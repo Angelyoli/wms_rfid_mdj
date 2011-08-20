@@ -3,6 +3,8 @@
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询品牌信息');
         $("input[type=text]").attr("value", "");
+        $('#ATC').combo('setValue', "");
+        $('#PLC').combo('setValue', "");
     };
     function select() {
         var queryParams = $('#details').datagrid('options').queryParams;
@@ -33,20 +35,20 @@
                     <table >
                       <tr>
                         <td>商品编码</td>
-                        <td style="padding-right:30px;"><input name="ProductCode" id="PC"></td>
+                        <td style="padding-right:30px;"><input name="ProductCode" id="PC" type="text"></td>
                         <td>自定义编码</td>
-                        <td><input name="CustomCode" id="CC"></td>
+                        <td><input name="CustomCode" id="CC" type="text"></td>
                       </tr>
                       <tr>
                         <td>商品名称</td>
-                        <td><input name="ProductName" id="PN"></td>
+                        <td><input name="ProductName" id="PN" type="text"></td>
                         <td>商品品牌</td>
-                      <td><input name="BrandCode" id="brandCode2">
+                      <td><input name="BrandCode" id="brandCode2" type="text">
                         <a href="#" onclick="brandSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                       </tr>
                       <tr>
                         <td>统一编码</td>
-                        <td><input name="UniformCode" id="NC" ></td>
+                        <td><input name="UniformCode" id="NC" type="text"></td>
                         <td>ABC类型</td>
                         <td><select  class="easyui-combobox" id="ATC"  editable="false" name="AbcTypeCode"  panelHeight="70" style="width: 129px;">
 		                        <option value=""></option>
@@ -59,7 +61,7 @@
                       </tr>
                       <tr>
                         <td>助记码</td>
-                        <td><input name="ShortCode" id="SC"></td>
+                        <td><input name="ShortCode" id="SC" type="text"></td>
                         <td>商品价类</td>
                         <td>
                            <select  class="easyui-combobox"  editable="false" id="PLC" name="PriceLevelCode" panelHeight="120" style="width: 129px;">
@@ -74,7 +76,7 @@
                       </tr>
                       <tr>
                         <td>厂商编码</td>
-                        <td><input name="SupplierCode" id="supplierCode2">
+                        <td><input name="SupplierCode" id="supplierCode2" type="text">
                         <a href="#" onclick="supplierSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                       </tr>                    
                     </table>

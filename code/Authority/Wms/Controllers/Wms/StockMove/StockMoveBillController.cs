@@ -44,9 +44,10 @@ namespace Authority.Controllers.Wms.StockMove
             string beginDate = collection["beginDate"] ?? "";
             string endDate = collection["endDate"] ?? "";
             string OperatePersonCode = collection["OperatePersonCode"] ?? "";
+            string CheckPersonCode = collection["CheckPersonCode"] ?? string.Empty;
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var moveBillMaster = MoveBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, beginDate, endDate, OperatePersonCode, Status, IsActive);
+            var moveBillMaster = MoveBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, beginDate, endDate, OperatePersonCode, CheckPersonCode, Status, IsActive);
             return Json(moveBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 

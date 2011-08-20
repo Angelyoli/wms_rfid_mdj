@@ -18,6 +18,7 @@ namespace THOK.Wms.DbModel
         public string RealUnitCode { get; set; }
         public decimal RealQuantity { get; set; }
         public Guid? OperatePersonID { get; set; }
+        public string Operator { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? FinishTime { get; set; }
         public string Status { get; set; }

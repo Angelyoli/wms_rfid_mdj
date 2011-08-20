@@ -24,6 +24,29 @@ namespace THOK.Wms.Bll.Service
 
         #region ICheckBillDetailService 成员
 
+        /// <summary>
+        /// 判断处理状态
+        /// </summary>
+        /// <param name="status">数据库查询出来的状态值</param>
+        /// <returns></returns>
+        public string WhatStatus(string status)
+        {
+            string statusStr = "";
+            switch (status)
+            {
+                case "0":
+                    statusStr = "未开始";
+                    break;
+                case "1":
+                    statusStr = "已申请";
+                    break;
+                case "2":
+                    statusStr = "已完成";
+                    break;
+            }
+            return statusStr;
+        }
+
         public object GetDetails(int page, int rows, string BillNo)
         {
             IQueryable<CheckBillDetail> checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
@@ -53,14 +76,14 @@ namespace THOK.Wms.Bll.Service
                     OperatePersonName = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeName,
                     StartTime = i.StartTime == null ? string.Empty : i.StartTime.ToString(),
                     FinishTime = i.FinishTime == null ? string.Empty : i.FinishTime.ToString(),
-                    i.Status
+                    Status=WhatStatus(i.Status)
                 });
                 return new { total, rows = temp.ToArray() };
             }
             return "";
         }
 
-        public new bool CellAdd(string BillNo, string ware, string area, string shelf, string cell)
+        public bool CellAdd(string BillNo, string ware, string area, string shelf, string cell)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             if (ware != null && ware != string.Empty || area != null && area != string.Empty || shelf != null && shelf != string.Empty || cell != null && cell != string.Empty)

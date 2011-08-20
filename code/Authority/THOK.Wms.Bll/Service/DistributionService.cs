@@ -90,9 +90,13 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = storages.ToArray() };
         }
 
-        public object GetProductTree()
+        public object GetProductTree(string productCode, string unitType)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable().Where(p => p.Quantity > 0);
+            if (productCode != "New")
+            {
+                storageQuery = storageQuery.Where(p => p.ProductCode == productCode);
+            }
             var products = storageQuery.GroupBy(s => new
                                                 {
                                                     s.ProductCode,
@@ -166,36 +170,59 @@ namespace THOK.Wms.Bll.Service
             {
                 Tree productTree = new Tree();
                 productTree.id = product.ProductCode;
-                productTree.text = product.ProductName + "(  数量：" + product.Quantity + " )";
-                productTree.state = "open";
-                productTree.attributes = "product";
-
+                productTree.text = product.ProductName + "<" + product.Quantity / 10000 + "件>";
+                productTree.state = "closed";
+                var productAttribute = new
+                    {
+                        AttributeId = "product",
+                        AttributeProduct = product.ProductCode,
+                        AttributeUnit = unitType
+                    };
+                productTree.attributes = productAttribute;
                 HashSet<Tree> warehouseSet = new HashSet<Tree>();
                 foreach (var wareHouse in product.WareHouses)
                 {
                     Tree warehouseTree = new Tree();
                     warehouseTree.id = wareHouse.WarehouseCode;
-                    warehouseTree.text = "仓库：" + wareHouse.WarehouseName + "(  数量：" + wareHouse.Quantity + " )";
+                    warehouseTree.text = "仓库：" + wareHouse.WarehouseName + "<" + wareHouse.Quantity / 10000 + "件>";
                     warehouseTree.state = "open";
-                    warehouseTree.attributes = "warehouse";
+                    var warehouseAttribute = new
+                    {
+                        AttributeId = "ware",
+                        AttributeProduct = product.ProductCode,
+                        AttributeUnit = unitType
+                    };
+                    warehouseTree.attributes = warehouseAttribute;
 
                     HashSet<Tree> areaSet = new HashSet<Tree>();
                     foreach (var area in wareHouse.Areas)
                     {
                         Tree areaTree = new Tree();
                         areaTree.id = area.AreaCode;
-                        areaTree.text = "库区：" + area.AreaName + "(  数量：" + area.Quantity + " )";
+                        areaTree.text = "库区：" + area.AreaName + "<" + area.Quantity / 10000 + " 件>";
                         areaTree.state = "open";
-                        areaTree.attributes = "area";
+                        var areaAttribute = new
+                        {
+                            AttributeId = "area",
+                            AttributeProduct = product.ProductCode,
+                            AttributeUnit = unitType
+                        };
+                        areaTree.attributes = areaAttribute;
 
                         HashSet<Tree> shelfSet = new HashSet<Tree>();
                         foreach (var shelf in area.Shelfs)
                         {
                             Tree shelfTree = new Tree();
                             shelfTree.id = shelf.ShelfCode;
-                            shelfTree.text = "货架：" + shelf.ShelfName + "(  数量：" + shelf.Quantity + " )";
+                            shelfTree.text = "货架：" + shelf.ShelfName + "<" + shelf.Quantity / 10000 + "件>";
                             shelfTree.state = "open";
-                            shelfTree.attributes = "shelf";
+                            var shelfAttribute = new
+                            {
+                                AttributeId = "shelf",
+                                AttributeProduct = product.ProductCode,
+                                AttributeUnit = unitType
+                            };
+                            shelfTree.attributes = shelfAttribute;
                             shelfSet.Add(shelfTree);
                         }
                         areaTree.children = shelfSet.ToArray();
@@ -210,31 +237,30 @@ namespace THOK.Wms.Bll.Service
             return productSet.ToArray();
         }
 
-        public object GetCellDetails(int page, int rows, string type, string id, string unitType)
+        public object GetCellDetails(int page, int rows, string type, string id, string unitType, string productCode)
         {
             if (unitType == null || unitType == "")
             {
                 unitType = "1";
             }
-
-            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.Where(s => s.StorageCode != null);
-
-            if (type == "product")
+            if (productCode == null || productCode == "")
             {
-                storages = storageQuery.Where(s => s.ProductCode == id);
+                productCode = "New";
             }
-            else if (type == "ware")
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+            var storages = storageQuery.Where(s => s.StorageCode != null && s.ProductCode == productCode);
+
+            if (type == "ware")
             {
-                storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id);
+                storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id && s.ProductCode == productCode);
             }
             else if (type == "area")
             {
-                storages = storageQuery.Where(s => s.Cell.Shelf.Area.AreaCode == id);
+                storages = storageQuery.Where(s => s.Cell.Shelf.Area.AreaCode == id && s.ProductCode == productCode);
             }
             else if (type == "shelf")
             {
-                storages = storageQuery.Where(s => s.Cell.Shelf.ShelfCode == id);
+                storages = storageQuery.Where(s => s.Cell.Shelf.ShelfCode == id && s.ProductCode == productCode);
             }
             var storage = storages.OrderBy(s => s.Product.ProductName).Where(s => s.Quantity > 0);
             int total = storage.Count();
