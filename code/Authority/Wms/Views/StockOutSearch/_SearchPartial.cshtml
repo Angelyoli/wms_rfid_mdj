@@ -76,6 +76,7 @@
         $('#warehouse_Out').combogrid('clear');
         $('#beginDate').datebox('setValue', "");
         $('#endDate').datebox('setValue', "");
+        $('#operate_Status').combo('setValue', "");
     };
 
     function select() {
@@ -102,7 +103,7 @@
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >   
-            <table align="left" width="300">
+            <table align="left" width="240">
               <tr>
                 <td width="60">出库单号:</td>
                 <td><input id="billNo" type="text" style="width: 140px"></td>

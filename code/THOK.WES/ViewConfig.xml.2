@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Application>
+	<Caption MinBox="true" MaxBox="true"/>
+	<Title Visible="true"/>
+	<MenuBar Width="180"/>
+	<MenuItem Height="25"/>
+
+  <MenuControl Type="THOK.AF.Menus.PanderMenu, THOK.AF.Menus.dll"/>
+
+ 
+
+	<Menus Name="仓库作业">
+		<Menu Name="入库作业" Type="THOK.WES.View.EntryTaskForm,THOK.WES.dll"/>
+		<Menu Name="出库作业" Type="THOK.WES.View.DeliveryTaskForm,THOK.WES.dll"/>
+		<Menu Name="移库作业" Type="THOK.WES.View.MoveTaskForm,THOK.WES.dll"/>
+		<Menu Name="盘点作业" Type="THOK.WES.View.CheckTaskForm,THOK.WES.dll"/>
+
+	</Menus>
+	
+
+	<Menus Name="系统">
+		<Menu Name="参数设置" Type="THOK.WES.View.ParameterForm,THOK.WES.dll"/>
+	</Menus>
+</Application>
