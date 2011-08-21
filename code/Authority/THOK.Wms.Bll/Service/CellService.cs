@@ -719,5 +719,36 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
+        public System.Data.DataTable Test01()
+        {
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+
+            var cellInfo = cellQuery.Where(c => c.Product != null)
+                .GroupBy(c => c.Product)
+                .Select(c => new
+                {
+                    ProductCode = c.Key.ProductCode,
+                    ProductName = c.Key.ProductName,
+                    ProductQuantity = c.Count(),
+                    p1 = c.Key.UniformCode,
+                    p2 = c.Key.UnitCode,
+                    p3 = c.Key.BrandCode
+                });
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("one", typeof(string));
+            dt.Columns.Add("two", typeof(string));
+            dt.Columns.Add("three", typeof(int));
+            dt.Columns.Add("four", typeof(string));
+            dt.Columns.Add("five", typeof(string));
+            dt.Columns.Add("six", typeof(string));
+
+            foreach (var item in cellInfo)
+            {
+                dt.Rows.Add("'" + item.ProductCode, item.ProductName, item.ProductQuantity, item.p1, item.p2, item.p3);
+            }
+            return dt;
+        }
     }
 }

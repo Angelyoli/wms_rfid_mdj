@@ -922,7 +922,6 @@
     <Content Include="packages.config" />
     <Content Include="Views\DefaultProductSet\Index.cshtml" />
     <Content Include="Views\DefaultProductSet\_AddPartial.cshtml" />
-    <Content Include="Views\DefaultProductSet\_SelectPartial.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\PageNotFound.cshtml" />
     <Content Include="Views\Home\ServerError.cshtml" />
@@ -936,7 +935,6 @@
     <Content Include="Views\ExportExcel\_PrintPartial.cshtml" />
     <Content Include="Views\ExportExcel\_SearchPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
-    <Content Include="Views\DefaultProductSet\_GoodsCount.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
     <Content Include="Views\Home\_HeaderPartial.cshtml" />
