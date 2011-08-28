@@ -54,6 +54,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.Wms.DownloadWms", "THOK.Wms.DownloadWms\THOK.Wms.DownloadWms.csproj", "{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Authority.vsmdi
@@ -131,6 +133,10 @@ Global
 		{48444DC4-E3BF-4003-8612-953571102291}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48444DC4-E3BF-4003-8612-953571102291}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48444DC4-E3BF-4003-8612-953571102291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

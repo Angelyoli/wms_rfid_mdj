@@ -41,7 +41,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
         public ISortingLineRepository SortingLineRepository { get; set; }
         [Dependency]
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
-
+        
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
@@ -185,32 +185,43 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 {
                                     storQuantity = storageQuantity.Sum(s => s.Quantity);
                                 }
+                                //获取当前这个卷烟库存数量
+                                string[] areaTypes = new string[] { "1", "2", "4" };
+                                var areaSumQuantitys = storageQuery.Where(s => areaTypes.Any(t => t == s.Cell.Area.AreaType) &&
+                                                                          s.ProductCode == product.Product.ProductCode).ToArray();
+                                decimal areaQuantiy = 0;
+                                if (areaSumQuantitys.Count() > 0)
+                                {
+                                    areaQuantiy = areaSumQuantitys.Sum(s => s.Quantity - s.OutFrozenQuantity);
+                                }
 
                                 if (cancellationToken.IsCancellationRequested) return;
 
                                 //获取移库量（按整件计）
                                 decimal quantity = 0;
 
-                                if (lowerlimitQuantity == 0)
+                                quantity = Math.Ceiling((product.SumQuantity - storQuantity) / product.Product.Unit.Count)
+                                               * product.Product.Unit.Count;
+
+
+                                if (areaQuantiy < quantity)
                                 {
                                     quantity = product.SumQuantity - storQuantity;
                                 }
-                                else
-                                {
-                                    quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
-                                                   * product.Product.Unit.Count;
-                                }
 
-                                if (cancellationToken.IsCancellationRequested) return;
-                                AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity,cancellationToken);
+                                if (quantity > 0)
+                                {
+                                    if (cancellationToken.IsCancellationRequested) return;
+                                    AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps, item.SortingLine.Cell.CellCode);
+                                }
 
                                 if (quantity > 0)
                                 {
                                     //生成移库不完整,可能是库存不足；
                                     hasError = true;
                                     ps.State = StateType.Error;
-                                    ps.Errors.Add(product.Product.ProductCode +  " " + product.Product.ProductName + " 库存不足！");
-                                    NotifyConnection(ps.Clone()); 
+                                    ps.Errors.Add(product.Product.ProductCode + " " + product.Product.ProductName + " 库存不足！");
+                                    NotifyConnection(ps.Clone());
                                 }
                             }
 
@@ -229,7 +240,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     if (cancellationToken.IsCancellationRequested) return;
                                     OutBillCreater.AddToOutBillDetail(outBillMaster, product.Product, product.Price, product.SumQuantity);
                                 }
-
+                                
                                 if (cancellationToken.IsCancellationRequested) return;
                                 //添加出库、移库主单和作业调度表
                                 SortWorkDispatch sortWorkDisp = AddSortWorkDispMaster(moveBillMaster, outBillMaster, item.SortingLine.SortingLineCode, item.OrderDate);
@@ -301,21 +312,21 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             return sortWorkDispatch;
         }
 
-        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity, CancellationToken cancellationToken)
+        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps,string cellCode)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             //选择当前订单操作目标仓库；
             var storages = storageQuery.Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode);
             storages = storages.Where(s => s.Quantity - s.OutFrozenQuantity > 0);
 
-            //分配整盘；排除 件烟区 条烟区
+            //分配整盘；排除 件烟区 条烟区 备货区
             if (cancellationToken.IsCancellationRequested) return;
-            string[] areaTypes = new string[] { "2", "3" };
+            string[] areaTypes = new string[] { "2", "3", "5" };
             var ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPallet(moveBillMaster, ss, cell, ref quantity, cancellationToken);
+            if (quantity > 0) AllotPallet(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
 
             //分配件烟；件烟区 
             if (cancellationToken.IsCancellationRequested) return;
@@ -324,36 +335,36 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         && s.ProductCode == product.ProductCode)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken);
+            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
 
-            //分配件烟 (下层储位)；排除 件烟区 条烟区 
+            //分配件烟 (下层储位)；排除 件烟区 条烟区 备货区
             if (cancellationToken.IsCancellationRequested) return;
-            areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            areaTypes = new string[] { "2", "3", "5" };
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) 
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken);
+            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
 
-            //分配件烟 (非下层储位)；排除 件烟区 条烟区 
+            //分配件烟 (非下层储位)；排除 件烟区 条烟区 备货区
             if (cancellationToken.IsCancellationRequested) return;
-            areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            areaTypes = new string[] { "2", "3", "5" };
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) 
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken);
+            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
 
             //分配条烟；条烟区
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "3" };
-            ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+            ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType) 
                                         && s.ProductCode == product.ProductCode)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken);
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
 
             //分配条烟；件烟区
             areaTypes = new string[] { "2" };
@@ -361,30 +372,30 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         && s.ProductCode == product.ProductCode)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken);
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
 
-            //分配条烟 (下层储位)；排除 件烟区 条烟区
+            //分配条烟 (下层储位)；排除 件烟区 条烟区 本货位
             if (cancellationToken.IsCancellationRequested) return;
-            areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            areaTypes = new string[] { "2", "3"};
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && !cellCode.Contains(s.Cell.CellCode)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken);
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
 
-            //分配条烟 (非下层储位)；排除 件烟区 条烟区
+            //分配条烟 (非下层储位)；排除 件烟区 条烟区 本货位
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && !cellCode.Contains(s.Cell.CellCode)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity,cancellationToken);
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity,cancellationToken,ps);
         }
 
-        private void AllotBar(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken)
+        private void AllotBar(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps)
         {
             foreach (var s in ss.ToArray())
             {
@@ -400,11 +411,12 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                         var targetStorage = Locker.LockStorage(cell);
                         if (sourceStorage != null && targetStorage != null
                             && targetStorage.Quantity == 0
-                            && targetStorage.InFrozenQuantity ==0)
+                            && targetStorage.InFrozenQuantity == 0)
                         {
                             MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity);
                             quantity -= allotQuantity;
                         }
+                        else ps.Errors.Add("可用的移入目标库存记录不足！");                       
                     }
                     //else break;
                 }
@@ -412,7 +424,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             }
         }
 
-        private void AllotPiece(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken)
+        private void AllotPiece(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps)
         {
             foreach (var s in ss.ToArray())
             {
@@ -434,6 +446,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity);
                             quantity -= allotQuantity;
                         }
+                        else ps.Errors.Add("可用的移入目标库存记录不足！");  
                     }
                     //else break;
                 }
@@ -441,7 +454,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             }
         }
 
-        private void AllotPallet(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken)
+        private void AllotPallet(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps)
         {
             foreach (var s in ss.ToArray())
             {
@@ -462,6 +475,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity);
                             quantity -= allotQuantity;
                         }
+                        else ps.Errors.Add("可用的移入目标库存记录不足！");
                     }
                     //else break;
                 }
@@ -469,5 +483,87 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             }
         }
 
+        public bool LowerLimitMoveLibrary(string userName, bool isEnableStocking, out string errorInfo)
+        {
+            IQueryable<SortingLowerlimit> sortingLowerlimitQuery = SortingLowerlimitRepository.GetQueryable();
+            IQueryable<SortingLine> sortingLineQuery = SortingLineRepository.GetQueryable();
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+
+            bool Result = true;
+            errorInfo = string.Empty;
+
+            var sortLowerlimit = sortingLowerlimitQuery.Where(s => s.Quantity > 0)
+                                                       .GroupBy(s => new { s.SortingLine, s.Product, s.UnitCode })
+                                                       .Select(l => new { l.Key.SortingLine, l.Key.Product, l.Key.UnitCode, SumQuantity = l.Sum(p => p.Quantity) })
+                                                       .GroupBy(o => new { o.SortingLine })
+                                                       .Select(t => new { t.Key.SortingLine, product = t })
+                                                       .ToArray();
+
+            string cellCode = "";
+            var sortings = sortingLineQuery.Where(s => s.SortingLineCode == s.SortingLineCode).ToArray();
+            foreach (var sort in sortings)
+            {
+                cellCode += sort.Cell.CellCode;
+            }
+         
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
+            string operatePersonID = employee != null ? employee.ID.ToString() : "";
+            if (sortLowerlimit.Count() > 0)
+            {
+                foreach (var item in sortLowerlimit)
+                {
+                    MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(item.SortingLine.Cell.WarehouseCode,
+                                                                                                    item.SortingLine.MoveBillTypeCode,
+                                                                                                    operatePersonID);
+                    moveBillMaster.Origin = "1";
+                    moveBillMaster.Description = "根据 " + item.SortingLine.SortingLineName + "下限生成移库单！";
+                    bool hasError = false;
+                    foreach (var product in item.product.ToArray())
+                    {
+
+                        //获取分拣备货区库存                    
+                        var storageQuantity = storageQuery.Where(s => s.ProductCode == product.Product.ProductCode)
+                                                          .Join(sortingLineQuery,
+                                                                s => s.Cell,
+                                                                l => l.Cell,
+                                                                (s, l) => new { l.SortingLineCode, s.Quantity }
+                                                          )
+                                                          .Where(r => r.SortingLineCode == product.SortingLine.SortingLineCode);
+
+                        decimal storQuantity = 0;
+                        if (storageQuantity.Count() > 0)
+                        {
+                            storQuantity = storageQuantity.Sum(s => s.Quantity);
+                        }
+
+                        //获取移库量（按整件计）
+                        decimal quantity = 0;
+                        if (isEnableStocking)
+                            quantity = Math.Ceiling(product.SumQuantity - storQuantity);
+                        else
+                            quantity = Math.Ceiling(product.SumQuantity);
+
+                        CancellationToken cancellationToken = new CancellationToken();
+                        ProgressState ps = new ProgressState();
+                        AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps, cellCode);
+
+                        if (quantity > 0)
+                        {
+                            //生成移库不完整,可能是库存不足；
+                            hasError = true;
+                            errorInfo += product.Product.ProductCode + "(" + product.Product.ProductName + ")  库存不足！";
+                        }
+                    }
+                    if (!hasError)
+                    {
+                        MoveBillMasterRepository.SaveChanges();
+                        errorInfo += "分拣线：" + item.SortingLine.SortingLineName + " 根据下限生成移库单成功！";
+                    }
+                    else
+                        Result = false;
+                }
+            }
+            return Result;
+        }
     }
 }

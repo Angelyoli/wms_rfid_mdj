@@ -213,6 +213,10 @@
     <Compile Include="Migrations\201208220705510_modify_unit_list.Designer.cs">
       <DependentUpon>201208220705510_modify_unit_list.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201208280101441_modify_in_out_detail_unit.cs" />
+    <Compile Include="Migrations\201208280101441_modify_in_out_detail_unit.Designer.cs">
+      <DependentUpon>201208280101441_modify_in_out_detail_unit.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

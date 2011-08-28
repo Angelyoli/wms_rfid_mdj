@@ -11,7 +11,7 @@ namespace THOK.Wms.AutomotiveSystems.Models
         public string[] BillTypes { get; set; }
         public string productCode{ get; set; }
         public string OperateType { get; set; }
-        public string OperateAreas { get; set; }
+        public string OperateArea { get; set; }
         public string Operator { get; set; }
         public BillMaster[] BillMasters { get; set; }
         public BillDetail[] BillDetails { get; set; }

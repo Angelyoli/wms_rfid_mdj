@@ -55,7 +55,7 @@
                         break;
                 }
             });
-            g_connection.start({ transport: 'webSockets' }, function () {
+            g_connection.start(function () {
                 g_connection.send(data);
             });
             g_progressDialog = $.asyncProcessing.ShowProgressDialog(dlgTitle);

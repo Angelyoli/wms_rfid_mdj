@@ -34,6 +34,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
 
         [Dependency]
+        public ISortOrderDispatchRepository SortOrderDispatchRepository { get; set; }
+
+        [Dependency]
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
         public IStorageLocker Locker { get; set; }
@@ -100,13 +103,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     switch (billMaster.BillType)
                     {
                         case "1"://入库单
-                            var inBillDetails = InBillAllotRepository.GetQueryable()
+                            var inBillDetails = InBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.ProductCode == productCode || productCode == string.Empty)                                    
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
                                     && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType=="3")))                                
-                                .ToArray()
+                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType=="3")))
                                 .Select(i => new BillDetail() { 
                                     BillNo = i.BillNo, 
                                     BillType = "1" ,
@@ -133,13 +135,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(inBillDetails).ToArray();
                             break;
                         case "2"://出库单
-                            var outBillDetails = OutBillAllotRepository.GetQueryable()
+                            var outBillDetails = OutBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
                                     && (OperateAreas.Contains(i.Cell.Layer.ToString())
                                         || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
-                                .ToArray()
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -208,13 +209,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             }
                             break;                           
                         case "3"://移库单
-                           var moveBillDetails = MoveBillDetailRepository.GetQueryable()
+                            var moveBillDetails = MoveBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.InCell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))
-                                .ToArray()
+                                    && (OperateAreas.Contains(i.InCell.Layer.ToString()) 
+                                        || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))                               
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -242,12 +242,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
                             break;
                         case "4"://盘点单
-                            var checkBillDetails = CheckBillDetailRepository.GetQueryable()
+                            var checkBillDetails = CheckBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
                                     && (OperateAreas.Contains(i.Cell.Layer.ToString())
                                         || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
-                                .ToArray()
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -310,8 +309,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     inAllot.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.CellCode,
-                                            "入库", inAllot.Product.ProductName, (int)billDetail.PieceQuantity,
+                                        OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName,
+                                            billDetail.BillType, inAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
                                 }
@@ -328,8 +327,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     outAllot.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.CellCode,
-                                            "出库", outAllot.Product.ProductName, (int)billDetail.PieceQuantity,
+                                        OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName,
+                                            billDetail.BillType, outAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
                                 }
@@ -346,8 +345,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     moveDetail.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode,
-                                             "移库", moveDetail.Product.ProductName, (int)billDetail.PieceQuantity,
+                                        OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName,
+                                             billDetail.BillType, moveDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                              (int)billDetail.BarQuantity, moveDetail.InCell.CellName);
                                     }
                                 }
@@ -364,8 +363,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode,
-                                            "盘点", checkDetail.Product.ProductName, (int)billDetail.PieceQuantity,
+                                        OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellName,
+                                            billDetail.BillType, checkDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
                                 }
@@ -408,7 +407,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     inAllot.Status = "0";
                                     inAllot.Operator = string.Empty;
                                     if (useTag == "1")                                    
-                                        CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.CellCode);
+                                        CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
                                 }
                                 break;
                             case "2":
@@ -423,7 +422,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     outAllot.Status = "0";
                                     outAllot.Operator = string.Empty;
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.CellCode);
+                                        CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
                                 }
                                 break;
                             case "3":
@@ -438,7 +437,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     moveDetail.Status = "0";
                                     moveDetail.Operator = string.Empty;
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode);
+                                        CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
                                 }
                                 break;
                             case "4":
@@ -453,7 +452,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.Status = "0";
                                     checkDetail.Operator = string.Empty;
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.CellCode);
+                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
                                 }
                                 break;
                             default:
@@ -511,7 +510,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             inAllot.InBillMaster.Status = "6";
                                         }
                                         if (useTag == "1")    
-                                            CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.CellCode);
+                                            CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
                                     }
                                 }
                                 break;
@@ -544,7 +543,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             outAllot.OutBillMaster.Status = "6";
                                         }
                                         if (useTag == "1")    
-                                            CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.CellCode);
+                                            CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
                                     }
                                 }
                                 break;
@@ -571,14 +570,21 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
                                         moveDetail.MoveBillMaster.Status = "3";
+
+                                        var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
+                                        if (sortwork != null)
+                                        {
+                                            sortwork.DispatchStatus = "3";
+                                        }
                                         if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                                         {
                                             moveDetail.MoveBillMaster.Status = "4";
                                             string errorInfo = "";
+                                            MoveBillDetailRepository.SaveChanges();
                                             SettleSortWokDispatch(moveDetail.BillNo, ref errorInfo);
                                         }
-                                        if (useTag == "1")    
-                                            CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode);
+                                        if (useTag == "1")
+                                            CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
                                     }
                                 }
                                 break;
@@ -605,7 +611,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         checkDetail.CheckBillMaster.Status = "4";
                                     }
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.CellCode);
+                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
                                 }
                                 break;
                             default:
@@ -687,9 +693,16 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     .FirstOrDefault(o => o.BillNo == sortWork.OutBillNo);
                 outMaster.Status = "6";
                 outMaster.UpdateTime = DateTime.Now;
-                //分拣作业结单
+                //分拣作业结单                
                 sortWork.DispatchStatus = "4";
                 sortWork.UpdateTime = DateTime.Now;
+
+                //分拣订单线路调度完成
+                var sortOrderDetail = SortOrderDispatchRepository.GetQueryable().Where(s => s.SortWorkDispatchID == sortWork.ID).ToArray();
+                foreach (var sortOrder in sortOrderDetail)
+                {
+                    sortOrder.WorkStatus = "2";
+                }
                 return true;
             }
             return true;
@@ -697,14 +710,15 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         private void OperateToLabelServer(string billId, string detailId, string storageId, string operateType, string tobaccoName, int piece, int item, string targetStorageName)
         {
+            int operateTypeInt = Convert.ToInt32(operateType);
             string sql = @"INSERT INTO SY_SHOWINFO 
-                            VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}',0,0,0,'{7}');";
+                            VALUES('{0}','{1}','{2}',{3},'{4}',{5},{6},0,0,0,'{7}');";
             string tmp = "";
             tmp = tmp + (piece > 0 ? string.Format("{0}件", piece) : "");
             tmp = tmp + (item > 0 ? string.Format("{0}条", item) : "");
             tmp = tmp + (targetStorageName.Length > 0 ? string.Format(@"->{0}", targetStorageName) : "");
-  
-            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql, billId, detailId, storageId, operateType, tobaccoName, piece, item, tmp);               
+            sql = string.Format(sql, billId, detailId, storageId, operateTypeInt, tobaccoName, piece, item, tmp);
+            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);               
         }
 
         private void CancelOperateToLabelServer(string billId, string detailId, string storageId)
@@ -719,7 +733,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             UPDATE STORAGES SET
                             ACT = '',PRODUCTNAME='',CONTENTS='',NUMBERSHOW='',[SIGN]=0
                             WHERE STORAGEID = '{0}'";
-            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql,storageId, billId, detailId);
+            sql = string.Format(sql, storageId, billId, detailId);
+            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);
         }
     }
 }

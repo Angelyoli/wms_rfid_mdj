@@ -109,11 +109,10 @@ namespace THOK.Wms.Bll.Service
                                               IsActive = "可用"
                                           });
 
-            return sortOrder.ToArray();
+            return sortOrder.OrderBy(s=>s.DeliverLineName).ToArray();
         }
 
         #endregion
-
 
         public bool DownSortOrder(string beginDate, string endDate, out string errorInfo)
         {
@@ -129,7 +128,9 @@ namespace THOK.Wms.Bll.Service
                 {
                     sortOrderStrs += sortOrderIds[i].OrderID + ",";
                 }
-                SortOrder[] SortOrders = null; //SortingDownService.GetSortOrder(sortOrderStrs);
+
+                SortOrder[] SortOrders = SortingDownService.GetSortOrder(beginDate, endDate, sortOrderStrs);
+
                 foreach (var item in SortOrders)
                 {
                     var sortOrder = new SortOrder();

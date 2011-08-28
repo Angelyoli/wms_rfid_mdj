@@ -2,17 +2,31 @@
     //选择移出货位编码
     function moveInCellSelect() {
         $('#MoveCellData').dialog('open').dialog('setTitle', '选择货位信息');
-        $('#movewarehouseTree').tree({ url: '/Cell/GetMoveCellDetails/?inOrOut=' + 'in' }); //加载树形数据
+        var productCode = $('#inAllotAddProductCode').val();
+        $('#movewarehouseTree').tree({ url: '/Cell/GetMoveCellDetails/?inOrOut=' + 'in' + '&productCode=' + productCode + '' });  //加载树形数据
 
         //双击选择移入货位
         $('#movewarehouseTree').tree({
             onDblClick: function (node) {
                 if (node.attributes == "cell") {
                     $('#targetCellCode').val(node.id);
+                    $('#cellCode').val(node.id);
+                    $('#cellName').val(node.text);
                     $('#MoveCellData').dialog('close');
                 }
             }
         });
+    }
+
+    //将选中的货位编码赋值给控件
+    function MoveCellSave() {
+        var node = $('#movewarehouseTree').tree('getSelected');
+        if (node.attributes == "cell") {
+            $('#targetCellCode').val(node.id);
+            $('#cellCode').val(node.id);
+            $('#cellName').val(node.text);
+            $('#MoveCellData').dialog('close');
+        }
     }
 
 </script>
