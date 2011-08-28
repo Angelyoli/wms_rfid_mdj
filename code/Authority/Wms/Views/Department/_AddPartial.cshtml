@@ -45,23 +45,29 @@
 				]]
         });
 
-        $('#depart-add').combogrid({
-            disabled: false,
-            width: 130,
-            panelWidth: 340,
-            url: '/Department/Details/?page=1&rows=10',
-            idField: 'ID',
-            textField: 'DepartmentName',
-            mode: 'local',
-            editable: false,
-            fitColumns: true,
-            columns: [[
-					{ field: 'ID', title: '部门ID', hidden: true, width: 30 },
-					{ field: 'DepartmentCode', title: '部门编码', align: 'left', width: 40 },
-					{ field: 'DepartmentName', title: '部门名称', align: 'left', width: 30 },
-					{ field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
-				]]
-        });
+        function parentCodeSearchClick() {
+            alert(1);
+            $('#parentCodeData').dialog('open').dialog('setTitle', '选择部门编号');
+            $('#parentCodeDetail').datagrid({ url: '/Department/Details/' });
+            $("#parentCodeDetail").datagrid('reload');
+        }
+//        $('#depart-add').combogrid({
+//            disabled: false,
+//            width: 130,
+//            panelWidth: 340,
+//            url: '/Department/Details/?page=1&rows=10',
+//            idField: 'ID',
+//            textField: 'DepartmentName',
+//            mode: 'local',
+//            editable: false,
+//            fitColumns: true,
+//            columns: [[
+//					{ field: 'ID', title: '部门ID', hidden: true, width: 30 },
+//					{ field: 'DepartmentCode', title: '部门编码', align: 'left', width: 40 },
+//					{ field: 'DepartmentName', title: '部门名称', align: 'left', width: 30 },
+//					{ field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
+//				]]
+//        });
     }
 
     function addClick() {
@@ -119,6 +125,8 @@
                       <tr>
                         <td align="right">上级编码：</td>
                         <td><input name="ParentDepartmentID" id="depart-add"/>
+                        <a href="#" id="parentCodeSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                                onclick="parentCodeSearchClick()"></a>
 	                    </td>
                         <td align="right">是否可用：</td>
                         <td><select id="isActive_depart" name="IsActive" class="easyui-combobox" style="width: 130px">
@@ -146,3 +154,4 @@
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
 </div>
+@Html.Partial("_ParentCodePartial")

@@ -933,6 +933,8 @@
     <Content Include="Views\ExportExcel\Index.cshtml" />
     <Content Include="Views\ExportExcel\_PrintPartial.cshtml" />
     <Content Include="Views\ExportExcel\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\_ParentCompanyNamePartial.cshtml" />
+    <Content Include="Views\Department\_ParentCodePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

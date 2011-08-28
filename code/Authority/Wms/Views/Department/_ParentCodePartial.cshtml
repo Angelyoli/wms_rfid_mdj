@@ -1,0 +1,28 @@
+﻿<script type="text/javascript">
+    
+</script>
+<div id="parentCodeData" class="easyui-dialog" modal="true" style="width: 500px;
+    height: 500px; padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
+    <div id="btnQuery">
+        上级名称：<input id="parentCodeInfo">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="parentCodeQueryClick()"
+            id="parentCodeQuery">查询</a>
+    </div>
+    <div split="true" border="false" style="width: 486px; height: 430px;">
+        <table id="parentCodeDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+            <thead>
+                <tr>
+                    <th field="ParentDepartmentID" hidden="true" width="60">
+                        上级编码
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="dlgDepart-buttons">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="parentCodeSave()">确定</a>
+        <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#companyData').dialog('close')">
+            取消</a>
+    </div>
+</div>
