@@ -122,5 +122,43 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+        /// <summary>
+        /// 查找上级名称
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="CompanyCode"></param>
+        /// <param name="CompanyName"></param>
+        /// <returns></returns>
+        public object GetParentName(int page, int rows, string queryString, string value)
+        {
+            string companyCode = "", companyName = "";
+
+            if (queryString == "CompanyCode")
+            {
+                companyCode = value;
+            }
+            else
+            {
+                companyName = value;
+            }
+            IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode) && c.CompanyName.Contains(companyName))
+                .OrderBy(c => c.CompanyCode).AsEnumerable()
+                .Select(c => new
+                {
+                    c.ID,
+                    c.CompanyCode,
+                    c.CompanyName,
+                    ParentCompanyID = c.ParentCompany.ParentCompanyID,
+                    ParentCompanyName = c.ParentCompany.CompanyName,                    
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            int total = company.Count();
+            company = company.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = company.ToArray() };
+        }
     }
 }

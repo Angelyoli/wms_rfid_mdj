@@ -940,6 +940,11 @@
     <Content Include="Views\ExportExcel\_SearchPartial.cshtml" />
     <Content Include="Views\Company\_ParentCompanyNamePartial.cshtml" />
     <Content Include="Views\Department\_ParentCodePartial.cshtml" />
+    <Content Include="Views\Department\_DepartmentLeaderPartial.cshtml" />
+    <Content Include="Views\Department\_CompanyPartial.cshtml" />
+    <Content Include="Views\Employee\_DepartmentNamePartial.cshtml" />
+    <Content Include="Views\Employee\_JobPartial.cshtml" />
+    <Content Include="Views\Employee\_UserNamePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

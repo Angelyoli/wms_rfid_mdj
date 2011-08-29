@@ -102,5 +102,32 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+        public object GetDepartment(int page, int rows, string queryString, string value)
+        {
+            string departmentCode = "", departmentName = "";
+
+            if (queryString == "DepartmentCode")
+            {
+                departmentCode = value;
+            }
+            else
+            {
+                departmentName = value;
+            }
+            IQueryable<Department> departQuery = DepartmentRepository.GetQueryable();
+            var department = departQuery.Where(d => d.DepartmentCode.Contains(departmentCode) && d.DepartmentName.Contains(departmentName))
+                .OrderBy(d => d.DepartmentCode).AsEnumerable()
+                .Select(d => new { 
+                    d.ID, 
+                    d.DepartmentCode, 
+                    d.DepartmentName, 
+                    ParentDepartmentID = d.ParentDepartmentID, 
+                    ParentDepartmentName = d.ParentDepartment.DepartmentName
+                });            
+            int total = department.Count();
+            department = department.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = department.ToArray() };
+        }
     }
 }

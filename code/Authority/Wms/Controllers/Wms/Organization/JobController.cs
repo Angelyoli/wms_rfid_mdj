@@ -30,7 +30,7 @@ namespace Authority.Controllers.Wms.Organization
         }
 
         //
-        // GET: /Department/Details/
+        // GET: /Job/Details/
 
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
@@ -42,7 +42,7 @@ namespace Authority.Controllers.Wms.Organization
         }
 
         //
-        // POST: /Department/Create/
+        // POST: /Job/Create/
 
         [HttpPost]
         public ActionResult Create(Job job)
@@ -53,7 +53,7 @@ namespace Authority.Controllers.Wms.Organization
         }
 
         //
-        // POST: /Department/Edit/5
+        // POST: /Job/Edit/5
 
         public ActionResult Edit(Job job)
         {
@@ -63,7 +63,7 @@ namespace Authority.Controllers.Wms.Organization
         }
 
         //
-        // POST: /Department/Delete/
+        // POST: /Job/Delete/
 
         [HttpPost]
         public ActionResult Delete(string jobId)
@@ -73,5 +73,11 @@ namespace Authority.Controllers.Wms.Organization
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
+        // POST: /Job/GetJob/
+        public ActionResult GetJob(int page, int rows, string queryString, string value)
+        {
+            var job = JobService.GetJob(page, rows, queryString, value);
+            return Json(job, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

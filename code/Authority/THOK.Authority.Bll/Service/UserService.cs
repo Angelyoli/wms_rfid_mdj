@@ -257,6 +257,33 @@ namespace THOK.Authority.Bll.Service
             }
             return true;
         }
+
+        public object GetUser(int page, int rows, string queryString, string value)
+        {
+            string userName = "", chineseName = "";
+
+            if (queryString == "UserName")
+            {
+                userName = value;
+            }
+            else
+            {
+                chineseName = value;
+            }
+            IQueryable<THOK.Authority.DbModel.User> query = UserRepository.GetQueryable();
+            var users = query.Where(i => i.UserName.Contains(userName) && i.ChineseName.Contains(chineseName))
+                .OrderBy(i => i.UserID)
+                .Select(i => new
+                {
+                    i.UserID,
+                    i.UserName,
+                    i.ChineseName,
+                    IsAdmin = i.IsAdmin ? "是" : "否"
+                });
+            int total = users.Count();
+            users = users.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = users.ToArray() };
+        }
     }
 }
 

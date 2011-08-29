@@ -60,7 +60,7 @@
         $("#parentCompanyNameDetail").datagrid('reload');
     }
 </script>
-    <div id="dlg" class="easyui-dialog" modal="true" style="width:520px;height:330px;padding:2px 2px"   closed="true" buttons="#dlg-buttons">
+    <div id="dlg" class="easyui-dialog" modal="true" style="width:510px;height:330px;padding:2px 2px"   closed="true" buttons="#dlg-buttons">
 		<div class="easyui-layout" fit="true">
 			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
 	            <form id="companyfm" method="post">
@@ -75,7 +75,7 @@
                         <tr>
                         <td width="60">上级名称:</td>
                         <td width="168">
-                        <input name="ParentCompanyID" type="text" id="company-add" />
+                        <input name="ParentCompanyName" type="text" id="company-add"  readonly="readonly"/>
                         <a href="#" id="parentCompanyNameSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                                 onclick="parentCompanyNameSearchClick()"></a>
                                 </td>
@@ -112,7 +112,7 @@
                       <tr>
                         <td width="60">描述:</td>
                         <td width="168" colspan="3" >
-                        <textarea name="Description" style="width: 380px; height: 60px"></textarea> </td>
+                        <textarea name="Description" style="width: 367px; height: 60px"></textarea> </td>
                       </tr>
                     </table>
 	            </form>
