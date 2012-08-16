@@ -128,12 +128,12 @@ namespace THOK.Wms.Bll.Service
                 }
                 //判断移出数量是否合理
                 bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity, outCell.MaxQuantity, outStorage.Quantity, "out");
-                //判断移入数量是否合理
-                bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, inStorage.InFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity, inStorage.Quantity, "in");
                 if (Locker.LockStorage(outStorage, product) != null)
                 {
                     if (inStorage != null)
                     {
+                        //判断移入数量是否合理
+                        bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, inStorage.InFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity, inStorage.Quantity, "in");
                         if (isInQuantityRight && isOutQuantityRight)
                         {
                             var mbd = new MoveBillDetail();
