@@ -678,6 +678,16 @@
     <Content Include="obj\Debug\Authority.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\Authority.dll" />
     <Content Include="obj\Debug\Authority.pdb" />
+    <Content Include="Scripts\jquery.ztree.all-3.3.js" />
+    <Content Include="Scripts\jquery.ztree.all-3.3.min.js" />
+    <Content Include="Scripts\jquery.ztree.core-3.3.js" />
+    <Content Include="Scripts\jquery.ztree.core-3.3.min.js" />
+    <Content Include="Scripts\jquery.ztree.excheck-3.3.js" />
+    <Content Include="Scripts\jquery.ztree.excheck-3.3.min.js" />
+    <Content Include="Scripts\jquery.ztree.exedit-3.3.js" />
+    <Content Include="Scripts\jquery.ztree.exedit-3.3.min.js" />
+    <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
+    <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
     <Content Include="Views\Module\_DeletePartial.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -860,7 +870,6 @@
     <Content Include="Views\Distribution\Index.cshtml" />
     <Content Include="Views\CurrentStock\Index.cshtml" />
     <Content Include="Views\CurrentStock\_SearchPartial.cshtml" />
-    <Content Include="Views\CurrentStock\_Detail.cshtml" />
     <Content Include="Views\HistoricalDetail\Index.cshtml" />
     <Content Include="Views\HistoricalDetail\_SearchPartial.cshtml" />
     <Content Include="packages.config" />
@@ -1101,16 +1110,15 @@
     <Content Include="Views\StockInBill\_SearchPartial.cshtml" />
     <Content Include="Views\StockOutSearch\_Detail.cshtml" />
     <Content Include="Views\StockMoveBill\_SearchPartial.cshtml" />
-
     <Content Include="Views\StockMoveBill\_SettlePartial.cshtml" />
-
     <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial1.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial2.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial3.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial4.cshtml" />
-
+    <Content Include="Views\CurrentStock\_ProductPartial.cshtml" />
+    <Content Include="Views\Distribution\_ProductPartial.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
