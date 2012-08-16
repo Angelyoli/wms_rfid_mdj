@@ -146,6 +146,7 @@ namespace THOK.Wms.Bll.Service
                             mbd.UnitCode = moveBillDetail.UnitCode;
                             mbd.RealQuantity = moveBillDetail.RealQuantity * unit.Count;
                             outStorage.OutFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
+                            inStorage.ProductCode = moveBillDetail.ProductCode;
                             inStorage.InFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
                             mbd.Status = "0";
 
@@ -238,13 +239,13 @@ namespace THOK.Wms.Bll.Service
             var outCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.OutCellCode);
             var inCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
             //判断移出数量是否合理
-            bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity-mbd.RealQuantity, outCell.MaxQuantity, outStorage.Quantity, "out");
-            //判断移入数量是否合理
-            bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, inStorage.InFrozenQuantity-mbd.RealQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity, inStorage.Quantity, "in");
+            bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity-mbd.RealQuantity, outCell.MaxQuantity, outStorage.Quantity, "out");            
             if (Locker.LockStorage(outStorage, product) != null)
             {
                 if (Locker.LockStorage(inStorage, product) != null)
                 {
+                    //判断移入数量是否合理
+                    bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, inStorage.InFrozenQuantity - mbd.RealQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity, inStorage.Quantity, "in");
                     if (isOutQuantityRight && isInQuantityRight)
                     {
                         mbd.ProductCode = moveBillDetail.ProductCode;

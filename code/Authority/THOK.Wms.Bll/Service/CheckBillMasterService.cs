@@ -291,7 +291,7 @@ namespace THOK.Wms.Bll.Service
                             foreach (var item in wares.ToArray())
                             {
                                 var storages = storageQuery.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode && s.Quantity > 0 && s.IsLock == "0")
-                                                           .OrderBy(s => s.StorageCode).AsEnumerable()
+                                                           .OrderBy(s => s.StorageCode)
                                                            .Select(s => new
                                                            {
                                                                s.StorageCode,
@@ -304,9 +304,7 @@ namespace THOK.Wms.Bll.Service
                                                                s.Product.Unit.UnitName,
                                                                Quantity = s.Quantity / s.Product.Unit.Count,
                                                                s.Product.Unit.Count,
-                                                               IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                                                               StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                                                               UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                                                               IsActive = s.IsActive == "1" ? "可用" : "不可用"
                                                            });
                                 if (storages.Count() > 0)
                                 {
@@ -344,7 +342,6 @@ namespace THOK.Wms.Bll.Service
                                         var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
                                         storage.IsLock = "1";
                                         StorageRepository.SaveChanges();
-                                        scope.Complete();
                                     }
                                     result = true;
                                 }
@@ -372,7 +369,7 @@ namespace THOK.Wms.Bll.Service
                             foreach (var item in warehouses.ToArray())
                             {
                                 var storages = storageQuery.ToList().Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode && (area.Contains(s.Cell.Shelf.Area.AreaCode) || shelf.Contains(s.Cell.Shelf.ShelfCode) || cell.Contains(s.Cell.CellCode)) && s.Quantity > 0 && s.IsLock == "0")
-                                                           .OrderBy(s => s.StorageCode).AsEnumerable()
+                                                           .OrderBy(s => s.StorageCode)
                                                            .Select(s => new
                                                            {
                                                                s.StorageCode,
@@ -384,9 +381,7 @@ namespace THOK.Wms.Bll.Service
                                                                s.Product.Unit.UnitName,
                                                                Quantity = s.Quantity / s.Product.Unit.Count,
                                                                s.Product.Unit.Count,
-                                                               IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                                                               StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                                                               UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                                                               IsActive = s.IsActive == "1" ? "可用" : "不可用"
                                                            });
                                 if (storages.Count() > 0)
                                 {
@@ -423,7 +418,6 @@ namespace THOK.Wms.Bll.Service
                                         var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
                                         storage.IsLock = "1";
                                         StorageRepository.SaveChanges();
-                                        scope.Complete();
                                     }
                                     result = true;
                                 }
@@ -512,7 +506,7 @@ namespace THOK.Wms.Bll.Service
                             foreach (var item in warehouses.ToArray())
                             {
                                 var storages = storageQuery.Where(s =>s.ProductCode!=null&& products.Contains(s.ProductCode) && s.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode && s.Quantity > 0 && s.IsLock == "0")
-                                                           .OrderBy(s => s.StorageCode).AsEnumerable()
+                                                           .OrderBy(s => s.StorageCode)
                                                            .Select(s => new
                                                             {
                                                                 s.StorageCode,
@@ -524,9 +518,7 @@ namespace THOK.Wms.Bll.Service
                                                                 s.Product.Unit.UnitName,
                                                                 Quantity = s.Quantity / s.Product.Unit.Count,
                                                                 s.Product.Unit.Count,
-                                                                IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                                                                StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                                                                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                                                                IsActive = s.IsActive == "1" ? "可用" : "不可用"
                                                             });
                                 if (storages.Count() > 0)
                                 {
@@ -698,9 +690,7 @@ namespace THOK.Wms.Bll.Service
                                                            s.Product.Unit.UnitName,
                                                            Quantity = s.Quantity / s.Product.Unit.Count,
                                                            s.Product.Unit.Count,
-                                                           IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                                                           StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                                                           UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                                                           IsActive = s.IsActive == "1" ? "可用" : "不可用"
                                                        });
                             if (storages.Count() > 0)
                             {
