@@ -35,7 +35,15 @@ namespace Authority.Controllers.Wms.Inventory
             string ware = collection["Ware"] ?? "";
             string area = collection["Area"] ?? "";
             string unitType = collection["UnitType"] ?? "";
-            var storage = DistributionService.GetCellDetails(page, rows, productCode, ware, area, unitType);
+            var storage = DistributionService.GetAreaDetails(page, rows, productCode, ware, area, unitType);
+            return Json(storage, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // GET: /Distribution/GetCellDetails/
+        public ActionResult GetCellDetails(int page, int rows, string type, string id, string unitType)
+        {
+            var storage = DistributionService.GetCellDetails(page, rows, type, id, unitType);
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
 
