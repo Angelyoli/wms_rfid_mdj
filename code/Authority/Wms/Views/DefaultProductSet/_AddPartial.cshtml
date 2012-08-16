@@ -2,12 +2,6 @@
     var url;
     var editType;
     var setting = {
-        data: {
-            key: {
-                name: "name",
-                checked: "checked"
-            }
-        },
         check: {
             enable: true,
             chkStyle: "checkbox"
@@ -38,24 +32,24 @@
         var wareNodes = treeObj.getNodesByParam("type", "ware", null);
         for (var i = 0; i < wareNodes.length; i++) {
             if (wareNodes[i].checked && !wareNodes[i].getCheckStatus().half) {
-                ware = wareNodes[i].id + ',';
+                ware += wareNodes[i].id + ',';
             }
             else {
                 areaNodes = treeObj.getNodesByParam("type", "area", wareNodes[i]);
                 for (var j = 0; j < areaNodes.length; j++) {
                     if (areaNodes[j].checked && !areaNodes[j].getCheckStatus().half) {
-                        area = areaNodes[j].id + ',';
+                        area += areaNodes[j].id + ',';
                     }
                     else {
                         shelfNodes = treeObj.getNodesByParam("type", "shelf", areaNodes[j]);
                         for (var k = 0; k < shelfNodes.length; k++) {
                             if (shelfNodes[k].checked && !shelfNodes[k].getCheckStatus().half) {
-                                shelf = shelfNodes[k].id + ',';
+                                shelf += shelfNodes[k].id + ',';
                             } else {
                                 cellNodes = treeObj.getNodesByParam("type", "cell", shelfNodes[k]);
                                 for (var l = 0; l < cellNodes.length; l++) {
-                                    if (cellNodes[l].checked && !cellNodes[l].getCheckStatus().half) {
-                                        cell = cellNodes[l].id + ',';
+                                    if (cellNodes[l].checked) {
+                                        cell += cellNodes[l].id + ',';
                                     }
                                 }
                             }

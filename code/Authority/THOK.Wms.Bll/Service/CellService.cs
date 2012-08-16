@@ -308,7 +308,7 @@ namespace THOK.Wms.Bll.Service
                                      id = w.Key.WarehouseCode,
                                      name = w.Key.WarehouseName,
                                      type = "ware",
-                                     @checked = !string.IsNullOrEmpty(productCode) || w.All(c => c.c.DefaultProductCode == productCode),
+                                     @checked = w.All(c => c.c.DefaultProductCode == productCode),
                                      open = true,
                                      children = w.GroupBy(a => new { a.AreaCode, a.AreaName })
                                                  .Select(a => new
@@ -316,7 +316,7 @@ namespace THOK.Wms.Bll.Service
                                                      id = a.Key.AreaCode,
                                                      name = a.Key.AreaName,
                                                      type = "area",
-                                                     @checked = !string.IsNullOrEmpty(productCode) || a.All(c => c.c.DefaultProductCode == productCode),
+                                                     @checked = a.All(c => c.c.DefaultProductCode == productCode),
                                                      open = false,
                                                      children = a.GroupBy(s => new { s.ShelfCode, s.ShelfName })
                                                                  .Select(s => new
@@ -324,7 +324,7 @@ namespace THOK.Wms.Bll.Service
                                                                      id = s.Key.ShelfCode,
                                                                      name = s.Key.ShelfName,
                                                                      type = "shelf",
-                                                                     @checked = !string.IsNullOrEmpty(productCode) || s.All(c => c.c.DefaultProductCode == productCode),
+                                                                     @checked = s.All(c => c.c.DefaultProductCode == productCode),
                                                                      open = false,
                                                                      children = s.GroupBy(c => new { c.CellCode, c.CellName })
                                                                                  .Select(c => new
@@ -332,7 +332,7 @@ namespace THOK.Wms.Bll.Service
                                                                                      id = c.Key.CellCode,
                                                                                      name = c.Key.CellName,
                                                                                      type = "cell",
-                                                                                     @checked = !string.IsNullOrEmpty(productCode) || c.All(r => r.c.DefaultProductCode == productCode),
+                                                                                     @checked = c.All(r => r.c.DefaultProductCode == productCode),
                                                                                      open = false,
                                                                                      children = ""
                                                                                  })
