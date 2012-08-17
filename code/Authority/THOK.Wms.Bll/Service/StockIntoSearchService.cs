@@ -54,44 +54,52 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<InBillMaster> StockIntoQuery = StockIntoSearchRepository.GetQueryable();
             var StockIntoSearch = StockIntoQuery.Where(i => i.BillNo.Contains(BillNo)
-                                                         && i.WarehouseCode.Contains(WarehouseCode)
-                                                         && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
-                                                         //&& i.VerifyPerson.EmployeeCode.Contains(CheckPersonCode)
-                                                         && i.Status.Contains(Operate_Status))
-                                                .OrderBy(i => i.BillNo).ToList().Select(i => new
-                 { 
-                i.BillNo, 
-                i.Warehouse.WarehouseName,
-                BillDate = i.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                OperatePersonName = i.OperatePerson.EmployeeName,
-                i.OperatePersonID,
-                Status = WhatStatus(i.Status),
-                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
-                VerifyDate = (i.VerifyDate == null ? string.Empty : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
-                Description = i.Description, 
-                UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
-
+                                                    && i.WarehouseCode.Contains(WarehouseCode)
+                                                    && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
+                                                    && i.Status.Contains(Operate_Status));
             if (!BeginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(BeginDate);
-                StockIntoSearch = StockIntoSearch.Where(i => Convert.ToDateTime(i.BillDate) >= begin);
+                StockIntoSearch = StockIntoSearch.Where(i => i.BillDate >= begin);
             }
 
             if (!EndDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(EndDate);
-                StockIntoSearch = StockIntoSearch.Where(i => Convert.ToDateTime(i.BillDate) <= end);
+                StockIntoSearch = StockIntoSearch.Where(i => i.BillDate <= end);
             }
 
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                StockIntoSearch = StockIntoSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
+            }
+            
+            StockIntoSearch = StockIntoSearch.OrderBy(i => i.BillNo);
             int total = StockIntoSearch.Count();
             StockIntoSearch = StockIntoSearch.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = StockIntoSearch.ToArray() };
+            var IntoSearch = StockIntoSearch.ToArray().Select(s => new
+            {
+                s.BillNo,
+                s.Warehouse.WarehouseName,
+                BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                OperatePersonName = s.OperatePerson.EmployeeName,
+                s.OperatePersonID,
+                Status = WhatStatus(s.Status),
+                VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
+                VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                Description = s.Description,
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return new { total, rows = IntoSearch.ToArray() };
         }
 
         public object GetDetailInfos(int page, int rows, string BillNo)
         {
             IQueryable<InBillDetail> StockIntoQuery = InBillDetailRepository.GetQueryable();
-            var StockIntoDetail = StockIntoQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+            var StockIntoDetail = StockIntoQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo);
+            int total = StockIntoDetail.Count();
+            var StockIntoDetails = StockIntoDetail.Skip((page - 1) * rows).Take(rows);
+            var StockInto =StockIntoDetails.Select(i => new
                  {
                      i.ID,
                      i.BillNo,
@@ -104,9 +112,7 @@ namespace THOK.Wms.Bll.Service
                      i.Price,
                      i.Description
                  });
-            int total = StockIntoDetail.Count();
-            StockIntoDetail = StockIntoDetail.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = StockIntoDetail.ToArray() };
+            return new { total, rows = StockInto.ToArray() };
         }
 
         #endregion
