@@ -97,7 +97,8 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         public ActionResult CellCodeSet(string productId)
         {
             var wareCell = CellService.GetCellCheck(productId);
-            return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+            string msg = wareCell != null ? "" : "读取仓库信息失败";
+            return Json(JsonMessageHelper.getJsonMessage(wareCell != null, msg, wareCell), "text", JsonRequestBehavior.AllowGet);
         }
 
         //删除货位信息
