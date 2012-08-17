@@ -64,14 +64,13 @@ namespace THOK.Wms.Bll.Service
 
         #region IMoveBillMasterService 成员
 
-        public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode, string Status, string IsActive)
+        public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode,string CheckPersonCode, string Status, string IsActive)
         {
             IQueryable<MoveBillMaster> moveBillMasterQuery = MoveBillMasterRepository.GetQueryable();
             var moveBillMaster = moveBillMasterQuery.Where(i => i.BillNo.Contains(BillNo)
                     && i.Status != "4"
                     && i.WarehouseCode.Contains(WareHouseCode)
                     && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
-                    //|| i.VerifyPerson.EmployeeCode.Contains(CheckPersonCode)
                     && i.Status.Contains(Status))
                 .OrderByDescending(t => t.BillDate)
                 .OrderByDescending(t => t.BillNo)
@@ -87,6 +86,11 @@ namespace THOK.Wms.Bll.Service
             {
                 DateTime end = Convert.ToDateTime(endDate).AddDays(1);
                 moveBillMaster = moveBillMaster.Where(i => i.BillDate <= end);
+            }
+
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                moveBillMaster = moveBillMaster.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
             int total = moveBillMaster.Count();
             moveBillMaster = moveBillMaster.Skip((page - 1) * rows).Take(rows);

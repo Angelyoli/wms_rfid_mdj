@@ -63,7 +63,7 @@ namespace THOK.Wms.Bll.Service
             return statusStr;
         }
 
-        public object GetDetails(int page, int rows, string BillNo, string beginDate, string endDate, string OperatePersonCode, string Status, string IsActive)
+        public object GetDetails(int page, int rows, string BillNo, string beginDate, string endDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive)
         {
             IQueryable<OutBillMaster> OutBillMasterQuery = OutBillMasterRepository.GetQueryable().Where(o => o.Status != "6");
 
@@ -96,6 +96,10 @@ namespace THOK.Wms.Bll.Service
             if (!IsActive.Equals(string.Empty))
             {
                 outBillMaster = outBillMaster.Where(i => i.IsActive.Contains(IsActive));
+            }
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                outBillMaster = outBillMaster.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
             int total = outBillMaster.Count();
             outBillMaster = outBillMaster.Skip((page - 1) * rows).Take(rows);
