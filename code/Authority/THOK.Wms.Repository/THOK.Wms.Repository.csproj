@@ -153,6 +153,54 @@
     <Compile Include="Migrations\201207280241303_add_deliver.Designer.cs">
       <DependentUpon>201207280241303_add_deliver.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201207300251573_add_sort_table.cs" />
+    <Compile Include="Migrations\201207300251573_add_sort_table.Designer.cs">
+      <DependentUpon>201207300251573_add_sort_table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207300902560_modify_data_length.cs" />
+    <Compile Include="Migrations\201207300902560_modify_data_length.Designer.cs">
+      <DependentUpon>201207300902560_modify_data_length.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208010330430_SortWorkDispatch.cs" />
+    <Compile Include="Migrations\201208010330430_SortWorkDispatch.Designer.cs">
+      <DependentUpon>201208010330430_SortWorkDispatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208010713432_modify_SortWorkDispatch.cs" />
+    <Compile Include="Migrations\201208010713432_modify_SortWorkDispatch.Designer.cs">
+      <DependentUpon>201208010713432_modify_SortWorkDispatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208011549033_modify_allot_bill.cs" />
+    <Compile Include="Migrations\201208011549033_modify_allot_bill.Designer.cs">
+      <DependentUpon>201208011549033_modify_allot_bill.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208021047373_modify_sorting.cs" />
+    <Compile Include="Migrations\201208021047373_modify_sorting.Designer.cs">
+      <DependentUpon>201208021047373_modify_sorting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208021219188_modify_out_bill_allot.cs" />
+    <Compile Include="Migrations\201208021219188_modify_out_bill_allot.Designer.cs">
+      <DependentUpon>201208021219188_modify_out_bill_allot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208040800146_modify_out_move_master.cs" />
+    <Compile Include="Migrations\201208040800146_modify_out_move_master.Designer.cs">
+      <DependentUpon>201208040800146_modify_out_move_master.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208061103314_modify_ProfitLossBill_storage.cs" />
+    <Compile Include="Migrations\201208061103314_modify_ProfitLossBill_storage.Designer.cs">
+      <DependentUpon>201208061103314_modify_ProfitLossBill_storage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208071121321_modify_sorting_out_move_type.cs" />
+    <Compile Include="Migrations\201208071121321_modify_sorting_out_move_type.Designer.cs">
+      <DependentUpon>201208071121321_modify_sorting_out_move_type.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208110627574_modify_cell_max.cs" />
+    <Compile Include="Migrations\201208110627574_modify_cell_max.Designer.cs">
+      <DependentUpon>201208110627574_modify_cell_max.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208120953296_modify_out_move_master_origin.cs" />
+    <Compile Include="Migrations\201208120953296_modify_out_move_master_origin.Designer.cs">
+      <DependentUpon>201208120953296_modify_out_move_master_origin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

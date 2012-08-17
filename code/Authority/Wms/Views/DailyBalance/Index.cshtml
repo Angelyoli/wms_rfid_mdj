@@ -1,36 +1,55 @@
 ﻿<script type="text/javascript">
     var url;
+    var settle_Date;
+    var warehouse_Code;
     function formatAction(value, row, index) {
-        var e = '<a href="#" onclick="detail()">日结明细</a>   <a href="#"  onclick="detail()">重新日结</a>';
+        var e = '<a href="#" onclick=DailyDetail("' + row.WarehouseCode + '","' + row.SettleDate + '")>日结明细</a> <a href="#"  onclick=BalanceAgain("' + row.WarehouseCode + '","' + row.SettleDate + '")>重新日结</a>';
         return e
     }
-    function detail() {
-        var row = $('#details').datagrid('getSelected');
-       
-        $('#mx').dialog('open').dialog('setTitle', '日结明细');
-        $('#mxdetails').datagrid({ url: '/DailyBalance/MXDetails/?date=' + row.ToSettleDate });
-        $("#mxdetails").datagrid('reload');
-         
+    function DailyDetail(warehouseCode, settleDate) {
+            settle_Date = settleDate;
+            warehouse_Code = warehouseCode;
+            $('#infos').datagrid({ url: '/DailyBalance/InfoDetails/?WarehouseCode=' + warehouseCode + '&&SettleDate=' + settleDate });           
+            $('#InfoDetails').dialog('open').dialog('setTitle', '日结明细');
+    }
+    function BalanceAgain(warehouseCode, settleDate) {
+        var j_waitDialog = ShowWaitMessageDialog();
+        $.ajax({
+            url: '/DailyBalance/DoDailyBalance/', type: "GET", dataType: "text",
+            data: { 'WarehouseCode': warehouseCode, 'SettleDate': settleDate },
+            complete: function () { HideWaitMessageDialog(j_waitDialog); },
+            success: function (responseText) {
+                var result = $.evalJSON(responseText);
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#details').datagrid('reload');
+                    $('#dlg-Daily').dialog('close');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                }
+            }
+        });
     }
 </script>
 
-    <div region="center" split="true" border="false">    
+<div region="center" split="true" border="false">    
     <table id="details" class="easyui-datagrid"
         url="/DailyBalance/Details/" border="false" singleSelect="true"
-        fit="true" fitColumns="true" toolbar="#tool"  pagination="true" rownumbers="true">
+        fit="true" fitColumns="true" pagination="true" rownumbers="true">
         <thead>
             <tr>
-                 <th field="ToSettleDate" width="80">日结日期</th>
-                <th field="ToBeginning" width="80">期初量</th>
-                <th field="ToEntryAmount" width="80">入库总量</th>
-                <th field="ToDeliveryAmount" width="80">出库总量</th>
-                <th field="ToLossAmount" width="80">报损总量</th>
-                <th field="ToProfitAmount" width="80">报益总量</th>
-                <th field="ToEnding" width="80">日结量</th>
-
+                <th field="SettleDate" width="80">日结日期</th>
+                <th field="WarehouseName" width="80">仓库名称</th>
+                <th field="UnitName" width="80">单位</th>
+                <th field="Beginning" width="80">期初量</th>
+                <th field="EntryAmount" width="80">入库量</th>
+                <th field="DeliveryAmount" width="80">出库量</th>
+                <th field="LossAmount" width="80">报损量</th>
+                <th field="ProfitAmount" width="80">报益量</th>
+                <th field="Ending" width="80">结余量</th>
                 <th field="detail" width="80"  align="center" formatter="formatAction">操作</th>
-
+            </tr>
         </thead>
     </table>
-  </div>
-    @Html.Partial("_Detail")
+</div>
+@Html.Partial("_Detail")

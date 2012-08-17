@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Practices.Unity;
+using THOK.Wms.Bll.Interfaces;
+using THOK.WebUtil;
 
 namespace Authority.Controllers.Wms.Inventory
 {
@@ -11,14 +14,24 @@ namespace Authority.Controllers.Wms.Inventory
         //
         // GET: /Cargospace/
 
+        [Dependency]
+        public ICargospaceService CargospaceService { get; set; }
+
         public ActionResult Index(string moduleID)
         {
-            ViewBag.hasSearch = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
             return View();    
         }
 
+        //
+        // GET: /Cargospace/Details/
+
+        public ActionResult Details(int page, int rows, string type, string id)
+        {
+            var storage = CargospaceService.GetCellDetails(page, rows, type, id);
+            return Json(storage, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

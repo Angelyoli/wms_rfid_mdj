@@ -26,6 +26,8 @@ namespace Authority.Controllers.Wms.StockMove
             ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
             ViewBag.hasAudit = true;
+            ViewBag.hasAntiTrial = true;
+            ViewBag.hasSettle = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -38,11 +40,13 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string BillNo = collection["BillNo"] ?? "";
-            string BillDate = collection["BillDate"] ?? "";
+            string WareHouseCode = collection["WareHouseCode"] ?? "";
+            string beginDate = collection["beginDate"] ?? "";
+            string endDate = collection["endDate"] ?? "";
             string OperatePersonCode = collection["OperatePersonCode"] ?? "";
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var moveBillMaster = MoveBillMasterService.GetDetails(page, rows, BillNo, BillDate, OperatePersonCode, Status, IsActive);
+            var moveBillMaster = MoveBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, beginDate, endDate, OperatePersonCode, Status, IsActive);
             return Json(moveBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -81,42 +85,40 @@ namespace Authority.Controllers.Wms.StockMove
         [HttpPost]
         public ActionResult Edit(MoveBillMaster moveBillMaster)
         {
-            bool bResult = MoveBillMasterService.Save(moveBillMaster);
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.Save(moveBillMaster, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
         // POST: /MoveBillMaster/Delete/
-
-        [HttpPost]
         public ActionResult Delete(string BillNo)
         {
-            bool bResult = MoveBillMasterService.Delete(BillNo);
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.Delete(BillNo, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
         // POST: /MoveBillMaster/Audit/
-
-        [HttpPost]
         public ActionResult Audit(string BillNo)
         {
-            bool bResult = MoveBillMasterService.Audit(BillNo, this.User.Identity.Name.ToString());
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.Audit(BillNo, this.User.Identity.Name.ToString(), out strResult);
             string msg = bResult ? "审核成功" : "审核失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
-        // POST: /MoveBillMaster/AntiTria/
-
-        [HttpPost]
+        // POST: /MoveBillMaster/AntiTrial/
         public ActionResult AntiTrial(string BillNo)
         {
-            bool bResult = MoveBillMasterService.AntiTrial(BillNo);
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.AntiTrial(BillNo, out strResult);
             string msg = bResult ? "反审成功" : "反审失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -124,10 +126,45 @@ namespace Authority.Controllers.Wms.StockMove
 
         public ActionResult MoveBillDetailDelete(string ID)
         {
-            bool bResult = MoveBillDetailService.Delete(ID);
+            string strResult = string.Empty;
+            bool bResult = MoveBillDetailService.Delete(ID, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
+        //
+        // POST: /MoveBillDetail/MoveBillDetailCreate/
+
+        [HttpPost]
+        public ActionResult MoveBillDetailCreate(MoveBillDetail moveBillDetail)
+        {
+            string strResult = string.Empty;
+            bool bResult = MoveBillDetailService.Add(moveBillDetail, out strResult);
+            string msg = bResult ? "新增成功" : "新增失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /MoveBillDetail/MoveBillDetailEdit/
+
+        [HttpPost]
+        public ActionResult MoveBillDetailEdit(MoveBillDetail moveBillDetail)
+        {
+            string strResult = string.Empty;
+            bool bResult = MoveBillDetailService.Save(moveBillDetail, out strResult);
+            string msg = bResult ? "修改成功" : "修改失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /MoveBillMaster/moveBillMasterSettle/
+
+        public ActionResult MoveBillMasterSettle(string BillNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.Settle(BillNo, out strResult);
+            string msg = bResult ? "结单成功" : "结单失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

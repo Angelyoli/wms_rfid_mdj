@@ -16,10 +16,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         public IProductService ProductService { get; set; }
         [Dependency]
         public ICellService CellService { get; set; }
-
-        //
-        // GET: /DefaultProductSet/
-
+        
         public ActionResult Index(string moduleID)
         {
             ViewBag.hasSearch = true;
@@ -31,6 +28,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             ViewBag.ModuleID = moduleID;
             return View();
         }
+
         //根据条件查找卷烟信息
         //POST: /DefaultProductSet/GetProductBy/
         public ActionResult GetProductBy(int page, int rows, string QueryString, string Value)
@@ -69,6 +67,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             var product = ProductService.LoadProduct(page, rows);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
+
         //首页加载卷烟信息
         //POST: /DefaultProductSet/GetProductCell/
         public ActionResult GetProductCell()
@@ -76,6 +75,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             var product = CellService.GetCellInfo();
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
+
         //查找卷烟信息
         //POST: /DefaultProductSet/SearchProductCell/
         public ActionResult SearchProductCell(string productCode)
@@ -86,18 +86,20 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         
         //添加货位预设编码
         // POST: /DefaultProductSet/CellInsertCode/
-        public ActionResult CellInsertCode(string wareCodes, string areaCodes, string shelfCodes, string cellCodes, string defaultProductCode)
+        public ActionResult CellInsertCode(string wareCodes, string areaCodes, string shelfCodes, string cellCodes, string defaultProductCode, string editType)
         {
-            bool bResult = CellService.SaveCell(wareCodes, areaCodes, shelfCodes, cellCodes, defaultProductCode);
+            bool bResult = CellService.SaveCell(wareCodes, areaCodes, shelfCodes, cellCodes, defaultProductCode, editType);
             string msg = bResult ? "保存成功" : "保存失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
         //获得货位勾选状态
         // GET: /DefaultProductSet/CellCodeSet/
         public ActionResult CellCodeSet(string productId)
         {
             var wareCell = CellService.GetCellCheck(productId);
-            return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+            string msg = wareCell != null ? "" : "读取仓库信息失败";
+            return Json(JsonMessageHelper.getJsonMessage(wareCell != null, msg, wareCell), "text", JsonRequestBehavior.AllowGet);
         }
 
         //删除货位信息
@@ -108,6 +110,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
         //POST: /DefaultProductSet/SetTree2/
         public ActionResult SetTree2(string strId, string proCode)
         {

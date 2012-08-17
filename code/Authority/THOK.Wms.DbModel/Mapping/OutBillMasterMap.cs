@@ -26,6 +26,10 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .HasMaxLength(4);
 
+            this.Property(t => t.Origin)
+                .IsRequired()
+                .HasMaxLength(1);
+
             this.Property(t => t.WarehouseCode)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -60,12 +64,14 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.BillNo).HasColumnName(ColumnMap.Value.To("BillNo"));
             this.Property(t => t.BillDate).HasColumnName(ColumnMap.Value.To("BillDate"));
             this.Property(t => t.BillTypeCode).HasColumnName(ColumnMap.Value.To("BillTypeCode"));
+            this.Property(t => t.Origin).HasColumnName(ColumnMap.Value.To("Origin"));
             this.Property(t => t.WarehouseCode).HasColumnName(ColumnMap.Value.To("WarehouseCode"));
             this.Property(t => t.OperatePersonID).HasColumnName(ColumnMap.Value.To("OperatePersonID"));
             this.Property(t => t.Status).HasColumnName(ColumnMap.Value.To("Status"));
             this.Property(t => t.VerifyPersonID).HasColumnName(ColumnMap.Value.To("VerifyPersonID"));
             this.Property(t => t.VerifyDate).HasColumnName(ColumnMap.Value.To("VerifyDate"));
             this.Property(t => t.Description).HasColumnName(ColumnMap.Value.To("Description"));
+            this.Property(t => t.MoveBillMasterBillNo).HasColumnName(ColumnMap.Value.To("MoveBillMasterBillNo")); 
             this.Property(t => t.LockTag).HasColumnName(ColumnMap.Value.To("LockTag")); 
             this.Property(t => t.IsActive).HasColumnName(ColumnMap.Value.To("IsActive"));
             this.Property(t => t.UpdateTime).HasColumnName(ColumnMap.Value.To("UpdateTime"));
@@ -88,9 +94,14 @@ namespace THOK.Wms.DbModel.Mapping
                 .WillCascadeOnDelete(false);
 
             this.HasOptional(t => t.VerifyPerson)
-               .WithMany(t => t.VerifyPersonOutBillMasters)
-               .HasForeignKey(d => d.VerifyPersonID)
-               .WillCascadeOnDelete(false);
+                .WithMany(t => t.VerifyPersonOutBillMasters)
+                .HasForeignKey(d => d.VerifyPersonID)
+                .WillCascadeOnDelete(false);
+
+            this.HasOptional(t => t.MoveBillMaster)
+                .WithMany()
+                .HasForeignKey(d => d.MoveBillMasterBillNo)
+                .WillCascadeOnDelete(false);
         }
     }
 }

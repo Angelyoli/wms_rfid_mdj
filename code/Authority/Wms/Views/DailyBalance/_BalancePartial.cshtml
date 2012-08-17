@@ -1,0 +1,67 @@
+﻿<script type="text/javascript">
+    function balanceClick() {
+        $('#wareHouse2').combogrid({
+            required: true,
+            disabled: false,
+            width: 130,
+            panelWidth: 340,
+            url: '/StockInBill/GetWareHouseDetail/?IsActive=1',
+            idField: 'WarehouseCode',
+            textField: 'WarehouseName',
+            mode: 'local',
+            editable: false,
+            fitColumns: true,
+            columns: [[
+                    { field: 'WarehouseCode', title: '仓库编码', align: 'left', width: 40 },
+                    { field: 'WarehouseName', title: '仓库名称', align: 'left', width: 30 },
+                    { field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
+                ]]
+        });
+        $('#dlg-Daily').dialog('open').dialog('setTitle', '产品日结');
+    };
+
+    function DailyBalance() {
+        var settleDate = $('#SettleDate').datebox('getValue');
+        var warehouseCode = $('#wareHouse2').combo('getValue');
+        var j_waitDialog = ShowWaitMessageDialog();
+        $.ajax({
+            url: '/DailyBalance/DoDailyBalance/', type: "GET", dataType: "text",
+            data: { 'WarehouseCode': warehouseCode, 'SettleDate': settleDate },
+            complete: function () { HideWaitMessageDialog(j_waitDialog); },
+            success: function (responseText) {
+                var result = $.evalJSON(responseText);
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#details').datagrid('reload');
+                    $('#dlg-Daily').dialog('close');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                }
+            }
+        });
+    };
+</script>
+
+<div id="dlg-Daily" class="easyui-dialog" modal="true" style="width:300px;height:220px;padding:2px 2px"
+		closed="true" buttons="#dlg-buttons-Daily">
+    <div class="easyui-layout" fit="true">
+		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >   
+            <table width="250" style="padding-top:26px;">
+              <tr style="padding-top:10px;">
+                <td width="60" style="padding-top:5px;padding-left:15px">仓库:</td>
+                <td align="left">      
+		            <input type="text" id="wareHouse2"/>
+	            </td>
+              </tr>
+              <tr>
+                <td width="60" style="padding-top:5px;padding-left:15px">日结日期:</td>
+                <td style="padding-top:5px" align="left"><input id ="SettleDate" class="easyui-datebox" style="width:130px" required="true"/></td>
+              </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-Daily">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="DailyBalance()">日结</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-Daily').dialog('close')">取消</a>
+</div>

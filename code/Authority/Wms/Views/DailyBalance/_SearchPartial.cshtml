@@ -1,33 +1,38 @@
 ﻿<script type="text/javascript">
-    $(function () {
-        $('#warehouse-add').combogrid({
+    function searchClick() {
+        SearchLoad();
+        $('#dlg-search').dialog('open').dialog('setTitle', '每日库存查询');
+        $("input[type=text]").attr("value", "");
+        $('#wareHouse').combogrid('clear');
+        $('#beginDate').datebox('setValue', "");
+        $('#endDate').datebox('setValue', "");
+    };
+    function SearchLoad() {
+
+        $('#wareHouse').combogrid({
+            disabled: false,
             width: 130,
             panelWidth: 340,
-            url: '/Warehouse/Details/?page=1&rows=10',
+            url: '/StockInBill/GetWareHouseDetail/?IsActive=1',
             idField: 'WarehouseCode',
             textField: 'WarehouseName',
             mode: 'local',
             editable: false,
             fitColumns: true,
             columns: [[
-					{ field: 'WarehouseCode', title: '仓库编码', hidden: true, width: 30 },
-					{ field: 'WarehouseName', title: '仓库名称', align: 'left', width: 40 },
-					{ field: 'WarehouseType', title: '仓库类型', align: 'left', width: 30 },
-					{ field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
-				]]
+                    { field: 'WarehouseCode', title: '仓库编码', align: 'left', width: 40 },
+                    { field: 'WarehouseName', title: '仓库名称', align: 'left', width: 30 },
+                    { field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
+                ]]
         });
-
-    })
-
-    function searchClick() {
-        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
-    };
-
+    }
     function select() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.RoleName = $('#rolename').val();
-        queryParams.Description = $('#description').val();
-        queryParams.Status = $('#status').val();
+        queryParams.BeginDate = $('#beginDate').datebox('getValue');
+        queryParams.EndDate = $('#endDate').datebox('getValue');
+        queryParams.WarehouseCode = $('#wareHouse').combo('getValue');
+        queryParams.UnitType = $('#unit_Type').combo('getValue');
+        alert(queryParams.UnitType);
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
@@ -36,25 +41,35 @@
         $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
-
 </script>
-
-<div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:220px;padding:2px 2px"
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:220px;padding:10px 10px"
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">
-		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >   
-            <table width="250">
+		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc;">   
+            <table width="240" style="padding:5px 10px">
               <tr>
-                <td width="60" style="padding-top:5px;padding-left:15px">起始日期:</td>
-                <td style="padding-top:5px" align="left"><input class="easyui-datebox" style="width:130px" required="true"></td>
+                <td width="60">起始日期:</td>
+                <td align="left"><input id="beginDate" type="text" class="easyui-datebox" ></input></td>
               </tr>
-              <tr>
-                <td style="padding-top:7px;padding-left:15px">终止日期:</td>
-                <td  style="padding-top:7px" align="left"><input style="width:130px" class="easyui-datebox" required="true"></td>
+              <tr >
+                <td width="60">终止日期:</td>
+                <td align="left"><input id="endDate" type="text" class="easyui-datebox" ></input></td>
               </tr>
-               <tr>
-                <td style="padding-top:7px;padding-left:15px">仓库选择:</td>
-                <td  style="padding-top:7px" align="left"><input name="WarehouseCode" id="warehouse-add"/></td>
+              <tr style="padding-top:10px;">
+                <td>日结仓库:</td>
+                <td align="left">     
+		            <input type="text" id="wareHouse"/>
+	            </td>
+              </tr>
+              <tr style="padding-top:10px;">
+                <td>换算单位:</td>
+                <td align="left">     
+		           <select id="unit_Type" class="easyui-combobox" style="width: 130px; height: 40px" editable="false">
+                      <option value="">请选择</option>                       
+                      <option value="1">标准件</option>
+                      <option value="2">标准条</option>
+                   </select>
+	            </td>
               </tr>
             </table>
         </div>

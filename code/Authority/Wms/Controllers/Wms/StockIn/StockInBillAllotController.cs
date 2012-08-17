@@ -14,13 +14,50 @@ namespace Authority.Controllers.Wms.StockIn
         [Dependency]
         public IInBillAllotService InBillAllotService { get; set; }
 
-        public ActionResult Allot(string billNo, string areaCode)
+        public ActionResult Search(string billNo,int page, int rows)
         {
-            string[] areaCodes = new string[] { };
-            string result = string.Empty;
-            bool bResult = InBillAllotService.Allot(billNo, areaCodes,out result);
-            string msg = bResult ? "分配成功,确认后生效！" : "分配过程因异常错误中止.";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+            var result = InBillAllotService.Search(billNo,page,rows);
+            return Json(result, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AllotDelete(string billNo,long id)
+        {
+            string strResult = string.Empty;
+            bool bResult = InBillAllotService.AllotDelete(billNo,id,out strResult);
+            string msg = bResult ? "删除分配明细成功" : "删除分配明细失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AllotEdit(string billNo, long id, string cellCode, int allotQuantity)
+        {
+            string strResult = string.Empty;
+            bool bResult = InBillAllotService.AllotEdit(billNo, id,cellCode,allotQuantity,out strResult);
+            string msg = bResult ? "修改分配成功" : "修改分配失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AllotConfirm(string billNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = InBillAllotService.AllotConfirm(billNo,out strResult);
+            string msg = bResult ? "确认分配成功" : "确认分配失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AllotCancelConfirm(string billNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = InBillAllotService.AllotCancelConfirm(billNo, out strResult);
+            string msg = bResult ? "取消分配确认成功" : "取消分配确认失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AllotCancel(string billNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = InBillAllotService.AllotCancel(billNo, out strResult);
+            string msg = bResult ? "取消分配成功" : "取消分配失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

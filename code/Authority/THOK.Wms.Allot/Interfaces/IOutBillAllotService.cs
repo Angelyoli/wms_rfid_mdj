@@ -9,6 +9,18 @@ namespace THOK.Wms.Allot.Interfaces
 {
     public interface IOutBillAllotService:IService<OutBillAllot>
     {
-        bool Allot(string billNo, string[] areaCode);
+        object Search(string billNo, int page, int rows);
+
+        bool AllotCancelConfirm(string billNo, out string strResult);
+
+        bool AllotConfirm(string billNo, string userName, ref string strResult);
+
+        bool AllotDelete(string billNo, long id, out string strResult);
+
+        bool AllotEdit(string billNo, long id, string cellCode, int allotQuantity, out string strResult);
+
+        bool AllotAdd(string billNo, long id,string productCode,string cellCode, int allotQuantity, out string strResult);
+
+        bool AllotCancel(string billNo,out string strResult); 
     }
 }

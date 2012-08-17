@@ -1,0 +1,33 @@
+﻿<script type="text/javascript">
+    function auditClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            if (row.DispatchStatus != "已调度") {
+                $.messager.alert('错误', '该记录状态不是已调度状态无法审核！');
+            } else {
+                $.messager.confirm('审核', '确认要审核该记录吗？', function (r) {
+                    if (r) {
+                        var j_waitDialog = ShowWaitMessageDialog();
+                        $.ajax({
+                            url: '/SortWorkDispatch/Audit/', type: "GET", dataType: "text",
+                            data: { 'id': row.ID},
+                            complete: function () { HideWaitMessageDialog(j_waitDialog); },
+                            success: function (responseText) {
+                                var result = $.evalJSON(responseText);
+                                if (result.success) {
+                                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                                    $('#details').datagrid('load');
+                                } else {
+                                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        } else {
+            $.messager.alert('错误', '没有选择行，无法审核！');
+        }
+    }
+</script>
+

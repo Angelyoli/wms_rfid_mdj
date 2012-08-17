@@ -49,6 +49,14 @@ namespace Authority.Controllers.Wms.WarehouseInfo
             return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
         }
 
+        //查询仓库数据treegrid结构，用于分拣设置货位
+        // GET: /Cell/GetSortCell/
+        public ActionResult GetSortCell(string areaType)
+        {
+            var wareCell = CellService.GetSortCell(areaType);
+            return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+        }
+
         //查询仓库数据tree结构,用于盘点
         // GET: /Cell/GetCheckDetails/
         public ActionResult GetCheckDetails(string id)
@@ -91,6 +99,14 @@ namespace Authority.Controllers.Wms.WarehouseInfo
         public ActionResult GetCell(string shelfCode)
         {
             var wareCell = CellService.GetCell(shelfCode); ;
+            return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //根据条件查询仓库数据tree结构,用于移库
+        // GET: /Cell/GetMoveCellDetails/
+        public ActionResult GetMoveCellDetails(string id, string inOrOut, string productCode)
+        {
+            var wareCell = CellService.GetMoveCellDetails(id,inOrOut,productCode);
             return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
         }
     }

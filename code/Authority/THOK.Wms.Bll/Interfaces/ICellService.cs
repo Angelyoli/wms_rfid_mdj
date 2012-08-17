@@ -24,11 +24,17 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetCell(string shelfCode);
 
-        bool SaveCell(string wareCodes, string areaCodes, string shelfCodes, string cellCodes, string defaultProductCode);
+
+        object GetMoveCellDetails(string shelfCode, string inOrOut, string productCode);
+
+        bool SaveCell(string wareCodes, string areaCodes, string shelfCodes, string cellCodes, string defaultProductCode, string editType);
+
 
         object GetCellInfo();
 
         object GetCellInfo(string productCode);
+
+        object GetSortCell(string areaType);
 
         object GetCellCheck(string productCode);
 

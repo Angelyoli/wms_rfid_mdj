@@ -10,15 +10,15 @@ namespace THOK.Wms.DbModel.Mapping
     public class ProfitLossBillDetailMap : EntityMappingBase<ProfitLossBillDetail>
     {
         public ProfitLossBillDetailMap()
-            :base("Wms")
+            : base("Wms")
         {
             // Primary Key
             this.HasKey(t => t.ID);
 
             // Properties
             this.Property(t => t.ID)
-             .IsRequired()
-             .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+                .IsRequired()
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
             this.Property(t => t.BillNo)
                 .IsRequired()
@@ -42,11 +42,11 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.Price)
                 .IsRequired()
-                .HasPrecision(9, 2);
+                .HasPrecision(18, 2);
 
             this.Property(t => t.Quantity)
                 .IsRequired()
-                .HasPrecision(9, 2);
+                .HasPrecision(18, 2);
 
             this.Property(t => t.Description)
                 .HasMaxLength(100);
@@ -76,6 +76,11 @@ namespace THOK.Wms.DbModel.Mapping
             this.HasRequired(t => t.Unit)
                 .WithMany(t => t.ProfitLossBillDetails)
                 .HasForeignKey(d => d.UnitCode)
+                .WillCascadeOnDelete(false);
+
+            this.HasRequired(t => t.Storage)
+                .WithMany(t => t.ProfitLossBillDetails)
+                .HasForeignKey(d => d.StorageCode)
                 .WillCascadeOnDelete(false);
         }
     }

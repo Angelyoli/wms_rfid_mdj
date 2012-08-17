@@ -29,6 +29,7 @@ namespace Authority.Controllers.Wms.StockIn
             ViewBag.hasAudit = true;
             ViewBag.hasAntiTrial = true;
             ViewBag.hasAllot = true;
+            ViewBag.hasSettle = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -37,15 +38,17 @@ namespace Authority.Controllers.Wms.StockIn
 
         //
         // GET: /InBillMaster/Details/
-
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string BillNo = collection["BillNo"] ?? "";
-            string BillDate = collection["BillDate"] ?? "";
-            string OperatePersonCode = collection["OperatePersonCode"] ?? "";
+            string WareHouseCode = collection["WareHouseCode"] ?? "";
+            string BeginDate = collection["BeginDate"] ?? "";
+            string EndDate = collection["EndDate"] ?? "";
+            string OperatePersonCode = collection["OperatePersonCode"] ?? string.Empty;
+            string CheckPersonCode = collection["CheckPersonCode"] ?? string.Empty;
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var inBillMaster = InBillMasterService.GetDetails(page,rows,BillNo,BillDate,OperatePersonCode,Status,IsActive);
+            var inBillMaster = InBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, BeginDate, EndDate,OperatePersonCode,CheckPersonCode, Status, IsActive);
             return Json(inBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -91,8 +94,6 @@ namespace Authority.Controllers.Wms.StockIn
 
         //
         // POST: /InBillMaster/Delete/
-
-        [HttpPost]
         public ActionResult Delete(string BillNo)
         {
             bool bResult = InBillMasterService.Delete(BillNo);
@@ -124,8 +125,6 @@ namespace Authority.Controllers.Wms.StockIn
 
         //
         // POST: /InBillMaster/Audit/
-
-        [HttpPost]
         public ActionResult Audit(string BillNo)
         {
             bool bResult = InBillMasterService.Audit(BillNo, this.User.Identity.Name.ToString());
@@ -135,8 +134,6 @@ namespace Authority.Controllers.Wms.StockIn
 
         //
         // POST: /InBillMaster/AntiTria/
-
-        [HttpPost]
         public ActionResult AntiTrial(string BillNo)
         {
             bool bResult = InBillMasterService.AntiTrial(BillNo);
@@ -191,6 +188,17 @@ namespace Authority.Controllers.Wms.StockIn
             }
             var product = InBillDetailService.GetProductDetails(page,rows,QueryString,Value);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /InBillMaster/inBillMasterSettle/
+
+        public ActionResult InBillMasterSettle(string BillNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Settle(BillNo, out strResult);
+            string msg = bResult ? "结单成功" : "结单失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

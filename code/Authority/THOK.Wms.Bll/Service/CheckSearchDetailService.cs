@@ -26,17 +26,20 @@ namespace THOK.Wms.Bll.Service
             if (BillNo != "" && BillNo != null)
             {
                 IQueryable<CheckBillDetail> checkBillDetailQuery = CheckSearchDetailRepository.GetQueryable();
-                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
+                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
                 {
                     i.ID,
                     i.BillNo,
                     i.ProductCode,
+                    i.Product.ProductName,
                     i.UnitCode,
                     i.Unit.UnitName,
-                    //i.BillQuantity,
-                    //i.RealQuantity,
-                    //i.Price,
-                    //i.Description 
+                    i.CellCode,
+                    i.Cell.CellName,
+                    i.StorageCode,
+                    i.RealQuantity,
+                    i.Quantity,
+                    DifiierQuantity = i.RealQuantity-i.Quantity
                 });
                 int total = checkBillDetail.Count();
                 checkBillDetail = checkBillDetail.Skip((page - 1) * rows).Take(rows);

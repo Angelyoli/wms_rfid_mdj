@@ -15,6 +15,8 @@ namespace THOK.Wms.Bll.Service
         public IInBillDetailRepository InBillDetailRepository { get; set; }
         [Dependency]
         public IProductRepository ProductRepository { get; set; }
+        [Dependency]
+        public IUnitRepository UnitRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -28,7 +30,11 @@ namespace THOK.Wms.Bll.Service
             if (BillNo != "" && BillNo != null)
             {
                 IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-                var inBillDetail = inBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
+                var inBillDetail = inBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i =>i);
+                int total = inBillDetail.Count();
+                inBillDetail = inBillDetail.Skip((page - 1) * rows).Take(rows);
+
+                var temp = inBillDetail.ToArray().AsEnumerable().Select(i => new
                 {
                     i.ID,
                     i.BillNo,
@@ -36,15 +42,13 @@ namespace THOK.Wms.Bll.Service
                     i.Product.ProductName,
                     i.UnitCode,
                     i.Unit.UnitName,
-                    i.BillQuantity,
-                    i.RealQuantity,
-                    i.AllotQuantity,
+                    BillQuantity = i.BillQuantity / i.Unit.Count,
+                    RealQuantity = i.RealQuantity / i.Unit.Count,
+                    AllotQuantity = i.AllotQuantity / i.Unit.Count,
                     i.Price,
                     i.Description
                 });
-                int total = inBillDetail.Count();
-                inBillDetail = inBillDetail.Skip((page - 1) * rows).Take(rows);
-                return new { total, rows = inBillDetail.ToArray() };
+                return new { total, rows = temp.ToArray() };
             }
             return "";
         }
@@ -53,6 +57,7 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
             var isExistProduct = inBillDetailQuery.FirstOrDefault(i=>i.BillNo==inBillDetail.BillNo&&i.ProductCode==inBillDetail.ProductCode);
+            var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
             if (isExistProduct == null)
             {
                 var ibd = new InBillDetail();
@@ -60,7 +65,7 @@ namespace THOK.Wms.Bll.Service
                 ibd.ProductCode = inBillDetail.ProductCode;
                 ibd.UnitCode = inBillDetail.UnitCode;
                 ibd.Price = inBillDetail.Price;
-                ibd.BillQuantity = inBillDetail.BillQuantity;
+                ibd.BillQuantity = inBillDetail.BillQuantity*unit.Count;
                 ibd.AllotQuantity = 0;
                 ibd.RealQuantity = 0;
                 ibd.Description = inBillDetail.Description;
@@ -71,7 +76,8 @@ namespace THOK.Wms.Bll.Service
             else
             {
                 var ibd = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);
-                ibd.BillQuantity = ibd.BillQuantity + inBillDetail.BillQuantity;
+                ibd.UnitCode = inBillDetail.UnitCode;
+                ibd.BillQuantity = ibd.BillQuantity + inBillDetail.BillQuantity*unit.Count;
                 InBillDetailRepository.SaveChanges();
             }
             return true;
@@ -89,15 +95,38 @@ namespace THOK.Wms.Bll.Service
 
         public bool Save(InBillDetail inBillDetail)
         {
+            bool result=false;
             IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-            var ibd = inBillDetailQuery.FirstOrDefault(i=>i.ID==inBillDetail.ID&&i.BillNo==inBillDetail.BillNo);
-            ibd.ProductCode = inBillDetail.ProductCode;
-            ibd.UnitCode = inBillDetail.UnitCode;
-            ibd.Price = inBillDetail.Price;
-            ibd.BillQuantity = inBillDetail.BillQuantity;
-            ibd.Description = inBillDetail.Description;
-            InBillDetailRepository.SaveChanges();
-            return true;
+            var ibd = inBillDetailQuery.FirstOrDefault(i=>i.BillNo==inBillDetail.BillNo&&inBillDetail.ProductCode==inBillDetail.ProductCode);
+            var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
+            if ((ibd!= null&&ibd.ID==inBillDetail.ID)||ibd==null)
+            {
+                if(ibd==null)
+                {
+                    ibd=inBillDetailQuery.FirstOrDefault(i=>i.BillNo==inBillDetail.BillNo&&i.ID==inBillDetail.ID);
+                }
+                ibd.BillNo=inBillDetail.BillNo;
+                ibd.ProductCode = inBillDetail.ProductCode;
+                ibd.UnitCode = inBillDetail.UnitCode;
+                ibd.Price = inBillDetail.Price;
+                ibd.BillQuantity = inBillDetail.BillQuantity * unit.Count;
+                ibd.Description = inBillDetail.Description;
+                InBillDetailRepository.SaveChanges();
+                result = true;
+            }
+            else if(ibd != null && ibd.ID != inBillDetail.ID)
+            {
+                bool delDetail=this.Delete(inBillDetail.ID.ToString());
+                ibd.BillNo=inBillDetail.BillNo;
+                ibd.ProductCode=inBillDetail.ProductCode;
+                ibd.UnitCode=inBillDetail.UnitCode;
+                ibd.Price=inBillDetail.Price;
+                ibd.BillQuantity=ibd.BillQuantity+inBillDetail.BillQuantity*unit.Count;
+                ibd.Description=inBillDetail.Description;
+                InBillDetailRepository.SaveChanges();
+                result=true;
+            }
+            return result;
         }
 
         #endregion

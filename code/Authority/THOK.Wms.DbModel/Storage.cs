@@ -14,15 +14,16 @@ namespace THOK.Wms.DbModel
            this.CheckBillDetails = new List<CheckBillDetail>();
            this.InBillAllots = new List<InBillAllot>();
            this.OutBillAllots = new List<OutBillAllot>();
+           this.ProfitLossBillDetails = new List<ProfitLossBillDetail>();
        }
        public string StorageCode { get; set; }
        public string CellCode { get; set; }
        public string ProductCode { get; set; }
-       public int Quantity { get; set; }
+       public decimal Quantity { get; set; }
        public DateTime StorageTime { get; set; }
        public string Rfid { get; set; }
-       public int InFrozenQuantity { get; set; }
-       public int OutFrozenQuantity { get; set; }
+       public decimal InFrozenQuantity { get; set; }
+       public decimal OutFrozenQuantity { get; set; }
        public string IsLock { get; set; }
        public string LockTag { get; set; }
        public string IsActive { get; set; }
@@ -37,6 +38,7 @@ namespace THOK.Wms.DbModel
        public virtual ICollection<CheckBillDetail> CheckBillDetails { get; set; }
        public virtual ICollection<InBillAllot> InBillAllots { get; set; }
        public virtual ICollection<OutBillAllot> OutBillAllots { get; set; }
+       public virtual ICollection<ProfitLossBillDetail> ProfitLossBillDetails { get; set; }
 
     }
 }

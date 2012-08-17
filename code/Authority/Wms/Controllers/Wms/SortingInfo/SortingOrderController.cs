@@ -32,9 +32,7 @@ namespace Authority.Controllers.Wms.SortingInfo
         {
             string OrderID = collection["OrderID"] ?? "";
             string orderDate = collection["orderDate"] ?? "";
-            string CustomerCode = collection["CustomerCode"] ?? "";
-            string CustomerName = collection["CustomerName"] ?? "";
-            var sortOrder = SortOrderService.GetDetails(page, rows, OrderID, orderDate, CustomerCode, CustomerName);
+            var sortOrder = SortOrderService.GetDetails(page, rows, OrderID, orderDate);
             return Json(sortOrder, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -44,6 +42,14 @@ namespace Authority.Controllers.Wms.SortingInfo
         {
             var SortOrderDetail = SortOrderDetailService.GetDetails(page, rows, OrderID);
             return Json(SortOrderDetail, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //根据时间分组查询主单
+        // GET: /SortingOrder/GetOrderMaster/
+        public ActionResult GetOrderMaster(string orderDate)
+        {
+            var sortOrder = SortOrderService.GetDetails(orderDate);
+            return Json(sortOrder, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

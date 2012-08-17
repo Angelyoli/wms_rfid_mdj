@@ -1,9 +1,6 @@
 using System.Data.Entity;
 using THOK.Wms.DbModel.Mapping;
-using THOK.Wms.DbModel;
 using THOK.Wms.Repository.Migrations;
-using THOK.Wms.DbModel;
-using THOK.Wms.DbModel.Mapping;
 using THOK.Authority.DbModel.Mapping;
 
 namespace THOK.Wms.Repository
@@ -85,6 +82,10 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new DeliverLineMap());
             modelBuilder.Configurations.Add(new CustomerMap());
 
+            modelBuilder.Configurations.Add(new SortingLineMap());
+            modelBuilder.Configurations.Add(new SortingLowerlimitMap());
+            modelBuilder.Configurations.Add(new SortOrderDispatchMap());
+            modelBuilder.Configurations.Add(new SortWorkDispatchMap());
             #endregion
         }
     }

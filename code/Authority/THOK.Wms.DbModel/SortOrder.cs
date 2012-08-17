@@ -22,13 +22,14 @@ namespace THOK.Wms.DbModel
         public decimal QuantitySum { get; set; }
         public decimal AmountSum { get; set; }
         public decimal DetailNum { get; set; }
-        public decimal DeliverOrder { get; set; }
+        public int DeliverOrder { get; set; }
         public string DeliverDate { get; set; }
         public string Description { get; set; }
         public string IsActive { get; set; }
         public DateTime UpdateTime { get; set; }
 
         //public virtual Company Company { get; set; }
+        public virtual DeliverLine DeliverLine { get; set; }
 
         public virtual ICollection<SortOrderDetail> SortOrderDetails { get; set; }
 

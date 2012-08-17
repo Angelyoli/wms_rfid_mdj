@@ -26,18 +26,18 @@ namespace THOK.Wms.Bll.Service
             if (BillNo != "" && BillNo != null)
             {
                 IQueryable<OutBillAllot> OutBillAllotQuery = OutSearchDetailRepository.GetQueryable();
-                var OutBillAllot = OutBillAllotQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
+                var OutBillAllot = OutBillAllotQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
                 {
                     i.ID,
                     i.BillNo,
                     i.ProductCode,
-                    //i.Product.ProductName,
-                    //i.UnitCode,
-                    //i.Unit.UnitName,
-                    //i.BillQuantity,
-                    //i.RealQuantity,
-                    //i.Price,
-                    //i.Description
+                    i.Product.ProductName,
+                    i.UnitCode,
+                    i.Unit.UnitName,
+                    i.CellCode,
+                    i.Cell.CellName,
+                    i.RealQuantity,
+                    i.Status
                 });
                 int total = OutBillAllot.Count();
                 OutBillAllot = OutBillAllot.Skip((page - 1) * rows).Take(rows);

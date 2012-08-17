@@ -62,143 +62,154 @@ namespace THOK.Wms.Bll.Service
                 storages = storageQuery.Where(s => s.Cell.CellCode == id);
             }
 
-            var temp = storages.AsEnumerable().Select(s => new
-           {
-               s.StorageCode,
-               s.Cell.CellCode,
-               s.Cell.CellName,
-               s.Product.ProductCode,
-               s.Product.ProductName,
-               Quantity = s.Quantity / s.Product.Unit.Count,
-               IsActive = s.IsActive == "1" ? "可用" : "不可用",
-               StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-               UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
-           });
+            var temp = storages.Where(s=>s.Quantity>0).OrderBy(s=>s.CellCode).Select(s => s);
 
             int total = temp.Count();
             temp = temp.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = temp.ToArray() };
-        }
 
-        /// <summary>
-        /// 根据参数获取要生成的盘点数据  --货位
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="ware">仓库</param>
-        /// <param name="area">库区</param>
-        /// <param name="shelf">货架</param>
-        /// <param name="cell">货位</param>
-        /// <returns></returns>
-        public object GetCellDetails(int page, int rows, string ware, string area, string shelf, string cell)
-        {
-            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
-            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.OrderBy(s => s.StorageCode).AsEnumerable().Select(s => new
+            var tmp = temp.ToArray().AsEnumerable().Select(s => new
             {
                 s.StorageCode,
                 s.Cell.CellCode,
                 s.Cell.CellName,
                 s.Product.ProductCode,
                 s.Product.ProductName,
-                s.Quantity,
+                s.Product.Unit.UnitCode,
+                s.Product.Unit.UnitName,
+                Quantity = s.Quantity / s.Product.Unit.Count,
                 IsActive = s.IsActive == "1" ? "可用" : "不可用",
                 StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
                 UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
             });
-            if (ware != null && ware != string.Empty || area != null && area != string.Empty || shelf != null && shelf != string.Empty || cell != null && cell != string.Empty)
-            {
-                if (ware != string.Empty)
-                {
-                    ware = ware.Substring(0, ware.Length - 1);
-                }
-                if (area != string.Empty)
-                {
-                    area = area.Substring(0, area.Length - 1);
-                }
-                if (shelf != string.Empty)
-                {
-                    shelf = shelf.Substring(0, shelf.Length - 1);
-                }
-                if (cell != string.Empty)
-                {
-                    cell = cell.Substring(0, cell.Length - 1);
-                }
-
-                storages = storageQuery.ToList().Where(s => ware.Contains(s.Cell.Shelf.Area.Warehouse.WarehouseCode) || area.Contains(s.Cell.Shelf.Area.AreaCode) || shelf.Contains(s.Cell.Shelf.ShelfCode) || cell.Contains(s.Cell.CellCode))
-                                       .OrderBy(s => s.StorageCode).AsEnumerable()
-                                       .Select(s => new
-                                       {
-                                           s.StorageCode,
-                                           s.Cell.CellCode,
-                                           s.Cell.CellName,
-                                           s.Product.ProductCode,
-                                           s.Product.ProductName,
-                                           s.Quantity,
-                                           IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                                           StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                                           UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
-                                       });
-            }
-            int total = storages.Count();
-            storages = storages.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = storages.ToArray() };
-        }
-        
-        /// <summary>
-        /// 根据参数获取要生成的盘点数据  --产品
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="products">卷烟信息集合</param>
-        /// <returns></returns>
-        public object GetProductDetails(int page, int rows, string products)
-        {
-            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            if (products != string.Empty && products != null)
-            {
-                products = products.Substring(0, products.Length - 1);
-
-                var storages = storageQuery.ToList().Where(s => products.Contains(s.Product.ProductCode))
-                                      .OrderBy(s => s.StorageCode).AsEnumerable()
-                                      .Select(s => new
-                                      {
-                                          s.StorageCode,
-                                          s.Cell.CellCode,
-                                          s.Cell.CellName,
-                                          s.Product.ProductCode,
-                                          s.Product.ProductName,
-                                          s.Quantity,
-                                          IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                                          StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                                          UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
-                                      });
-                int total = storages.Count();
-                storages = storages.Skip((page - 1) * rows).Take(rows);
-                return new { total, rows = storages.ToArray() };
-            }
-            return null;
+            return new { total, rows = tmp.ToArray() };
         }
 
         /// <summary>
-        /// 根据参数获取要生成的盘点数据  --货位变动
+        /// 根据类型、id、inOrOut获取存储表的数据,-移库单使用
         /// </summary>
         /// <param name="page"></param>
         /// <param name="rows"></param>
-        /// <param name="beginDate">开始时间</param>
-        /// <param name="endDate">结束时间</param>
+        /// <param name="type">类型</param>
+        /// <param name="id">ID</param>
+        /// <param name="inOrOut">移入还是移出</param>
+        /// <param name="productCode">产品代码</param>
         /// <returns></returns>
-        public object GetChangedCellDetails(int page, int rows, string beginDate, string endDate)
+        public object GetMoveStorgeDetails(int page, int rows, string type, string id,string inOrOut,string productCode)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            IQueryable<InBillAllot> inAllotQuery = InBillAllotRepository.GetQueryable();
-            IQueryable<OutBillAllot> outAllotQuery = OutBillAllotRepository.GetQueryable();
-            IQueryable<MoveBillDetail> moveBillQuery = MoveBillDetailRepository.GetQueryable();
-            if (beginDate == string.Empty && beginDate == null)
-            { 
-                
+            var storages = storageQuery.OrderBy(s => s.StorageCode).Where(s => s.StorageCode != null);
+            if (type == "ware")
+            {
+                storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id);
             }
-            throw new NotImplementedException();
+            else if (type == "area")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.Area.AreaCode == id);
+            }
+            else if (type == "shelf")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.ShelfCode == id);
+            }
+            else if (type == "cell")
+            {
+                storages = storageQuery.Where(s => s.Cell.CellCode == id);
+            }
+            //传入的参数为out时查询的是移出货位的存储信息
+            if (inOrOut == "out")
+            {
+                storages = storages.Where(s => (s.Quantity - s.OutFrozenQuantity) > 0 && string.IsNullOrEmpty(s.Cell.LockTag));
+            }
+            else if(inOrOut=="in")//传入的参数为in时查询的是移入货位的存储信息
+            {
+                storages = storages.Where(s => s.Quantity == 0
+                    || (s.Cell.IsSingle == "1" && s.ProductCode == productCode 
+                       && ((s.Cell.MaxQuantity * s.Product.Unit.Count) - s.InFrozenQuantity - s.Quantity) > 0)
+                    || (s.Cell.IsSingle == "0" && string.IsNullOrEmpty(s.Cell.LockTag)));
+            }
+            else if (inOrOut == "stockOut")
+            {
+                storages = storages.Where(s => (s.Quantity - s.OutFrozenQuantity) > 0
+                                          && string.IsNullOrEmpty(s.Cell.LockTag)
+                                          && s.ProductCode == productCode);
+            }
+
+            if (!storages.Any())
+            {
+                return null;
+            }
+            var temp = storages.OrderBy(i=>i.CellCode).Select(s =>s);
+
+            int total = temp.Count();
+            temp = temp.Skip((page - 1) * rows).Take(rows);
+
+            var tmp=temp.ToArray().AsEnumerable().Select(s => new
+                {
+                    s.StorageCode,
+                    s.Cell.CellCode,
+                    s.Cell.CellName,
+                    ProductCode = s.Product == null ? "" : s.Product.ProductCode,
+                    ProductName = s.Product == null ? "" : s.Product.ProductName,
+                    UnitCode = s.Product == null ? "" : s.Product.Unit.UnitCode,
+                    UnitName = s.Product == null ? "" : s.Product.Unit.UnitName,
+                    Price = s.Product == null ? 0 : s.Product.CostPrice,
+                    Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
+                    IsActive = s.IsActive == "1" ? "可用" : "不可用",
+                    StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
+                    UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                });
+            return new { total, rows = tmp.ToArray() };
+        }
+        #endregion
+
+        #region IStorageService 成员
+
+
+        public object GetMoveInStorgeDetails(int page, int rows, string type, string id, string cellCode, string productCode)
+        {
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+            var storages = storageQuery.OrderBy(s => s.StorageCode).Where(s => s.StorageCode != null);
+            if (type == "ware")
+            {
+                storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id&&s.CellCode!=cellCode);
+            }
+            else if (type == "area")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.Area.AreaCode == id && s.CellCode != cellCode);
+            }
+            else if (type == "shelf")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.ShelfCode == id && s.CellCode != cellCode);
+            }
+            else if (type == "cell")
+            {
+                storages = storageQuery.Where(s => s.Cell.CellCode == id && s.CellCode != cellCode);
+            }
+
+            var storage = storages.Where(s => s.Quantity == 0
+                || (s.Cell.IsSingle == "1" && s.ProductCode == productCode
+                   && ((s.Cell.MaxQuantity * s.Product.Unit.Count) - s.InFrozenQuantity - s.Quantity) > 0)
+                || (s.Cell.IsSingle == "0" && string.IsNullOrEmpty(s.Cell.LockTag)))
+                .GroupBy(s => new { s.Cell })
+                .Select(s => new
+                {
+                    s.Key.Cell.CellCode,
+                    s.Key.Cell.CellName,
+                    //s.Key.Product.ProductCode,
+                    //s.Key.Product.ProductName,
+                    //s.Key.Unit.UnitCode,
+                    //s.Key.Unit.UnitName,
+                    //Quantity = s.Sum(q => (q.Cell.MaxQuantity * q.Product.Unit.Count - q.Quantity - q.InFrozenQuantity) / q.Product.Unit.Count),
+                    //storagecode = s.Key.storage.StorageCode
+                });
+
+            if (!storages.Any())
+            {
+                return null;
+            }
+
+            int total = storage.Count();
+            storage = storage.OrderBy(s=>s.CellCode).Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = storage.ToArray() };
         }
 
         #endregion

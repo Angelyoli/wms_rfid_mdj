@@ -61,12 +61,20 @@ namespace Authority.Controllers.ProductInfo
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
-        //查询卷烟信息 2012年7月24日 16:29:25
+        //下限查询卷烟信息 2012年7月24日 16:29:25
         // GET: /Product/FindProduct/
-        public ActionResult FindProduct()
+        public ActionResult FindProduct(int page, int rows, string QueryString, string value)
         {
-            var users = ProductService.FindProduct();
-            return Json(users, "text", JsonRequestBehavior.AllowGet);
+            var product = ProductService.FindProduct(page, rows, QueryString, value);
+            return Json(product, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //盘点查询卷烟信息 
+        // GET: /Product/CheckFindProduct/
+        public ActionResult CheckFindProduct()
+        {
+            var product = ProductService.checkFindProduct();
+            return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }
