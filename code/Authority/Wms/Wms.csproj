@@ -1152,6 +1152,8 @@
     <Content Include="Views\UnitList\_UnitPartial4.cshtml" />
     <Content Include="Views\CurrentStock\_ProductPartial.cshtml" />
     <Content Include="Views\Distribution\_ProductPartial.cshtml" />
+    <Content Include="Views\Stockledger\_ProductPartial.cshtml" />
+    <Content Include="Views\HistoricalDetail\_ProductPartial.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
