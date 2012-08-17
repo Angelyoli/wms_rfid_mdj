@@ -683,5 +683,30 @@ namespace THOK.Wms.Bll.Service
             }
             return areaSet.ToArray();
         }
+
+        public System.Data.DataTable GetProductCell()
+        {
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+
+            var cellInfo = cellQuery.Where(c1 => c1.Product != null)
+                .GroupBy(c2 => c2.Product)
+                .Select(c3 => new
+                {
+                    ProductCode = c3.Key.ProductCode,
+                    ProductName = c3.Key.ProductName,
+                    ProductQuantity = c3.Count()
+                });
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("编号", typeof(string));
+            dt.Columns.Add("名称", typeof(string));
+            dt.Columns.Add("数量", typeof(int));
+
+            foreach (var item in cellInfo)
+            {
+                dt.Rows.Add(item.ProductCode, item.ProductName, item.ProductQuantity);
+            }
+            return dt;
+        }
     }
 }
