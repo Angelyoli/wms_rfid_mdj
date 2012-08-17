@@ -72,10 +72,14 @@ $(function () {
                 success: function (responseText) {
                     var result = $.evalJSON(responseText);
                     if (result.success) {
-                        $.messager.alert(g_MsgBoxTitle, result.msg, "info",function()
-                        {
-                             $.ajaxSender.complete(result.data);
-                        });                       
+                        if (result.msg != '') {
+                            $.messager.alert(g_MsgBoxTitle, result.msg, "info",function()
+                            {
+                                 $.ajaxSender.complete(result.data);
+                            });   
+                        }else{
+                            $.ajaxSender.complete(result.data);
+                        }                  
                     } else {
                         $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
                     }
