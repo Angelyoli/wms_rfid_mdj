@@ -1,16 +1,21 @@
 ﻿<script type="text/javascript">
     function antitrialClick() {
-        var row = $('#details').datagrid('getSelected');
-        if (row) {
-            if (row.Status != "已审核") {
-                $.messager.alert('错误', '该记录状态不是已审核状态无法反审！');
-            } else {
+        var billnoRow = "";
+        var rows = $('#details').datagrid('getSelections');
+        if (rows.length > 0) {
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].Status == "已审核") {
+                    //                    billnoRow += rows[i].BillNo + ",";\\多选时要启用
+                    billnoRow += rows[i].BillNo;
+                }
+            }
+            if (billnoRow != "") {
                 $.messager.confirm('反审', '确认要反审该记录吗？', function (r) {
                     if (r) {
                         var j_waitDialog = ShowWaitMessageDialog();
                         $.ajax({
                             url: '/CheckBill/checkBillMasterAntiTrial/', type: "GET", dataType: "text",
-                            data: { 'BillNo': row.BillNo },
+                            data: { 'BillNo': billnoRow },
                             complete: function () { HideWaitMessageDialog(j_waitDialog); },
                             success: function (responseText) {
                                 var result = $.evalJSON(responseText);
@@ -24,9 +29,11 @@
                         });
                     }
                 });
+            } else {
+                $.messager.alert(g_MsgBoxTitle, '所选择的行没有已审核状态的单据！无法反审！', "error");
             }
         } else {
-            $.messager.alert('错误', '没有选择行，无法反审！');
+            $.messager.alert(g_MsgBoxTitle, '没有选择行，无法反审！', "error");
         }
     }
 </script>
