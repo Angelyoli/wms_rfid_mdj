@@ -228,6 +228,7 @@ namespace THOK.Wms.Bll.Service
                 });
             return cellInfo;
         }
+        /// <summary>根据条件查找卷烟信息</summary>
         public object GetCellBy(int page, int rows, string QueryString, string Value)
         {
             string productCode = "", productName = "";
@@ -332,6 +333,31 @@ namespace THOK.Wms.Bll.Service
                 wareSet.Add(wareTree);
             }
             return wareSet.ToArray();
+        }
+        /// <summary>获得卷烟货位信息</summary>
+        public System.Data.DataTable GetProductCell()
+        {
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+
+            var cellInfo = cellQuery.Where(c1 => c1.Product != null)
+                .GroupBy(c2 => c2.Product)
+                .Select(c3 => new
+                {
+                    ProductCode = c3.Key.ProductCode,
+                    ProductName = c3.Key.ProductName,
+                    ProductQuantity = c3.Count()
+                });
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("卷烟编号", typeof(string));
+            dt.Columns.Add("卷烟名称", typeof(string));
+            dt.Columns.Add("货位数量", typeof(int));
+
+            foreach (var item in cellInfo)
+            {
+                dt.Rows.Add(item.ProductCode, item.ProductName, item.ProductQuantity);
+            }
+            return dt;
         }
         
         /// <summary>

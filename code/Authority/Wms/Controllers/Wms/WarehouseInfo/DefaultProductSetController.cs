@@ -46,7 +46,8 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             var product = ProductService.GetProductBy(page, rows, QueryString, Value);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
-
+        //根据条件查询卷烟货位
+        //POST: /DefaultProductSet/GetCellBy/
         public ActionResult GetCellBy(int page ,int rows,string QueryString ,string Value)
         {
             if (QueryString == null)

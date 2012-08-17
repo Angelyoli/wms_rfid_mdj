@@ -35,6 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Microsoft.Practices.Unity.dll</HintPath>
@@ -128,6 +131,7 @@
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
+    <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\ShelfController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\StorageController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\WarehouseController.cs" />
@@ -850,6 +854,9 @@
     <Content Include="Views\DefaultProductSet\_DeletePartial.cshtml" />
     <Content Include="Views\DefaultProductSet\_EditPartial.cshtml" />
     <Content Include="Views\DefaultProductSet\_ProductPartial.cshtml" />
+    <Content Include="Views\ExportExcel\Index.cshtml" />
+    <Content Include="Views\ExportExcel\_SearchPartial.cshtml" />
+    <None Include="Views\ExportExcel\CrystalReport1.mht" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
