@@ -20,9 +20,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        #region IDistributionService 成员
-
-        public object GetCellDetails(int page, int rows, string productCode, string ware, string area, string unitType)
+        public object GetAreaDetails(int page, int rows, string productCode, string ware, string area, string unitType)
         {
             if (unitType == null || unitType == "")
             {
@@ -30,7 +28,7 @@ namespace THOK.Wms.Bll.Service
             }
 
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.Where(s => s.Quantity > 0 && s.IsLock == "0");
+            var storages = storageQuery.Where(s => s.Quantity > 0);
             if (ware != null && ware != string.Empty || area != null && area != string.Empty)
             {
                 if (ware != string.Empty)
@@ -94,74 +92,113 @@ namespace THOK.Wms.Bll.Service
 
         public object GetProductTree()
         {
-            IQueryable<Storage> products = StorageRepository.GetQueryable().Where(p => p.Quantity > 0 && p.IsLock == "0")
-                                                                           .OrderBy(p => p.Product.ProductName);
-            var productRepository = products.ToArray().OrderBy(p => p.Product.ProductName).GroupBy(s => s.Product.ProductCode)
-                                                                           .Select(s => new
-                                                                           {
-                                                                               ProductCode = s.Max(p => p.Product.ProductCode),
-                                                                               ProductName = s.Max(p => p.Product.ProductName),
-                                                                               Quantity = s.Sum(p => p.Quantity)
-                                                                           });
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable().Where(p => p.Quantity > 0);
+            var products = storageQuery.GroupBy(s => new
+                                                {
+                                                    s.ProductCode,
+                                                    s.Product.ProductName,
+                                                    s.Cell.WarehouseCode,
+                                                    s.Cell.Warehouse.WarehouseName,
+                                                    s.Cell.AreaCode,
+                                                    s.Cell.Area.AreaName,
+                                                    s.Cell.ShelfCode,
+                                                    s.Cell.Shelf.ShelfName
+                                                })
+                                                .Select(s => new
+                                                {
+                                                    s.Key.ProductCode,
+                                                    s.Key.ProductName,
+                                                    s.Key.WarehouseCode,
+                                                    s.Key.WarehouseName,
+                                                    s.Key.AreaCode,
+                                                    s.Key.AreaName,
+                                                    s.Key.ShelfCode,
+                                                    s.Key.ShelfName,
+                                                    Quantity = s.Sum(p => p.Quantity)
+                                                })
+                                                .GroupBy(s => new
+                                                {
+                                                    s.ProductCode,
+                                                    s.ProductName
+                                                })
+                                                .Select(s => new
+                                                {
+                                                    s.Key.ProductCode,
+                                                    s.Key.ProductName,
+                                                    Quantity = s.Sum(p => p.Quantity),
+                                                    WareHouses = s.GroupBy(w => new
+                                                    {
+                                                        w.WarehouseCode,
+                                                        w.WarehouseName
+                                                    })
+                                                    .Select(w => new
+                                                    {
+                                                        w.Key.WarehouseCode,
+                                                        w.Key.WarehouseName,
+                                                        Quantity = w.Sum(q => q.Quantity),
+                                                        Areas = w.GroupBy(a => new
+                                                        {
+                                                            a.AreaCode,
+                                                            a.AreaName
+                                                        })
+                                                        .Select(a => new
+                                                        {
+                                                            a.Key.AreaCode,
+                                                            a.Key.AreaName,
+                                                            Quantity = a.Sum(q => q.Quantity),
+                                                            Shelfs = a.GroupBy(sh => new
+                                                            {
+                                                                sh.ShelfCode,
+                                                                sh.ShelfName
+                                                            })
+                                                            .Select(sh => new
+                                                            {
+                                                                sh.Key.ShelfCode,
+                                                                sh.Key.ShelfName,
+                                                                Quantity = sh.Sum(q => q.Quantity)
+                                                            })
+                                                        })
+                                                    })
+                                                }).ToArray();
+
             HashSet<Tree> productSet = new HashSet<Tree>();
-            int aaa = productRepository.Count();
-            foreach (var product in productRepository)
+            foreach (var product in products)
             {
                 Tree productTree = new Tree();
                 productTree.id = product.ProductCode;
-                productTree.text =product.ProductName+ "(  数量："+ product.Quantity +" )";
+                productTree.text = product.ProductName + "(  数量：" + product.Quantity + " )";
                 productTree.state = "open";
                 productTree.attributes = "product";
 
-                var warehouses = products.Where(w => w.ProductCode == product.ProductCode)
-                                         .OrderBy(w => w.Cell.Area.WarehouseCode)
-                                         .GroupBy(w => w.Cell.Area.WarehouseCode)
-                                         .Select(w => new
-                                         {
-                                             WarehouseCode = w.Max(p => p.Cell.Area.WarehouseCode),
-                                             WarehouseName = w.Max(p => p.Cell.Area.Warehouse.WarehouseName),
-                                             Quantity = w.Sum(p => p.Quantity)
-                                         });
                 HashSet<Tree> warehouseSet = new HashSet<Tree>();
-                int bbb = warehouses.Count();
-                foreach (var warehouse in warehouses)
+                foreach (var wareHouse in product.WareHouses)
                 {
                     Tree warehouseTree = new Tree();
-                    warehouseTree.id = warehouse.WarehouseCode;
-                    warehouseTree.text = "仓库：" + warehouse.WarehouseName + "(  数量：" + warehouse.Quantity + " )";
+                    warehouseTree.id = wareHouse.WarehouseCode;
+                    warehouseTree.text = "仓库：" + wareHouse.WarehouseName + "(  数量：" + wareHouse.Quantity + " )";
                     warehouseTree.state = "open";
                     warehouseTree.attributes = "warehouse";
-                    var areas = products.Where(a => a.Cell.Area.WarehouseCode == warehouse.WarehouseCode &&  a.ProductCode == product.ProductCode)
-                                          .OrderBy(a => a.Cell.AreaCode)
-                                          .GroupBy(a => a.Cell.AreaCode)
-                                          .Select(a => new
-                                          {
-                                              AreaCode = a.Max(p => p.Cell.AreaCode),
-                                              AreaName = a.Max(p => p.Cell.Area.AreaName),
-                                              Quantity = a.Sum(p => p.Quantity)
-                                          });
+
                     HashSet<Tree> areaSet = new HashSet<Tree>();
-                    int ccc = areas.Count();
-                    foreach (var area in areas)
+                    foreach (var area in wareHouse.Areas)
                     {
                         Tree areaTree = new Tree();
                         areaTree.id = area.AreaCode;
                         areaTree.text = "库区：" + area.AreaName + "(  数量：" + area.Quantity + " )";
-                        areaTree.state = "close";
+                        areaTree.state = "open";
                         areaTree.attributes = "area";
-                        //var shelfs = warehouses.Where(s => s.Cell.AreaCode == area.Cell.AreaCode)
-                        //                       .OrderBy(s => s.Cell.ShelfCode).Select(s => s);
-                        //HashSet<Tree> shelfSet = new HashSet<Tree>();
-                        //foreach (var shelf in shelfs)
-                        //{
-                        //    Tree shelfTree = new Tree();
-                        //    shelfTree.id = shelf.Cell.ShelfCode;
-                        //    shelfTree.text = "货架：" + shelf.Cell.Shelf.ShelfName;
-                        //    shelfTree.state = "close";
-                        //    shelfTree.attributes = "shelf";
-                        //    shelfSet.Add(shelfTree);
-                        //}
-                        //areaTree.children = shelfSet.ToArray();
+
+                        HashSet<Tree> shelfSet = new HashSet<Tree>();
+                        foreach (var shelf in area.Shelfs)
+                        {
+                            Tree shelfTree = new Tree();
+                            shelfTree.id = shelf.ShelfCode;
+                            shelfTree.text = "货架：" + shelf.ShelfName + "(  数量：" + shelf.Quantity + " )";
+                            shelfTree.state = "open";
+                            shelfTree.attributes = "shelf";
+                            shelfSet.Add(shelfTree);
+                        }
+                        areaTree.children = shelfSet.ToArray();
                         areaSet.Add(areaTree);
                     }
                     warehouseTree.children = areaSet.ToArray();
@@ -173,7 +210,75 @@ namespace THOK.Wms.Bll.Service
             return productSet.ToArray();
         }
 
-        #endregion
+        public object GetCellDetails(int page, int rows, string type, string id, string unitType)
+        {
+            if (unitType == null || unitType == "")
+            {
+                unitType = "1";
+            }
+
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+            var storages = storageQuery.Where(s => s.StorageCode != null);
+
+            if (type == "product")
+            {
+                storages = storageQuery.Where(s => s.ProductCode == id);
+            }
+            else if (type == "ware")
+            {
+                storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id);
+            }
+            else if (type == "area")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.Area.AreaCode == id);
+            }
+            else if (type == "shelf")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.ShelfCode == id);
+            }
+            var storage = storages.OrderBy(s => s.Product.ProductName).Where(s => s.Quantity > 0);
+            int total = storage.Count();
+            storage = storage.Skip((page - 1) * rows).Take(rows);
+            if (unitType == "1")
+            {
+                string unitName1 = "标准件";
+                decimal count1 = 10000;
+                string unitName2 = "标准条";
+                decimal count2 = 200;
+                var currentstorage = storage.ToArray().Select(d => new
+                {
+                    ProductCode = d.ProductCode,
+                    ProductName = d.Product.ProductName,
+                    d.Cell.CellCode,
+                    d.Cell.CellName,
+                    UnitName1 = unitName1,
+                    UnitName2 = unitName2,
+                    Quantity1 = d.Quantity / count1,
+                    Quantity2 = d.Quantity / count2,
+                    Quantity = d.Quantity,
+                    StorageTime = d.StorageTime.ToString("yyyy-MM-dd")
+                });
+                return new { total, rows = currentstorage.ToArray() };
+            }
+            if (unitType == "2")
+            {
+                var currentstorage = storage.ToArray().Select(d => new
+                {
+                    ProductCode = d.ProductCode,
+                    ProductName = d.Product.ProductName,
+                    d.Cell.CellCode,
+                    d.Cell.CellName,
+                    UnitName1 = d.Product.UnitList.Unit01.UnitName,
+                    UnitName2 = d.Product.UnitList.Unit02.UnitName,
+                    Quantity1 = d.Quantity / d.Product.UnitList.Unit01.Count,
+                    Quantity2 = d.Quantity / d.Product.UnitList.Unit02.Count,
+                    Quantity = d.Quantity,
+                    StorageTime = d.StorageTime.ToString("yyyy-MM-dd")
+                });
+                return new { total, rows = currentstorage.ToArray() };
+            }
+            return new { total, rows = storage.ToArray() };
+        }
 
     }
 }

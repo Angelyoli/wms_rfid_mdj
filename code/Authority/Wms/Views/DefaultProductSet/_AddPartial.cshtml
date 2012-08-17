@@ -1,12 +1,24 @@
 ﻿<script type="text/javascript">
     var url;
     var editType;
+    var setting = {
+        check: {
+            enable: true,
+            chkStyle: "checkbox"
+        }
+    };
     function addClick() {
-        editType = 'add';
-        $('#dlg').dialog('open').dialog('setTitle', '新增');
+        editType = 'add';        
         $('#productCode').attr("readonly", true);
         $('#productName').attr("readonly", true);
-        $('#productTree').tree({ url: '/Cell/GetCheckDetails/' }); //加载树形数据
+        $('#dlg').dialog('open').dialog('setTitle', '新增');
+        $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
+                        {
+                            'productId': ''
+                        },
+                        function (data) {
+                            $.fn.zTree.init($("#treeDemo"), setting, data);
+                        });    
     }
     function productSearchClick() {
         $('#productData').dialog('open').dialog('setTitle', '选择卷烟信息');
@@ -16,35 +28,28 @@
 
     function enterSave() {
         var ware = "", area = "", shelf = "", cell = "";
-        var areaChildren, shelfChildren, cellChildren;
-        //根节点集合
-        var roots = $('#productTree').tree('getRoots'); 
-
-        //仓库
-        for (i = 0; i < roots.length; i++) {
-            if (roots[i].attributes == "ware" && roots[i].checked == true) {
-                ware += roots[i].id + ",";
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var wareNodes = treeObj.getNodesByParam("type", "ware", null);
+        for (var i = 0; i < wareNodes.length; i++) {
+            if (wareNodes[i].checked && !wareNodes[i].getCheckStatus().half) {
+                ware += wareNodes[i].id + ',';
             }
             else {
-                areaChildren = $('#productTree').tree('getChildren', roots[i].target);
-                //库区
-                for (j = 0; j < areaChildren.length; j++) {
-                    if (areaChildren[j].attributes == "area" && areaChildren[j].checked == true) {
-                        area += areaChildren[j].id + ",";
+                areaNodes = treeObj.getNodesByParam("type", "area", wareNodes[i]);
+                for (var j = 0; j < areaNodes.length; j++) {
+                    if (areaNodes[j].checked && !areaNodes[j].getCheckStatus().half) {
+                        area += areaNodes[j].id + ',';
                     }
                     else {
-                        shelfChildren = $('#productTree').tree('getChildren', areaChildren[j].target);
-                        //货架
-                        for (h = 0; h < shelfChildren.length; h++) {
-                            if (shelfChildren[h].attributes == "shelf" && shelfChildren[h].checked == true) {
-                                shelf += shelfChildren[h].id + ",";
-                            }
-                            else {
-                                cellChildren = $('#productTree').tree('getChildren', shelfChildren[h].target);
-                                //货位
-                                for (k = 0; k < cellChildren.length; k++) {
-                                    if (cellChildren[k].attributes == "cell" && cellChildren[k].checked == true) {
-                                        cell += cellChildren[k].id + "," + cellChildren[k].checked + ",";
+                        shelfNodes = treeObj.getNodesByParam("type", "shelf", areaNodes[j]);
+                        for (var k = 0; k < shelfNodes.length; k++) {
+                            if (shelfNodes[k].checked && !shelfNodes[k].getCheckStatus().half) {
+                                shelf += shelfNodes[k].id + ',';
+                            } else {
+                                cellNodes = treeObj.getNodesByParam("type", "cell", shelfNodes[k]);
+                                for (var l = 0; l < cellNodes.length; l++) {
+                                    if (cellNodes[l].checked) {
+                                        cell += cellNodes[l].id + ',';
                                     }
                                 }
                             }
@@ -69,7 +74,6 @@
                             $('#details').datagrid('reload');
                             $("#productCode").attr("value", "");
                             $("#productName").attr("value", "");
-                            $('#dlg').dialog('close');
                         });
         }
         else {
@@ -77,14 +81,15 @@
         }
     }    
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 800px; height: 500px;
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 700px; height: 450px;
     padding: 1px 1px" closed="true" buttons="#dlg-buttons">
     <div class="easyui-tabs" fit="true">
         <div id="product" title="货位视图">
             <div class="easyui-layout" fit="true">
                 <div id="sidebar" region="west" border="false" style="width: 220px; border-right-style: solid;
                     border-right-width: 1px; border-right-color: #99BBE8;">
-                    <ul id="productTree" class="easyui-tree" checkbox="true" url=''>
+                    @*<ul id="productTree" class="easyui-tree" checkbox="true" url=''>*@
+                    <ul id="treeDemo" class="ztree"></ul>
                     </ul>
                 </div>
                 <div id="main" region="center" fit="true" border="false" style="margin: 10px 10px 10px 10px;">
