@@ -248,13 +248,9 @@ namespace THOK.Wms.Bll.Service
                 productCode = "New";
             }
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.Where(s => s.StorageCode != null);
+            var storages = storageQuery.Where(s => s.StorageCode != null && s.ProductCode == productCode);
 
-            if (type == "product")
-            {
-                storages = storageQuery.Where(s => s.ProductCode == id);
-            }
-            else if (type == "ware")
+            if (type == "ware")
             {
                 storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id && s.ProductCode == productCode);
             }

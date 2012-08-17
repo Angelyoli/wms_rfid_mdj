@@ -19,8 +19,10 @@
 
     function select() {
         unit_Type=$('#unit_Type').combo('getValue');
-        product_Code = $('#productCode').val();
-        if (unit_Type == null ||unit_Type =="") {
+        product_Code = $('#productCode').val(); 
+        $('#treedetails').datagrid('options').url = '/Distribution/GetCellDetails/?productCode=' + product_Code + '&unitType=' + unit_Type;
+        $('#treedetails').datagrid('reload');
+        if (unit_Type == null || unit_Type == "") {
             unit_Type = "1";
         }
         if (product_Code == null || product_Code == "") {
@@ -28,8 +30,6 @@
         }
         $('#Tree').tree({ url: '/Distribution/GetProductTreeDetails/?productCode=' + product_Code + '&unitType=' + unit_Type});
         $('#Tree').tree('reload');
-        $('#treedetails').datagrid('options').url = '/Distribution/GetCellDetails/?productcode=' + product_Code + '&unitType=' + unit_Type;
-        $('#treedetails').datagrid('reload');
         $('#dlg-search').dialog('close');
     }
 </script>

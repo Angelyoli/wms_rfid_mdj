@@ -10,7 +10,7 @@
                     var AttributeId = node.attributes.AttributeId;
                     var AttributeProduct = node.attributes.AttributeProduct;
                     var AttributeUnit = node.attributes.AttributeUnit;
-                    $('#treedetails').datagrid('options').url = '/Distribution/GetCellDetails/?type=' + AttributeId + '&id=' + node.id + '&productcode=' + AttributeProduct + '&unitType=' + AttributeUnit;
+                    $('#treedetails').datagrid('options').url = '/Distribution/GetCellDetails/?type=' + AttributeId + '&id=' + node.id + '&productCode=' + AttributeProduct + '&unitType=' + AttributeUnit;
                     $('#treedetails').datagrid('reload');
                 }
             }
