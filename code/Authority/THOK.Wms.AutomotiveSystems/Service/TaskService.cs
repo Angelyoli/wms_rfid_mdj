@@ -28,8 +28,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ICheckBillMasterRepository CheckBillMasterRepository { get; set; }
         [Dependency]
         public ICheckBillDetailRepository CheckBillDetailRepository { get; set; }
-
-
+        
         public void GetBillMaster(string[] BillTypes, Result result)
         {
             BillMaster[] billMasters = new BillMaster[] { };
@@ -40,32 +39,32 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     switch (billType)
                     {
                         case "1"://入库单
-                            var inBillMaster = InBillMasterRepository.GetQueryable()
+                            var inBillMasters = InBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "4" || i.Status == "5")
                                 .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "1" })
                                 .ToArray();
-                            billMasters.Concat(inBillMaster);
+                            billMasters = billMasters.Concat(inBillMasters).ToArray();
                             break;
                         case "2"://出库单
-                            var outBillMaster = OutBillMasterRepository.GetQueryable()
+                            var outBillMasters = OutBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "4" || i.Status == "5")
                                 .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "2" })
                                 .ToArray();
-                            billMasters.Concat(outBillMaster);
+                            billMasters = billMasters.Concat(outBillMasters).ToArray();
                             break;
                         case "3"://移库单
-                            var moveBillMaster = MoveBillMasterRepository.GetQueryable()
+                            var moveBillMasters = MoveBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "2" || i.Status == "3")
                                 .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "3" })
                                 .ToArray();
-                            billMasters.Concat(moveBillMaster);
+                            billMasters = billMasters.Concat(moveBillMasters).ToArray();
                             break;
                         case "4"://盘点单
-                            var checkBillMaster = CheckBillMasterRepository.GetQueryable()
+                            var checkBillMasters = CheckBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "2" || i.Status == "3")
                                 .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "4" })
                                 .ToArray();
-                            billMasters.Concat(checkBillMaster);
+                            billMasters = billMasters.Concat(checkBillMasters).ToArray();
                             break;
                         default:
                             break;
@@ -81,9 +80,193 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
-        public void GetBillDetail(BillMaster[] billMaster, Result result)
+        public void GetBillDetail(BillMaster[] billMasters, string productCode, string OperateType, string Operator, Result result)
         {
-            throw new NotImplementedException();
+            BillDetail[] billDetails = new BillDetail[] { };
+            try
+            {
+                foreach (var billMaster in billMasters)
+                {
+                    string billNo = billMaster.BillNo;
+                    switch (billMaster.BillType)
+                    {
+                        case "1"://入库单
+                            var inBillDetails = InBillAllotRepository.GetQueryable()
+                                .Where(i => i.BillNo == billNo
+                                    && (i.ProductCode == productCode || productCode == string.Empty)                                    
+                                    && (i.Status == "0" || (i.Status == "1"&& i.Operator == Operator)))
+                                .ToArray()
+                                .Select(i => new BillDetail() { 
+                                    BillNo = i.BillNo, 
+                                    BillType = "1" ,
+
+                                    DetailID = i.ID.ToString(),
+                                    StorageName = i.Cell.CellName,
+                                    StorageRfid = i.Cell.Rfid,
+                                    TargetStorageName = "",
+                                    TargetStorageRfid = "",
+
+                                    ProductCode = i.ProductCode,
+                                    ProductName = i.Product.ProductName,
+
+                                    PieceQuantity =(int) Math.Floor(i.AllotQuantity/i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = (int) Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = (int)Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = (int)Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+
+                                    OperatorCode = string.Empty,
+                                    Operator = i.Operator,
+                                    Status = i.Status,
+                                })
+                                .ToArray();
+                            billDetails = billDetails.Concat(inBillDetails).ToArray();
+                            break;
+                        case "2"://出库单
+                            var outBillDetails = OutBillAllotRepository.GetQueryable()
+                                .Where(i => i.BillNo == billNo
+                                    && (i.CanRealOperate == "1" || OperateType != "Real")
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
+                                .ToArray()
+                                .Select(i => new BillDetail()
+                                {
+                                    BillNo = i.BillNo,
+                                    BillType = "2",
+
+                                    DetailID = i.ID.ToString(),
+                                    StorageName = i.Cell.CellName,
+                                    StorageRfid = i.Cell.Rfid,
+                                    TargetStorageName = "",
+                                    TargetStorageRfid = "",
+
+                                    ProductCode = i.ProductCode,
+                                    ProductName = i.Product.ProductName,
+
+                                    PieceQuantity = (int)Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = (int)Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = (int)Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = (int)Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+
+                                    OperatorCode = string.Empty,
+                                    Operator = i.Operator,
+                                    Status = i.Status,
+                                })
+                                .ToArray();
+                            billDetails = billDetails.Concat(outBillDetails).ToArray();
+
+                            var outBillMaster = OutBillMasterRepository.GetQueryable()
+                                .Where(i => i.BillNo == billNo)
+                                .FirstOrDefault();
+                            if (outBillMaster != null && outBillMaster.MoveBillMasterBillNo != null)
+                            {
+                                billNo = outBillMaster.MoveBillMasterBillNo;
+                                //todo;
+                                var moveBillDetailss = MoveBillDetailRepository.GetQueryable()
+                                        .Where(i => i.BillNo == billNo
+                                            && (i.CanRealOperate == "1" || OperateType != "Real")
+                                            && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
+                                        .ToArray()
+                                        .Select(i => new BillDetail()
+                                        {
+                                            BillNo = i.BillNo,
+                                            BillType = "3",
+
+                                            DetailID = i.ID.ToString(),
+                                            StorageName = i.OutCell.CellName,
+                                            StorageRfid = i.OutCell.Rfid,
+                                            TargetStorageName = i.InCell.CellName,
+                                            TargetStorageRfid = i.InCell.Rfid,
+
+                                            ProductCode = i.ProductCode,
+                                            ProductName = i.Product.ProductName,
+
+                                            PieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                            BarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                            OperatePieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                            OperateBarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+
+                                            OperatorCode = string.Empty,
+                                            Operator = i.Operator,
+                                            Status = i.Status,
+                                        })
+                                        .ToArray();
+                                billDetails = billDetails.Concat(moveBillDetailss).ToArray();
+                            }
+                            break;                           
+                        case "3"://移库单
+                           var moveBillDetails = MoveBillDetailRepository.GetQueryable()
+                                .Where(i => i.BillNo == billNo
+                                    && (i.CanRealOperate == "1" || OperateType != "Real")
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
+                                .ToArray()
+                                .Select(i => new BillDetail()
+                                {
+                                    BillNo = i.BillNo,
+                                    BillType = "3",
+
+                                    DetailID = i.ID.ToString(),
+                                    StorageName = i.OutCell.CellName,
+                                    StorageRfid = i.OutCell.Rfid,
+                                    TargetStorageName = i.InCell.CellName,
+                                    TargetStorageRfid = i.InCell.Rfid,
+
+                                    ProductCode = i.ProductCode,
+                                    ProductName = i.Product.ProductName,
+
+                                    PieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+
+                                    OperatorCode = string.Empty,
+                                    Operator = i.Operator,
+                                    Status = i.Status,
+                                })
+                                .ToArray();
+                            billDetails = billDetails.Concat(moveBillDetails).ToArray();
+                            break;
+                        case "4"://盘点单
+                            var checkBillDetails = CheckBillDetailRepository.GetQueryable()
+                                .Where(i => i.BillNo == billNo
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
+                                .ToArray()
+                                .Select(i => new BillDetail()
+                                {
+                                    BillNo = i.BillNo,
+                                    BillType = "4",
+
+                                    DetailID = i.ID.ToString(),
+                                    StorageName = i.Cell.CellName,
+                                    StorageRfid = i.Cell.Rfid,
+                                    TargetStorageName = "",
+                                    TargetStorageRfid = "",
+
+                                    ProductCode = i.ProductCode,
+                                    ProductName = i.Product.ProductName,
+
+                                    PieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+
+                                    OperatorCode = string.Empty,
+                                    Operator = i.Operator,
+                                    Status = i.Status,
+                                })
+                                .ToArray();
+                            billDetails = billDetails.Concat(checkBillDetails).ToArray();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                result.IsSuccess = true;
+                result.BillDetails = billDetails.OrderBy(b=>b.StorageName).ToArray();
+            }
+            catch (Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = "调用服务器服务查询订单细表失败，详情：" + e.Message;
+            }
         }
 
         public void Apply(BillDetail[] billDetail, Result result)

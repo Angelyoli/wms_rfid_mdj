@@ -25,7 +25,7 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
                         TaskService.GetBillMaster(taskParameter.BillTypes, result);
                         break;
                     case "getDetail":
-                        TaskService.GetBillDetail(taskParameter.BillMasters, result);
+                        TaskService.GetBillDetail(taskParameter.BillMasters,"","","", result);
                         break;
                     case "apply":
                         TaskService.Apply(taskParameter.BillDetails, result);
