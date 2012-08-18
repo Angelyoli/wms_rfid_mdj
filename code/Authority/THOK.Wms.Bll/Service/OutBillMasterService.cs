@@ -67,7 +67,7 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<OutBillMaster> OutBillMasterQuery = OutBillMasterRepository.GetQueryable().Where(o => o.Status != "6");
 
-            var outBillMaster = OutBillMasterQuery.AsEnumerable()
+            var outBillMaster = OutBillMasterQuery
                                     .OrderByDescending(t => t.BillDate)
                                     .OrderByDescending(t => t.BillNo)
                                     .Select(i =>i);
@@ -78,12 +78,12 @@ namespace THOK.Wms.Bll.Service
             if (!beginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(beginDate);
-                outBillMaster = outBillMaster.Where(i => Convert.ToDateTime(i.BillDate) >= begin);
+                outBillMaster = outBillMaster.Where(i => i.BillDate >= begin);
             }
             if (!endDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(endDate).AddDays(1);
-                outBillMaster = outBillMaster.Where(i => Convert.ToDateTime(i.BillDate) <= end);
+                outBillMaster = outBillMaster.Where(i => i.BillDate <= end);
             }
             if (!OperatePersonCode.Equals(string.Empty) && OperatePersonCode != null)
             {
