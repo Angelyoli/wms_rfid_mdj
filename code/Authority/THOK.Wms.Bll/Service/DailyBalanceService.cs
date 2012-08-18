@@ -113,12 +113,12 @@ namespace THOK.Wms.Bll.Service
                                              Count02 = i.Product.UnitList.Unit02.Count,
                                              i.WarehouseCode,
                                              i.Warehouse.WarehouseName,
-                                             Beginning = i.Beginning/i.Unit.Count,
-                                             EntryAmount = i.EntryAmount/i.Unit.Count,
-                                             DeliveryAmount = i.DeliveryAmount/i.Unit.Count,
-                                             ProfitAmount = i.ProfitAmount/i.Unit.Count,
-                                             LossAmount = i.LossAmount/i.Unit.Count,
-                                             Ending = i.Ending/i.Unit.Count
+                                             i.Beginning,
+                                             i.EntryAmount,
+                                             i.DeliveryAmount,
+                                             i.ProfitAmount,
+                                             i.LossAmount,
+                                             i.Ending
                                          });
 
             

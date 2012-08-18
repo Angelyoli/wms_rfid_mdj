@@ -107,8 +107,8 @@ namespace THOK.Wms.Bll.Service
                      i.Product.ProductName,
                      i.UnitCode,
                      i.Unit.UnitName,
-                     i.BillQuantity,
-                     i.RealQuantity,
+                     BillQuantity = i.BillQuantity / i.Unit.Count,
+                     RealQuantity = i.RealQuantity / i.Unit.Count,
                      i.Price,
                      i.Description
                  });
