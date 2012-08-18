@@ -27,50 +27,70 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string ProductName, string ProductCode, string CustomCode, string BrandCode, string UniformCode, string AbcTypeCode, string ShortCode, string PriceLevelCode, string SupplierCode)
         {
             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
-            var product = ProductQuery.Where(c => c.ProductName.Contains(ProductName) || c.ProductCode.Contains(ProductCode)
-                || c.CustomCode.Contains(CustomCode) || c.BrandCode.Contains(BrandCode) || c.UniformCode.Contains(UniformCode)
-               || c.AbcTypeCode.Contains(AbcTypeCode) || c.ShortCode.Contains(ShortCode) || c.PriceLevelCode.Contains(PriceLevelCode) || c.SupplierCode.Contains(SupplierCode))
-                .OrderBy(c => c.ProductCode).AsEnumerable()
-                .Select(c => new
-                {
-                    c.AbcTypeCode,
-                    c.BarBarcode,
-                    c.BelongRegion,
-                    c.BrandCode,
-                    c.BuyPrice,
-                    c.CostPrice,
-                    c.CustomCode,
-                    c.Description,
-                    IsAbnormity = c.IsAbnormity == "1" ? "是" : "不是",
-                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
-                    c.IsConfiscate,
-                    c.IsFamous,
-                    c.IsFilterTip,
-                    c.IsMainProduct,
-                    c.IsNew,
-                    c.IsProvinceMainProduct,
-                    c.OneProjectBarcode,
-                    c.PackageBarcode,
-                    c.PackTypeCode,
-                    c.PieceBarcode,
-                    c.PriceLevelCode,
-                    c.ProductCode,
-                    c.ProductName,
-                    c.ProductTypeCode,
-                    c.RetailPrice,
-                    c.ShortCode,
-                    c.StatisticType,
-                    c.SupplierCode,
-                    c.TradePrice,
-                    c.UniformCode,
-                    c.UnitCode,
-                    c.Unit.UnitName,
-                    c.UnitListCode,
-                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-                });
+            var product = ProductQuery.Where(c => c.ProductName.Contains(ProductName)
+                && c.ProductCode.Contains(ProductCode)
+                && c.BrandCode.Contains(BrandCode)
+                && c.UniformCode.Contains(UniformCode)
+                && c.SupplierCode.Contains(SupplierCode))
+                .OrderBy(c => c.ProductCode)
+                .Select(c => c);
+            if (!CustomCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.CustomCode == CustomCode);
+            }
+            if (!AbcTypeCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.AbcTypeCode == AbcTypeCode);
+            }
+            if (!UniformCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.UniformCode == UniformCode);
+            }
+            if (!PriceLevelCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.PriceLevelCode == PriceLevelCode);
+            }
             int total = product.Count();
             product = product.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = product.ToArray() };
+
+            var temp = product.ToArray().Select(c => new
+            {
+                c.AbcTypeCode,
+                c.BarBarcode,
+                c.BelongRegion,
+                c.BrandCode,
+                c.BuyPrice,
+                c.CostPrice,
+                c.CustomCode,
+                c.Description,
+                IsAbnormity = c.IsAbnormity == "1" ? "是" : "不是",
+                IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                c.IsConfiscate,
+                c.IsFamous,
+                c.IsFilterTip,
+                c.IsMainProduct,
+                c.IsNew,
+                c.IsProvinceMainProduct,
+                c.OneProjectBarcode,
+                c.PackageBarcode,
+                c.PackTypeCode,
+                c.PieceBarcode,
+                c.PriceLevelCode,
+                c.ProductCode,
+                c.ProductName,
+                c.ProductTypeCode,
+                c.RetailPrice,
+                c.ShortCode,
+                c.StatisticType,
+                c.SupplierCode,
+                c.TradePrice,
+                c.UniformCode,
+                c.UnitCode,
+                c.Unit.UnitName,
+                c.UnitListCode,
+                UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return new { total, rows = temp.ToArray() };
         }
         public bool Add(Product product)
         {
@@ -109,9 +129,6 @@ namespace THOK.Wms.Bll.Service
             prod.UnitCode = product.UnitCode;
             prod.UnitListCode = product.UnitListCode;
             prod.UpdateTime = DateTime.Now;
-       
-
-
 
             ProductRepository.Add(prod);
             ProductRepository.SaveChanges();
@@ -198,7 +215,11 @@ namespace THOK.Wms.Bll.Service
                 var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Select(s => s.ProductCode);
                 product = product.Where(p => storages.Any(s => s == p.ProductCode)&& !p.SortingLowerlimits.Any(l=>l.ProductCode==p.ProductCode));
             }
-            var temp = product.AsEnumerable().OrderBy(p => p.ProductCode).Select(c => new
+            var temp = product.OrderBy(p => p.ProductCode).Select(c=>c);
+            int total = temp.Count();
+            temp = temp.Skip((page - 1) * rows).Take(rows);
+
+            var tmp = temp.ToArray().Select(c => new
             {
                 c.AbcTypeCode,
                 c.BarBarcode,
@@ -235,9 +256,7 @@ namespace THOK.Wms.Bll.Service
                 c.UnitListCode,
                 UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
-            int total = temp.Count();
-            temp = temp.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = temp.ToArray() };
+            return new { total, rows = tmp.ToArray() };
         }
 
         /// <summary>
@@ -253,8 +272,16 @@ namespace THOK.Wms.Bll.Service
                                            p => p.ProductCode,
                                            (s, p) => new { p.ProductCode, p.ProductName, s.Quantity, s.Product, p.Unit, p.BuyPrice }
                                            ).GroupBy(s => new { s.ProductCode, s.ProductName, s.Unit, s.BuyPrice })
-                                           .Select(s => new { ProductCode = s.Key.ProductCode, ProductName = s.Key.ProductName, UnitCode = s.Key.Unit.UnitCode, UnitName = s.Key.Unit.UnitName, BuyPrice = s.Key.BuyPrice, Quantity = s.Sum(st => (st.Quantity / st.Product.Unit.Count)) });
-           // var product = ProductQuery.OrderBy(p => p.ProductCode).Where(p => p.Storages.Any(s => s.ProductCode == p.ProductCode));
+                                           .Select(s => new
+                                           {
+                                               ProductCode = s.Key.ProductCode,
+                                               ProductName = s.Key.ProductName,
+                                               UnitCode = s.Key.Unit.UnitCode,
+                                               UnitName = s.Key.Unit.UnitName,
+                                               BuyPrice = s.Key.BuyPrice,
+                                               Quantity = s.Sum(st => (st.Quantity / st.Product.Unit.Count))
+                                           });
+            // var product = ProductQuery.OrderBy(p => p.ProductCode).Where(p => p.Storages.Any(s => s.ProductCode == p.ProductCode));
             return storage.ToArray();
         }
 
@@ -284,7 +311,7 @@ namespace THOK.Wms.Bll.Service
             }
             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
             var product = ProductQuery.Where(c => c.ProductCode.Contains(productCode) && c.ProductName.Contains(productName))
-                .OrderBy(c => c.ProductCode).AsEnumerable()
+                .OrderBy(c => c.ProductCode)
                 .Select(c => new { 
                     c.ProductCode,
                     c.ProductName

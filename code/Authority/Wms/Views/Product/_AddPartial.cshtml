@@ -100,7 +100,7 @@
                         <td>零售价</td>
                         <td><input  class="easyui-numberbox" min="0" name="RetailPrice" max="999999999" precision="2"/></td>
                         <td>ABC类型</td>
-                        <td><select  class="easyui-combobox"  editable="false" name="AbcTypeCode"  panelHeight="70" style="width: 129px;" required="true">
+                        <td><select  class="easyui-combobox"  editable="false" name="AbcTypeCode" id="abcType"  panelHeight="70" style="width: 129px;">
 		                        <option value="1">A</option>
 		                        <option value="2">B</option>
                                 <option value="3">C</option>
@@ -119,7 +119,7 @@
                         <td><input  class="easyui-numberbox" name="CostPrice" min="0" max="999999999" precision="2"/></td>
                         <td>商品类型</td>
                         <td>
-                          <select   class="easyui-combobox"  editable="false"  name="ProductTypeCode" panelHeight="120" style="width: 129px;" required="true">
+                          <select   class="easyui-combobox"  editable="false"  name="ProductTypeCode" id="productType" panelHeight="120" style="width: 129px;">
 		                       <option value="0501">烤烟型</option>
 		                        <option value="0502">混合型</option>
                                 <option value="0503">外香型</option>
@@ -141,7 +141,7 @@
                         </td>
                         <td>包装类型</td>
                         <td>
-                          <select   class="easyui-combobox"  editable="false"  name="PackTypeCode" panelHeight="170" style="width: 129px;" required="true">
+                          <select   class="easyui-combobox"  editable="false"  name="PackTypeCode" id="packType" panelHeight="170" style="width: 129px;">
 		                       <option value="0601">条盒硬盒</option>
 		                        <option value="0602">条盒软盒</option>
                                 <option value="0603">条包硬盒</option>
@@ -165,12 +165,12 @@
                         </td>
                         <td>商品价类</td>
                         <td>
-                           <select  class="easyui-combobox"  editable="false"  name="PriceLevelCode" panelHeight="120" style="width: 129px;" required="true">
+                           <select  class="easyui-combobox"  editable="false"  name="PriceLevelCode" id="priceLevel" panelHeight="120" style="width: 129px;">
 		                       <option value="01">一类</option>
 		                        <option value="02">二类</option>
                                 <option value="03">三类</option>
                                 <option value="04">四类</option>
-		                        <option value="04">五类</option>
+		                        <option value="05">五类</option>
                                 </select>
                         </td>
                       </tr>
