@@ -9,7 +9,10 @@ namespace THOK.Wms.AutomotiveSystems.Models
     {
         public string Method { get; set; }
         public string[] BillTypes { get; set; }
+        public string productCode{ get; set; }
+        public string OperateType { get; set; }
+        public string Operator { get; set; }
         public BillMaster[] BillMasters { get; set; }
-        public BillDetail[] BillDetails { get; set; }
+        public BillDetail[] BillDetails { get; set; }         
     }
 }

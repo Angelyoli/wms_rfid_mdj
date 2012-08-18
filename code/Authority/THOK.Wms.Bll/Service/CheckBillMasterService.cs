@@ -338,7 +338,7 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealProductCode = stor.ProductCode;
                                         checkDetail.RealUnitCode = stor.UnitCode;
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                        checkDetail.Status = "1";
+                                        checkDetail.Status = "0";
 
                                         CheckBillDetailRepository.Add(checkDetail);
                                         CheckBillDetailRepository.SaveChanges();
@@ -415,7 +415,7 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealProductCode = stor.ProductCode;
                                         checkDetail.RealUnitCode = stor.UnitCode;
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                        checkDetail.Status = "1";
+                                        checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
                                         CheckBillDetailRepository.SaveChanges();
 
@@ -552,7 +552,7 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealProductCode = stor.ProductCode;
                                         checkDetail.RealUnitCode = stor.UnitCode;
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                        checkDetail.Status = "1";
+                                        checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
                                         CheckBillDetailRepository.SaveChanges();
 
@@ -724,7 +724,7 @@ namespace THOK.Wms.Bll.Service
                                     checkDetail.RealProductCode = stor.ProductCode;
                                     checkDetail.RealUnitCode = stor.UnitCode;
                                     checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                    checkDetail.Status = "1";
+                                    checkDetail.Status = "0";
                                     CheckBillDetailRepository.Add(checkDetail);
                                     CheckBillDetailRepository.SaveChanges();
 

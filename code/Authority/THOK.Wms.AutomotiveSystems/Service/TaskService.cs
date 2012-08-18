@@ -7,6 +7,7 @@ using System.Data.Linq;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
@@ -100,7 +101,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BillNo = i.BillNo, 
                                     BillType = "1" ,
 
-                                    DetailID = i.ID.ToString(),
+                                    DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
                                     StorageRfid = i.Cell.Rfid,
                                     TargetStorageName = "",
@@ -109,10 +110,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
-                                    PieceQuantity =(int) Math.Floor(i.AllotQuantity/i.Product.UnitList.Unit01.Count),
-                                    BarQuantity = (int) Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    OperatePieceQuantity = (int)Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
-                                    OperateBarQuantity = (int)Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    PieceQuantity =Math.Floor(i.AllotQuantity/i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -132,7 +133,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BillNo = i.BillNo,
                                     BillType = "2",
 
-                                    DetailID = i.ID.ToString(),
+                                    DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
                                     StorageRfid = i.Cell.Rfid,
                                     TargetStorageName = "",
@@ -141,10 +142,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
-                                    PieceQuantity = (int)Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
-                                    BarQuantity = (int)Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    OperatePieceQuantity = (int)Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
-                                    OperateBarQuantity = (int)Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    PieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -170,7 +171,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             BillNo = i.BillNo,
                                             BillType = "3",
 
-                                            DetailID = i.ID.ToString(),
+                                            DetailID = i.ID,
                                             StorageName = i.OutCell.CellName,
                                             StorageRfid = i.OutCell.Rfid,
                                             TargetStorageName = i.InCell.CellName,
@@ -179,10 +180,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             ProductCode = i.ProductCode,
                                             ProductName = i.Product.ProductName,
 
-                                            PieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                            BarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                            OperatePieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                            OperateBarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                            PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                            BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                            OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                            OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
 
                                             OperatorCode = string.Empty,
                                             Operator = i.Operator,
@@ -203,7 +204,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BillNo = i.BillNo,
                                     BillType = "3",
 
-                                    DetailID = i.ID.ToString(),
+                                    DetailID = i.ID,
                                     StorageName = i.OutCell.CellName,
                                     StorageRfid = i.OutCell.Rfid,
                                     TargetStorageName = i.InCell.CellName,
@@ -212,10 +213,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
-                                    PieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                    BarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    OperatePieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                    OperateBarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -234,7 +235,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BillNo = i.BillNo,
                                     BillType = "4",
 
-                                    DetailID = i.ID.ToString(),
+                                    DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
                                     StorageRfid = i.Cell.Rfid,
                                     TargetStorageName = "",
@@ -243,10 +244,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
-                                    PieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                    BarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    OperatePieceQuantity = (int)Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                    OperateBarQuantity = (int)Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -269,19 +270,298 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
-        public void Apply(BillDetail[] billDetail, Result result)
+        public void Apply(BillDetail[] billDetails, Result result)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+                    foreach (var billDetail in billDetails)
+                    {
+                        switch (billDetail.BillType)
+                        {
+                            case "1":
+                                var inAllot = InBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "0")
+                                    .FirstOrDefault();
+                                if (inAllot != null)
+                                {
+                                    inAllot.Status = "1";
+                                    inAllot.Operator = billDetail.Operator;
+                                }
+                                break;
+                            case "2":
+                                var outAllot = OutBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "0")
+                                    .FirstOrDefault();
+                                if (outAllot != null)
+                                {
+                                    outAllot.Status = "1";
+                                    outAllot.Operator = billDetail.Operator;
+                                }
+                                break;
+                            case "3":
+                                var moveDetail = MoveBillDetailRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "0")
+                                    .FirstOrDefault();
+                                if (moveDetail != null)
+                                {
+                                    moveDetail.Status = "1";
+                                    moveDetail.Operator = billDetail.Operator;
+                                }
+                                break;
+                            case "4":
+                                var checkDetail = CheckBillDetailRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "0")
+                                    .FirstOrDefault();
+                                if (checkDetail != null)
+                                {
+                                    checkDetail.Status = "1";
+                                    checkDetail.Operator = billDetail.Operator;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    InBillAllotRepository.SaveChanges();
+                    scope.Complete();
+                }
+                result.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = "调用服务器服务申请作业任务失败，详情：" + e.Message;
+            }
         }
 
-        public void Cancel(BillDetail[] billDetail, Result result)
+        public void Cancel(BillDetail[] billDetails, Result result)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+                    foreach (var billDetail in billDetails)
+                    {
+                        switch (billDetail.BillType)
+                        {
+                            case "1":
+                                var inAllot = InBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (inAllot != null)
+                                {
+                                    inAllot.Status = "0";
+                                    inAllot.Operator = string.Empty;
+                                }
+                                break;
+                            case "2":
+                                var outAllot = OutBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (outAllot != null)
+                                {
+                                    outAllot.Status = "0";
+                                    outAllot.Operator = string.Empty;
+                                }
+                                break;
+                            case "3":
+                                var moveDetail = MoveBillDetailRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (moveDetail != null)
+                                {
+                                    moveDetail.Status = "0";
+                                    moveDetail.Operator = string.Empty;
+                                }
+                                break;
+                            case "4":
+                                var checkDetail = CheckBillDetailRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (checkDetail != null)
+                                {
+                                    checkDetail.Status = "0";
+                                    checkDetail.Operator = string.Empty;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    InBillAllotRepository.SaveChanges();
+                    scope.Complete();
+                }
+                result.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = "调用服务器服务取消作业任务失败，详情：" + e.Message;
+            }
         }
 
-        public void Execute(BillDetail[] billDetail, Result result)
+        public void Execute(BillDetail[] billDetails, Result result)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+                    foreach (var billDetail in billDetails)
+                    {
+                        switch (billDetail.BillType)
+                        {
+                            case "1":
+                                var inAllot = InBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (inAllot != null
+                                    && (inAllot.InBillMaster.Status == "4"
+                                    || inAllot.InBillMaster.Status == "5"
+                                    ))
+                                {
+                                    decimal quantity = billDetail.PieceQuantity * inAllot.Product.UnitList.Unit01.Count
+                                        + billDetail.BarQuantity * inAllot.Product.UnitList.Unit02.Count;
+                                    if (string.IsNullOrEmpty(inAllot.Storage.LockTag)
+                                        && inAllot.AllotQuantity >= quantity
+                                        && inAllot.Storage.InFrozenQuantity >= quantity)
+                                    {
+                                        inAllot.Status = "2";
+                                        inAllot.RealQuantity += quantity;
+                                        inAllot.Storage.Quantity += quantity;
+                                        inAllot.Storage.InFrozenQuantity -= quantity;
+                                        inAllot.InBillDetail.RealQuantity += quantity;
+                                        inAllot.InBillMaster.Status = "5";
+                                        if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
+                                        {
+                                            inAllot.InBillMaster.Status = "6";
+                                        }
+                                    }
+                                }
+                                break;
+                            case "2":
+                                var outAllot = OutBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (outAllot != null
+                                    && (outAllot.OutBillMaster.Status == "4"
+                                    || outAllot.OutBillMaster.Status == "5"
+                                    ))
+                                {
+                                    decimal quantity = billDetail.PieceQuantity * outAllot.Product.UnitList.Unit01.Count
+                                        + billDetail.BarQuantity * outAllot.Product.UnitList.Unit02.Count;
+                                    if (string.IsNullOrEmpty(outAllot.Storage.LockTag)
+                                        && outAllot.AllotQuantity >= quantity
+                                        && outAllot.Storage.OutFrozenQuantity >= quantity)
+                                    {
+                                        outAllot.Status = "2";
+                                        outAllot.RealQuantity += quantity;
+                                        outAllot.Storage.Quantity -= quantity;
+                                        outAllot.Storage.OutFrozenQuantity -= quantity;
+                                        outAllot.OutBillDetail.RealQuantity += quantity;
+                                        outAllot.OutBillMaster.Status = "5"; 
+                                        if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
+                                        {
+                                            outAllot.OutBillMaster.Status = "6";
+                                        }
+                                    }
+                                }
+                                break;
+                            case "3":
+                                var moveDetail = MoveBillDetailRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (moveDetail != null
+                                    && (moveDetail.MoveBillMaster.Status =="2"
+                                    || moveDetail.MoveBillMaster.Status =="3"
+                                    ))
+                                {
+                                    if (string.IsNullOrEmpty(moveDetail.InStorage.LockTag)
+                                        && string.IsNullOrEmpty(moveDetail.OutStorage.LockTag)
+                                        && moveDetail.InStorage.InFrozenQuantity >= moveDetail.RealQuantity
+                                        && moveDetail.OutStorage.OutFrozenQuantity >= moveDetail.RealQuantity)
+                                    {
+                                        moveDetail.Status = "2";
+                                        moveDetail.InStorage.Quantity += moveDetail.RealQuantity;
+                                        moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
+                                        moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
+                                        moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                                        moveDetail.MoveBillMaster.Status = "3";
+                                        if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
+                                        {
+                                            moveDetail.MoveBillMaster.Status = "4";
+                                        }
+                                    }
+                                }
+                                break;
+                            case "4":
+                                var checkDetail = CheckBillDetailRepository.GetQueryable()
+                                    .Where(i => i.BillNo == billDetail.BillNo
+                                        && i.ID == billDetail.DetailID
+                                        && i.Status == "1"
+                                        && i.Operator == billDetail.Operator)
+                                    .FirstOrDefault();
+                                if (checkDetail != null 
+                                    && (checkDetail.CheckBillMaster.Status=="2" 
+                                    || checkDetail.CheckBillMaster.Status=="3"))
+                                {
+                                    decimal quantity = billDetail.PieceQuantity * checkDetail.Product.UnitList.Unit01.Count
+                                                       + billDetail.BarQuantity * checkDetail.Product.UnitList.Unit02.Count;
+
+                                    checkDetail.Status = "2";
+                                    checkDetail.RealQuantity = quantity;
+                                    checkDetail.Storage.IsLock = "0";
+                                    checkDetail.CheckBillMaster.Status = "3";
+                                    if (checkDetail.CheckBillMaster.CheckBillDetails.All(c => c.Status == "2"))
+                                    {
+                                        checkDetail.CheckBillMaster.Status = "4";
+                                    }
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    InBillAllotRepository.SaveChanges();
+                    scope.Complete();
+                }
+                result.IsSuccess = true;
+            }
+            catch (Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = "调用服务器服务执行作业任务失败，详情：" + e.Message;
+            }
         }
     }
 }
