@@ -25,14 +25,27 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string SupplierCode, string SupplierName, string IsActive)
         {
             IQueryable<Supplier> supplierQuery = SupplierRepository.GetQueryable();
-            var supplier = supplierQuery.Where(s => s.SupplierCode.Contains(SupplierCode) && s.SupplierName.Contains(SupplierName)).OrderBy(s => s.SupplierCode).AsEnumerable().Select(s => new { s.SupplierCode,s.UniformCode,s.CustomCode,s.SupplierName,s.ProvinceName,IsActive = s.IsActive == "1" ? "可用" : "不可用", UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            var supplier = supplierQuery.Where(s => s.SupplierCode.Contains(SupplierCode)
+                && s.SupplierName.Contains(SupplierName))
+                .OrderBy(s => s.SupplierCode).Select(s => s);
             if (!IsActive.Equals(""))
             {
-                supplier = supplierQuery.Where(s => s.SupplierCode.Contains(SupplierCode) && s.SupplierName.Contains(SupplierName) && s.IsActive.Contains(IsActive)).OrderBy(s => s.SupplierCode).AsEnumerable().Select(s => new { s.SupplierCode, s.UniformCode, s.CustomCode, s.SupplierName, s.ProvinceName, IsActive = s.IsActive == "1" ? "可用" : "不可用", UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+                supplier = supplier.Where(s => s.IsActive.Contains(IsActive));
             }
             int total = supplier.Count();
             supplier = supplier.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = supplier.ToArray() };
+
+            var temp = supplier.ToArray().Select(s => new
+            {
+                s.SupplierCode,
+                s.UniformCode,
+                s.CustomCode,
+                s.SupplierName,
+                s.ProvinceName,
+                IsActive = s.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return new { total, rows = temp.ToArray() };
         }
 
         public new bool Add(Supplier supplier)

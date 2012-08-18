@@ -30,17 +30,25 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<Unit> unitQuery = UnitRepository.GetQueryable();
             var unit = unitQuery.Where(u => u.UnitCode.Contains(UnitCode) && u.UnitName.Contains(UnitName))
-                .OrderBy(u => u.UnitCode).AsEnumerable()
-                .Select(u => new { u.UnitCode, u.UnitName, COUNT = u.Count, IsActive = u.IsActive == "1" ? "可用" : "不可用", UpdateTime = u.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),RowVersion = Convert.ToBase64String(u.RowVersion) });
+                .OrderBy(u => u.UnitCode)
+                .Select(u =>u);
             if (!IsActive.Equals(""))
             {
-                unit = unitQuery.Where(u => u.UnitCode.Contains(UnitCode) && u.UnitName.Contains(UnitName) && u.IsActive.Contains(IsActive))
-                    .OrderBy(u => u.UnitCode).AsEnumerable()
-                    .Select(u => new { u.UnitCode, u.UnitName, COUNT = u.Count, IsActive = u.IsActive == "1" ? "可用" : "不可用", UpdateTime = u.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"), RowVersion = Convert.ToBase64String(u.RowVersion) });
+                unit = unit.Where(u=>u.IsActive.Contains(IsActive));
             }
             int total = unit.Count();
             unit = unit.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = unit.ToArray() };
+
+            var temp = unit.ToArray().Select(u => new
+            {
+                u.UnitCode,
+                u.UnitName,
+                COUNT = u.Count,
+                IsActive = u.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = u.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                RowVersion = Convert.ToBase64String(u.RowVersion)
+            });
+            return new { total, rows = temp.ToArray() };
         }
 
         public new bool Add(Unit unit)
