@@ -684,27 +684,27 @@ namespace THOK.Wms.Bll.Service
             return areaSet.ToArray();
         }
 
-        public System.Data.DataTable GetProductCell()
+        public System.Data.DataTable GetProductCell(string queryString)
         {
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 
-            var cellInfo = cellQuery.Where(c1 => c1.Product != null)
-                .GroupBy(c2 => c2.Product)
-                .Select(c3 => new
+            var cellInfo = cellQuery.Where(c => c.Product != null && c.DefaultProductCode.Contains(queryString))
+                .GroupBy(c => c.Product)
+                .Select(c => new
                 {
-                    ProductCode = c3.Key.ProductCode,
-                    ProductName = c3.Key.ProductName,
-                    ProductQuantity = c3.Count()
+                    ProductCode = c.Key.ProductCode,
+                    ProductName = c.Key.ProductName,
+                    ProductQuantity = c.Count()
                 });
 
             System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("编号", typeof(string));
-            dt.Columns.Add("名称", typeof(string));
-            dt.Columns.Add("数量", typeof(int));
+            dt.Columns.Add("卷烟编码", typeof(string));
+            dt.Columns.Add("卷烟名称", typeof(string));
+            dt.Columns.Add("货位数量", typeof(int));
 
             foreach (var item in cellInfo)
             {
-                dt.Rows.Add(item.ProductCode, item.ProductName, item.ProductQuantity);
+                dt.Rows.Add("'"+item.ProductCode, item.ProductName, item.ProductQuantity);
             }
             return dt;
         }

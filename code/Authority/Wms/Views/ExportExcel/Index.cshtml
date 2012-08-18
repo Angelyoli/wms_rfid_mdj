@@ -1,13 +1,9 @@
 ﻿<script type="text/javascript">
-    $(function () {
-        $('details').datagrid({
-            url: '/DefaultProductSet/GetProductCell/'
-        });
-    })
+    
 </script>
 <div id="divtemp" region="center" split="true" border="false">
     <table id="details" class="easyui-datagrid" border="false" singleselect="false" fit="true"
-        fitcolumns="true" pagination="true" rownumbers="true" url="">
+        fitcolumns="true" pagination="true" rownumbers="true" url="/DefaultProductSet/GetProductCell/">
         <thead>
             <tr>
                 <th field="chk" id="chkid" checkbox="true">
@@ -19,8 +15,7 @@
                     卷烟名称
                 </th>
                 <th field="ProductQuantity" width="400" align="left" iconcls="icon">
-                    货位数量
-                </th>
+                货位数量
             </tr>
         </thead>
     </table>

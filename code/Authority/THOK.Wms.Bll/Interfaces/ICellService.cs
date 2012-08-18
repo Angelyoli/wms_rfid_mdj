@@ -44,6 +44,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetCellBy(int page, int rows, string QueryString, string Value);
 
-        System.Data.DataTable GetProductCell();
+        System.Data.DataTable GetProductCell(string queryString);
     }
 }

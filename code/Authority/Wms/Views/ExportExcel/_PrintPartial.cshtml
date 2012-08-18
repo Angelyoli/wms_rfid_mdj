@@ -1,0 +1,11 @@
+﻿<script type="text/javascript">
+
+    function printClick() {
+        var panle = "D盘";
+        $.getJSON('/ExportExcel/ExportExcel/'
+                            , function (data) {
+                                $.messager.alert("导出Excel", "导出成功到“" + panle + "”", "info");
+                            });
+
+    }
+</script>
