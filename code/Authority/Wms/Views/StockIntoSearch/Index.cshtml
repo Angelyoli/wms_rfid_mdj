@@ -9,7 +9,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#infos').datagrid({ url: '/StockIntoSearch/DetailInfos/?BillNo=' + row.BillNo });
-            $('#InfoDetails').dialog('open').dialog('setTitle', '入库单'+row.BillNo+'明细');
+            $('#InfoDetails').dialog('open').dialog('setTitle', '入库单'+row.BillNo+'分配明细');
         }
     }
 

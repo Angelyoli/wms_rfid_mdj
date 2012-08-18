@@ -33,13 +33,13 @@ namespace THOK.Wms.Bll.Service
                 i.BillNo,
                 i.ProductCode,
                 i.Product.ProductName,
-                i.AllotQuantity,
+                AllotQuantity = i.AllotQuantity / i.Unit.Count,
                 i.CellCode,
                 i.Cell.CellName,
                 i.StorageCode,
                 i.UnitCode,
                 i.Unit.UnitName,
-                i.RealQuantity,
+                RealQuantity = i.RealQuantity / i.Unit.Count,
                 i.Status
             });
             return new { total, rows = inBillAllotDetail.ToArray() };
