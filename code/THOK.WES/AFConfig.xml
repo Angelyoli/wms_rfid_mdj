@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Config>
+  <UDP>
+    <IP name="IP" value="192.168.0.200" />
+    <PORT name="PORT" value="5000" />
+  </UDP>
+  <RFID>
+    <PORT name="PORT" value="com2" />
+  </RFID>
+  <Layers>
+    <Number name="Number" value="1" />
+  </Layers>
+  <DeviceType>
+    <Device name="Device" value="0" />
+  </DeviceType>
+</Config>
