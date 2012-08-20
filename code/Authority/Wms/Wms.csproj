@@ -937,7 +937,6 @@
     <Content Include="Views\ExportExcel\_SearchPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\DefaultProductSet\_GoodsCount.cshtml" />
-    <Content Include="Views\DefaultProductSet\_GoodsCount.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
     <Content Include="Views\Home\_HeaderPartial.cshtml" />
