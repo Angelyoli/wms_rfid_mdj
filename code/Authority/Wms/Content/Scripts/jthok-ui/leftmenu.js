@@ -28,6 +28,7 @@
                     $('#welcome').html('欢迎：' + data.Identity.Name);
 
                     if (window.ActiveXObject) {
+                    
                         var WsShell = new ActiveXObject('WScript.Shell')
                         WsShell.SendKeys('{F11}');
                     }

@@ -71,7 +71,6 @@ namespace THOK.Wms.Bll.Service
                     && i.Status != "6"
                     && i.WarehouseCode.Contains(WareHouseCode)
                     && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
-                //|| i.VerifyPerson.EmployeeCode.Contains(CheckPersonCode)
                     && i.Status.Contains(Status))
                     .OrderByDescending(t => t.BillDate)
                     .OrderByDescending(t => t.BillNo)
@@ -87,6 +86,11 @@ namespace THOK.Wms.Bll.Service
             {
                 DateTime end = Convert.ToDateTime(EndDate).AddDays(1);
                 inBillMaster = inBillMaster.Where(i => i.BillDate <= end);
+            }
+
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                inBillMaster = inBillMaster.Where(i=>i.VerifyPerson.EmployeeCode==CheckPersonCode);
             }
             int total = inBillMaster.Count();
             inBillMaster = inBillMaster.Skip((page - 1) * rows).Take(rows);

@@ -15,6 +15,8 @@ namespace THOK.Wms.Bll.Service
         public IInBillDetailRepository InBillDetailRepository { get; set; }
         [Dependency]
         public IOutBillDetailRepository OutBillDetailRepository { get; set; }
+        [Dependency]
+        public IProfitLossBillDetailRepository ProfitLossBillDetailRepository { get; set; }
 
         //protected override Type LogPrefix
         //{
@@ -70,12 +72,12 @@ namespace THOK.Wms.Bll.Service
         
         public object GetInfoDetails(int page, int rows, string warehouseCode, string productCode, string settleDate)
         {
-            var inQuery = InBillDetailRepository.GetQueryable().AsEnumerable();
-            var outQuery = OutBillDetailRepository.GetQueryable().AsEnumerable();
-
+            var inQuery = InBillDetailRepository.GetQueryable();
+            var outQuery = OutBillDetailRepository.GetQueryable();
+            var differQuery = ProfitLossBillDetailRepository.GetQueryable();
             var Allquery = inQuery.Select(a => new
             {
-                BillDate = a.InBillMaster.BillDate.ToString("yyyy-MM-dd"),
+                BillDate = a.InBillMaster.BillDate,
                 a.InBillMaster.Warehouse.WarehouseCode,
                 a.InBillMaster.Warehouse.WarehouseName,
                 a.BillNo,
@@ -87,7 +89,7 @@ namespace THOK.Wms.Bll.Service
                 a.Unit.UnitName
             }).Union(outQuery.Select(a => new
             {
-                BillDate = a.OutBillMaster.BillDate.ToString("yyyy-MM-dd"),
+                BillDate = a.OutBillMaster.BillDate,
                 a.OutBillMaster.Warehouse.WarehouseCode,
                 a.OutBillMaster.Warehouse.WarehouseName,
                 a.BillNo,
@@ -97,33 +99,43 @@ namespace THOK.Wms.Bll.Service
                 a.Product.ProductName,
                 a.RealQuantity,
                 a.Unit.UnitName
+            })).Union(differQuery.Select(a => new
+            {
+                BillDate = a.ProfitLossBillMaster.BillDate,
+                a.ProfitLossBillMaster.Warehouse.WarehouseCode,
+                a.ProfitLossBillMaster.Warehouse.WarehouseName,
+                a.BillNo,
+                a.ProfitLossBillMaster.BillType.BillTypeCode,
+                a.ProfitLossBillMaster.BillType.BillTypeName,
+                a.ProductCode,
+                a.Product.ProductName,
+                RealQuantity = a.Quantity,
+                a.Unit.UnitName
             }));
-            var query = Allquery.Where(i => i.ProductCode.Contains(productCode)
-                                         && i.WarehouseCode.Contains(warehouseCode)
-                                       ).OrderBy(i => i.BillDate).OrderBy(i => i.WarehouseName
-                                       ).AsEnumerable().Select(i => new
-                                       {
-                                           i.BillDate,
-                                           i.WarehouseCode,
-                                           i.WarehouseName,
-                                           i.BillNo,
-                                           i.BillTypeCode,
-                                           i.BillTypeName,
-                                           i.ProductCode,
-                                           i.ProductName,
-                                           i.RealQuantity,
-                                           JQuantity=Convert.ToDouble(i.RealQuantity/50),
-                                           TQuantity = i.RealQuantity,
-                                           i.UnitName
-
-            });
             if (!settleDate.Equals(string.Empty))
             {
                 DateTime date = Convert.ToDateTime(settleDate);
-                query = query.Where(i => Convert.ToDateTime(i.BillDate) == date);
+                Allquery = Allquery.Where(i => i.BillDate == date);
             }
-            int total = query.Count();
-            query = query.Skip((page - 1) * rows).Take(rows);
+            Allquery = Allquery.OrderBy(a => a.BillDate).OrderBy(a => a.WarehouseName);
+            int total = Allquery.Count();
+            Allquery = Allquery.Skip((page - 1) * rows).Take(rows);
+            var query = Allquery.Where(i => i.ProductCode.Contains(productCode) && i.WarehouseCode.Contains(warehouseCode)).ToArray().Select(i => new
+            {
+                BillDate = i.BillDate.ToString("yyyy-MM-dd"),
+                i.WarehouseCode,
+                i.WarehouseName,
+                i.BillNo,
+                i.BillTypeCode,
+                i.BillTypeName,
+                i.ProductCode,
+                i.ProductName,
+                i.RealQuantity,
+                JQuantity = Convert.ToDouble(i.RealQuantity / 50),
+                TQuantity = i.RealQuantity,
+                i.UnitName
+
+            });
             return new { total, rows = query.ToArray() };
         }
 

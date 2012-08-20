@@ -49,38 +49,43 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<CheckBillMaster> StockCheckQuery = StockCheckSearchRepository.GetQueryable();
             var StockCheckSearch = StockCheckQuery.Where(i => i.BillNo.Contains(BillNo)
-                                                         && i.WarehouseCode.Contains(WarehouseCode)
-                                                         && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
-                                                         //&& i.VerifyPerson.EmployeeCode.Contains(CheckPersonCode)
-                                                         && i.Status.Contains(Operate_Status))
-                                                .OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
-                 { 
-                i.BillNo, 
-                i.Warehouse.WarehouseName,
-                BillDate = i.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                OperatePersonName = i.OperatePerson.EmployeeName,
-                i.OperatePersonID,
-                Status = WhatStatus(i.Status),
-                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
-                VerifyDate = (i.VerifyDate == null ? string.Empty : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
-                Description = i.Description, 
-                UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
-
+                                                    && i.WarehouseCode.Contains(WarehouseCode)
+                                                    && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
+                                                    && i.Status.Contains(Operate_Status));
             if (!BeginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(BeginDate);
-                StockCheckSearch = StockCheckSearch.Where(i => Convert.ToDateTime(i.BillDate) >= begin);
+                StockCheckSearch = StockCheckSearch.Where(i => i.BillDate >= begin);
             }
 
             if (!EndDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(EndDate);
-                StockCheckSearch = StockCheckSearch.Where(i => Convert.ToDateTime(i.BillDate) <= end);
+                StockCheckSearch = StockCheckSearch.Where(i => i.BillDate <= end);
             }
 
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                StockCheckSearch = StockCheckSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
+            }
+
+            StockCheckSearch = StockCheckSearch.OrderBy(i => i.BillNo);
             int total = StockCheckSearch.Count();
             StockCheckSearch = StockCheckSearch.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = StockCheckSearch.ToArray() };
+            var CheckSearch = StockCheckSearch.ToArray().Select(s => new
+            {
+                s.BillNo,
+                s.Warehouse.WarehouseName,
+                BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                OperatePersonName = s.OperatePerson.EmployeeName,
+                s.OperatePersonID,
+                Status = WhatStatus(s.Status),
+                VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
+                VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                Description = s.Description,
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return new { total, rows = CheckSearch.ToArray() };
         }
 
         #endregion

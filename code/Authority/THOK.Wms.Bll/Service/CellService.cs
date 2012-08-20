@@ -282,70 +282,64 @@ namespace THOK.Wms.Bll.Service
         /// <summary>编辑储位货位树形菜单</summary>
         public object GetCellCheck(string productCode)
         {
-            var warehouses = WarehouseRepository.GetQueryable().AsEnumerable();
-            HashSet<Tree> wareSet = new HashSet<Tree>();
+            var warehouses = WarehouseRepository.GetQueryable();
+            var areas = AreaRepository.GetQueryable();
+            var shelfs = ShelfRepository.GetQueryable();
+            var cells = CellRepository.GetQueryable();
 
-            foreach (var warehouse in warehouses)//仓库
-            {
-                Tree wareTree = new Tree();
-                wareTree.id = warehouse.WarehouseCode;
-                wareTree.text = "仓库：" + warehouse.WarehouseName;
-                wareTree.state = "open";
-                wareTree.attributes = "ware";
-
-                var areas = AreaRepository.GetQueryable().Where(a => a.Warehouse.WarehouseCode == warehouse.WarehouseCode)
-                                                         .OrderBy(a => a.AreaCode).Select(a => a);
-                HashSet<Tree> areaSet = new HashSet<Tree>();
-                foreach (var area in areas)//库区
-                {
-                    Tree areaTree = new Tree();
-                    areaTree.id = area.AreaCode;
-                    areaTree.text = "库区：" + area.AreaName;
-                    areaTree.state = "open";
-                    areaTree.attributes = "area";
-
-                    var shelfs = ShelfRepository.GetQueryable().Where(s => s.Area.AreaCode == area.AreaCode)
-                                                               .OrderBy(s => s.ShelfCode).Select(s => s);
-                    HashSet<Tree> shelfSet = new HashSet<Tree>();
-                    foreach (var shelf in shelfs)//货架
-                    {
-                        Tree shelfTree = new Tree();
-                        shelfTree.id = shelf.ShelfCode;
-                        shelfTree.text = "货架：" + shelf.ShelfName;
-                        shelfTree.state = "open";
-                        shelfTree.attributes = "shelf";
-
-                        var cells = CellRepository.GetQueryable().Where(c => c.Shelf.ShelfCode == shelf.ShelfCode)
-                                                                .OrderBy(c => c.CellCode).Select(c => c);
-                        HashSet<Tree> cellSet = new HashSet<Tree>();
-                        foreach (var cell in cells)
-                        {
-                            Tree cellTree = new Tree();
-                            cellTree.id = cell.CellCode;
-                            cellTree.text = "货位" + cell.CellName;
-                            if (cell.DefaultProductCode == productCode)
-                            {
-                                cellTree.@checked = true;
-                            }
-                            else
-                            {
-                                cellTree.@checked = false;
-                                shelfTree.state = "closed";
-                            }
-                            cellTree.state = "open";
-                            cellTree.attributes = "cell";
-                            cellSet.Add(cellTree);
-                        }
-                        shelfTree.children = cellSet.ToArray();
-                        shelfSet.Add(shelfTree);
-                    }
-                    areaTree.children = shelfSet.ToArray();
-                    areaSet.Add(areaTree);
-                }
-                wareTree.children = areaSet.ToArray();
-                wareSet.Add(wareTree);
-            }
-            return wareSet.ToArray();
+            var tmp = warehouses.Join(areas,
+                                     w => w.WarehouseCode,
+                                     a => a.WarehouseCode,
+                                     (w, a) => new { w.WarehouseCode, w.WarehouseName, a.AreaCode, a.AreaName }
+                                 )
+                                 .Join(shelfs,
+                                    a => a.AreaCode,
+                                    s => s.AreaCode,
+                                    (a, s) => new { a.WarehouseCode, a.WarehouseName, a.AreaCode, a.AreaName, s.ShelfCode, s.ShelfName }
+                                 )
+                                 .Join(cells,
+                                    s => s.ShelfCode,
+                                    c => c.ShelfCode,
+                                    (s, c) => new { s.WarehouseCode, s.WarehouseName, s.AreaCode, s.AreaName, s.ShelfCode, s.ShelfName, c.CellCode, c.CellName, c }
+                                 )
+                                 .GroupBy(c => new { c.WarehouseCode, c.WarehouseName })
+                                 .Select(w => new
+                                 {
+                                     id = w.Key.WarehouseCode,
+                                     name = w.Key.WarehouseName,
+                                     type = "ware",
+                                     @checked = w.Any(c => c.c.DefaultProductCode == productCode),
+                                     open = true,
+                                     children = w.GroupBy(a => new { a.AreaCode, a.AreaName })
+                                                 .Select(a => new
+                                                 {
+                                                     id = a.Key.AreaCode,
+                                                     name = a.Key.AreaName,
+                                                     type = "area",
+                                                     @checked = a.Any(c => c.c.DefaultProductCode == productCode),
+                                                     open = false,
+                                                     children = a.GroupBy(s => new { s.ShelfCode, s.ShelfName })
+                                                                 .Select(s => new
+                                                                 {
+                                                                     id = s.Key.ShelfCode,
+                                                                     name = s.Key.ShelfName,
+                                                                     type = "shelf",
+                                                                     @checked = s.Any(c => c.c.DefaultProductCode == productCode),
+                                                                     open = false,
+                                                                     children = s.GroupBy(c => new { c.CellCode, c.CellName })
+                                                                                 .Select(c => new
+                                                                                 {
+                                                                                     id = c.Key.CellCode,
+                                                                                     name = c.Key.CellName,
+                                                                                     type = "cell",
+                                                                                     @checked = c.Any(r => r.c.DefaultProductCode == productCode),
+                                                                                     open = false,
+                                                                                     children = ""
+                                                                                 })
+                                                                 })
+                                                             })
+                                 }).ToArray();
+            return tmp;            
         }
         
         /// <summary>

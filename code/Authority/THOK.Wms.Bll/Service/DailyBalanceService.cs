@@ -100,7 +100,9 @@ namespace THOK.Wms.Bll.Service
             IQueryable<DailyBalance> dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
             var query = dailyBalanceQuery.Where(i => i.WarehouseCode.Contains(warehouseCode) && i.SettleDate == date)
                                          .OrderBy(i => i.SettleDate)
-                                         .OrderBy(i => i.Warehouse.WarehouseName).Select(i => new
+                                         .OrderBy(i => i.Warehouse.WarehouseName)
+                                         .OrderBy(i => i.ProductCode)
+                                         .Select(i => new
                                          {
                                              i.SettleDate,
                                              i.ProductCode,
@@ -113,12 +115,12 @@ namespace THOK.Wms.Bll.Service
                                              Count02 = i.Product.UnitList.Unit02.Count,
                                              i.WarehouseCode,
                                              i.Warehouse.WarehouseName,
-                                             Beginning = i.Beginning/i.Unit.Count,
-                                             EntryAmount = i.EntryAmount/i.Unit.Count,
-                                             DeliveryAmount = i.DeliveryAmount/i.Unit.Count,
-                                             ProfitAmount = i.ProfitAmount/i.Unit.Count,
-                                             LossAmount = i.LossAmount/i.Unit.Count,
-                                             Ending = i.Ending/i.Unit.Count
+                                             Beginning = i.Beginning,
+                                             EntryAmount = i.EntryAmount,
+                                             DeliveryAmount = i.DeliveryAmount,
+                                             ProfitAmount = i.ProfitAmount,
+                                             LossAmount = i.LossAmount,
+                                             Ending = i.Ending
                                          });
 
             
@@ -187,74 +189,74 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = query.ToArray() };
         }
 
-        public object GetDailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate)
-        {
-            var inQuery = InBillDetailRepository.GetQueryable().AsEnumerable();
-            var outQuery = OutBillDetailRepository.GetQueryable().AsEnumerable();
-            var profitLossQuery = ProfitLossBillDetailRepository.GetQueryable().AsEnumerable();
+        //public object GetDailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate)
+        //{
+        //    var inQuery = InBillDetailRepository.GetQueryable().AsEnumerable();
+        //    var outQuery = OutBillDetailRepository.GetQueryable().AsEnumerable();
+        //    var profitLossQuery = ProfitLossBillDetailRepository.GetQueryable().AsEnumerable();
 
-            var query = inQuery.Where(a => a.InBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
-            {
-                BillDate = a.InBillMaster.BillDate.ToString("yyyy-MM-dd"),
-                a.InBillMaster.Warehouse.WarehouseCode,
-                a.InBillMaster.Warehouse.WarehouseName,
-                a.BillNo,
-                a.InBillMaster.BillType.BillTypeCode,
-                a.InBillMaster.BillType.BillTypeName,
-                a.ProductCode,
-                a.Product.ProductName,
-                RealQuantity=a.RealQuantity,
-                Beginning=0.00.ToString(),
-                EntryAmount = a.RealQuantity.ToString(),
-                ProfitAmount = 0.00.ToString(),
-                LossAmount = 0.00.ToString(),
-                Ending = 0.00.ToString(),
-                a.Unit.UnitName
-            }).Union(outQuery.Where(a => a.OutBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
-            {
-                BillDate = a.OutBillMaster.BillDate.ToString("yyyy-MM-dd"),
-                a.OutBillMaster.Warehouse.WarehouseCode,
-                a.OutBillMaster.Warehouse.WarehouseName,
-                a.BillNo,
-                a.OutBillMaster.BillType.BillTypeCode,
-                a.OutBillMaster.BillType.BillTypeName,
-                a.ProductCode,
-                a.Product.ProductName,
-                RealQuantity = a.RealQuantity,
-                Beginning = 0.00.ToString(),
-                EntryAmount = 0.00.ToString(),
-                ProfitAmount = 0.00.ToString(),
-                LossAmount = 0.00.ToString(),
-                Ending = 0.00.ToString(),
-                a.Unit.UnitName
-            })).Union(profitLossQuery.Where(a => a.ProfitLossBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
-            {
-                BillDate = a.ProfitLossBillMaster.BillDate.ToString("yyyy-MM-dd"),
-                a.ProfitLossBillMaster.Warehouse.WarehouseCode,
-                a.ProfitLossBillMaster.Warehouse.WarehouseName,
-                a.BillNo,
-                a.ProfitLossBillMaster.BillType.BillTypeCode,
-                a.ProfitLossBillMaster.BillType.BillTypeName,
-                a.ProductCode,
-                a.Product.ProductName,
-                RealQuantity = a.Quantity,
-                Beginning = 0.00.ToString(),
-                EntryAmount = 0.00.ToString(),
-                ProfitAmount =a.Quantity> 0 ? a.Quantity.ToString() : 0.00.ToString(),
-                LossAmount = a.Quantity < 0 ? (-a.Quantity).ToString() : 0.00.ToString(),
-                Ending = 0.00.ToString(),
-                a.Unit.UnitName
-            }));
+        //    var query = inQuery.Where(a => a.InBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
+        //    {
+        //        BillDate = a.InBillMaster.BillDate.ToString("yyyy-MM-dd"),
+        //        a.InBillMaster.Warehouse.WarehouseCode,
+        //        a.InBillMaster.Warehouse.WarehouseName,
+        //        a.BillNo,
+        //        a.InBillMaster.BillType.BillTypeCode,
+        //        a.InBillMaster.BillType.BillTypeName,
+        //        a.ProductCode,
+        //        a.Product.ProductName,
+        //        RealQuantity=a.RealQuantity,
+        //        Beginning=0.00.ToString(),
+        //        EntryAmount = a.RealQuantity.ToString(),
+        //        ProfitAmount = 0.00.ToString(),
+        //        LossAmount = 0.00.ToString(),
+        //        Ending = 0.00.ToString(),
+        //        a.Unit.UnitName
+        //    }).Union(outQuery.Where(a => a.OutBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
+        //    {
+        //        BillDate = a.OutBillMaster.BillDate.ToString("yyyy-MM-dd"),
+        //        a.OutBillMaster.Warehouse.WarehouseCode,
+        //        a.OutBillMaster.Warehouse.WarehouseName,
+        //        a.BillNo,
+        //        a.OutBillMaster.BillType.BillTypeCode,
+        //        a.OutBillMaster.BillType.BillTypeName,
+        //        a.ProductCode,
+        //        a.Product.ProductName,
+        //        RealQuantity = a.RealQuantity,
+        //        Beginning = 0.00.ToString(),
+        //        EntryAmount = 0.00.ToString(),
+        //        ProfitAmount = 0.00.ToString(),
+        //        LossAmount = 0.00.ToString(),
+        //        Ending = 0.00.ToString(),
+        //        a.Unit.UnitName
+        //    })).Union(profitLossQuery.Where(a => a.ProfitLossBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
+        //    {
+        //        BillDate = a.ProfitLossBillMaster.BillDate.ToString("yyyy-MM-dd"),
+        //        a.ProfitLossBillMaster.Warehouse.WarehouseCode,
+        //        a.ProfitLossBillMaster.Warehouse.WarehouseName,
+        //        a.BillNo,
+        //        a.ProfitLossBillMaster.BillType.BillTypeCode,
+        //        a.ProfitLossBillMaster.BillType.BillTypeName,
+        //        a.ProductCode,
+        //        a.Product.ProductName,
+        //        RealQuantity = a.Quantity,
+        //        Beginning = 0.00.ToString(),
+        //        EntryAmount = 0.00.ToString(),
+        //        ProfitAmount =a.Quantity> 0 ? a.Quantity.ToString() : 0.00.ToString(),
+        //        LossAmount = a.Quantity < 0 ? (-a.Quantity).ToString() : 0.00.ToString(),
+        //        Ending = 0.00.ToString(),
+        //        a.Unit.UnitName
+        //    }));
 
-            if (!settleDate.Equals(string.Empty))
-            {
-                DateTime date = Convert.ToDateTime(settleDate);
-                query = query.Where(i => Convert.ToDateTime(i.BillDate) == date);
-            }
-            int total = query.Count();
-            query = query.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = query.ToArray() };
-        }
+        //    if (!settleDate.Equals(string.Empty))
+        //    {
+        //        DateTime date = Convert.ToDateTime(settleDate);
+        //        query = query.Where(i => Convert.ToDateTime(i.BillDate) == date);
+        //    }
+        //    int total = query.Count();
+        //    query = query.Skip((page - 1) * rows).Take(rows);
+        //    return new { total, rows = query.ToArray() };
+        //}
 
         public Boolean DoDailyBalance(string warehouseCode, string settleDate,ref string errorInfo)
         {
@@ -301,7 +303,7 @@ namespace THOK.Wms.Bll.Service
                         ProfitAmount = decimal.Zero,
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
-                    }).Union(outQuery.Where(a => (a.OutBillMaster.WarehouseCode == warehouseCode
+                    }).Concat(outQuery.Where(a => (a.OutBillMaster.WarehouseCode == warehouseCode
                                                    || string.IsNullOrEmpty(warehouseCode))
                                                 && a.OutBillMaster.BillDate.ToString("yyyy-MM-dd") == settleDate
                                     ).Select(a => new
@@ -316,7 +318,7 @@ namespace THOK.Wms.Bll.Service
                         ProfitAmount = decimal.Zero,
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
-                    })).Union(profitLossQuery.Where(a => (a.ProfitLossBillMaster.WarehouseCode == warehouseCode
+                    })).Concat(profitLossQuery.Where(a => (a.ProfitLossBillMaster.WarehouseCode == warehouseCode
                                                            || string.IsNullOrEmpty(warehouseCode))
                                                         && a.ProfitLossBillMaster.BillDate.ToString("yyyy-MM-dd") == settleDate
                                             ).Select(a => new
@@ -331,10 +333,10 @@ namespace THOK.Wms.Bll.Service
                         ProfitAmount = a.Quantity > 0 ? Math.Abs(a.Quantity) : decimal.Zero,
                         LossAmount = a.Quantity < 0 ? Math.Abs(a.Quantity) : decimal.Zero,
                         Ending = decimal.Zero
-                    })).Union(dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode
+                    })).Concat(dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode
                                                              || string.IsNullOrEmpty(warehouseCode))
                                                           && d.SettleDate.ToString("yyyy-MM-dd") == t
-                                                          && d.Ending > decimal.Zero
+                                                          && d.Ending != decimal.Zero
                                               ).Select(a => new
                     {
                         BillDate = settleDate,

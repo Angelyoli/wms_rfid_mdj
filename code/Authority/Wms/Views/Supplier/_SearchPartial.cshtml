@@ -10,6 +10,7 @@
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询厂商信息');
         $("input[type=text]").attr("value", "");
+        $('#isActive').combo('setValue',"");
     };
 
     function select() {
