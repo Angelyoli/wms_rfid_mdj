@@ -300,8 +300,7 @@ namespace THOK.WES.View
 
                     if (confirmForm.ShowDialog() == DialogResult.OK)
                     {
-                        DisplayPlWailt();
-                        billDetails.Add(billDetail);
+                        DisplayPlWailt();                        
 
                         if (BillTypes == "4")
                         {
@@ -309,6 +308,9 @@ namespace THOK.WES.View
                             billDetail.OperateBarQuantity = confirmForm.Item;
                         }
 
+                        //todo RFID 确认，及RFID 记录；
+
+                        billDetails.Add(billDetail);
                         BillDetail[] tmp = new BillDetail[billDetails.Count];
                         billDetails.CopyTo(tmp, 0);
 

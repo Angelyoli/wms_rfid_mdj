@@ -5,14 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.WES", "THOK.WES\THOK.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.WES.App", "THOK.WES.App\THOK.WES.App.csproj", "{7B7A5CA4-08F9-4160-8A83-C4B806F512EC}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "车载执行系统", "车载执行系统\车载执行系统.vdproj", "{6D0BC684-DF4A-4393-B535-6CCFAC162131}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.WES.Interface", "THOK.WES.Interface\THOK.WES.Interface.csproj", "{78B38305-22F2-4E8A-B076-5B3D39D14682}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "车载执行系统", "THOK.WES.SETUP\THOK.WES.SETUP.vdproj", "{16804907-9697-4514-90DC-190C10DA31E5}"
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = THOK.WES.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -26,12 +23,14 @@ Global
 		{7B7A5CA4-08F9-4160-8A83-C4B806F512EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B7A5CA4-08F9-4160-8A83-C4B806F512EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B7A5CA4-08F9-4160-8A83-C4B806F512EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D0BC684-DF4A-4393-B535-6CCFAC162131}.Debug|Any CPU.ActiveCfg = Debug
-		{6D0BC684-DF4A-4393-B535-6CCFAC162131}.Release|Any CPU.ActiveCfg = Release
 		{78B38305-22F2-4E8A-B076-5B3D39D14682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{78B38305-22F2-4E8A-B076-5B3D39D14682}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78B38305-22F2-4E8A-B076-5B3D39D14682}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78B38305-22F2-4E8A-B076-5B3D39D14682}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16804907-9697-4514-90DC-190C10DA31E5}.Debug|Any CPU.ActiveCfg = Debug
+		{16804907-9697-4514-90DC-190C10DA31E5}.Debug|Any CPU.Build.0 = Debug
+		{16804907-9697-4514-90DC-190C10DA31E5}.Release|Any CPU.ActiveCfg = Release
+		{16804907-9697-4514-90DC-190C10DA31E5}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

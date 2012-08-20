@@ -683,5 +683,41 @@ namespace THOK.Wms.Bll.Service
             }
             return areaSet.ToArray();
         }
+
+        public System.Data.DataTable GetProductCell(string queryString,string value)
+        {
+            string productCode = "", productName = "";
+
+            if (queryString == "ProductCode")
+            {
+                productCode = value;
+            }
+            else
+            {
+                productName = value;
+            }
+
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+
+            var cellInfo = cellQuery.Where(c => c.Product != null && c.DefaultProductCode.Contains(productCode) && c.Product.ProductName.Contains(productName))
+                .GroupBy(c => c.Product)
+                .Select(c => new
+                {
+                    ProductCode = c.Key.ProductCode,
+                    ProductName = c.Key.ProductName,
+                    ProductQuantity = c.Count()
+                });
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("卷烟编码", typeof(string));
+            dt.Columns.Add("卷烟名称", typeof(string));
+            dt.Columns.Add("货位数量", typeof(int));
+
+            foreach (var item in cellInfo)
+            {
+                dt.Rows.Add("'"+item.ProductCode, item.ProductName, item.ProductQuantity);
+            }
+            return dt;
+        }
     }
 }

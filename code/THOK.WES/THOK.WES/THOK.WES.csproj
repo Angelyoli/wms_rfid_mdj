@@ -78,47 +78,47 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="View\1.仓库作业\BaseTaskForm.cs">
+    <Compile Include="View\1\BaseTaskForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\1.仓库作业\BaseTaskForm.Designer.cs">
+    <Compile Include="View\1\BaseTaskForm.Designer.cs">
       <DependentUpon>BaseTaskForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="View\1.仓库作业\CheckTaskForm.cs">
+    <Compile Include="View\1\CheckTaskForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="View\1.仓库作业\CheckTaskForm.Designer.cs">
+    <Compile Include="View\1\CheckTaskForm.Designer.cs">
       <DependentUpon>CheckTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\1\DeliveryTaskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\1\DeliveryTaskForm.Designer.cs">
+      <DependentUpon>DeliveryTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\1\EntryTaskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\1\EntryTaskForm.Designer.cs">
+      <DependentUpon>EntryTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\1\MoveTaskForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\1\MoveTaskForm.Designer.cs">
+      <DependentUpon>MoveTaskForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\3\ParameterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\3\ParameterForm.Designer.cs">
+      <DependentUpon>ParameterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="View\ConfirmDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\ConfirmDialog.Designer.cs">
       <DependentUpon>ConfirmDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\1.仓库作业\DeliveryTaskForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\1.仓库作业\DeliveryTaskForm.Designer.cs">
-      <DependentUpon>DeliveryTaskForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\1.仓库作业\EntryTaskForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\1.仓库作业\EntryTaskForm.Designer.cs">
-      <DependentUpon>EntryTaskForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\1.仓库作业\MoveTaskForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\1.仓库作业\MoveTaskForm.Designer.cs">
-      <DependentUpon>MoveTaskForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\3.系统信息\ParameterForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\3.系统信息\ParameterForm.Designer.cs">
-      <DependentUpon>ParameterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="View\ExitForm.cs">
       <SubType>Form</SubType>
@@ -139,29 +139,29 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="View\1.仓库作业\BaseTaskForm.resx">
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="View\1\BaseTaskForm.resx">
       <DependentUpon>BaseTaskForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\1\DeliveryTaskForm.resx">
+      <DependentUpon>DeliveryTaskForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\1\EntryTaskForm.resx">
+      <DependentUpon>EntryTaskForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\1\MoveTaskForm.resx">
+      <DependentUpon>MoveTaskForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\3\ParameterForm.resx">
+      <DependentUpon>ParameterForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="View\ConfirmDialog.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ConfirmDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\1.仓库作业\DeliveryTaskForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>DeliveryTaskForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\1.仓库作业\EntryTaskForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>EntryTaskForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\1.仓库作业\MoveTaskForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>MoveTaskForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="View\3.系统信息\ParameterForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ParameterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\ExitForm.resx">
       <SubType>Designer</SubType>
@@ -227,7 +227,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="View\2.手持终端\" />
+    <Folder Include="View\2\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

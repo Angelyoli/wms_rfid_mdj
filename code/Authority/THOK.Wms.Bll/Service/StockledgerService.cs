@@ -115,12 +115,12 @@ namespace THOK.Wms.Bll.Service
             if (!settleDate.Equals(string.Empty))
             {
                 DateTime date = Convert.ToDateTime(settleDate);
-                Allquery = Allquery.Where(i => i.BillDate == date);
+                Allquery = Allquery.Where(i => i.BillDate.Year == date.Year && i.BillDate.Month == date.Month && i.BillDate.Day == date.Day);
             }
-            Allquery = Allquery.OrderBy(a => a.BillDate).OrderBy(a => a.WarehouseName);
+            Allquery = Allquery.Where(i => i.ProductCode.Contains(productCode) && i.WarehouseCode.Contains(warehouseCode)).OrderBy(a => a.BillDate).OrderBy(a => a.WarehouseName);
             int total = Allquery.Count();
             Allquery = Allquery.Skip((page - 1) * rows).Take(rows);
-            var query = Allquery.Where(i => i.ProductCode.Contains(productCode) && i.WarehouseCode.Contains(warehouseCode)).ToArray().Select(i => new
+            var query = Allquery.ToArray().Select(i => new
             {
                 BillDate = i.BillDate.ToString("yyyy-MM-dd"),
                 i.WarehouseCode,
