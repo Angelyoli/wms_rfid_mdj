@@ -27,7 +27,8 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         //POST: /ExportExcel/ExportExcel/
         public void ExportExcel()
         {
-            string queryString = "";
+            string queryString = Request.QueryString["queryString"];
+            string value = Request.QueryString["value"];
             string filename = System.DateTime.Now.ToString("yyMMdd-HHmm-ss") + ".xls";
             string path = "";
             if (System.IO.Directory.Exists(@"D:\"))
@@ -44,12 +45,20 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             string titleSize = "20", contentFirstSize = "10";
             string contentFontName = "Arial";
 
-            CreateExcel(queryString, pathFilename, titleName, titleBold, titleSize, contentFontName, contentFirstSize);
+            CreateExcel(queryString, value, pathFilename, titleName, titleBold, titleSize, contentFontName, contentFirstSize);
         }
 
-        public void CreateExcel(string queryString, string pathFilename, string titleName, bool titleBold, string titleSize, string contentFontName, string contentFirstSize)
+        public void CreateExcel(string queryString,string value, string pathFilename, string titleName, bool titleBold, string titleSize, string contentFontName, string contentFirstSize)
         {
-            System.Data.DataTable dt = CellService.GetProductCell(queryString);
+            if (queryString == null)
+            {
+                queryString = "ProductCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            System.Data.DataTable dt = CellService.GetProductCell(queryString, value);
             if (dt == null)
             {
                 throw new Exception("数据表中无数据");

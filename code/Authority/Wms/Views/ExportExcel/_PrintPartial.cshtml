@@ -1,10 +1,14 @@
 ﻿<script type="text/javascript">
 
     function printClick() {
-        var panle = "D盘";
-        $.getJSON('/ExportExcel/ExportExcel/'
-                            , function (data) {
-                                $.messager.alert("导出Excel", "导出成功到“" + panle + "”", "info");
+        var disk = "D盘";
+        $.getJSON('/ExportExcel/ExportExcel/',
+                            {
+                                'queryString': $('#productChoose').combogrid('getValue'),
+                                'value': $('#cellInfo').val()
+                            },
+                            function (data) {
+                                $.messager.alert("导出Excel", "导出成功到“" + disk + "”", "info");
                             });
 
     }

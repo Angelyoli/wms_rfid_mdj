@@ -684,11 +684,22 @@ namespace THOK.Wms.Bll.Service
             return areaSet.ToArray();
         }
 
-        public System.Data.DataTable GetProductCell(string queryString)
+        public System.Data.DataTable GetProductCell(string queryString,string value)
         {
+            string productCode = "", productName = "";
+
+            if (queryString == "ProductCode")
+            {
+                productCode = value;
+            }
+            else
+            {
+                productName = value;
+            }
+
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 
-            var cellInfo = cellQuery.Where(c => c.Product != null && c.DefaultProductCode.Contains(queryString))
+            var cellInfo = cellQuery.Where(c => c.Product != null && c.DefaultProductCode.Contains(productCode) && c.Product.ProductName.Contains(productName))
                 .GroupBy(c => c.Product)
                 .Select(c => new
                 {
