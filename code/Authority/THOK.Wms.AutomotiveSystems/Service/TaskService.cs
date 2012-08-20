@@ -95,7 +95,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             var inBillDetails = InBillAllotRepository.GetQueryable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.ProductCode == productCode || productCode == string.Empty)                                    
-                                    && (i.Status == "0" || (i.Status == "1"&& i.Operator == Operator)))
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .ToArray()
                                 .Select(i => new BillDetail() { 
                                     BillNo = i.BillNo, 
@@ -444,8 +444,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     || inAllot.InBillMaster.Status == "5"
                                     ))
                                 {
-                                    decimal quantity = billDetail.PieceQuantity * inAllot.Product.UnitList.Unit01.Count
-                                        + billDetail.BarQuantity * inAllot.Product.UnitList.Unit02.Count;
+                                    decimal quantity = billDetail.OperatePieceQuantity * inAllot.Product.UnitList.Unit01.Count
+                                        + billDetail.OperateBarQuantity * inAllot.Product.UnitList.Unit02.Count;
                                     if (string.IsNullOrEmpty(inAllot.Storage.LockTag)
                                         && inAllot.AllotQuantity >= quantity
                                         && inAllot.Storage.InFrozenQuantity >= quantity)
@@ -475,8 +475,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     || outAllot.OutBillMaster.Status == "5"
                                     ))
                                 {
-                                    decimal quantity = billDetail.PieceQuantity * outAllot.Product.UnitList.Unit01.Count
-                                        + billDetail.BarQuantity * outAllot.Product.UnitList.Unit02.Count;
+                                    decimal quantity = billDetail.OperatePieceQuantity * outAllot.Product.UnitList.Unit01.Count
+                                        + billDetail.OperateBarQuantity * outAllot.Product.UnitList.Unit02.Count;
                                     if (string.IsNullOrEmpty(outAllot.Storage.LockTag)
                                         && outAllot.AllotQuantity >= quantity
                                         && outAllot.Storage.OutFrozenQuantity >= quantity)
@@ -535,8 +535,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     && (checkDetail.CheckBillMaster.Status=="2" 
                                     || checkDetail.CheckBillMaster.Status=="3"))
                                 {
-                                    decimal quantity = billDetail.PieceQuantity * checkDetail.Product.UnitList.Unit01.Count
-                                                       + billDetail.BarQuantity * checkDetail.Product.UnitList.Unit02.Count;
+                                    decimal quantity = billDetail.OperatePieceQuantity * checkDetail.Product.UnitList.Unit01.Count
+                                                       + billDetail.OperateBarQuantity * checkDetail.Product.UnitList.Unit02.Count;
 
                                     checkDetail.Status = "2";
                                     checkDetail.RealQuantity = quantity;
