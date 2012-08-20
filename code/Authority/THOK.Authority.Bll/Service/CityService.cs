@@ -24,7 +24,7 @@ namespace THOK.Authority.Bll.Service
         {
             IQueryable<THOK.Authority.DbModel.City> query = CityRepository.GetQueryable();
             bool isactive;
-            var citys = query.OrderBy(i => i.CityID).Select(i => new { i.CityID, i.CityName, i.Description, IsActive = i.IsActive ? "启用" : "禁用" });
+                var citys = query.OrderBy(i => i.CityID).Select(i => new { i.CityID, i.CityName, i.Description, IsActive = i.IsActive ? "启用" : "禁用" });
             if (cityName != "" || description != "" || isActive != "")
             {
                 if (isActive == "true") isactive = true;
