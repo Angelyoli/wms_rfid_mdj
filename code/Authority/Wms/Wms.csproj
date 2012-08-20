@@ -91,6 +91,7 @@
     <Compile Include="Controllers\Authority\UserController.cs" />
     <Compile Include="Controllers\Authority\UserPermissionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\SortOrderSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockCheckSearchController.cs" />
@@ -776,6 +777,10 @@
       <Project>{330D59D0-3B57-4F12-BB7D-49AF46DCD46D}</Project>
       <Name>THOK.Wms.Allot</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.AutomotiveSystems\THOK.Wms.AutomotiveSystems.csproj">
+      <Project>{52A95469-B4A3-43C8-99CA-23A6910EE173}</Project>
+      <Name>THOK.Wms.AutomotiveSystems</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Bll\THOK.Wms.Bll.csproj">
       <Project>{2B8E7C92-13CA-426C-94DA-7D021EBD504C}</Project>
       <Name>THOK.Wms.Bll</Name>
@@ -1152,6 +1157,8 @@
     <Content Include="Views\UnitList\_UnitPartial4.cshtml" />
     <Content Include="Views\CurrentStock\_ProductPartial.cshtml" />
     <Content Include="Views\Distribution\_ProductPartial.cshtml" />
+    <Content Include="Views\Stockledger\_ProductPartial.cshtml" />
+    <Content Include="Views\HistoricalDetail\_ProductPartial.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

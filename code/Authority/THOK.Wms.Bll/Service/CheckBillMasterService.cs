@@ -71,7 +71,7 @@ namespace THOK.Wms.Bll.Service
             return statusStr;
         }
 
-        public object GetDetails(int page, int rows, string BillNo, string beginDate, string endDate, string OperatePersonCode, string Status, string IsActive)
+        public object GetDetails(int page, int rows, string BillNo, string beginDate, string endDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive)
         {
             IQueryable<CheckBillMaster> CheckBillMasterQuery = CheckBillMasterRepository.GetQueryable();
             //var checkBillMasters = CheckBillMasterQuery.Where(i => i.BillNo.Contains(BillNo) && i.OperatePerson.EmployeeName.Contains(OperatePersonCode));
@@ -105,6 +105,10 @@ namespace THOK.Wms.Bll.Service
             if (!IsActive.Equals(string.Empty))
             {
                 checkBillMasters = checkBillMasters.Where(i => i.IsActive.Contains(IsActive));
+            }
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                checkBillMasters = checkBillMasters.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
 
             int total = checkBillMasters.Count();
@@ -334,7 +338,7 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealProductCode = stor.ProductCode;
                                         checkDetail.RealUnitCode = stor.UnitCode;
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                        checkDetail.Status = "1";
+                                        checkDetail.Status = "0";
 
                                         CheckBillDetailRepository.Add(checkDetail);
                                         CheckBillDetailRepository.SaveChanges();
@@ -411,7 +415,7 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealProductCode = stor.ProductCode;
                                         checkDetail.RealUnitCode = stor.UnitCode;
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                        checkDetail.Status = "1";
+                                        checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
                                         CheckBillDetailRepository.SaveChanges();
 
@@ -548,7 +552,7 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealProductCode = stor.ProductCode;
                                         checkDetail.RealUnitCode = stor.UnitCode;
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                        checkDetail.Status = "1";
+                                        checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
                                         CheckBillDetailRepository.SaveChanges();
 
@@ -720,7 +724,7 @@ namespace THOK.Wms.Bll.Service
                                     checkDetail.RealProductCode = stor.ProductCode;
                                     checkDetail.RealUnitCode = stor.UnitCode;
                                     checkDetail.RealQuantity = stor.Quantity * stor.Count;
-                                    checkDetail.Status = "1";
+                                    checkDetail.Status = "0";
                                     CheckBillDetailRepository.Add(checkDetail);
                                     CheckBillDetailRepository.SaveChanges();
 

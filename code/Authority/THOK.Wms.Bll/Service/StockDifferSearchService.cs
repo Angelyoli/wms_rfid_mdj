@@ -43,41 +43,49 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<ProfitLossBillMaster> StockDifferQuery = StockDifferSearchRepository.GetQueryable();
             var StockDifferSearch = StockDifferQuery.Where(i => i.BillNo.Contains(BillNo)
-                                                         && i.CheckBillNo.Contains(CheckBillNo)
-                                                         && i.WarehouseCode.Contains(WarehouseCode)
-                                                         && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
-                                                         //&& i.VerifyPerson.EmployeeCode.Contains(CheckPersonCode)
-                                                         && i.Status.Contains(Operate_Status))
-                                                .OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
-                                                {
-                                                    i.BillNo,
-                                                    i.CheckBillNo,
-                                                    i.Warehouse.WarehouseName,
-                                                    BillDate = i.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                                                    OperatePersonName = i.OperatePerson.EmployeeName,
-                                                    i.OperatePersonID,
-                                                    Status = WhatStatus(i.Status),
-                                                    VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
-                                                    VerifyDate = (i.VerifyDate == null ? string.Empty : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
-                                                    Description = i.Description,
-                                                    UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-                                                });
-
+                                                    && i.WarehouseCode.Contains(WarehouseCode)
+                                                    && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
+                                                    && i.Status.Contains(Operate_Status));
             if (!BeginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(BeginDate);
-                StockDifferSearch = StockDifferSearch.Where(i => Convert.ToDateTime(i.BillDate) >= begin);
+                StockDifferSearch = StockDifferSearch.Where(i => i.BillDate >= begin);
             }
 
             if (!EndDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(EndDate);
-                StockDifferSearch = StockDifferSearch.Where(i => Convert.ToDateTime(i.BillDate) <= end);
+                StockDifferSearch = StockDifferSearch.Where(i => i.BillDate <= end);
             }
 
+            if (!CheckBillNo.Equals(string.Empty))
+            {
+                StockDifferSearch = StockDifferSearch.Where(i => i.CheckBillNo == CheckBillNo);
+            }
+
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                StockDifferSearch = StockDifferSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
+            }
+
+            StockDifferSearch = StockDifferSearch.OrderBy(i => i.BillNo);
             int total = StockDifferSearch.Count();
             StockDifferSearch = StockDifferSearch.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = StockDifferSearch.ToArray() };
+            var DifferSearch = StockDifferSearch.ToArray().Select(s => new
+            {
+                s.BillNo,
+                s.CheckBillNo,
+                s.Warehouse.WarehouseName,
+                BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                OperatePersonName = s.OperatePerson.EmployeeName,
+                s.OperatePersonID,
+                Status = WhatStatus(s.Status),
+                VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
+                VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                Description = s.Description,
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return new { total, rows = DifferSearch.ToArray() };
         }
 
         #endregion

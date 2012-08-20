@@ -49,11 +49,11 @@ namespace Wms.Controllers.Wms.Inventory
 
         //
         // GET: /DailyBalance/DailyBalanceInfos/
-        public ActionResult DailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate)
-        {
-            var DailyBalanceInfo = DailyBalanceService.GetDailyBalanceInfos(page, rows, warehouseCode, settleDate);
-            return Json(DailyBalanceInfo, "text", JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult DailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate)
+        //{
+        //    var DailyBalanceInfo = DailyBalanceService.GetDailyBalanceInfos(page, rows, warehouseCode, settleDate);
+        //    return Json(DailyBalanceInfo, "text", JsonRequestBehavior.AllowGet);
+        //}
 
         //
         // GET: /DailyBalance/DoDailyBalance/

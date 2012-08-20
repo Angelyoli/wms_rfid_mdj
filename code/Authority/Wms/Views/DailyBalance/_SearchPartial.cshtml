@@ -32,7 +32,6 @@
         queryParams.EndDate = $('#endDate').datebox('getValue');
         queryParams.WarehouseCode = $('#wareHouse').combo('getValue');
         queryParams.UnitType = $('#unit_Type').combo('getValue');
-        alert(queryParams.UnitType);
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,

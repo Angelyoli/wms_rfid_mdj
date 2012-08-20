@@ -55,60 +55,66 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<OutBillMaster> StockOutQuery = StockOutSearchRepository.GetQueryable();
             var StockOutSearch = StockOutQuery.Where(i => i.BillNo.Contains(BillNo)
-                                                         && i.WarehouseCode.Contains(WarehouseCode)
-                                                         && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
-                                                         //&& i.VerifyPerson.EmployeeCode.Contains(CheckPersonCode)
-                                                         && i.Status.Contains(Operate_Status))
-                                                .OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
-                 { 
-                i.BillNo, 
-                i.Warehouse.WarehouseName,
-                BillDate = i.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                OperatePersonName = i.OperatePerson.EmployeeName,
-                i.OperatePersonID,
-                Status = WhatStatus(i.Status),
-                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
-                VerifyDate = (i.VerifyDate == null ? string.Empty : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
-                Description = i.Description, 
-                UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
-
+                                                    && i.WarehouseCode.Contains(WarehouseCode)
+                                                    && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
+                                                    && i.Status.Contains(Operate_Status));
             if (!BeginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(BeginDate);
-                StockOutSearch = StockOutSearch.Where(i => Convert.ToDateTime(i.BillDate) >= begin);
+                StockOutSearch = StockOutSearch.Where(i => i.BillDate >= begin);
             }
 
             if (!EndDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(EndDate);
-                StockOutSearch = StockOutSearch.Where(i => Convert.ToDateTime(i.BillDate) <= end);
+                StockOutSearch = StockOutSearch.Where(i => i.BillDate <= end);
             }
 
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                StockOutSearch = StockOutSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
+            }
+            
+            StockOutSearch = StockOutSearch.OrderBy(i => i.BillNo);
             int total = StockOutSearch.Count();
             StockOutSearch = StockOutSearch.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = StockOutSearch.ToArray() };
+            var OutSearch = StockOutSearch.ToArray().Select(s => new
+            {
+                s.BillNo,
+                s.Warehouse.WarehouseName,
+                BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                OperatePersonName = s.OperatePerson.EmployeeName,
+                s.OperatePersonID,
+                Status = WhatStatus(s.Status),
+                VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
+                VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                Description = s.Description,
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return new { total, rows = OutSearch.ToArray() };
         }
 
         public object GetDetailInfos(int page, int rows, string BillNo)
         {
             IQueryable<OutBillDetail> StockOutQuery = OutBillDetailRepository.GetQueryable();
-            var StockOutDetail = StockOutQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
-            {
-                i.ID,
-                i.BillNo,
-                i.ProductCode,
-                i.Product.ProductName,
-                i.UnitCode,
-                i.Unit.UnitName,
-                i.BillQuantity,
-                i.AllotQuantity,
-                i.RealQuantity,
-                i.Price,
-                i.Description
-            });
+            var StockOutDetail = StockOutQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo);
             int total = StockOutDetail.Count();
-            StockOutDetail = StockOutDetail.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = StockOutDetail.ToArray() };
+            var StockOutDetails = StockOutDetail.Skip((page - 1) * rows).Take(rows);
+            var StockOut =StockOutDetails.Select(i => new
+                 {
+                    i.ID,
+                    i.BillNo,
+                    i.ProductCode,
+                    i.Product.ProductName,
+                    i.UnitCode,
+                    i.Unit.UnitName,
+                    BillQuantity = i.BillQuantity / i.Unit.Count,
+                    AllotQuantity = i.AllotQuantity / i.Unit.Count,
+                    RealQuantity = i.RealQuantity / i.Unit.Count,
+                    i.Price,
+                    i.Description
+                 });
+            return new { total, rows = StockOut.ToArray() };
         }
 
         #endregion

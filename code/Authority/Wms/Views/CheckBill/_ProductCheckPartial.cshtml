@@ -1,7 +1,5 @@
 ﻿<script type="text/javascript">
-    var data = { "total": 0, "rows": [] };
-//    var ldata = { "rows": [] };
-//    var rdata = { "rows": [] };
+    var rdata = { "rows": [] };
     //    $(function () {
     //        $.getJSON("/Product/FindProduct/", function (json) {
     //            ydata = json;
@@ -65,36 +63,49 @@
         return s;
     }
 
+    //将选中的卷烟移到右边
     function rightMoveClick() {
         var rows = $('#productTable').datagrid('getSelections');
         if (rows.length > 0) {
+            $.each(rows, function (index, row) {
+                data.rows.splice($.inArray(row, data.rows), 1);
+            });
+            $('#productTable').datagrid('loadData', data);
             for (var i = 0; i < rows.length; i++) {
-                var index = $('#productTable').datagrid('getRowIndex', rows[i]);
-                //ldata.rows.splice(index,0)
-                $('#productTable').datagrid('deleteRow', index);
-                $('#checkProductTable').datagrid('appendRow', rows[i]);
+                rdata.rows.push({
+                    ProductCode: rows[i].ProductCode,
+                    ProductName: rows[i].ProductName
+                });
             }
+            $('#checkProductTable').datagrid('loadData', rdata);
         } else {
             $.messager.alert(g_MsgBoxTitle, '请选择需要盘点的卷烟移向右边！', "error");
         }
     }
 
+    //将选中的卷烟移到左边
     function leftMoveClick() {
         var rows = $('#checkProductTable').datagrid('getSelections');
         if (rows.length > 0) {
+            $.each(rows, function (index, row) {
+                rdata.rows.splice($.inArray(row, rdata.rows), 1);
+            });
+            $('#checkProductTable').datagrid('loadData', rdata);
             for (var i = 0; i < rows.length; i++) {
-                var index = $('#checkProductTable').datagrid('getRowIndex', rows[i]);
-                $('#checkProductTable').datagrid('deleteRow', index);
-                $('#productTable').datagrid('appendRow', rows[i]);
+                data.rows.push({
+                    ProductCode: rows[i].ProductCode,
+                    ProductName: rows[i].ProductName
+                });
             }
+            $('#productTable').datagrid('loadData', data);
         } else {
-            $.messager.alert(g_MsgBoxTitle, '请选择需要盘点的卷烟移向左边！', "error");
+            $.messager.alert(g_MsgBoxTitle, '请选择不需要盘点的卷烟移向左边！', "error");
         }
     }
 </script>
 <div class="easyui-layout" fit="true">
     <div region="west" style="width: 380px; border-right-style: solid; border-right-width: 1px; border-right-color: #99BBE8;" border="false">
-        <table id="productTable" class="easyui-datagrid" border="false" url='/Product/CheckFindProduct/'
+        <table id="productTable" class="easyui-datagrid" border="false" url=''
             singleselect="false" fit="true" rownumbers="true">
             <thead>
                 <tr>

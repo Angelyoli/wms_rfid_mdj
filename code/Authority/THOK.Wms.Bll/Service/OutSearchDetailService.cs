@@ -23,28 +23,28 @@ namespace THOK.Wms.Bll.Service
 
         public object GetDetails(int page, int rows, string BillNo)
         {
-            if (BillNo != "" && BillNo != null)
+            IQueryable<OutBillAllot> outBillDetailQuery = OutSearchDetailRepository.GetQueryable();
+            var OutBillAllots = outBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo);
+            int total = OutBillAllots.Count();
+            var OutBillAllot = OutBillAllots.Skip((page - 1) * rows).Take(rows);
+            var OutBillAllotDetail = OutBillAllot.ToArray().Select(i => new
             {
-                IQueryable<OutBillAllot> OutBillAllotQuery = OutSearchDetailRepository.GetQueryable();
-                var OutBillAllot = OutBillAllotQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
-                {
-                    i.ID,
-                    i.BillNo,
-                    i.ProductCode,
-                    i.Product.ProductName,
-                    i.UnitCode,
-                    i.Unit.UnitName,
-                    i.CellCode,
-                    i.Cell.CellName,
-                    i.RealQuantity,
-                    i.Status
-                });
-                int total = OutBillAllot.Count();
-                OutBillAllot = OutBillAllot.Skip((page - 1) * rows).Take(rows);
-                return new { total, rows = OutBillAllot.ToArray() };
-            }
-            return "";
+                i.ID,
+                i.BillNo,
+                i.ProductCode,
+                i.Product.ProductName,
+                i.UnitCode,
+                i.Unit.UnitName,
+                i.CellCode,
+                i.Cell.CellName,
+                i.StorageCode,
+                AllotQuantity = i.AllotQuantity / i.Unit.Count,
+                RealQuantity = i.RealQuantity / i.Unit.Count,
+                i.Status
+            });
+            return new { total, rows = OutBillAllotDetail.ToArray() };
         }
+
         #endregion
     }
 }
