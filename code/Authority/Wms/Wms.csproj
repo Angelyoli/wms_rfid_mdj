@@ -815,7 +815,6 @@
     <Content Include="Views\Authorize\Index.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
     <Content Include="Views\Department\Index.cshtml" />
-    <Content Include="Views\Area\Index.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\City\_AddPartial.cshtml" />
@@ -833,12 +832,6 @@
     <Content Include="Views\Company\_HelpPartial.cshtml" />
     <Content Include="Views\Company\_SearchPartial.cshtml" />
     <Content Include="Views\Company\_PrintPartial.cshtml" />
-    <Content Include="Views\Area\_AddPartial.cshtml" />
-    <Content Include="Views\Area\_DeletePartial.cshtml" />
-    <Content Include="Views\Area\_EditPartial.cshtml" />
-    <Content Include="Views\Area\_SearchPartial.cshtml" />
-    <Content Include="Views\Area\_HelpPartial.cshtml" />
-    <Content Include="Views\Area\_PrintPartial.cshtml" />
     <Content Include="Views\Department\_AddPartial.cshtml" />
     <Content Include="Views\Department\_DeletePartial.cshtml" />
     <Content Include="Views\Department\_EditPartial.cshtml" />
