@@ -201,6 +201,10 @@
     <Compile Include="Migrations\201208120953296_modify_out_move_master_origin.Designer.cs">
       <DependentUpon>201208120953296_modify_out_move_master_origin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201208180344327_bill_Operator_canReal.cs" />
+    <Compile Include="Migrations\201208180344327_bill_Operator_canReal.Designer.cs">
+      <DependentUpon>201208180344327_bill_Operator_canReal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

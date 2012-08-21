@@ -182,9 +182,10 @@ namespace THOK.Wms.SignalR.Allot.Service
                                                                 && s.Quantity == 0
                                                                 && s.InFrozenQuantity == 0))
                                               .FirstOrDefault();
-                    lock (c)
-                    {                       
-                        if (c != null)
+
+                    if (c != null)
+                    {
+                        lock (c)
                         {
                             decimal allotQuantity = c.MaxQuantity * billDetail.Product.Unit.Count;
                             decimal billQuantity = billDetail.BillQuantity - billDetail.AllotQuantity;
@@ -198,8 +199,8 @@ namespace THOK.Wms.SignalR.Allot.Service
                                 Locker.UnLockStorage(targetStorage);
                             }
                         }
-                        else break;
                     }
+                    else break;                   
                 }
             }
 

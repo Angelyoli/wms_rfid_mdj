@@ -105,9 +105,10 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             string beginDate = collection["beginDate"] ?? "";
             string endDate = collection["endDate"] ?? "";
             string OperatePersonCode = collection["OperatePersonCode"] ?? "";
+            string CheckPersonCode = collection["CheckPersonCode"] ?? string.Empty;
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var inBillMaster = CheckBillMasterService.GetDetails(page, rows, BillNo,beginDate,endDate, OperatePersonCode, Status, IsActive);
+            var inBillMaster = CheckBillMasterService.GetDetails(page, rows, BillNo, beginDate, endDate, OperatePersonCode, CheckPersonCode, Status, IsActive);
             return Json(inBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 

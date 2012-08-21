@@ -23,26 +23,23 @@ namespace THOK.Wms.Bll.Service
 
         public object GetDetails(int page, int rows, string BillNo)
         {
-            if (BillNo != "" && BillNo != null)
+            IQueryable<ProfitLossBillDetail> differBillDetailQuery = DifferSearchDetailRepository.GetQueryable();
+            var differBillDetails = differBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo);
+            int total = differBillDetails.Count();
+            var differBillDetail = differBillDetails.Skip((page - 1) * rows).Take(rows);
+            var differDetail = differBillDetail.ToArray().Select(i => new
             {
-                IQueryable<ProfitLossBillDetail> DifferBillDetailQuery = DifferSearchDetailRepository.GetQueryable();
-                var DifferBillDetail = DifferBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
-                {
-                    i.ID,
-                    i.BillNo,
-                    i.ProductCode,
-                    i.UnitCode,
-                    i.Unit.UnitName,
-                    i.Product.ProductName,
-                    i.CellCode,
-                    i.Storage.Cell.CellName,
-                    i.Quantity
-                });
-                int total = DifferBillDetail.Count();
-                DifferBillDetail = DifferBillDetail.Skip((page - 1) * rows).Take(rows);
-                return new { total, rows = DifferBillDetail.ToArray() };
-            }
-            return "";
+                i.ID,
+                i.BillNo,
+                i.ProductCode,
+                i.UnitCode,
+                i.Unit.UnitName,
+                i.Product.ProductName,
+                i.CellCode,
+                i.Storage.Cell.CellName,
+                Quantity = i.Quantity / i.Unit.Count
+            });
+            return new { total, rows = differDetail.ToArray() };
         }
         #endregion
     }

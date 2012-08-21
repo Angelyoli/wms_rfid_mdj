@@ -46,39 +46,43 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<MoveBillMaster> StockMoveQuery = StockMoveSearchRepository.GetQueryable();
             var StockMoveSearch = StockMoveQuery.Where(i => i.BillNo.Contains(BillNo)
-                                                         && i.WarehouseCode.Contains(WarehouseCode)
-                                                         && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
-                                                         //&& i.VerifyPerson.EmployeeCode.Contains(CheckPersonCode)
-                                                         && i.Status.Contains(Operate_Status))
-                                                .OrderBy(i => i.BillNo).AsEnumerable().Select(i => new
-                                                {
-                                                    i.BillNo,
-                                                    i.Warehouse.WarehouseName,
-                                                    BillDate = i.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                                                    OperatePersonName = i.OperatePerson.EmployeeName,
-                                                    i.OperatePersonID,
-                                                    Status = WhatStatus(i.Status),
-                                                    VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
-                                                    VerifyDate = (i.VerifyDate == null ? string.Empty : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
-                                                    Description = i.Description,
-                                                    UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-                                                });
-
+                                                    && i.WarehouseCode.Contains(WarehouseCode)
+                                                    && i.OperatePerson.EmployeeCode.Contains(OperatePersonCode)
+                                                    && i.Status.Contains(Operate_Status));
             if (!BeginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(BeginDate);
-                StockMoveSearch = StockMoveSearch.Where(i => Convert.ToDateTime(i.BillDate) >= begin);
+                StockMoveSearch = StockMoveSearch.Where(i => i.BillDate >= begin);
             }
 
             if (!EndDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(EndDate);
-                StockMoveSearch = StockMoveSearch.Where(i => Convert.ToDateTime(i.BillDate) <= end);
+                StockMoveSearch = StockMoveSearch.Where(i => i.BillDate <= end);
             }
 
+            if (!CheckPersonCode.Equals(string.Empty))
+            {
+                StockMoveSearch = StockMoveSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
+            }
+
+            StockMoveSearch = StockMoveSearch.OrderBy(i => i.BillNo);
             int total = StockMoveSearch.Count();
             StockMoveSearch = StockMoveSearch.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = StockMoveSearch.ToArray() };
+            var MoveSearch = StockMoveSearch.ToArray().Select(s => new
+            {
+                s.BillNo,
+                s.Warehouse.WarehouseName,
+                BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                OperatePersonName = s.OperatePerson.EmployeeName,
+                s.OperatePersonID,
+                Status = WhatStatus(s.Status),
+                VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
+                VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                Description = s.Description,
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return new { total, rows = MoveSearch.ToArray() };
         }
 
         #endregion

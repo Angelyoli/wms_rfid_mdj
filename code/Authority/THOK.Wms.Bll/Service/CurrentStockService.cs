@@ -28,7 +28,7 @@ namespace THOK.Wms.Bll.Service
                 unitType = "1";
             }
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.Where(s => s.Quantity > 0 && s.IsLock == "0");
+            var storages = storageQuery.Where(s => s.Quantity > 0);
             if (ware != null && ware != string.Empty || area != null && area != string.Empty)
             {
                 if (ware != string.Empty)
@@ -51,12 +51,8 @@ namespace THOK.Wms.Bll.Service
                  {
                      ProductCode = s.Max(p => p.Product.ProductCode),
                      ProductName = s.Max(p => p.Product.ProductName),
-                     //UnitCode = s.Max(p => p.Product.Unit.UnitCode),
-                     //UnitName = s.Max(p => p.Product.Unit.UnitName),
                      Quantity = s.Sum(p => p.Quantity),
-                     //UnitCode01 =s.Max(p => p.Product.UnitList.Unit01.UnitCode),
                      UnitName01 =s.Max(p => p.Product.UnitList.Unit01.UnitName),
-                     //UnitCode02 =s.Max(p => p.Product.UnitList.Unit02.UnitCode),
                      UnitName02 =s.Max(p => p.Product.UnitList.Unit02.UnitName),
                      Count01 =s.Max(p => p.Product.UnitList.Unit01.Count),
                      Count02 = s.Max(p => p.Product.UnitList.Unit02.Count),

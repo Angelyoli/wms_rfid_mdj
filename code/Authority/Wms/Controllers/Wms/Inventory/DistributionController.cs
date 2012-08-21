@@ -29,29 +29,29 @@ namespace Authority.Controllers.Wms.Inventory
         //
         // GET: /Distribution/Details/
 
-        public ActionResult Details(int page, int rows, FormCollection collection)
-        {
-            string productCode = collection["ProductCode"] ?? "";
-            string ware = collection["Ware"] ?? "";
-            string area = collection["Area"] ?? "";
-            string unitType = collection["UnitType"] ?? "";
-            var storage = DistributionService.GetAreaDetails(page, rows, productCode, ware, area, unitType);
-            return Json(storage, "text", JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult Details(int page, int rows, FormCollection collection)
+        //{
+        //    string productCode = collection["ProductCode"] ?? "";
+        //    string ware = collection["Ware"] ?? "";
+        //    string area = collection["Area"] ?? "";
+        //    string unitType = collection["UnitType"] ?? "";
+        //    var storage = DistributionService.GetAreaDetails(page, rows, productCode, ware, area, unitType);
+        //    return Json(storage, "text", JsonRequestBehavior.AllowGet);
+        //}
 
         //
         // GET: /Distribution/GetCellDetails/
-        public ActionResult GetCellDetails(int page, int rows, string type, string id, string unitType)
+        public ActionResult GetCellDetails(int page, int rows, string type, string id, string unitType, string productCode)
         {
-            var storage = DistributionService.GetCellDetails(page, rows, type, id, unitType);
+            var storage = DistributionService.GetCellDetails(page, rows, type, id, unitType, productCode);
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
 
         //获取库存商品分布树
         // GET: /Distribution/GetProductTreeDetails/
-        public ActionResult GetProductTreeDetails()
+        public ActionResult GetProductTreeDetails(string productCode, string unitType)
         {
-            var wareCell = DistributionService.GetProductTree();
+            var wareCell = DistributionService.GetProductTree(productCode,unitType);
             return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
         }
     }

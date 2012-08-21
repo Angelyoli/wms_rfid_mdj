@@ -9,7 +9,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#infos2').datagrid({ url: '/StockOutSearch/DetailInfos/?BillNo=' + row.BillNo });
-            $('#DetailInfos2').dialog('open').dialog('setTitle', '出库单' + row.BillNo + '明细');
+            $('#DetailInfos2').dialog('open').dialog('setTitle', '出库单' + row.BillNo + '分配明细');
         }
     }
 
@@ -50,17 +50,6 @@
         url="/StockOutSearch/InfoDetails/" border="false" singleSelect="true"
         fit="true"  pagination="true" rownumbers="true">
         <thead>
-            @*<tr>
-                <th field="IdNo" width="80" align="center">序号</th>
-                <th field="ProduceCode" width="100" align="center">产品代码</th>
-                <th field="ProduceName" width="140" align="center">产品名称</th>
-                <th field="UnitCode" width="100" align="center">单位编码</th>
-                <th field="UnitName" width="140" align="center">单位名称</th>
-                <th field="Quantity" width="100" align="center">数量</th>
-                <th field="RealQuantity" width="100" align="center">实际出库量</th>
-                <th field="Price" width="80" align="center">单价</th>
-                <th field="DetailRemark" width="80" align="center">备注</th>
-            </tr>*@
             <tr>
                 <th field="ID" width="80">序号</th>
                 <th field="ProductCode" width="80">产品代码</th>
