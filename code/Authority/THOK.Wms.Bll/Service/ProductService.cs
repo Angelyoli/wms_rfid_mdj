@@ -208,7 +208,7 @@ namespace THOK.Wms.Bll.Service
             else if (QueryString == "ProductName")
             {
                 var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Where(s => s.Product.ProductName.Contains(value)).GroupBy(s => s.ProductCode).Select(s => s.Key);
-                product = product.Where(p => storages.Any(s => s == p.ProductName));
+                product = product.Where(p => storages.Any(s => s == p.ProductCode));
             }
             if (QueryString == string.Empty || QueryString == null || value == string.Empty || value == null)
             {
