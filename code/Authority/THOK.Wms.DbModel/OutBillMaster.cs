@@ -27,6 +27,7 @@ namespace THOK.Wms.DbModel
         public string IsActive { get; set; }
         public DateTime UpdateTime { get; set; }
         public byte[] RowVersion { get; set; }
+        public string TargetCellCode { get; set; }
 
         public virtual BillType BillType { get; set; }
         public virtual Warehouse Warehouse { get; set; }

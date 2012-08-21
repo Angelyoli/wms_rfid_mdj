@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Connections>
+  <Connection Name="DefaultConnection" DatabaseType="SQLSERVER">
+    <ConnectionString Value="server=10.66.21.68;database=THOKWES;uid=sa;" />
+    <Password Name="password" Value="65CED0851FFD283F" />
+  </Connection>
+  <Connection Name="WMSConnection" DatabaseType="SQLSERVER">
+    <ConnectionString Value="server=10.66.21.68;database=THOK_WMS_DATA;uid=sa;" />
+    <Password Name="password" Value="65CED0851FFD283F" />
+  </Connection>
+  <Connection Name="DB2Connection" DatabaseType="DB2">
+    <ConnectionString Value="server=192.168.163.100;database=TEST;uid=db2admin;" />
+    <Password Name="password" Value="78DAC4845ECAB0D5" />
+  </Connection>
+</Connections>
