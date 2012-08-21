@@ -21,22 +21,38 @@ namespace THOK.Wms.Bll.Service
 
         #region ISortOrderSearch 成员
 
-        public object GetDetails(int page, int rows, string OrderID, string OrderDate)
+        public object GetDetails(int page, int rows, string orderID, string orderDate, string customerCode, string customerName, string deliverLineCode)
         {
-            IQueryable<SortOrder> SortOrderQuery = SortOrderSearchRepository.GetQueryable();
-            var SortOrderSearch = SortOrderQuery.Where(i => i.OrderID.Contains(OrderID)).OrderBy(i => i.OrderID).AsEnumerable().Select(i => new
+            if (orderDate == string.Empty || orderDate == null)
             {
-                i.OrderID,
-                i.OrderDate,
-                i.OrderType,
-                i.CustomerCode,
-                i.CustomerName,
-                i.QuantitySum,
-                i.DetailNum
-            });
+                orderDate = DateTime.Now.ToString("yyyyMMdd"); 
+            }
+            else
+            {
+                orderDate = Convert.ToDateTime(orderDate).ToString("yyyyMMdd"); 
+            }
+            IQueryable<SortOrder> SortOrderQuery = SortOrderSearchRepository.GetQueryable();
+            var SortOrderSearch = SortOrderQuery.Where(i => i.OrderDate.Contains(orderDate)
+                                                    && i.OrderID.Contains(orderID)
+                                                    && i.CustomerCode.Contains(customerCode)
+                                                    && i.CustomerName.Contains(customerName)
+                                                    && i.DeliverLineCode.Contains(deliverLineCode))
+                                                    .OrderBy(i => i.OrderID);
+
             int total = SortOrderSearch.Count();
-            SortOrderSearch = SortOrderSearch.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = SortOrderSearch.ToArray() };
+            var SortOrder = SortOrderSearch.Skip((page - 1) * rows).Take(rows);
+            var sortOrder = SortOrder.ToArray().Select(s => new
+            {
+                s.OrderID,
+                OrderDate = Convert.ToInt32(s.OrderDate) / 10000 + "-" + (Convert.ToInt32(s.OrderDate) % 10000 / 100 > 10 ? "" : "0") + Convert.ToInt32(s.OrderDate) % 10000 / 100 + "-" + (Convert.ToInt32(s.OrderDate) % 100 > 10 ? "" : "0") + Convert.ToInt32(s.OrderDate) % 100,
+                OrderType = s.OrderType =="1" ? "普通客户": "大客户", 
+                s.CustomerCode,
+                s.CustomerName,
+                s.QuantitySum,
+                s.DetailNum,
+                s.DeliverLine.DeliverLineName
+            });
+            return new { total, rows = sortOrder.ToArray() };
         }
 
         #endregion

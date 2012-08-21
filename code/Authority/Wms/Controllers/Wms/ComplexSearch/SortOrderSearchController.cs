@@ -31,9 +31,12 @@ namespace Authority.Controllers.Wms.ComplexSearch
 
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string OrderID = collection["OrderID"] ?? "";
-            string OrderDate = collection["OrderDate"] ?? "";
-            var SortOrder = SortOrderSearchService.GetDetails(page, rows, OrderID, OrderDate);
+            string orderID = collection["OrderID"] ?? "";
+            string orderDate = collection["OrderDate"] ?? "";
+            string customerCode = collection["CustomerCode"] ?? "";
+            string customerName = collection["CustomerName"] ?? "";
+            string deliverLineCode = collection["DeliverLineCode"] ?? "";
+            var SortOrder = SortOrderSearchService.GetDetails(page, rows, orderID, orderDate, customerCode, customerName, deliverLineCode);
             return Json(SortOrder, "text", JsonRequestBehavior.AllowGet);
         }
 
