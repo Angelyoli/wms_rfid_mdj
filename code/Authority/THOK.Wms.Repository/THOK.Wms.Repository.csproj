@@ -205,6 +205,10 @@
     <Compile Include="Migrations\201208180344327_bill_Operator_canReal.Designer.cs">
       <DependentUpon>201208180344327_bill_Operator_canReal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201208210232541_modify_in_out_bill_target_cell.cs" />
+    <Compile Include="Migrations\201208210232541_modify_in_out_bill_target_cell.Designer.cs">
+      <DependentUpon>201208210232541_modify_in_out_bill_target_cell.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
