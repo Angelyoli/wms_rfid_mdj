@@ -1152,8 +1152,6 @@
     <Content Include="Views\StockOutSearch\_Detail.cshtml" />
     <Content Include="Views\StockMoveBill\_SearchPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_SettlePartial.cshtml" />
-    <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
-    <Content Include="Views\UnitList\_UnitPartial.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial1.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial2.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial3.cshtml" />
@@ -1162,6 +1160,7 @@
     <Content Include="Views\Distribution\_ProductPartial.cshtml" />
     <Content Include="Views\Stockledger\_ProductPartial.cshtml" />
     <Content Include="Views\HistoricalDetail\_ProductPartial.cshtml" />
+    <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

@@ -51,6 +51,34 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
+        public object GetDetails(int page, int rows, string QueryString, string Value)
+        {
+            string UnitCode = "";
+            string UnitName = "";
+            if (QueryString == "UnitCode")
+            {
+                UnitCode = Value;
+            }
+            else
+            {
+                UnitName = Value;
+            }
+            IQueryable<Unit> UnitQuery = UnitRepository.GetQueryable();
+            var Unit = UnitQuery.Where(c => c.UnitName.Contains(UnitName) && c.UnitCode.Contains(UnitCode) && c.IsActive == "1")
+                .OrderBy(c => c.UnitCode).AsEnumerable()
+                .Select(c => new
+                {
+                    
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    c.UnitCode,
+                    c.UnitName,
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd")
+                });
+            int total = Unit.Count();
+            Unit = Unit.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = Unit.ToArray() };
+        }
+
         public new bool Add(Unit unit)
         {
             var un = new Unit();
