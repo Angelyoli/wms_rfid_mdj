@@ -40,7 +40,23 @@ namespace Authority.Controllers.ProductInfo
             var unit = UnitService.GetDetails(page, rows, UnitCode, UnitName, IsActive);
             return Json(unit, "text", JsonRequestBehavior.AllowGet);
         }
+        //
+        // POST: /Unit/GetDetails/
 
+        [HttpPost]
+        public ActionResult GetDetails(int page, int rows, string QueryString, string Value)
+        {
+            if (QueryString == null)
+            {
+                QueryString = "UnitCode";
+            }
+            if (Value == null)
+            {
+                Value = "";
+            }
+            var product = UnitService.GetDetails(page, rows, QueryString, Value);
+            return Json(product, "text", JsonRequestBehavior.AllowGet);
+        }
         //
         // POST: /Unit/Create/
 

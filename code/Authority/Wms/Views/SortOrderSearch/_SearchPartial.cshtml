@@ -8,60 +8,61 @@
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '分拣单查询');
         $("input[type=text]").attr("value", "");
+        $('#OrderDate').datebox('setValue', "");
     };
 
     function select() {
-        var queryParams = $('#masters').datagrid('options').queryParams;
-        queryParams.SortOrderNo = $('#sortOrderNo').val();
-        queryParams.SortOrderDate = $('#sortOrderDate').val();
-        queryParams.SortOrderType = $('#sortOrderType').val();
-        queryParams.CustomerCode = $('#customerCode').val();
-        queryParams.CustomerName = $('#customerName').val();
-        queryParams.TotalQuantity = $('#totalQuantity').val();
-        queryParams.DeliverRoute = $('#deliverRoute').val();
-        $('#masters').datagrid('options').queryParams = queryParams;
-        $('#masters').datagrid({
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.OrderID = $('#OrderID').val();
+        queryParams.OrderDate = $('#OrderDate').datebox('getValue');
+//        queryParams.OrderType = $('#OrderType').val();
+        queryParams.CustomerCode = $('#CustomerCode').val();
+        queryParams.CustomerName = $('#CustomerName').val(); 
+        queryParams.DeliverLineCode = $('#DeliverLineCode').val();
+        $('#details').datagrid('options').queryParams = queryParams;
+        $('#details').datagrid({
             pageNumber: 1,
             pageSize: 10
         });
-        $("#masters").datagrid('reload');
+        $("#details").datagrid('reload');
+        $("#infoDetails").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
 
 </script>
 
-<div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:350px;padding:2px 2px"
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width:260px;height:210px;padding:2px 2px"
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >   
-            <table align="left" width="260">
+            <table align="left" width="230">
               <tr>
                 <td width="60">订单单号:</td>
-                <td><input id="sortOrderNo"   type="text" style="width: 140px"></td>
+                <td><input id="OrderID" type="text" style="width: 140px"></td>
               </tr>
               <tr>
                 <td width="60">订单日期:</td>
-                <td><input id="sortOrderDate"   type="text" style="width: 140px"></td>  
+                <td><input id="OrderDate" type="text" style="width: 140px " class="easyui-datebox"></td>
               </tr>
-              <tr>
+@*              <tr>
                 <td width="60">订单类型:</td>
-                <td><input id="sortOrderType"   type="text" style="width: 140px"></td>
-              </tr>
+                <td><select id="OrderType" class="easyui-combobox" style="width: 140px" editable="false">
+                            <option value="">请选择</option>                      
+                            <option value="1">普通客户</option>
+                            <option value="2">大客户</option>
+                        </select></td>
+              </tr>*@
               <tr>
                 <td width="60">客户编号:</td>
-                <td><input id="customerCode"   type="text" style="width: 140px"></td>
+                <td><input id="CustomerCode" type="text" style="width: 140px"></td>
               </tr>
               <tr>
                 <td width="60">客户名称:</td>
-                <td><input id="customerName"   type="text" style="width: 140px"></td>                
-              </tr>
-              <tr>
-                <td width="60">总 数 量:</td>
-                <td><input id="totalQuantity"   type="text" style="width: 140px"></td>                
+                <td><input id="CustomerName" type="text" style="width: 140px"></td>                
               </tr>
               <tr>
                 <td width="60">送货路线:</td>
-                <td><input id="deliverRoute"   type="text" style="width: 140px"></td>
+                <td><input id="DeliverLineCode" type="text" style="width: 140px"></td>
               </tr>
             </table>
         </div>

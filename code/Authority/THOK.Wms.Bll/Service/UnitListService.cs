@@ -23,48 +23,39 @@ namespace THOK.Wms.Bll.Service
 
         public object GetDetails(int page, int rows, UnitList uls)
         {
-            
             IQueryable<UnitList> unitListQuery = UnitListRepository.GetQueryable();
+            
             var unitList = unitListQuery.Where(ul =>
                 ul.UnitListCode.Contains(uls.UnitListCode)
                 && ul.UnitListName.Contains(uls.UnitListName)
-                && ul.UniformCode.Contains(uls.UniformCode)
                 && ul.UnitCode01.Contains(uls.UnitCode01)
-                && ul.UnitName01.Contains(uls.UnitName01)
                 && ul.UnitCode02.Contains(uls.UnitCode02)
-                && ul.UnitName02.Contains(uls.UnitName02)
                 && ul.UnitCode03.Contains(uls.UnitCode03)
-                && ul.UnitName03.Contains(uls.UnitName03)
                 && ul.UnitCode04.Contains(uls.UnitCode04)
-                && ul.UnitName04.Contains(uls.UnitName04)
-                && ul.IsActive.Contains(uls.IsActive)
-                ).AsEnumerable().Select(ul => new 
-            { 
+                && ul.IsActive.Contains(uls.IsActive)).OrderBy(ul => ul.UnitListCode);
+
+            int total = unitList.Count();
+            var unitLists = unitList.Skip((page - 1) * rows).Take(rows);
+            var unit_List = unitLists.ToArray().Select(ul => new
+            {
                 ul.UnitListCode,
                 ul.UniformCode,
                 ul.UnitListName,
-                Unit01 = ul.UnitName01.ToString() + " ： " + ul.UnitCode01.ToString(),
-                Unit02 = ul.UnitName02.ToString() + " ： " + ul.UnitCode02.ToString(),
-                Unit03 = ul.UnitName03.ToString() + " ： " + ul.UnitCode03.ToString(),
-                Unit04 = ul.UnitName04.ToString() + " ： " + ul.UnitCode04.ToString(),
                 ul.UnitCode01,
-                ul.UnitName01,
-                ul.Quantity01,
                 ul.UnitCode02,
-                ul.UnitName02,
-                ul.Quantity02,
                 ul.UnitCode03,
-                ul.UnitName03,
-                ul.Quantity03,
                 ul.UnitCode04,
-                ul.UnitName04,
+                UnitName01 = ul.Unit01.UnitName,
+                UnitName02 = ul.Unit02.UnitName,
+                UnitName03 = ul.Unit03.UnitName,
+                UnitName04 = ul.Unit04.UnitName,
+                Quantity01 = Convert.ToInt32(ul.Quantity01).ToString() + ":1",
+                Quantity02 = Convert.ToInt32(ul.Quantity02).ToString() + ":1",
+                Quantity03 = Convert.ToInt32(ul.Quantity03).ToString() + ":1",
                 ul.IsActive,
-                UpdateTime = ul.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-
+                UpdateTime = ul.UpdateTime.ToString("yyyy-MM-dd")
             });
-            int total = unitList.Count();
-            unitList = unitList.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = unitList.ToArray() };
+            return new { total, rows = unit_List.ToArray() };
         }
 
         public new bool Add(UnitList unitlist)
@@ -72,18 +63,14 @@ namespace THOK.Wms.Bll.Service
             var ul = new UnitList();
             ul.UnitListCode = unitlist.UnitListCode;
             ul.UniformCode = unitlist.UniformCode;
-            ul.UnitListName = unitlist.UnitListCode;
+            ul.UnitListName = unitlist.UnitListName;
             ul.UnitCode01 = unitlist.UnitCode01;
-            ul.UnitName01 = unitlist.UnitName01;
-            ul.Quantity01 = unitlist.Quantity01;
+            ul.Quantity01 = Convert.ToInt32(unitlist.Quantity01);
             ul.UnitCode02 = unitlist.UnitCode02;
-            ul.UnitName02 = unitlist.UnitName02;
-            ul.Quantity02 = unitlist.Quantity02;
+            ul.Quantity02 = Convert.ToInt32(unitlist.Quantity02);
             ul.UnitCode03 = unitlist.UnitCode03;
-            ul.UnitName03 = unitlist.UnitName03;
-            ul.Quantity03 = unitlist.Quantity03;
+            ul.Quantity03 = Convert.ToInt32(unitlist.Quantity03);
             ul.UnitCode04 = unitlist.UnitCode04;
-            ul.UnitName04 = unitlist.UnitName04;
             ul.IsActive = unitlist.IsActive;
             ul.UpdateTime = DateTime.Now;
             UnitListRepository.Add(ul);
@@ -112,16 +99,12 @@ namespace THOK.Wms.Bll.Service
             ul.UniformCode = unitlist.UniformCode;
             ul.UnitListName = unitlist.UnitListCode;
             ul.UnitCode01 = unitlist.UnitCode01;
-            ul.UnitName01 = unitlist.UnitName01;
-            ul.Quantity01 = unitlist.Quantity01;
+            ul.Quantity01 = Convert.ToInt32(unitlist.Quantity01);
             ul.UnitCode02 = unitlist.UnitCode02;
-            ul.UnitName02 = unitlist.UnitName02;
-            ul.Quantity02 = unitlist.Quantity02;
+            ul.Quantity02 = Convert.ToInt32(unitlist.Quantity02);
             ul.UnitCode03 = unitlist.UnitCode03;
-            ul.UnitName03 = unitlist.UnitName03;
-            ul.Quantity03 = unitlist.Quantity03;
+            ul.Quantity03 = Convert.ToInt32(unitlist.Quantity03);
             ul.UnitCode04 = unitlist.UnitCode04;
-            ul.UnitName04 = unitlist.UnitName04;
             ul.IsActive = unitlist.IsActive;
             ul.UpdateTime = DateTime.Now;
             UnitListRepository.SaveChanges();

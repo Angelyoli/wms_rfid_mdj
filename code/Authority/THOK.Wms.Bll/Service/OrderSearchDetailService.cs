@@ -23,26 +23,23 @@ namespace THOK.Wms.Bll.Service
 
         public object GetDetails(int page, int rows, string OrderID)
         {
-            if (OrderID != "" && OrderID != null)
+            IQueryable<SortOrderDetail> OrderDetailQuery = OrderSearchDetailRepository.GetQueryable();
+            var OrderDetails = OrderDetailQuery.Where(i => i.OrderID.Contains(OrderID)).OrderBy(i => i.OrderID);
+            int total = OrderDetails.Count();
+            var OrderDetail = OrderDetails.Skip((page - 1) * rows).Take(rows);
+            var orderDetail = OrderDetail.ToArray().Select(o => new
             {
-                IQueryable<SortOrderDetail> OrderOrderDetailQuery = OrderSearchDetailRepository.GetQueryable();
-                var OrderOrderDetail = OrderOrderDetailQuery.Where(i => i.OrderID.Contains(OrderID)).OrderBy(i => i.OrderID).AsEnumerable().Select(i => new
-                {
-                    i.OrderID,
-                    i.Price,
-                    i.ProductCode,
-                    i.Product.ProductName,
-                    i.OrderDetailID,
-                    i.RealQuantity,
-                    i.UnitCode,
-                    i.UnitName,
-                    i.Amount
-                });
-                int total = OrderOrderDetail.Count();
-                OrderOrderDetail = OrderOrderDetail.Skip((page - 1) * rows).Take(rows);
-                return new { total, rows = OrderOrderDetail.ToArray() };
-            }
-            return "";
+                o.OrderID,
+                o.Price,
+                o.ProductCode,
+                o.Product.ProductName,
+                o.OrderDetailID,
+                o.RealQuantity,
+                o.UnitCode,
+                o.UnitName,
+                o.Amount
+            });
+            return new { total, rows = orderDetail.ToArray() };
         }
         #endregion
     }

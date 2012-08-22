@@ -314,6 +314,7 @@ namespace THOK.Wms.Bll.Service
                                     (s, c) => new { s.WarehouseCode, s.WarehouseName, s.AreaCode, s.AreaName, s.ShelfCode, s.ShelfName, c.CellCode, c.CellName, c }
                                  )
                                  .GroupBy(c => new { c.WarehouseCode, c.WarehouseName })
+                                 .AsParallel()
                                  .Select(w => new
                                  {
                                      id = w.Key.WarehouseCode,
@@ -730,6 +731,7 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
 
         /// <summary>
         /// 根据货编码架获取生成的货位编码

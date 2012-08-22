@@ -1,15 +1,32 @@
 ﻿<script type="text/javascript">
 
     function printClick() {
-        var disk = "D盘";
-        $.getJSON('/ExportExcel/ExportExcel/',
-                            {
-                                'queryString': $('#productChoose').combogrid('getValue'),
-                                'value': $('#cellInfo').val()
-                            },
-                            function (data) {
-                                $.messager.alert("导出Excel", "导出成功到“" + disk + "”", "info");
-                            });
+        var path = "<a href='#'>D盘</a>";
+        var mydate = new Date();
+        var y = mydate.getFullYear().toString();
+        var year = y.substring(2, 4);
+        var m = parseInt(mydate.getMonth().toString()) + 1;
+        var month = m < 10 ? '0' + m : m;
+        var date = mydate.getDate().toString();
+        var hours = mydate.getHours().toString();
+        var minutes = mydate.getMinutes().toString();
+        var seconds = mydate.getSeconds().toString();
 
+        var filename = year + month + date + "-" + hours + minutes + "-" + seconds;
+
+        $.getJSON('/ExportExcel/ExportExcel/',
+             {
+                 'queryString': $('#productChoose').combogrid('getValue'),
+                 'value': $('#cellInfo').val()
+             },
+             function (data) {
+                 $.messager.alert("导出Excel", "导出成功到“" + path + "”，文件名：<a href='#'>" + filename + ".xls</a>", "info");
+             });
     }
 </script>
+<style type="text/css">
+    a
+    {
+        text-decoration: none;
+    }
+</style>
