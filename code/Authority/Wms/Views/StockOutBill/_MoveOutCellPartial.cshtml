@@ -1,0 +1,32 @@
+﻿<script type="text/javascript">
+    //选择移出货位编码
+    function moveOutCellSelect() {
+        $('#MoveCellData').dialog('open').dialog('setTitle', '选择货位信息');
+        $('#movewarehouseTree').tree({ url: '/Cell/GetMoveCellDetails/?inOrOut=' + 'out' }); //加载树形数据
+        
+        //双击选择移入货位
+        $('#movewarehouseTree').tree({
+            onDblClick: function (node) {
+                if (node.attributes == "cell") {
+                    $('#targetCellCode').val(node.id);
+                    $('#MoveCellData').dialog('close');
+                }
+            }
+        });
+    }
+
+</script>
+<div id="MoveCellData" class="easyui-dialog" modal="true" style="width: 300px; height: 460px;
+    padding: 1px 1px" closed="true" buttons="#dlg-moveCellDatabuttons">
+    <div class="easyui-layout" fit="true">
+        <div id="sidebar" region="center" border="false" style="width: 220px; border-right-style: solid;
+            border-right-width: 1px; border-right-color: #99BBE8;">
+            <ul id="movewarehouseTree" class="easyui-tree" url=''>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="dlg-moveCellDatabuttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="MoveCellSave()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#MoveCellData').dialog('close')">取消</a>
+</div>

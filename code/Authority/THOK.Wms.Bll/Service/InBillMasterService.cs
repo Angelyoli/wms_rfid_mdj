@@ -112,7 +112,8 @@ namespace THOK.Wms.Bll.Service
                 Status = WhatStatus(i.Status),
                 IsActive = i.IsActive == "1" ? "可用" : "不可用",
                 Description = i.Description,
-                UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                i.TargetCellCode
             });
             return new { total, rows = tmp.ToArray() };
         }
@@ -136,6 +137,7 @@ namespace THOK.Wms.Bll.Service
                 //ibm.IsActive = inBillMaster.IsActive;
                 ibm.IsActive = "1";
                 ibm.UpdateTime = DateTime.Now;
+                ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
                 InBillMasterRepository.Add(ibm);
                 InBillMasterRepository.SaveChanges();
@@ -175,6 +177,7 @@ namespace THOK.Wms.Bll.Service
                 //ibm.IsActive = inBillMaster.IsActive;
                 ibm.IsActive = "1";
                 ibm.UpdateTime = DateTime.Now;
+                ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
                 InBillMasterRepository.SaveChanges();
                 result = true;
@@ -233,13 +236,31 @@ namespace THOK.Wms.Bll.Service
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (ibm != null)
             {
-                ibm.Status = "2";
-                ibm.VerifyDate = DateTime.Now;
-                ibm.UpdateTime = DateTime.Now;
-                ibm.VerifyPersonID = employee.ID;
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                if (string.IsNullOrEmpty(ibm.TargetCellCode))//判断入库主单是否指定货位
+                {
+                    ibm.Status = "2";
+                    ibm.VerifyDate = DateTime.Now;
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.VerifyPersonID = employee.ID;
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                else//如果入库主单指定了货位那么就进行入库分配
+                {
+                    result = InAllot(ibm);
+                }
             }
+            return result;
+        }
+
+        /// <summary>
+        /// 入库分配
+        /// </summary>
+        /// <param name="inBillMaster">入库主单</param>
+        /// <returns></returns>
+        public bool InAllot(InBillMaster inBillMaster)
+        {
+            bool result = false;
             return result;
         }
 
