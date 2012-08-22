@@ -86,7 +86,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             BillDetail[] billDetails = new BillDetail[] { };
             try
             {
-                foreach (var billMaster in billMasters)
+                foreach (var billMaster in billMasters.AsParallel())
                 {
                     string billNo = billMaster.BillNo;
                     switch (billMaster.BillType)

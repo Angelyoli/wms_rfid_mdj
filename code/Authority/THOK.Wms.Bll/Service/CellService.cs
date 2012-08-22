@@ -44,35 +44,46 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = cell.ToArray() };
         }
 
-        public new bool Add(Cell cell)
+        public new bool Add(Cell cell, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var cellAdd = new Cell();
             var warehouse = WarehouseRepository.GetQueryable().FirstOrDefault(w => w.WarehouseCode == cell.WarehouseCode);
             var area = AreaRepository.GetQueryable().FirstOrDefault(a => a.AreaCode == cell.AreaCode);
             var shelf = ShelfRepository.GetQueryable().FirstOrDefault(s => s.ShelfCode == cell.ShelfCode);
             var product = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == cell.DefaultProductCode);
-            cellAdd.CellCode = cell.CellCode;
-            cellAdd.CellName = cell.CellName;
-            cellAdd.ShortName = cell.ShortName;
-            cellAdd.CellType = cell.CellType;
-            cellAdd.Layer = cell.Layer;
-            cellAdd.Col = cell.Col;
-            cellAdd.ImgX = cell.ImgX;
-            cellAdd.ImgY = cell.ImgY;
-            cellAdd.Rfid = cell.Rfid;
-            cellAdd.Warehouse = warehouse;
-            cellAdd.Area = area;
-            cellAdd.Shelf = shelf;
-            cellAdd.Product = product;
-            cellAdd.MaxQuantity = cell.MaxQuantity;
-            cellAdd.IsSingle = cell.IsSingle;
-            cellAdd.Description = cell.Description;
-            cellAdd.IsActive = cell.IsActive;
-            cellAdd.UpdateTime = DateTime.Now;
+            string cellCodeStr = cell.CellCode + "-" + cell.Layer;
+            var cellCode = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == cellCodeStr);
+            if (cellCode == null)
+            {
+                cellAdd.CellCode = cell.CellCode + "-" + cell.Layer;
+                cellAdd.CellName = cell.CellName;
+                cellAdd.ShortName = cell.ShortName;
+                cellAdd.CellType = cell.CellType;
+                cellAdd.Layer = cell.Layer;
+                cellAdd.Col = cell.Col;
+                cellAdd.ImgX = cell.ImgX;
+                cellAdd.ImgY = cell.ImgY;
+                cellAdd.Rfid = cell.Rfid;
+                cellAdd.Warehouse = warehouse;
+                cellAdd.Area = area;
+                cellAdd.Shelf = shelf;
+                cellAdd.Product = product;
+                cellAdd.MaxQuantity = cell.MaxQuantity;
+                cellAdd.IsSingle = cell.IsSingle;
+                cellAdd.Description = cell.Description;
+                cellAdd.IsActive = cell.IsActive;
+                cellAdd.UpdateTime = DateTime.Now;
 
-            CellRepository.Add(cellAdd);
-            CellRepository.SaveChanges();
-            return true;
+                CellRepository.Add(cellAdd);
+                CellRepository.SaveChanges();
+                return true;
+            }
+            else
+            {
+                errorInfo = "添加失败!原因：所添加数据已存在或者选择的层号已存在，请重选！";
+                return false;
+            }
         }
 
         public bool Delete(string cellCode)
@@ -303,6 +314,7 @@ namespace THOK.Wms.Bll.Service
                                     (s, c) => new { s.WarehouseCode, s.WarehouseName, s.AreaCode, s.AreaName, s.ShelfCode, s.ShelfName, c.CellCode, c.CellName, c }
                                  )
                                  .GroupBy(c => new { c.WarehouseCode, c.WarehouseName })
+                                 .AsParallel()
                                  .Select(w => new
                                  {
                                      id = w.Key.WarehouseCode,
@@ -718,6 +730,41 @@ namespace THOK.Wms.Bll.Service
                 dt.Rows.Add("'"+item.ProductCode, item.ProductName, item.ProductQuantity);
             }
             return dt;
+        }
+
+
+        /// <summary>
+        /// 根据货编码架获取生成的货位编码
+        /// </summary>
+        /// <param name="shelfCode">货架编码</param>
+        /// <returns></returns>
+        public object GetCellCode(string shelfCode)
+        {
+            string cellCodeStr = "";
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+            var cellCode = cellQuery.Where(c => c.ShelfCode == shelfCode).Max(c=>c.CellCode);
+            if (cellCode == string.Empty || cellCode == null)
+            {
+                cellCodeStr = shelfCode + "-01";
+            }
+            else
+            {
+                int i = Convert.ToInt32(cellCode.ToString().Substring(shelfCode.Length+1, 2));
+                if (cellCode.ToString().Substring(cellCode.Length - 1, 1) == "3")
+                {
+                    i++;
+                }
+                string newcode = i.ToString();
+                if (newcode.Length <= 2)
+                {
+                    for (int j = 0; j < 2 - i.ToString().Length; j++)
+                    {
+                        newcode = "0" + newcode;
+                    }
+                    cellCodeStr = shelfCode + "-" + newcode;
+                }
+            }
+            return cellCodeStr;
         }
     }
 }

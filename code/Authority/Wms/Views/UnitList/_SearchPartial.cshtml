@@ -36,14 +36,10 @@
         queryParams.UnitListCode = $('#unitListCode').val();
         queryParams.UnitListName = $('#unitListName').val();
         queryParams.UniformCode = $('#uniformCode').val();
-        queryParams.UnitCode01 = $('#unitCode01').val();
-        queryParams.UnitName01 = $('#unitName01').val();
-        queryParams.UnitCode02 = $('#unitCode02').val();
-        queryParams.UnitName02 = $('#unitName02').val();
-        queryParams.UnitCode03 = $('#unitCode03').val();
-        queryParams.UnitName03 = $('#unitName03').val();
-        queryParams.UnitCode04 = $('#unitCode04').val();
-        queryParams.UnitName04 = $('#unitName04').val();
+        queryParams.UnitCode01 = $('#unitCode1').val();
+        queryParams.UnitCode02 = $('#unitCode2').val();
+        queryParams.UnitCode03 = $('#unitCode3').val();
+        queryParams.UnitCode04 = $('#unitCode4').val();
         queryParams.IsActive = $('#isActive').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
@@ -71,32 +67,28 @@
                   </tr>
                   <tr>
                     <td width="100">一级单位（件）:</td>
-                    <td><input name="unitName01" id="unitName01" type="text" style="width: 100px"">
+                    <td><input name="unitCode01" id="unitCode1" type="text" style="width: 100px"">
                         <a href="#" onclick="unitSelect1()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
                   </tr> 
                   <tr>
                     <td width="100">二级单位（条）:</td>
-                    <td><input name="unitName02" id="unitName02" type="text" style="width: 100px"">
+                    <td><input name="unitCode01" id="unitCode2" type="text" style="width: 100px"">
                         <a href="#" onclick="unitSelect2()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                         </td>
                   </tr>
                   <tr>
                     <td width="100">三级单位（包）:</td>
-                    <td><input name="unitName03" id="unitName03" type="text" style="width: 100px"">
+                    <td><input name="unitCode03" id="unitCode3" type="text" style="width: 100px"">
                         <a href="#" onclick="unitSelect3()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
                   </tr>
                   <tr>
                     <td width="100">四级单位（支）:</td>
-                    <td><input name="unitName04" id="unitName04" type="text" style="width: 100px"">
+                    <td><input name="unitCode04" id="unitCode4" type="text" style="width: 100px"">
                         <a href="#" onclick="unitSelect4()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
                   </tr>
-                  <tr> 
-                    <td width="60">统一编码:</td>
-                    <td><input id="uniformCode" name="UniformCode" type="text" style="width: 100px"></td>
-                   </tr>
                    <tr> 
                     <td width="60">是否可用:</td>
                     <td><select id="isActive" name="IsActive" class="easyui-combobox" style="width: 100px">

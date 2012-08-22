@@ -68,5 +68,13 @@ namespace Authority.Controllers.Wms.WarehouseInfo
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
+        //获取生成的货架编码
+        // GET: /Shelf/GetShelfCode/
+        public ActionResult GetShelfCode(string areaCode)
+        {
+            var shelfCode = ShelfService.GetShelfCode(areaCode);
+            return Json(shelfCode, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

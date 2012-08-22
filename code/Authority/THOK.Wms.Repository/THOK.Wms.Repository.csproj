@@ -209,6 +209,10 @@
     <Compile Include="Migrations\201208210232541_modify_in_out_bill_target_cell.Designer.cs">
       <DependentUpon>201208210232541_modify_in_out_bill_target_cell.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201208220705510_modify_unit_list.cs" />
+    <Compile Include="Migrations\201208220705510_modify_unit_list.Designer.cs">
+      <DependentUpon>201208220705510_modify_unit_list.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
