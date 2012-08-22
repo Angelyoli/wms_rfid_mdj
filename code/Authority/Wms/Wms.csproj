@@ -1171,6 +1171,8 @@
     <Content Include="Views\Distribution\_ProductPartial.cshtml" />
     <Content Include="Views\Stockledger\_ProductPartial.cshtml" />
     <Content Include="Views\HistoricalDetail\_ProductPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_MoveOutCellPartial.cshtml" />
+    <Content Include="Views\StockInBill\_MoveInCellPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
