@@ -202,18 +202,18 @@ namespace THOK.Wms.Bll.Service
 
             if (QueryString == "ProductCode")
             {
-                var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Where(s => s.ProductCode == value && s.IsActive=="1").Select(s => s.ProductCode);
-                product = product.Where(p => storages.Any(s => s == p.ProductCode) && !p.SortingLowerlimits.Any(l => l.ProductCode == p.ProductCode));
+                var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Where(s => s.ProductCode == value).GroupBy(s=>s.ProductCode).Select(s => s.Key);
+                product = product.Where(p => storages.Any(s => s == p.ProductCode));
             }
             else if (QueryString == "ProductName")
             {
-                var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Where(s => s.Product.ProductName == value && s.IsActive == "1").Select(s => s.Product.ProductName);
-                product = product.Where(p => storages.Any(s => s == p.ProductName) && !p.SortingLowerlimits.Any(l => l.ProductCode == p.ProductCode));
+                var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Where(s => s.Product.ProductName.Contains(value)).GroupBy(s => s.ProductCode).Select(s => s.Key);
+                product = product.Where(p => storages.Any(s => s == p.ProductCode));
             }
-            else if (QueryString == string.Empty || QueryString ==null)
+            if (QueryString == string.Empty || QueryString == null || value == string.Empty || value == null)
             {
-                var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Select(s => s.ProductCode);
-                product = product.Where(p => storages.Any(s => s == p.ProductCode)&& !p.SortingLowerlimits.Any(l=>l.ProductCode==p.ProductCode));
+                var storages = StorageRepository.GetQueryable().OrderBy(s => s.ProductCode).Where(s => s.Product != null).GroupBy(s => s.ProductCode).Select(s => s.Key);
+                product = ProductQuery.Where(p => storages.Any(s => s == p.ProductCode));
             }
             var temp = product.OrderBy(p => p.ProductCode).Select(c=>c);
             int total = temp.Count();

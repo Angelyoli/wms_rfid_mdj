@@ -16,6 +16,8 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool Save(Warehouse warehouse);
 
-        Object FindWarehouse(string parameter);
+        object FindWarehouse(string parameter);
+
+        object GetWareCode();
     }
 }

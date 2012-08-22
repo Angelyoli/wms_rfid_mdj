@@ -97,6 +97,37 @@ namespace THOK.Wms.Bll.Service
             return warehouse.First(w => w.WarehouseCode == wareCode);
         }
 
+        /// <summary>
+        /// 获取生成的仓库编码
+        /// </summary>
+        /// <returns></returns>
+        public object GetWareCode()
+        {
+            string warehouseCode = "";
+            IQueryable<Warehouse> wareQuery = WarehouseRepository.GetQueryable();
+            var wareCode = wareQuery.Max(w => w.WarehouseCode);
+            if (wareCode == string.Empty || wareCode == null)
+            {
+                warehouseCode = "01";
+            }
+            else
+            {
+                int i = Convert.ToInt32(wareCode);
+                i++;
+                string newcode = i.ToString();
+                if (newcode.Length <= 2)
+                {
+                    for (int j = 0; j < 2 - i.ToString().Length; j++)
+                    {
+                        newcode = "0" + newcode;
+                    }
+                    warehouseCode = newcode;
+                }
+            }
+            return warehouseCode;
+        }
+
         #endregion
+               
     }
 }
