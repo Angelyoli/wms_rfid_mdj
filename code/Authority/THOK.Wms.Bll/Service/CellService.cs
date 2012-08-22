@@ -732,6 +732,7 @@ namespace THOK.Wms.Bll.Service
             return dt;
         }
 
+
         /// <summary>
         /// 根据货编码架获取生成的货位编码
         /// </summary>
