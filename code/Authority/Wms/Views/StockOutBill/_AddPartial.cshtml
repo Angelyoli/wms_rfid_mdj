@@ -297,6 +297,12 @@
                 <td width="60">描述</td>
                 <td width="168"><input name="Description" /></td>
                 </tr>
+                <tr>
+                <td width="60">目标货位</td>
+                <td width="168"><input name="TargetCellCode" readonly="true" id="targetCellCode">
+                <a href="#" onclick="moveOutCellSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
+                </td>
+                </tr>
             </table>
 	    </form>
     </div>
@@ -383,3 +389,4 @@
 </div>
 @Html.Partial("_ProductPartial")
 @Html.Partial("_UnitPartial")
+@Html.Partial("_MoveOutCellPartial")
