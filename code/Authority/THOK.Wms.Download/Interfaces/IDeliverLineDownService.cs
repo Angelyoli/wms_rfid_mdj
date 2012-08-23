@@ -8,6 +8,7 @@ namespace THOK.Wms.Download.Interfaces
 {
    public interface IDeliverLineDownService
     {
-       DeliverLine[] GetDeliverLine();
+       DeliverLine[] GetDeliverLine(string deloverLines);
+       DeliverDist[] GetDeliverDist(string deloverDists);
     }
 }

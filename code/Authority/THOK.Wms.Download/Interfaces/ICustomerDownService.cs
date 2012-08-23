@@ -6,9 +6,8 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Download.Interfaces
 {
-   public interface ISortingDownService
+   public interface ICustomerDownService
     {
-       SortOrder[] GetSortOrder(string sortOrders);
-       SortOrderDetail[] GetSortOrderDetail(string sortOrders);
+       Customer[] GetCustomer(string customers);
     }
 }

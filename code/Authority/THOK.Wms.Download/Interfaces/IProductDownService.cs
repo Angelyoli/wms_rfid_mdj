@@ -8,6 +8,7 @@ namespace THOK.Wms.Download.Interfaces
 {
     public interface IProductDownService
     {
-        Product[] GetProduct();
+        Product[] GetProduct(string productCodes);
+        Supplier[] GetSupplier(string SupplierCodes);
     }
 }

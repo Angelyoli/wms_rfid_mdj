@@ -9,7 +9,7 @@ namespace THOK.Wms.Download.Service
 {
     public class ProductDownService : IProductDownService
     {
-        public Product[] GetProduct()
+        public Product[] GetProduct(string productCodes)
         {
             using (SortingDbContext sortdb = new SortingDbContext())
             {
@@ -19,38 +19,53 @@ namespace THOK.Wms.Download.Service
                             ,[N_UNIFY_CODE] AS UniformCode
                             ,[BRAND_N] AS CustomCode
                             ,[SHORT_CODE] AS ShortCode
-                            ,[customer_code] AS UnitListCode
-                            ,[customer_name] AS UnitCode
-                            ,[quantity_sum] AS SupplierCode
-                            ,[amount_sum] AS BrandCode
-                            ,[detail_num] AS AbcTypeCode
-                            ,[deliver_order] AS ProductTypeCode
-                            ,[DeliverDate] AS PackTypeCode
-                            ,[description] AS PriceLevelCode
-                            ,[is_active] AS StatisticType
-                            ,[update_time] AS PieceBarcode
-                            ,[deliver_line_code] AS BarBarcode
-                             ,[deliver_line_code] AS PackageBarcode
-                             ,[deliver_line_code] AS OneProjectBarcode
-                             ,[deliver_line_code] AS BuyPrice
-                             ,[deliver_line_code] AS TradePrice
-                             ,[deliver_line_code] AS RetailPrice
-                             ,[deliver_line_code] AS CostPrice
-                             ,[deliver_line_code] AS IsFilterTip
-                             ,[deliver_line_code] AS IsNew
-                             ,[deliver_line_code] AS IsFamous
-                             ,[deliver_line_code] AS IsMainProduct
-                             ,[deliver_line_code] AS IsProvinceMainProduct
-                             ,[deliver_line_code] AS BelongRegion
-                             ,[deliver_line_code] AS IsConfiscate
-                             ,[deliver_line_code] AS IsAbnormity
-                             ,[deliver_line_code] AS Description
-                             ,[deliver_line_code] AS IsActive
-                             ,[deliver_line_code] AS UpdateTime
+                            ,[''] AS UnitListCode
+                            ,[UNIT_CODE] AS UnitCode
+                            ,[''] AS SupplierCode
+                            ,[''] AS BrandCode
+                            ,[''] AS AbcTypeCode
+                            ,[PRICE_LEVEL_CODE] AS ProductTypeCode
+                            ,[''] AS PackTypeCode
+                            ,[PRICE_LEVEL_CODE] AS PriceLevelCode
+                            ,[''] AS StatisticType
+                            ,[BARCODE_PIECE] AS PieceBarcode
+                            ,[BARCODE_BAR] AS BarBarcode
+                            ,[BARCODE_PACKAGE] AS PackageBarcode
+                            ,[''] AS OneProjectBarcode
+                            ,[BUY_PRICE] AS BuyPrice
+                            ,[TRADE_PRICE] AS TradePrice
+                            ,[RETAIL_PRICE] AS RetailPrice
+                            ,[COST_PRICE] AS CostPrice
+                            ,[IS_FILTERTIP] AS IsFilterTip
+                            ,[IS_NEW] AS IsNew
+                            ,[IS_FAMOUS] AS IsFamous
+                            ,[IS_MAINPRODUCT] AS IsMainProduct
+                            ,[IS_MAINPROVINCE] AS IsProvinceMainProduct
+                            ,[BELONG_REGION] AS BelongRegion
+                            ,[IS_CONFISCATE] AS IsConfiscate
+                            ,[IS_ABNORMITY_BRAND] AS IsAbnormity
+                            ,[''] AS Description
+                            ,[ISACTIVE] AS IsActive
+                            ,[UPDATE_DATE] AS UpdateTime
                         FROM [V_WMS_BRAND]
-                    "
-                    )
-                    .ToArray();
+                    ").ToArray();
+            }
+        }
+
+        public Supplier[] GetSupplier(string SupplierCodes)
+        {
+            using (SortingDbContext sortdb = new SortingDbContext())
+            {
+                return sortdb.Database.SqlQuery<Supplier>(@"
+                    SELECT [FACTORY_CODE] AS SupplierCode
+                            ,[N_FACTORY_CODE] AS UniformCode
+                            ,[FACTORY_N] AS CustomCode
+                            ,[FACTORY_NAME] AS SupplierName
+                            ,[PROVINCE_NAME] AS ProvinceName
+                            ,[ISACTIVE] AS IsActive
+                            ,getdate() AS UpdateTime
+                        FROM [V_WMS_FACTORY]
+                    ").ToArray();
             }
         }
     }

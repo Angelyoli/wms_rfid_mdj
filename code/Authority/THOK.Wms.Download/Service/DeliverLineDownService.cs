@@ -9,7 +9,7 @@ namespace THOK.Wms.Download.Service
 {
     public class DeliverLineDownService : IDeliverLineDownService
     {
-        public DeliverLine[] GetDeliverLine()
+        public DeliverLine[] GetDeliverLine(string deloverLines)
         {
             using (SortingDbContext sortdb = new SortingDbContext())
             {
@@ -23,9 +23,27 @@ namespace THOK.Wms.Download.Service
                             ,[ISACTIVE] AS IsActive
                             ,getdate() AS UpdateTime
                         FROM [V_WMS_DELIVER_LINE]
-                    "
-                    )
-                    .ToArray();
+                    ").ToArray();
+            }
+        }
+
+
+        public DeliverDist[] GetDeliverDist(string deloverDists)
+        {
+            using (SortingDbContext sortdb = new SortingDbContext())
+            {
+                return sortdb.Database.SqlQuery<DeliverDist>(@"
+                    SELECT [DIST_STA_CODE] AS DistCode
+                            ,[DIST_STA_N] AS CustomCode
+                            ,[DIST_STA_NAME] AS DistName
+                            ,[DIST_CTR_CODE] AS DistCenterCode
+                            ,[ORG_CODE] AS CompanyCode
+                            ,[N_ORG_CODE] AS UniformCode
+                            ,'' AS Description
+                            ,[ISACTIVE] AS IsActive
+                            ,getdate() AS UpdateTime
+                        FROM [V_WMS_DIST_STATION]
+                    ").ToArray();
             }
         }
     }

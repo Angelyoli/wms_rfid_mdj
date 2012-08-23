@@ -19,6 +19,7 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IDeliverLineDownService DeliverLineDownService { get; set; }
 
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
@@ -30,7 +31,13 @@ namespace THOK.Wms.Bll.Service
             bool result = false;
             try
             {
-                DeliverLine[] deliverLines = DeliverLineDownService.GetDeliverLine();
+                var deliverLineCodes = DeliverLineRepository.GetQueryable().Where(d => d.DeliverLineCode == d.DeliverLineCode).Select(s => new { s.DeliverLineCode }).ToArray();
+                string deliverStrs = "";
+                for (int i = 0; i < deliverLineCodes.Length; i++)
+                {
+                    deliverStrs += deliverLineCodes[i].DeliverLineCode + ",";
+                }
+                DeliverLine[] deliverLines = DeliverLineDownService.GetDeliverLine(deliverStrs);
                 foreach (var item in deliverLines)
                 {
                     var deliverLine = new DeliverLine();
@@ -53,5 +60,6 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+
     }
 }

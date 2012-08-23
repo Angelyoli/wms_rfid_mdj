@@ -9,7 +9,7 @@ namespace THOK.Wms.Download.Service
 {
     public class SortingDownService : ISortingDownService
     {
-        public SortOrder[] GetSortOrder()
+        public SortOrder[] GetSortOrder(string sortOrders)
         {
             using (SortingDbContext sortdb = new SortingDbContext())
             {
@@ -35,8 +35,7 @@ namespace THOK.Wms.Download.Service
             }
         }
 
-
-        public SortOrderDetail[] GetSortOrderDetail()
+        public SortOrderDetail[] GetSortOrderDetail(string sortOrders)
         {
             using (SortingDbContext sortdb = new SortingDbContext())
             {

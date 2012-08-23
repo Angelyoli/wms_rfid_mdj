@@ -130,5 +130,11 @@ namespace THOK.Wms.Bll.Service
        }
 
         #endregion
+
+
+        public bool DownUnit()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

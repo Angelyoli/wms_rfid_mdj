@@ -6,9 +6,9 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Download.Interfaces
 {
-   public interface ISortingDownService
+   public interface IInBillMasterDownService
     {
-       SortOrder[] GetSortOrder(string sortOrders);
-       SortOrderDetail[] GetSortOrderDetail(string sortOrders);
+       InBillMaster[] GetInBillMaster(string inBillMasters);
+       InBillDetail[] GetInBillDetail(string inBillMasters);
     }
 }

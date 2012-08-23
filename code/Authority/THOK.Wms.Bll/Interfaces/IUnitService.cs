@@ -20,5 +20,7 @@ namespace THOK.Wms.Bll.Interfaces
 
 
         object GetDetails(int page, int rows, string QueryString, string Value);
+
+        bool DownUnit();
     }
 }
