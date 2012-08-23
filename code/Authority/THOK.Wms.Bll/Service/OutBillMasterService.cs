@@ -122,7 +122,8 @@ namespace THOK.Wms.Bll.Service
                         Status = WhatStatus(i.Status),
                         IsActive = i.IsActive == "1" ? "可用" : "不可用",
                         Description = i.Description,
-                        UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                        UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                        i.TargetCellCode
                     });
             return new { total, rows = temp.ToArray() };
         }
@@ -149,6 +150,7 @@ namespace THOK.Wms.Bll.Service
                     outbm.IsActive = "1";
                     outbm.UpdateTime = DateTime.Now;
                     outbm.Origin = "1";
+                    outbm.TargetCellCode = outBillMaster.TargetCellCode;
 
                     OutBillMasterRepository.Add(outbm);
                     OutBillMasterRepository.SaveChanges();
@@ -214,6 +216,7 @@ namespace THOK.Wms.Bll.Service
                     outbm.IsActive = "1";
                     outbm.UpdateTime = DateTime.Now;
                     outbm.Origin = "1";
+                    outbm.TargetCellCode = outBillMaster.TargetCellCode;
 
                     OutBillMasterRepository.SaveChanges();
                     result = true;
@@ -282,13 +285,31 @@ namespace THOK.Wms.Bll.Service
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (outbm != null && outbm.Status == "1")
             {
-                outbm.Status = "2";
-                outbm.VerifyDate = DateTime.Now;
-                outbm.UpdateTime = DateTime.Now;
-                outbm.VerifyPersonID = employee.ID;
-                OutBillMasterRepository.SaveChanges();
-                result = true;
+                if (string.IsNullOrEmpty(outbm.TargetCellCode))//判断出库主单是否有指定货位
+                {
+                    outbm.Status = "2";
+                    outbm.VerifyDate = DateTime.Now;
+                    outbm.UpdateTime = DateTime.Now;
+                    outbm.VerifyPersonID = employee.ID;
+                    OutBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                else//如果出库主单指定了货位那么就从指定的货位出库
+                {
+                    result = OutAllot(outbm);
+                }
             }
+            return result;
+        }
+
+        /// <summary>
+        /// 出库分配
+        /// </summary>
+        /// <param name="outBillMaster">出库主单</param>
+        /// <returns></returns>
+        public bool OutAllot(OutBillMaster outBillMaster)
+        {
+            bool result=false;
             return result;
         }
 

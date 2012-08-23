@@ -29,6 +29,22 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         {
             string queryString = Request.QueryString["queryString"];
             string value = Request.QueryString["value"];
+            if (queryString == null)
+            {
+                queryString = "ProductCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            System.Data.DataTable dt = CellService.GetProductCell(queryString, value);
+            //System.Data.DataTable dt = CellService.Test01();
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                Response.Write("<script>alert('导出Excel', '数据表中无数据', 'info')</script>");
+                //throw new Exception("数据表中无数据");
+            }
+
             string filename = System.DateTime.Now.ToString("yyMMdd-HHmm-ss") + ".xls";
             string path = "";
             if (System.IO.Directory.Exists(@"D:\"))
@@ -42,27 +58,15 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             string pathFilename = path + filename;
             string titleName = "货位预设卷烟信息表";
             bool titleBold = true;
-            string titleSize = "20", contentFirstSize = "10";
+            int titleSize = 20, contentFirstSize = 10;
             string contentFontName = "Arial";
+            int plusSize = 50;
 
-            CreateExcel(queryString, value, pathFilename, titleName, titleBold, titleSize, contentFontName, contentFirstSize);
+            CreateExcel(dt, pathFilename, titleName, titleBold, titleSize, contentFontName, contentFirstSize, plusSize);
         }
 
-        public void CreateExcel(string queryString,string value, string pathFilename, string titleName, bool titleBold, string titleSize, string contentFontName, string contentFirstSize)
+        public void CreateExcel(System.Data.DataTable dt, string pathFilename, string titleName, bool titleBold, int titleSize, string contentFontName, int contentFirstSize, int plusSize)
         {
-            if (queryString == null)
-            {
-                queryString = "ProductCode";
-            }
-            if (value == null)
-            {
-                value = "";
-            }
-            System.Data.DataTable dt = CellService.GetProductCell(queryString, value);
-            if (dt == null)
-            {
-                throw new Exception("数据表中无数据");
-            }
             int eRowIndex = 2;
             int eColIndex = 1;
             int cols = dt.Columns.Count;
@@ -73,11 +77,11 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             //xlSheet.PageSetup.CenterHorizontally = false;//页面水平居中
             //xlSheet.PageSetup.CenterVertically = false;//页面不垂直居中
 
-            xlApp.Cells[1, 1] = titleName;
-            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, 3]).Font.Bold = titleBold;
-            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, 3]).Font.Size = titleSize;
-            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, 3]).MergeCells = true;
-            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, 3]).HorizontalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+            xlApp.Cells[1, cols] = titleName;
+            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).Font.Bold = titleBold;
+            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).Font.Size = titleSize;
+            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).MergeCells = true;
+            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).HorizontalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
 
             try
             {
@@ -89,12 +93,12 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                 }
 
                 //列内容样式
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, 3]).Font.Bold = titleBold;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, 3]).Font.Name = contentFontName;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, 3]).Font.Size = contentFirstSize;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, 1]).ColumnWidth = 20;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 2], (object)xlApp.Cells[eRowIndex, 2]).ColumnWidth = 40;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 3], (object)xlApp.Cells[eRowIndex, 3]).ColumnWidth = 10;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Bold = titleBold;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Name = contentFontName;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Size = contentFirstSize;
+                //xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, 1]).ColumnWidth = 20;
+                //xlApp.get_Range((object)xlApp.Cells[eRowIndex, 2], (object)xlApp.Cells[eRowIndex, 2]).ColumnWidth = 40;
+                //xlApp.get_Range((object)xlApp.Cells[eRowIndex, 3], (object)xlApp.Cells[eRowIndex, 3]).ColumnWidth = 10;
 
                 eRowIndex++;
 
@@ -108,7 +112,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                     }
                     eRowIndex++;
                 }
-                Microsoft.Office.Interop.Excel.Range range1 = (Microsoft.Office.Interop.Excel.Range)xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[eRowIndex - 1, 3]);
+                Microsoft.Office.Interop.Excel.Range range1 = (Microsoft.Office.Interop.Excel.Range)xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[eRowIndex - 1, cols]);
                 range1.Borders.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
                 range1.Borders.get_Item(Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeTop).LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
                 range1.Borders.get_Item(Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeRight).LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
@@ -117,15 +121,17 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                 //xlApp.Visible = true;
 
                 xlApp.Cells[eRowIndex + 1, 1] = "附加信息：";
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, 3]).MergeCells = true;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, 3]).MergeCells = true;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, eColIndex]).RowHeight = 50;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).RowHeight = plusSize;
 
                 xlApp.Cells[eRowIndex + 2, 1] = "确认签名：";
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, 3]).MergeCells = true;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, 3]).MergeCells = true;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
 
+                //行、列自适应
                 //xlApp.Cells.EntireRow.AutoFit();
+                xlApp.Cells.EntireColumn.AutoFit();
                 //xlApp.DisplayAlerts = true;
 
                 //xlBook.SaveCopyAs(path);

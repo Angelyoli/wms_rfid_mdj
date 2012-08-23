@@ -26,7 +26,7 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
         {
             IQueryable<SortingLowerlimit> lowerLimitQuery = SortingLowerlimitRepository.GetQueryable();
-            var lowerLimit = lowerLimitQuery.Where(s => s.SortingLineCode == s.SortingLineCode);
+            var lowerLimit = lowerLimitQuery.OrderBy(b => b.SortingLineCode).Where(s => s.SortingLineCode == s.SortingLineCode);
             if (sortingLineCode != string.Empty && sortingLineCode != null)
             {
                 lowerLimit = lowerLimit.Where(l => l.SortingLineCode.Contains(sortingLineCode));
@@ -47,7 +47,10 @@ namespace THOK.Wms.Bll.Service
             {
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
-            var temp = lowerLimit.OrderBy(b => b.SortingLineCode).AsEnumerable().Select(b => new
+            int total = lowerLimit.Count();
+            lowerLimit = lowerLimit.Skip((page - 1) * rows).Take(rows);
+
+            var temp = lowerLimit.ToArray().AsEnumerable().Select(b => new
             {
                 b.ID,
                 b.SortingLineCode,
@@ -61,8 +64,6 @@ namespace THOK.Wms.Bll.Service
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
 
-            int total = temp.Count();
-            temp = temp.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = temp.ToArray() };
         }
 
@@ -70,15 +71,25 @@ namespace THOK.Wms.Bll.Service
         {
             var lowerLimit = new SortingLowerlimit();
             var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == sortLowerLimit.UnitCode);
-            lowerLimit.SortingLineCode = sortLowerLimit.SortingLineCode;
-            lowerLimit.ProductCode = sortLowerLimit.ProductCode;
-            lowerLimit.UnitCode = sortLowerLimit.UnitCode;
-            lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;
-            lowerLimit.IsActive = sortLowerLimit.IsActive;
-            lowerLimit.UpdateTime = DateTime.Now;
+            var lowerLimitList = SortingLowerlimitRepository.GetQueryable().FirstOrDefault(l => l.ProductCode == sortLowerLimit.ProductCode && l.SortingLineCode == sortLowerLimit.SortingLineCode);
+            if (lowerLimitList == null)
+            {
+                lowerLimit.SortingLineCode = sortLowerLimit.SortingLineCode;
+                lowerLimit.ProductCode = sortLowerLimit.ProductCode;
+                lowerLimit.UnitCode = sortLowerLimit.UnitCode;
+                lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;
+                lowerLimit.IsActive = sortLowerLimit.IsActive;
+                lowerLimit.UpdateTime = DateTime.Now;
 
-            SortingLowerlimitRepository.Add(lowerLimit);
-            SortingLowerlimitRepository.SaveChanges();
+                SortingLowerlimitRepository.Add(lowerLimit);
+                SortingLowerlimitRepository.SaveChanges();
+            }
+            else
+            {
+                lowerLimitList.Quantity = lowerLimitList.Quantity + (sortLowerLimit.Quantity * unit.Count);
+                lowerLimitList.UpdateTime = DateTime.Now;
+                SortingLowerlimitRepository.SaveChanges();
+            }
             return true;
         }
 

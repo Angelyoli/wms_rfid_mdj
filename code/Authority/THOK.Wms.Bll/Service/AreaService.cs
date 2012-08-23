@@ -133,6 +133,40 @@ namespace THOK.Wms.Bll.Service
             return wareSet.ToArray();
         }
 
+        /// <summary>
+        /// 根据仓库编码获取生成的库区编码
+        /// </summary>
+        /// <param name="wareCode">仓库编码</param>
+        /// <returns></returns>
+        public object GetAreaCode(string wareCode)
+        {
+            string areaCodeStr = "";
+            IQueryable<Area> areaQuery = AreaRepository.GetQueryable();
+            var areaCode = areaQuery.Where(a=>a.WarehouseCode==wareCode).Max(a=>a.AreaCode);
+            if (areaCode == string.Empty || areaCode == null)
+            {
+                areaCodeStr = wareCode + "-01";
+            }
+            else
+            {
+                int i = Convert.ToInt32(areaCode.ToString().Substring(wareCode.Length+1,2));
+                i++;
+                string newcode = i.ToString();
+                if (newcode.Length <= 2)
+                {
+                    for (int j = 0; j < 2 - i.ToString().Length; j++)
+                    {
+                        newcode = "0" + newcode;
+                    }
+                    areaCodeStr = wareCode + "-" + newcode;
+                }
+            }
+            return areaCodeStr;
+        }
+
         #endregion
+
+
+        
     }
 }

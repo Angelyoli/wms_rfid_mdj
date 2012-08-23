@@ -3,11 +3,10 @@ using THOK.Wms.AutomotiveSystems.Models;
 using THOK.Wms.AutomotiveSystems.Interfaces;
 using THOK.Wms.Dal.Interfaces;
 using Microsoft.Practices.Unity;
-using System.Data.Linq;
-using System.Linq.Expressions;
-using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
+using THOK.Wms.SignalR.Common;
+using THOK.Wms.DbModel;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
@@ -29,7 +28,15 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ICheckBillMasterRepository CheckBillMasterRepository { get; set; }
         [Dependency]
         public ICheckBillDetailRepository CheckBillDetailRepository { get; set; }
-        
+
+        [Dependency]
+        public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
+
+        [Dependency]
+        public IStorageRepository StorageRepository { get; set; }
+        [Dependency]
+        public IStorageLocker Locker { get; set; }
+ 
         public void GetBillMaster(string[] BillTypes, Result result)
         {
             BillMaster[] billMasters = new BillMaster[] { };
@@ -81,7 +88,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
-        public void GetBillDetail(BillMaster[] billMasters, string productCode, string OperateType, string Operator, Result result)
+        public void GetBillDetail(BillMaster[] billMasters, string productCode, string OperateType, string OperateAreas, string Operator, Result result)
         {
             BillDetail[] billDetails = new BillDetail[] { };
             try
@@ -520,6 +527,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                                         {
                                             moveDetail.MoveBillMaster.Status = "4";
+                                            string errorInfo = "";
+                                            SettleSortWokDispatch(moveDetail.BillNo, ref errorInfo);
                                         }
                                     }
                                 }
@@ -562,6 +571,77 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 result.IsSuccess = false;
                 result.Message = "调用服务器服务执行作业任务失败，详情：" + e.Message;
             }
+        }
+
+        private bool SettleSortWokDispatch(string moveBillNo,ref string errorInfo)
+        {
+            var sortWork = SortWorkDispatchRepository.GetQueryable()
+                .FirstOrDefault(s => s.MoveBillNo == moveBillNo);
+
+            if (sortWork!= null)
+            {
+                //出库单作自动出库
+                var storages = StorageRepository.GetQueryable()
+                    .Where(s => s.CellCode == sortWork.SortingLine.CellCode
+                       && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
+
+                sortWork.OutBillMaster.OutBillDetails.AsParallel().ForAll(
+                    (Action<OutBillDetail>)delegate(OutBillDetail o)
+                    {
+                        var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
+                        foreach (var s in ss)
+                        {
+                            lock (s)
+                            {
+                                if (o.BillQuantity - o.AllotQuantity > 0)
+                                {
+                                    decimal allotQuantity = s.Quantity;
+                                    decimal billQuantity = o.BillQuantity - o.AllotQuantity;
+                                    allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                                    o.AllotQuantity += allotQuantity;
+                                    o.RealQuantity += allotQuantity;
+                                    s.Quantity -= allotQuantity;
+
+                                    var billAllot = new OutBillAllot()
+                                    {
+                                        BillNo = sortWork.OutBillMaster.BillNo,
+                                        OutBillDetailId = o.ID,
+                                        ProductCode = o.ProductCode,
+                                        CellCode = s.CellCode,
+                                        StorageCode = s.StorageCode,
+                                        UnitCode = o.UnitCode,
+                                        AllotQuantity = allotQuantity,
+                                        RealQuantity = allotQuantity,
+                                        Status = "2"
+                                    };
+                                    lock (sortWork.OutBillMaster.OutBillAllots)
+                                    {
+                                        sortWork.OutBillMaster.OutBillAllots.Add(billAllot);
+                                    }
+                                }
+                                else
+                                    break;
+                            }
+                        }
+
+                        if (o.BillQuantity - o.AllotQuantity > 0)
+                        {
+                            throw new Exception(sortWork.SortingLine.SortingLineName + " " + o.ProductCode + " " + o.Product.ProductName + "分拣备货区库存不足，未能结单！");
+                        }
+                    }
+                );
+
+                //出库结单
+                var outMaster = OutBillMasterRepository.GetQueryable()
+                    .FirstOrDefault(o => o.BillNo == sortWork.OutBillNo);
+                outMaster.Status = "6";
+                outMaster.UpdateTime = DateTime.Now;
+                //分拣作业结单
+                sortWork.DispatchStatus = "4";
+                sortWork.UpdateTime = DateTime.Now;
+                return true;
+            }
+            return true;
         }
     }
 }

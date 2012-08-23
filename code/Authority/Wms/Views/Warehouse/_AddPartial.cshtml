@@ -10,6 +10,12 @@
             url = '/Warehouse/WareCreate/';
             addClass("", "");
             addName = "仓库";
+            $.getJSON("/Warehouse/GetWareCode/", function (json) {
+                if (json) {
+                    $('#wareID').attr("readonly", true);
+                    $('#wareID').val(json);
+                }
+            });
         } else if (row.attributes == "cell") {
             $('#dlg').dialog('close');
             alert("货位下不能增加！");
@@ -18,16 +24,35 @@
             url = '/Area/AreaCreate/';
             addClass("wareArea", "");
             addName = "库区";
+            $.getJSON("/Area/GetAreaCode/", { wareCode: row.WarehouseCode }, function (json) {
+                if (json) {
+                    $('#areaID').attr("readonly", true);
+                    $('#areaID').val(json);
+                }
+            });
         } else if (row.attributes == "area") {
             divid = "shelf";
             url = '/Shelf/ShelfCreate/';
             addClass("wareShelf", "areaShelf");
             addName = "货架";
+            $.getJSON("/Shelf/GetShelfCode/", { areaCode: row.AreaCode }, function (json) {
+                if (json) {
+                    $('#shelfID').attr("readonly", true);
+                    $('#shelfID').val(json);
+                }
+            });
         } else if (row.attributes == "shelf") {
             divid = "cell";
             url = '/Cell/CellCreate/';
             addClass("wareCell", "areaCell");
             addName = "货位";
+            $.getJSON("/Cell/GetCellCode/", { shelfCode: row.ShelfCode }, function (json) {
+                if (json) {
+                    $('#cellID').attr("readonly", true);
+                    $('#cellID').val(json);
+                    $('#cellCol').val(json.substr(row.ShelfCode.length+1, 2));
+                }
+            });
         }
         fm = divid + "fm";
         $('#dlg').dialog('open').dialog('setTitle', '新增: ' + addName);
@@ -533,7 +558,7 @@
                         储位列号:
                     </td>
                     <td colspan="3" style="text-align: left">
-                        <input name="Col" type="text" class="easyui-validatebox" style="width: 140px;"/>
+                        <input name="Col" type="text" id="cellCol" class="easyui-validatebox" style="width: 140px;"/>
                     </td>
                 </tr>
                 <tr>
