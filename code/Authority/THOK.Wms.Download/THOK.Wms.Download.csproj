@@ -45,7 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Service\SortingService.cs" />
+    <Compile Include="Interfaces\IDeliverLineDownService.cs" />
+    <Compile Include="Interfaces\IProductDownService.cs" />
+    <Compile Include="Interfaces\ISortingDownService.cs" />
+    <Compile Include="Service\DeliverLineDownService.cs" />
+    <Compile Include="Service\ProductDownService.cs" />
+    <Compile Include="Service\SortingDownService.cs" />
     <Compile Include="SortingDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -53,9 +58,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>

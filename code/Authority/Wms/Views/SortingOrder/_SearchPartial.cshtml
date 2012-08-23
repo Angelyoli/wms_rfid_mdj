@@ -19,6 +19,24 @@
         $('#dlg-search').dialog('close');
     }
 
+    function sasd() {
+        var j_waitDialog = ShowWaitMessageDialog();
+        $.ajax({
+            url: "/StockInBillAllot/AllotConfirm/", type: "GET", dataType: "text",
+            data: { billNo: billNo },
+            complete: function () { HideWaitMessageDialog(j_waitDialog); },
+            success: function (responseText) {
+                var result = $.evalJSON(responseText);
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                }
+            }
+        });
+    }
+
 </script>
 
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width:280px;height:220px;padding:2px 2px"

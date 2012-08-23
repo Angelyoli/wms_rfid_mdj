@@ -51,6 +51,7 @@
     <Compile Include="Interfaces\ICheckSearchDetailService.cs" />
     <Compile Include="Interfaces\ICurrentStockService.cs" />
     <Compile Include="Interfaces\IDailyBalanceService.cs" />
+    <Compile Include="Interfaces\IDeliverLineService.cs" />
     <Compile Include="Interfaces\IDifferSearchDetailService.cs" />
     <Compile Include="Interfaces\IDistributionService.cs" />
     <Compile Include="Interfaces\IHistoricalDetailService.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Service\CheckSearchDetailService.cs" />
     <Compile Include="Service\CurrentStockService.cs" />
     <Compile Include="Service\DailyBalanceService.cs" />
+    <Compile Include="Service\DeliverLineService.cs" />
     <Compile Include="Service\DifferSearchDetailService.cs" />
     <Compile Include="Service\DistributionService.cs" />
     <Compile Include="Service\HistoricalDetailService.cs" />
@@ -169,6 +171,10 @@
     <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
       <Name>THOK.Wms.DbModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.Download\THOK.Wms.Download.csproj">
+      <Project>{9495DAFA-C32B-445C-B760-341CBE9288C6}</Project>
+      <Name>THOK.Wms.Download</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>

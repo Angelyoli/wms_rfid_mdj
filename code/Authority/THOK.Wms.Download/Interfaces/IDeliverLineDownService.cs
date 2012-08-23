@@ -6,8 +6,8 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Download.Interfaces
 {
-    public interface IProductService
+   public interface IDeliverLineDownService
     {
-        Product[] GetProduct();
+       DeliverLine[] GetDeliverLine();
     }
 }
