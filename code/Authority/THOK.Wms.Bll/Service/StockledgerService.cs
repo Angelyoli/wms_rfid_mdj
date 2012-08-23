@@ -25,49 +25,108 @@ namespace THOK.Wms.Bll.Service
 
         #region IStockledgerService 成员
 
-        public object GetDetails(int page, int rows, string warehouseCode, string productCode, string beginDate, string endDate)
+        public object GetDetails(int page, int rows, string warehouseCode, string productCode, string beginDate, string endDate, string unitType)
         {
-            var ledgerQuery = StockledgerRepository.GetQueryable().AsEnumerable();
-            var query = ledgerQuery.Where(i => i.ProductCode.Contains(productCode)
-                                         && i.WarehouseCode.Contains(warehouseCode)
-                                       ).OrderBy(i => i.SettleDate).OrderBy(i => i.Product.ProductName
-                                       ).AsEnumerable().Select(i => new
-                                       {
-                                           SettleDate = i.SettleDate.ToString("yyyy-MM-dd"),
-                                           i.WarehouseCode,
-                                           i.Warehouse.WarehouseName,
-                                           i.ProductCode,
-                                           i.Product.ProductName,
-                                           i.UnitCode,
-                                           i.Unit.UnitName,
-                                           i.Beginning,
-                                           Item_Beginning=Convert.ToDouble(i.Beginning/50),
-                                           i.EntryAmount,
-                                           Item_EntryAmount = Convert.ToDouble(i.EntryAmount / 50),
-                                           i.DeliveryAmount,
-                                           Item_DeliveryAmount = Convert.ToDouble(i.DeliveryAmount / 50),
-                                           i.ProfitAmount,
-                                           Item_ProfitAmount = Convert.ToDouble(i.ProfitAmount / 50),
-                                           i.LossAmount,
-                                           Item_LossAmount = Convert.ToDouble(i.LossAmount / 50),
-                                           ProfitLossAmount = i.ProfitAmount - i.LossAmount,
-                                           Item_ProfitLossAmount = Convert.ToDouble((i.ProfitAmount-i.LossAmount) / 50),
-                                           i.Ending
-            });
+            if (unitType == null || unitType == "")
+            {
+                unitType = "1";
+            }
+            var query = StockledgerRepository.GetQueryable().Where(i => i.ProductCode.Contains(productCode)
+                                                                     && i.WarehouseCode.Contains(warehouseCode))
+                                         .Select(i => new
+                                         {
+                                             i.SettleDate,
+                                             i.ProductCode,
+                                             i.Product.ProductName,
+                                             UnitCode01 = i.Product.UnitList.Unit01.UnitCode,
+                                             UnitName01 = i.Product.UnitList.Unit01.UnitName,
+                                             UnitCode02 = i.Product.UnitList.Unit02.UnitCode,
+                                             UnitName02 = i.Product.UnitList.Unit02.UnitName,
+                                             Count01 = i.Product.UnitList.Unit01.Count,
+                                             Count02 = i.Product.UnitList.Unit02.Count,
+                                             i.WarehouseCode,
+                                             i.Warehouse.WarehouseName,
+                                             i.Beginning,
+                                             i.EntryAmount,
+                                             i.DeliveryAmount,
+                                             i.ProfitAmount,
+                                             i.LossAmount,
+                                             i.Ending
+                                         }).OrderByDescending(i => i.SettleDate)
+                                           .OrderBy(i => i.WarehouseName)
+                                           .OrderBy(i => i.ProductName);
             if (!beginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(beginDate);
-                query = query.Where(i => Convert.ToDateTime(i.SettleDate) >= begin);
+                query = query.Where(i => i.SettleDate >= begin).OrderBy(i => i.ProductName);
             }
 
             if (!endDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(endDate);
-                query = query.Where(i => Convert.ToDateTime(i.SettleDate) <= end);
+                query = query.Where(i => i.SettleDate <= end).OrderBy(i => i.ProductName);
             }
             int total = query.Count();
-            query = query.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = query.ToArray() };
+            var querys = query.Skip((page - 1) * rows).Take(rows);
+
+            string unitName = "";
+            decimal count = 1;
+            
+            //标准单位（标准件||标准条）
+            if ( unitType == "1" || unitType == "2")
+            {
+                if (unitType == "1")
+                {
+                    unitName = "标准件";
+                    count = 10000;
+                }
+
+                if (unitType == "2")
+                {
+                    unitName = "标准条";
+                    count = 200;
+                }
+                var Stockledger = querys.ToArray().Select(i => new
+                                         {
+                                             SettleDate = i.SettleDate.ToString("yyyy-MM-dd"),
+                                             i.ProductCode,
+                                             i.ProductName,
+                                             UnitCode = "",
+                                             UnitName = unitName,
+                                             i.WarehouseCode,
+                                             i.WarehouseName,
+                                             Beginning = i.Beginning / count,
+                                             EntryAmount = i.EntryAmount / count,
+                                             DeliveryAmount = i.DeliveryAmount / count,
+                                             ProfitAmount = i.ProfitAmount / count,
+                                             LossAmount = i.LossAmount / count,
+                                             Ending = i.Ending / count
+                                         });
+                return new { total, rows = Stockledger.ToArray() };
+            }
+
+            //自然件
+            if (unitType == "3" || unitType == "4")
+            {
+                var Stockledger = querys.ToArray().Select(i => new
+                                         {
+                                             SettleDate = i.SettleDate.ToString("yyyy-MM-dd"),
+                                             i.ProductCode,
+                                             i.ProductName,
+                                             UnitCode = unitType == "3" ? i.UnitCode01 : i.UnitCode02,
+                                             UnitName = unitType == "3" ? i.UnitName01 : i.UnitName02,
+                                             i.WarehouseCode,
+                                             i.WarehouseName,
+                                             Beginning = i.Beginning / (unitType == "3" ? i.Count01 : i.Count02),
+                                             EntryAmount = i.EntryAmount / (unitType == "3" ? i.Count01 : i.Count02),
+                                             DeliveryAmount = i.DeliveryAmount / (unitType == "3" ? i.Count01 : i.Count02),
+                                             ProfitAmount = i.ProfitAmount / (unitType == "3" ? i.Count01 : i.Count02),
+                                             LossAmount = i.LossAmount / (unitType == "3" ? i.Count01 : i.Count02),
+                                             Ending = i.Ending / (unitType == "3" ? i.Count01 : i.Count02),
+                                         });
+                return new { total, rows = Stockledger.ToArray() };
+            }
+            return new { total, rows = querys.ToArray() };
         }
         
         public object GetInfoDetails(int page, int rows, string warehouseCode, string productCode, string settleDate)

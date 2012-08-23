@@ -29,7 +29,8 @@ namespace Authority.Controllers.Wms.Inventory
             string productCode = collection["ProductCode"] ?? "";
             string beginDate = collection["BeginDate"] ?? "";
             string endDate = collection["EndDate"] ?? "";
-            var Stockledger = StockledgerService.GetDetails(page, rows, warehouseCode, productCode, beginDate, endDate);
+            string unitType = collection["UnitType"] ?? "";
+            var Stockledger = StockledgerService.GetDetails(page, rows, warehouseCode, productCode, beginDate, endDate, unitType);
             return Json(Stockledger, "text", JsonRequestBehavior.AllowGet);
         }
 

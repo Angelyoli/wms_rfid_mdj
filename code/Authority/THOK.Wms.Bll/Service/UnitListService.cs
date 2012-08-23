@@ -49,9 +49,9 @@ namespace THOK.Wms.Bll.Service
                 UnitName02 = ul.Unit02.UnitName,
                 UnitName03 = ul.Unit03.UnitName,
                 UnitName04 = ul.Unit04.UnitName,
-                Quantity01 = Convert.ToInt32(ul.Quantity01).ToString() + ":1",
-                Quantity02 = Convert.ToInt32(ul.Quantity02).ToString() + ":1",
-                Quantity03 = Convert.ToInt32(ul.Quantity03).ToString() + ":1",
+                Quantity01 = Convert.ToInt32(ul.Quantity01).ToString(),
+                Quantity02 = Convert.ToInt32(ul.Quantity02).ToString(),
+                Quantity03 = Convert.ToInt32(ul.Quantity03).ToString(),
                 ul.IsActive,
                 UpdateTime = ul.UpdateTime.ToString("yyyy-MM-dd")
             });
