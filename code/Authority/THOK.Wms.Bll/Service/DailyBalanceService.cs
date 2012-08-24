@@ -122,10 +122,6 @@ namespace THOK.Wms.Bll.Service
                                              LossAmount = i.LossAmount,
                                              Ending = i.Ending
                                          });
-
-            
-            
-
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
