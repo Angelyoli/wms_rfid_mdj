@@ -129,7 +129,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     sortOrderStrs += sortOrderIds[i].OrderID + ",";
                 }
-                SortOrder[] SortOrders = SortingDownService.GetSortOrder(sortOrderStrs);
+                SortOrder[] SortOrders = null; //SortingDownService.GetSortOrder(sortOrderStrs);
                 foreach (var item in SortOrders)
                 {
                     var sortOrder = new SortOrder();
@@ -154,7 +154,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 if (sortOrderList != string.Empty)
                 {
-                    SortOrderDetail[] SortOrderDetails = SortingDownService.GetSortOrderDetail(sortOrderList);
+                    SortOrderDetail[] SortOrderDetails = null; //SortingDownService.GetSortOrderDetail(sortOrderList);
                     foreach (var detail in SortOrderDetails)
                     {
                         var sortOrderDetail = new SortOrderDetail();
