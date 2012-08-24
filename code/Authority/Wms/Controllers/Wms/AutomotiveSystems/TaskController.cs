@@ -28,13 +28,13 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
                         TaskService.GetBillDetail(taskParameter.BillMasters, taskParameter.productCode, taskParameter.OperateType, taskParameter.OperateAreas, taskParameter.Operator, result);
                         break;
                     case "apply":
-                        TaskService.Apply(taskParameter.BillDetails, result);
+                        TaskService.Apply(taskParameter.BillDetails, taskParameter.UseTag,result);
                         break;
                     case "cancel":
-                        TaskService.Cancel(taskParameter.BillDetails, result);
+                        TaskService.Cancel(taskParameter.BillDetails, taskParameter.UseTag,result);
                         break;
                     case "execute":
-                        TaskService.Execute(taskParameter.BillDetails, result);
+                        TaskService.Execute(taskParameter.BillDetails,taskParameter.UseTag, result);
                         break;
                     default:
                         result.IsSuccess = false;

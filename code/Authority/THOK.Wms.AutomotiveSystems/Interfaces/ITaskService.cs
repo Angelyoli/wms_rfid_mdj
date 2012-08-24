@@ -12,10 +12,10 @@ namespace THOK.Wms.AutomotiveSystems.Interfaces
 
         void GetBillDetail(BillMaster[] billMaster, string productCode, string OperateType, string OperateAreas, string Operator, Result result);
 
-        void Apply(BillDetail[] billDetail, Result result);
+        void Apply(BillDetail[] billDetail,string useTag, Result result);
 
-        void Cancel(BillDetail[] billDetail, Result result);
+        void Cancel(BillDetail[] billDetail, string useTag, Result result);
 
-        void Execute(BillDetail[] billDetail, Result result);        
+        void Execute(BillDetail[] billDetail, string useTag, Result result);
     }
 }
