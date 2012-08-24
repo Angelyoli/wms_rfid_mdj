@@ -192,13 +192,22 @@ namespace Authority.Controllers.Wms.StockIn
 
         //
         // POST: /InBillMaster/inBillMasterSettle/
-
         public ActionResult InBillMasterSettle(string BillNo)
         {
             string strResult = string.Empty;
             bool bResult = InBillMasterService.Settle(BillNo, out strResult);
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /InBillMaster/DownInBillMaster/
+        public ActionResult DownInBillMaster(string BeginDate, string EndDate)
+        {
+            string errorInfo = string.Empty;
+            bool bResult = InBillMasterService.DownInBillMaster(BeginDate, EndDate,out errorInfo);
+            string msg = bResult ? "下载成功" : "下载失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

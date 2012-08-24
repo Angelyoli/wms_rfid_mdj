@@ -8,7 +8,7 @@ namespace THOK.Wms.Download.Interfaces
 {
    public interface ISortingDownService
     {
-       SortOrder[] GetSortOrder(string sortOrders);
+       SortOrder[] GetSortOrder(string beginDate,string endDate,string sortOrders);
        SortOrderDetail[] GetSortOrderDetail(string sortOrders);
     }
 }

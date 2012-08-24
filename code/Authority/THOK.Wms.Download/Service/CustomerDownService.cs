@@ -11,10 +11,7 @@ namespace THOK.Wms.Download.Service
     {
         public Customer[] GetCustomer(string customers)
         {
-            using (SortingDbContext sortdb = new SortingDbContext())
-            {
-                return sortdb.Database.SqlQuery<Customer>(@"
-                    SELECT [CUST_CODE] AS CustomerCode
+            string sql = @"SELECT [CUST_CODE] AS CustomerCode
                         ,[CUST_N] AS CustomCode
                         ,[CUST_NAME] AS CustomerName
                         ,[ORG_CODE] AS CompanyCode
@@ -40,8 +37,12 @@ namespace THOK.Wms.Download.Service
                         ,[''] AS Description
                         ,[ISACTIVE] AS IsActive
                         ,[UPDATE_DATE] AS UpdateTime
-                        FROM [V_WMS_CUSTOMER]
-                    ").ToArray();
+                        FROM [V_WMS_CUSTOMER]";
+
+            sql = sql + " WHERE CUST_CODE NOT IN('" + customers + "')";
+            using (SortingDbContext sortdb = new SortingDbContext())
+            {
+                return sortdb.Database.SqlQuery<Customer>(sql).ToArray();
             }
         }
     }

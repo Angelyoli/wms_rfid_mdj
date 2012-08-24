@@ -11,24 +11,21 @@ namespace THOK.Wms.Download.Service
     {
         public Unit[] GetUnit(string units)
         {
-            using (SortingDbContext sortdb = new SortingDbContext())
-            {
-                return sortdb.Database.SqlQuery<Unit>(@"
-                    SELECT [BRAND_UNIT_CODE]+[COUNT] AS UnitCode
+            string sql = @" SELECT [BRAND_UNIT_CODE]+[COUNT] AS UnitCode
                         ,[BRAND_UNIT_NAME] AS UnitName
                         ,[COUNT] AS COUNT
                         FROM [V_WMS_SORT_ORDER_DETAIL]
-                        GROUP BY [BRAND_UNIT_CODE]+[COUNT],[BRAND_UNIT_NAME],[COUNT]
-                    ").ToArray();
+                        GROUP BY [BRAND_UNIT_CODE]+[COUNT],[BRAND_UNIT_NAME],[COUNT]";
+
+            using (SortingDbContext sortdb = new SortingDbContext())
+            {
+                return sortdb.Database.SqlQuery<Unit>(sql).ToArray();
             }
         }
 
         public UnitList[] GetUnitList(string unitLists)
         {
-            using (SortingDbContext sortdb = new SortingDbContext())
-            {
-                return sortdb.Database.SqlQuery<UnitList>(@"
-                    SELECT [BRAND_ULIST_CODE] AS UnitListCode
+            string sql = @"SELECT [BRAND_ULIST_CODE] AS UnitListCode
                             ,[N_BRAND_ULIST_CODE] AS UniformCode
                             ,[BRAND_ULIST_NAME] AS UnitListName
                             ,[BRAND_UNIT_CODE_01] AS UnitCode01
@@ -44,8 +41,10 @@ namespace THOK.Wms.Download.Service
                             ,[BRAND_UNIT_NAME_04] AS UnitName04
                             ,[ISACTIVE] AS IsActive
                             ,getdate() AS UpdateTime
-                        FROM [V_WMS_BRAND_ULIST]
-                    ").ToArray();
+                        FROM [V_WMS_BRAND_ULIST]";
+            using (SortingDbContext sortdb = new SortingDbContext())
+            {
+                return sortdb.Database.SqlQuery<UnitList>(sql).ToArray();
             }
         }
     }

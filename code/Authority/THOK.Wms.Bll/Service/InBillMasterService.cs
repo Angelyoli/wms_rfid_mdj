@@ -406,7 +406,6 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
-
         public bool DownInBillMaster(string BeginDate, string EndDate, out string errorInfo)
         {
             errorInfo = string.Empty;

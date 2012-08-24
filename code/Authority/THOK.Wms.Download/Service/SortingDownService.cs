@@ -9,12 +9,9 @@ namespace THOK.Wms.Download.Service
 {
     public class SortingDownService : ISortingDownService
     {
-        public SortOrder[] GetSortOrder(string sortOrders)
+        public SortOrder[] GetSortOrder(string beginDate, string endDate, string sortOrders)
         {
-            using (SortingDbContext sortdb = new SortingDbContext())
-            {
-                return sortdb.Database.SqlQuery<SortOrder>(@"
-                    SELECT [ORDER_ID] AS OrderID
+            string sql = @" SELECT [ORDER_ID] AS OrderID
                             ,[ORG_CODE] AS CompanyCode
                             ,[SALE_REG_CODE] AS SaleRegionCode
                             ,[ORDER_DATE] AS OrderDate
@@ -30,17 +27,17 @@ namespace THOK.Wms.Download.Service
                             ,[ISACTIVE] AS IsActive
                             ,[UPDATE_DATE] AS UpdateTime
                             ,[DELIVER_LINE_CODE] AS DeliverLineCode
-                        FROM [V_WMS_SORT_ORDER]
-                    ").ToArray();
+                        FROM [V_WMS_SORT_ORDER]";
+            sql = sql + " WHERE ORDER_DATE>='" + beginDate + "' AND ORDER_DATE<='" + endDate + "'";
+            using (SortingDbContext sortdb = new SortingDbContext())
+            {
+                return sortdb.Database.SqlQuery<SortOrder>(sql).ToArray();
             }
         }
 
         public SortOrderDetail[] GetSortOrderDetail(string sortOrders)
         {
-            using (SortingDbContext sortdb = new SortingDbContext())
-            {
-                return sortdb.Database.SqlQuery<SortOrderDetail>(@"
-                    SELECT [ORDER_DETAIL_ID] AS OrderDetailID
+            string sql = @"SELECT [ORDER_DETAIL_ID] AS OrderDetailID
                             ,[ORDER_ID] AS OrderID
                             ,[BRAND_CODE] AS ProductCode
                             ,[BRAND_NAME] AS ProductName
@@ -51,8 +48,11 @@ namespace THOK.Wms.Download.Service
                             ,[PRICE] AS Price
                             ,[AMOUNT] AS Amount
                             ,[50] AS UnitQuantity                           
-                        FROM [V_WMS_SORT_ORDER_DETAIL]
-                    ").ToArray();
+                        FROM [V_WMS_SORT_ORDER_DETAIL]";
+            sql = sql + " WHERE ORDER_ID IN('" + sortOrders + "')";
+            using (SortingDbContext sortdb = new SortingDbContext())
+            {
+                return sortdb.Database.SqlQuery<SortOrderDetail>(sql).ToArray();
             }
         }
     }
