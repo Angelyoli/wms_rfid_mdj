@@ -2,7 +2,7 @@
     function downloadClick() {
         var j_waitDialog = ShowWaitMessageDialog();
         $.ajax({
-            url: "/DeliverLine/DownloadDeliverLineSave/", type: "GET", dataType: "text",
+            url: "/SortingOrder/DownSortOrder/", type: "GET", dataType: "text",
             complete: function () { HideWaitMessageDialog(j_waitDialog); },
             success: function (responseText) {
                 var result = $.evalJSON(responseText);

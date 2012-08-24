@@ -56,7 +56,7 @@ namespace THOK.Wms.Bll.Service
             }
             catch (Exception e)
             {
-                errorInfo = "出错，原因：" + e.Message;
+                errorInfo = "出错，原因:" + e.Message;
             }
             return result;
         }
