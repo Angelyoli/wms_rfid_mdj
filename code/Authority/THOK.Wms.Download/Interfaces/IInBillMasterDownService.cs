@@ -6,8 +6,9 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Download.Interfaces
 {
-    public interface IProductService
+   public interface IInBillMasterDownService
     {
-        Product[] GetProduct();
+       InBillMaster[] GetInBillMaster(string inBillMasters);
+       InBillDetail[] GetInBillDetail(string inBillMasters);
     }
 }

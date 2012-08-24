@@ -10,5 +10,7 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string OrderID, string orderDate);
         object GetDetails(string orderDate);
+
+        bool DownSortOrder(string beginDate, string endDate, out string errorInfo);
     }
 }

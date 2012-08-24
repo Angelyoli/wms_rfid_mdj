@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
+using THOK.WebUtil;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -14,6 +15,10 @@ namespace Authority.Controllers.Wms.SortingInfo
         public ISortOrderService SortOrderService { get; set; }
         [Dependency]
         public ISortOrderDetailService SortOrderDetailService { get; set; }
+        [Dependency]
+        public IDeliverLineService DeliverLineService { get; set; }
+        [Dependency]
+        public ICustomerService CustomerService { get; set; }
         //
         // GET: /SortingOrder/
         public ActionResult Index(string moduleID)
@@ -50,6 +55,21 @@ namespace Authority.Controllers.Wms.SortingInfo
         {
             var sortOrder = SortOrderService.GetDetails(orderDate);
             return Json(sortOrder, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /SortingOrder/DownSortOrder/
+        public ActionResult DownSortOrder(string beginDate, string endDate)
+        {
+            string errorInfo = string.Empty;
+            string lineErrorInfo = string.Empty;
+            string custErrorInfo = string.Empty;
+            bool lineResult = DeliverLineService.DownDeliverLine(out lineErrorInfo);
+            bool custResult = CustomerService.DownDeliverLine(out custErrorInfo);           
+            bool bResult = SortOrderService.DownSortOrder(beginDate, endDate,out errorInfo);
+            string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;
+            string msg = bResult ? "下载成功" : "下载失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, info), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }
