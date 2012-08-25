@@ -49,7 +49,7 @@ namespace THOK.Wms.Bll.Service
                     statusStr = "已录入";
                     break;
                 case "1":
-                    statusStr = "已审核";
+                    statusStr = "已申请";
                     break;
                 case "2":
                     statusStr = "执行中";
