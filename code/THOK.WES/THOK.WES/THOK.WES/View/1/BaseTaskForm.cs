@@ -197,6 +197,8 @@ namespace THOK.WES.View
                         billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
+                        billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                        billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);  
                         billDetail.Operator = Environment.MachineName;
                         billDetails.Add(billDetail);
                     }

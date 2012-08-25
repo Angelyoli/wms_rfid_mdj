@@ -306,7 +306,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     inAllot.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.CellCode,
+                                        OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName,
                                             "入库", inAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
@@ -324,7 +324,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     outAllot.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.CellCode,
+                                        OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName,
                                             "出库", outAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
@@ -342,7 +342,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     moveDetail.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode,
+                                        OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName,
                                              "移库", moveDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                              (int)billDetail.BarQuantity, moveDetail.InCell.CellName);
                                     }
@@ -360,7 +360,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode,
+                                        OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellName,
                                             "盘点", checkDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
@@ -699,8 +699,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
             tmp = tmp + (piece > 0 ? string.Format("{0}件", piece) : "");
             tmp = tmp + (item > 0 ? string.Format("{0}条", item) : "");
             tmp = tmp + (targetStorageName.Length > 0 ? string.Format(@"->{0}", targetStorageName) : "");
-  
-            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql, billId, detailId, storageId, operateType, tobaccoName, piece, item, tmp);               
+            sql = string.Format(sql, billId, detailId, storageId, operateType, tobaccoName, piece, item, tmp);
+            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);               
         }
 
         private void CancelOperateToLabelServer(string billId, string detailId, string storageId)
