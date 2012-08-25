@@ -469,5 +469,80 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             }
         }
 
+        public bool LowerLimitMoveLibrary(string userName, bool isEnableStocking, out string errorInfo)
+        {
+            IQueryable<SortingLowerlimit> sortingLowerlimitQuery = SortingLowerlimitRepository.GetQueryable();
+            IQueryable<SortingLine> sortingLineQuery = SortingLineRepository.GetQueryable();
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+
+            bool Result = true;
+            errorInfo = string.Empty;
+
+            var sortLowerlimit = sortingLowerlimitQuery.Where(s => s.Quantity > 0)
+                                                       .GroupBy(s => new { s.SortingLine, s.Product, s.UnitCode })
+                                                       .Select(l => new { l.Key.SortingLine, l.Key.Product, l.Key.UnitCode, SumQuantity = l.Sum(p => p.Quantity) })
+                                                       .GroupBy(o => new { o.SortingLine })
+                                                       .Select(t => new { t.Key.SortingLine, product = t })
+                                                       .ToArray();
+
+
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
+            string operatePersonID = employee != null ? employee.ID.ToString() : "";
+            if (sortLowerlimit.Count() > 0)
+            {
+                foreach (var item in sortLowerlimit)
+                {
+                    MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(item.SortingLine.Cell.WarehouseCode,
+                                                                                                    item.SortingLine.MoveBillTypeCode,
+                                                                                                    operatePersonID);
+                    moveBillMaster.Origin = "1";
+                    moveBillMaster.Description = "根据下限预出库！";
+                    bool hasError = false;
+                    foreach (var product in item.product.ToArray())
+                    {
+
+                        //获取分拣备货区库存                    
+                        var storageQuantity = storageQuery.Where(s => s.ProductCode == product.Product.ProductCode)
+                                                          .Join(sortingLineQuery,
+                                                                s => s.Cell,
+                                                                l => l.Cell,
+                                                                (s, l) => new { l.SortingLineCode, s.Quantity }
+                                                          )
+                                                          .Where(r => r.SortingLineCode == product.SortingLine.SortingLineCode);
+
+                        decimal storQuantity = 0;
+                        if (storageQuantity.Count() > 0)
+                        {
+                            storQuantity = storageQuantity.Sum(s => s.Quantity);
+                        }
+
+                        //获取移库量（按整件计）
+                        decimal quantity = 0;
+                        if (isEnableStocking)
+                            quantity = Math.Ceiling(product.SumQuantity - storQuantity);
+                        else
+                            quantity = Math.Ceiling(product.SumQuantity);
+
+                        CancellationToken cancellationToken = new CancellationToken();
+                        AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken);
+
+                        if (quantity > 0)
+                        {
+                            //生成移库不完整,可能是库存不足；
+                            hasError = true;
+                            errorInfo += product.Product.ProductCode + "(" + product.Product.ProductName + ")  库存不足！";
+                        }
+                    }
+                    if (!hasError)
+                    {
+                        MoveBillMasterRepository.SaveChanges();
+                        errorInfo += "分拣线：" + item.SortingLine.SortingLineName + " 根据下限生成移库单成功！";
+                    }
+                    else
+                        Result = false;
+                }
+            }
+            return Result;
+        }
     }
 }

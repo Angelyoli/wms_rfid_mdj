@@ -1,17 +1,53 @@
 ﻿<script type="text/javascript">
     function downloadClick() {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: "/InBillMaster/DownInBillMaster/", type: "GET", dataType: "text",
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");                   
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+        $('#dlg_out_date').dialog('open').dialog('setTitle', '请选择时间');
+        $('#outbeginDate').datebox({ editable: false });
+        $('#outendDate').datebox({ editable: false });
+        $('#outbeginDate').datebox('setValue', "");
+        $('#outendDate').datebox('setValue', "");
+    }
+
+    function outDateClick() {
+        var begin = $('#outbeginDate').datebox('getValue');
+        var end = $('#outendDate').datebox('getValue');
+        if ((begin != "" || begin != null) && (end != "" || end != null)) {
+            var j_waitDialog = ShowWaitMessageDialog();
+            $.ajax({
+                url: "/StockOutBill/DownOutBillMaster/", type: "GET", dataType: "text",
+                data: { 'beginDate': begin, "endDate": end },
+                complete: function () { HideWaitMessageDialog(j_waitDialog); },
+                success: function (responseText) {
+                    var result = $.evalJSON(responseText);
+                    if (result.success) {
+                        $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    } else {
+                        $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            $.messager.alert('错误', '没选时间！请选择时间！');
+        }
     }
 </script>
+
+<div id="dlg_out_date" class="easyui-dialog" modal="true"
+        style="width:290px;height:160px;padding:4px 4px"
+        closed="true" buttons="#dlg_allot_modify_buttons" align="center">
+        <form id="fm_out_date" method="post" novalidate>           
+            <table align="left" width="240">            
+              <tr>
+                <td width="60" style="text-align:right">开始日期:</td>
+                <td><input id="outbeginDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
+              </tr>
+               <tr>
+                <td width="60" style="text-align:right">结束日期:</td>
+                <td><input id="outendDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
+              </tr>
+            </table>
+        </form>
+</div>
+<div id="dlg_allot_modify_buttons">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="outDateClick()">确定</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg_out_date').dialog('close')">取消</a>
+</div>

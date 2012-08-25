@@ -50,6 +50,24 @@
     function sortLineSelect() {
         $('#sortLineShowDiv').dialog('open').dialog('setTitle', '选择分拣线信息');
     }
+
+    function move() {
+        var j_waitDialog = ShowWaitMessageDialog();
+        $.ajax({
+            url: '/SortingLowerLimit/LowerLimitMove/', type: "GET", dataType: "text",
+            data: { 'isEnableStocking': false },
+            complete: function () { HideWaitMessageDialog(j_waitDialog); },
+            success: function (responseText) {
+                var result = $.evalJSON(responseText);
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#dlg').dialog('close');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                }
+            }
+        });
+    }
 </script>
 
     <div id="dlg" class="easyui-dialog" modal="true"  style="width:320px;height:320px;padding:2px 2px"
@@ -99,7 +117,12 @@
 		                        <option value="0">不可用</option>
 	                        </select>
 	                    </td>
-                      </tr>                      
+                      </tr>
+                      <tr>
+                        <td style="text-align:right">生成：</td>
+                        <td><a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="move()">生成</a>
+	                    </td>
+                      </tr>                    
                     </table>
 	            </form>
             </div>
