@@ -86,48 +86,48 @@
                 <table align="left" width="360">    
                  <tr>
                     <td width="100">计量单位系列编码:</td>
-                    <td><input id="unitListCode" name="UnitListCode" type="text" style="width: 80px"></td>
+                    <td><input id="unitListCode" name="UnitListCode" type="text" style="width: 80px" class="easyui-validatebox" required="true"></td>
                   </tr>
                   <tr> 
                     <td width="100">计量单位系列名称:</td>
-                    <td><input id="unitListName" name="UnitListName" type="text" style="width: 100px"></td>
+                    <td><input id="unitListName" name="UnitListName" type="text" style="width: 100px" class="easyui-validatebox" required="true"></td>
                     <td width="60">统一编码:</td>
                     <td><input id="uniformCode" name="UniformCode" type="text" style="width: 60px"></td>
                    </tr>
                   <tr>
                     <td width="100">一级单位（件）:</td>
-                    <td><input id="unitCode01" name="unitCode01" type="text" style="width: 80px"">
+                    <td><input id="unitCode01" name="unitCode01" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect1()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
-                    <td width="60">件条比例:</td>
-                    <td><input id="quantity01" name="Quantity01" type="text" editable="false" style="width: 60px"">
+                    <td width="60">转换比例1:</td>
+                    <td><input id="quantity01" name="Quantity01" type="text" editable="false" style="width: 60px">
                     </td>
                   </tr>
                   <tr>
                     <td width="100">二级单位（条）:</td>
-                    <td><input id="unitCode02" name="unitCode02" type="text" style="width: 80px"">
+                    <td><input id="unitCode02" name="unitCode02" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect2()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
-                    <td width="60">条包比例:</td>
+                    <td width="60">转换比例2:</td>
                     <td><input id="quantity02" name="Quantity02" type="text" editable="false" style="width: 60px"">
                     </td>
                   </tr>
                   <tr>
                     <td width="100">三级单位（包）:</td>
-                    <td><input id="unitCode03" name="unitCode03" type="text" style="width: 80px"">
+                    <td><input id="unitCode03" name="unitCode03" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect3()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
-                    <td width="60">包支比例:</td>
-                    <td><input id="quantity03" name="Quantity03" type="text" editable="false" style="width: 60px"">
+                    <td width="60">转换比例3:</td>
+                    <td><input id="quantity03" name="Quantity03" type="text" editable="false" style="width: 60px">
                     </td>
                   </tr>
                   <tr>
                     <td width="100">四级单位（支）:</td>
-                    <td><input id="unitCode04" name="unitCode04" type="text" style="width: 80px"">
+                    <td><input id="unitCode04" name="unitCode04" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect4()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
                     <td width="60">是否可用:</td>
-                    <td><select id="isActive" name="IsActive" class="easyui-combobox" style="width: 60px;height:40px">
+                    <td><select id="isActive" name="IsActive" class="easyui-combobox" style="width: 60px;height:40px" required="true">
                       <option value="">请选择</option>
                       <option value="1">可用</option>
                       <option value="0">不可用</option>

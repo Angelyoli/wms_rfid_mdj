@@ -58,6 +58,10 @@ namespace Entities.Extensions
             return entity.Context.ExecuteStoreCommand(commandText, args);           
         }
 
+        public static int ExecuteStoreCommand<T>(this ObjectSet<T> entity, string commandText, params object[] args) where T : class,new()
+        {
+            return entity.Context.ExecuteStoreCommand(commandText, args);
+        }
         private static object GetExpressionValue(Expression expression)
         {
             if (expression is ConstantExpression)

@@ -463,7 +463,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             quantity -= allotQuantity;
                         }
                     }
-                    //else break;
+                    else break;
                 }
                 else break;
             }

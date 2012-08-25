@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.WES.App", "THOK.WES.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.WES.Interface", "THOK.WES.Interface\THOK.WES.Interface.csproj", "{78B38305-22F2-4E8A-B076-5B3D39D14682}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "车载执行系统", "THOK.WES.SETUP\THOK.WES.SETUP.vdproj", "{16804907-9697-4514-90DC-190C10DA31E5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,10 +25,6 @@ Global
 		{78B38305-22F2-4E8A-B076-5B3D39D14682}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78B38305-22F2-4E8A-B076-5B3D39D14682}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78B38305-22F2-4E8A-B076-5B3D39D14682}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16804907-9697-4514-90DC-190C10DA31E5}.Debug|Any CPU.ActiveCfg = Debug
-		{16804907-9697-4514-90DC-190C10DA31E5}.Debug|Any CPU.Build.0 = Debug
-		{16804907-9697-4514-90DC-190C10DA31E5}.Release|Any CPU.ActiveCfg = Release
-		{16804907-9697-4514-90DC-190C10DA31E5}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
