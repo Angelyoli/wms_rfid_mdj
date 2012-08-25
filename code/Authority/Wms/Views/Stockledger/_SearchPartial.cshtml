@@ -40,6 +40,7 @@
         queryParams.EndDate = $('#endDate').datebox('getValue');
         queryParams.WarehouseCode = $('#wareHouse').combo('getValue');
         queryParams.ProductCode = $('#productCode').val();
+        queryParams.UnitType = $('#unitType').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
@@ -79,6 +80,18 @@
                 <td>商品名称:</td>
                 <td align="left"><input type="text" id="productName" editable="false" style="width: 150px"/>
                 </td>
+              </tr>
+              <tr style="padding-top:10px;">
+                <td>换算单位:</td>
+                <td align="left">     
+		           <select id="unitType" class="easyui-combobox" style="width: 130px; height: 40px" editable="false">
+                        <option value="">请选择</option>                       
+                        <option value="1">标准件</option>
+                        <option value="2">标准条</option>
+                        <option value="3">自然件</option>
+                        <option value="4">自然条</option>
+                    </select>
+	            </td>
               </tr>
             </table>
         </div>

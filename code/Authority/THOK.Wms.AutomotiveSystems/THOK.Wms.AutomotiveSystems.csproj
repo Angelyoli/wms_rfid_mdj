@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
@@ -54,6 +55,10 @@
     <Compile Include="Service\TaskService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Entities.Extensions\Entities.Extensions.csproj">
+      <Project>{D629856F-6F11-4A87-8440-A5B66383A26A}</Project>
+      <Name>Entities.Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
@@ -65,6 +70,10 @@
     <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
       <Name>THOK.Wms.DbModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
+      <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>
+      <Name>THOK.Wms.SignalR</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

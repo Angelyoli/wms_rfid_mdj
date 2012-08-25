@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,6 +108,7 @@
     <Compile Include="Controllers\Wms\ComplexSearch\StockOutSearchController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisDownloadController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisUploadController.cs" />
+    <Compile Include="Controllers\Wms\InterfaceInfo\DeliverLineController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\SortingRealTimeController.cs" />
     <Compile Include="Controllers\Wms\Inventory\CargospaceController.cs" />
     <Compile Include="Controllers\Wms\Inventory\CurrentStockController.cs" />
@@ -1162,7 +1164,9 @@
     <Content Include="Views\HistoricalDetail\_ProductPartial.cshtml" />
     <Content Include="Views\StockOutBill\_MoveOutCellPartial.cshtml" />
     <Content Include="Views\StockInBill\_MoveInCellPartial.cshtml" />
-   <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
+    <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
+    <Content Include="Views\StockInBill\_DownLoadPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_DownLoadPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

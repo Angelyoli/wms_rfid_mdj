@@ -14,7 +14,7 @@
             $('#unitName1').val(unitRow.UnitName);
             count1 = unitRow.COUNT;
             if (count2 != null) {
-                $('#quantity01').val((count1 / count2) + ":1");
+                $('#quantity01').val(count1 / count2);
             }
             $('#unitData1').dialog('close');
         }
