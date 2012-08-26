@@ -170,7 +170,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 {
                                     lowerlimitQuantity = sortingLowerlimitQuantity.Sum(s => s.Quantity);
                                 }
-                               
+
                                 if (cancellationToken.IsCancellationRequested) return;
                                 //获取分拣备货区库存                    
                                 var storageQuantity = storageQuery.Where(s => s.ProductCode == product.Product.ProductCode)
@@ -208,10 +208,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     quantity = product.SumQuantity + lowerlimitQuantity - storQuantity;
                                 }
 
-                                
-
                                 if (cancellationToken.IsCancellationRequested) return;
-                                AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps);
+                                AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps,item.SortingLine.Cell.CellCode);
 
                                 if (quantity > 0)
                                 {
@@ -310,7 +308,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             return sortWorkDispatch;
         }
 
-        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps)
+        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps,string cellCode)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             //选择当前订单操作目标仓库；
@@ -320,7 +318,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             //分配整盘；排除 件烟区 条烟区
             if (cancellationToken.IsCancellationRequested) return;
             string[] areaTypes = new string[] { "2", "3" };
-            var ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            var ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && s.Cell.CellCode != cellCode
                                         && s.ProductCode == product.ProductCode)
                              .OrderBy(s => s.StorageTime)
                              .OrderBy(s => s.Cell.Area.AllotOutOrder);
@@ -338,7 +336,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             //分配件烟 (下层储位)；排除 件烟区 条烟区 
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && s.Cell.CellCode != cellCode
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
                              .OrderBy(s => s.StorageTime)
@@ -348,7 +346,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             //分配件烟 (非下层储位)；排除 件烟区 条烟区 
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && s.Cell.CellCode != cellCode
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
                              .OrderBy(s => s.StorageTime)
@@ -375,7 +373,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             //分配条烟 (下层储位)；排除 件烟区 条烟区
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && s.Cell.CellCode != cellCode
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
                              .OrderBy(s => s.StorageTime)
@@ -385,7 +383,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             //分配条烟 (非下层储位)；排除 件烟区 条烟区
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "2", "3" };
-            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+            ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && s.Cell.CellCode != cellCode
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
                              .OrderBy(s => s.StorageTime)
@@ -537,7 +535,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
                         CancellationToken cancellationToken = new CancellationToken();
                         ProgressState ps = new ProgressState();
-                        AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps);
+                        AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps,item.SortingLine.Cell.CellCode);
 
                         if (quantity > 0)
                         {
