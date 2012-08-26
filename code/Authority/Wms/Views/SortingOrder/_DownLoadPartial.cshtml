@@ -1,6 +1,10 @@
 ﻿<script type="text/javascript">
     function downloadClick() {
         $('#dlg_sorting_date').dialog('open').dialog('setTitle', '请选择时间');
+        $('#beginDate').datebox({ editable: false });
+        $('#endDate').datebox({ editable: false });
+        $('#beginDate').datebox('setValue', "");
+        $('#endDate').datebox('setValue', "");
     }
 
     function generateCheckClick() {
@@ -16,8 +20,12 @@
                     var result = $.evalJSON(responseText);
                     if (result.success) {
                         $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                        $("#details").datagrid('reload');
+                        $('#dlg_sorting_date').dialog('close');
                     } else {
                         $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                        $("#details").datagrid('reload');
+                        $('#dlg_sorting_date').dialog('close');
                     }
                 }
             });

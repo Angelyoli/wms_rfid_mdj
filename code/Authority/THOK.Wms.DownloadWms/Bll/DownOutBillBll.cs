@@ -109,7 +109,10 @@ namespace THOK.WMS.DownloadWms.Bll
                     this.Insert(masterds, detailds);
                 }
                 else
+                {
                     errorInfo = "没有可下载的出库数据！";
+                    tag = false;
+                }
             }
             return tag;
         }

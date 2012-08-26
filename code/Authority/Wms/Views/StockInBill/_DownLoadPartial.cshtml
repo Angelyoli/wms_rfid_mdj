@@ -7,9 +7,11 @@
         $('#inendDate').datebox('setValue', "");
     }
 
-    function inDateClick() {
-        var begin = $('#inbeginDate').datebox('getValue');
-        var end = $('#inendDate').datebox('getValue');
+    function inDateClick() {        
+        var begin = "";
+        var end = "";
+        begin = $('#inbeginDate').datebox('getValue');
+        end = $('#inendDate').datebox('getValue');
         if ((begin != "" || begin != null) && (end != "" || end != null)) {
             var j_waitDialog = ShowWaitMessageDialog();
             $.ajax({
@@ -20,8 +22,12 @@
                     var result = $.evalJSON(responseText);
                     if (result.success) {
                         $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                        $("#details").datagrid('reload');
+                        $('#dlg_in_date').dialog('close');
                     } else {
                         $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                        $("#details").datagrid('reload');
+                        $('#dlg_in_date').dialog('close');
                     }
                 }
             });

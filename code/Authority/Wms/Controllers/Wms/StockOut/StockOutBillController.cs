@@ -164,8 +164,16 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult DownOutBillMaster(string beginDate, string endDate)
         {
             string errorInfo = string.Empty;
-            beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
-            endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+            if (beginDate == string.Empty || endDate == string.Empty)
+            {
+                beginDate = DateTime.Now.ToString("yyyyMMdd");
+                endDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+            }
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownOutBillBll ibll = new DownOutBillBll();

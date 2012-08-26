@@ -20,8 +20,12 @@
                     var result = $.evalJSON(responseText);
                     if (result.success) {
                         $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                        $("#details").datagrid('reload');
+                        $('#dlg_out_date').dialog('close');
                     } else {
                         $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                        $("#details").datagrid('reload');
+                        $('#dlg_out_date').dialog('close');
                     }
                 }
             });

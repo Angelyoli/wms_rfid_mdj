@@ -76,7 +76,14 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <param name="ds"></param>
         public void InsertInBillMaster(DataSet ds)
         {
-            BatchInsert(ds.Tables["WMS_IN_BILLMASTER"], "wms_in_bill_master");
+            foreach (DataRow row in ds.Tables["WMS_IN_BILLMASTER"].Rows)
+            {
+                string sql = "INSERT INTO wms_in_bill_master(bill_no,bill_date,bill_type_code,warehouse_code,status,is_active,update_time,operate_person_id" +
+                   ") VALUES('" + row["bill_no"] + "','" + row["bill_date"] + "','" + row["bill_type_code"] + "'," +
+                   "'" + row["warehouse_code"] + "','" + row["status"] + "','" + row["is_active"] + "','" + row["update_time"] + "','" + row["operate_person_id"] + "')";
+                this.ExecuteNonQuery(sql);
+            }
+           // BatchInsert(ds.Tables["WMS_IN_BILLMASTER"], "wms_in_bill_master");
         }
 
         /// <summary>

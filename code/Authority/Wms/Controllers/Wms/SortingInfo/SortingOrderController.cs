@@ -66,12 +66,20 @@ namespace Authority.Controllers.Wms.SortingInfo
             string lineErrorInfo = string.Empty;
             string custErrorInfo = string.Empty;
 
+            if (beginDate == string.Empty || endDate == string.Empty)
+            {
+                beginDate = DateTime.Now.ToString("yyyyMMdd");
+                endDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+            }
+
             DownRouteBll bll = new DownRouteBll();
             DownSortingOrderBll sbll = new DownSortingOrderBll();
             DownCustomerBll cbll = new DownCustomerBll();
-            beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
-            endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
-
             bool lineResult = bll.DownRouteInfo();
             bool custResult = cbll.DownCustomerInfo();
             bool bResult = sbll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
