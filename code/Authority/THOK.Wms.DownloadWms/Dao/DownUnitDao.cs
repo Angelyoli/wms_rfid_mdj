@@ -16,7 +16,9 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetUnitInfo(string unitCode)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_BRAND_UNIT WHERE {0}", unitCode);
+            string sql = string.Format(@"SELECT U.*,B.BRAND_N FROM V_WMS_BRAND_UNIT U
+                                        LEFT JOIN  V_WMS_BRAND B ON U.BRAND_CODE =B.BRAND_CODE
+                                        WHERE (B.BRAND_N <> 'NULL' OR B.BRAND_N !='') and {0}", unitCode);
             return this.ExecuteQuery(sql).Tables[0];
         }
 

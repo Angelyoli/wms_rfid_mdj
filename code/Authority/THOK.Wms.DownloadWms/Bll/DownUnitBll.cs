@@ -215,7 +215,7 @@ namespace THOK.WMS.DownloadWms.Bll
             DataTable unitProductDt = this.GetUnitProduct();//取得中间表数据
             string productcodeList = UtinString.StringMake(unitProductDt, "unit_list_code");
             string productcode = UtinString.StringMake(productcodeList);
-            productcode = "BRAND_CODE NOT IN(" + productcode + ")";
+            productcode = "BRAND_N NOT IN(" + productcode + ")";
 
             DataTable Unitdt = this.GetUnitInfo(productcode);//下载数据
             if (Unitdt.Rows.Count > 0)
@@ -339,8 +339,8 @@ namespace THOK.WMS.DownloadWms.Bll
                 //把支的计量单位和卷烟编码存到中间表
                 DataRow UnitzhiDr = ds.Tables["WMS_UNIT_PRODUCT"].NewRow();
                 UnitzhiDr["unit_code04"] = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
-                UnitzhiDr["unit_list_code"] = row["BRAND_CODE"].ToString().Trim();
-                UnitzhiDr["unit_list_name"] = row["BRAND_CODE"].ToString().Trim() + "(" + row["BRAND_UNIT_NAME"] + ")";
+                UnitzhiDr["unit_list_code"] = row["BRAND_N"].ToString().Trim();
+                UnitzhiDr["unit_list_name"] = row["BRAND_N"].ToString().Trim() + "(" + row["BRAND_UNIT_NAME"] + ")";
                 UnitzhiDr["is_active"] = 1;
                 UnitzhiDr["uniform_code"] = "1001";
                 UnitzhiDr["update_time"] = DateTime.Now;
@@ -363,7 +363,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     he = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
                     ds.Tables["WMS_UNIT_INSERT"].Rows.Add(hedr);
                 }
-                DataRow[] brandhe = ds.Tables["WMS_UNIT_PRODUCT"].Select(string.Format("unit_list_code='{0}'", row["BRAND_CODE"].ToString().Trim()));
+                DataRow[] brandhe = ds.Tables["WMS_UNIT_PRODUCT"].Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
                 brandhe[0]["unit_code03"] = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
                 brandhe[0]["quantity03"] =  Convert.ToDecimal(row["COUNT"]);
             }
@@ -384,8 +384,8 @@ namespace THOK.WMS.DownloadWms.Bll
                     tiao = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
                     ds.Tables["WMS_UNIT_INSERT"].Rows.Add(tiaodr);
                 }
-                DataRow[] tiaobybao = unittable.Select("BRAND_UNIT_CODE=02 AND BRAND_CODE ='" + row["BRAND_CODE"].ToString().Trim() + "' ");
-                DataRow[] brandtiao = ds.Tables["WMS_UNIT_PRODUCT"].Select(string.Format("unit_list_code='{0}'", row["BRAND_CODE"].ToString().Trim()));
+                DataRow[] tiaobybao = unittable.Select("BRAND_UNIT_CODE=02 AND BRAND_N ='" + row["BRAND_N"].ToString().Trim() + "' ");
+                DataRow[] brandtiao = ds.Tables["WMS_UNIT_PRODUCT"].Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
                 brandtiao[0]["unit_code02"] = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
                 brandtiao[0]["quantity02"] = Convert.ToDecimal(row["COUNT"]) / Convert.ToDecimal(tiaobybao[0]["COUNT"]);
             }
@@ -406,8 +406,8 @@ namespace THOK.WMS.DownloadWms.Bll
                     jian = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
                     ds.Tables["WMS_UNIT_INSERT"].Rows.Add(jiandr);
                 }
-                DataRow[] jianbytiao = unittable.Select("BRAND_UNIT_CODE=03 AND BRAND_CODE ='" + row["BRAND_CODE"].ToString().Trim() + "' ", "COUNT ASC");
-                DataRow[] brandjian = ds.Tables["WMS_UNIT_PRODUCT"].Select(string.Format("unit_list_code='{0}'", row["BRAND_CODE"].ToString().Trim()));
+                DataRow[] jianbytiao = unittable.Select("BRAND_UNIT_CODE=03 AND BRAND_N ='" + row["BRAND_N"].ToString().Trim() + "' ", "COUNT ASC");
+                DataRow[] brandjian = ds.Tables["WMS_UNIT_PRODUCT"].Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
                 brandjian[0]["unit_code01"] = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
                 brandjian[0]["quantity01"] = Convert.ToDecimal(row["COUNT"]) / Convert.ToDecimal(jianbytiao[0]["COUNT"]);
             }
