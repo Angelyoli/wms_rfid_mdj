@@ -52,7 +52,7 @@ namespace THOK.Wms.Bll.Service
                     statusStr = "已申请";
                     break;
                 case "2":
-                    statusStr = "执行中";
+                    statusStr = "已完成";
                     break;
             }
             return statusStr;

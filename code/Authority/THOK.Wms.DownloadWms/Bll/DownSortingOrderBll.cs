@@ -330,20 +330,23 @@ namespace THOK.WMS.DownloadWms.Bll
        public DataSet SaveSortingOrderDetail(DataTable detaildt)
        {
            DownProductBll pbll=new DownProductBll();
+           DownSortingOrderDao dao = new DownSortingOrderDao();
+           DataTable unitList = dao.GetUnitProduct();
            DataSet ds = this.GenerateEmptyTables();
            try
            {
                int i=0;
                foreach (DataRow row in detaildt.Rows)
                {
-                   DataTable product = pbll.FindProductInfo(row["BRAND_CODE"].ToString());
+                   DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
+                   //DataTable product = pbll.FindProductInfo(row["BRAND_CODE"].ToString());
                    DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();
                    i++;
                    detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim() + i;
                    detailrow["order_id"] = row["ORDER_ID"].ToString().Trim();
-                   detailrow["product_code"] = product.Rows[0]["product_code"].ToString();
+                   detailrow["product_code"] = row["BRAND_N"].ToString().Trim();
                    detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
-                   detailrow["unit_code"] = product.Rows[0]["unit_code02"].ToString();
+                   detailrow["unit_code"] = list[0]["unit_code02"].ToString();// product.Rows[0]["unit_code02"].ToString();
                    detailrow["unit_name"] = row["BRAND_UNIT_NAME"].ToString().Trim(); ;
                    detailrow["demand_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
                    detailrow["real_quantity"] = Convert.ToDecimal(row["QUANTITY"]);

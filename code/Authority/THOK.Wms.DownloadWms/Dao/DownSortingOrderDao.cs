@@ -26,7 +26,8 @@ namespace THOK.WMS.DownloadWms.Dao
        /// <returns></returns>
        public DataTable GetSortingOrderDetail(string orderid)
        {
-           string sql = string.Format("SELECT * FROM V_WMS_SORT_ORDER_DETAIL WHERE {0} ", orderid);
+           string sql = string.Format(@"SELECT A.* , B.BRAND_N FROM V_WMS_SORT_ORDER_DETAIL A
+                                        LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", orderid);
            return this.ExecuteQuery(sql).Tables[0];
        }
 
@@ -88,6 +89,12 @@ namespace THOK.WMS.DownloadWms.Dao
        public DataTable GetOrderId()
        {
            string sql = " SELECT order_id FROM wms_sort_order WHERE order_date>DATEADD(DAY, -3, CONVERT(VARCHAR(14), GETDATE(), 112)) ";
+           return this.ExecuteQuery(sql).Tables[0];
+       }
+
+       public DataTable GetUnitProduct()
+       {
+           string sql = "SELECT * FROM WMS_UNIT_LIST";
            return this.ExecuteQuery(sql).Tables[0];
        }
 

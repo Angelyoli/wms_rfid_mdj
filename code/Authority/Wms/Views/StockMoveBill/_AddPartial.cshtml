@@ -247,6 +247,30 @@
         }
     }
 
+    function lowerMove() {
+        $.messager.confirm('确认', '确认要根据下限生成移库单么？', function (r) {
+            if (r) {
+                var j_waitDialog = ShowWaitMessageDialog();
+                $.ajax({
+                    url: '/SortingLowerLimit/LowerLimitMove/', type: "GET", dataType: "text",
+                    data: { 'isEnableStocking': false },
+                    complete: function () { HideWaitMessageDialog(j_waitDialog); },
+                    success: function (responseText) {
+                        var result = $.evalJSON(responseText);
+                        if (result.success) {
+                            $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                            $('#dlg').dialog('close');
+                            $('#details').datagrid('reload');
+                        } else {
+                            $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                            $('#dlg').dialog('close');
+                            $('#details').datagrid('reload');
+                        }
+                    }
+                });
+            }
+        });
+    }
 </script>
 
 <div id="dlg" class="easyui-dialog" modal="true"
@@ -317,6 +341,7 @@
 </div>
 
 <div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="lowerMove()">下限生成</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
 </div>
