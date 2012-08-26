@@ -567,13 +567,20 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
                                         moveDetail.MoveBillMaster.Status = "3";
+
+                                        var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
+                                        if (sortwork != null)
+                                        {
+                                            sortwork.DispatchStatus = "3";
+                                        }
                                         if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                                         {
                                             moveDetail.MoveBillMaster.Status = "4";
                                             string errorInfo = "";
+                                            MoveBillDetailRepository.SaveChanges();
                                             SettleSortWokDispatch(moveDetail.BillNo, ref errorInfo);
                                         }
-                                        if (useTag == "1")    
+                                        if (useTag == "1")
                                             CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode);
                                     }
                                 }
