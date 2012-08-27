@@ -319,70 +319,75 @@ namespace THOK.Wms.Bll.Service
         /// <returns></returns>
         public bool OutAllot(OutBillMaster outBillMaster)
         {
-            bool result = false;
-            //出库单出库
-            var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == outBillMaster.TargetCellCode
-                                                                    && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
-
-            if (!Locker.Lock(storages))
+            try
             {
-                infoStr = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
-                return false;
-            }
-            outBillMaster.OutBillDetails.AsParallel().ForAll(
-           (Action<OutBillDetail>)delegate(OutBillDetail o)
-           {
-               var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
-               foreach (var s in ss)
-               {
-                   lock (s)
-                   {
-                       if (o.BillQuantity - o.AllotQuantity > 0)
-                       {
-                           decimal allotQuantity = s.Quantity;
-                           decimal billQuantity = o.BillQuantity - o.AllotQuantity;
-                           allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                           o.AllotQuantity += allotQuantity;
-                           o.RealQuantity += allotQuantity;
-                           s.Quantity -= allotQuantity;
+                bool result = false;
+                //出库单出库
+                var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == outBillMaster.TargetCellCode
+                                                                        && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
 
-                           var billAllot = new OutBillAllot()
+                if (!Locker.Lock(storages))
+                {
+                    throw new Exception("锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！");
+                }
+                outBillMaster.OutBillDetails.AsParallel().ForAll(
+               (Action<OutBillDetail>)delegate(OutBillDetail o)
+               {
+                   var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
+                   foreach (var s in ss)
+                   {
+                       lock (s)
+                       {
+                           if (o.BillQuantity - o.AllotQuantity > 0)
                            {
-                               BillNo = outBillMaster.BillNo,
-                               OutBillDetailId = o.ID,
-                               ProductCode = o.ProductCode,
-                               CellCode = s.CellCode,
-                               StorageCode = s.StorageCode,
-                               UnitCode = o.UnitCode,
-                               AllotQuantity = allotQuantity,
-                               RealQuantity = allotQuantity,
-                               Status = "2"
-                           };
-                           lock (outBillMaster.OutBillAllots)
-                           {
-                               outBillMaster.OutBillAllots.Add(billAllot);
+                               decimal allotQuantity = s.Quantity;
+                               decimal billQuantity = o.BillQuantity - o.AllotQuantity;
+                               allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                               o.AllotQuantity += allotQuantity;
+                               o.RealQuantity += allotQuantity;
+                               s.Quantity -= allotQuantity;
+
+                               var billAllot = new OutBillAllot()
+                               {
+                                   BillNo = outBillMaster.BillNo,
+                                   OutBillDetailId = o.ID,
+                                   ProductCode = o.ProductCode,
+                                   CellCode = s.CellCode,
+                                   StorageCode = s.StorageCode,
+                                   UnitCode = o.UnitCode,
+                                   AllotQuantity = allotQuantity,
+                                   RealQuantity = allotQuantity,
+                                   Status = "2"
+                               };
+                               lock (outBillMaster.OutBillAllots)
+                               {
+                                   outBillMaster.OutBillAllots.Add(billAllot);
+                               }
                            }
+                           else
+                               break;
                        }
-                       else
-                           break;
+                   }
+
+                   if (o.BillQuantity - o.AllotQuantity > 0)
+                   {
+                       infoStr = o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！";
                    }
                }
-
-               if (o.BillQuantity - o.AllotQuantity > 0)
-               {
-                   infoStr= o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！";
-               }
-           }
-       );
-            result = true;
-            storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
-            //出库结单
-            var outMaster = OutBillMasterRepository.GetQueryable()
-                .FirstOrDefault(o => o.BillNo == outBillMaster.BillNo);
-            outMaster.Status = "6";
-            outMaster.UpdateTime = DateTime.Now;
-            OutBillMasterRepository.SaveChanges();
-            return result;
+           );
+                result = true;
+                storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
+                //出库结单
+                outBillMaster.Status = "6";
+                outBillMaster.UpdateTime = DateTime.Now;
+                OutBillMasterRepository.SaveChanges();
+                return result;
+            }
+            catch (AggregateException ex)
+            {
+                infoStr = "审核失败，详情：" + ex.InnerExceptions.Select(i => i.Message).Aggregate((m, n) => m + n);
+                return false;
+            }
         }
 
         /// <summary>

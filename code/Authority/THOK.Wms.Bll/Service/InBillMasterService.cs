@@ -42,7 +42,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        string resultStr = "";//错误提示信息
+        public string resultStr = "";//错误提示信息
 
         #region IInBillMasterService 成员
 
@@ -271,57 +271,63 @@ namespace THOK.Wms.Bll.Service
         /// <returns></returns>
         public bool InAllot(InBillMaster inBillMaster)
         {
-            bool result = false;
-            var inBillDetails = inBillMaster.InBillDetails.ToArray();
-            var cell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inBillMaster.TargetCellCode);
-            //入库单入库
-            inBillMaster.InBillDetails.AsParallel().ForAll(
-           (Action<InBillDetail>)delegate(InBillDetail i)
-           {
-               var inStorage = Locker.LockStorage(cell);
-               if (inStorage == null)
+            try
+            {
+                bool result = false;
+                var inBillDetails = inBillMaster.InBillDetails.ToArray();
+                var cell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inBillMaster.TargetCellCode);
+                //入库单入库
+                inBillMaster.InBillDetails.AsParallel().ForAll(
+               (Action<InBillDetail>)delegate(InBillDetail i)
                {
-                   throw new Exception("锁定储位失败，储位其他人正在操作，无法分配请稍候重试！");
-               }
-
-               if (i.BillQuantity - i.AllotQuantity > 0)
-               {
-                   decimal allotQuantity = i.BillQuantity < cell.MaxQuantity * i.Unit.Count ? i.BillQuantity : cell.MaxQuantity * i.Unit.Count;
-                   decimal billQuantity = i.BillQuantity - i.AllotQuantity;
-                   allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                   i.AllotQuantity += allotQuantity;
-                   i.RealQuantity += allotQuantity;
-                   inStorage.ProductCode = i.ProductCode;
-                   inStorage.Quantity += allotQuantity;
-
-                   var billAllot = new InBillAllot()
+                   var inStorage = Locker.LockStorage(cell);
+                   if (inStorage == null)
                    {
-                       BillNo = inBillMaster.BillNo,
-                       InBillDetailId = i.ID,
-                       ProductCode = i.ProductCode,
-                       CellCode = inStorage.CellCode,
-                       StorageCode = inStorage.StorageCode,
-                       UnitCode = i.UnitCode,
-                       AllotQuantity = allotQuantity,
-                       RealQuantity = allotQuantity,
-                       Status = "2"
-                   };
-
-                   lock (inBillMaster.InBillAllots)
-                   {
-                       inBillMaster.InBillAllots.Add(billAllot);
+                       throw new Exception("锁定储位失败，储位其他人正在操作，无法分配请稍候重试！");
                    }
-                   inStorage.LockTag = string.Empty;
-                   result = true;
-               }
-           });
-            //入库结单
-            var inMaster = InBillMasterRepository.GetQueryable()
-                .FirstOrDefault(i => i.BillNo == inBillMaster.BillNo);
-            inMaster.Status = "6";
-            inMaster.UpdateTime = DateTime.Now;
-            InBillMasterRepository.SaveChanges();
-            return result;
+
+                   if (i.BillQuantity - i.AllotQuantity > 0)
+                   {
+                       decimal allotQuantity = i.BillQuantity < cell.MaxQuantity * i.Unit.Count ? i.BillQuantity : cell.MaxQuantity * i.Unit.Count;
+                       decimal billQuantity = i.BillQuantity - i.AllotQuantity;
+                       allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                       i.AllotQuantity += allotQuantity;
+                       i.RealQuantity += allotQuantity;
+                       inStorage.ProductCode = i.ProductCode;
+                       inStorage.Quantity += allotQuantity;
+
+                       var billAllot = new InBillAllot()
+                       {
+                           BillNo = inBillMaster.BillNo,
+                           InBillDetailId = i.ID,
+                           ProductCode = i.ProductCode,
+                           CellCode = inStorage.CellCode,
+                           StorageCode = inStorage.StorageCode,
+                           UnitCode = i.UnitCode,
+                           AllotQuantity = allotQuantity,
+                           RealQuantity = allotQuantity,
+                           Status = "2"
+                       };
+
+                       lock (inBillMaster.InBillAllots)
+                       {
+                           inBillMaster.InBillAllots.Add(billAllot);
+                       }
+                       inStorage.LockTag = string.Empty;
+                       result = true;
+                   }
+               });
+                //入库结单
+                inBillMaster.Status = "6";
+                inBillMaster.UpdateTime = DateTime.Now;
+                InBillMasterRepository.SaveChanges();
+                return result;
+            }
+            catch (AggregateException ex)
+            {
+                resultStr = "审核失败，详情：" + ex.InnerExceptions.Select(i => i.Message).Aggregate((m, n) => m + n);
+                return false;
+            }
         }
 
         #endregion
