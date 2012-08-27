@@ -35,18 +35,6 @@
 
     var modifyUrl;
 
-    //删除出库单明细
-    function allotDelete() {
-        var detailRow = $('#allotBillDetails').datagrid('getSelected');
-        if (detailRow) {
-            $('#dlg_allot_modify').dialog('open').dialog('setTitle', '删除');
-            $('#fm_allot').form('load', detailRow);
-            modifyUrl = '/StockOutBillAllot/AllotDelete/';
-        } else {
-            $.messager.alert('错误', '没有选择行！');
-        }
-    }
-
     //新增出库单明细分配
     function allotAdd() {
         var detailRow = $('#outBillDetails1').datagrid('getSelected');
@@ -77,90 +65,58 @@
         }
     }
 
+    //删除出库单明细
+    function allotDelete() {
+        var detailRow = $('#allotBillDetails').datagrid('getSelected');
+        if (detailRow) {
+            $('#dlg_allot_modify').dialog('open').dialog('setTitle', '删除');
+            $('#fm_allot').form('load', detailRow);
+            modifyUrl = '/StockOutBillAllot/AllotDelete/';
+        } else {
+            $.messager.alert('错误', '没有选择行！');
+        }
+    }
+
+    function cancelAllot() {
+        $.ajaxSender.send('/StockOutBillAllot/AllotCancel/',
+                        { billNo: billNo },
+                        function (data) {
+                            $('#outBillDetails1').datagrid('reload');
+                            $('#allotBillDetails').datagrid('reload');
+                            $('#details').datagrid('reload');
+                        }, $('#dlg-allot'));
+    }
+
     function AllotModifySave() {
         $('#fm_allot .easyui-validatebox').validatebox({
             required: true
         });
         if ($('#fm_allot').form('validate')) {
-            var j_waitDialog = ShowWaitMessageDialog();
-            $.ajax({
-                url: modifyUrl, type: "GET", dataType: "text",
-                data: $('#fm_allot').serializeArray(),
-                complete: function () { HideWaitMessageDialog(j_waitDialog); },
-                success: function (responseText) {
-                    var result = $.evalJSON(responseText);
-                    if (result.success) {
-                        $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                        $('#details').datagrid('reload');
-                        $('#outBillDetails1').datagrid('reload');
-                        $('#allotBillDetails').datagrid('reload');
-                        $('#dlg_allot_modify').dialog('close');
-                    } else {
-                        $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                    }
-                }
-            });
+            $.ajaxSender.send(modifyUrl,
+                $('#fm_allot').serializeArray(),
+                function (data) {
+                    $('#details').datagrid('reload');
+                    $('#outBillDetails1').datagrid('reload');
+                    $('#allotBillDetails').datagrid('reload');
+                    $('#dlg_allot_modify').dialog('close');
+                }, $('#dlg_allot_modify'));
         };
     };
 
     function confirmAllot() {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: "/StockOutBillAllot/AllotConfirm/", type: "GET", dataType: "text",
-            data: { billNo: billNo },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#outBillDetails1').datagrid('reload');
-                    $('#allotBillDetails').datagrid('reload');
-                    $('#details').datagrid('reload');
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
+        $.ajaxSender.send('/StockOutBillAllot/AllotConfirm/',
+                        { billNo: billNo },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                        }, $('#dlg-allot')); 
     }
 
     function cancelConfirm() {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: "/StockOutBillAllot/AllotCancelConfirm/", type: "GET", dataType: "text",
-            data: { billNo: billNo },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#outBillDetails1').datagrid('reload');
-                    $('#allotBillDetails').datagrid('reload');
-                    $('#details').datagrid('reload');
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
-    }
-
-    function cancelAllot() {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: "/StockOutBillAllot/AllotCancel/", type: "GET", dataType: "text",
-            data: { billNo: billNo },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#outBillDetails1').datagrid('reload');
-                    $('#allotBillDetails').datagrid('reload');
-                    $('#details').datagrid('reload');
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
+        $.ajaxSender.send('/StockOutBillAllot/AllotCancelConfirm/',
+                        { billNo: billNo },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                        }, $('#dlg-allot'));
     }
 </script>
 
