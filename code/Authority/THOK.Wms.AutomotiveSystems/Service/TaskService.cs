@@ -700,13 +700,14 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         private void OperateToLabelServer(string billId, string detailId, string storageId, string operateType, string tobaccoName, int piece, int item, string targetStorageName)
         {
+            int operateTypeInt = Convert.ToInt32(operateType);
             string sql = @"INSERT INTO SY_SHOWINFO 
-                            VALUES('{0}','{1}','{2}','{3}','{4}',{5},{6},0,0,0,'{7}');";
+                            VALUES('{0}','{1}','{2}',{3},'{4}',{5},{6},0,0,0,'{7}');";
             string tmp = "";
             tmp = tmp + (piece > 0 ? string.Format("{0}件", piece) : "");
             tmp = tmp + (item > 0 ? string.Format("{0}条", item) : "");
             tmp = tmp + (targetStorageName.Length > 0 ? string.Format(@"->{0}", targetStorageName) : "");
-            sql = string.Format(sql, billId, detailId, storageId, operateType, tobaccoName, piece, item, tmp);
+            sql = string.Format(sql, billId, detailId, storageId, operateTypeInt, tobaccoName, piece, item, tmp);
             StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);               
         }
 
