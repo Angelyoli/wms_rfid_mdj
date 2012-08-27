@@ -800,6 +800,10 @@
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
       <Name>THOK.Wms.DbModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.DownloadWms\THOK.Wms.DownloadWms.csproj">
+      <Project>{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}</Project>
+      <Name>THOK.Wms.DownloadWms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Repository\THOK.Wms.Repository.csproj">
       <Project>{259E5E16-41D8-420F-A11C-72BEE784B5CB}</Project>
       <Name>THOK.Wms.Repository</Name>

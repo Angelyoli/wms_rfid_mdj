@@ -100,13 +100,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     switch (billMaster.BillType)
                     {
                         case "1"://入库单
-                            var inBillDetails = InBillAllotRepository.GetQueryable()
+                            var inBillDetails = InBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.ProductCode == productCode || productCode == string.Empty)                                    
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
                                     && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType=="3")))                                
-                                .ToArray()
+                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType=="3")))
                                 .Select(i => new BillDetail() { 
                                     BillNo = i.BillNo, 
                                     BillType = "1" ,
@@ -133,13 +132,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(inBillDetails).ToArray();
                             break;
                         case "2"://出库单
-                            var outBillDetails = OutBillAllotRepository.GetQueryable()
+                            var outBillDetails = OutBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
                                     && (OperateAreas.Contains(i.Cell.Layer.ToString())
                                         || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
-                                .ToArray()
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -208,13 +206,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             }
                             break;                           
                         case "3"://移库单
-                           var moveBillDetails = MoveBillDetailRepository.GetQueryable()
+                            var moveBillDetails = MoveBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.InCell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))
-                                .ToArray()
+                                    && (OperateAreas.Contains(i.InCell.Layer.ToString()) 
+                                        || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))                               
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -242,12 +239,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
                             break;
                         case "4"://盘点单
-                            var checkBillDetails = CheckBillDetailRepository.GetQueryable()
+                            var checkBillDetails = CheckBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
                                 .Where(i => i.BillNo == billNo
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
                                     && (OperateAreas.Contains(i.Cell.Layer.ToString())
                                         || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
-                                .ToArray()
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -310,7 +306,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     inAllot.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.CellCode,
+                                        OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName,
                                             "入库", inAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
@@ -328,7 +324,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     outAllot.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.CellCode,
+                                        OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName,
                                             "出库", outAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
@@ -346,7 +342,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     moveDetail.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode,
+                                        OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName,
                                              "移库", moveDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                              (int)billDetail.BarQuantity, moveDetail.InCell.CellName);
                                     }
@@ -364,7 +360,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.Operator = billDetail.Operator;
                                     if (useTag == "1")
                                     {
-                                        OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode,
+                                        OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellName,
                                             "盘点", checkDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
@@ -571,13 +567,20 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
                                         moveDetail.MoveBillMaster.Status = "3";
+
+                                        var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
+                                        if (sortwork != null)
+                                        {
+                                            sortwork.DispatchStatus = "3";
+                                        }
                                         if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                                         {
                                             moveDetail.MoveBillMaster.Status = "4";
                                             string errorInfo = "";
+                                            MoveBillDetailRepository.SaveChanges();
                                             SettleSortWokDispatch(moveDetail.BillNo, ref errorInfo);
                                         }
-                                        if (useTag == "1")    
+                                        if (useTag == "1")
                                             CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode);
                                     }
                                 }
@@ -698,13 +701,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
         private void OperateToLabelServer(string billId, string detailId, string storageId, string operateType, string tobaccoName, int piece, int item, string targetStorageName)
         {
             string sql = @"INSERT INTO SY_SHOWINFO 
-                            VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}',0,0,0,'{7}');";
+                            VALUES('{0}','{1}','{2}','{3}','{4}',{5},{6},0,0,0,'{7}');";
             string tmp = "";
             tmp = tmp + (piece > 0 ? string.Format("{0}件", piece) : "");
             tmp = tmp + (item > 0 ? string.Format("{0}条", item) : "");
             tmp = tmp + (targetStorageName.Length > 0 ? string.Format(@"->{0}", targetStorageName) : "");
-  
-            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql, billId, detailId, storageId, operateType, tobaccoName, piece, item, tmp);               
+            sql = string.Format(sql, billId, detailId, storageId, operateType, tobaccoName, piece, item, tmp);
+            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);               
         }
 
         private void CancelOperateToLabelServer(string billId, string detailId, string storageId)

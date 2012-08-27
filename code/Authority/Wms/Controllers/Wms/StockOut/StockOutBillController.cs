@@ -7,6 +7,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.WMS.DownloadWms.Bll;
 
 namespace Authority.Controllers.Wms.StockOut
 {
@@ -163,7 +164,24 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult DownOutBillMaster(string beginDate, string endDate)
         {
             string errorInfo = string.Empty;
-            bool bResult = OutBillMasterService.DownOutBillMaster(beginDate, endDate, out errorInfo);
+            if (beginDate == string.Empty || endDate == string.Empty)
+            {
+                beginDate = DateTime.Now.ToString("yyyyMMdd");
+                endDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+            }
+            DownUnitBll ubll = new DownUnitBll();
+            DownProductBll pbll = new DownProductBll();
+            DownOutBillBll ibll = new DownOutBillBll();
+            ubll.DownUnitCodeInfo();
+            pbll.DownProductInfo();            
+            bool bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo);
+
+            //bool bResult = OutBillMasterService.DownOutBillMaster(beginDate, endDate, out errorInfo);
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

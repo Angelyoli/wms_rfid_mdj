@@ -114,7 +114,6 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
-
         public bool DownSortOrder(string beginDate, string endDate, out string errorInfo)
         {
             errorInfo = string.Empty;
@@ -129,7 +128,9 @@ namespace THOK.Wms.Bll.Service
                 {
                     sortOrderStrs += sortOrderIds[i].OrderID + ",";
                 }
-                SortOrder[] SortOrders = null; //SortingDownService.GetSortOrder(sortOrderStrs);
+
+                SortOrder[] SortOrders = SortingDownService.GetSortOrder(beginDate, endDate, sortOrderStrs);
+
                 foreach (var item in SortOrders)
                 {
                     var sortOrder = new SortOrder();

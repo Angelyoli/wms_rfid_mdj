@@ -74,7 +74,8 @@ namespace TestProject
             SortingDownService target = new SortingDownService(); // TODO: 初始化为适当的值
             SortOrder[] expected = null; // TODO: 初始化为适当的值
             SortOrder[] actual;
-            actual = null; //target.GetSortOrder("");
+            actual = target.GetSortOrder("","","");
+
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("验证此测试方法的正确性。");
         }

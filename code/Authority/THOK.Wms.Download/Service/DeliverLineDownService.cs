@@ -23,7 +23,16 @@ namespace THOK.Wms.Download.Service
             sql = sql + " WHERE DELIVER_LINE_CODE NOT IN('" + deloverLines + "')";
             using (SortingDbContext sortdb = new SortingDbContext())
             {
-                return sortdb.Database.SqlQuery<DeliverLine>(sql).ToArray();
+                return sortdb.Database.SqlQuery<DeliverLine>(@"
+                            SELECT [DELIVER_LINE_CODE] AS DeliverLineCode
+                            ,[LINE_TYPE] AS CustomCode
+                            ,[DELIVER_LINE_NAME] AS DeliverLineName
+                            ,[DIST_STA_CODE] AS DistCode
+                            ,[DELIVER_LINE_ORDER] AS DeliverOrder
+                            ,'' AS Description
+                            ,[ISACTIVE] AS IsActive
+                            ,getdate() AS UpdateTime
+                        FROM [V_WMS_DELIVER_LINE]").ToArray();
             }
         }
 
