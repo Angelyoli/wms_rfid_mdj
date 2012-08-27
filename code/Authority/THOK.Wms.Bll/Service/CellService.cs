@@ -618,8 +618,8 @@ namespace THOK.Wms.Bll.Service
                 }
                 else if (inOrOut == "in")//查询出可以移入卷烟的货位
                 {
-                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode)
-                                                     .OrderBy(c => c.CellCode).Select(c => c);
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && (c.Storages.Count == 0 || c.Storages.Any(s => s.ProductCode == productCode && ((c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity)) > 0)))
+                                             .OrderBy(c => c.CellCode).Select(c => c);
                 }
                 else if (inOrOut == "stockOut")//查询可以出库的数量 --出库使用
                 {

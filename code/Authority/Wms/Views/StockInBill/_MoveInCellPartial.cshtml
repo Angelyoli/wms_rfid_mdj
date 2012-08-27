@@ -2,7 +2,8 @@
     //选择移出货位编码
     function moveInCellSelect() {
         $('#MoveCellData').dialog('open').dialog('setTitle', '选择货位信息');
-        $('#movewarehouseTree').tree({ url: '/Cell/GetMoveCellDetails/?inOrOut=' + 'in' }); //加载树形数据
+        var productCode = $('#inAllotAddProductCode').val();
+        $('#movewarehouseTree').tree({ url: '/Cell/GetMoveCellDetails/?inOrOut=' + 'in' + '&productCode=' + productCode + '' });  //加载树形数据
 
         //双击选择移入货位
         $('#movewarehouseTree').tree({
