@@ -512,7 +512,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                                                                                     item.SortingLine.MoveBillTypeCode,
                                                                                                     operatePersonID);
                     moveBillMaster.Origin = "1";
-                    moveBillMaster.Description = "根据 " + item.SortingLine.SortingLineName + "下限预出库！";
+                    moveBillMaster.Description = "根据 " + item.SortingLine.SortingLineName + "下限生成移库单！";
                     bool hasError = false;
                     foreach (var product in item.product.ToArray())
                     {
