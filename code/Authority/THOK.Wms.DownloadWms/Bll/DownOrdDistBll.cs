@@ -21,11 +21,9 @@ namespace THOK.WMS.DownloadWms.Bll
             string distCodeList = UtinString.StringMake(orgTable, "DIST_BILL_ID");
             distCodeList = UtinString.StringMake(distCodeList);
             distCodeList = "DIST_BILL_ID NOT IN (" + distCodeList + ")";
-
             DataTable bistBillMasterTable = this.GetDistBillMaster(distCodeList);
-            DataTable bistBillDetailTable = this.GetDistBillDetail(distCodeList);
-            if (bistBillMasterTable.Rows.Count > 0 && bistBillDetailTable.Rows.Count>0)
-                this.Insert(bistBillMasterTable, bistBillDetailTable);
+            if (bistBillMasterTable.Rows.Count > 0)
+                this.Insert(bistBillMasterTable);
             else
                 tag = false;
             return tag;
@@ -76,12 +74,12 @@ namespace THOK.WMS.DownloadWms.Bll
         /// 把下载的数据插入数据库
         /// </summary>
         /// <param name="orgDistBillTable"></param>
-        public void Insert(DataTable bistBillMasterTable, DataTable bistBillDetailTable)
+        public void Insert(DataTable bistBillMasterTable)
         {
             using (PersistentManager dbpm = new PersistentManager())
             {
                 DownOrdDistDao dao = new DownOrdDistDao();
-                dao.Insert(bistBillMasterTable, bistBillDetailTable);
+                dao.Insert(bistBillMasterTable);
             }
         }
         #endregion

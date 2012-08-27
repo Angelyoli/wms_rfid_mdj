@@ -34,6 +34,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
 
         [Dependency]
+        public ISortOrderDispatchRepository SortOrderDispatchRepository { get; set; }
+
+        [Dependency]
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
         public IStorageLocker Locker { get; set; }
@@ -690,9 +693,16 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     .FirstOrDefault(o => o.BillNo == sortWork.OutBillNo);
                 outMaster.Status = "6";
                 outMaster.UpdateTime = DateTime.Now;
-                //分拣作业结单
+                //分拣作业结单                
                 sortWork.DispatchStatus = "4";
                 sortWork.UpdateTime = DateTime.Now;
+
+                //分拣订单线路调度完成
+                var sortOrderDetail = SortOrderDispatchRepository.GetQueryable().Where(s => s.SortWorkDispatchID == sortWork.ID).ToArray();
+                foreach (var sortOrder in sortOrderDetail)
+                {
+                    sortOrder.WorkStatus = "2";
+                }
                 return true;
             }
             return true;

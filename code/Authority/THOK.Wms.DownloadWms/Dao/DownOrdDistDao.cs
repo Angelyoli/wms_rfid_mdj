@@ -15,7 +15,7 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetDistBillMaster(string bistBillId)
         {
-            string sql = string.Format(" SELECT * FROM V_WMS_DIST_BILL WHERE {0} ", bistBillId);
+            string sql = string.Format("SELECT * FROM V_DWV_ORD_DIST_BILL WHERE {0} ", bistBillId);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
@@ -44,10 +44,9 @@ namespace THOK.WMS.DownloadWms.Dao
         /// 保存配车单信息到数字仓储
         /// </summary>
         /// <param name="bistBillTable"></param>
-        public void Insert(DataTable bistBillMasterTable,DataTable bistBillDetailTable)
+        public void Insert(DataTable bistBillMasterTable)
         {
             this.BatchInsert(bistBillMasterTable, "WMS_DIST_BILL");
-            this.BatchInsert(bistBillDetailTable, "WMS_DIST_BILL_DETAIL");
         }
     }
 }
