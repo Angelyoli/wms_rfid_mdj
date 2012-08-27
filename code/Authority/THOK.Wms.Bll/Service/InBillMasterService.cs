@@ -32,11 +32,17 @@ namespace THOK.Wms.Bll.Service
         public IStorageLocker Locker { get; set; }
         [Dependency]
         public IInBillMasterDownService InBillMasterDownService { get; set; }
+        [Dependency]
+        public IStorageRepository StorageRepository { get; set; }
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
+
+        string resultStr = "";//错误提示信息
 
         #region IInBillMasterService 成员
 
@@ -232,9 +238,10 @@ namespace THOK.Wms.Bll.Service
         #region IInBillMasterService 成员
 
 
-        public bool Audit(string BillNo, string userName)
+        public bool Audit(string BillNo, string userName,out string strResult)
         {
             bool result = false;
+            strResult = string.Empty;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (ibm != null)
@@ -251,6 +258,7 @@ namespace THOK.Wms.Bll.Service
                 else//如果入库主单指定了货位那么就进行入库分配
                 {
                     result = InAllot(ibm);
+                    strResult = resultStr;
                 }
             }
             return result;
@@ -264,6 +272,79 @@ namespace THOK.Wms.Bll.Service
         public bool InAllot(InBillMaster inBillMaster)
         {
             bool result = false;
+            var inBillDetails = inBillMaster.InBillDetails.ToArray();
+            var cell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inBillMaster.TargetCellCode);
+            //入库单入库
+            inBillMaster.InBillDetails.AsParallel().ForAll(
+           (Action<InBillDetail>)delegate(InBillDetail i)
+           {
+               foreach (var ibd in inBillDetails)
+               {
+                   lock (ibd)
+                   {
+                       var inStorage = Locker.LockEmpty(cell);
+                       if (inStorage == null)
+                       {
+                           result = false;
+                           resultStr = "锁定储位失败，储位其他人正在操作，无法分配请稍候重试！";
+                       }
+                       else
+                       {
+                           if (i.BillQuantity - i.AllotQuantity > 0)
+                           {
+                               decimal allotQuantity = i.BillQuantity<cell.MaxQuantity*i.Unit.Count?i.BillQuantity:cell.MaxQuantity*i.Unit.Count;
+                               decimal billQuantity = i.BillQuantity - i.AllotQuantity;
+                               allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                               i.AllotQuantity += allotQuantity;
+                               i.RealQuantity += allotQuantity;
+                               inStorage.Quantity+= allotQuantity;
+
+                               var billAllot = new InBillAllot()
+                               {
+                                   BillNo = inBillMaster.BillNo,
+                                   InBillDetailId = i.ID,
+                                   ProductCode = i.ProductCode,
+                                   CellCode = inStorage.CellCode,
+                                   StorageCode = inStorage.StorageCode,
+                                   UnitCode = i.UnitCode,
+                                   AllotQuantity = allotQuantity,
+                                   RealQuantity = allotQuantity,
+                                   Status = "2"
+                               };
+                               var storage = new Storage()
+                               {
+                                   StorageCode=inStorage.StorageCode,
+                                   CellCode=cell.CellCode,
+                                   ProductCode=i.ProductCode,
+                                   Quantity=inStorage.Quantity,
+                                   StorageTime=DateTime.Now,
+                                   InFrozenQuantity=0,
+                                   OutFrozenQuantity=0,
+                                   IsLock=string.Empty,
+                                   IsActive="1",
+                                   UpdateTime=DateTime.Now
+                               };
+                               lock (inBillMaster.InBillAllots)
+                               {
+                                   inBillMaster.InBillAllots.Add(billAllot);
+                               }
+                               inStorage.LockTag = string.Empty;
+                               result = true;
+                           }
+                           else
+                               break;
+                       }
+                   }
+               }
+           }
+       );
+            //入库结单
+            var inMaster = InBillMasterRepository.GetQueryable()
+                .FirstOrDefault(i => i.BillNo == inBillMaster.BillNo);
+            inMaster.Status = "6";
+            inMaster.UpdateTime = DateTime.Now;
+            StorageRepository.SaveChanges();
+            InBillMasterRepository.SaveChanges();
             return result;
         }
 

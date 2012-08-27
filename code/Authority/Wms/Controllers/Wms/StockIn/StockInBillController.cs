@@ -127,9 +127,10 @@ namespace Authority.Controllers.Wms.StockIn
         // POST: /InBillMaster/Audit/
         public ActionResult Audit(string BillNo)
         {
-            bool bResult = InBillMasterService.Audit(BillNo, this.User.Identity.Name.ToString());
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Audit(BillNo, this.User.Identity.Name.ToString(), out strResult);
             string msg = bResult ? "审核成功" : "审核失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
