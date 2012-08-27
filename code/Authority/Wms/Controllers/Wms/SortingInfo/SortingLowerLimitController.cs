@@ -7,6 +7,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.Wms.SignalR.Dispatch.Interfaces;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -14,6 +15,8 @@ namespace Authority.Controllers.Wms.SortingInfo
     {
         [Dependency]
         public ISortingLowerlimitService SortingLowerlimitService { get; set; }
+        [Dependency]
+        public ISortOrderWorkDispatchService SortOrderWorkDispatchService { get; set; }
         //
         // GET: /SortingLowerLimit/
 
@@ -67,6 +70,16 @@ namespace Authority.Controllers.Wms.SortingInfo
             bool bResult = SortingLowerlimitService.Delete(id);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //根据下限生成移库单
+        // POST: /SortingLowerLimit/LowerLimitMove/
+        public ActionResult LowerLimitMove(bool isEnableStocking)
+        {
+            string errorInfo = string.Empty;
+            bool bResult = SortOrderWorkDispatchService.LowerLimitMoveLibrary(this.User.Identity.Name.ToString(), isEnableStocking, out errorInfo);
+            string msg = bResult ? "生成成功" : "生成失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

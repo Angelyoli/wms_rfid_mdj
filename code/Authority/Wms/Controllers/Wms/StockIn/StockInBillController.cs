@@ -7,6 +7,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.WMS.DownloadWms.Bll;
 
 namespace Authority.Controllers.Wms.StockIn
 {
@@ -202,11 +203,28 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillMaster/DownInBillMaster/
-        public ActionResult DownInBillMaster(string BeginDate, string EndDate)
+        // POST: /StockInBill/DownInBillMaster/
+        public ActionResult DownInBillMaster(string beginDate, string endDate)
         {
             string errorInfo = string.Empty;
-            bool bResult = InBillMasterService.DownInBillMaster(BeginDate, EndDate,out errorInfo);
+            if (beginDate == string.Empty || endDate == string.Empty)
+            {
+                beginDate = DateTime.Now.ToString("yyyyMMdd");
+                endDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+            }
+            DownUnitBll ubll = new DownUnitBll();
+            DownProductBll pbll = new DownProductBll();
+            DownInBillBll ibll = new DownInBillBll();
+            ubll.DownUnitCodeInfo();
+            pbll.DownProductInfo();           
+            bool bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo);
+           
+            //bool bResult = InBillMasterService.DownInBillMaster(beginDate, endDate, out errorInfo);
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

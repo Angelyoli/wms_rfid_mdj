@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.WebUtil;
+using THOK.WMS.DownloadWms.Bll;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -64,12 +65,32 @@ namespace Authority.Controllers.Wms.SortingInfo
             string errorInfo = string.Empty;
             string lineErrorInfo = string.Empty;
             string custErrorInfo = string.Empty;
-            bool lineResult = DeliverLineService.DownDeliverLine(out lineErrorInfo);
-            bool custResult = CustomerService.DownDeliverLine(out custErrorInfo);           
-            bool bResult = SortOrderService.DownSortOrder(beginDate, endDate,out errorInfo);
+
+            if (beginDate == string.Empty || endDate == string.Empty)
+            {
+                beginDate = DateTime.Now.ToString("yyyyMMdd");
+                endDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+            }
+
+            DownRouteBll bll = new DownRouteBll();
+            DownSortingOrderBll sbll = new DownSortingOrderBll();
+            DownCustomerBll cbll = new DownCustomerBll();
+            bool lineResult = bll.DownRouteInfo();
+            bool custResult = cbll.DownCustomerInfo();
+            bool bResult = sbll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+
+            //bool lineResult = DeliverLineService.DownDeliverLine(out lineErrorInfo);
+            //bool custResult = CustomerService.DownDeliverLine(out custErrorInfo);           
+            //bool bResult = SortOrderService.DownSortOrder(beginDate, endDate, out errorInfo);
+
             string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;
             string msg = bResult ? "下载成功" : "下载失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, info), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }
