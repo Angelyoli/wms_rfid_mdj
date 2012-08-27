@@ -13,22 +13,11 @@
         if (billnoRow != "") {
             $.messager.confirm('删除', '确认要删除该记录吗？', function (r) {
                 if (r) {
-                    var j_waitDialog = ShowWaitMessageDialog();
-                    $.ajax({
-                        url: '/StockInBill/Delete/', type: "GET", dataType: "text",
-                        data: { 'BillNo': billnoRow },
-                        complete: function () { HideWaitMessageDialog(j_waitDialog); },
-                        success: function (responseText) {
-                            var result = $.evalJSON(responseText);
-                            if (result.success) {
-                                $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                                $('#details').datagrid('reload');
-                                $('#inBillDetails').datagrid('reload');
-                            } else {
-                                $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                            }
-                        }
-                    });
+                    $.ajaxSender.send('/StockInBill/Delete/',
+                            { BillNo: billnoRow },
+                            function () {
+                                $('#details').datagrid('load');
+                            });
                 }
             });
         } else {
