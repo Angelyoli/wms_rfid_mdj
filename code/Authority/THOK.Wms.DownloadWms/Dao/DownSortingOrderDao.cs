@@ -16,7 +16,8 @@ namespace THOK.WMS.DownloadWms.Dao
        /// <returns></returns>
        public DataTable GetSortingOrder(string orderid)
        {
-           string sql = string.Format("SELECT * FROM V_WMS_SORT_ORDER WHERE {0} AND QUANTITY_SUM>0", orderid);
+           string sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME FROM V_WMS_SORT_ORDER A
+                                        LEFT JOIN V_DWV_ORD_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND QUANTITY_SUM>0", orderid);
            return this.ExecuteQuery(sql).Tables[0];
        }
 

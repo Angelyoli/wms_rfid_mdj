@@ -113,7 +113,7 @@ namespace THOK.WMS.DownloadWms.Bll
 
                    string ordermasterlist = UtinString.StringMake(masterdt, "ORDER_ID");//取得根据时间查询的订单号
                    string ordermasterid = UtinString.StringMake(ordermasterlist);
-                   ordermasterid = "order_id IN (" + ordermasterid + ")";
+                   ordermasterid = "ORDER_ID IN (" + ordermasterid + ")";
                    DataTable detaildt = this.GetSortingOrderDetail(ordermasterid);//根据订单号查询明细
                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
                    {
@@ -278,7 +278,7 @@ namespace THOK.WMS.DownloadWms.Bll
                masterrow["description"] = "";//送货区域名称
                masterrow["is_active"] = row["ISACTIVE"].ToString().Trim();//送货线路编码
                masterrow["update_time"] = DateTime.Now;//送货线路名称
-               masterrow["deliver_line_code"] = row["DELIVER_LINE_CODE"];//送货顺序编码
+               masterrow["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim() + "_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
                ds.Tables["DWV_OUT_ORDER"].Rows.Add(masterrow);
            }
            return ds;

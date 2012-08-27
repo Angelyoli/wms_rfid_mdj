@@ -109,7 +109,7 @@ namespace THOK.Wms.Bll.Service
                                               IsActive = "可用"
                                           });
 
-            return sortOrder.ToArray();
+            return sortOrder.OrderBy(s=>s.DeliverLineName).ToArray();
         }
 
         #endregion

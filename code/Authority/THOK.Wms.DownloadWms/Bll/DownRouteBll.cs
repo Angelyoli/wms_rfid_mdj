@@ -21,13 +21,18 @@ namespace THOK.WMS.DownloadWms.Bll
             DataTable RouteCodeDt = this.GetRouteCode();
             string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
             routeCodeList = UtinString.StringMake(routeCodeList);
-            routeCodeList = "DELIVER_LINE_CODE NOT IN (" + routeCodeList + ")";
+            //routeCodeList = "deliver_line_code NOT IN (" + routeCodeList + ")";
+            DataTable RouteDt = this.GetRouteInfo("");
 
-            DataTable RouteDt = this.GetRouteInfo(routeCodeList);
             if (RouteDt.Rows.Count > 0)
             {
-                DataSet routeCodeDs = this.InsertRouteCode(RouteDt);
-                this.Insert(routeCodeDs);
+                DataTable routeTable = this.InsertRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
+                DataRow[] line = routeTable.Select("deliver_line_code NOT IN(" + routeCodeList + ")");
+                if (line.Length > 0)
+                {
+                    DataSet lineds = this.InsertRouteCode(line);
+                    this.Insert(lineds);
+                }
             }else
                 tag = false;
             return tag;
@@ -128,13 +133,37 @@ namespace THOK.WMS.DownloadWms.Bll
            foreach (DataRow row in routeCodeTable.Rows)
            {
                DataRow routeDr = ds.Tables["DWV_OUT_DELIVER_LINE"].NewRow();
-               routeDr["deliver_line_code"] = row["DELIVER_LINE_CODE"];
+               routeDr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString() + "_" + row["DIST_BILL_ID"].ToString();
                routeDr["custom_code"] = row["LINE_TYPE"];
-               routeDr["deliver_line_name"] = row["DELIVER_LINE_NAME"];
+               routeDr["deliver_line_name"] = row["DELIVERYMAN_NAME"].ToString().Trim() + "----(" + row["DELIVER_LINE_NAME"].ToString() + ")";
                routeDr["dist_code"] = row["DIST_STA_CODE"];
                routeDr["deliver_order"] = row["DELIVER_LINE_ORDER"];
                routeDr["description"] = "";
                routeDr["is_active"] = row["ISACTIVE"];
+               routeDr["update_time"] = DateTime.Now;
+               ds.Tables["DWV_OUT_DELIVER_LINE"].Rows.Add(routeDr);
+           }
+           return ds;
+       }
+
+       /// <summary>
+       /// 添加数据到虚拟表中
+       /// </summary>
+       /// <param name="dr"></param>
+       /// <returns></returns>
+       private DataSet InsertRouteCode(DataRow[] routeCodeTable)
+       {
+           DataSet ds = this.GenerateEmptyTables();
+           foreach (DataRow row in routeCodeTable)
+           {
+               DataRow routeDr = ds.Tables["DWV_OUT_DELIVER_LINE"].NewRow();
+               routeDr["deliver_line_code"] = row["deliver_line_code"].ToString().Trim();
+               routeDr["custom_code"] = row["custom_code"].ToString().Trim();
+               routeDr["deliver_line_name"] = row["deliver_line_name"].ToString().Trim();
+               routeDr["dist_code"] = row["dist_code"];
+               routeDr["deliver_order"] = row["deliver_order"];
+               routeDr["description"] = "";
+               routeDr["is_active"] = row["is_active"];
                routeDr["update_time"] = DateTime.Now;
                ds.Tables["DWV_OUT_DELIVER_LINE"].Rows.Add(routeDr);
            }
