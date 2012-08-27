@@ -27,11 +27,11 @@
                     initMenu();
                     $('#welcome').html('欢迎：' + data.Identity.Name);
 
-                    if (window.ActiveXObject) {
-                    
-                        var WsShell = new ActiveXObject('WScript.Shell')
-                        WsShell.SendKeys('{F11}');
-                    }
+//                    if (window.ActiveXObject) {
+//                    
+//                        var WsShell = new ActiveXObject('WScript.Shell')
+//                        WsShell.SendKeys('{F11}');
+//                    }
 //                    if (window.name == "fullscreen") return;
 //                    var a = window.open("", "fullscreen", "fullscreen=yes")
 //                    a.location = window.location.href
