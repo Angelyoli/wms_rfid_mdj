@@ -211,6 +211,7 @@
     <Content Include="Content\Scripts\JQuery-zTree-v3.3\zTreeStyle\zTreeStyle.css" />
     <Content Include="Content\Scripts\jquery.ajaxsetup.js" />
     <Content Include="Content\Scripts\jquery.json.js" />
+    <Content Include="Content\Scripts\json2.js" />
     <Content Include="Content\Scripts\jthok-ui\JDiv.js" />
     <Content Include="Content\Scripts\jquery.fullscreen.js" />
     <Content Include="Content\Scripts\jquery.asyncProcessing.js" />

@@ -15,6 +15,15 @@
         });
     }
 
+    //将选中的货位编码赋值给控件
+    function MoveCellSave() {
+        var node = $('#movewarehouseTree').tree('getSelected');
+        if (node.attributes == "cell") {
+            $('#targetCellCode').val(node.id);
+            $('#MoveCellData').dialog('close');
+        }
+    }
+
 </script>
 <div id="MoveCellData" class="easyui-dialog" modal="true" style="width: 300px; height: 460px;
     padding: 1px 1px" closed="true" buttons="#dlg-moveCellDatabuttons">

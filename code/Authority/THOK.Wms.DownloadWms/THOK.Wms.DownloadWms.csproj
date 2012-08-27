@@ -31,9 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Unity, Version=2.0.208.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Microsoft.Practices.Unity.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\Libraries\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,7 +43,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="THOK.Util, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\THOK.Util.dll</HintPath>
+      <HintPath>..\Packages\THOK.Util.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

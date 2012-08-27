@@ -37,35 +37,32 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             {
                 value = "";
             }
-            System.Data.DataTable dt = CellService.GetProductCell(queryString, value);
-            //System.Data.DataTable dt = CellService.Test01();
+            System.Data.DataTable dt = CellService.GetProductCell(queryString, value);//System.Data.DataTable dt = CellService.Test01();
             if (dt == null || dt.Rows.Count == 0)
             {
                 Response.Write("<script>alert('导出Excel', '数据表中无数据', 'info')</script>");
-                //throw new Exception("数据表中无数据");
             }
-
-            string filename = System.DateTime.Now.ToString("yyMMdd-HHmm-ss") + ".xls";
             string path = "";
-            if (System.IO.Directory.Exists(@"D:\"))
-            {
-                path = @"D:\";
+            if (System.IO.Directory.Exists(@"D:\")) 
+            { 
+                path = @"D:\"; 
+            } 
+            else 
+            { 
+                path = @"C:\"; 
             }
-            else
-            {
-                path = @"C:\";
-            }
-            string pathFilename = path + filename;
-            string titleName = "货位预设卷烟信息表";
-            bool titleBold = true;
-            int titleSize = 20, contentFirstSize = 10;
-            string contentFontName = "Arial";
-            int plusSize = 50;
-
-            CreateExcel(dt, pathFilename, titleName, titleBold, titleSize, contentFontName, contentFirstSize, plusSize);
+            string pathname = path + System.DateTime.Now.ToString("yyMMdd-HHmm-ss") + ".xls";
+            string[] str = {
+                               "货位预设卷烟信息表", //[0] 大标题
+                               "20",    //[1] 大标题字体大小 
+                               "10",    //[2] 小标题字体大小 
+                               "Arial", //[3] 设置字体 
+                               "50"     //[4] 附加信息的高度 
+                           };
+            CreateExcel(dt, pathname, str);
         }
-
-        public void CreateExcel(System.Data.DataTable dt, string pathFilename, string titleName, bool titleBold, int titleSize, string contentFontName, int contentFirstSize, int plusSize)
+        /// <summary>根据参数创建excel表</summary>
+        public void CreateExcel(System.Data.DataTable dt, string pathname, string[] str)
         {
             int eRowIndex = 2;
             int eColIndex = 1;
@@ -74,15 +71,12 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
             Microsoft.Office.Interop.Excel.Workbook xlBook = xlApp.Workbooks.Add(true);
             Microsoft.Office.Interop.Excel.Worksheet xlSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets["sheet1"];
-            //xlSheet.PageSetup.CenterHorizontally = false;//页面水平居中
-            //xlSheet.PageSetup.CenterVertically = false;//页面不垂直居中
-
-            xlApp.Cells[1, cols] = titleName;
-            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).Font.Bold = titleBold;
-            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).Font.Size = titleSize;
+            //xlSheet.PageSetup.CenterHorizontally = false;//页面水平居中//xlSheet.PageSetup.CenterVertically = false;//页面不垂直居中
+            xlApp.Cells[1, cols] = str[0];
+            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).Font.Bold = true;
+            xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).Font.Size = str[1];
             xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).MergeCells = true;
             xlApp.get_Range((object)xlApp.Cells[1, 1], (object)xlApp.Cells[1, cols]).HorizontalAlignment = Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
-
             try
             {
                 //列名的处理
@@ -91,17 +85,12 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                     xlApp.Cells[eRowIndex, eColIndex] = dt.Columns[i].ColumnName;
                     eColIndex++;
                 }
-
                 //列内容样式
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Bold = titleBold;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Name = contentFontName;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Size = contentFirstSize;
-                //xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, 1]).ColumnWidth = 20;
-                //xlApp.get_Range((object)xlApp.Cells[eRowIndex, 2], (object)xlApp.Cells[eRowIndex, 2]).ColumnWidth = 40;
-                //xlApp.get_Range((object)xlApp.Cells[eRowIndex, 3], (object)xlApp.Cells[eRowIndex, 3]).ColumnWidth = 10;
-
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Bold = true;
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Name = str[3];
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, cols]).Font.Size = str[2];
+                //xlApp.get_Range((object)xlApp.Cells[eRowIndex, 1], (object)xlApp.Cells[eRowIndex, 1]).ColumnWidth = 20;//设置列宽
                 eRowIndex++;
-
                 for (int i = 0; i < rows; i++)
                 {
                     eColIndex = 1;
@@ -119,24 +108,16 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                 range1.Borders.get_Item(Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeBottom).LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
                 range1.Borders.get_Item(Microsoft.Office.Interop.Excel.XlBordersIndex.xlEdgeLeft).LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
                 //xlApp.Visible = true;
-
                 xlApp.Cells[eRowIndex + 1, 1] = "附加信息：";
                 xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
                 xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
-                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).RowHeight = plusSize;
-
+                xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).RowHeight = str[4];
                 xlApp.Cells[eRowIndex + 2, 1] = "确认签名：";
                 xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
                 xlApp.get_Range((object)xlApp.Cells[eRowIndex + 1, 1], (object)xlApp.Cells[eRowIndex + 1, cols]).MergeCells = true;
-
-                //行、列自适应
-                //xlApp.Cells.EntireRow.AutoFit();
-                xlApp.Cells.EntireColumn.AutoFit();
-                //xlApp.DisplayAlerts = true;
-
-                //xlBook.SaveCopyAs(path);
-                xlSheet.SaveAs(pathFilename);
-
+                //行、列自适应               
+                xlApp.Cells.EntireColumn.AutoFit(); //xlApp.Cells.EntireRow.AutoFit(); //xlApp.DisplayAlerts = true; //xlBook.SaveCopyAs(path);
+                xlSheet.SaveAs(pathname);
                 xlApp.Workbooks.Close();
             }
             catch (Exception e)
