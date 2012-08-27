@@ -307,7 +307,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName,
-                                            "入库", inAllot.Product.ProductName, (int)billDetail.PieceQuantity,
+                                            billDetail.BillType, inAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
                                 }
@@ -325,7 +325,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName,
-                                            "出库", outAllot.Product.ProductName, (int)billDetail.PieceQuantity,
+                                            billDetail.BillType, outAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
                                 }
@@ -343,7 +343,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName,
-                                             "移库", moveDetail.Product.ProductName, (int)billDetail.PieceQuantity,
+                                             billDetail.BillType, moveDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                              (int)billDetail.BarQuantity, moveDetail.InCell.CellName);
                                     }
                                 }
@@ -361,7 +361,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellName,
-                                            "盘点", checkDetail.Product.ProductName, (int)billDetail.PieceQuantity,
+                                            billDetail.BillType, checkDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
                                 }
@@ -404,7 +404,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     inAllot.Status = "0";
                                     inAllot.Operator = string.Empty;
                                     if (useTag == "1")                                    
-                                        CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.CellCode);
+                                        CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
                                 }
                                 break;
                             case "2":
@@ -419,7 +419,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     outAllot.Status = "0";
                                     outAllot.Operator = string.Empty;
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.CellCode);
+                                        CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
                                 }
                                 break;
                             case "3":
@@ -434,7 +434,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     moveDetail.Status = "0";
                                     moveDetail.Operator = string.Empty;
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode);
+                                        CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
                                 }
                                 break;
                             case "4":
@@ -449,7 +449,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.Status = "0";
                                     checkDetail.Operator = string.Empty;
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.CellCode);
+                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
                                 }
                                 break;
                             default:
@@ -507,7 +507,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             inAllot.InBillMaster.Status = "6";
                                         }
                                         if (useTag == "1")    
-                                            CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.CellCode);
+                                            CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
                                     }
                                 }
                                 break;
@@ -540,7 +540,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             outAllot.OutBillMaster.Status = "6";
                                         }
                                         if (useTag == "1")    
-                                            CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.CellCode);
+                                            CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
                                     }
                                 }
                                 break;
@@ -581,7 +581,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             SettleSortWokDispatch(moveDetail.BillNo, ref errorInfo);
                                         }
                                         if (useTag == "1")
-                                            CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCellCode);
+                                            CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
                                     }
                                 }
                                 break;
@@ -608,7 +608,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         checkDetail.CheckBillMaster.Status = "4";
                                     }
                                     if (useTag == "1")    
-                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.CellCode);
+                                        CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
                                 }
                                 break;
                             default:
@@ -700,13 +700,14 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         private void OperateToLabelServer(string billId, string detailId, string storageId, string operateType, string tobaccoName, int piece, int item, string targetStorageName)
         {
+            int operateTypeInt = Convert.ToInt32(operateType);
             string sql = @"INSERT INTO SY_SHOWINFO 
-                            VALUES('{0}','{1}','{2}','{3}','{4}',{5},{6},0,0,0,'{7}');";
+                            VALUES('{0}','{1}','{2}',{3},'{4}',{5},{6},0,0,0,'{7}');";
             string tmp = "";
             tmp = tmp + (piece > 0 ? string.Format("{0}件", piece) : "");
             tmp = tmp + (item > 0 ? string.Format("{0}条", item) : "");
             tmp = tmp + (targetStorageName.Length > 0 ? string.Format(@"->{0}", targetStorageName) : "");
-            sql = string.Format(sql, billId, detailId, storageId, operateType, tobaccoName, piece, item, tmp);
+            sql = string.Format(sql, billId, detailId, storageId, operateTypeInt, tobaccoName, piece, item, tmp);
             StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);               
         }
 
@@ -722,7 +723,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             UPDATE STORAGES SET
                             ACT = '',PRODUCTNAME='',CONTENTS='',NUMBERSHOW='',[SIGN]=0
                             WHERE STORAGEID = '{0}'";
-            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql,storageId, billId, detailId);
+            sql = string.Format(sql, storageId, billId, detailId);
+            StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);
         }
     }
 }
