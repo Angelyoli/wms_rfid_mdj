@@ -243,7 +243,7 @@ namespace THOK.Wms.Allot.Service
                         {
                             decimal q1 = allotDetail.InBillDetail.BillQuantity - allotDetail.InBillDetail.AllotQuantity;
                             decimal q2 = allotQuantity * allotDetail.Unit.Count;
-                            if (q1 >= q2)
+                            if (q1 >= q2 || q1==0)
                             {
                                 try
                                 {
@@ -392,7 +392,7 @@ namespace THOK.Wms.Allot.Service
                         InBillAllot billAllot = null;
                         decimal q1 = ibd.BillQuantity - ibd.AllotQuantity;
                         decimal q2 = allotQuantity * ibd.Unit.Count;
-                        if (q2 > q1&&q2<=cell.MaxQuantity*ibd.Unit.Count)
+                        if (q2 <= q1&&q2<=cell.MaxQuantity*ibd.Unit.Count)
                         {
                             try
                             {
@@ -409,7 +409,8 @@ namespace THOK.Wms.Allot.Service
                                     Status = "0"
                                 };
                                 ibd.AllotQuantity += q2;
-                                storage.OutFrozenQuantity += q2;
+                                storage.InFrozenQuantity += q2;
+                                storage.ProductCode = ibd.ProductCode;
                                 ibm.InBillAllots.Add(billAllot);
                                 ibm.Status = "3";
                                 storage.LockTag = string.Empty;
