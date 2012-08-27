@@ -19,5 +19,7 @@ namespace THOK.Wms.Bll.Interfaces
         object FindArea(string parameter);
 
         object GetWareArea();
+
+        object GetAreaCode(string WareCode);
     }
 }

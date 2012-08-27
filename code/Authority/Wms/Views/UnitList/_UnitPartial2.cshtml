@@ -1,8 +1,8 @@
 ﻿<script type="text/javascript">
 
-    function UnitQueryClick() {
-        $('#dlg-Unitsearch').dialog('open').dialog('setTitle', '查询单位信息');
-        $("input[type=text]").attr("value", "");
+    function UnitQueryClick2() {
+        $('#unitDetail2').datagrid({ url: '/Unit/GetDetails/?QueryString=' + $('#queryType2').combobox('getValue') + '&Value=' + $('#UnitInfo2').val() });
+        $("#unitDetail2").datagrid('reload');
     };
 
     function unitSave2() {
@@ -10,15 +10,38 @@
         if (unitRow) {
             $('#unitCode02').val(unitRow.UnitCode);
             $('#unitName02').val(unitRow.UnitName);
+            $('#unitCode2').val(unitRow.UnitCode);
+            $('#unitName2').val(unitRow.UnitName);
+            count2 = unitRow.COUNT;
+            if (count1 != null) {
+                $('#quantity01').val(count1 / count2);
+            }
+            if (count3 != null) {
+                $('#quantity02').val(count2 / count3);
+            }
             $('#unitData2').dialog('close');
         }
     }
+
+    $(function () {
+        $('#queryType').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 100
+        });
+        $('#unitDetail2').datagrid({
+            onDblClickRow: function () {
+                unitSave2();
+            }
+        })
+    });
 </script>
 <div id="unitData2" class="easyui-dialog" modal="true" style="width: 500px; height: 500px;
     padding: 0px 0px" closed="true" buttons="#dlgUnit-buttons">
     <div split="true" border="false" style="width: 486px; height: 430px">
         <table id="unitDetail2" class="easyui-datagrid" border="false" 
-        @*toolbar="#btn-query3"*@
+        toolbar="#btn-query"
             singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
             <thead>
                 <tr>
@@ -47,7 +70,13 @@
     <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#unitData2').dialog('close')">
         取消</a>
 </div>
-@*<div id="btn-query3">
- <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="UnitQueryClick()" id="UnitQuery">查询</a> 
-</div>*@
+<div id="btn-query2">
+<select id="queryType2" name="QueryString" class="easyui-combobox" style="width: 100px;" readonly="true">
+		                <option value="UnitCode">计量单位编码</option>
+		                <option value="UnitName">计量单位名称</option>
+	                </select>
+                    <input id="UnitInfo2">
+ <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="UnitQueryClick2()" id="UnitQuery2">查询</a>
+</div>
+
 

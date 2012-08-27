@@ -2,7 +2,6 @@
     var url;
     $(function () {
         $('#IsActiveCc').combo({
-            required: true,
             editable: false,
             panelHeight: 45
         });
@@ -16,9 +15,9 @@
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
-        $('#IsActiveCc').combo({
-            hasDownArrow: true
-        });
+//        $('#IsActiveCc').combo({
+//            hasDownArrow: true
+//        });
         url = '/SortingLowerLimit/Create/';
     };
 
@@ -43,6 +42,7 @@
     }
     function productSelect() {
         $('#productInfoShowDiv').dialog('open').dialog('setTitle', '选择产品信息');
+        $('#ProductInfo').attr('value', "");
         $('#productDetail').datagrid({ url: '/Product/FindProduct/' });
         $("#productDetail").datagrid('reload');
     }
@@ -94,7 +94,7 @@
                       </tr>                 
                       <tr>
                         <td style="text-align:right">是否可用：</td>
-                        <td><select id="IsActiveCc" name="IsActive" class="easyui-combobox" style="width:80px">
+                        <td><select id="IsActiveCc" name="IsActive" class="easyui-combobox" style="width:80px" required="true">
 		                        <option value="1">可用</option>
 		                        <option value="0">不可用</option>
 	                        </select>

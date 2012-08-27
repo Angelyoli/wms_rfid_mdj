@@ -18,5 +18,9 @@ namespace THOK.Wms.Bll.Interfaces
 
         object FindUnit(string productCode);
 
+
+        object GetDetails(int page, int rows, string QueryString, string Value);
+
+        bool DownUnit();
     }
 }

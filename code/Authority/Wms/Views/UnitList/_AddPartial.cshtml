@@ -1,5 +1,9 @@
 ﻿<script type="text/javascript">
     var url;
+    var count1;
+    var count2;
+    var count3;
+    var count4;
     $(function () {
         $('#isActive').combo({
             required: true,
@@ -7,6 +11,7 @@
             panelHeight: 45,
             panelWidth: 100
         });
+
     })
 
     function unitSelect1() {
@@ -14,18 +19,21 @@
         $('#unitDetail1').datagrid({ url: '/Unit/Details/' });
         $("#unitDetail1").datagrid('reload');
     }
+
     function unitSelect2() {
         $('#unitData2').dialog('open').dialog('setTitle', '选择二级单位');
         $('#unitDetail2').datagrid({ url: '/Unit/Details/' });
         $("#unitDetail2").datagrid('reload');
+
     }
+
     function unitSelect3() {
-        $('#unitData3').dialog('open').dialog('setTitle', '选择三级单位');
+        $('#unitData3').dialog('open').dialog('setTitle', '选择二级单位');
         $('#unitDetail3').datagrid({ url: '/Unit/Details/' });
         $("#unitDetail3").datagrid('reload');
     }
     function unitSelect4() {
-        $('#unitData4').dialog('open').dialog('setTitle', '选择四级单位');
+        $('#unitData4').dialog('open').dialog('setTitle', '选择二级单位');
         $('#unitDetail4').datagrid({ url: '/Unit/Details/' });
         $("#unitDetail4").datagrid('reload');
     }
@@ -70,56 +78,61 @@
         });
     }
 </script>
-<div id="dlg-add" class="easyui-dialog" modal="true" style="width:280px;height:320px;padding:2px 2px"
+<div id="dlg-add" class="easyui-dialog" modal="true" style="width:400px;height:260px;padding:2px 2px"
 		closed="true" buttons="#dlg-buttons-add">
     <div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " > 
             <form id="fm-add" method="post" novalidate>  
-                <table align="left" width="250">    
+                <table align="left" width="360">    
                  <tr>
                     <td width="100">计量单位系列编码:</td>
-                    <td><input id="UnitListCode" name="UnitListCode" type="text" style="width: 100px"></td>
+                    <td><input id="unitListCode" name="UnitListCode" type="text" style="width: 80px" class="easyui-validatebox" required="true"></td>
                   </tr>
-                  <tr>
+                  <tr> 
                     <td width="100">计量单位系列名称:</td>
-                    <td><input id="unitListName" name="UnitListName" type="text" style="width: 100px"></td>
-                  </tr>
+                    <td><input id="unitListName" name="UnitListName" type="text" style="width: 100px" class="easyui-validatebox" required="true"></td>
+                    <td width="60">统一编码:</td>
+                    <td><input id="uniformCode" name="UniformCode" type="text" style="width: 60px"></td>
+                   </tr>
                   <tr>
                     <td width="100">一级单位（件）:</td>
-                    <td><input name="unitCode01" id="unitCode01" type="text" style="width: 100px"">
+                    <td><input id="unitCode01" name="unitCode01" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect1()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
-                  </tr> 
+                    <td width="60">转换比例1:</td>
+                    <td><input id="quantity01" name="Quantity01" type="text" editable="false" style="width: 60px">
+                    </td>
+                  </tr>
                   <tr>
                     <td width="100">二级单位（条）:</td>
-                    <td><input name="unitCode02" id="unitCode02" type="text" style="width: 100px"">
+                    <td><input id="unitCode02" name="unitCode02" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect2()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
-                        </td>
+                    </td>
+                    <td width="60">转换比例2:</td>
+                    <td><input id="quantity02" name="Quantity02" type="text" editable="false" style="width: 60px"">
+                    </td>
                   </tr>
                   <tr>
                     <td width="100">三级单位（包）:</td>
-                    <td><input name="unitCode03" id="unitCode03" type="text" style="width: 100px"">
+                    <td><input id="unitCode03" name="unitCode03" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect3()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
+                    </td>
+                    <td width="60">转换比例3:</td>
+                    <td><input id="quantity03" name="Quantity03" type="text" editable="false" style="width: 60px">
                     </td>
                   </tr>
                   <tr>
                     <td width="100">四级单位（支）:</td>
-                    <td><input name="unitCode04" id="unitCode04" type="text" style="width: 100px"">
+                    <td><input id="unitCode04" name="unitCode04" type="text" style="width: 80px" required="true">
                         <a href="#" onclick="unitSelect4()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
-                  </tr>
-                  <tr> 
-                    <td width="60">统一编码:</td>
-                    <td><input id="uniformCode" name="UniformCode" type="text" style="width: 100px"></td>
-                   </tr>
-                   <tr> 
                     <td width="60">是否可用:</td>
-                    <td><select id="isActive" name="IsActive" class="easyui-combobox" style="width: 100px">
+                    <td><select id="isActive" name="IsActive" class="easyui-combobox" style="width: 60px;height:40px" required="true">
                       <option value="">请选择</option>
                       <option value="1">可用</option>
                       <option value="0">不可用</option>
                      </select></td>
-                   </tr>
+                  </tr>
             </table>
             </form>
         </div>
@@ -129,4 +142,7 @@
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-add').dialog('close')">取消</a>
 </div>
-
+@Html.Partial("_UnitPartial1") 
+@Html.Partial("_UnitPartial2") 
+@Html.Partial("_UnitPartial3") 
+@Html.Partial("_UnitPartial4") 

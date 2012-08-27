@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,6 +108,7 @@
     <Compile Include="Controllers\Wms\ComplexSearch\StockOutSearchController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisDownloadController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisUploadController.cs" />
+    <Compile Include="Controllers\Wms\InterfaceInfo\DeliverLineController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\SortingRealTimeController.cs" />
     <Compile Include="Controllers\Wms\Inventory\CargospaceController.cs" />
     <Compile Include="Controllers\Wms\Inventory\CurrentStockController.cs" />
@@ -815,7 +817,6 @@
     <Content Include="Views\Authorize\Index.cshtml" />
     <Content Include="Views\Company\Index.cshtml" />
     <Content Include="Views\Department\Index.cshtml" />
-    <Content Include="Views\Area\Index.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\City\_AddPartial.cshtml" />
@@ -833,12 +834,6 @@
     <Content Include="Views\Company\_HelpPartial.cshtml" />
     <Content Include="Views\Company\_SearchPartial.cshtml" />
     <Content Include="Views\Company\_PrintPartial.cshtml" />
-    <Content Include="Views\Area\_AddPartial.cshtml" />
-    <Content Include="Views\Area\_DeletePartial.cshtml" />
-    <Content Include="Views\Area\_EditPartial.cshtml" />
-    <Content Include="Views\Area\_SearchPartial.cshtml" />
-    <Content Include="Views\Area\_HelpPartial.cshtml" />
-    <Content Include="Views\Area\_PrintPartial.cshtml" />
     <Content Include="Views\Department\_AddPartial.cshtml" />
     <Content Include="Views\Department\_DeletePartial.cshtml" />
     <Content Include="Views\Department\_EditPartial.cshtml" />
@@ -1159,8 +1154,6 @@
     <Content Include="Views\StockOutSearch\_Detail.cshtml" />
     <Content Include="Views\StockMoveBill\_SearchPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_SettlePartial.cshtml" />
-    <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
-    <Content Include="Views\UnitList\_UnitPartial.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial1.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial2.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial3.cshtml" />
@@ -1169,6 +1162,11 @@
     <Content Include="Views\Distribution\_ProductPartial.cshtml" />
     <Content Include="Views\Stockledger\_ProductPartial.cshtml" />
     <Content Include="Views\HistoricalDetail\_ProductPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_MoveOutCellPartial.cshtml" />
+    <Content Include="Views\StockInBill\_MoveInCellPartial.cshtml" />
+    <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
+    <Content Include="Views\StockInBill\_DownLoadPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_DownLoadPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

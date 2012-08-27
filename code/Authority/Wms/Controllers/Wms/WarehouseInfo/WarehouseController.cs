@@ -76,5 +76,13 @@ namespace Authority.Controllers.WarehouseInfo
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
+        //获取生成的仓库编码
+        // GET: /Warehouse/GetWareCode/
+        public ActionResult GetWareCode()
+        {
+            var warehouseCode = WarehouseService.GetWareCode();
+            return Json(warehouseCode, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

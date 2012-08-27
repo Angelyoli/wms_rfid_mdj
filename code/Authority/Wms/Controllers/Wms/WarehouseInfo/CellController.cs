@@ -70,9 +70,10 @@ namespace Authority.Controllers.Wms.WarehouseInfo
         [HttpPost]
         public ActionResult CellCreate(Cell cell)
         {
-            bool bResult = CellService.Add(cell);
+            string errorInfo = string.Empty;
+            bool bResult = CellService.Add(cell, out errorInfo);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 
         //编辑货位表
@@ -108,6 +109,14 @@ namespace Authority.Controllers.Wms.WarehouseInfo
         {
             var wareCell = CellService.GetMoveCellDetails(id,inOrOut,productCode);
             return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //获取生成的货位编码
+        // GET: /Cell/GetCellCode/
+        public ActionResult GetCellCode(string shelfCode)
+        {
+            var cellCode = CellService.GetCellCode(shelfCode);
+            return Json(cellCode, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string cellCode);
 
-        bool Add(Cell cell);
+        bool Add(Cell cell, out string errorInfo);
 
         bool Delete(string cellCode);
 
@@ -24,6 +24,7 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetCell(string shelfCode);
 
+        object GetCellCode(string shelfCode);
 
         object GetMoveCellDetails(string shelfCode, string inOrOut, string productCode);
 
@@ -45,7 +46,5 @@ namespace THOK.Wms.Bll.Interfaces
         object GetCellBy(int page, int rows, string QueryString, string Value);
 
         System.Data.DataTable GetProductCell(string queryString, string value);
-
-        System.Data.DataTable Test01();
     }
 }

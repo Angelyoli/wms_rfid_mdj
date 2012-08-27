@@ -156,7 +156,16 @@ namespace Authority.Controllers.Wms.StockOut
             bool bResult = OutBillMasterService.Settle(BillNo, out errorInfo);
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
+        }
 
+        //主单结单
+        // POST: /StockOutBill/DownOutBillMaster/
+        public ActionResult DownOutBillMaster(string beginDate, string endDate)
+        {
+            string errorInfo = string.Empty;
+            bool bResult = OutBillMasterService.DownOutBillMaster(beginDate, endDate, out errorInfo);
+            string msg = bResult ? "下载成功" : "下载失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 
     }

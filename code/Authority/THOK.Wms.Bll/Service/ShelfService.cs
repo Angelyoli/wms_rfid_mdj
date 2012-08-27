@@ -124,6 +124,40 @@ namespace THOK.Wms.Bll.Service
             return shelf.First(s => s.ShelfCode == shelfCode);
         }
 
+        /// <summary>
+        /// 根据库区编码获取生成的货架编码
+        /// </summary>
+        /// <param name="areaCode">库区编码</param>
+        /// <returns></returns>
+        public object GetShelfCode(string areaCode)
+        {
+            string shelfCodeStr = "";
+            IQueryable<Shelf> shelfQuery = ShelfRepository.GetQueryable();
+            var shelfCode = shelfQuery.Where(s=>s.AreaCode==areaCode).Max(s => s.ShelfCode);
+            if (shelfCode == string.Empty || shelfCode == null)
+            {
+                shelfCodeStr = areaCode + "-001";
+            }
+            else
+            {
+                int i = Convert.ToInt32(shelfCode.ToString().Substring(areaCode.Length+1, 3));
+                i++;
+                string newcode = i.ToString();
+                if (newcode.Length <= 3)
+                {
+                    for (int j = 0; j < 3 - i.ToString().Length; j++)
+                    {
+                        newcode = "0" + newcode;
+                    }
+                    shelfCodeStr = areaCode + "-" + newcode;
+                }
+            }
+            return shelfCodeStr;
+        }
+
         #endregion
+
+
+       
     }
 }

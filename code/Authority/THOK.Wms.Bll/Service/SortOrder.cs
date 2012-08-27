@@ -6,6 +6,7 @@ using THOK.Wms.DbModel;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
+using THOK.Wms.Download.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -13,8 +14,19 @@ namespace THOK.Wms.Bll.Service
     {
         [Dependency]
         public ISortOrderRepository SortOrderRepository { get; set; }
+
+        [Dependency]
+        public ISortOrderDetailRepository SortOrderDetailRepository { get; set; }
+
         [Dependency]
         public ISortOrderDispatchRepository SortOrderDispatchRepository { get; set; }
+
+        [Dependency]
+        public IProductRepository ProductRepository { get; set; }
+
+        [Dependency]
+        public ISortingDownService SortingDownService { get; set; }
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
@@ -101,5 +113,74 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+
+        public bool DownSortOrder(string beginDate, string endDate, out string errorInfo)
+        {
+            errorInfo = string.Empty;
+            bool result = false;
+            string sortOrderStrs = "";
+            string sortOrderList = "";
+            try
+            {
+                var sortOrderIds = SortOrderRepository.GetQueryable().Where(s=>s.OrderID==s.OrderID).Select(s => new { s.OrderID }).ToArray();
+                
+                for (int i = 0; i < sortOrderIds.Length; i++)
+                {
+                    sortOrderStrs += sortOrderIds[i].OrderID + ",";
+                }
+                SortOrder[] SortOrders = null; //SortingDownService.GetSortOrder(sortOrderStrs);
+                foreach (var item in SortOrders)
+                {
+                    var sortOrder = new SortOrder();
+                    sortOrder.OrderID = item.OrderID;
+                    sortOrder.CompanyCode = item.CompanyCode;
+                    sortOrder.SaleRegionCode = item.SaleRegionCode;
+                    sortOrder.OrderDate = item.OrderDate;
+                    sortOrder.OrderType = item.OrderType;
+                    sortOrder.CustomerCode = item.CustomerCode;
+                    sortOrder.CustomerName = item.CustomerName;
+                    sortOrder.DeliverLineCode = item.DeliverLineCode;
+                    sortOrder.QuantitySum = item.QuantitySum;
+                    sortOrder.AmountSum = item.AmountSum;
+                    sortOrder.DetailNum = item.DetailNum;
+                    sortOrder.DeliverOrder = item.DeliverOrder;
+                    sortOrder.DeliverDate = item.DeliverDate;
+                    sortOrder.Description = item.Description;
+                    sortOrder.IsActive = item.IsActive;
+                    sortOrder.UpdateTime = item.UpdateTime;
+                    SortOrderRepository.Add(sortOrder);
+                    sortOrderList += item.OrderID + ",";
+                }
+                if (sortOrderList != string.Empty)
+                {
+                    SortOrderDetail[] SortOrderDetails = null; //SortingDownService.GetSortOrderDetail(sortOrderList);
+                    foreach (var detail in SortOrderDetails)
+                    {
+                        var sortOrderDetail = new SortOrderDetail();
+                        var product = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == detail.ProductCode);                        
+                        sortOrderDetail.OrderDetailID = detail.OrderDetailID;
+                        sortOrderDetail.OrderID = detail.OrderID;
+                        sortOrderDetail.ProductCode = detail.ProductCode;
+                        sortOrderDetail.ProductName = detail.ProductName;
+                        sortOrderDetail.UnitCode = detail.UnitCode;
+                        sortOrderDetail.UnitName = detail.UnitName;
+                        sortOrderDetail.DemandQuantity = detail.DemandQuantity * product.UnitList.Unit02.Count;
+                        sortOrderDetail.RealQuantity = detail.RealQuantity * product.UnitList.Unit02.Count;
+                        sortOrderDetail.Price = detail.Price;
+                        sortOrderDetail.Amount = detail.Amount;
+                        sortOrderDetail.UnitQuantity = product.UnitList.Quantity02;
+                        SortOrderDetailRepository.Add(sortOrderDetail);
+                    }
+                }
+                SortOrderRepository.SaveChanges();
+                result = true;
+            }
+            catch (Exception e)
+            {
+                errorInfo = "出错，原因：" + e.Message;
+            }
+            return result;
+        }
     }
 }

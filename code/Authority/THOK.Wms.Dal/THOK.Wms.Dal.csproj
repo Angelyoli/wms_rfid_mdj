@@ -53,7 +53,10 @@
     <Compile Include="EntityRepository\CheckBillMasterRepository.cs" />
     <Compile Include="EntityRepository\CheckSearchDetailRepository.cs" />
     <Compile Include="EntityRepository\CompanyRepository.cs" />
+    <Compile Include="EntityRepository\CustomerRepository.cs" />
     <Compile Include="EntityRepository\DailyBalanceRepository.cs" />
+    <Compile Include="EntityRepository\DeliverDistRepository.cs" />
+    <Compile Include="EntityRepository\DeliverLineRepository.cs" />
     <Compile Include="EntityRepository\DepartmentRepository.cs" />
     <Compile Include="EntityRepository\DifferSearchDetailRepository.cs" />
     <Compile Include="EntityRepository\EmployeeRepository.cs" />
@@ -99,7 +102,10 @@
     <Compile Include="Interfaces\ICheckBillMasterRepository.cs" />
     <Compile Include="Interfaces\ICheckSearchDetailRepository.cs" />
     <Compile Include="Interfaces\ICompanyRepository.cs" />
+    <Compile Include="Interfaces\ICustomerRepository.cs" />
     <Compile Include="Interfaces\IDailyBalanceRepository.cs" />
+    <Compile Include="Interfaces\IDeliverDistRepository.cs" />
+    <Compile Include="Interfaces\IDeliverLineRepository.cs" />
     <Compile Include="Interfaces\IDepartmentRepository.cs" />
     <Compile Include="Interfaces\IDifferSearchDetailRepository.cs" />
     <Compile Include="Interfaces\IEmployeeRepository.cs" />

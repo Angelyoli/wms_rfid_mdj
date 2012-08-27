@@ -10,6 +10,7 @@ using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Common;
 using System.Transactions;
+using THOK.Wms.Download.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -29,6 +30,8 @@ namespace THOK.Wms.Bll.Service
         public IInBillAllotRepository InBillAllotRepository { get; set; }
         [Dependency]
         public IStorageLocker Locker { get; set; }
+        [Dependency]
+        public IInBillMasterDownService InBillMasterDownService { get; set; }
 
         protected override Type LogPrefix
         {
@@ -112,7 +115,8 @@ namespace THOK.Wms.Bll.Service
                 Status = WhatStatus(i.Status),
                 IsActive = i.IsActive == "1" ? "可用" : "不可用",
                 Description = i.Description,
-                UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                i.TargetCellCode
             });
             return new { total, rows = tmp.ToArray() };
         }
@@ -136,6 +140,7 @@ namespace THOK.Wms.Bll.Service
                 //ibm.IsActive = inBillMaster.IsActive;
                 ibm.IsActive = "1";
                 ibm.UpdateTime = DateTime.Now;
+                ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
                 InBillMasterRepository.Add(ibm);
                 InBillMasterRepository.SaveChanges();
@@ -175,6 +180,7 @@ namespace THOK.Wms.Bll.Service
                 //ibm.IsActive = inBillMaster.IsActive;
                 ibm.IsActive = "1";
                 ibm.UpdateTime = DateTime.Now;
+                ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
                 InBillMasterRepository.SaveChanges();
                 result = true;
@@ -233,13 +239,31 @@ namespace THOK.Wms.Bll.Service
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (ibm != null)
             {
-                ibm.Status = "2";
-                ibm.VerifyDate = DateTime.Now;
-                ibm.UpdateTime = DateTime.Now;
-                ibm.VerifyPersonID = employee.ID;
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                if (string.IsNullOrEmpty(ibm.TargetCellCode))//判断入库主单是否指定货位
+                {
+                    ibm.Status = "2";
+                    ibm.VerifyDate = DateTime.Now;
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.VerifyPersonID = employee.ID;
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                else//如果入库主单指定了货位那么就进行入库分配
+                {
+                    result = InAllot(ibm);
+                }
             }
+            return result;
+        }
+
+        /// <summary>
+        /// 入库分配
+        /// </summary>
+        /// <param name="inBillMaster">入库主单</param>
+        /// <returns></returns>
+        public bool InAllot(InBillMaster inBillMaster)
+        {
+            bool result = false;
             return result;
         }
 
@@ -381,5 +405,60 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+        public bool DownInBillMaster(string BeginDate, string EndDate, out string errorInfo)
+        {
+            errorInfo = string.Empty;
+            bool result = false;
+            string inBillStr = "";
+            string inBillMasterStr = "";
+            try
+            {
+                var inBillNos = InBillMasterRepository.GetQueryable().Where(i => i.BillNo == i.BillNo).Select(i => new { i.BillNo }).ToArray();
+                
+                for (int i = 0; i < inBillNos.Length; i++)
+                {
+                    inBillStr += inBillNos[i].BillNo + ",";
+                }
+                InBillMaster[] inBillMasterList = InBillMasterDownService.GetInBillMaster(inBillStr);
+                foreach (var master in inBillMasterList)
+                {
+                    var inBillMaster = new InBillMaster();
+                    inBillMaster.BillNo = master.BillNo;
+                    inBillMaster.BillDate = master.BillDate;
+                    inBillMaster.BillTypeCode = master.BillTypeCode;
+                    inBillMaster.WarehouseCode = master.WarehouseCode;
+                    inBillMaster.Status = "1";                
+                    inBillMaster.IsActive = master.IsActive;
+                    inBillMaster.UpdateTime = DateTime.Now;
+                    InBillMasterRepository.Add(inBillMaster);
+                    inBillMasterStr += master.BillNo + ",";
+                }
+                if (inBillMasterStr != string.Empty)
+                {
+                    InBillDetail[] inBillDetailList = InBillMasterDownService.GetInBillDetail(inBillMasterStr);
+                    foreach (var detail in inBillDetailList)
+                    {
+                        var inBillDetail = new InBillDetail();
+                        inBillDetail.BillNo = detail.BillNo;
+                        inBillDetail.ProductCode = detail.ProductCode;
+                        inBillDetail.UnitCode = detail.UnitCode;
+                        inBillDetail.Price = detail.Price;
+                        inBillDetail.BillQuantity = detail.BillQuantity;
+                        inBillDetail.AllotQuantity = detail.AllotQuantity;
+                        inBillDetail.RealQuantity = detail.RealQuantity;
+                        inBillDetail.Description = detail.Description;
+                        InBillDetailRepository.Add(inBillDetail);
+                    }
+                }
+                InBillMasterRepository.SaveChanges();
+                result = true;
+            }
+            catch (Exception e)
+            {
+                errorInfo = "出错，原因：" + e.Message;
+            }
+            return result;
+        }
     }
 }

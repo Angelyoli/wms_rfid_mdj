@@ -1,1 +1,17 @@
-﻿
+﻿<script type="text/javascript">
+    function downloadClick() {
+        var j_waitDialog = ShowWaitMessageDialog();
+        $.ajax({
+            url: "/SortingOrder/DownSortOrder/", type: "GET", dataType: "text",
+            complete: function () { HideWaitMessageDialog(j_waitDialog); },
+            success: function (responseText) {
+                var result = $.evalJSON(responseText);
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");                   
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                }
+            }
+        });
+    }
+</script>
