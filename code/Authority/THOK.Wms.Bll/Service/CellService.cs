@@ -608,7 +608,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             else
-            {                
+            {
                 var cells = CellRepository.GetQueryable().Where(c => c.CellCode == c.CellCode);
                 if (inOrOut == "out")// 查询出可以移出卷烟的货位
                 {
@@ -616,18 +616,15 @@ namespace THOK.Wms.Bll.Service
                     cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode))
                                                          .OrderBy(s => s.CellCode);
                 }
-                else if(inOrOut=="in")//查询出可以移入卷烟的货位
+                else if (inOrOut == "in")//查询出可以移入卷烟的货位
                 {
-                    var storages = StorageRepository.GetQueryable().Where(s => s.Quantity == 0
-                        || (s.Cell.IsSingle == "1" && s.ProductCode == productCode && ((s.Cell.MaxQuantity*s.Product.Unit.Count)-s.InFrozenQuantity-s.Quantity)>0)
-                        || (s.Cell.IsSingle == "0" && string.IsNullOrEmpty(s.Cell.LockTag))).Select(s => s.CellCode);
-                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode))
-                                                         .OrderBy(c => c.CellCode).Select(c => c);
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode)
+                                                     .OrderBy(c => c.CellCode).Select(c => c);
                 }
                 else if (inOrOut == "stockOut")//查询可以出库的数量 --出库使用
                 {
-                    var storages = StorageRepository.GetQueryable().Where(s => (s.Quantity - s.OutFrozenQuantity) > 0 
-                                                                    && string.IsNullOrEmpty(s.Cell.LockTag) 
+                    var storages = StorageRepository.GetQueryable().Where(s => (s.Quantity - s.OutFrozenQuantity) > 0
+                                                                    && string.IsNullOrEmpty(s.Cell.LockTag)
                                                                     && s.ProductCode == productCode)
                                                                     .Select(s => s.CellCode);
                     cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode)).OrderBy(c => c.CellCode);
