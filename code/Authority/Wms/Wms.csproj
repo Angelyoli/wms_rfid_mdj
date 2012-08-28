@@ -1172,6 +1172,7 @@
     <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
     <Content Include="Views\StockInBill\_DownLoadPartial.cshtml" />
     <Content Include="Views\StockOutBill\_DownLoadPartial.cshtml" />
+    <Content Include="Views\StockMoveBill\_UnitPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
