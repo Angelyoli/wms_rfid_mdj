@@ -387,50 +387,57 @@ namespace THOK.Wms.Allot.Service
                 if (string.IsNullOrEmpty(ibm.LockTag))
                 {
                     Storage storage = Locker.LockStorage(cell);
-                    if (storage != null && allotQuantity > 0)
-                    {
-                        InBillAllot billAllot = null;
-                        decimal q1 = ibd.BillQuantity - ibd.AllotQuantity;
-                        decimal q2 = allotQuantity * ibd.Unit.Count;
-                        if (q2 <= q1 && q2 <= (cell.MaxQuantity * ibd.Unit.Count - (storage.Quantity + storage.InFrozenQuantity)))
+                    if (storage != null)
+                    {                       
+                        if (allotQuantity > 0)
                         {
-                            try
+                            InBillAllot billAllot = null;
+                            decimal q1 = ibd.BillQuantity - ibd.AllotQuantity;
+                            decimal q2 = allotQuantity * ibd.Unit.Count;
+                            if (q2 <= q1 && q2 <= (cell.MaxQuantity * ibd.Unit.Count - (storage.Quantity + storage.InFrozenQuantity)))
                             {
-                                billAllot = new InBillAllot()
+                                try
                                 {
-                                    BillNo = billNo,
-                                    InBillDetailId = ibd.ID,
-                                    ProductCode = ibd.ProductCode,
-                                    CellCode = storage.CellCode,
-                                    StorageCode = storage.StorageCode,
-                                    UnitCode = ibd.UnitCode,
-                                    AllotQuantity = q2,
-                                    RealQuantity = 0,
-                                    Status = "0"
-                                };
-                                ibd.AllotQuantity += q2;
-                                storage.InFrozenQuantity += q2;
-                                storage.ProductCode = ibd.ProductCode;
-                                ibm.InBillAllots.Add(billAllot);
-                                ibm.Status = "3";
-                                storage.LockTag = string.Empty;
-                                StorageRepository.SaveChanges();
-                                strResult = "手工分配成功！";
-                                result = true;
+                                    billAllot = new InBillAllot()
+                                    {
+                                        BillNo = billNo,
+                                        InBillDetailId = ibd.ID,
+                                        ProductCode = ibd.ProductCode,
+                                        CellCode = storage.CellCode,
+                                        StorageCode = storage.StorageCode,
+                                        UnitCode = ibd.UnitCode,
+                                        AllotQuantity = q2,
+                                        RealQuantity = 0,
+                                        Status = "0"
+                                    };
+                                    ibd.AllotQuantity += q2;
+                                    storage.InFrozenQuantity += q2;
+                                    storage.ProductCode = ibd.ProductCode;
+                                    ibm.InBillAllots.Add(billAllot);
+                                    ibm.Status = "3";
+                                    storage.LockTag = string.Empty;
+                                    StorageRepository.SaveChanges();
+                                    strResult = "手工分配成功！";
+                                    result = true;
+                                }
+                                catch (Exception)
+                                {
+                                    strResult = "保存添加失败，订单或储位其他人正在操作！";
+                                }
                             }
-                            catch (Exception)
+                            else
                             {
-                                strResult = "保存添加失败，订单或储位其他人正在操作！";
+                                strResult = "分配数量超过订单数量,或者大于储位的最大数量！";
                             }
                         }
                         else
                         {
-                            strResult = "分配数量超过订单数量,或者大于储位的最大数量！";
+                            strResult = "分配数量必须大于0！";
                         }
                     }
                     else
                     {
-                        strResult = "当前选择的储位不可用，其他人正在操作！";
+                        strResult = "当前选择的储位不可用，或者分配数量超过最大托盘数，其他人正在操作！";
                     }
                 }
                 else
