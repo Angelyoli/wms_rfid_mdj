@@ -290,11 +290,11 @@ namespace THOK.Wms.Bll.Service
                         if (ware != null && ware != string.Empty)
                         {
                             ware = ware.Substring(0, ware.Length - 1);
-                            var wares = wareQuery.Where(w => ware.Contains(w.WarehouseCode));
+                            var wares = wareQuery.Where(w => ware.Contains(w.WarehouseCode)).ToArray();
 
-                            foreach (var item in wares.ToArray())
+                            foreach (var item in wares)
                             {
-                                var storages = storageQuery.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode && s.Quantity > 0 && s.IsLock == "0")
+                                var storages = storageQuery.Where(s => s.Cell.WarehouseCode == item.WarehouseCode && s.Quantity > 0 && s.IsLock == "0")
                                                            .OrderBy(s => s.StorageCode)
                                                            .Select(s => new
                                                            {
@@ -309,7 +309,7 @@ namespace THOK.Wms.Bll.Service
                                                                Quantity = s.Quantity / s.Product.Unit.Count,
                                                                s.Product.Unit.Count,
                                                                IsActive = s.IsActive == "1" ? "可用" : "不可用"
-                                                           });
+                                                           }).ToArray();
                                 if (storages.Count() > 0)
                                 {
                                     string billNo = GetCheckBillNo().ToString();
@@ -324,9 +324,8 @@ namespace THOK.Wms.Bll.Service
                                     check.UpdateTime = DateTime.Now;
 
                                     CheckBillMasterRepository.Add(check);
-                                    CheckBillMasterRepository.SaveChanges();
 
-                                    foreach (var stor in storages.ToArray())
+                                    foreach (var stor in storages)
                                     {
                                         var checkDetail = new CheckBillDetail();
                                         checkDetail.BillNo = billNo;
@@ -340,13 +339,12 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
                                         checkDetail.Status = "0";
 
-                                        CheckBillDetailRepository.Add(checkDetail);
-                                        CheckBillDetailRepository.SaveChanges();
+                                        CheckBillDetailRepository.Add(checkDetail);                                   
 
                                         var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
                                         storage.IsLock = "1";
-                                        StorageRepository.SaveChanges();
                                     }
+
                                     result = true;
                                 }
                                 else
@@ -386,7 +384,7 @@ namespace THOK.Wms.Bll.Service
                                                                Quantity = s.Quantity / s.Product.Unit.Count,
                                                                s.Product.Unit.Count,
                                                                IsActive = s.IsActive == "1" ? "可用" : "不可用"
-                                                           });
+                                                           }).ToArray();
                                 if (storages.Count() > 0)
                                 {
                                     string billNo = GetCheckBillNo().ToString();
@@ -401,9 +399,8 @@ namespace THOK.Wms.Bll.Service
                                     check.UpdateTime = DateTime.Now;
 
                                     CheckBillMasterRepository.Add(check);
-                                    CheckBillMasterRepository.SaveChanges();
 
-                                    foreach (var stor in storages.ToArray())
+                                    foreach (var stor in storages)
                                     {
                                         var checkDetail = new CheckBillDetail();
                                         checkDetail.BillNo = billNo;
@@ -417,17 +414,17 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
                                         checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
-                                        CheckBillDetailRepository.SaveChanges();
 
                                         var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
                                         storage.IsLock = "1";
-                                        StorageRepository.SaveChanges();
                                     }
                                     result = true;
                                 }
                             }
                         }
                         #endregion
+
+                        CheckBillMasterRepository.SaveChanges();
 
                         scope.Complete();
                     }
@@ -523,7 +520,7 @@ namespace THOK.Wms.Bll.Service
                                                                 Quantity = s.Quantity / s.Product.Unit.Count,
                                                                 s.Product.Unit.Count,
                                                                 IsActive = s.IsActive == "1" ? "可用" : "不可用"
-                                                            });
+                                                            }).ToArray();
                                 if (storages.Count() > 0)
                                 {
                                     string billNo = GetCheckBillNo().ToString();
@@ -538,9 +535,8 @@ namespace THOK.Wms.Bll.Service
                                     check.UpdateTime = DateTime.Now;
 
                                     CheckBillMasterRepository.Add(check);
-                                    CheckBillMasterRepository.SaveChanges();
 
-                                    foreach (var stor in storages.ToArray())
+                                    foreach (var stor in storages)
                                     {
                                         var checkDetail = new CheckBillDetail();
                                         checkDetail.BillNo = billNo;
@@ -554,11 +550,9 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealQuantity = stor.Quantity * stor.Count;
                                         checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
-                                        CheckBillDetailRepository.SaveChanges();
 
                                         var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
                                         storage.IsLock = "1";
-                                        StorageRepository.SaveChanges();
                                     }
                                     result = true;
                                 }
@@ -567,6 +561,7 @@ namespace THOK.Wms.Bll.Service
                                     info = "所选择的产品无数据！";
                                 }
                             }
+                            CheckBillMasterRepository.SaveChanges();
                             #endregion
                             scope.Complete();
                         }
@@ -695,7 +690,7 @@ namespace THOK.Wms.Bll.Service
                                                            Quantity = s.Quantity / s.Product.Unit.Count,
                                                            s.Product.Unit.Count,
                                                            IsActive = s.IsActive == "1" ? "可用" : "不可用"
-                                                       });
+                                                       }).ToArray();
                             if (storages.Count() > 0)
                             {
                                 string billNo = GetCheckBillNo().ToString();
@@ -710,9 +705,8 @@ namespace THOK.Wms.Bll.Service
                                 check.UpdateTime = DateTime.Now;
 
                                 CheckBillMasterRepository.Add(check);
-                                CheckBillMasterRepository.SaveChanges();
 
-                                foreach (var stor in storages.ToArray())
+                                foreach (var stor in storages)
                                 {
                                     var checkDetail = new CheckBillDetail();
                                     checkDetail.BillNo = billNo;
@@ -726,11 +720,9 @@ namespace THOK.Wms.Bll.Service
                                     checkDetail.RealQuantity = stor.Quantity * stor.Count;
                                     checkDetail.Status = "0";
                                     CheckBillDetailRepository.Add(checkDetail);
-                                    CheckBillDetailRepository.SaveChanges();
 
                                     var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
                                     storage.IsLock = "1";
-                                    StorageRepository.SaveChanges();
                                 }
                                 result = true;
                             }
@@ -739,6 +731,8 @@ namespace THOK.Wms.Bll.Service
                                 info = "所选择查询的时间无数据！";
                             }
                         }
+
+                        CheckBillMasterRepository.SaveChanges();
                         #endregion
                         scope.Complete();
                     }
