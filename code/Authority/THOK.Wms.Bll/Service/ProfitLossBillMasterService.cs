@@ -30,6 +30,8 @@ namespace THOK.Wms.Bll.Service
 
         public string resultStr = "";//错误信息字符串
 
+        #region//损益主单增、删、改、查、生成单号方法
+
         /// <summary>
         /// 判断处理状态
         /// </summary>
@@ -52,8 +54,6 @@ namespace THOK.Wms.Bll.Service
             }
             return statusStr;
         }
-
-        #region IProfitLossBillMasterService 成员
 
         /// <summary>
         /// 查询损益单主单明细
@@ -288,7 +288,9 @@ namespace THOK.Wms.Bll.Service
             };
             return findBillInfo;
         }
+        #endregion
 
+        #region//损益主单审核、更改库存方法
         /// <summary>
         /// 损益主单审核
         /// </summary>
@@ -348,11 +350,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
         }
-
         #endregion
-
-        #region IProfitLossBillMasterService 成员
-
 
         /// <summary>
         /// 对损益主单进行加锁
@@ -385,7 +383,5 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
-
-        #endregion
     }
 }

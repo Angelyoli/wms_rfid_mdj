@@ -36,6 +36,7 @@ namespace THOK.Wms.Bll.Service
 
         public string resultStr = "";//错误信息字符串
 
+        #region //移库主单增、删、改、查、生成单号方法
         /// <summary>
         /// 判断处理状态
         /// </summary>
@@ -61,8 +62,6 @@ namespace THOK.Wms.Bll.Service
             }
             return statusStr;
         }
-
-        #region IMoveBillMasterService 成员
 
         public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode,string CheckPersonCode, string Status, string IsActive)
         {
@@ -236,6 +235,9 @@ namespace THOK.Wms.Bll.Service
             return findBillInfo;
         }
 
+        #endregion
+
+        #region//移库主单审核、反审、结单方法
         public bool Audit(string BillNo, string userName, out string strResult)
         {
             bool result = false;
@@ -283,51 +285,6 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        public object GetBillTypeDetail(string BillClass, string IsActive)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object GetWareHouseDetail(string IsActive)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 对移库单进行加锁
-        /// </summary>
-        /// <param name="BillNo">移库单号</param>
-        /// <returns></returns>
-        public bool LockBillMaster(string BillNo)
-        {
-            bool result = false;
-            var pbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(p => p.BillNo == BillNo);
-            if (pbm != null)
-            {
-                if (string.IsNullOrEmpty(pbm.LockTag))
-                {
-                    pbm.LockTag = BillNo;
-                    MoveBillMasterRepository.SaveChanges();
-                    result = true;
-                }
-                else
-                {
-                    resultStr = "当前订单其他人正在操作，请稍候重试！";
-                    result = false;
-                }
-            }
-            else
-            {
-                resultStr = "当前单据的状态不是已录入状态或者该单据已被删除无法编辑，请刷新页面！";
-                result = false;
-            }
-            return result;
-        }
-
-        #endregion
-
-        #region IMoveBillMasterService 成员
-
         /// <summary>
         /// 移库结单
         /// </summary>
@@ -336,10 +293,10 @@ namespace THOK.Wms.Bll.Service
         /// <returns></returns>
         public bool Settle(string BillNo, out string strResult)
         {
-            bool result=false;
+            bool result = false;
             strResult = string.Empty;
-            var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(m=>m.BillNo==BillNo);
-            if (mbm!=null&&mbm.Status=="3")
+            var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(m => m.BillNo == BillNo);
+            if (mbm != null && mbm.Status == "3")
             {
                 using (var scope = new TransactionScope())
                 {
@@ -351,7 +308,7 @@ namespace THOK.Wms.Bll.Service
                                                                          && m.Status != "2");
                         var sourceStorages = moveDetail.Select(m => m.OutStorage).ToArray();
                         var targetStorages = moveDetail.Select(m => m.InStorage).ToArray();
-                        if (!Locker.Lock(sourceStorages)|| !Locker.Lock(targetStorages))
+                        if (!Locker.Lock(sourceStorages) || !Locker.Lock(targetStorages))
                         {
                             strResult = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
                             return false;
@@ -391,7 +348,50 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+        #endregion
+
+        #region//移库主单获取单据类型和仓库信息方法
+        public object GetBillTypeDetail(string BillClass, string IsActive)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetWareHouseDetail(string IsActive)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
+
+        /// <summary>
+        /// 对移库单进行加锁
+        /// </summary>
+        /// <param name="BillNo">移库单号</param>
+        /// <returns></returns>
+        public bool LockBillMaster(string BillNo)
+        {
+            bool result = false;
+            var pbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(p => p.BillNo == BillNo);
+            if (pbm != null)
+            {
+                if (string.IsNullOrEmpty(pbm.LockTag))
+                {
+                    pbm.LockTag = BillNo;
+                    MoveBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                else
+                {
+                    resultStr = "当前订单其他人正在操作，请稍候重试！";
+                    result = false;
+                }
+            }
+            else
+            {
+                resultStr = "当前单据的状态不是已录入状态或者该单据已被删除无法编辑，请刷新页面！";
+                result = false;
+            }
+            return result;
+        }
     }
 }
