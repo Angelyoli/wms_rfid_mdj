@@ -124,16 +124,16 @@ namespace THOK.Wms.Bll.Service
                 }
                 else
                 {
-                    inStorage = Locker.LockEmpty(inCell);
+                    inStorage = Locker.LockStorage(inCell);
                 }
                 //判断移出数量是否合理
-                bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity, outCell.MaxQuantity, outStorage.Quantity, "out");
+                bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity, outCell.MaxQuantity*product.Unit.Count, outStorage.Quantity, "out");
                 if (Locker.LockStorage(outStorage, product) != null)
                 {
                     if (inStorage != null)
                     {
                         //判断移入数量是否合理
-                        bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, inStorage.InFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity, inStorage.Quantity, "in");
+                        bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, inStorage.InFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity*product.Unit.Count, inStorage.Quantity, "in");
                         if (isInQuantityRight && isOutQuantityRight)
                         {
                             var mbd = new MoveBillDetail();
@@ -239,13 +239,13 @@ namespace THOK.Wms.Bll.Service
             var outCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.OutCellCode);
             var inCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
             //判断移出数量是否合理
-            bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity-mbd.RealQuantity, outCell.MaxQuantity, outStorage.Quantity, "out");            
+            bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity-mbd.RealQuantity, outCell.MaxQuantity*product.Unit.Count, outStorage.Quantity, "out");            
             if (Locker.LockStorage(outStorage, product) != null)
             {
                 if (Locker.LockStorage(inStorage, product) != null)
                 {
                     //判断移入数量是否合理
-                    bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity, inStorage.InFrozenQuantity - mbd.RealQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity, inStorage.Quantity, "in");
+                    bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, inStorage.InFrozenQuantity - mbd.RealQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity*product.Unit.Count, inStorage.Quantity, "in");
                     if (isOutQuantityRight && isInQuantityRight)
                     {
                         mbd.ProductCode = moveBillDetail.ProductCode;
