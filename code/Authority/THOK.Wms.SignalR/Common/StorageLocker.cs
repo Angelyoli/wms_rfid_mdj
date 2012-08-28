@@ -391,7 +391,10 @@ namespace THOK.Wms.SignalR.Common
                                     StorageTime = DateTime.Now,
                                     UpdateTime = DateTime.Now
                                 };
-                                cell.Storages.Add(storage);
+                                lock (cell.Storages)
+                                {
+                                    cell.Storages.Add(storage);
+                                }
                                 return storage;
                             }
                             else
@@ -409,7 +412,10 @@ namespace THOK.Wms.SignalR.Common
                             StorageTime = DateTime.Now,
                             UpdateTime = DateTime.Now
                         };
-                        cell.Storages.Add(storage);
+                        lock (cell.Storages)
+                        {
+                            cell.Storages.Add(storage);
+                        }
                         return storage;
                     }
                 }
