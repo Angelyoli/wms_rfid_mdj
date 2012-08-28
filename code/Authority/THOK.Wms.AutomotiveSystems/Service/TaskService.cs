@@ -502,6 +502,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         inAllot.Status = "2";
                                         inAllot.RealQuantity += quantity;
                                         inAllot.Storage.Quantity += quantity;
+                                        if(inAllot.Storage.Cell.IsSingle=="1")//货位管理更改入库时间
+                                            inAllot.Storage.StorageTime = DateTime.Now;
                                         inAllot.Storage.InFrozenQuantity -= quantity;
                                         inAllot.InBillDetail.RealQuantity += quantity;
                                         inAllot.InBillMaster.Status = "5";
@@ -569,6 +571,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                                        //判断移入的事件是否小于移出的时间
+                                        if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
+                                            moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
                                         moveDetail.MoveBillMaster.Status = "3";
 
                                         var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
