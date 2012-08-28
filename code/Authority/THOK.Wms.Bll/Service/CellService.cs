@@ -616,9 +616,9 @@ namespace THOK.Wms.Bll.Service
                     cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode))
                                                          .OrderBy(s => s.CellCode);
                 }
-                else if (inOrOut == "in")//查询出可以移入卷烟的货位
+                else if (inOrOut == "in")//查询出可以移入卷烟的货位 ,
                 {
-                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && (c.Storages.Count == 0 || c.Storages.Any(s => s.ProductCode == productCode && ((c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity)) > 0)))
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && (c.Storages.Count == 0 || c.Storages.Any(s => s.Product == null || (s.ProductCode == productCode && (c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity) > 0))))
                                              .OrderBy(c => c.CellCode).Select(c => c);
                 }
                 else if (inOrOut == "stockOut")//查询可以出库的数量 --出库使用
@@ -635,10 +635,23 @@ namespace THOK.Wms.Bll.Service
                 }
                 foreach (var cell in cells)//货位
                 {
-                    var product = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == cell.DefaultProductCode);
+                    string quantityStr="";
+                    if (inOrOut == "in")
+                    {
+                        if (cell.Storages.Count != 0)
+                        {
+                            var cellQuantity = cell.Storages.GroupBy(g => g.Cell).Select(s => new { quant = s.Sum(q => q.Product == null ? q.Cell.MaxQuantity : ((q.Cell.MaxQuantity * q.Product.Unit.Count) - (q.Quantity + q.InFrozenQuantity)) / q.Product.Unit.Count) });
+                            decimal quantity = Convert.ToDecimal(cellQuantity.Sum(p => p.quant));
+                            quantity = Math.Round(quantity, 2);
+                            quantityStr = "<可入：" + quantity + ">件";
+                        }
+                        else
+                            quantityStr = "<可入：" + cell.MaxQuantity + ">件";
+                    }
+
                     Tree cellTree = new Tree();
                     cellTree.id = cell.CellCode;
-                    cellTree.text = "货位：" + cell.CellName;
+                    cellTree.text = "货位：" + cell.CellName + quantityStr;
                     cellTree.state = "open";
                     cellTree.attributes = "cell";
                     wareSet.Add(cellTree);
