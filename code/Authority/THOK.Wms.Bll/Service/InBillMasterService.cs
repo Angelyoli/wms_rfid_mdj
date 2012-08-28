@@ -273,55 +273,63 @@ namespace THOK.Wms.Bll.Service
         {
             try
             {
-                bool result = false;
                 var inBillDetails = inBillMaster.InBillDetails.ToArray();
                 var cell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inBillMaster.TargetCellCode);
                 //入库单入库
                 inBillMaster.InBillDetails.AsParallel().ForAll(
                (Action<InBillDetail>)delegate(InBillDetail i)
                {
-                   var inStorage = Locker.LockStorage(cell);
-                   if (inStorage == null)
-                   {
-                       throw new Exception("锁定储位失败，储位其他人正在操作，无法分配请稍候重试！");
-                   }
-
                    if (i.BillQuantity - i.AllotQuantity > 0)
                    {
-                       decimal allotQuantity = i.BillQuantity < cell.MaxQuantity * i.Unit.Count ? i.BillQuantity : cell.MaxQuantity * i.Unit.Count;
-                       decimal billQuantity = i.BillQuantity - i.AllotQuantity;
-                       allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                       i.AllotQuantity += allotQuantity;
-                       i.RealQuantity += allotQuantity;
-                       inStorage.ProductCode = i.ProductCode;
-                       inStorage.Quantity += allotQuantity;
-
-                       var billAllot = new InBillAllot()
+                       Storage inStorage = null;
+                       lock (cell)
                        {
-                           BillNo = inBillMaster.BillNo,
-                           InBillDetailId = i.ID,
-                           ProductCode = i.ProductCode,
-                           CellCode = inStorage.CellCode,
-                           StorageCode = inStorage.StorageCode,
-                           UnitCode = i.UnitCode,
-                           AllotQuantity = allotQuantity,
-                           RealQuantity = allotQuantity,
-                           Status = "2"
-                       };
-
-                       lock (inBillMaster.InBillAllots)
-                       {
-                           inBillMaster.InBillAllots.Add(billAllot);
+                           inStorage = Locker.LockStorage(cell);
+                           if (inStorage == null)
+                           {
+                               throw new Exception("锁定储位失败，储位其他人正在操作，无法分配请稍候重试！");
+                           }
+                           inStorage.LockTag = inBillMaster.BillNo;
                        }
-                       inStorage.LockTag = string.Empty;
-                       result = true;
+                       if (inStorage.Quantity == 0
+                           && inStorage.InFrozenQuantity == 0)
+                       {
+                           decimal allotQuantity = i.BillQuantity;
+                           i.AllotQuantity += allotQuantity;
+                           i.RealQuantity += allotQuantity;
+                           inStorage.ProductCode = i.ProductCode;
+                           inStorage.Quantity += allotQuantity;
+                           inStorage.LockTag = string.Empty;
+
+                           var billAllot = new InBillAllot()
+                           {
+                               BillNo = inBillMaster.BillNo,
+                               InBillDetailId = i.ID,
+                               ProductCode = i.ProductCode,
+                               CellCode = inStorage.CellCode,
+                               StorageCode = inStorage.StorageCode,
+                               UnitCode = i.UnitCode,
+                               AllotQuantity = allotQuantity,
+                               RealQuantity = allotQuantity,
+                               Status = "2"
+                           };
+
+                           lock (inBillMaster.InBillAllots)
+                           {
+                               inBillMaster.InBillAllots.Add(billAllot);
+                           }
+                       }
+                       else
+                       {
+                           throw new Exception("储位数量不等于0，无法分配请稍候重试！");
+                       }
                    }
                });
                 //入库结单
                 inBillMaster.Status = "6";
                 inBillMaster.UpdateTime = DateTime.Now;
                 InBillMasterRepository.SaveChanges();
-                return result;
+                return true;
             }
             catch (AggregateException ex)
             {

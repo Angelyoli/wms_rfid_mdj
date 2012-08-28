@@ -629,6 +629,10 @@ namespace THOK.Wms.Bll.Service
                                                                     .Select(s => s.CellCode);
                     cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode)).OrderBy(c => c.CellCode);
                 }
+                else if (inOrOut=="moveIn")//查询出非货位管理的货位用于入库单非货位管理的移入
+                {
+                    cells = cells.Where(c=>c.Shelf.ShelfCode==shelfCode&&c.IsSingle=="0").OrderBy(c => c.CellCode).Select(c => c);;
+                }
                 foreach (var cell in cells)//货位
                 {
                     var product = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == cell.DefaultProductCode);
