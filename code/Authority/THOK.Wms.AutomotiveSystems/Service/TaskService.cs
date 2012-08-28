@@ -278,7 +278,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     }
                 }
                 result.IsSuccess = true;
-                result.BillDetails = billDetails.OrderByDescending(i=>i.Status).OrderBy(b=>b.StorageName).ToArray();
+                result.BillDetails = billDetails.OrderByDescending(i=>i.Status)
+                    .ThenBy(b=>b.StorageName).ToArray();
             }
             catch (Exception e)
             {
