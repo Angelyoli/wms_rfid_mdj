@@ -1,13 +1,19 @@
 <script type="text/javascript">
     function deleteClick() {
-        var row = $('#details').datagrid('getSelected');
-        if (row) {
-            $.messager.confirm('删除', '确认要删除该记录吗？', function (r) {
+        var billnoRow = "";
+        var rows = $('#details').datagrid('getSelections');
+        if (rows.length > 0) {
+            for (var i = 0; i < rows.length; i++) {
+                billnoRow += rows[i].ID + ","; //多选时要启用
+            }
+        }
+        if (rows) {
+            $.messager.confirm('删除', '确认要删除该选中记录吗？', function (r) {
                 if (r) {
                     var j_waitDialog = ShowWaitMessageDialog();
                     $.ajax({
                         url: '/SortingLowerLimit/Delete/', type: "GET", dataType: "text",
-                        data: { 'id': row.ID },
+                        data: { 'id': billnoRow },
                         complete: function () { HideWaitMessageDialog(j_waitDialog); },
                         success: function (responseText) {
                             var result = $.evalJSON(responseText);
