@@ -61,23 +61,31 @@
         }
     }
 
+    function SelectQuantity() {
+        var quantitySum = 0;
+        var rows = $('#sortingOrderAllot').datagrid('getChecked');
+        if (rows.length > 0) {
+            for (var i = 0; i < rows.length; i++) {
+                quantitySum = parseInt(quantitySum) + rows[i].QuantitySum;
+            }
+            $('#checkQuantitySum').text(quantitySum);
+        } else {
+            $('#checkQuantitySum').text(0);
+        }
+    }
+
     $(function () {
         $('#sortingOrderAllot').datagrid({
-            //onCheckAll：function () {
-            onClickRow: function () {
-                var quantitySum = 0;
-                var rows = $('#sortingOrderAllot').datagrid('getSelections');
-                //var rows = $('#sortingOrderAllot').datagrid('getChecked');
-                if (rows.length > 0) {
-                    for (var i = 0; i < rows.length; i++) {
-                        quantitySum = parseInt(quantitySum) + rows[i].QuantitySum;
-                    }
-                    $('#checkQuantitySum').text(quantitySum);
-                } else {
-                    $('#checkQuantitySum').text(0);
-                }
+            onCheck: function () {//选中复选框执行
+                SelectQuantity();
             },
-            onLoadSuccess: function () {
+            onCheckAll: function () {//选中所有复选框执行
+                SelectQuantity();
+            },
+            onUncheckAll: function () {//取消所有复选框执行
+                $('#checkQuantitySum').text(0);
+            },
+            onLoadSuccess: function () {//数据加载完后执行
                 countSum();
             }
         })

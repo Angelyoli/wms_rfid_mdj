@@ -26,7 +26,7 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string OrderDate, string SortingLineCode)
         {
             IQueryable<SortOrderDispatch> sortDispatchQuery = SortOrderDispatchRepository.GetQueryable();
-            var sortDispatch = sortDispatchQuery.Where(s => s.SortingLineCode == s.SortingLineCode);
+            var sortDispatch = sortDispatchQuery.Where(s => s.WorkStatus != "2");
             if (OrderDate != string.Empty && OrderDate != null)
             {
                 OrderDate = Convert.ToDateTime(OrderDate).ToString("yyyyMMdd");
