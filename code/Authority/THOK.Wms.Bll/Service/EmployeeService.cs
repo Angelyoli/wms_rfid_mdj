@@ -44,7 +44,7 @@ namespace THOK.Wms.Bll.Service
                 employee = employee.Where(e => e.JobID == jobID);
             }
 
-            var temp = employee.AsEnumerable().OrderByDescending(e=>e.UpdateTime).Select(e => new
+            var temp = employee.AsEnumerable().OrderByDescending(e => e.UpdateTime).Select(e => new
             {
                 e.ID,
                 e.EmployeeCode,
@@ -56,7 +56,7 @@ namespace THOK.Wms.Bll.Service
                 JobName = e.Job == null ? string.Empty : e.Job.JobName,
                 e.Sex,
                 e.Tel,
-                e.Status,
+                Status = e.Status == "3701" ? "在职" : e.Status == "3702" ? "离职" : e.Status == "3703" ? "退休" : e.Status == "3704" ? "试用" : e.Status == "3705" ? "外调" : e.Status == "3706" ? "停薪留职" : e.Status == "3707" ? "借用" : "其他",
                 IsActive = e.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = e.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
             });
