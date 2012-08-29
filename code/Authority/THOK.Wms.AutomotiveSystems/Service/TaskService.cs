@@ -278,7 +278,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     }
                 }
                 result.IsSuccess = true;
-                result.BillDetails = billDetails.OrderByDescending(i=>i.Status).OrderBy(b=>b.StorageName).ToArray();
+                result.BillDetails = billDetails.OrderByDescending(i=>i.Status)
+                    .ThenBy(b=>b.StorageName).ToArray();
             }
             catch (Exception e)
             {
@@ -502,6 +503,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         inAllot.Status = "2";
                                         inAllot.RealQuantity += quantity;
                                         inAllot.Storage.Quantity += quantity;
+                                        if(inAllot.Storage.Cell.IsSingle=="1")//货位管理更改入库时间
+                                            inAllot.Storage.StorageTime = DateTime.Now;
                                         inAllot.Storage.InFrozenQuantity -= quantity;
                                         inAllot.InBillDetail.RealQuantity += quantity;
                                         inAllot.InBillMaster.Status = "5";
@@ -569,9 +572,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                                        //判断移入的事件是否小于移出的时间
+                                        if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
+                                            moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
                                         moveDetail.MoveBillMaster.Status = "3";
 
                                         var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
+                                        //修改分拣调度作业状态
                                         if (sortwork != null)
                                         {
                                             sortwork.DispatchStatus = "3";
@@ -619,6 +626,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                         }
                     }
                     InBillAllotRepository.SaveChanges();
+                    //把库存为0，入库，出库冻结量为0，无锁的库存数据的卷烟编码清空
+                    UpdateStorageInfo();
                     scope.Complete();
                 }
                 result.IsSuccess = true;
@@ -735,6 +744,16 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             WHERE STORAGEID = '{0}'";
             sql = string.Format(sql, storageId, billId, detailId);
             StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);
+        }
+
+        private void UpdateStorageInfo()
+        {
+            var storages = StorageRepository.GetQueryable().Where(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0 && s.OutFrozenQuantity == 0).ToArray();
+            foreach (var item in storages)
+            {
+                item.Product = null;
+            }
+            StorageRepository.SaveChanges();
         }
     }
 }
