@@ -23,7 +23,7 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
             var company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType))
-                .OrderBy(c => c.CompanyCode).AsEnumerable()
+                .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
                 {
                     c.ID,
@@ -39,7 +39,7 @@ namespace THOK.Wms.Bll.Service
             {
                 string bStatus = IsActive == "可用" ? "1" : "0";
                 company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType) && c.IsActive.Contains(bStatus))
-                .OrderBy(c => c.CompanyCode).AsEnumerable()
+                .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
                 {
                     c.ID,

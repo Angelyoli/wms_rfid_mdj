@@ -44,7 +44,7 @@ namespace THOK.Wms.Bll.Service
                 employee = employee.Where(e => e.JobID == jobID);
             }
 
-            var temp = employee.AsEnumerable().Select(e => new
+            var temp = employee.AsEnumerable().OrderByDescending(e=>e.UpdateTime).Select(e => new
             {
                 e.ID,
                 e.EmployeeCode,
