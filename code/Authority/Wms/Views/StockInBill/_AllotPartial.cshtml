@@ -122,6 +122,10 @@
                             $('#details').datagrid('reload');
                         }, $('#dlg-allot'));
     }
+    //手工选择移入的货位
+    function allotInSelect() {
+        moveInCellSelect("in");
+    }
 </script>
 
 <div id="dlg-allot" class="easyui-dialog" modal="true"
@@ -217,7 +221,7 @@
                     <td align="left">
                       <input type="text" name="CellCode" id=cellCode class="easyui-validatebox" required="true" readonly="true" missingmessage="请选择储位！"/>
                       @*<a href="#" onclick="javascript:inCellSelect($('input[name=CellCode]'),$('input[name=CellName]'))" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>*@
-                      <a href="#" onclick="moveInCellSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
+                      <a href="#" onclick="allotInSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
                     </td>
                   </tr>
                   <tr>

@@ -38,5 +38,7 @@ namespace THOK.Wms.DbModel
         public virtual ICollection<InBillAllot> InBillAllots { get; set; }
         public virtual ICollection<OutBillAllot> OutBillAllots { get; set; }
         public virtual ICollection<SortingLowerlimit> SortingLowerlimits { get; set; }
+        public virtual ICollection<InBillDetail> InBillDetails { get; set; }
+        public virtual ICollection<OutBillDetail> OutBillDetails { get; set; }
     }
 }

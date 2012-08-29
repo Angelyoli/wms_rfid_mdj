@@ -44,8 +44,12 @@ namespace THOK.Wms.Bll.Service
 
         public string resultStr = "";//错误提示信息
 
-        #region IInBillMasterService 成员
-
+        #region//入库主单增、删、改、查、生成单号方法
+        /// <summary>
+        /// 判断状态
+        /// </summary>
+        /// <param name="status">数据库查询出来的状态</param>
+        /// <returns>返回的状态</returns>
         public string WhatStatus(string status)
         {
             string statusStr = "";
@@ -73,6 +77,20 @@ namespace THOK.Wms.Bll.Service
             return statusStr;
         }
 
+        /// <summary>
+        /// 入库单查询
+        /// </summary>
+        /// <param name="page">页面传回的分页参数，页数</param>
+        /// <param name="rows">页面传回的分页参数，行数</param>
+        /// <param name="BillNo">入库单号</param>
+        /// <param name="WareHouseCode">仓库编码</param>
+        /// <param name="BeginDate">开始日期</param>
+        /// <param name="EndDate">结束日期</param>
+        /// <param name="OperatePersonCode">操作员编码</param>
+        /// <param name="CheckPersonCode">审核人编码</param>
+        /// <param name="Status">操作状态</param>
+        /// <param name="IsActive">是否可用</param>
+        /// <returns></returns>
         public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string BeginDate, string EndDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive)
         {
             IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();
@@ -127,6 +145,12 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = tmp.ToArray() };
         }
 
+        /// <summary>
+        /// 入库单新增
+        /// </summary>
+        /// <param name="inBillMaster">入库主单</param>
+        /// <param name="userName">用户名</param>
+        /// <returns></returns>
         public bool Add(InBillMaster inBillMaster, string userName)
         {
             bool result = false;
@@ -155,6 +179,11 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
+        /// <summary>
+        /// 入库单删除
+        /// </summary>
+        /// <param name="BillNo">入库单号</param>
+        /// <returns></returns>
         public bool Delete(string BillNo)
         {
             bool result = false;
@@ -169,6 +198,11 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
+        /// <summary>
+        /// 入库单修改
+        /// </summary>
+        /// <param name="inBillMaster">入库主单</param>
+        /// <returns></returns>
         public bool Save(InBillMaster inBillMaster)
         {
             bool result = false;
@@ -194,11 +228,11 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        #endregion
-
-        #region IInBillMasterService 成员
-
-
+        /// <summary>
+        /// 生成入库单号
+        /// </summary>
+        /// <param name="userName">用户名</param>
+        /// <returns></returns>
         public object GenInBillNo(string userName)
         {
             IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();
@@ -232,12 +266,16 @@ namespace THOK.Wms.Bll.Service
             };
             return findBillInfo;
         }
-
         #endregion
 
-        #region IInBillMasterService 成员
-
-
+        #region//入库主单审核、反审、结单、非货位管理入库方法
+        /// <summary>
+        /// 入库单审核
+        /// </summary>
+        /// <param name="BillNo">入库单号</param>
+        /// <param name="userName">用户名</param>
+        /// <param name="strResult">操作提示信息</param>
+        /// <returns></returns>
         public bool Audit(string BillNo, string userName,out string strResult)
         {
             bool result = false;
@@ -273,55 +311,63 @@ namespace THOK.Wms.Bll.Service
         {
             try
             {
-                bool result = false;
                 var inBillDetails = inBillMaster.InBillDetails.ToArray();
                 var cell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inBillMaster.TargetCellCode);
                 //入库单入库
                 inBillMaster.InBillDetails.AsParallel().ForAll(
                (Action<InBillDetail>)delegate(InBillDetail i)
                {
-                   var inStorage = Locker.LockStorage(cell);
-                   if (inStorage == null)
-                   {
-                       throw new Exception("锁定储位失败，储位其他人正在操作，无法分配请稍候重试！");
-                   }
-
                    if (i.BillQuantity - i.AllotQuantity > 0)
                    {
-                       decimal allotQuantity = i.BillQuantity < cell.MaxQuantity * i.Unit.Count ? i.BillQuantity : cell.MaxQuantity * i.Unit.Count;
-                       decimal billQuantity = i.BillQuantity - i.AllotQuantity;
-                       allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                       i.AllotQuantity += allotQuantity;
-                       i.RealQuantity += allotQuantity;
-                       inStorage.ProductCode = i.ProductCode;
-                       inStorage.Quantity += allotQuantity;
-
-                       var billAllot = new InBillAllot()
+                       Storage inStorage = null;
+                       lock (cell)
                        {
-                           BillNo = inBillMaster.BillNo,
-                           InBillDetailId = i.ID,
-                           ProductCode = i.ProductCode,
-                           CellCode = inStorage.CellCode,
-                           StorageCode = inStorage.StorageCode,
-                           UnitCode = i.UnitCode,
-                           AllotQuantity = allotQuantity,
-                           RealQuantity = allotQuantity,
-                           Status = "2"
-                       };
-
-                       lock (inBillMaster.InBillAllots)
-                       {
-                           inBillMaster.InBillAllots.Add(billAllot);
+                           inStorage = Locker.LockStorage(cell);
+                           if (inStorage == null)
+                           {
+                               throw new Exception("锁定储位失败，储位其他人正在操作，无法分配请稍候重试！");
+                           }
+                           inStorage.LockTag = inBillMaster.BillNo;
                        }
-                       inStorage.LockTag = string.Empty;
-                       result = true;
+                       if (inStorage.Quantity == 0
+                           && inStorage.InFrozenQuantity == 0)
+                       {
+                           decimal allotQuantity = i.BillQuantity;
+                           i.AllotQuantity += allotQuantity;
+                           i.RealQuantity += allotQuantity;
+                           inStorage.ProductCode = i.ProductCode;
+                           inStorage.Quantity += allotQuantity;
+                           inStorage.LockTag = string.Empty;
+
+                           var billAllot = new InBillAllot()
+                           {
+                               BillNo = inBillMaster.BillNo,
+                               InBillDetailId = i.ID,
+                               ProductCode = i.ProductCode,
+                               CellCode = inStorage.CellCode,
+                               StorageCode = inStorage.StorageCode,
+                               UnitCode = i.UnitCode,
+                               AllotQuantity = allotQuantity,
+                               RealQuantity = allotQuantity,
+                               Status = "2"
+                           };
+
+                           lock (inBillMaster.InBillAllots)
+                           {
+                               inBillMaster.InBillAllots.Add(billAllot);
+                           }
+                       }
+                       else
+                       {
+                           throw new Exception("储位数量不等于0，无法分配请稍候重试！");
+                       }
                    }
                });
                 //入库结单
                 inBillMaster.Status = "6";
                 inBillMaster.UpdateTime = DateTime.Now;
                 InBillMasterRepository.SaveChanges();
-                return result;
+                return true;
             }
             catch (AggregateException ex)
             {
@@ -330,11 +376,11 @@ namespace THOK.Wms.Bll.Service
             }
         }
 
-        #endregion
-
-        #region IInBillMasterService 成员
-
-
+        /// <summary>
+        /// 入库单反审
+        /// </summary>
+        /// <param name="BillNo">入库单号</param>
+        /// <returns></returns>
         public bool AntiTrial(string BillNo)
         {
             bool result = false;
@@ -350,61 +396,6 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
-
-        #endregion
-
-        #region IInBillMasterService 成员
-
-        /// <summary>
-        /// 根据条件查询订单类型
-        /// </summary>
-        /// <param name="BillClass">订单类别</param>
-        /// <param name="IsActive">是否可用</param>
-        /// <returns></returns>
-        public object GetBillTypeDetail(string BillClass, string IsActive)
-        {
-            IQueryable<BillType> billtypeQuery = BillTypeRepository.GetQueryable();
-            var billtype = billtypeQuery.Where(b => b.BillClass == BillClass
-                && b.IsActive.Contains(IsActive)).ToArray().OrderBy(b => b.BillTypeCode).Select(b => new
-            {
-                b.BillTypeCode,
-                b.BillTypeName,
-                b.BillClass,
-                b.Description,
-                IsActive = b.IsActive == "1" ? "可用" : "不可用",
-                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-            });
-            return billtype.ToArray();
-        }
-
-        #endregion
-
-        #region IInBillMasterService 成员
-
-        /// <summary>
-        /// 根据条件查询仓库信息
-        /// </summary>
-        /// <param name="IsActive">是否可用</param>
-        /// <returns></returns>
-        public object GetWareHouseDetail(string IsActive)
-        {
-            IQueryable<Warehouse> wareQuery = WarehouseRepository.GetQueryable();
-            var warehouse = wareQuery.Where(w => w.IsActive == IsActive).OrderBy(w => w.WarehouseCode).ToArray().Select(w => new
-                {
-                    w.WarehouseCode,
-                    w.WarehouseName,
-                    w.WarehouseType,
-                    w.Description,
-                    w.ShortName,
-                    IsActive = w.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = w.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-                });
-            return warehouse.ToArray();
-        }
-
-        #endregion
-
-        #region IInBillMasterService 成员
 
         /// <summary>
         /// 入库单结单
@@ -438,18 +429,18 @@ namespace THOK.Wms.Bll.Service
 
                         inAllot.AsParallel().ForAll(
                             (Action<InBillAllot>)delegate(InBillAllot i)
-                        {
-                            if (i.Storage.ProductCode == i.ProductCode
-                                && i.Storage.InFrozenQuantity >= i.AllotQuantity)
                             {
-                                i.Storage.InFrozenQuantity -= i.AllotQuantity;
-                                i.Storage.LockTag = string.Empty;
+                                if (i.Storage.ProductCode == i.ProductCode
+                                    && i.Storage.InFrozenQuantity >= i.AllotQuantity)
+                                {
+                                    i.Storage.InFrozenQuantity -= i.AllotQuantity;
+                                    i.Storage.LockTag = string.Empty;
+                                }
+                                else
+                                {
+                                    throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
+                                }
                             }
-                            else
-                            {
-                                throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
-                            }
-                        }
                         );
 
                         ibm.Status = "6";
@@ -466,7 +457,51 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+        #endregion
 
+        #region//入库主单查询订单类型、查询仓库信息方法
+        /// <summary>
+        /// 根据条件查询订单类型
+        /// </summary>
+        /// <param name="BillClass">订单类别</param>
+        /// <param name="IsActive">是否可用</param>
+        /// <returns></returns>
+        public object GetBillTypeDetail(string BillClass, string IsActive)
+        {
+            IQueryable<BillType> billtypeQuery = BillTypeRepository.GetQueryable();
+            var billtype = billtypeQuery.Where(b => b.BillClass == BillClass
+                && b.IsActive.Contains(IsActive)).ToArray().OrderBy(b => b.BillTypeCode).Select(b => new
+            {
+                b.BillTypeCode,
+                b.BillTypeName,
+                b.BillClass,
+                b.Description,
+                IsActive = b.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return billtype.ToArray();
+        }
+
+        /// <summary>
+        /// 根据条件查询仓库信息
+        /// </summary>
+        /// <param name="IsActive">是否可用</param>
+        /// <returns></returns>
+        public object GetWareHouseDetail(string IsActive)
+        {
+            IQueryable<Warehouse> wareQuery = WarehouseRepository.GetQueryable();
+            var warehouse = wareQuery.Where(w => w.IsActive == IsActive).OrderBy(w => w.WarehouseCode).ToArray().Select(w => new
+                {
+                    w.WarehouseCode,
+                    w.WarehouseName,
+                    w.WarehouseType,
+                    w.Description,
+                    w.ShortName,
+                    IsActive = w.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = w.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                });
+            return warehouse.ToArray();
+        }
         #endregion
 
         public bool DownInBillMaster(string BeginDate, string EndDate, out string errorInfo)
