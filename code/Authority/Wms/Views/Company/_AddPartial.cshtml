@@ -51,10 +51,16 @@
             editable: false,
             panelHeight: 55,
             panelWidth: 130
-        });  
+        });
+    }
+
+    function parentCompanyNameSearchClick() {
+        $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级名称');
+        $('#parentCompanyNameDetail').datagrid({ url: '/Company/Details/' });
+        $("#parentCompanyNameDetail").datagrid('reload');
     }
 </script>
-    <div id="dlg" class="easyui-dialog" modal="true" style="width:520px;height:330px;padding:2px 2px"   closed="true" buttons="#dlg-buttons">
+    <div id="dlg" class="easyui-dialog" modal="true" style="width:510px;height:330px;padding:2px 2px"   closed="true" buttons="#dlg-buttons">
 		<div class="easyui-layout" fit="true">
 			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
 	            <form id="companyfm" method="post">
@@ -68,7 +74,11 @@
                       </tr>
                         <tr>
                         <td width="60">上级名称:</td>
-                        <td width="168"><input name="ParentCompanyID" type="text" id="company-add"/></td>
+                        <td width="168">
+                        <input name="ParentCompanyName" type="text" id="company-add"  readonly="readonly"/>
+                        <a href="#" id="parentCompanyNameSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                                onclick="parentCompanyNameSearchClick()"></a>
+                                </td>
                         <td width="60">国家编码：</td>
                         <td width="168"><input name="UniformCode" /></td>
                       </tr>
@@ -102,7 +112,7 @@
                       <tr>
                         <td width="60">描述:</td>
                         <td width="168" colspan="3" >
-                        <textarea name="Description" style="width: 380px; height: 60px"></textarea> </td>
+                        <textarea name="Description" style="width: 367px; height: 60px"></textarea> </td>
                       </tr>
                     </table>
 	            </form>
@@ -113,3 +123,4 @@
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
 </div>
+@Html.Partial("_ParentCompanyNamePartial")

@@ -31,7 +31,7 @@ namespace Authority.Controllers.Organization
         }
 
         //
-        // GET: /Department/Details/
+        // GET: /Employee/Details/
 
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
@@ -47,7 +47,7 @@ namespace Authority.Controllers.Organization
 
 
         //
-        // POST: /Department/Create
+        // POST: /Employee/Create
 
         [HttpPost]
         public ActionResult Create(Employee employee)
@@ -59,7 +59,7 @@ namespace Authority.Controllers.Organization
 
 
         //
-        // POST: /Department/Edit/5
+        // POST: /Employee/Edit/5
 
         public ActionResult Edit(Employee employee)
         {
@@ -70,7 +70,7 @@ namespace Authority.Controllers.Organization
 
 
         //
-        // POST: /Department/Delete/
+        // POST: /Employee/Delete/
 
         [HttpPost]
         public ActionResult Delete(string demployeeId)
@@ -78,6 +78,21 @@ namespace Authority.Controllers.Organization
             bool bResult = EmployeeService.Delete(demployeeId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        // POST: /Employee/GetEmployee/
+        public ActionResult GetEmployee(int page , int rows, string queryString,string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "EmployeeCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var employee = EmployeeService.GetEmployee(page, rows, queryString, value);
+            return Json(employee, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -1,0 +1,75 @@
+﻿<script type="text/javascript">    
+    $(function () {
+        $('#parentCodeDetail').datagrid({
+            //双击赋值
+            onDblClickRow: function () {
+                parentCodeSave();
+            }
+        })
+        //属性初始化
+        $('#queryTypeParentcode').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 100
+        })
+    });
+    //选中赋值
+    function parentCodeSave() {
+        var parentCodeRow = $('#parentCodeDetail').datagrid('getSelected');
+        if (parentCodeRow) {
+            $('#parentDepartId').val(parentCodeRow.ID);
+            $('#parentDepartName').val(parentCodeRow.DepartmentName);
+            $('#parentCodeData').dialog('close');
+        }
+    }
+    //根据条件查询
+    function parentCodeQueryClick1() {
+        $("#parentCodeDetail").datagrid({
+            url: '/Department/GetDepartment/?queryString=' + $('#queryTypeParentcode').combogrid('getValue') + '&value=' + $('#parentCodeInfo').val()
+        });
+        $("#parentCodeDetail").datagrid('reload');
+    }
+
+</script>
+<div id="parentCodeData" class="easyui-dialog" modal="true" style="width: 500px;
+    height: 420px; padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
+    <div id="btnQuery">
+        <select id="queryTypeParentcode" class="easyui-combobox" style="width: 100px;" readonly="true">
+            <option value="DepartmentCode">上级编码</option>
+            <option value="DepartmentName">上级名称</option>
+        </select>
+        <input id="parentCodeInfo">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="parentCodeQueryClick1()"
+            id="parentCodeQuery">查询</a>
+    </div>
+    <div split="true" border="false" style="width: 486px; height: 320px;">
+        <table id="parentCodeDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+            <thead>
+                <tr>
+                    <th field="ID" hidden="true" width="60">
+                        ID
+                    </th>
+                    <th field="ParentDepartmentID" hidden="true" width="60">
+                        上级编码
+                    </th>
+                    <th field="DepartmentCode" width="60">
+                        上级编码
+                    </th>
+                    <th field="DepartmentName" width="60">
+                        上级名称
+                    </th>
+                    <th field="IsActive" width="60">
+                        是否可用
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="dlgDepart-buttons" style="float:right; margin-top:10px; margin-right:10px;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="parentCodeSave()">确定</a>
+        <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#companyData').dialog('close')">
+            取消</a>
+    </div>
+</div>

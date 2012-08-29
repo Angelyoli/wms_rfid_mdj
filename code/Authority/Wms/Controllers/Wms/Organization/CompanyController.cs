@@ -51,7 +51,7 @@ namespace Authority.Controllers.Organization
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
-        
+
         //
         // GET: /Company/Edit/
         public ActionResult Edit(Company company)
@@ -69,6 +69,22 @@ namespace Authority.Controllers.Organization
             bool bResult = CompanyService.Delete(companyID);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /Company/GetParentName/
+        public ActionResult GetParentName(int page, int rows, string queryString, string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "CompanyCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var company = CompanyService.GetParentName(page, rows, queryString, value);
+            return Json(company, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

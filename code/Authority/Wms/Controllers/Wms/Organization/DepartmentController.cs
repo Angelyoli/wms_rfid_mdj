@@ -77,5 +77,20 @@ namespace Authority.Controllers.Organization
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
+        // POST: /Department/GetDepartment/
+        public ActionResult GetDepartment(int page,int rows,string queryString,string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "EmployeeCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var department = DepartmentService.GetDepartment(page, rows, queryString, value);
+            return Json(department, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

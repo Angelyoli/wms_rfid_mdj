@@ -38,6 +38,10 @@
     <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -1189,6 +1193,13 @@
     <Content Include="Views\ExportExcel\Index.cshtml" />
     <Content Include="Views\ExportExcel\_PrintPartial.cshtml" />
     <Content Include="Views\ExportExcel\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\_ParentCompanyNamePartial.cshtml" />
+    <Content Include="Views\Department\_ParentCodePartial.cshtml" />
+    <Content Include="Views\Department\_DepartmentLeaderPartial.cshtml" />
+    <Content Include="Views\Department\_CompanyPartial.cshtml" />
+    <Content Include="Views\Employee\_DepartmentNamePartial.cshtml" />
+    <Content Include="Views\Employee\_JobPartial.cshtml" />
+    <Content Include="Views\Employee\_UserNamePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
