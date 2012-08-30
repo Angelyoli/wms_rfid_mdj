@@ -10,6 +10,7 @@ using THOK.Common;
 using SignalR;
 using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Connection;
+using System.IO.Compression;
 
 namespace Wms
 {
@@ -132,6 +133,13 @@ namespace Wms
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {
+            //bool enableGzip = (this.Request.Headers["Content-Encoding"] == "gzip");
+            //if (enableGzip)
+            //{
+                this.Response.Filter = new GZipStream(this.Response.Filter, CompressionMode.Compress);
+                this.Response.AppendHeader("Content-Encoding", "gzip");
+            //}
+
             if (Context.User == null)
             {
                 var oldTicket = ExtractTicketFromCookie(Context, FormsAuthentication.FormsCookieName);
