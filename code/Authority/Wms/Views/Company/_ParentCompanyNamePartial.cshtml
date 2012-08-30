@@ -23,6 +23,9 @@
             $('#companyName').val(parentCompanyNameRow.ParentCompanyName);
             $('#parentCompanyNameData').dialog('close');
         }
+        else {
+            $.messager.alert('提示', '没有选择行!', 'info');
+        }
     }
     //查询
     function parentCompanyNameQueryClick() {
@@ -37,8 +40,8 @@
     height: 420px; padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
     <div id="btnQuery">
         <select id="queryType" class="easyui-combobox" style="width: 100px;" readonly="true">
-            <option value="CompanyCode">上级编码</option>
-            <option value="CompanyName">上级名称</option>
+            <option value="CompanyCode">公司编码</option>
+            <option value="CompanyName">公司名称</option>
         </select>
         <input id="parentCompanyNameInfo">
         <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="parentCompanyNameQueryClick()"
@@ -50,13 +53,16 @@
             <thead>
                 <tr>
                     <th field="ID" hidden="true" width="60">
-                        上级ID
+                        公司ID
                     </th>
                     <th field="CompanyCode" width="180">
-                        上级名称
+                        公司名称
                     </th>
                     <th field="ParentCompanyName" width="180">
-                        上级名称
+                        公司名称
+                    </th>
+                    <th field="IsActive" width="180">
+                        是否可用
                     </th>
                 </tr>
             </thead>
