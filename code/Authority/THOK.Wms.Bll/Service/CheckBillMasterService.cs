@@ -296,20 +296,7 @@ namespace THOK.Wms.Bll.Service
                             {
                                 var storages = storageQuery.Where(s => s.Cell.WarehouseCode == item.WarehouseCode && s.Quantity > 0 && s.IsLock == "0")
                                                            .OrderBy(s => s.StorageCode)
-                                                           .Select(s => new
-                                                           {
-                                                               s.StorageCode,
-                                                               s.Cell.CellCode,
-                                                               s.Cell.CellName,
-                                                               s.IsLock,
-                                                               s.Product.ProductCode,
-                                                               s.Product.ProductName,
-                                                               s.Product.Unit.UnitCode,
-                                                               s.Product.Unit.UnitName,
-                                                               Quantity = s.Quantity / s.Product.Unit.Count,
-                                                               s.Product.Unit.Count,
-                                                               IsActive = s.IsActive == "1" ? "可用" : "不可用"
-                                                           }).ToArray();
+                                                           .Select(s => s).ToArray();
                                 if (storages.Count() > 0)
                                 {
                                     string billNo = GetCheckBillNo().ToString();
@@ -332,19 +319,18 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.CellCode = stor.CellCode;
                                         checkDetail.StorageCode = stor.StorageCode;
                                         checkDetail.ProductCode = stor.ProductCode;
-                                        checkDetail.UnitCode = stor.UnitCode;
-                                        checkDetail.Quantity = stor.Quantity * stor.Count;
+                                        checkDetail.UnitCode = stor.Product.UnitCode;
+                                        checkDetail.Quantity = stor.Quantity;
                                         checkDetail.RealProductCode = stor.ProductCode;
-                                        checkDetail.RealUnitCode = stor.UnitCode;
-                                        checkDetail.RealQuantity = stor.Quantity * stor.Count;
+                                        checkDetail.RealUnitCode = stor.Product.UnitCode;
+                                        checkDetail.RealQuantity = stor.Quantity;
                                         checkDetail.Status = "0";
-
-                                        CheckBillDetailRepository.Add(checkDetail);                                   
-
-                                        var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
+                                        CheckBillDetailRepository.Add(checkDetail);
+                                       
+                                        var storage = storageQuery.Where(s => s.StorageCode == stor.StorageCode).FirstOrDefault();
                                         storage.IsLock = "1";
                                     }
-
+                                    
                                     result = true;
                                 }
                                 else
@@ -370,21 +356,9 @@ namespace THOK.Wms.Bll.Service
 
                             foreach (var item in warehouses.ToArray())
                             {
-                                var storages = storageQuery.ToList().Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode && (area.Contains(s.Cell.Shelf.Area.AreaCode) || shelf.Contains(s.Cell.Shelf.ShelfCode) || cell.Contains(s.Cell.CellCode)) && s.Quantity > 0 && s.IsLock == "0")
+                                var storages = storageQuery.Where(s => s.Cell.WarehouseCode == item.WarehouseCode && (area.Contains(s.Cell.Shelf.Area.AreaCode) || shelf.Contains(s.Cell.Shelf.ShelfCode) || cell.Contains(s.Cell.CellCode)) && s.Quantity > 0 && s.IsLock == "0")
                                                            .OrderBy(s => s.StorageCode)
-                                                           .Select(s => new
-                                                           {
-                                                               s.StorageCode,
-                                                               s.Cell.CellCode,
-                                                               s.Cell.CellName,
-                                                               s.Product.ProductCode,
-                                                               s.Product.ProductName,
-                                                               s.Product.Unit.UnitCode,
-                                                               s.Product.Unit.UnitName,
-                                                               Quantity = s.Quantity / s.Product.Unit.Count,
-                                                               s.Product.Unit.Count,
-                                                               IsActive = s.IsActive == "1" ? "可用" : "不可用"
-                                                           }).ToArray();
+                                                           .Select(s => s).ToArray();
                                 if (storages.Count() > 0)
                                 {
                                     string billNo = GetCheckBillNo().ToString();
@@ -407,15 +381,15 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.CellCode = stor.CellCode;
                                         checkDetail.StorageCode = stor.StorageCode;
                                         checkDetail.ProductCode = stor.ProductCode;
-                                        checkDetail.UnitCode = stor.UnitCode;
-                                        checkDetail.Quantity = stor.Quantity * stor.Count;
+                                        checkDetail.UnitCode = stor.Product.UnitCode;
+                                        checkDetail.Quantity = stor.Quantity;
                                         checkDetail.RealProductCode = stor.ProductCode;
-                                        checkDetail.RealUnitCode = stor.UnitCode;
-                                        checkDetail.RealQuantity = stor.Quantity * stor.Count;
+                                        checkDetail.RealUnitCode = stor.Product.UnitCode;
+                                        checkDetail.RealQuantity = stor.Quantity;
                                         checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
 
-                                        var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
+                                        var storage = storageQuery.Where(s => s.StorageCode == stor.StorageCode).FirstOrDefault();
                                         storage.IsLock = "1";
                                     }
                                     result = true;
@@ -506,7 +480,7 @@ namespace THOK.Wms.Bll.Service
                             var warehouses = wareQuery.OrderBy(w => w.WarehouseCode);
                             foreach (var item in warehouses.ToArray())
                             {
-                                var storages = storageQuery.Where(s =>s.ProductCode!=null&& products.Contains(s.ProductCode) && s.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode && s.Quantity > 0 && s.IsLock == "0")
+                                var storages = storageQuery.Where(s => s.Product != null && products.Contains(s.ProductCode) && s.Cell.WarehouseCode == item.WarehouseCode && s.Quantity > 0 && s.IsLock == "0")
                                                            .OrderBy(s => s.StorageCode)
                                                            .Select(s => new
                                                             {
@@ -551,7 +525,7 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
 
-                                        var storage = storageQuery.FirstOrDefault(s => s.StorageCode == stor.StorageCode);
+                                        var storage = storageQuery.Where(s => s.StorageCode == stor.StorageCode).FirstOrDefault();
                                         storage.IsLock = "1";
                                     }
                                     result = true;
@@ -672,12 +646,12 @@ namespace THOK.Wms.Bll.Service
                         var warehouses = wareQuery.OrderBy(w => w.WarehouseCode);
                         foreach (var item in warehouses.ToArray())
                         {
-                            var inCells = inAllotQuery.Where(i => i.FinishTime >= begin && i.FinishTime <= end && i.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode).OrderBy(i => i.CellCode).Select(i => i.CellCode);
-                            var outCells = outAllotQuery.Where(o => o.FinishTime >= begin && o.FinishTime <= end && o.Cell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode).OrderBy(o => o.CellCode).Select(o => o.CellCode);
-                            var moveInCells = moveBillQuery.Where(m => m.FinishTime >= begin && m.FinishTime <= end && m.InCell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode).OrderBy(m => m.InCell.CellCode).Select(m => m.InCell.CellCode);
-                            var moveOutCells = moveBillQuery.Where(m => m.FinishTime >= begin && m.FinishTime <= end && m.OutCell.Shelf.Area.Warehouse.WarehouseCode == item.WarehouseCode).OrderBy(m => m.OutCell.CellCode).Select(m => m.OutCell.CellCode);
-                            var storages = storageQuery.ToList().Where(s => s.Quantity > 0 && s.IsLock == "0" && (inCells.Any(i => i == s.CellCode) || outCells.Any(o => o == s.CellCode) || moveInCells.Any(mi => mi == s.CellCode) || moveOutCells.Any(mo => mo == s.CellCode)))
-                                                       .OrderBy(s => s.ProductCode).AsEnumerable()
+                            var inCells = inAllotQuery.Where(i => i.FinishTime >= begin && i.FinishTime <= end && i.Cell.WarehouseCode == item.WarehouseCode).OrderBy(i => i.CellCode).Select(i => i.CellCode);
+                            var outCells = outAllotQuery.Where(o => o.FinishTime >= begin && o.FinishTime <= end && o.Cell.WarehouseCode == item.WarehouseCode).OrderBy(o => o.CellCode).Select(o => o.CellCode);
+                            var moveInCells = moveBillQuery.Where(m => m.FinishTime >= begin && m.FinishTime <= end && m.InCell.WarehouseCode == item.WarehouseCode).OrderBy(m => m.InCell.CellCode).Select(m => m.InCell.CellCode);
+                            var moveOutCells = moveBillQuery.Where(m => m.FinishTime >= begin && m.FinishTime <= end && m.OutCell.WarehouseCode == item.WarehouseCode).OrderBy(m => m.OutCell.CellCode).Select(m => m.OutCell.CellCode);
+                            var storages = storageQuery.Where(s => s.Quantity > 0 && s.IsLock == "0" && (inCells.Any(i => i == s.CellCode) || outCells.Any(o => o == s.CellCode) || moveInCells.Any(mi => mi == s.CellCode) || moveOutCells.Any(mo => mo == s.CellCode)))
+                                                       .OrderBy(s => s.ProductCode)
                                                        .Select(s => new
                                                        {
                                                            s.StorageCode,

@@ -308,6 +308,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     inAllot.Status = "1";
                                     inAllot.Operator = billDetail.Operator;
+                                    inAllot.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName,
@@ -326,6 +327,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     outAllot.Status = "1";
                                     outAllot.Operator = billDetail.Operator;
+                                    outAllot.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName,
@@ -344,6 +346,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     moveDetail.Status = "1";
                                     moveDetail.Operator = billDetail.Operator;
+                                    moveDetail.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName,
@@ -362,6 +365,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     checkDetail.Status = "1";
                                     checkDetail.Operator = billDetail.Operator;
+                                    checkDetail.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellName,
@@ -407,6 +411,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     inAllot.Status = "0";
                                     inAllot.Operator = string.Empty;
+                                    inAllot.StartTime = null;
                                     if (useTag == "1")                                    
                                         CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
                                 }
@@ -422,6 +427,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     outAllot.Status = "0";
                                     outAllot.Operator = string.Empty;
+                                    outAllot.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
                                 }
@@ -437,6 +443,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     moveDetail.Status = "0";
                                     moveDetail.Operator = string.Empty;
+                                    moveDetail.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
                                 }
@@ -452,6 +459,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     checkDetail.Status = "0";
                                     checkDetail.Operator = string.Empty;
+                                    checkDetail.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
                                 }
@@ -508,6 +516,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         inAllot.Storage.InFrozenQuantity -= quantity;
                                         inAllot.InBillDetail.RealQuantity += quantity;
                                         inAllot.InBillMaster.Status = "5";
+                                        inAllot.FinishTime = DateTime.Now;
                                         if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
                                         {
                                             inAllot.InBillMaster.Status = "6";
@@ -540,7 +549,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         outAllot.Storage.Quantity -= quantity;
                                         outAllot.Storage.OutFrozenQuantity -= quantity;
                                         outAllot.OutBillDetail.RealQuantity += quantity;
-                                        outAllot.OutBillMaster.Status = "5"; 
+                                        outAllot.OutBillMaster.Status = "5";
+                                        outAllot.FinishTime = DateTime.Now;
                                         if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
                                         {
                                             outAllot.OutBillMaster.Status = "6";
@@ -576,7 +586,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
                                             moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
                                         moveDetail.MoveBillMaster.Status = "3";
-
+                                        moveDetail.FinishTime = DateTime.Now;
                                         var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
                                         //修改分拣调度作业状态
                                         if (sortwork != null)
@@ -613,6 +623,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.RealQuantity = quantity;
                                     checkDetail.Storage.IsLock = "0";
                                     checkDetail.CheckBillMaster.Status = "3";
+                                    checkDetail.FinishTime = DateTime.Now;
                                     if (checkDetail.CheckBillMaster.CheckBillDetails.All(c => c.Status == "2"))
                                     {
                                         checkDetail.CheckBillMaster.Status = "4";
