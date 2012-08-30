@@ -30,7 +30,7 @@ namespace THOK.Wms.Bll.Service
                     c.CompanyCode,
                     c.CompanyName,
                     c.Description,
-                    c.CompanyType,
+                    CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
                     c.WarehouseCapacity,c.WarehouseCount,c.WarehouseSpace,c.SortingCount,ParentCompanyName=c.ParentCompany.CompanyName,c.ParentCompanyID,
                     IsActive = c.IsActive == "1" ? "可用" : "不可用",
                     UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")

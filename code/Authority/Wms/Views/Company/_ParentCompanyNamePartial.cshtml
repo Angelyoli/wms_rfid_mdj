@@ -19,7 +19,8 @@
     function parentCompanyNameSave() {
         var parentCompanyNameRow = $('#parentCompanyNameDetail').datagrid('getSelected');
         if (parentCompanyNameRow) {
-            $('#company-add').val(parentCompanyNameRow.ParentCompanyName);
+            $('#companyId').val(parentCompanyNameRow.ID);
+            $('#companyName').val(parentCompanyNameRow.ParentCompanyName);
             $('#parentCompanyNameData').dialog('close');
         }
     }
