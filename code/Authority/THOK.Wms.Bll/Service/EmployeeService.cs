@@ -32,7 +32,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<Employee> employeeQuery = EmployeeRepository.GetQueryable();
             var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(EmployeeCode) && e.EmployeeName.Contains(EmployeeName)
                              && e.Status.Contains(Status) && e.IsActive.Contains(IsActive));
-                            
+
             if (!DepartmentID.Equals(string.Empty))
             {
                 Guid departID = new Guid(DepartmentID);
@@ -44,19 +44,19 @@ namespace THOK.Wms.Bll.Service
                 employee = employee.Where(e => e.JobID == jobID);
             }
 
-            var temp = employee.AsEnumerable().Select(e => new
+            var temp = employee.AsEnumerable().OrderByDescending(e => e.UpdateTime).Select(e => new
             {
                 e.ID,
                 e.EmployeeCode,
                 e.EmployeeName,
-                DepartmentID=e.DepartmentID== null ? string.Empty :e.DepartmentID.ToString(),
-                DepartmentName =e.DepartmentID == null ? string.Empty : e.Department.DepartmentName,
+                DepartmentID = e.DepartmentID == null ? string.Empty : e.DepartmentID.ToString(),
+                DepartmentName = e.DepartmentID == null ? string.Empty : e.Department.DepartmentName,
                 e.Description,
-                JobID =e.Job==null?string.Empty:e.Job.ID.ToString(),
+                JobID = e.Job == null ? string.Empty : e.Job.ID.ToString(),
                 JobName = e.Job == null ? string.Empty : e.Job.JobName,
                 e.Sex,
                 e.Tel,
-                e.Status,
+                Status = e.Status == "3701" ? "在职" : e.Status == "3702" ? "离职" : e.Status == "3703" ? "退休" : e.Status == "3704" ? "试用" : e.Status == "3705" ? "外调" : e.Status == "3706" ? "停薪留职" : e.Status == "3707" ? "借用" : "其他",
                 IsActive = e.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = e.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
             });
@@ -69,7 +69,7 @@ namespace THOK.Wms.Bll.Service
         {
             var emp = new Employee();
             var job = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == employee.JobID);
-            var department =DepartmentRepository.GetQueryable().FirstOrDefault(d=>d.ID==employee.DepartmentID);
+            var department = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == employee.DepartmentID);
             emp.ID = Guid.NewGuid();
             emp.EmployeeCode = employee.EmployeeCode;
             emp.EmployeeName = employee.EmployeeName;
@@ -125,5 +125,31 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+        public object GetEmployee(int page, int rows, string queryString, string value)
+        {
+            string employeeCode = "", employeeName = "";
+
+            if (employeeCode == "employeeCode")
+            {
+                employeeCode = value;
+            }
+            else
+            {
+                employeeName = value;
+            }
+            IQueryable<Employee> employeeQuery = EmployeeRepository.GetQueryable();
+            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(employeeCode) && e.EmployeeName.Contains(employeeName))
+                .OrderBy(e => e.EmployeeCode).AsEnumerable()
+                .Select(e => new
+                {
+                    e.ID,
+                    e.EmployeeCode,
+                    e.EmployeeName,
+                });
+            int total = employee.Count();
+            employee = employee.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = employee.ToArray() };
+        }
     }
 }

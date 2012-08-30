@@ -1,0 +1,66 @@
+﻿<script type="text/javascript">
+
+    $(function () {
+        $('#parentCompanyNameDetail').datagrid({
+            //双击赋值
+            onDblClickRow: function () {
+                parentCompanyNameSave();
+            }
+        })
+        //属性初始化
+        $('#queryType').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 100
+        })
+    });
+    //选中赋值
+    function parentCompanyNameSave() {
+        var parentCompanyNameRow = $('#parentCompanyNameDetail').datagrid('getSelected');
+        if (parentCompanyNameRow) {
+            $('#company-add').val(parentCompanyNameRow.ParentCompanyName);
+            $('#parentCompanyNameData').dialog('close');
+        }
+    }
+    //查询
+    function parentCompanyNameQueryClick() {
+        $("#parentCompanyNameDetail").datagrid({
+            url: '/Company/GetParentName/?queryString=' + $('#queryType').combogrid('getValue') + '&value=' + $('#parentCompanyNameInfo').val()
+        });
+        $("#parentCompanyNameDetail").datagrid('reload');
+    }
+    
+</script>
+<div id="parentCompanyNameData" class="easyui-dialog" modal="true" style="width: 500px;
+    height: 420px; padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
+    <div id="btnQuery">
+        <select id="queryType" class="easyui-combobox" style="width: 100px;" readonly="true">
+            <option value="CompanyCode">上级编码</option>
+            <option value="CompanyName">上级名称</option>
+        </select>
+        <input id="parentCompanyNameInfo">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="parentCompanyNameQueryClick()"
+            id="parentCompanyNameQuery">查询</a>
+    </div>
+    <div split="true" border="false" style="width: 486px; height: 320px;">
+        <table id="parentCompanyNameDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+            <thead>
+                <tr>
+                    <th field="CompanyCode"  width="60">
+                        上级ID
+                    </th>
+                    <th field="ParentCompanyName" width="180">
+                        上级名称
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="dlgCompany-buttons" style="float:right; margin-top:10px; margin-right:10px;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="parentCompanyNameSave()">
+            确定</a> <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#companyData').dialog('close')">
+                取消</a>
+    </div>
+</div>

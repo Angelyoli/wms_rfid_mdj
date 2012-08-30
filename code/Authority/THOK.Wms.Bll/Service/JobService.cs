@@ -24,10 +24,10 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string JobCode, string JobName, string IsActive)
         {
             IQueryable<Job> jobQuery = JobRepository.GetQueryable();
-            var job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName)).OrderBy(j => j.JobCode).AsEnumerable().Select(j => new { j.ID, j.JobCode, j.JobName, j.Description, IsActive = j.IsActive == "1" ? "可用" : "不可用", UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            var job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName)).OrderByDescending(j => j.UpdateTime).AsEnumerable().Select(j => new { j.ID, j.JobCode, j.JobName, j.Description, IsActive = j.IsActive == "1" ? "可用" : "不可用", UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
             if (!IsActive.Equals(""))
             {
-                job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName) && j.IsActive.Contains(IsActive)).OrderBy(j => j.JobCode).AsEnumerable().Select(j => new { j.ID, j.JobCode, j.JobName, j.Description, IsActive = j.IsActive == "1" ? "可用" : "不可用", UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+                job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName) && j.IsActive.Contains(IsActive)).OrderByDescending(j => j.UpdateTime).AsEnumerable().Select(j => new { j.ID, j.JobCode, j.JobName, j.Description, IsActive = j.IsActive == "1" ? "可用" : "不可用", UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
             }
             int total = job.Count();
             job = job.Skip((page - 1) * rows).Take(rows);
@@ -79,6 +79,33 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
-        
+
+
+        public object GetJob(int page, int rows, string queryString, string value)
+        {
+            string jobCode = "", jobName = "";
+
+            if (queryString == "JobName")
+            {
+                jobCode = value;
+            }
+            else
+            {
+                jobName = value;
+            }
+            IQueryable<Job> jobQuery = JobRepository.GetQueryable();
+            var job = jobQuery.Where(j => j.JobCode.Contains(jobCode) && j.JobName.Contains(jobName))
+                .OrderBy(j => j.JobCode).AsEnumerable().
+                Select(j => new { 
+                    j.ID, 
+                    j.JobCode,
+                    j.JobName, 
+                    j.Description,
+                    IsActive = j.IsActive == "1" ? "可用" : "不可用"
+                });           
+            int total = job.Count();
+            job = job.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = job.ToArray() };
+        }
     }
 }

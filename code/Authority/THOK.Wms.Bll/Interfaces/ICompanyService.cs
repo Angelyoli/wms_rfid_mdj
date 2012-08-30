@@ -15,6 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string companyID);
 
         bool Save(Company company);
-        
+
+        object GetParentName(int page, int rows, string queryString, string value);
     }
 }

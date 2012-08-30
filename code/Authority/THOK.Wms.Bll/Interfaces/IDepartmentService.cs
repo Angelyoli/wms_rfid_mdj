@@ -15,5 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string departmentId);
 
         bool Save(Department department);
+
+        object GetDepartment(int page, int rows, string queryString, string value);
     }
 }

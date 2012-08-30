@@ -15,5 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string employeeId);
 
         bool Save(Employee employee);
+
+        object GetEmployee(int page, int rows, string queryString, string value);
     }
 }
