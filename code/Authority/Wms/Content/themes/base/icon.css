@@ -63,6 +63,10 @@
 	background:url('icons/mini_refresh.png') no-repeat 3px 2px;
 }
 
+.x-tabs-close{
+	background:url('images/tabs_close.gif') no-repeat 2px 2px;
+}
+
 /*background: url('icons/tabicons.png') no-repeat;*/
 .icon
 {    

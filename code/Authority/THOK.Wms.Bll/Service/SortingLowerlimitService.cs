@@ -95,12 +95,13 @@ namespace THOK.Wms.Bll.Service
 
         public bool Delete(string id)
         {
-            int ID = Convert.ToInt32(id);
-            var lowerLimit = SortingLowerlimitRepository.GetQueryable()
-               .FirstOrDefault(s => s.ID == ID);
-            if (lowerLimit != null)
+            var lowerLimit = SortingLowerlimitRepository.GetQueryable().ToArray().AsEnumerable().Where(s => id.Contains(s.ID.ToString()));
+            if (lowerLimit.Count()>0)
             {
-                SortingLowerlimitRepository.Delete(lowerLimit);
+                foreach (var item in lowerLimit)
+                {
+                    SortingLowerlimitRepository.Delete(item);
+                }
                 SortingLowerlimitRepository.SaveChanges();
             }
             else

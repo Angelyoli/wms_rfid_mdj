@@ -24,7 +24,7 @@ namespace THOK.Wms.Bll.Service
         public object GetCellDetails(int page, int rows, string type, string id)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.OrderBy(s => s.StorageCode).Where(s => s.StorageCode != null);
+            var storages = storageQuery.Where(s => s.StorageCode != null);
             if (type == "ware")
             {
                 storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id);
