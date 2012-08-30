@@ -8,7 +8,21 @@
             $('#companyfm').form('load', row);
             $('#companyfm .easyui-validatebox').validatebox({
                 required: true
-            });      
+            });
+//            //CompanyType
+//            if (row.CompanyType == "配送中心") {
+//                $('#company_type').combo('setValue', 1).combo('setText', row.CompanyType);
+//            }
+//            else if (row.CompanyType == "市公司") {
+//                $('#company_type').combo('setValue', 2).combo('setText', row.CompanyType);
+//            }
+//            else if (row.CompanyType == "县公司") {
+//                $('#company_type').combo('setValue', 3).combo('setText', row.CompanyType);
+//            }
+//            $('#companyType').combo({
+//                hasDownArrow: true
+//            });
+            //IsActive
             if (row.IsActive == '可用') {
                 $('#isActive_com').combo('setValue', 1).combo('setText', row.IsActive);
             } else {

@@ -9,7 +9,7 @@
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
-        $('#CompanyType').combo({
+        $('#company_type').combo({
             hasDownArrow: true
         });
         $('#isActive_com').combo({
@@ -46,10 +46,10 @@
             panelWidth: 130
         });
 
-        $('#CompanyType').combo({
+        $('#company_type').combo({
             required: true,
             editable: false,
-            panelHeight: 55,
+            panelHeight: 65,
             panelWidth: 130
         });
     }
@@ -98,7 +98,7 @@
                       <tr>
                         <td width="60">公司类型：</td>
                         <td width="168">
-                        <select id="CompanyType" name="CompanyType" class="easyui-combobox" required="true"  style="width: 130px">
+                        <select id="company_type" name="CompanyType" class="easyui-combobox" required="true"  style="width: 130px">
 		                        <option value="1">配送中心</option>
 		                        <option value="2">市公司</option>
                                 <option value="3">县公司</option>
