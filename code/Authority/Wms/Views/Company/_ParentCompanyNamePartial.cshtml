@@ -19,7 +19,8 @@
     function parentCompanyNameSave() {
         var parentCompanyNameRow = $('#parentCompanyNameDetail').datagrid('getSelected');
         if (parentCompanyNameRow) {
-            $('#company-add').val(parentCompanyNameRow.ParentCompanyName);
+            $('#companyId').val(parentCompanyNameRow.ID);
+            $('#companyName').val(parentCompanyNameRow.ParentCompanyName);
             $('#parentCompanyNameData').dialog('close');
         }
     }
@@ -48,8 +49,11 @@
             singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
             <thead>
                 <tr>
-                    <th field="CompanyCode"  width="60">
+                    <th field="ID" hidden="true" width="60">
                         上级ID
+                    </th>
+                    <th field="CompanyCode" width="180">
+                        上级名称
                     </th>
                     <th field="ParentCompanyName" width="180">
                         上级名称
