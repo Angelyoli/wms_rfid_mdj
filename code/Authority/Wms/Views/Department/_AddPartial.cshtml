@@ -45,17 +45,17 @@
     }
     function parentCodeSearchClick() {
         $('#parentCodeData').dialog('open').dialog('setTitle', '选择上级编号');
-        $('#parentCodeDetail').datagrid({ url: '/Department/Details/' });
+        $('#parentCodeDetail').datagrid({ url: '/Department/GetDepartment/' });
         $("#parentCodeDetail").datagrid('reload');
     }
     function departmentLeaderSearchClick() {
         $('#departLeaderData').dialog('open').dialog('setTitle', '选择负责人');
-        $('#departLeaderDetail').datagrid({ url: '/Employee/Details/' });
+        $('#departLeaderDetail').datagrid({ url: '/Employee/GetEmployee/' });
         $("#departLeaderDetail").datagrid('reload');
     }
     function companySearchClick() {
         $('#companyData').dialog('open').dialog('setTitle', '选择公司');
-        $('#companyDetail').datagrid({ url: '/Company/Details/' });
+        $('#companyDetail').datagrid({ url: '/Company/GetParentName/' });
         $("#companyDetail").datagrid('reload');
     }
 </script>

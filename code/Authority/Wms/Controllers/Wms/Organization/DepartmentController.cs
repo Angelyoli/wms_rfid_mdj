@@ -37,35 +37,37 @@ namespace Authority.Controllers.Organization
         {
             string DepartmentCode = collection["DepartmentCode"] ?? "";
             string DepartmentName = collection["DepartmentName"] ?? "";
-            string DepartmentLeaderID = collection["DepartmentLeaderID"] ?? "";
-            string CompanyID = collection["CompanyID"] ?? "";
+            string DepartmentLeaderID = collection["DepartmentLeaderId"] ?? "";
+            string CompanyID = collection["CompanyId"] ?? "";
             var systems = DepartmentService.GetDetails(page, rows, DepartmentCode, DepartmentName, DepartmentLeaderID, CompanyID);
             return Json(systems, "text", JsonRequestBehavior.AllowGet);
         }
 
-       
+
         //
         // POST: /Department/Create
 
         [HttpPost]
         public ActionResult Create(Department department)
         {
-            bool bResult = DepartmentService.Add(department);
+            string strResult = string.Empty;
+            bool bResult = DepartmentService.Add(department, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
-        
-       
+
+
         //
         // POST: /Department/Edit/
 
         public ActionResult Edit(Department department)
         {
-            bool bResult = DepartmentService.Save(department);
+            string strResult = string.Empty;
+            bool bResult = DepartmentService.Save(department, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
-        
+
 
         //
         // POST: /Department/Delete/
@@ -73,22 +75,14 @@ namespace Authority.Controllers.Organization
         [HttpPost]
         public ActionResult Delete(string departId)
         {
-            string error = null;
-            bool bResult = false;
-            try
-            {
-                bResult = DepartmentService.Delete(departId);
-            }
-            catch (Exception)
-            {
-                error = "已在使用";
-            }
+            string strResult = string.Empty;
+            bool bResult = DepartmentService.Delete(departId, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         // POST: /Department/GetDepartment/
-        public ActionResult GetDepartment(int page,int rows,string queryString,string value)
+        public ActionResult GetDepartment(int page, int rows, string queryString, string value)
         {
             if (queryString == null)
             {

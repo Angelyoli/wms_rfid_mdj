@@ -32,101 +32,150 @@ namespace THOK.Wms.Bll.Service
             IQueryable<Department> departQuery = DepartmentRepository.GetQueryable();
             var department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode) && d.DepartmentName.Contains(DepartmentName))
                 .OrderByDescending(d => d.UpdateTime).AsEnumerable().
-                Select(d => new { 
-                    d.ID, 
-                    d.DepartmentCode, 
-                    d.DepartmentName, 
-                    d.Description, 
-                    d.DepartmentLeaderID, 
-                    EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName, 
-                    companyID = d.Company.ID, 
+                Select(d => new
+                {
+                    d.ID,
+                    d.DepartmentCode,
+                    d.DepartmentName,
+                    d.Description,
+                    d.DepartmentLeaderID,
+                    EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName,
+                    companyID = d.Company.ID,
                     d.Company.CompanyName,
                     ParentDepartmentID = d.ParentDepartmentID,
-                    ParentDepartmentName = d.ParentDepartment.DepartmentName, 
+                    ParentDepartmentName = d.ParentDepartment.DepartmentName,
                     d.UniformCode,
-                    IsActive = d.IsActive == "1" ? "可用" : "不可用", 
-                    UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+                    IsActive = d.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                });
             if (!CompanyID.Equals("") || !DepartmentLeaderID.Equals(""))
             {
                 var compId = new Guid(CompanyID);
                 var empId = new Guid(DepartmentLeaderID);
-                department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode) && d.DepartmentName.Contains(DepartmentName) && d.Company.ID == compId && d.DepartmentLeader.ID == empId)
+                department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode) && d.DepartmentName.Contains(DepartmentName) && d.Company.ID == compId && d.DepartmentLeader.ID == empId) 
                 .OrderByDescending(d => d.UpdateTime).AsEnumerable()
-                .Select(d => new { 
-                    d.ID, 
-                    d.DepartmentCode, 
-                    d.DepartmentName, 
-                    d.Description, 
+                .Select(d => new
+                {
+                    d.ID,
+                    d.DepartmentCode,
+                    d.DepartmentName,
+                    d.Description,
                     d.DepartmentLeaderID,
-                    EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName, 
-                    companyID = d.Company.ID, 
-                    d.Company.CompanyName, 
+                    EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName,
+                    companyID = d.Company.ID,
+                    d.Company.CompanyName,
                     ParentDepartmentID = d.ParentDepartmentID,
                     ParentDepartmentName = d.ParentDepartment.DepartmentName,
                     d.UniformCode,
-                    IsActive = d.IsActive == "1" ? "可用" : "不可用", 
-                    UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+                    IsActive = d.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                });
             }
             int total = department.Count();
             department = department.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = department.ToArray() };
         }
 
-        public bool Add(Department department)
+        public bool Add(Department department, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var newDepartment = new Department();
             var depart = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == department.ParentDepartmentID);
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.ID == department.DepartmentLeaderID);
             var company = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == department.CompanyID);
-            newDepartment.ID = Guid.NewGuid();
-            newDepartment.DepartmentCode = department.DepartmentCode;
-            newDepartment.DepartmentName = department.DepartmentName;
-            newDepartment.ParentDepartment = depart ?? newDepartment;
-            newDepartment.DepartmentLeader = employee;
-            newDepartment.Description = department.Description;
-            newDepartment.Company = company;
-            newDepartment.UniformCode = department.UniformCode;
-            newDepartment.IsActive = department.IsActive;
-            newDepartment.UpdateTime = DateTime.Now;
-
-            DepartmentRepository.Add(newDepartment);
-            DepartmentRepository.SaveChanges();
-            return true;
+            if (newDepartment != null)
+            {
+                try
+                {
+                    newDepartment.ID = Guid.NewGuid();
+                    newDepartment.DepartmentCode = department.DepartmentCode;
+                    newDepartment.DepartmentName = department.DepartmentName;
+                    newDepartment.ParentDepartment = depart ?? newDepartment;
+                    newDepartment.DepartmentLeader = employee;
+                    newDepartment.Description = department.Description;
+                    newDepartment.Company = company;
+                    newDepartment.UniformCode = department.UniformCode;
+                    newDepartment.IsActive = department.IsActive;
+                    newDepartment.UpdateTime = DateTime.Now;
+                    DepartmentRepository.Add(newDepartment);
+                    DepartmentRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "新增失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "找不到当前登陆用户！请重新登陆！";
+            }
+            return result;
         }
 
-        public bool Delete(string departmentId)
+        public bool Delete(string departmentId, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             Guid deparId = new Guid(departmentId);
             var departemnt = DepartmentRepository.GetQueryable()
                 .FirstOrDefault(c => c.ID == deparId);
             if (departemnt != null)
             {
-                Del(DepartmentRepository, departemnt.Departments);
-                DepartmentRepository.Delete(departemnt);
-                DepartmentRepository.SaveChanges();
+                try
+                {
+                    Del(DepartmentRepository, departemnt.Departments);
+                    DepartmentRepository.Delete(departemnt);
+                    DepartmentRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    strResult = "已在使用";
+                }
             }
             else
-                return false;
-            return true;
+            {
+                strResult = "删除失败！未找到当前需要删除的数据！";
+            }
+            return result;
         }
 
-        public bool Save(Department department)
+        public bool Save(Department department, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var depart = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == department.ID);
             var parent = DepartmentRepository.GetQueryable().FirstOrDefault(p => p.ID == department.ParentDepartmentID);
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.ID == department.DepartmentLeaderID);
             var company = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == department.CompanyID);
-            depart.DepartmentCode = department.DepartmentCode;
-            depart.DepartmentName = department.DepartmentName;
-            depart.ParentDepartment = depart ?? depart;
-            depart.DepartmentLeader = employee;
-            depart.Description = department.Description;
-            depart.Company = company;
-            depart.UniformCode = department.UniformCode;
-            depart.IsActive = department.IsActive;
-            depart.UpdateTime = DateTime.Now;
-            DepartmentRepository.SaveChanges();
-            return true;
+            if (depart != null)
+            {
+                try
+                {
+                    depart.DepartmentCode = department.DepartmentCode;
+                    depart.DepartmentName = department.DepartmentName;
+                    depart.ParentDepartment = depart ?? depart;
+                    depart.DepartmentLeader = employee;
+                    depart.Description = department.Description;
+                    depart.Company = company;
+                    depart.UniformCode = department.UniformCode;
+                    depart.IsActive = department.IsActive;
+                    depart.UpdateTime = DateTime.Now;
+                    DepartmentRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "保存失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "保存失败，未找到该条数据！";
+            }
+            return result;
         }
 
         #endregion
@@ -144,7 +193,7 @@ namespace THOK.Wms.Bll.Service
                 departmentName = value;
             }
             IQueryable<Department> departQuery = DepartmentRepository.GetQueryable();
-            var department = departQuery.Where(d => d.DepartmentCode.Contains(departmentCode) && d.DepartmentName.Contains(departmentName))
+            var department = departQuery.Where(d => d.DepartmentCode.Contains(departmentCode) && d.DepartmentName.Contains(departmentName) && d.IsActive == "1")
                 .OrderBy(d => d.DepartmentCode).AsEnumerable()
                 .Select(d => new
                 {
@@ -152,6 +201,7 @@ namespace THOK.Wms.Bll.Service
                     d.DepartmentCode,
                     d.DepartmentName,
                     ParentDepartmentID = d.ParentDepartmentID,
+                    IsActive = d.IsActive == "1" ? "可用" : "不可用",
                     ParentDepartmentName = d.ParentDepartment.DepartmentName
                 });
             int total = department.Count();

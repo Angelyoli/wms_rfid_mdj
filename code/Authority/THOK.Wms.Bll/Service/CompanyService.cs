@@ -62,63 +62,110 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = company.ToArray() };
         }
 
-        public bool Add(Company company)
+        public bool Add(Company company,out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var comp = new  Company();
             var parent = CompanyRepository.GetQueryable().FirstOrDefault(p => p.ID == company.ParentCompanyID);
-            comp.ID = Guid.NewGuid();
-            comp.CompanyCode = company.CompanyCode;
-            comp.CompanyName = company.CompanyName;
-            comp.CompanyType = company.CompanyType;
-            comp.Description = company.Description;
-            comp.ParentCompany = parent ?? comp;
-            comp.UniformCode = company.UniformCode;
-            comp.WarehouseCapacity = company.WarehouseCapacity;
-            comp.WarehouseCount = company.WarehouseCount;
-            comp.WarehouseSpace = company.WarehouseSpace;
-            comp.SortingCount = company.SortingCount;            
-            comp.IsActive = company.IsActive;
-            comp.UpdateTime = DateTime.Now;
+            if (comp != null)
+            {
+                try
+                {
+                    comp.ID = Guid.NewGuid();
+                    comp.CompanyCode = company.CompanyCode;
+                    comp.CompanyName = company.CompanyName;
+                    comp.CompanyType = company.CompanyType;
+                    comp.Description = company.Description;
+                    comp.ParentCompany = parent ?? comp;
+                    comp.UniformCode = company.UniformCode;
+                    comp.WarehouseCapacity = company.WarehouseCapacity;
+                    comp.WarehouseCount = company.WarehouseCount;
+                    comp.WarehouseSpace = company.WarehouseSpace;
+                    comp.SortingCount = company.SortingCount;
+                    comp.IsActive = company.IsActive;
+                    comp.UpdateTime = DateTime.Now;
 
-            CompanyRepository.Add(comp);
-            CompanyRepository.SaveChanges();
-            return true;
+                    CompanyRepository.Add(comp);
+                    CompanyRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "新增失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "找不到当前登陆用户！请重新登陆！";
+            }
+            return result;
         }
 
-        public bool Delete(string  companyID)
+        public bool Delete(string  companyID, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             Guid cid = new Guid(companyID);
             var com = CompanyRepository.GetQueryable()
                 .FirstOrDefault(c => c.ID == cid);
             if (com != null)
             {
-                Del(CompanyRepository, com.Companies);
-                CompanyRepository.Delete(com);
-                CompanyRepository.SaveChanges();
+                try
+                {
+                    Del(CompanyRepository, com.Companies);
+                    CompanyRepository.Delete(com);
+                    CompanyRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    strResult = "已在使用";
+                }
             }
             else
-                return false;
-            return true;
+            {
+                strResult = "删除失败！未找到当前需要删除的数据！";
+            }
+            return result;
         }
 
-        public bool Save(Company company)
+        public bool Save(Company company, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var comp = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == company.ID);
             var par = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == company.ParentCompanyID);
-            comp.CompanyCode = company.CompanyCode;
-            comp.CompanyName = company.CompanyName;
-            comp.CompanyType = company.CompanyType;
-            comp.Description = company.Description;
-            comp.ParentCompany = par;
-            comp.SortingCount = company.SortingCount;
-            comp.UniformCode = company.UniformCode;
-            comp.UpdateTime = DateTime.Now;
-            comp.WarehouseCapacity = company.WarehouseCapacity;
-            comp.WarehouseCount = company.WarehouseCount;
-            comp.WarehouseSpace = company.WarehouseSpace;
-            comp.IsActive = company.IsActive;           
-            CompanyRepository.SaveChanges();
-            return true;
+            if (comp != null)
+            {
+                try
+                {
+                    comp.CompanyCode = company.CompanyCode;
+                    comp.CompanyName = company.CompanyName;
+                    comp.CompanyType = company.CompanyType;
+                    comp.Description = company.Description;
+                    comp.ParentCompany = par;
+                    comp.SortingCount = company.SortingCount;
+                    comp.UniformCode = company.UniformCode;
+                    comp.UpdateTime = DateTime.Now;
+                    comp.WarehouseCapacity = company.WarehouseCapacity;
+                    comp.WarehouseCount = company.WarehouseCount;
+                    comp.WarehouseSpace = company.WarehouseSpace;
+                    comp.IsActive = company.IsActive;
+                    CompanyRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+
+                    strResult = "保存失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "保存失败，未找到该条数据！";
+            }
+            return result;
         }
 
         #endregion

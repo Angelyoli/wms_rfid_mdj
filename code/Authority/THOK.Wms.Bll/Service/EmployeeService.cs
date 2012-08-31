@@ -66,63 +66,107 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
-        public bool Add(Employee employee)
+        public bool Add(Employee employee, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var emp = new Employee();
             var job = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == employee.JobID);
             var department = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == employee.DepartmentID);
-            emp.ID = Guid.NewGuid();
-            emp.EmployeeCode = employee.EmployeeCode;
-            emp.EmployeeName = employee.EmployeeName;
-            emp.Description = employee.Description;
-            emp.Department = department;
-            emp.Job = job;
-            emp.Sex = employee.Sex;
-            emp.Tel = employee.Tel;
-            emp.Status = employee.Status;
-            emp.IsActive = employee.IsActive;
-            emp.UserName = employee.UserName;
-            emp.UpdateTime = DateTime.Now;
-
-            EmployeeRepository.Add(emp);
-            EmployeeRepository.SaveChanges();
-            return true;
+            if (emp != null)
+            {
+                try
+                {
+                    emp.ID = Guid.NewGuid();
+                    emp.EmployeeCode = employee.EmployeeCode;
+                    emp.EmployeeName = employee.EmployeeName;
+                    emp.Description = employee.Description;
+                    emp.Department = department;
+                    emp.Job = job;
+                    emp.Sex = employee.Sex;
+                    emp.Tel = employee.Tel;
+                    emp.Status = employee.Status;
+                    emp.IsActive = employee.IsActive;
+                    emp.UserName = employee.UserName;
+                    emp.UpdateTime = DateTime.Now;
+                    EmployeeRepository.Add(emp);
+                    EmployeeRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "新增失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "找不到当前登陆用户！请重新登陆！";
+            }
+            return result;
         }
 
-        public bool Delete(string employeeId)
+        public bool Delete(string employeeId, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             Guid empId = new Guid(employeeId);
             var employee = EmployeeRepository.GetQueryable()
                 .FirstOrDefault(e => e.ID == empId);
             if (employee != null)
             {
-                EmployeeRepository.Delete(employee);
-                EmployeeRepository.SaveChanges();
+                try
+                {
+                    EmployeeRepository.Delete(employee);
+                    EmployeeRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    strResult = "已在使用";
+                }
             }
             else
-                return false;
-            return true;
+            {
+                strResult = "删除失败！未找到当前需要删除的数据！";
+            }
+            return result;
         }
 
-        public bool Save(Employee employee)
+        public bool Save(Employee employee, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var emp = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.ID == employee.ID);
             var department = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == employee.DepartmentID);
             var job = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == employee.JobID);
-            emp.EmployeeCode = employee.EmployeeCode;
-            emp.EmployeeName = employee.EmployeeName;
-            emp.Description = employee.Description;
-            emp.Department = department;
-            emp.Job = job;
-            emp.Sex = employee.Sex;
-            emp.Tel = employee.Tel;
-            emp.Status = employee.Status;
-            emp.IsActive = employee.IsActive;
-            emp.UserName = employee.UserName;
-            emp.UpdateTime = DateTime.Now;
-
-            EmployeeRepository.SaveChanges();
-            return true;
+            if (emp != null)
+            {
+                try
+                {
+                    emp.EmployeeCode = employee.EmployeeCode;
+                    emp.EmployeeName = employee.EmployeeName;
+                    emp.Description = employee.Description;
+                    emp.Department = department;
+                    emp.Job = job;
+                    emp.Sex = employee.Sex;
+                    emp.Tel = employee.Tel;
+                    emp.Status = employee.Status;
+                    emp.IsActive = employee.IsActive;
+                    emp.UserName = employee.UserName;
+                    emp.UpdateTime = DateTime.Now;
+                    EmployeeRepository.SaveChanges();
+                    result = true; ;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "保存失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "保存失败，未找到该条数据！";
+            }
+            return result;
         }
 
         #endregion
@@ -140,13 +184,14 @@ namespace THOK.Wms.Bll.Service
                 employeeName = value;
             }
             IQueryable<Employee> employeeQuery = EmployeeRepository.GetQueryable();
-            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(employeeCode) && e.EmployeeName.Contains(employeeName))
+            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(employeeCode) && e.EmployeeName.Contains(employeeName) && e.IsActive == "1")
                 .OrderBy(e => e.EmployeeCode).AsEnumerable()
                 .Select(e => new
                 {
                     e.ID,
                     e.EmployeeCode,
                     e.EmployeeName,
+                    IsActive = e.IsActive == "1" ? "可用" : "不可用",
                 });
             int total = employee.Count();
             employee = employee.Skip((page - 1) * rows).Take(rows);
