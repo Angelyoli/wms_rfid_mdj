@@ -468,6 +468,7 @@
     <Content Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\zTreeStyle.css" />
     <Content Include="Content\Scripts\jquery.ajaxsetup.js" />
     <Content Include="Content\Scripts\jquery.json.js" />
+    <Content Include="Content\Scripts\jquery\jquery-1.8.0.min.js" />
     <Content Include="Content\Scripts\json2.js" />
     <Content Include="Content\Scripts\jthok-ui\JDiv.js" />
     <Content Include="Content\Scripts\jquery.fullscreen.js" />
