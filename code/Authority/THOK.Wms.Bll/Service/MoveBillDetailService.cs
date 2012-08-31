@@ -268,14 +268,15 @@ namespace THOK.Wms.Bll.Service
             bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity-mbd.RealQuantity, outCell.MaxQuantity*product.Unit.Count, outStorage.Quantity, "out");            
             if (Locker.LockStorage(outStorage, product) != null)
             {
-                if (Locker.LockStorage(inStorage, product) != null)
-                {
+                //if (Locker.LockStorage(inStorage, product) != null)
+                //{
                     //判断移入数量是否合理
                     bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, inStorage.InFrozenQuantity - mbd.RealQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity*product.Unit.Count, inStorage.Quantity, "in");
                     if (isOutQuantityRight && isInQuantityRight)
                     {
                         if (mbd.OutCellCode == moveBillDetail.OutCellCode)
                         {
+                            outStorage.OutFrozenQuantity -= moveBillDetail.RealQuantity * unit.Count;
                             outStorage.OutFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
                         }
                         else
@@ -305,11 +306,11 @@ namespace THOK.Wms.Bll.Service
                         MoveBillDetailRepository.SaveChanges();
                         result = true;
                     }
-                }
-                else
-                {
-                    resultStr = "加锁移入库存失败，当前库存已有人在操作！";
-                }
+                //}
+                //else
+                //{
+                //    resultStr = "加锁移入库存失败，当前库存已有人在操作！";
+                //}
 
             }
             else

@@ -76,7 +76,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配整盘；排除 件烟区 条烟区
                 string[] areaTypes = new string[] { "2", "3" };
                 var ss = storages.Where(s=>areaTypes.All(a => a != s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode)
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive=="1")
                                  .OrderBy(s=>s.StorageTime)
                                  .OrderBy(s=>s.Cell.Area.AllotOutOrder);
                 AllotPallet(billMaster, billDetail, ss, cancellationToken, ps);
@@ -84,7 +84,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配件烟；件烟区 
                 areaTypes = new string[] { "2"};
                 ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode)
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive == "1")
                                  .OrderBy(s => s.StorageTime)
                                  .OrderBy(s => s.Cell.Area.AllotOutOrder);
                 AllotPiece(billMaster, billDetail, ss, cancellationToken, ps);
@@ -92,7 +92,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配件烟 (下层储位)；排除 件烟区 条烟区 
                 areaTypes = new string[] { "2", "3" };
                 ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive == "1"
                                             && s.Cell.Layer == 1)
                                  .OrderBy(s => s.StorageTime)
                                  .OrderBy(s => s.Cell.Area.AllotOutOrder);
@@ -101,7 +101,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配件烟 (非下层储位)；排除 件烟区 条烟区 
                 areaTypes = new string[] { "2", "3" };
                 ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive == "1"
                                             && s.Cell.Layer != 1)
                                  .OrderBy(s => s.StorageTime)
                                  .OrderBy(s => s.Cell.Area.AllotOutOrder);
@@ -110,7 +110,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配条烟；条烟区
                 areaTypes = new string[] { "3" };
                 ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode)
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive == "1")
                                  .OrderBy(s => s.StorageTime)
                                  .OrderBy(s => s.Cell.Area.AllotOutOrder);
                 AllotBar(billMaster, billDetail, ss, cancellationToken, ps);
@@ -118,7 +118,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配条烟；件烟区
                 areaTypes = new string[] { "2" };
                 ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode)
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive == "1")
                                  .OrderBy(s => s.StorageTime)
                                  .OrderBy(s => s.Cell.Area.AllotOutOrder);
                 AllotBar(billMaster, billDetail, ss, cancellationToken, ps);
@@ -126,7 +126,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配条烟 (下层储位)；排除 件烟区 条烟区 
                 areaTypes = new string[] { "2", "3" };
                 ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive == "1"
                                             && s.Cell.Layer == 1)
                                  .OrderBy(s => s.StorageTime)
                                  .OrderBy(s => s.Cell.Area.AllotOutOrder);
@@ -135,7 +135,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配条烟 (非下层储位)；排除 件烟区 条烟区 
                 areaTypes = new string[] { "2", "3" };
                 ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
-                                            && s.ProductCode == billDetail.ProductCode
+                                            && s.ProductCode == billDetail.ProductCode && s.Cell.IsActive == "1"
                                             && s.Cell.Layer != 1)
                                  .OrderBy(s => s.StorageTime)
                                  .OrderBy(s => s.Cell.Area.AllotOutOrder);
