@@ -2,47 +2,13 @@
     function SearchLoad() {
         $('#Status_Search').combo({
             editable: false,
-            panelHeight: 65,
+            panelHeight: 100,
             panelWidth: 130
         });
         $('#isActive').combo({
             editable: false,
-            panelHeight: 45,
+            panelHeight: 65,
             panelWidth: 130
-        });
-
-        $('#DepartmentID').combogrid({
-            width: 130,
-            panelWidth: 340,
-            url: '/Department/Details/?page=1&rows=10',
-            idField: 'ID',
-            textField: 'DepartmentName',
-            mode: 'local',
-            editable: false,
-            fitColumns: true,
-            columns: [[
-					{ field: 'ID', title: '部门ID', hidden: true, width: 30 },
-					{ field: 'DepartmentCode', title: '部门编码', align: 'left', width: 40 },
-					{ field: 'DepartmentName', title: '部门名称', align: 'left', width: 30 },
-					{ field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
-				]]
-        });
-
-        $('#JobID').combogrid({
-            width: 130,
-            panelWidth: 340,
-            url: '/Job/Details/?page=1&rows=10',
-            idField: 'ID',
-            textField: 'JobName',
-            mode: 'local',
-            editable: false,
-            fitColumns: true,
-            columns: [[
-					{ field: 'ID', title: '岗位ID', hidden: true, width: 30 },
-					{ field: 'JobCode', title: '岗位编码', align: 'left', width: 40 },
-					{ field: 'JobName', title: '岗位名称', align: 'left', width: 30 },
-					{ field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
-				]]
         });
     }
 
@@ -56,8 +22,8 @@
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.EmployeeCode = $('#EmployeeCode').val();
         queryParams.EmployeeName = $('#EmployeeName').val();
-        queryParams.DepartmentID = $('#DepartmentID').val();
-        queryParams.JobID = $('#JobID').val();
+        queryParams.DepartmentID = $('#department-id').val();
+        queryParams.JobID = $('#job-id').val();
         queryParams.Status = $('#Status_Search').combo('getValue');
         queryParams.IsActive = $('#isActive').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
@@ -99,7 +65,10 @@
                         部门名称：
                     </td>
                     <td width="168" align="left">
-                        <input id="DepartmentID" type="text"/>
+                        <input id="department-id" name="DepartmentID" type="text" style="display:none;"/>
+                        <input id="department-name" name="DepartmentName" type="text"/>
+                        <a href="#" id="departname-name" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="departNameSearchClick()"></a>
                     </td>
                 </tr>
                 <tr>
@@ -107,7 +76,10 @@
                         岗位名称：
                     </td>
                     <td width="168" align="left">
-                        <input id="JobID" type="text"/>
+                        <input id="job-id" name="JobID" type="text" style="display:none;"/>
+                        <input id="job-name" name="JobName" type="text"/>
+                        <a href="#" id="job-search" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                            onclick="jobSearchClick()"></a>
                     </td>
                 </tr>
                 <tr>

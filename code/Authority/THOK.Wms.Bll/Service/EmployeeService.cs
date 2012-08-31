@@ -57,7 +57,7 @@ namespace THOK.Wms.Bll.Service
                 e.Sex,
                 e.Tel,
                 e.UserName,
-                Status = e.Status == "3701" ? "在职" : e.Status == "3702" ? "离职" : e.Status == "3703" ? "退休" : e.Status == "3704" ? "试用" : e.Status == "3705" ? "外调" : e.Status == "3706" ? "停薪留职" : e.Status == "3707" ? "借用" : "其他",
+                Status = e.Status == "3701" ? "在职" : e.Status == "3702" ? "离职" : e.Status == "3703" ? "退休" : e.Status == "3704" ? "试用" : e.Status == "3705" ? "外调" : e.Status == "3706" ? "停薪留职" : e.Status == "3707" ? "借用" : e.Status == "3708" ? "其他" : "",
                 IsActive = e.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = e.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
             });

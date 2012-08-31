@@ -50,9 +50,10 @@ namespace THOK.Wms.Bll.Service
                 });
             if (!CompanyID.Equals("") || !DepartmentLeaderID.Equals(""))
             {
-                var compId = new Guid(CompanyID);
-                var empId = new Guid(DepartmentLeaderID);
-                department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode) && d.DepartmentName.Contains(DepartmentName) && d.Company.ID == compId && d.DepartmentLeader.ID == empId) 
+                department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode)
+                    && d.DepartmentName.Contains(DepartmentName)
+                    && d.Company.CompanyCode.Contains(CompanyID)
+                    && d.DepartmentLeader.EmployeeCode.Contains(DepartmentLeaderID))
                 .OrderByDescending(d => d.UpdateTime).AsEnumerable()
                 .Select(d => new
                 {
