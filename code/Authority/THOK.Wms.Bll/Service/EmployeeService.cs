@@ -30,8 +30,10 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string EmployeeCode, string EmployeeName, string DepartmentID, string JobID, string Status, string IsActive)
         {
             IQueryable<Employee> employeeQuery = EmployeeRepository.GetQueryable();
-            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(EmployeeCode) && e.EmployeeName.Contains(EmployeeName)
-                             && e.Status.Contains(Status) && e.IsActive.Contains(IsActive));
+            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(EmployeeCode) 
+                && e.EmployeeName.Contains(EmployeeName)
+                && e.Status.Contains(Status) 
+                && e.IsActive.Contains(IsActive));
 
             if (!DepartmentID.Equals(string.Empty))
             {

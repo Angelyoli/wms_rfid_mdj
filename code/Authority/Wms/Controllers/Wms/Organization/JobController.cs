@@ -85,6 +85,14 @@ namespace Authority.Controllers.Wms.Organization
         // POST: /Job/GetJob/
         public ActionResult GetJob(int page, int rows, string queryString, string value)
         {
+            if (queryString == null)
+            {
+                queryString = "JobCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
             var job = JobService.GetJob(page, rows, queryString, value);
             return Json(job, "text", JsonRequestBehavior.AllowGet);
         }
