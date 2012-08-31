@@ -126,29 +126,41 @@ namespace THOK.Wms.Bll.Service
         /// <param name="profitLossBillMaster">损益单主单</param>
         /// <param name="userName">用户名</param>
         /// <returns></returns>
-        public bool Add(ProfitLossBillMaster profitLossBillMaster, string userName)
+        public bool Add(ProfitLossBillMaster profitLossBillMaster, string userName, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var pbm = new ProfitLossBillMaster();
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (employee != null)
             {
-                pbm.BillNo = profitLossBillMaster.BillNo;
-                pbm.BillDate = profitLossBillMaster.BillDate;
-                pbm.BillTypeCode = profitLossBillMaster.BillTypeCode;
-                pbm.WarehouseCode = profitLossBillMaster.WarehouseCode;
-                pbm.OperatePersonID = employee.ID;
-                pbm.Status = "1";
-                pbm.VerifyPersonID = profitLossBillMaster.VerifyPersonID;
-                pbm.VerifyDate = profitLossBillMaster.VerifyDate;
-                pbm.Description = profitLossBillMaster.Description;
-                //pbm.IsActive = profitLossBillMaster.IsActive;
-                pbm.IsActive = "1";
-                pbm.UpdateTime = DateTime.Now;
+                try
+                {
+                    pbm.BillNo = profitLossBillMaster.BillNo;
+                    pbm.BillDate = profitLossBillMaster.BillDate;
+                    pbm.BillTypeCode = profitLossBillMaster.BillTypeCode;
+                    pbm.WarehouseCode = profitLossBillMaster.WarehouseCode;
+                    pbm.OperatePersonID = employee.ID;
+                    pbm.Status = "1";
+                    pbm.VerifyPersonID = profitLossBillMaster.VerifyPersonID;
+                    pbm.VerifyDate = profitLossBillMaster.VerifyDate;
+                    pbm.Description = profitLossBillMaster.Description;
+                    //pbm.IsActive = profitLossBillMaster.IsActive;
+                    pbm.IsActive = "1";
+                    pbm.UpdateTime = DateTime.Now;
 
-                ProfitLossBillMasterRepository.Add(pbm);
-                ProfitLossBillMasterRepository.SaveChanges();
-                result = true;
+                    ProfitLossBillMasterRepository.Add(pbm);
+                    ProfitLossBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "新增失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "找不到当前登陆用户！请重新登陆！";
             }
             return result;
         }
@@ -160,23 +172,36 @@ namespace THOK.Wms.Bll.Service
         /// <returns></returns>
         public bool Delete(string BillNo,out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var pbm = ProfitLossBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
             if (LockBillMaster(BillNo))
             {
                 if (pbm != null)
                 {
-                    DeleteProfitLossBillDetail(pbm);
-                    ProfitLossBillMasterRepository.Delete(pbm);
-                    ProfitLossBillMasterRepository.SaveChanges();
-                    result = true;
+                    try
+                    {
+                        DeleteProfitLossBillDetail(pbm);
+                        ProfitLossBillMasterRepository.Delete(pbm);
+                        ProfitLossBillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "删除失败，原因："+ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "删除失败，未找到该条数据！";
+                    result = false;
                 }
             }
             else
             {
+                strResult = resultStr;
                 result = false;
             }
-            strResult = resultStr;
             return result;
         }
 
@@ -219,34 +244,46 @@ namespace THOK.Wms.Bll.Service
         /// <returns></returns>
         public bool Save(ProfitLossBillMaster profitLossBillMaster, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var pbm = ProfitLossBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == profitLossBillMaster.BillNo && i.Status == "1");
             if (LockBillMaster(profitLossBillMaster.BillNo))
             {
                 if (pbm != null)
                 {
-                    pbm.BillDate = profitLossBillMaster.BillDate;
-                    pbm.BillTypeCode = profitLossBillMaster.BillTypeCode;
-                    pbm.WarehouseCode = profitLossBillMaster.WarehouseCode;
-                    pbm.OperatePersonID = profitLossBillMaster.OperatePersonID;
-                    pbm.Status = "1";
-                    pbm.VerifyPersonID = profitLossBillMaster.VerifyPersonID;
-                    pbm.VerifyDate = profitLossBillMaster.VerifyDate;
-                    pbm.Description = profitLossBillMaster.Description;
-                    //pbm.IsActive = profitLossBillMaster.IsActive;
-                    pbm.IsActive = "1";
-                    pbm.UpdateTime = DateTime.Now;
+                    try
+                    {
+                        pbm.BillDate = profitLossBillMaster.BillDate;
+                        pbm.BillTypeCode = profitLossBillMaster.BillTypeCode;
+                        pbm.WarehouseCode = profitLossBillMaster.WarehouseCode;
+                        pbm.OperatePersonID = profitLossBillMaster.OperatePersonID;
+                        pbm.Status = "1";
+                        pbm.VerifyPersonID = profitLossBillMaster.VerifyPersonID;
+                        pbm.VerifyDate = profitLossBillMaster.VerifyDate;
+                        pbm.Description = profitLossBillMaster.Description;
+                        //pbm.IsActive = profitLossBillMaster.IsActive;
+                        pbm.IsActive = "1";
+                        pbm.UpdateTime = DateTime.Now;
 
-                    pbm.LockTag = string.Empty;
-                    ProfitLossBillMasterRepository.SaveChanges();
-                    result = true;
+                        pbm.LockTag = string.Empty;
+                        ProfitLossBillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "保存失败，原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "保存失败，未找到该条数据！";
                 }
             }
             else
             {
+                strResult = resultStr;
                 result = false;
             }
-            strResult = resultStr;
             return result;
         }
 
@@ -299,6 +336,7 @@ namespace THOK.Wms.Bll.Service
         /// <returns></returns>
         public bool Audit(string BillNo, string userName, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var pbm = ProfitLossBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
@@ -306,22 +344,33 @@ namespace THOK.Wms.Bll.Service
             {
                 if (pbm != null)
                 {
-                    ChangeStorages(pbm);
-                    pbm.Status = "2";
-                    pbm.VerifyDate = DateTime.Now;
-                    pbm.UpdateTime = DateTime.Now;
-                    pbm.VerifyPersonID = employee.ID;
+                    try
+                    {
+                        ChangeStorages(pbm);
+                        pbm.Status = "2";
+                        pbm.VerifyDate = DateTime.Now;
+                        pbm.UpdateTime = DateTime.Now;
+                        pbm.VerifyPersonID = employee.ID;
 
-                    pbm.LockTag = string.Empty;
-                    ProfitLossBillMasterRepository.SaveChanges();
-                    result = true;
+                        pbm.LockTag = string.Empty;
+                        ProfitLossBillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "审核失败，原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "审核失败，未找到该条数据！";
                 }
             }
             else
             {
+                strResult = resultStr;
                 result = false;
             }
-            strResult = resultStr;
             return result;
         }
 
