@@ -5,17 +5,12 @@
             panelHeight: 45,
             panelWidth: 130
         });
-
-        $('#employeename-id').val("");
-        $('#employeename-name').val("");
-
-        $('#companyname-id').val("");
-        $('#companyname-name').val("");
     }
 
     function searchClick() {
         SearchLoad();
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        $("input[type=text]").attr("value", "");
     };
 
     function select() {
@@ -30,7 +25,6 @@
             pageSize: 10
         });
         $("#details").datagrid('reload');
-        
         $('#dlg-search').dialog('close');
     }
 
@@ -46,7 +40,7 @@
                         部门编码：
                     </td>
                     <td width="168" align="left">
-                        <input id="DepartmentCode" />
+                        <input id="DepartmentCode" type="text"/>
                     </td>
                 </tr>
                 <tr>
@@ -54,7 +48,7 @@
                         部门编码：
                     </td>
                     <td align="left">
-                        <input id="DepartmentName" />
+                        <input id="DepartmentName" type="text" />
                     </td>
                 </tr>
                 <tr>
