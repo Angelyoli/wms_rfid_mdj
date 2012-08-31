@@ -77,9 +77,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult Create(InBillMaster inBillMaster)
         {
-            bool bResult = InBillMasterService.Add(inBillMaster, this.User.Identity.Name.ToString());
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Add(inBillMaster, this.User.Identity.Name.ToString(), out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -88,18 +89,20 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult Edit(InBillMaster inBillMaster)
         {
-            bool bResult = InBillMasterService.Save(inBillMaster);
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Save(inBillMaster, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
         // POST: /InBillMaster/Delete/
         public ActionResult Delete(string BillNo)
         {
-            bool bResult = InBillMasterService.Delete(BillNo);
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Delete(BillNo,out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -138,9 +141,10 @@ namespace Authority.Controllers.Wms.StockIn
         // POST: /InBillMaster/AntiTria/
         public ActionResult AntiTrial(string BillNo)
         {
-            bool bResult = InBillMasterService.AntiTrial(BillNo);
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.AntiTrial(BillNo,out strResult);
             string msg = bResult ? "反审成功" : "反审失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //

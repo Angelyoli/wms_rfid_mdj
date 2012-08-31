@@ -22,6 +22,9 @@
             $('#parentDepartName').val(parentCodeRow.DepartmentName);
             $('#parentCodeData').dialog('close');
         }
+        else {
+            $.messager.alert('提示', '没有选择行!', 'info');
+        }
     }
     //根据条件查询
     function parentCodeQueryClick1() {
@@ -36,8 +39,8 @@
     height: 420px; padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
     <div id="btnQuery">
         <select id="queryTypeParentcode" class="easyui-combobox" style="width: 100px;" readonly="true">
-            <option value="DepartmentCode">上级编码</option>
-            <option value="DepartmentName">上级名称</option>
+            <option value="DepartmentCode">部门编码</option>
+            <option value="DepartmentName">部门名称</option>
         </select>
         <input id="parentCodeInfo">
         <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="parentCodeQueryClick1()"
@@ -52,13 +55,13 @@
                         ID
                     </th>
                     <th field="ParentDepartmentID" hidden="true" width="60">
-                        上级编码
+                        上级部门编码
                     </th>
                     <th field="DepartmentCode" width="60">
-                        上级编码
+                        部门编码
                     </th>
                     <th field="DepartmentName" width="60">
-                        上级名称
+                        部门名称
                     </th>
                     <th field="IsActive" width="60">
                         是否可用

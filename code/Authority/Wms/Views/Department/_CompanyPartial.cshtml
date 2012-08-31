@@ -23,6 +23,9 @@
             $('#companyName').val(companyRow.CompanyName);
             $('#companyData').dialog('close');
         }
+        else {
+            $.messager.alert('提示', '没有选择行!', 'info');
+        }
     }
     //查询
     function companyQueryClick() {

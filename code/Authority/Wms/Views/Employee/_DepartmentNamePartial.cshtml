@@ -22,6 +22,9 @@
             $('#departName').val(departNameRow.DepartmentName);
             $('#departNameData').dialog('close');
         }
+        else {
+            $.messager.alert('提示', '没有选择行!', 'info');
+        }
     }
     //根据条件查询
     function departNameQueryClick() {
