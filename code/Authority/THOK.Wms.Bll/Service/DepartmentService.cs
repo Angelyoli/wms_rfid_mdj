@@ -157,7 +157,8 @@ namespace THOK.Wms.Bll.Service
                 {
                     depart.DepartmentCode = department.DepartmentCode;
                     depart.DepartmentName = department.DepartmentName;
-                    depart.ParentDepartment = depart ?? depart;
+                    //depart.ParentDepartment = depart ?? depart;
+                    depart.ParentDepartmentID = department.ParentDepartmentID;
                     depart.DepartmentLeader = employee;
                     depart.Description = department.Description;
                     depart.Company = company;
