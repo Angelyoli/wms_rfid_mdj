@@ -105,7 +105,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception ex)
                 {
-                    strResult = "新增失败，原因：" + ex.Message;
+                    strResult = "原因：" + ex.Message;
                 }
             }
             else
@@ -133,7 +133,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception)
                 {
-                    strResult = "已在使用";
+                    strResult = "原因：已在使用";
                 }
             }
             else
@@ -169,7 +169,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception ex)
                 {
-                    strResult = "保存失败，原因：" + ex.Message;
+                    strResult = "原因：" + ex.Message;
                 }
             }
             else

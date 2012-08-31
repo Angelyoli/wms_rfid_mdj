@@ -37,7 +37,6 @@ namespace THOK.Wms.Bll.Service
                 });
             if (!IsActive.Equals(""))
             {
-                //string bStatus = IsActive == "可用" ? "1" : "0";
                 company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType) && c.IsActive.Contains(IsActive))
                 .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
@@ -92,7 +91,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception ex)
                 {
-                    strResult = "新增失败，原因：" + ex.Message;
+                    strResult = "原因：" + ex.Message;
                 }
             }
             else
@@ -120,7 +119,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception)
                 {
-                    strResult = "已在使用";
+                    strResult = "原因：已在使用";
                 }
             }
             else
@@ -158,7 +157,7 @@ namespace THOK.Wms.Bll.Service
                 catch (Exception ex)
                 {
 
-                    strResult = "保存失败，原因：" + ex.Message;
+                    strResult = "原因：" + ex.Message;
                 }
             }
             else
