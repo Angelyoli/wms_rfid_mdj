@@ -10,7 +10,7 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string BeginDate, string EndDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive);
 
-        bool Add(ProfitLossBillMaster profitLossBillMaster, string userName);
+        bool Add(ProfitLossBillMaster profitLossBillMaster, string userName, out string strResult);
 
         bool Delete(string BillNo, out string strResult);
 
