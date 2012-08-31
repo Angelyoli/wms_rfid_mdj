@@ -133,7 +133,7 @@ namespace Wms
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {
-            bool enableGzip = (this.Request.Headers["Content-Encoding"] == "gzip");
+            bool enableGzip = (this.Request.Headers["Accept-Encoding"].Contains("gzip"));
             if (enableGzip)
             {
                 this.Response.Filter = new GZipStream(this.Response.Filter, CompressionMode.Compress);

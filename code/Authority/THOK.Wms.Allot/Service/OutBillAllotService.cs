@@ -171,7 +171,7 @@ namespace THOK.Wms.Allot.Service
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo);
             var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
-            var obm = OutBillDetailRepository.GetQueryable().FirstOrDefault(o => o.ProductCode == productCode);
+            var obm = OutBillDetailRepository.GetQueryable().FirstOrDefault(o => o.ID == id);
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
