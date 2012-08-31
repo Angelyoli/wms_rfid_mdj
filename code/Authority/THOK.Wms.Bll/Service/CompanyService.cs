@@ -37,8 +37,8 @@ namespace THOK.Wms.Bll.Service
                 });
             if (!IsActive.Equals(""))
             {
-                string bStatus = IsActive == "可用" ? "1" : "0";
-                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType) && c.IsActive.Contains(bStatus))
+                //string bStatus = IsActive == "可用" ? "1" : "0";
+                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType) && c.IsActive.Contains(IsActive))
                 .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
                 {
@@ -144,7 +144,7 @@ namespace THOK.Wms.Bll.Service
                 companyName = value;
             }
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
-            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode) && c.CompanyName.Contains(companyName))
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode) && c.CompanyName.Contains(companyName) && c.IsActive=="1")
                 .OrderBy(c => c.CompanyCode).AsEnumerable()
                 .Select(c => new
                 {
@@ -152,7 +152,7 @@ namespace THOK.Wms.Bll.Service
                     c.CompanyCode,
                     c.CompanyName,
                     ParentCompanyID = c.ParentCompany.ParentCompanyID,
-                    ParentCompanyName = c.ParentCompany.CompanyName,                    
+                    ParentCompanyName = c.ParentCompany.CompanyName,
                     IsActive = c.IsActive == "1" ? "可用" : "不可用",
                     UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 });
