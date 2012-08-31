@@ -37,6 +37,11 @@ namespace Authority.Controllers.Wms.StockIn
             return View();
         }
 
+        public ActionResult SearchPage()
+        {
+            return View();
+        }
+        
         //
         // GET: /InBillMaster/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)

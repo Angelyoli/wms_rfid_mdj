@@ -52,7 +52,7 @@
         clearMenu();
         $.getJSON("/Home/GetMenu/?t=" + new Date(), function (data) {
             menus_root = data[0];
-            initMainMenu(menus_root);
+            //initMainMenu(menus_root);
             initLeftMenu(menus_root);
         });
         tabEven();
