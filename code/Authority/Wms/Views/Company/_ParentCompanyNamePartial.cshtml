@@ -20,7 +20,7 @@
         var parentCompanyNameRow = $('#parentCompanyNameDetail').datagrid('getSelected');
         if (parentCompanyNameRow) {
             $('#companyId').val(parentCompanyNameRow.ID);
-            $('#companyName').val(parentCompanyNameRow.ParentCompanyName);
+            $('#companyName').val(parentCompanyNameRow.CompanyName);
             $('#parentCompanyNameData').dialog('close');
         }
         else {
