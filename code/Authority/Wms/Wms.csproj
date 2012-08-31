@@ -1446,6 +1446,7 @@
     <Content Include="Views\Shared\_ScriptPartial.cshtml" />
     <Content Include="Views\StockInBill\_SearchPartial.cshtml" />
     <Content Include="Views\StockInBill\Search.cshtml" />
+    <Content Include="Views\StockInBill\SearchPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
