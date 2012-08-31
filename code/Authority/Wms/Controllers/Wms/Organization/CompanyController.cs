@@ -56,9 +56,18 @@ namespace Authority.Controllers.Organization
         // GET: /Company/Edit/
         public ActionResult Edit(Company company)
         {
-            bool bResult = CompanyService.Save(company);
+            string error = null;
+            bool bResult = false;
+            try
+            {
+                bResult = CompanyService.Save(company);
+            }
+            catch (Exception)
+            {
+                error = "参数没有转成数字";
+            }
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -72,10 +81,9 @@ namespace Authority.Controllers.Organization
             {
                 bResult = CompanyService.Delete(companyID);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                error = "存在主外键约束";
-                Response.Write("<script>alert('"+ error + e +"')</script>");
+                error = "已在使用";
             }
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);

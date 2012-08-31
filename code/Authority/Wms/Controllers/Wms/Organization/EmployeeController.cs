@@ -81,10 +81,9 @@ namespace Authority.Controllers.Organization
             {
                 bResult = EmployeeService.Delete(demployeeId);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                error = "存在主外键约束";
-                Response.Write("<script>alert('"+ error + e +"')</script>");
+                error = "已在使用";
             }
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
