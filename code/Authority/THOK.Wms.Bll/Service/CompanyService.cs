@@ -22,8 +22,8 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string CompanyCode, string CompanyName, string CompanyType, string IsActive)
         {
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
-            var company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) 
-                && c.CompanyName.Contains(CompanyName) 
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode)
+                && c.CompanyName.Contains(CompanyName)
                 && c.CompanyType.Contains(CompanyType))
                 .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
@@ -34,15 +34,20 @@ namespace THOK.Wms.Bll.Service
                     c.UniformCode,
                     c.Description,
                     CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
-                    c.WarehouseCapacity,c.WarehouseCount,c.WarehouseSpace,c.SortingCount,ParentCompanyName=c.ParentCompany.CompanyName,c.ParentCompanyID,
+                    c.WarehouseCapacity,
+                    c.WarehouseCount,
+                    c.WarehouseSpace,
+                    c.SortingCount,
+                    ParentCompanyName = c.ParentCompany.CompanyName,
+                    c.ParentCompanyID,
                     IsActive = c.IsActive == "1" ? "可用" : "不可用",
                     UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 });
             if (!IsActive.Equals(""))
             {
-                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) 
-                    && c.CompanyName.Contains(CompanyName) 
-                    && c.CompanyType.Contains(CompanyType) 
+                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode)
+                    && c.CompanyName.Contains(CompanyName)
+                    && c.CompanyType.Contains(CompanyType)
                     && c.IsActive.Contains(IsActive))
                 .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
@@ -60,7 +65,7 @@ namespace THOK.Wms.Bll.Service
                     ParentCompanyName = c.ParentCompany.CompanyName,
                     c.ParentCompanyID,
                     IsActive = c.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime=c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 });
             }
             int total = company.Count();
@@ -68,11 +73,11 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = company.ToArray() };
         }
 
-        public bool Add(Company company,out string strResult)
+        public bool Add(Company company, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
-            var comp = new  Company();
+            var comp = new Company();
             var parent = CompanyRepository.GetQueryable().FirstOrDefault(p => p.ID == company.ParentCompanyID);
             if (comp != null)
             {
@@ -103,12 +108,12 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "找不到当前登陆用户！请重新登陆！";
+                strResult = "原因：找不到当前登陆用户！请重新登陆！";
             }
             return result;
         }
 
-        public bool Delete(string  companyID, out string strResult)
+        public bool Delete(string companyID, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
@@ -131,7 +136,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "删除失败！未找到当前需要删除的数据！";
+                strResult = "原因：未找到当前需要删除的数据！";
             }
             return result;
         }
@@ -169,7 +174,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "保存失败，未找到该条数据！";
+                strResult = "原因：未找到当前需要修改的数据！";
             }
             return result;
         }
@@ -197,7 +202,7 @@ namespace THOK.Wms.Bll.Service
                 companyName = value;
             }
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
-            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode) && c.CompanyName.Contains(companyName) && c.IsActive=="1")
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode) && c.CompanyName.Contains(companyName) && c.IsActive == "1")
                 .OrderBy(c => c.CompanyCode).AsEnumerable()
                 .Select(c => new
                 {

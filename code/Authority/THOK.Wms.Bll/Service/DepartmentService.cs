@@ -97,7 +97,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "找不到当前登陆用户！请重新登陆！";
+                strResult = "原因：找不到当前登陆用户！请重新登陆！";
             }
             return result;
         }
@@ -125,7 +125,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "删除失败！未找到当前需要删除的数据！";
+                strResult = "原因：未找到当前需要删除的数据！";
             }
             return result;
         }
@@ -162,7 +162,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "保存失败，未找到该条数据！";
+                strResult = "原因：未找到当前需要修改的数据！";
             }
             return result;
         }
