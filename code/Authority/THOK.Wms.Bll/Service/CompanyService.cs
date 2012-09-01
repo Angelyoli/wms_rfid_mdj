@@ -22,13 +22,16 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string CompanyCode, string CompanyName, string CompanyType, string IsActive)
         {
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
-            var company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType))
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) 
+                && c.CompanyName.Contains(CompanyName) 
+                && c.CompanyType.Contains(CompanyType))
                 .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
                 {
                     c.ID,
                     c.CompanyCode,
                     c.CompanyName,
+                    c.UniformCode,
                     c.Description,
                     CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
                     c.WarehouseCapacity,c.WarehouseCount,c.WarehouseSpace,c.SortingCount,ParentCompanyName=c.ParentCompany.CompanyName,c.ParentCompanyID,
@@ -37,13 +40,17 @@ namespace THOK.Wms.Bll.Service
                 });
             if (!IsActive.Equals(""))
             {
-                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType) && c.IsActive.Contains(IsActive))
+                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) 
+                    && c.CompanyName.Contains(CompanyName) 
+                    && c.CompanyType.Contains(CompanyType) 
+                    && c.IsActive.Contains(IsActive))
                 .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
                 {
                     c.ID,
                     c.CompanyCode,
                     c.CompanyName,
+                    c.UniformCode,
                     c.Description,
                     CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
                     c.WarehouseCapacity,
