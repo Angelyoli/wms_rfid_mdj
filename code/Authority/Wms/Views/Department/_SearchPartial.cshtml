@@ -17,8 +17,8 @@
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.DepartmentCode = $('#DepartmentCode').val();
         queryParams.DepartmentName = $('#DepartmentName').val();
-        queryParams.EmployeeCode = $('#employeename-id').val();
-        queryParams.CompanyCode = $('#companyname-id').val();
+        queryParams.DepartmentLeaderID = $('#employeename-id').val();
+        queryParams.CompanyID = $('#companyname-id').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,

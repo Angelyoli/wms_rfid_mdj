@@ -37,8 +37,8 @@ namespace Authority.Controllers.Organization
         {
             string DepartmentCode = collection["DepartmentCode"] ?? "";
             string DepartmentName = collection["DepartmentName"] ?? "";
-            string DepartmentLeaderID = collection["EmployeeCode"] ?? "";
-            string CompanyID =  collection["CompanyCode"] ?? "";
+            string DepartmentLeaderID = collection["DepartmentLeaderID"] ?? "";
+            string CompanyID =  collection["CompanyID"] ?? "";
             var systems = DepartmentService.GetDetails(page, rows, DepartmentCode, DepartmentName, DepartmentLeaderID, CompanyID);
             return Json(systems, "text", JsonRequestBehavior.AllowGet);
         }

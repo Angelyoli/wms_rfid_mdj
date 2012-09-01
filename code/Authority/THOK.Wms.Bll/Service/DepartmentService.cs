@@ -30,51 +30,38 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string DepartmentCode, string DepartmentName, string DepartmentLeaderID, string CompanyID)
         {
             IQueryable<Department> departQuery = DepartmentRepository.GetQueryable();
-            var department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode) && d.DepartmentName.Contains(DepartmentName))
-                .OrderByDescending(d => d.UpdateTime).AsEnumerable().
-                Select(d => new
-                {
-                    d.ID,
-                    d.DepartmentCode,
-                    d.DepartmentName,
-                    d.Description,
-                    d.DepartmentLeaderID,
-                    EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName,
-                    companyID = d.Company.ID,
-                    d.Company.CompanyName,
-                    ParentDepartmentID = d.ParentDepartmentID,
-                    ParentDepartmentName = d.ParentDepartment.DepartmentName,
-                    d.UniformCode,
-                    IsActive = d.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-                });
-            if (!CompanyID.Equals("") || !DepartmentLeaderID.Equals(""))
+            var department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode)
+                && d.DepartmentName.Contains(DepartmentName));
+
+            if (!CompanyID.Equals(string.Empty))
             {
-                department = departQuery.Where(d => d.DepartmentCode.Contains(DepartmentCode)
-                    && d.DepartmentName.Contains(DepartmentName)
-                    && d.Company.CompanyCode.Contains(CompanyID)
-                    && d.DepartmentLeader.EmployeeCode.Contains(DepartmentLeaderID))
-                .OrderByDescending(d => d.UpdateTime).AsEnumerable()
-                .Select(d => new
-                {
-                    d.ID,
-                    d.DepartmentCode,
-                    d.DepartmentName,
-                    d.Description,
-                    d.DepartmentLeaderID,
-                    EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName,
-                    companyID = d.Company.ID,
-                    d.Company.CompanyName,
-                    ParentDepartmentID = d.ParentDepartmentID,
-                    ParentDepartmentName = d.ParentDepartment.DepartmentName,
-                    d.UniformCode,
-                    IsActive = d.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-                });
+                Guid compId = new Guid(CompanyID);
+                department = department.Where(d => d.Company.ID == compId);
             }
-            int total = department.Count();
-            department = department.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = department.ToArray() };
+            if (!DepartmentLeaderID.Equals(string.Empty))
+            {
+                Guid departID = new Guid(DepartmentLeaderID);
+                department = department.Where(d => d.DepartmentLeader.ID == departID);
+            }
+            var temp = department.AsEnumerable().OrderByDescending(d => d.UpdateTime).AsEnumerable().Select(d => new
+            {
+                d.ID,
+                d.DepartmentCode,
+                d.DepartmentName,
+                d.Description,
+                d.DepartmentLeaderID,
+                EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName,
+                companyID = d.Company.ID,
+                d.Company.CompanyName,
+                ParentDepartmentID = d.ParentDepartmentID,
+                ParentDepartmentName = d.ParentDepartment.DepartmentName,
+                d.UniformCode,
+                IsActive = d.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            int total = temp.Count();
+            temp = temp.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = temp.ToArray() };
         }
 
         public bool Add(Department department, out string strResult)
