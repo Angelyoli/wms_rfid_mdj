@@ -40,8 +40,8 @@ namespace THOK.Wms.Bll.Service
             }
             if (!DepartmentLeaderID.Equals(string.Empty))
             {
-                Guid departID = new Guid(DepartmentLeaderID);
-                department = department.Where(d => d.DepartmentLeader.ID == departID);
+                Guid empId = new Guid(DepartmentLeaderID);
+                department = department.Where(d => d.DepartmentLeader.ID == empId);
             }
             var temp = department.AsEnumerable().OrderByDescending(d => d.UpdateTime).AsEnumerable().Select(d => new
             {
