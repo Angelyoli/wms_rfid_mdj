@@ -1202,6 +1202,7 @@
     <Content Include="Views\Employee\_JobPartial.cshtml" />
     <Content Include="Views\Employee\_UserNamePartial.cshtml" />
     <Content Include="Views\CellHistorical\Index.cshtml" />
+    <Content Include="Views\CellHistorical\_SearchPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
