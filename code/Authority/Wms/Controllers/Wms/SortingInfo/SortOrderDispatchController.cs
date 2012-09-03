@@ -48,9 +48,9 @@ namespace Wms.Controllers.Wms.SortingInfo
 
         //新增线路调度
         // POST: /SortOrderDispatch/Create/
-        public ActionResult Create(string SortingLineCode, string DeliverLineCodes)
+        public ActionResult Create(string SortingLineCode, string DeliverLineCodes,string orderDate)
         {
-            bool bResult = SortOrderDispatchService.Add(SortingLineCode, DeliverLineCodes);
+            bool bResult = SortOrderDispatchService.Add(SortingLineCode, DeliverLineCodes, orderDate);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
