@@ -10,6 +10,8 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string warehouseCode);
 
+        object GetDetail(int page, int rows, string type,string id);
+
         bool Add(Warehouse warehouse);
 
         bool Delete(string warehouseCode);

@@ -17,6 +17,10 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IWarehouseRepository WarehouseRepository { get; set; }
+        [Dependency]
+        public IShelfRepository ShelfRepository { get; set; }
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -35,6 +39,28 @@ namespace THOK.Wms.Bll.Service
             if (areaCode != null && areaCode!=string.Empty){
                 area = area.Where(a => a.AreaCode == areaCode).OrderBy(a => a.AreaCode).Select(a => a);
             }           
+            return area.ToArray();
+        }
+        public object GetDetail(string type, string id)
+        {
+            IQueryable<Area> areaQuery = AreaRepository.GetQueryable();
+            IQueryable<Shelf> shelfQuery = ShelfRepository.GetQueryable();
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+            var area = areaQuery.OrderBy(b => b.AreaCode).AsEnumerable().Select(b => new { b.AreaCode, b.AreaName, b.AreaType, b.ShortName, b.AllotInOrder, b.AllotOutOrder, b.Description, b.Warehouse.WarehouseCode, b.Warehouse.WarehouseName, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            if (type == "shelf")
+            {
+                var areaCode=shelfQuery.Where(s=>s.ShelfCode==id).Select(s=>new{s.AreaCode}).ToArray();
+                area = area.Where(a => a.AreaCode == areaCode[0].AreaCode);
+            }
+            else if (type == "cell")
+            {
+                var areaCode = cellQuery.Where(c => c.CellCode == id).Select(c => new { c.AreaCode}).ToArray();
+                area = area.Where(a => a.AreaCode == areaCode[0].AreaCode);
+            }  
+            else if (type == "area")
+            {
+                area = area.Where(a => a.AreaCode == id);
+            }
             return area.ToArray();
         }
 
@@ -149,7 +175,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                int i = Convert.ToInt32(areaCode.ToString().Substring(wareCode.Length+1,2));
+                int i = Convert.ToInt32(areaCode.ToString().Substring(wareCode.Length,2));
                 i++;
                 string newcode = i.ToString();
                 if (newcode.Length <= 2)

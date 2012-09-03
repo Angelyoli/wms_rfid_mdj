@@ -249,7 +249,7 @@ namespace THOK.Wms.Allot.Service
                         try
                         {
                             allotDetail.OutBillDetail.AllotQuantity -= allotDetail.AllotQuantity;
-                            allotDetail.Storage.InFrozenQuantity -= allotDetail.AllotQuantity;
+                            allotDetail.Storage.OutFrozenQuantity -= allotDetail.AllotQuantity;
                             allotDetail.Storage.LockTag = string.Empty;
                             ibm.OutBillAllots.Remove(allotDetail);
                             OutBillAllotRepository.Delete(allotDetail);

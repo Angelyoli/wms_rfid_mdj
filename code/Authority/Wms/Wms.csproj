@@ -150,6 +150,7 @@
     <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\ShelfController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\StorageController.cs" />
+    <Compile Include="Controllers\Wms\WarehouseInfo\Warehouse2Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1172,6 +1173,11 @@
     <Content Include="Views\UnitList\_UnitSearchPartial.cshtml" />
     <Content Include="Views\StockInBill\_DownLoadPartial.cshtml" />
     <Content Include="Views\StockOutBill\_DownLoadPartial.cshtml" />
+    <Content Include="Views\Warehouse2\Index.cshtml" />
+    <Content Include="Views\Warehouse2\_SearchPartial.cshtml" />
+    <Content Include="Views\Warehouse2\_EditPartial.cshtml" />
+    <Content Include="Views\Warehouse2\_DeletePartial.cshtml" />
+    <Content Include="Views\Warehouse2\_AddPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

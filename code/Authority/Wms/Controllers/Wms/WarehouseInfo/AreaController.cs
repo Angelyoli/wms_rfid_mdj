@@ -30,7 +30,12 @@ namespace Authority.Controllers.Wms.WarehouseInfo
             var area = AreaService.GetDetails(warehouseCode, areaCode);
             return Json(area, "text", JsonRequestBehavior.AllowGet);
         }
-
+        [HttpPost]
+        public ActionResult Detail(string type, string id)
+        {
+            var area = AreaService.GetDetail(type, id);
+            return Json(area, "text", JsonRequestBehavior.AllowGet);
+        }
         //查询库区信息表
         // POST: /Area/FindArea
         [HttpPost]
