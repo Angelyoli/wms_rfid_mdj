@@ -38,6 +38,12 @@ namespace Authority.Controllers.WarehouseInfo
             var warehouse = WarehouseService.GetDetails(page, rows, warehouseCode);
             return Json(warehouse, "text", JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult Detail(int page, int rows, string type,string id)
+        {
+            var warehouse = WarehouseService.GetDetail(page, rows, type, id);
+            return Json(warehouse, "text", JsonRequestBehavior.AllowGet);
+        }
 
         //查询仓库信息表
         // POST: /Warehouse/FindWarehouse
