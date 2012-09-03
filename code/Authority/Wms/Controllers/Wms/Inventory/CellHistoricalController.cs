@@ -20,6 +20,7 @@ namespace Wms.Controllers.Wms.Inventory
 
         public ActionResult Index(string moduleID)
         {
+            ViewBag.hasSearch = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -29,9 +30,10 @@ namespace Wms.Controllers.Wms.Inventory
         //
         // GET: /CellHistorical/Details/
 
-        public ActionResult Details(int page, int rows, string type, string id)
+        public ActionResult Details(int page, int rows, string beginDate, string endDate, string type, string id)
         {
-            var storage = CellHistoricalService.GetCellDetails(page, rows, type, id);
+            var storage = CellHistoricalService.GetCellDetails(page, rows, beginDate, endDate, type, id);
+
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
 
