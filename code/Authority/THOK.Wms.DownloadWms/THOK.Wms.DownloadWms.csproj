@@ -59,6 +59,7 @@
     <Compile Include="Bll\DownReachBll.cs" />
     <Compile Include="Bll\DownRouteBll.cs" />
     <Compile Include="Bll\DownSaleRegionBll.cs" />
+    <Compile Include="Bll\DownSortingInfoBll.cs" />
     <Compile Include="Bll\DownSortingOrderBll.cs" />
     <Compile Include="Bll\DownSupplierBll.cs" />
     <Compile Include="Bll\DownUnitBll.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Dao\DownReachDao.cs" />
     <Compile Include="Dao\DownRouteDao.cs" />
     <Compile Include="Dao\DownSaleRegionDao.cs" />
+    <Compile Include="Dao\DownSortingInfoDao.cs" />
     <Compile Include="Dao\DownSortingOrderDao.cs" />
     <Compile Include="Dao\DownSupplierDao.cs" />
     <Compile Include="Dao\DownUnitDao.cs" />

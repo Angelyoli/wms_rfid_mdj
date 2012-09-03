@@ -8,7 +8,6 @@ namespace THOK.WMS.DownloadWms.Dao
 {
     public class DownSortingOrderDao : BaseDao
    {
-       #region 从营销系统下载分拣信息
 
        /// <summary>
        /// 根据条件下载分拣订单主表信息
@@ -30,39 +29,6 @@ namespace THOK.WMS.DownloadWms.Dao
            string sql = string.Format(@"SELECT A.* , B.BRAND_N FROM V_WMS_SORT_ORDER_DETAIL A
                                         LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", orderid);
            return this.ExecuteQuery(sql).Tables[0];
-       }
-
-       /// <summary>
-       /// 下载所有分拣订单明细表信息
-       /// </summary>
-       /// <returns></returns>
-       public DataTable GetSortingOrderDetail()
-       {
-           string sql = " SELECT * FROM V_WMS_SORT_ORDER_DETAIL";
-           return this.ExecuteQuery(sql).Tables[0];
-       }
-
-       /// <summary>
-       /// 下载前清理当前时间七天之内的数据
-       /// </summary>
-       public void DeleteOrder()
-       {
-           string dtOrder = DateTime.Now.AddDays(-2d).ToString("yyyyMMdd");
-           //DateTime historyDate = dtOrder.AddDays(-8d).ToShortDateString();
-           string sql = string.Format("DELETE FROM DWV_OUT_ORDER WHERE ORDER_DATE < '{0}'", dtOrder);
-           this.ExecuteNonQuery(sql);
-           sql = "DELETE FROM DWV_OUT_ORDER WHERE ORDER_DATE < '{0}'";
-           this.ExecuteNonQuery(sql);
-       }
-
-       #endregion
-
-       #region 查询仓储分拣信息
-
-       public void InsertSortingOrder(DataTable masertdt, DataTable detaildt)
-       {
-           BatchInsert(masertdt, "DWV_OUT_ORDER");
-           BatchInsert(detaildt, "DWV_OUT_ORDER_DETAIL");
        }
 
        /// <summary>
@@ -93,13 +59,16 @@ namespace THOK.WMS.DownloadWms.Dao
            return this.ExecuteQuery(sql).Tables[0];
        }
 
+        /// <summary>
+        /// 查询计量单位信息
+        /// </summary>
+        /// <returns></returns>
        public DataTable GetUnitProduct()
        {
            string sql = "SELECT * FROM WMS_UNIT_LIST";
            return this.ExecuteQuery(sql).Tables[0];
        }
 
-       #endregion
-
+    
    }
 }
