@@ -54,7 +54,6 @@
     <Compile Include="Company.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="DailyBalance.cs" />
-    <Compile Include="DayEnd.cs" />
     <Compile Include="DeliverDist.cs" />
     <Compile Include="DeliverLine.cs" />
     <Compile Include="Department.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Mapping\CompanyMap.cs" />
     <Compile Include="Mapping\CustomerMap.cs" />
     <Compile Include="Mapping\DailyBalanceMap.cs" />
-    <Compile Include="Mapping\DayEndMap.cs" />
     <Compile Include="Mapping\DeliverDistMap.cs" />
     <Compile Include="Mapping\DeliverLineMap.cs" />
     <Compile Include="Mapping\DepartmentMap.cs" />
@@ -101,6 +99,7 @@
     <Compile Include="Mapping\UnitListMap.cs" />
     <Compile Include="Mapping\UnitMap.cs" />
     <Compile Include="Mapping\WarehouseMap.cs" />
+    <Compile Include="Mapping\BusinessSystemsDailyBalanceMap.cs" />
     <Compile Include="MoveBillDetail.cs" />
     <Compile Include="MoveBillMaster.cs" />
     <Compile Include="OutBillAllot.cs" />
@@ -122,6 +121,7 @@
     <Compile Include="Unit.cs" />
     <Compile Include="UnitList.cs" />
     <Compile Include="Warehouse.cs" />
+    <Compile Include="BusinessSystemsDailyBalance.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -7,7 +7,7 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class DayEndService : ServiceBase<DayEnd>, IDayEndService
+    public class BusinessSystemsDailyBalanceService : ServiceBase<BusinessSystemsDailyBalance>, IBusinessSystemsDailyBalanceService
     {
         protected override Type LogPrefix
         {
