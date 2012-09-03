@@ -22,29 +22,16 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string CompanyCode, string CompanyName, string CompanyType, string IsActive)
         {
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
-            var company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType))
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode)
+                && c.CompanyName.Contains(CompanyName)
+                && c.CompanyType.Contains(CompanyType))
                 .OrderByDescending(c => c.UpdateTime).AsEnumerable()
                 .Select(c => new
                 {
                     c.ID,
                     c.CompanyCode,
                     c.CompanyName,
-                    c.Description,
-                    CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
-                    c.WarehouseCapacity,c.WarehouseCount,c.WarehouseSpace,c.SortingCount,ParentCompanyName=c.ParentCompany.CompanyName,c.ParentCompanyID,
-                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-                });
-            if (!IsActive.Equals(""))
-            {
-                string bStatus = IsActive == "可用" ? "1" : "0";
-                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode) && c.CompanyName.Contains(CompanyName) && c.CompanyType.Contains(CompanyType) && c.IsActive.Contains(bStatus))
-                .OrderByDescending(c => c.UpdateTime).AsEnumerable()
-                .Select(c => new
-                {
-                    c.ID,
-                    c.CompanyCode,
-                    c.CompanyName,
+                    c.UniformCode,
                     c.Description,
                     CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
                     c.WarehouseCapacity,
@@ -54,7 +41,31 @@ namespace THOK.Wms.Bll.Service
                     ParentCompanyName = c.ParentCompany.CompanyName,
                     c.ParentCompanyID,
                     IsActive = c.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime=c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            if (!IsActive.Equals(""))
+            {
+                company = companyQuery.Where(c => c.CompanyCode.Contains(CompanyCode)
+                    && c.CompanyName.Contains(CompanyName)
+                    && c.CompanyType.Contains(CompanyType)
+                    && c.IsActive.Contains(IsActive))
+                .OrderByDescending(c => c.UpdateTime).AsEnumerable()
+                .Select(c => new
+                {
+                    c.ID,
+                    c.CompanyCode,
+                    c.CompanyName,
+                    c.UniformCode,
+                    c.Description,
+                    CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
+                    c.WarehouseCapacity,
+                    c.WarehouseCount,
+                    c.WarehouseSpace,
+                    c.SortingCount,
+                    ParentCompanyName = c.ParentCompany.CompanyName,
+                    c.ParentCompanyID,
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 });
             }
             int total = company.Count();
@@ -62,63 +73,110 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = company.ToArray() };
         }
 
-        public bool Add(Company company)
+        public bool Add(Company company, out string strResult)
         {
-            var comp = new  Company();
+            strResult = string.Empty;
+            bool result = false;
+            var comp = new Company();
             var parent = CompanyRepository.GetQueryable().FirstOrDefault(p => p.ID == company.ParentCompanyID);
-            comp.ID = Guid.NewGuid();
-            comp.CompanyCode = company.CompanyCode;
-            comp.CompanyName = company.CompanyName;
-            comp.CompanyType = company.CompanyType;
-            comp.Description = company.Description;
-            comp.ParentCompany = parent ?? comp;
-            comp.UniformCode = company.UniformCode;
-            comp.WarehouseCapacity = company.WarehouseCapacity;
-            comp.WarehouseCount = company.WarehouseCount;
-            comp.WarehouseSpace = company.WarehouseSpace;
-            comp.SortingCount = company.SortingCount;            
-            comp.IsActive = company.IsActive;
-            comp.UpdateTime = DateTime.Now;
+            if (comp != null)
+            {
+                try
+                {
+                    comp.ID = Guid.NewGuid();
+                    comp.CompanyCode = company.CompanyCode;
+                    comp.CompanyName = company.CompanyName;
+                    comp.CompanyType = company.CompanyType;
+                    comp.Description = company.Description;
+                    comp.ParentCompany = parent ?? comp;
+                    comp.UniformCode = company.UniformCode;
+                    comp.WarehouseCapacity = company.WarehouseCapacity;
+                    comp.WarehouseCount = company.WarehouseCount;
+                    comp.WarehouseSpace = company.WarehouseSpace;
+                    comp.SortingCount = company.SortingCount;
+                    comp.IsActive = company.IsActive;
+                    comp.UpdateTime = DateTime.Now;
 
-            CompanyRepository.Add(comp);
-            CompanyRepository.SaveChanges();
-            return true;
+                    CompanyRepository.Add(comp);
+                    CompanyRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "原因：找不到当前登陆用户！请重新登陆！";
+            }
+            return result;
         }
 
-        public bool Delete(string  companyID)
+        public bool Delete(string companyID, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             Guid cid = new Guid(companyID);
             var com = CompanyRepository.GetQueryable()
                 .FirstOrDefault(c => c.ID == cid);
             if (com != null)
             {
-                Del(CompanyRepository, com.Companies);
-                CompanyRepository.Delete(com);
-                CompanyRepository.SaveChanges();
+                try
+                {
+                    Del(CompanyRepository, com.Companies);
+                    CompanyRepository.Delete(com);
+                    CompanyRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception)
+                {
+                    strResult = "原因：已在使用";
+                }
             }
             else
-                return false;
-            return true;
+            {
+                strResult = "原因：未找到当前需要删除的数据！";
+            }
+            return result;
         }
 
-        public bool Save(Company company)
+        public bool Save(Company company, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var comp = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == company.ID);
             var par = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == company.ParentCompanyID);
-            comp.CompanyCode = company.CompanyCode;
-            comp.CompanyName = company.CompanyName;
-            comp.CompanyType = company.CompanyType;
-            comp.Description = company.Description;
-            comp.ParentCompany = par;
-            comp.SortingCount = company.SortingCount;
-            comp.UniformCode = company.UniformCode;
-            comp.UpdateTime = DateTime.Now;
-            comp.WarehouseCapacity = company.WarehouseCapacity;
-            comp.WarehouseCount = company.WarehouseCount;
-            comp.WarehouseSpace = company.WarehouseSpace;
-            comp.IsActive = company.IsActive;           
-            CompanyRepository.SaveChanges();
-            return true;
+            if (comp != null)
+            {
+                try
+                {
+                    comp.CompanyCode = company.CompanyCode;
+                    comp.CompanyName = company.CompanyName;
+                    comp.CompanyType = company.CompanyType;
+                    comp.Description = company.Description;
+                    comp.ParentCompany = par;
+                    comp.SortingCount = company.SortingCount;
+                    comp.UniformCode = company.UniformCode;
+                    comp.UpdateTime = DateTime.Now;
+                    comp.WarehouseCapacity = company.WarehouseCapacity;
+                    comp.WarehouseCount = company.WarehouseCount;
+                    comp.WarehouseSpace = company.WarehouseSpace;
+                    comp.IsActive = company.IsActive;
+                    CompanyRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+
+                    strResult = "原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "原因：未找到当前需要修改的数据！";
+            }
+            return result;
         }
 
         #endregion
@@ -144,7 +202,7 @@ namespace THOK.Wms.Bll.Service
                 companyName = value;
             }
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
-            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode) && c.CompanyName.Contains(companyName))
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode) && c.CompanyName.Contains(companyName) && c.IsActive == "1")
                 .OrderBy(c => c.CompanyCode).AsEnumerable()
                 .Select(c => new
                 {
@@ -152,7 +210,7 @@ namespace THOK.Wms.Bll.Service
                     c.CompanyCode,
                     c.CompanyName,
                     ParentCompanyID = c.ParentCompany.ParentCompanyID,
-                    ParentCompanyName = c.ParentCompany.CompanyName,                    
+                    ParentCompanyName = c.ParentCompany.CompanyName,
                     IsActive = c.IsActive == "1" ? "可用" : "不可用",
                     UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 });

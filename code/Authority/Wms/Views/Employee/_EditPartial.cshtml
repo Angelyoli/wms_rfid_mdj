@@ -1,27 +1,54 @@
 <script type="text/javascript">
-function editClick() {
-    var row = $('#details').datagrid('getSelected');
-    if (row) {
-        AddLoad();
-        url = '/Employee/Edit/';
-        $('#fm').form('load', row);
-        $('#dlg').dialog('open').dialog('setTitle', '编辑');
-        $('#fm .easyui-validatebox').validatebox({
-            required: true
-        });        
-        if (row.IsActive == '可用') {
-            $('#isActive_emp').combo('setValue', 1).combo('setText', row.IsActive);
+    function editClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            AddLoad();
+            url = '/Employee/Edit/';
+            $('#fm').form('load', row);
+            $('#dlg').dialog('open').dialog('setTitle', '编辑');
+            $('#fm .easyui-validatebox').validatebox({
+                required: true
+            });
+            //Status
+            if (row.Status == "在职") {
+                $('#Status').combo('setValue', 3701).combo('setText', row.Status);
+            }
+            else if (row.Status == "离职") {
+                $('#Status').combo('setValue', 3702).combo('setText', row.Status);
+            }
+            else if (row.Status == "退休") {
+                $('#Status').combo('setValue', 3703).combo('setText', row.Status);
+            }
+            else if (row.Status == "试用") {
+                $('#Status').combo('setValue', 3704).combo('setText', row.Status);
+            }
+            else if (row.Status == "外调") {
+                $('#Status').combo('setValue', 3705).combo('setText', row.Status);
+            }
+            else if (row.Status == "停薪留职") {
+                $('#Status').combo('setValue', 3706).combo('setText', row.Status);
+            }
+            else if (row.Status == "借用") {
+                $('#Status').combo('setValue', 3707).combo('setText', row.Status);
+            }
+            else {
+                $('#Status').combo('setValue', 3708).combo('setText', row.Status);
+            }
+            //IsActive
+            if (row.IsActive == '可用') {
+                $('#isActive_emp').combo('setValue', 1).combo('setText', row.IsActive);
+            }
+            else {
+                $('#isActive_emp').combo('setValue', 0).combo('setText', row.IsActive);
+            }
+            $('#isActive_emp').combo({
+                hasDownArrow: true
+            });
+
+            $('form input').removeAttr("disabled");
+            $('form textarea').removeAttr("disabled");
         } else {
-            $('#isActive_emp').combo('setValue', 0).combo('setText', row.IsActive);
+            $.messager.alert('错误', '没有选择行！');
         }
-        $('#isActive_emp').combo({
-            hasDownArrow: true
-        });
-        $('form input').removeAttr("disabled");
-        $('form textarea').removeAttr("disabled");
-    } else {
-        $.messager.alert('错误', '没有选择行！');
-    }
-};
+    };
 </script>
-   
