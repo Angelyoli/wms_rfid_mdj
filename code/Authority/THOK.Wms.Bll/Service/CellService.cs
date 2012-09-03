@@ -613,12 +613,12 @@ namespace THOK.Wms.Bll.Service
                 if (inOrOut == "out")// 查询出可以移出卷烟的货位
                 {
                     var storages = StorageRepository.GetQueryable().Where(s => (s.Quantity - s.OutFrozenQuantity) > 0 && string.IsNullOrEmpty(s.Cell.LockTag)).Select(s => s.CellCode);
-                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode))
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode) && c.IsActive == "1")
                                                          .OrderBy(s => s.CellCode);
                 }
                 else if (inOrOut == "in")//查询出可以移入卷烟的货位 ,
                 {
-                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && (c.Storages.Count == 0 || c.Storages.Any(s => s.Product == null || (s.ProductCode == productCode && (c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity) > 0))))
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && c.IsActive=="1" && (c.Storages.Count == 0 || c.Storages.Any(s => s.Product == null || (s.ProductCode == productCode && (c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity) > 0))))
                                              .OrderBy(c => c.CellCode).Select(c => c);
                 }
                 else if (inOrOut == "stockOut")//查询可以出库的数量 --出库使用
@@ -627,11 +627,11 @@ namespace THOK.Wms.Bll.Service
                                                                     && string.IsNullOrEmpty(s.Cell.LockTag)
                                                                     && s.ProductCode == productCode)
                                                                     .Select(s => s.CellCode);
-                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode)).OrderBy(c => c.CellCode);
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && storages.Any(s => s == c.CellCode) && c.IsActive=="1").OrderBy(c => c.CellCode);
                 }
                 else if (inOrOut=="moveIn")//查询出非货位管理的货位用于入库单非货位管理的移入
                 {
-                    cells = cells.Where(c=>c.Shelf.ShelfCode==shelfCode&&c.IsSingle=="0").OrderBy(c => c.CellCode).Select(c => c);;
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && c.IsSingle == "0" && c.IsActive == "1").OrderBy(c => c.CellCode).Select(c => c);
                 }
                 foreach (var cell in cells)//货位
                 {
