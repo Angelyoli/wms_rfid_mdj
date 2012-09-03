@@ -8,7 +8,7 @@ using THOK.Common.Ef.EntityRepository;
 
 namespace THOK.Wms.Dal.EntityRepository
 {
-    public class DayEndRepository : RepositoryBase<DayEnd>, IDayEndRepository
+    public class BusinessSystemsDailyBalanceRepository : RepositoryBase<BusinessSystemsDailyBalance>, IBusinessSystemsDailyBalanceRepository
     {
     }
 }

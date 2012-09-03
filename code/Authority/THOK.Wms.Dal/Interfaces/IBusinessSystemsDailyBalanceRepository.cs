@@ -7,7 +7,7 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Dal.Interfaces
 {
-    public interface IDayEndRepository : IRepository<DayEnd>
+    public interface IBusinessSystemsDailyBalanceRepository : IRepository<BusinessSystemsDailyBalance>
     {
     }
 }

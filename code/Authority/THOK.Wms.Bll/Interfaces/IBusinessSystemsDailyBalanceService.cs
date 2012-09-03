@@ -6,7 +6,7 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Bll.Interfaces
 {
-    public interface IDayEndService : IService<DayEnd>
+    public interface IBusinessSystemsDailyBalanceService : IService<BusinessSystemsDailyBalance>
     {
     }
 }
