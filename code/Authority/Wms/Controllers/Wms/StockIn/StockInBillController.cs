@@ -8,6 +8,7 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
+using THOK.Wms.DownloadWms.Bll;
 
 namespace Authority.Controllers.Wms.StockIn
 {
@@ -229,6 +230,8 @@ namespace Authority.Controllers.Wms.StockIn
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownInBillBll ibll = new DownInBillBll();
+            DownDayEndBll dbll = new DownDayEndBll();
+            dbll.DownDayEndInfo();
             ubll.DownUnitCodeInfo();
             pbll.DownProductInfo();           
             bool bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo);

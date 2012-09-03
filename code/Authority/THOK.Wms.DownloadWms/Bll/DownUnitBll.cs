@@ -15,49 +15,48 @@ namespace THOK.WMS.DownloadWms.Bll
         /// 下载单位数据
         /// </summary>
         /// <returns></returns>
-        public bool DownUnitInfo()
+        public bool DownUnitCodeInfo()
         {
             bool tag = true;
-            //下载单位信息
-            DataTable unitCodeTable = this.GetUnitCode();
-            string unitCodeList = UtinString.StringMake(unitCodeTable, "UNITCODE");
-            unitCodeList = UtinString.StringMake(unitCodeList);
-            unitCodeList = "BRAND_UNIT_CODE NOT IN (" + unitCodeList + ")";
-            DataTable brandUnitCodeTable = this.GetUnitInfo(unitCodeList);
-            if (brandUnitCodeTable.Rows.Count > 0)
-            {
-                DataSet unitCodeDs = this.InsertUnit(brandUnitCodeTable);
-                this.Insert(unitCodeDs.Tables[0]);
-            }
-            else
-                tag = false;
+            DataTable unitProductDt = this.GetUnitProduct();//取得中间表数据
+            string productcodeList = UtinString.StringMake(unitProductDt, "UNIT_LIST_CODE");
+            string productcode = UtinString.StringMake(productcodeList);
+            productcode = "BRAND_N NOT IN(" + productcode + ")";
 
-            //下载计量单位系列数据
-            DataTable ulistCodeTable = this.GetUlistCode();
-            string ulistCodeList = UtinString.StringMake(ulistCodeTable, "BRAND_ULIST_CODE");
-            ulistCodeList = UtinString.StringMake(ulistCodeList);
-            ulistCodeList = "BRAND_ULIST_CODE NOT IN (" + ulistCodeList + ")";
-            DataTable brandUlistCodeTable = this.GetBrandUlist(ulistCodeList);
-            if (brandUlistCodeTable.Rows.Count > 0)
+            DataTable Unitdt = this.GetUnitInfo(productcode);//下载数据
+            if (Unitdt.Rows.Count > 0)
             {
-                this.InsertUlist(brandUlistCodeTable);
+                DataTable codedt = this.GetUnitCode();//取得单位
+                DataSet ds = this.InsertTable(Unitdt);//把数据转化放到单位表和中间表
+                DataTable unitTable = ds.Tables["WMS_UNIT_INSERT"];//取得单位表
+                DataTable unitListTable = ds.Tables["WMS_UNIT_PRODUCT"];//取得单位系列表
+                string codeList = UtinString.StringMake(codedt, "unit_code");
+                string code = UtinString.StringMake(codeList);
+                DataRow[] unitdr = unitTable.Select("UNIT_CODE NOT IN (" + code + ")");//把没有下载过的取出来
+                DataSet unitDs = this.InsertUnit(unitdr);
+                DataSet unitlistds = this.InsertProduct(unitListTable);
+                if (unitDs.Tables["WMS_UNIT_INSERT"].Rows.Count > 0)
+                {
+                    this.Insert(unitDs.Tables["WMS_UNIT_INSERT"]);
+                }
+                if (unitlistds.Tables["WMS_UNIT_PRODUCT"].Rows.Count > 0)
+                {
+                    this.InsertLcUnit(unitlistds.Tables["WMS_UNIT_PRODUCT"]);
+                }
             }
-            else
-                tag = false;
             return tag;
         }
 
         /// <summary>
-        /// 下载计量单位系列编号
+        /// 获取单位系统表字段
         /// </summary>
         /// <returns></returns>
-        public DataTable GetBrandUlist(string ulistCodeList)
+        public DataTable GetUnitProduct()
         {
-            using (PersistentManager pm = new PersistentManager("YXConnection"))
+            using (PersistentManager pm = new PersistentManager())
             {
                 DownUnitDao dao = new DownUnitDao();
-                dao.SetPersistentManager(pm);
-                return dao.GetBrandUlistInfo(ulistCodeList);
+                return dao.GetUnitProduct();
             }
         }
 
@@ -75,19 +74,6 @@ namespace THOK.WMS.DownloadWms.Bll
             }
         }
 
-        /// <summary>
-        /// 查询计量单位系列编号
-        /// </summary>
-        /// <returns></returns>
-        public DataTable GetUlistCode()
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownUnitDao dao = new DownUnitDao();
-                return dao.GetUlistCode();
-            }
-        }
-
 
         /// <summary>
         /// 查询数字仓储单位编号
@@ -100,145 +86,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 DownUnitDao dao = new DownUnitDao();
                 return dao.GetUnitCode();
             }
-        }
-
-        public DataTable GetUnitProduct()
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownUnitDao dao = new DownUnitDao();
-                return dao.GetUnitProduct();
-            }
-        }
-
-        /// <summary>
-        /// 单位表插入数据
-        /// </summary>
-        /// <param name="ds"></param>
-        public void Insert(DataTable unitTable)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownUnitDao dao = new DownUnitDao();
-                dao.InsertUnit(unitTable);
-            }
-        }
-
-        /// <summary>
-        /// 创联中间表插入数据
-        /// </summary>
-        /// <param name="ds"></param>
-        public void InsertUlist(DataTable ulistCodeTable)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownUnitDao dao = new DownUnitDao();
-                dao.InsertUlist(ulistCodeTable);
-            }
-        }
-
-        /// <summary>
-        /// 浪潮中间表插入数据
-        /// </summary>
-        /// <param name="ds"></param>
-        public void InsertLcUnit(DataTable lcUnitTable)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownUnitDao dao = new DownUnitDao();
-                dao.InsertLcUnit(lcUnitTable);
-            }
-        }
-
-        /// <summary>
-        /// 把转换后的数据添加到虚拟表
-        /// </summary>
-        /// <param name="unitdr"></param>
-        /// <returns></returns>
-        public DataSet InsertUnit(DataTable unitCodeTable)
-        {
-            DataSet ds = this.GenerateEmptyTables();
-            foreach (DataRow row in unitCodeTable.Rows)
-            {
-                DataRow dr = ds.Tables["WMS_UNIT_INSERT"].NewRow();
-                dr["UNITCODE"] = row["BRAND_UNIT_CODE"];
-                dr["UNITNAME"] = row["BRAND_UNIT_NAME"];
-                dr["STANDARDRATE"] = row["COUNT"];
-                dr["ISACTIVE"] = row["ISACTIVE"];
-                dr["MEMO"] = "";
-                ds.Tables["WMS_UNIT_INSERT"].Rows.Add(dr);
-            }
-            return ds;
-        }
-
-        /// <summary>
-        /// 构建虚拟表
-        /// </summary>
-        /// <returns></returns>
-        private DataSet GenerateEmptyTables()
-        {
-            DataSet ds = new DataSet();
-            DataTable intable = ds.Tables.Add("WMS_UNIT_INSERT");
-            intable.Columns.Add("unit_code");
-            intable.Columns.Add("unit_name");
-            intable.Columns.Add("count");
-            intable.Columns.Add("is_active");
-            intable.Columns.Add("update_time");
-            intable.Columns.Add("row_version");
-
-            DataTable uptable = ds.Tables.Add("WMS_UNIT_PRODUCT");
-            uptable.Columns.Add("unit_list_code");
-            uptable.Columns.Add("uniform_code");
-            uptable.Columns.Add("unit_list_name");
-            uptable.Columns.Add("unit_code01");
-            uptable.Columns.Add("quantity01");
-            uptable.Columns.Add("unit_code02");
-            uptable.Columns.Add("quantity02");
-            uptable.Columns.Add("unit_code03");
-            uptable.Columns.Add("quantity03");
-            uptable.Columns.Add("unit_code04");
-            uptable.Columns.Add("is_active");
-            uptable.Columns.Add("update_time");
-            return ds;
-        }
-
-        #endregion
-
-        #region 从营销系统下载单位数据 -广西
-        /// <summary>
-        /// 下载单位数据
-        /// </summary>
-        /// <returns></returns>
-        public bool DownUnitCodeInfo()
-        {
-            bool tag = true;
-            DataTable unitProductDt = this.GetUnitProduct();//取得中间表数据
-            string productcodeList = UtinString.StringMake(unitProductDt, "unit_list_code");
-            string productcode = UtinString.StringMake(productcodeList);
-            productcode = "BRAND_N NOT IN(" + productcode + ")";
-
-            DataTable Unitdt = this.GetUnitInfo(productcode);//下载数据
-            if (Unitdt.Rows.Count > 0)
-            {
-                DataTable codedt = this.GetUnitCode();//取得单位
-                DataSet ds = this.InsertTable(Unitdt);//把数据转化放到单位表和中间表
-                DataTable unitTable = ds.Tables["WMS_UNIT_INSERT"];//取得单位表
-                DataTable unitListTable = ds.Tables["WMS_UNIT_PRODUCT"];//取得单位系列表
-                string codeList = UtinString.StringMake(codedt, "unit_code");
-                string code = UtinString.StringMake(codeList);
-                DataRow[] unitdr = unitTable.Select("unit_code NOT IN (" + code + ")");//把没有下载过的取出来
-                DataSet unitDs = this.InsertUnit(unitdr);
-                DataSet unitlistds = this.InsertProduct(unitListTable);
-                if (unitDs.Tables["WMS_UNIT_INSERT"].Rows.Count > 0)
-                {
-                    this.Insert(unitDs.Tables["WMS_UNIT_INSERT"]);
-                }
-                if (unitlistds.Tables["WMS_UNIT_PRODUCT"].Rows.Count > 0)
-                {
-                    this.InsertLcUnit(unitlistds.Tables["WMS_UNIT_PRODUCT"]);
-                }
-            }
-            return tag;
         }
 
         /// <summary>
@@ -260,27 +107,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 ds.Tables["WMS_UNIT_INSERT"].Rows.Add(dr);
             }
             return ds;
-        }
-
-
-        /// <summary>
-        /// 把单位数据添加到数据库
-        /// </summary>
-        /// <param name="ds"></param>
-        public void Insert(DataSet unitds, DataSet productds)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownUnitDao dao = new DownUnitDao();
-                if (unitds.Tables["WMS_UNIT_INSERT"].Rows.Count > 0)
-                {
-                   // dao.InsertUnit(unitds);
-                }
-                if (productds.Tables["WMS_UNIT_PRODUCT"].Rows.Count > 0)
-                {
-                   // dao.InsertUnitProduct(productds);
-                }
-            }
         }
 
         /// <summary>
@@ -311,7 +137,33 @@ namespace THOK.WMS.DownloadWms.Bll
             return ds;
         }
 
-      
+
+        /// <summary>
+        /// 单位表插入数据
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Insert(DataTable unitTable)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownUnitDao dao = new DownUnitDao();
+                dao.InsertUnit(unitTable);
+            }
+        }
+
+        /// <summary>
+        /// 单位系列表插入数据
+        /// </summary>
+        /// <param name="ds"></param>
+        public void InsertLcUnit(DataTable lcUnitTable)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownUnitDao dao = new DownUnitDao();
+                dao.InsertLcUnit(lcUnitTable);
+            }
+        }
+
         /// <summary>
         /// 把数据转换添加到虚拟表
         /// </summary>
@@ -411,6 +263,37 @@ namespace THOK.WMS.DownloadWms.Bll
                 brandjian[0]["unit_code01"] = row["BRAND_UNIT_CODE"].ToString() + "_" + row["COUNT"].ToString();
                 brandjian[0]["quantity01"] = Convert.ToDecimal(row["COUNT"]) / Convert.ToDecimal(jianbytiao[0]["COUNT"]);
             }
+            return ds;
+        }
+
+        /// <summary>
+        /// 构建虚拟表
+        /// </summary>
+        /// <returns></returns>
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable intable = ds.Tables.Add("WMS_UNIT_INSERT");
+            intable.Columns.Add("unit_code");
+            intable.Columns.Add("unit_name");
+            intable.Columns.Add("count");
+            intable.Columns.Add("is_active");
+            intable.Columns.Add("update_time");
+            intable.Columns.Add("row_version");
+
+            DataTable uptable = ds.Tables.Add("WMS_UNIT_PRODUCT");
+            uptable.Columns.Add("unit_list_code");
+            uptable.Columns.Add("uniform_code");
+            uptable.Columns.Add("unit_list_name");
+            uptable.Columns.Add("unit_code01");
+            uptable.Columns.Add("quantity01");
+            uptable.Columns.Add("unit_code02");
+            uptable.Columns.Add("quantity02");
+            uptable.Columns.Add("unit_code03");
+            uptable.Columns.Add("quantity03");
+            uptable.Columns.Add("unit_code04");
+            uptable.Columns.Add("is_active");
+            uptable.Columns.Add("update_time");
             return ds;
         }
 

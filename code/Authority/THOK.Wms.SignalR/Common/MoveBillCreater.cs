@@ -299,9 +299,9 @@ namespace THOK.Wms.SignalR.Common
                 else
                     throw new Exception("锁定储位失败，其他人可能正在操作，请稍候重试!");
 
-                //MoveBillDetailRepository.Delete(moveBillMaster.MoveBillDetails.ToArray());
-                MoveBillDetailRepository.GetObjectSet()
-                    .DeleteEntity(m => m.BillNo == moveBillMaster.BillNo);
+                MoveBillDetailRepository.Delete(moveBillMaster.MoveBillDetails.ToArray());
+                //MoveBillDetailRepository.GetObjectSet()
+                //    .DeleteEntity(m => m.BillNo == moveBillMaster.BillNo);
                                         
                 MoveBillDetailRepository.SaveChanges();
             }

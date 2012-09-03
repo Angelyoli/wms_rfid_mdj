@@ -18,6 +18,7 @@ namespace THOK.Wms.DbModel
             this.OutBillMasters = new List<OutBillMaster>();
             this.InBillMasters = new List<InBillMaster>();
             this.ProfitLossBillMasters = new List<ProfitLossBillMaster>();
+            this.DayEnds = new List<DayEnd>();
         }
 
         public string WarehouseCode { get; set; }
@@ -33,6 +34,7 @@ namespace THOK.Wms.DbModel
         public virtual ICollection<Shelf> Shelfs { get; set; }
         public virtual ICollection<Cell> Cells { get; set; }
         public virtual ICollection<DailyBalance> DailyBalances { get; set; }
+        public virtual ICollection<DayEnd> DayEnds { get; set; }
         public virtual ICollection<MoveBillMaster> MoveBillMasters { get; set; }
         public virtual ICollection<CheckBillMaster> CheckBillMasters { get; set; }
         public virtual ICollection<OutBillMaster> OutBillMasters { get; set; }

@@ -32,6 +32,20 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         /// <summary>
+        /// 查询已下载过的客户编码
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetCustomerCode()
+        {
+            using (PersistentManager dbPm = new PersistentManager())
+            {
+                DownCustomerDao dao = new DownCustomerDao();
+                return dao.GetCustomerCode();
+            }
+        }
+
+
+        /// <summary>
         /// 下载客户信息
         /// </summary>
         /// <returns></returns>
@@ -45,31 +59,6 @@ namespace THOK.WMS.DownloadWms.Bll
             }
         }
 
-        /// <summary>
-        /// 查询已下载过的客户编码
-        /// </summary>
-        /// <returns></returns>
-        public DataTable GetCustomerCode()
-        {
-            using (PersistentManager dbPm = new PersistentManager())
-            {
-                DownCustomerDao dao = new DownCustomerDao();
-                return dao.GetCustomerCode();
-            }
-        }
-
-        /// <summary>
-        /// 保存数据到数据表
-        /// </summary>
-        /// <param name="customerDt"></param>
-        public void Insert(DataSet customerDs)
-        {
-            using (PersistentManager dbPm = new PersistentManager())
-            {
-                DownCustomerDao dao = new DownCustomerDao();
-                dao.Insert(customerDs);
-            }
-        }
 
         /// <summary>
         ///保存虚拟表
@@ -92,7 +81,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["sale_scope"] = row["sale_scope"].ToString().Trim();
                 inbrddr["industry_type"] = row["RTL_CUST_TYPE_CODE"].ToString().Trim();
                 inbrddr["city_or_countryside"] = row["CUST_GEO_TYPE_CODE"].ToString().Trim();
-                inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();             
+                inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();
                 inbrddr["deliver_order"] = row["DELIVER_ORDER"];
                 inbrddr["address"] = row["DIST_ADDRESS"].ToString().Trim();
                 inbrddr["phone"] = row["DIST_PHONE"].ToString().Trim();
@@ -112,7 +101,20 @@ namespace THOK.WMS.DownloadWms.Bll
             }
             return ds;
         }
+       
 
+        /// <summary>
+        /// 保存数据到数据表
+        /// </summary>
+        /// <param name="customerDt"></param>
+        public void Insert(DataSet customerDs)
+        {
+            using (PersistentManager dbPm = new PersistentManager())
+            {
+                DownCustomerDao dao = new DownCustomerDao();
+                dao.Insert(customerDs);
+            }
+        }
 
         /// <summary>
         /// 构建一个客户虚拟表

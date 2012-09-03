@@ -21,13 +21,12 @@ namespace THOK.WMS.DownloadWms.Bll
             DataTable RouteCodeDt = this.GetRouteCode();
             string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
             routeCodeList = UtinString.StringMake(routeCodeList);
-            //routeCodeList = "deliver_line_code NOT IN (" + routeCodeList + ")";
             DataTable RouteDt = this.GetRouteInfo("");
 
             if (RouteDt.Rows.Count > 0)
             {
                 DataTable routeTable = this.InsertRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
-                DataRow[] line = routeTable.Select("deliver_line_code NOT IN(" + routeCodeList + ")");
+                DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
                 if (line.Length > 0)
                 {
                     DataSet lineds = this.InsertRouteCode(line);
@@ -37,37 +36,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 tag = false;
             return tag;
         }
-
-        /// <summary>
-        /// 自动下载线路信息，下载前清楚线路表
-        /// </summary>
-        /// <returns></returns>
-       public bool GetDownRouteInfo()
-       {
-           bool tag = true;
-           this.DeleteRoute();//下载清除线路表
-           DataTable RouteDt = this.GetRouteInfo();
-           if (RouteDt.Rows.Count > 0)
-           {
-               DataSet deptDs = this.InsertRouteCode(RouteDt);
-               this.Insert(deptDs);
-           }
-           else
-               tag = false;
-           return tag;
-       }
-
-       /// <summary>
-       /// 清除线路表
-       /// </summary>
-       public void DeleteRoute()
-       {
-           using (PersistentManager dbPm = new PersistentManager())
-           {
-               DownRouteDao dao = new DownRouteDao();
-               dao.Delete();
-           }
-       }
 
        /// <summary>
        /// 下载线路信息
@@ -82,19 +50,7 @@ namespace THOK.WMS.DownloadWms.Bll
                return dao.GetRouteInfo(routeCodeList);
            }
        }
-       /// <summary>
-       /// 自动下载线路信息
-       /// </summary>
-       /// <returns></returns>
-       public DataTable GetRouteInfo()
-       {
-           using (PersistentManager dbPm = new PersistentManager("YXConnection"))
-           {
-               DownRouteDao dao = new DownRouteDao();
-               dao.SetPersistentManager(dbPm);
-               return dao.GetRouteInfo();
-           }
-       }
+      
 
        /// <summary>
        /// 查询仓库线路编号
