@@ -54,6 +54,7 @@
     <Compile Include="Company.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="DailyBalance.cs" />
+    <Compile Include="DayEnd.cs" />
     <Compile Include="DeliverDist.cs" />
     <Compile Include="DeliverLine.cs" />
     <Compile Include="Department.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Mapping\CompanyMap.cs" />
     <Compile Include="Mapping\CustomerMap.cs" />
     <Compile Include="Mapping\DailyBalanceMap.cs" />
+    <Compile Include="Mapping\DayEndMap.cs" />
     <Compile Include="Mapping\DeliverDistMap.cs" />
     <Compile Include="Mapping\DeliverLineMap.cs" />
     <Compile Include="Mapping\DepartmentMap.cs" />

@@ -20,6 +20,7 @@ namespace THOK.Wms.DbModel
             this.InBillAllots = new List<InBillAllot>();
             this.OutBillAllots = new List<OutBillAllot>();
             this.SortingLowerlimits = new List<SortingLowerlimit>();
+            this.DayEnds = new List<DayEnd>();
         }
         public string UnitCode { get; set; }
         public string UnitName { get; set; }
@@ -30,6 +31,7 @@ namespace THOK.Wms.DbModel
 
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<DailyBalance> DailyBalances { get; set; }
+        public virtual ICollection<DayEnd> DayEnds { get; set; }
         public virtual ICollection<MoveBillDetail> MoveBillDetails { get; set; }
         public virtual ICollection<CheckBillDetail> CheckBillDetailUnits { get; set; }
         public virtual ICollection<CheckBillDetail> CheckBillDetailRealUnits { get; set; }

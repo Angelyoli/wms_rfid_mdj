@@ -20,6 +20,7 @@ namespace THOK.Wms.DbModel
             this.InBillAllots = new List<InBillAllot>();
             this.OutBillAllots = new List<OutBillAllot>();
             this.SortingLowerlimits = new List<SortingLowerlimit>();
+            this.DayEnds = new List<DayEnd>();
         }
 
         public string ProductCode { get; set; }
@@ -64,6 +65,7 @@ namespace THOK.Wms.DbModel
         public virtual ICollection<Cell> Cells { get; set; }
         public virtual ICollection<Storage> Storages { get; set; }
         public virtual ICollection<DailyBalance> DailyBalances { get; set; }
+        public virtual ICollection<DayEnd> DayEnds{ get; set; }
         public virtual ICollection<MoveBillDetail> MoveBillDetails { get; set; }
         public virtual ICollection<CheckBillDetail> CheckBillDetailProducts { get; set; }
         public virtual ICollection<CheckBillDetail> CheckBillDetailRealProducts { get; set; }
