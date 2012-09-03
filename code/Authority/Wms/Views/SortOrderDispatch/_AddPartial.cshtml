@@ -34,13 +34,14 @@
 
     function save() {
         var sortlineCode = $('#lineCode').combobox('getValue'), deliverLineCode = "";
+        var sortDate = $('#orderDate').datebox('getValue');
         if (sortlineCode != "" && sortlineCode != null) {
             var rows = $('#sortingOrderAllot').datagrid('getSelections');
             if (rows.length > 0) {
                 for (var i = 0; i < rows.length; i++) {
                     deliverLineCode += rows[i].DeliverLineCode + ",";
                 }
-                $.getJSON('/SortOrderDispatch/Create/', { SortingLineCode: sortlineCode, DeliverLineCodes: deliverLineCode }, function (result) {
+                $.getJSON('/SortOrderDispatch/Create/', { SortingLineCode: sortlineCode, DeliverLineCodes: deliverLineCode, orderDate: sortDate }, function (result) {
                     if (result) {
                         if (result.success) {
                             $.messager.alert(g_MsgBoxTitle, result.msg, "info");

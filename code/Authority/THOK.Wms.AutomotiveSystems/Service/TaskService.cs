@@ -718,11 +718,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 sortWork.UpdateTime = DateTime.Now;
 
                 //分拣订单线路调度完成
-                var sortOrderDetail = SortOrderDispatchRepository.GetQueryable().Where(s => s.SortWorkDispatchID == sortWork.ID).ToArray();
-                foreach (var sortOrder in sortOrderDetail)
-                {
-                    sortOrder.WorkStatus = "2";
-                }
+                //var sortOrderDetail = SortOrderDispatchRepository.GetQueryable().Where(s => s.SortWorkDispatchID == sortWork.ID).ToArray();
+                //foreach (var sortOrder in sortOrderDetail)
+                //{
+                //    sortOrder.WorkStatus = "2";
+                //}
                 return true;
             }
             return true;
