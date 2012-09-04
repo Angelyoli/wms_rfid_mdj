@@ -17,5 +17,7 @@ namespace THOK.Wms.AutomotiveSystems.Interfaces
         void Cancel(BillDetail[] billDetail, string useTag, Result result);
 
         void Execute(BillDetail[] billDetail, string useTag, Result result);
+
+        bool ProcessSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId, ref string error);
     }
 }

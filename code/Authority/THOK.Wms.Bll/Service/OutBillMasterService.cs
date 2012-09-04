@@ -305,8 +305,8 @@ namespace THOK.Wms.Bll.Service
                 }
                 else//如果出库主单指定了货位那么就从指定的货位出库
                 {
-                    result = OutAllot(outbm);
-                    errorInfo=infoStr;
+                    result = OutAllot(outbm, employee.ID);
+                    errorInfo = infoStr;
                 }
             }
             return result;
@@ -317,7 +317,7 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="outBillMaster">出库主单</param>
         /// <returns></returns>
-        public bool OutAllot(OutBillMaster outBillMaster)
+        public bool OutAllot(OutBillMaster outBillMaster,Guid employeeId)
         {
             try
             {
@@ -330,7 +330,9 @@ namespace THOK.Wms.Bll.Service
                 {
                     throw new Exception("锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！");
                 }
-                outBillMaster.OutBillDetails.AsParallel().ForAll(
+                var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
+                    .Where(o => o.BillNo == outBillMaster.BillNo);
+                outDetails.ToArray().AsParallel().ForAll(
                (Action<OutBillDetail>)delegate(OutBillDetail o)
                {
                    var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
@@ -371,16 +373,19 @@ namespace THOK.Wms.Bll.Service
 
                    if (o.BillQuantity - o.AllotQuantity > 0)
                    {
-                       infoStr = o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！";
+                       throw new Exception(o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！");
                    }
-               }
-           );
+               });
+
                 result = true;
                 storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
                 //出库结单
                 outBillMaster.Status = "6";
+                outBillMaster.VerifyDate = DateTime.Now;
+                outBillMaster.VerifyPersonID = employeeId;
                 outBillMaster.UpdateTime = DateTime.Now;
                 OutBillMasterRepository.SaveChanges();
+
                 return result;
             }
             catch (AggregateException ex)

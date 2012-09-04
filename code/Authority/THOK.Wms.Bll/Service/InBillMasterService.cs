@@ -331,7 +331,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 else//如果入库主单指定了货位那么就进行入库分配
                 {
-                    result = InAllot(ibm);
+                    result = InAllot(ibm, employee.ID);
                     strResult = resultStr;
                 }
             }
@@ -343,7 +343,7 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="inBillMaster">入库主单</param>
         /// <returns></returns>
-        public bool InAllot(InBillMaster inBillMaster)
+        public bool InAllot(InBillMaster inBillMaster,Guid employeeId)
         {
             try
             {
@@ -401,6 +401,8 @@ namespace THOK.Wms.Bll.Service
                });
                 //入库结单
                 inBillMaster.Status = "6";
+                inBillMaster.VerifyDate = DateTime.Now;
+                inBillMaster.VerifyPersonID = employeeId;
                 inBillMaster.UpdateTime = DateTime.Now;
                 InBillMasterRepository.SaveChanges();
                 return true;
