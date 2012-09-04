@@ -14,7 +14,6 @@ namespace THOK.Wms.DbModel
         }
 
         public Guid ID { get; set; }
-        //public string CompanyID { get; set; }
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string CompanyType { get; set; }
