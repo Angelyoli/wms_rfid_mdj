@@ -18,6 +18,7 @@
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
+        $('#inputDepartCode').attr("readonly", false);
         $('#isActive_depart').combo({
             hasDownArrow: true
         });
@@ -71,14 +72,15 @@
                         部门编码：
                     </td>
                     <td width="168">
-                        <input name="DepartmentCode" class="easyui-validatebox" required="true" /><input
-                            name="ID" style="display: none" />
+                        <input name="DepartmentCode" id="inputDepartCode" class="easyui-validatebox" validtype="maxLength[8]"
+                            required="true" /><input name="ID" style="display: none" />
                     </td>
                     <td width="60" align="right">
                         部门名称：
                     </td>
                     <td width="168">
-                        <input name="DepartmentName" class="easyui-validatebox" required="true" />
+                        <input name="DepartmentName" class="easyui-validatebox" validtype="maxLength[50]"
+                            required="true" />
                     </td>
                 </tr>
                 <tr>
@@ -86,8 +88,8 @@
                         负责人名称：
                     </td>
                     <td width="168">
-                        <input name="DepartmentLeaderID" id="employeeId" style="display: none;"/>
-                        <input name="EmployeeName" id="employeeName" readonly="readonly" class="easyui-validatebox"/>
+                        <input name="DepartmentLeaderID" id="employeeId" style="display: none;" />
+                        <input name="EmployeeName" id="employeeName" readonly="readonly" class="easyui-validatebox" />
                         <a href="#" id="departmentLeaderSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="departmentLeaderSearchClick()"></a>
                     </td>
@@ -96,7 +98,7 @@
                     </td>
                     <td width="168">
                         <input name="CompanyID" id="companyId" style="display: none;" />
-                        <input name="CompanyName" id="companyName" readonly="readonly" class="easyui-validatebox"/>
+                        <input name="CompanyName" id="companyName" readonly="readonly" class="easyui-validatebox" />
                         <a href="#" id="companySearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                             onclick="companySearchClick()"></a>
                     </td>
@@ -106,8 +108,8 @@
                         上级部门：
                     </td>
                     <td>
-                        <input name="ParentDepartmentID" id="parentDepartId" style="display: none;"/>
-                        <input name="ParentDepartmentName" id="parentDepartName" readonly="readonly" class="easyui-validatebox"/>
+                        <input name="ParentDepartmentID" id="parentDepartId" style="display: none;" />
+                        <input name="ParentDepartmentName" id="parentDepartName" readonly="readonly" class="easyui-validatebox" />
                         <a href="#" id="parentCodeSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="parentCodeSearchClick()"></a>
                     </td>

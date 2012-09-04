@@ -15,9 +15,10 @@
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
-        });       
+        });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
+        $('#inputJobCode').attr("readonly", false);
         $('#isActive_job').combo({
             hasDownArrow: true
         });
@@ -44,38 +45,56 @@
         });
     }
 </script>
-
-<div id="dlg" class="easyui-dialog" modal="true"  style="width:340px;height:240px;padding:2px 2px"  closed="true" buttons="#dlg-buttons">
-		<div class="easyui-layout" fit="true">
-			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
-	            <form id="fm" method="post" novalidate>
-                     <table width="300">
-                      <tr>
-                        <td width="60">岗位编码:</td>
-                        <td width="168"><input name="JobCode" class="easyui-validatebox" required="true"/><input name="ID"  style="display:none" /></td>
-                      </tr>
-                        <tr>
-                        <td width="60">岗位名称：</td>
-                        <td width="168"><input name="JobName" class="easyui-validatebox" required="true"/></td>
-                      </tr>                      
-                      <tr>
-                      <td width="60">是否可用：</td>
-                        <td><select id="isActive_job" name="IsActive" class="easyui-combobox" style="width:130px">
-		                        <option value="1">可用</option>
-		                        <option value="0">不可用</option>
-	                        </select>
-	                    </td>
-                      </tr>
-                      <tr>
-                        <td width="60">描述:</td>
-                        <td width="168" colspan="3" ><textarea name="Description" style="width: 128px; height: 60px"></textarea> </td>
-                      </tr>
-                    </table>
-	            </form>
-            </div>
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 340px; height: 240px;
+    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <form id="fm" method="post" novalidate>
+            <table width="300">
+                <tr>
+                    <td width="60">
+                        岗位编码:
+                    </td>
+                    <td width="168">
+                        <input name="JobCode" id="inputJobCode" class="easyui-validatebox" validType="maxLength[8]" required="true" /><input name="ID"
+                            style="display: none" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        岗位名称：
+                    </td>
+                    <td width="168">
+                        <input name="JobName" class="easyui-validatebox" validType="maxLength[50]" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        是否可用：
+                    </td>
+                    <td>
+                        <select id="isActive_job" name="IsActive" class="easyui-combobox" style="width: 130px">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        描述:
+                    </td>
+                    <td width="168" colspan="3">
+                        <textarea name="Description" style="width: 128px; height: 60px"></textarea>
+                    </td>
+                </tr>
+            </table>
+            </form>
         </div>
+    </div>
 </div>
 <div id="dlg-buttons">
-	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
-	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
+        取消</a>
 </div>
