@@ -60,29 +60,37 @@ namespace THOK.Wms.Bll.Service
             strResult = string.Empty;
             bool result = false;
             var jo = new Job();
-            if (jo != null)
+            var jobExist = JobRepository.GetQueryable().FirstOrDefault(j => j.JobCode == job.JobCode);
+            if (jobExist == null)
             {
-                try
+                if (jo != null)
                 {
-                    jo.ID = Guid.NewGuid();
-                    jo.JobCode = job.JobCode;
-                    jo.JobName = job.JobName;
-                    jo.Description = job.Description;
-                    jo.IsActive = job.IsActive;
-                    jo.UpdateTime = DateTime.Now;
+                    try
+                    {
+                        jo.ID = Guid.NewGuid();
+                        jo.JobCode = job.JobCode;
+                        jo.JobName = job.JobName;
+                        jo.Description = job.Description;
+                        jo.IsActive = job.IsActive;
+                        jo.UpdateTime = DateTime.Now;
 
-                    JobRepository.Add(jo);
-                    JobRepository.SaveChanges();
-                    result = true;
+                        JobRepository.Add(jo);
+                        JobRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    strResult = "原因：" + ex.Message;
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
                 }
             }
             else
             {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                strResult = "原因：该编号已存在！";
             }
             return result;
         }
@@ -117,6 +125,7 @@ namespace THOK.Wms.Bll.Service
             strResult = string.Empty;
             bool result = false;
             var jo = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == job.ID);
+
             if (jo != null)
             {
                 try

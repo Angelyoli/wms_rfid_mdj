@@ -30,9 +30,9 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string EmployeeCode, string EmployeeName, string DepartmentID, string JobID, string Status, string IsActive)
         {
             IQueryable<Employee> employeeQuery = EmployeeRepository.GetQueryable();
-            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(EmployeeCode) 
+            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(EmployeeCode)
                 && e.EmployeeName.Contains(EmployeeName)
-                && e.Status.Contains(Status) 
+                && e.Status.Contains(Status)
                 && e.IsActive.Contains(IsActive));
 
             if (!DepartmentID.Equals(string.Empty))
@@ -75,34 +75,42 @@ namespace THOK.Wms.Bll.Service
             var emp = new Employee();
             var job = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == employee.JobID);
             var department = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == employee.DepartmentID);
-            if (emp != null)
+            var empExist = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.EmployeeCode == employee.EmployeeCode);
+            if (empExist == null)
             {
-                try
+                if (emp != null)
                 {
-                    emp.ID = Guid.NewGuid();
-                    emp.EmployeeCode = employee.EmployeeCode;
-                    emp.EmployeeName = employee.EmployeeName;
-                    emp.Description = employee.Description;
-                    emp.Department = department;
-                    emp.Job = job;
-                    emp.Sex = employee.Sex;
-                    emp.Tel = employee.Tel;
-                    emp.Status = employee.Status;
-                    emp.IsActive = employee.IsActive;
-                    emp.UserName = employee.UserName;
-                    emp.UpdateTime = DateTime.Now;
-                    EmployeeRepository.Add(emp);
-                    EmployeeRepository.SaveChanges();
-                    result = true;
+                    try
+                    {
+                        emp.ID = Guid.NewGuid();
+                        emp.EmployeeCode = employee.EmployeeCode;
+                        emp.EmployeeName = employee.EmployeeName;
+                        emp.Description = employee.Description;
+                        emp.Department = department;
+                        emp.Job = job;
+                        emp.Sex = employee.Sex;
+                        emp.Tel = employee.Tel;
+                        emp.Status = employee.Status;
+                        emp.IsActive = employee.IsActive;
+                        emp.UserName = employee.UserName;
+                        emp.UpdateTime = DateTime.Now;
+                        EmployeeRepository.Add(emp);
+                        EmployeeRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    strResult = "原因：" + ex.Message;
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
                 }
             }
             else
             {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                strResult = "原因：该编号已存在！";
             }
             return result;
         }
@@ -141,6 +149,7 @@ namespace THOK.Wms.Bll.Service
             var emp = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.ID == employee.ID);
             var department = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == employee.DepartmentID);
             var job = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == employee.JobID);
+
             if (emp != null)
             {
                 try
