@@ -64,13 +64,13 @@
         $("#companyDetail").datagrid('reload');
     }
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 570px; height: 320px;
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 550px; height: 300px;
     padding: 2px 2px" closed="true" buttons="#dlg-buttons">
     <div class="easyui-layout" fit="true">
         <div region="center" border="false" style="padding: 10px 10px; background: #fff;
             border: 1px solid #ccc;">
             <form id="fm" method="post" novalidate>
-            <table width="520">
+            <table width="500">
                 <tr>
                     <td width="60" align="right">
                         部门编码：
@@ -89,7 +89,7 @@
                 </tr>
                 <tr>
                     <td align="right" width="80">
-                        负责人名称：
+                        负责人：
                     </td>
                     <td width="168">
                         <input name="DepartmentLeaderID" id="employeeId" style="display: none;" />
@@ -121,7 +121,7 @@
                         是否可用：
                     </td>
                     <td>
-                        <select id="isActive_depart" name="IsActive" class="easyui-combobox" style="width: 130px">
+                        <select id="isActive_depart" name="IsActive" class="easyui-combobox" style="width: 129px">
                             <option value="1">可用</option>
                             <option value="0">不可用</option>
                         </select>
@@ -140,7 +140,7 @@
                         描述：
                     </td>
                     <td width="168" colspan="3">
-                        <textarea name="Description" id="desId" style="width: 380px; height: 80px"></textarea>
+                        <textarea name="Description" id="desId" style="width: 366px; height: 80px"></textarea>
                     </td>
                 </tr>
             </table>
