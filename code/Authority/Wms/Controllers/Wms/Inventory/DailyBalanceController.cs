@@ -39,6 +39,7 @@ namespace Wms.Controllers.Wms.Inventory
             var DailyBalance = DailyBalanceService.GetDetails(page, rows, beginDate, endDate, warehouseCode, unitType);
             return Json(DailyBalance, "text", JsonRequestBehavior.AllowGet);
         }
+
         //
         // GET: /DailyBalance/InfoDetails/
         public ActionResult InfoDetails(int page, int rows, string warehouseCode, string settleDate,string unitType)
@@ -48,12 +49,12 @@ namespace Wms.Controllers.Wms.Inventory
         }
 
         //
-        // GET: /DailyBalance/DailyBalanceInfos/
-        //public ActionResult DailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate)
-        //{
-        //    var DailyBalanceInfo = DailyBalanceService.GetDailyBalanceInfos(page, rows, warehouseCode, settleDate);
-        //    return Json(DailyBalanceInfo, "text", JsonRequestBehavior.AllowGet);
-        //}
+        // GET: /DailyBalance/InfoCheck/
+        public ActionResult InfoCheck(int page, int rows, string warehouseCode, string settleDate, string unitType)
+        {
+            var DailyBalanceInfo = DailyBalanceService.GetInfoCheck(page, rows, warehouseCode, settleDate, unitType);
+            return Json(DailyBalanceInfo, "text", JsonRequestBehavior.AllowGet);
+        }
 
         //
         // GET: /DailyBalance/DoDailyBalance/
@@ -65,5 +66,14 @@ namespace Wms.Controllers.Wms.Inventory
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 
+
+
+        //
+        // GET: /DailyBalance/DailyBalanceInfos/
+        //public ActionResult DailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate)
+        //{
+        //    var DailyBalanceInfo = DailyBalanceService.GetDailyBalanceInfos(page, rows, warehouseCode, settleDate);
+        //    return Json(DailyBalanceInfo, "text", JsonRequestBehavior.AllowGet);
+        //}
     }
 }
