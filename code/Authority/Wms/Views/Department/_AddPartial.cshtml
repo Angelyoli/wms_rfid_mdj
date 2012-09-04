@@ -26,6 +26,10 @@
     };
 
     function save() {
+        if ($("#desId").val().length > 100) {
+            $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
+            return false
+        }
         $('#fm').form('submit', {
             url: url,
             onSubmit: function () {
@@ -136,7 +140,7 @@
                         描述：
                     </td>
                     <td width="168" colspan="3">
-                        <textarea name="Description" style="width: 380px; height: 80px"></textarea>
+                        <textarea name="Description" id="desId" style="width: 380px; height: 80px"></textarea>
                     </td>
                 </tr>
             </table>
