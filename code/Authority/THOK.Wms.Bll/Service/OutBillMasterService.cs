@@ -373,8 +373,8 @@ namespace THOK.Wms.Bll.Service
                    {
                        infoStr = o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！";
                    }
-               }
-           );
+               });
+           
                 result = true;
                 storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
                 //出库结单
