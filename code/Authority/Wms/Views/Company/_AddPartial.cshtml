@@ -30,12 +30,16 @@
     };
 
     function save() {
+        if ($("#desId").val().length > 100) {
+            $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
+            return false
+        }
         $('#companyfm').form('submit', {
             url: url,
             onSubmit: function () {
                 return $(this).form('validate');
             },
-            success: function (result) {
+            success: function (result) {               
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
@@ -171,7 +175,8 @@
                         描述:
                     </td>
                     <td width="168" colspan="3">
-                        <textarea name="Description" style="width: 367px; height: 60px"></textarea>
+                        <textarea name="Description" id="desId"  style="width: 367px; height: 60px"></textarea>
+                        @*class="easyui-validatebox" required="false" validtype="maxLength[0,100]" invalidmessage='文本过长'*@
                     </td>
                 </tr>
             </table>
