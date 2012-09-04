@@ -7,16 +7,19 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
-
-namespace Authority.Controllers.WarehouseInfo
+using THOK.Wms.Bll.Service;
+namespace Wms.Controllers.Wms.WarehouseInfo
 {
-    public class WarehouseController : Controller
+    public class Warehouse2Controller : Controller
     {
         [Dependency]
-        public IWarehouseService WarehouseService { get; set; }       
-
+        public IWarehouseService WarehouseService { get; set; }
+        [Dependency]
+        public ICargospaceService CargospaceService { get; set; }
+        [Dependency]
+        public ICellService CellService { get; set; }
         //
-        // GET: /Warehouse/
+        // GET: /Warehouse2/
 
         public ActionResult Index(string moduleID)
         {
@@ -33,18 +36,11 @@ namespace Authority.Controllers.WarehouseInfo
         //查询仓库信息表
         // POST: /Warehouse/Details
         [HttpPost]
-        public ActionResult Details(int page, int rows, string warehouseCode)
+        public ActionResult Details(int page, int rows, string type, string id)
         {
-            var warehouse = WarehouseService.GetDetails(page, rows, warehouseCode);
+            var warehouse = CellService.GetDetail(page, rows, type, id);
             return Json(warehouse, "text", JsonRequestBehavior.AllowGet);
         }
-        [HttpPost]
-        public ActionResult Detail(int page, int rows, string type,string id)
-        {
-            var warehouse = WarehouseService.GetDetail(page, rows, type, id);
-            return Json(warehouse, "text", JsonRequestBehavior.AllowGet);
-        }
-
         //查询仓库信息表
         // POST: /Warehouse/FindWarehouse
         [HttpPost]

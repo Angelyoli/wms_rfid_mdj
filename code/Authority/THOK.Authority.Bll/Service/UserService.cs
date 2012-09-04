@@ -39,7 +39,7 @@ namespace THOK.Authority.Bll.Service
                 .OrderBy(i => i.UserID)
                 .Select(i => new { i.UserID, i.UserName, i.ChineseName, i.Memo, IsLock = i.IsLock ? "是" : "否", IsAdmin = i.IsAdmin ? "是" : "否" });
 
-            
+
             int total = users.Count();
             users = users.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = users.ToArray() };
@@ -141,7 +141,7 @@ namespace THOK.Authority.Bll.Service
 
             if (!string.IsNullOrEmpty(serverId))
             {
-                url = GetUrlFromServer(new Guid(serverId)); 
+                url = GetUrlFromServer(new Guid(serverId));
             }
             var key = new UserLoginInfo()
                     {
@@ -151,7 +151,7 @@ namespace THOK.Authority.Bll.Service
                         Password = password,
                         ServerID = serverId
                     };
-            logOnKey = Des.EncryptDES((new JavaScriptSerializer()).Serialize(key),"12345678");
+            logOnKey = Des.EncryptDES((new JavaScriptSerializer()).Serialize(key), "12345678");
             url += @"/Account/LogOn/?LogOnKey=" + Uri.EscapeDataString(logOnKey);
             return url;
         }
@@ -179,13 +179,13 @@ namespace THOK.Authority.Bll.Service
             return System.Text.Encoding.ASCII.GetString(data);
         }
 
-        private string GetUrlFromCity(Guid gCityID,out string serverId)
+        private string GetUrlFromCity(Guid gCityID, out string serverId)
         {
             IQueryable<THOK.Authority.DbModel.City> queryCity = CityRepository.GetQueryable();
             var city = queryCity.Single(c => c.CityID == gCityID);
-            var server = city.Servers.OrderBy(s=>s.ServerID).First();
+            var server = city.Servers.OrderBy(s => s.ServerID).First();
             serverId = server.ServerID.ToString();
-            return server.Url;                
+            return server.Url;
         }
 
         private string GetUrlFromServer(Guid gServerID)
@@ -193,7 +193,7 @@ namespace THOK.Authority.Bll.Service
             IQueryable<THOK.Authority.DbModel.Server> query = ServerRepository.GetQueryable();
             var system = query.Single(s => s.ServerID == gServerID);
             return system.Url;
-        }        
+        }
 
         public object GetUserRole(string userID)
         {
@@ -201,7 +201,7 @@ namespace THOK.Authority.Bll.Service
             IQueryable<THOK.Authority.DbModel.User> queryUser = UserRepository.GetQueryable();
             IQueryable<THOK.Authority.DbModel.Role> queryRole = RoleRepository.GetQueryable();
             var user = queryUser.FirstOrDefault(u => u.UserID == uid);
-            var roles = user.UserRoles.OrderBy(r=>r.Role.RoleID).Select(r => new { r.UserRoleID, r.User.UserID, r.User.UserName, r.Role.RoleID, r.Role.RoleName });
+            var roles = user.UserRoles.OrderBy(r => r.Role.RoleID).Select(r => new { r.UserRoleID, r.User.UserID, r.User.UserName, r.Role.RoleID, r.Role.RoleName });
             return roles.ToArray();
         }
 
@@ -220,7 +220,7 @@ namespace THOK.Authority.Bll.Service
         public bool DeleteUserRole(string userRoleIdStr)
         {
             string[] userRoleIdList = userRoleIdStr.Split(',');
-            for (int i = 0; i < userRoleIdList.Length-1; i++)
+            for (int i = 0; i < userRoleIdList.Length - 1; i++)
             {
                 Guid userRoleId = new Guid(userRoleIdList[i]);
                 var UserRole = UserRoleRepository.GetQueryable().FirstOrDefault(ur => ur.UserRoleID == userRoleId);
@@ -271,7 +271,7 @@ namespace THOK.Authority.Bll.Service
                 chineseName = value;
             }
             IQueryable<THOK.Authority.DbModel.User> query = UserRepository.GetQueryable();
-            var users = query.Where(i => i.UserName.Contains(userName) && i.ChineseName.Contains(chineseName))
+            var users = query.Where(i => i.UserName.Contains(userName) && i.ChineseName.Contains(chineseName) && i.IsAdmin == true)
                 .OrderBy(i => i.UserID)
                 .Select(i => new
                 {

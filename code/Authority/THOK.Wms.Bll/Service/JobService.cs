@@ -24,10 +24,30 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string JobCode, string JobName, string IsActive)
         {
             IQueryable<Job> jobQuery = JobRepository.GetQueryable();
-            var job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName)).OrderByDescending(j => j.UpdateTime).AsEnumerable().Select(j => new { j.ID, j.JobCode, j.JobName, j.Description, IsActive = j.IsActive == "1" ? "可用" : "不可用", UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            var job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName))
+                .OrderByDescending(j => j.UpdateTime).AsEnumerable()
+                .Select(j => new
+                {
+                    j.ID,
+                    j.JobCode,
+                    j.JobName,
+                    j.Description,
+                    IsActive = j.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                });
             if (!IsActive.Equals(""))
             {
-                job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName) && j.IsActive.Contains(IsActive)).OrderByDescending(j => j.UpdateTime).AsEnumerable().Select(j => new { j.ID, j.JobCode, j.JobName, j.Description, IsActive = j.IsActive == "1" ? "可用" : "不可用", UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+                job = jobQuery.Where(j => j.JobCode.Contains(JobCode) && j.JobName.Contains(JobName) && j.IsActive.Contains(IsActive))
+                    .OrderByDescending(j => j.UpdateTime).AsEnumerable()
+                    .Select(j => new
+                    {
+                        j.ID,
+                        j.JobCode,
+                        j.JobName,
+                        j.Description,
+                        IsActive = j.IsActive == "1" ? "可用" : "不可用",
+                        UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                    });
             }
             int total = job.Count();
             job = job.Skip((page - 1) * rows).Take(rows);
@@ -35,47 +55,100 @@ namespace THOK.Wms.Bll.Service
 
         }
 
-        public bool Add(Job job)
+        public bool Add(Job job, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var jo = new Job();
-            jo.ID = Guid.NewGuid();
-            jo.JobCode = job.JobCode;
-            jo.JobName = job.JobName;
-            jo.Description = job.Description;
-            jo.IsActive = job.IsActive;
-            jo.UpdateTime = DateTime.Now;
-
-            JobRepository.Add(jo);
-            JobRepository.SaveChanges();
-            return true;
-        }
-
-        public bool Delete(string JobId)
-        {
-            Guid joId = new Guid(JobId);
-            var job = JobRepository.GetQueryable()
-                .FirstOrDefault(j => j.ID == joId);
-            if (job != null)
+            var jobExist = JobRepository.GetQueryable().FirstOrDefault(j => j.JobCode == job.JobCode);
+            if (jobExist == null)
             {
-                JobRepository.Delete(job);
-                JobRepository.SaveChanges();
+                if (jo != null)
+                {
+                    try
+                    {
+                        jo.ID = Guid.NewGuid();
+                        jo.JobCode = job.JobCode;
+                        jo.JobName = job.JobName;
+                        jo.Description = job.Description;
+                        jo.IsActive = job.IsActive;
+                        jo.UpdateTime = DateTime.Now;
+
+                        JobRepository.Add(jo);
+                        JobRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                }
             }
             else
-                return false;
-            return true;
+            {
+                strResult = "原因：该编号已存在！";
+            }
+            return result;
         }
 
-        public bool Save(Job job)
+        public bool Delete(string JobId, out string strResult)
         {
-            var jo = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == job.ID);
-            jo.JobCode = job.JobCode;
-            jo.JobName = job.JobName;
-            jo.Description = job.Description;
-            jo.IsActive = job.IsActive;
-            jo.UpdateTime = DateTime.Now;
+            strResult = string.Empty;
+            bool result = false;
+            Guid joId = new Guid(JobId);
+            var job = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == joId);
+            if (job != null)
+            {
+                try
+                {
+                    JobRepository.Delete(job);
+                    JobRepository.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：已在使用";
+                }
+            }
+            else
+            {
+                strResult = "原因：未找到当前需要删除的数据！";
+            }
+            return result;
+        }
 
-            JobRepository.SaveChanges();
-            return true;
+        public bool Save(Job job, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var jo = JobRepository.GetQueryable().FirstOrDefault(j => j.ID == job.ID);
+
+            if (jo != null)
+            {
+                try
+                {
+                    jo.JobCode = job.JobCode;
+                    jo.JobName = job.JobName;
+                    jo.Description = job.Description;
+                    jo.IsActive = job.IsActive;
+                    jo.UpdateTime = DateTime.Now;
+
+                    JobRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "原因：未找到当前需要修改的数据！";
+            }
+            return result;
         }
 
         #endregion
@@ -85,7 +158,7 @@ namespace THOK.Wms.Bll.Service
         {
             string jobCode = "", jobName = "";
 
-            if (queryString == "JobName")
+            if (queryString == "JobCode")
             {
                 jobCode = value;
             }
@@ -94,15 +167,16 @@ namespace THOK.Wms.Bll.Service
                 jobName = value;
             }
             IQueryable<Job> jobQuery = JobRepository.GetQueryable();
-            var job = jobQuery.Where(j => j.JobCode.Contains(jobCode) && j.JobName.Contains(jobName))
+            var job = jobQuery.Where(j => j.JobCode.Contains(jobCode) && j.JobName.Contains(jobName) && j.IsActive == "1")
                 .OrderBy(j => j.JobCode).AsEnumerable().
-                Select(j => new { 
-                    j.ID, 
+                Select(j => new
+                {
+                    j.ID,
                     j.JobCode,
-                    j.JobName, 
+                    j.JobName,
                     j.Description,
                     IsActive = j.IsActive == "1" ? "可用" : "不可用"
-                });           
+                });
             int total = job.Count();
             job = job.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = job.ToArray() };

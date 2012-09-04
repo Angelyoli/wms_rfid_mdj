@@ -9,5 +9,6 @@ namespace THOK.Wms.Dal.Interfaces
 {
     public interface IOutBillDetailRepository:IRepository<OutBillDetail>
     {
+        IQueryable<OutBillDetail> GetQueryableIncludeProduct();
     }
 }

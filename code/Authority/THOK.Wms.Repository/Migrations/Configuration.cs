@@ -1149,7 +1149,7 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleID = new Guid("B8344F88-08AD-4FDA-8F45-EAD3BB471102"),
                         ModuleName = "≤÷ø‚–≈œ¢…Ë÷√",
                         ShowOrder = 1,
-                        ModuleURL = "/Warehouse/",
+                        ModuleURL = "/Warehouse2/",
                         IndicateImage = "icon-son_Warehouse",
                         DeskTopImage = "image-son_Warehouse",
                         System = system,
