@@ -52,9 +52,10 @@ namespace Authority.Controllers.Organization
         [HttpPost]
         public ActionResult Create(Employee employee)
         {
-            bool bResult = EmployeeService.Add(employee);
+            string strResult = string.Empty;
+            bool bResult = EmployeeService.Add(employee, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
 
@@ -63,9 +64,10 @@ namespace Authority.Controllers.Organization
 
         public ActionResult Edit(Employee employee)
         {
-            bool bResult = EmployeeService.Save(employee);
+            string strResult = string.Empty;
+            bool bResult = EmployeeService.Save(employee, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
 
@@ -75,22 +77,14 @@ namespace Authority.Controllers.Organization
         [HttpPost]
         public ActionResult Delete(string demployeeId)
         {
-            string error = null;
-            bool bResult = false;
-            try
-            {
-                bResult = EmployeeService.Delete(demployeeId);
-            }
-            catch (Exception)
-            {
-                error = "已在使用";
-            }
+            string strResult = string.Empty;
+            bool bResult = EmployeeService.Delete(demployeeId, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         // POST: /Employee/GetEmployee/
-        public ActionResult GetEmployee(int page , int rows, string queryString,string value)
+        public ActionResult GetEmployee(int page, int rows, string queryString, string value)
         {
             if (queryString == null)
             {

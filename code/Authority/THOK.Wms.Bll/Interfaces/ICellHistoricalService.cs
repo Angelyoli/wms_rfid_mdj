@@ -6,8 +6,10 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Bll.Interfaces
 {
-    public interface ICellHistoricalService : IService<Storage>
+    public interface ICellHistoricalService : IService<InBillAllot>
     {
-        object GetCellDetails(int page, int rows, string type, string id);
+        //object GetCellDetails(int page, int rows, string type, string id);
+
+        object GetCellDetails(int page, int rows, string beginDate, string endDate, string type, string id);
     }
 }

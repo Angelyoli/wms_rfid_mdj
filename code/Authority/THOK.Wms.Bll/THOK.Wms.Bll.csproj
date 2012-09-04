@@ -53,6 +53,7 @@
     <Compile Include="Interfaces\ICurrentStockService.cs" />
     <Compile Include="Interfaces\ICustomerService.cs" />
     <Compile Include="Interfaces\IDailyBalanceService.cs" />
+    <Compile Include="Interfaces\IBusinessSystemsDailyBalanceService.cs" />
     <Compile Include="Interfaces\IDeliverDistService.cs" />
     <Compile Include="Interfaces\IDeliverLineService.cs" />
     <Compile Include="Interfaces\IDifferSearchDetailService.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Service\CurrentStockService.cs" />
     <Compile Include="Service\CustomerService.cs" />
     <Compile Include="Service\DailyBalanceService.cs" />
+    <Compile Include="Service\BusinessSystemsDailyBalanceService.cs" />
     <Compile Include="Service\DeliverDistService.cs" />
     <Compile Include="Service\DeliverLineService.cs" />
     <Compile Include="Service\DifferSearchDetailService.cs" />

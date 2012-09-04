@@ -45,17 +45,17 @@
     }
     function parentCodeSearchClick() {
         $('#parentCodeData').dialog('open').dialog('setTitle', '选择上级编号');
-        $('#parentCodeDetail').datagrid({ url: '/Department/Details/' });
+        $('#parentCodeDetail').datagrid({ url: '/Department/GetDepartment/' });
         $("#parentCodeDetail").datagrid('reload');
     }
     function departmentLeaderSearchClick() {
         $('#departLeaderData').dialog('open').dialog('setTitle', '选择负责人');
-        $('#departLeaderDetail').datagrid({ url: '/Employee/Details/' });
+        $('#departLeaderDetail').datagrid({ url: '/Employee/GetEmployee/' });
         $("#departLeaderDetail").datagrid('reload');
     }
     function companySearchClick() {
         $('#companyData').dialog('open').dialog('setTitle', '选择公司');
-        $('#companyDetail').datagrid({ url: '/Company/Details/' });
+        $('#companyDetail').datagrid({ url: '/Company/GetParentName/' });
         $("#companyDetail").datagrid('reload');
     }
 </script>
@@ -87,7 +87,7 @@
                     </td>
                     <td width="168">
                         <input name="DepartmentLeaderID" id="employeeId" style="display: none;"/>
-                        <input name="EmployeeName" id="employeeName" readonly="readonly" />
+                        <input name="EmployeeName" id="employeeName" readonly="readonly" class="easyui-validatebox"/>
                         <a href="#" id="departmentLeaderSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="departmentLeaderSearchClick()"></a>
                     </td>
@@ -96,18 +96,18 @@
                     </td>
                     <td width="168">
                         <input name="CompanyID" id="companyId" style="display: none;" />
-                        <input name="CompanyName" id="companyName" readonly="readonly" />
+                        <input name="CompanyName" id="companyName" readonly="readonly" class="easyui-validatebox"/>
                         <a href="#" id="companySearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                             onclick="companySearchClick()"></a>
                     </td>
                 </tr>
                 <tr>
                     <td align="right">
-                        上级编码：
+                        上级部门：
                     </td>
                     <td>
                         <input name="ParentDepartmentID" id="parentDepartId" style="display: none;"/>
-                        <input name="DepartmentName" id="parentDepartName" readonly="readonly" />
+                        <input name="ParentDepartmentName" id="parentDepartName" readonly="readonly" class="easyui-validatebox"/>
                         <a href="#" id="parentCodeSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="parentCodeSearchClick()"></a>
                     </td>

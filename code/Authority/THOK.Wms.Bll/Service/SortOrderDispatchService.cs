@@ -54,9 +54,18 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
-        public new bool Add(string SortingLineCode, string DeliverLineCodes)
+        public new bool Add(string SortingLineCode, string DeliverLineCodes, string orderDate)
         {
-            var sortOder = SortOrderRepository.GetQueryable().Where(s => DeliverLineCodes.Contains(s.DeliverLineCode))
+            if (orderDate == string.Empty || orderDate == null)
+            {
+                orderDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                orderDate = Convert.ToDateTime(orderDate).ToString("yyyyMMdd");
+            }
+
+            var sortOder = SortOrderRepository.GetQueryable().Where(s => DeliverLineCodes.Contains(s.DeliverLineCode) && s.OrderDate == orderDate)
                                               .GroupBy(s => new { s.DeliverLineCode, s.OrderDate })
                                               .Select(s => new { DeliverLineCode = s.Key.DeliverLineCode, OrderDate = s.Key.OrderDate });
             foreach (var item in sortOder.ToArray())

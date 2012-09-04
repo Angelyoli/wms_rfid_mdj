@@ -3,9 +3,11 @@
     function searchClick() {
         $('#isActive').combo({
             editable: false,
-            panelHeight: 45
+            panelHeight: 65,
+            panelWidth: 130
         });
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        $("input[type=text]").attr("value", "");
     };
 
     function select() {
@@ -41,7 +43,7 @@
                       </tr>                      
                       <tr>
                       <td width="60">是否可用：</td>
-                        <td><select id="isActive" class="easyui-combobox" required="true" style="width: 80px">
+                        <td><select id="isActive" class="easyui-combobox" required="true" style="width: 130px">
                                 <option value="">请选择</option>
 		                        <option value="1">可用</option>
 		                        <option value="0">不可用</option>

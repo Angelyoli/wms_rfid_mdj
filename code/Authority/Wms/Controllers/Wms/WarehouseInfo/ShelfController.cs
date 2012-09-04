@@ -30,6 +30,12 @@ namespace Authority.Controllers.Wms.WarehouseInfo
             var shelf = ShelfService.GetDetails(warehouseCode, areaCode, shelfCode);
             return Json(shelf, "text", JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public ActionResult Detail(string type, string id)
+        {
+            var shelf = ShelfService.GetDetail(type, id);
+            return Json(shelf, "text", JsonRequestBehavior.AllowGet);
+        }
 
         //查询货架信息表
         // POST: /Shelf/FindShelf

@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bll\DownCustomerBll.cs" />
+    <Compile Include="Bll\DownDayEndBll.cs" />
     <Compile Include="Bll\DownDeptBll.cs" />
     <Compile Include="Bll\DownDistBll.cs" />
     <Compile Include="Bll\DownInBillBll.cs" />
@@ -58,10 +59,12 @@
     <Compile Include="Bll\DownReachBll.cs" />
     <Compile Include="Bll\DownRouteBll.cs" />
     <Compile Include="Bll\DownSaleRegionBll.cs" />
+    <Compile Include="Bll\DownSortingInfoBll.cs" />
     <Compile Include="Bll\DownSortingOrderBll.cs" />
     <Compile Include="Bll\DownSupplierBll.cs" />
     <Compile Include="Bll\DownUnitBll.cs" />
     <Compile Include="Dao\DownCustomerDao.cs" />
+    <Compile Include="Dao\DownDayEndDao.cs" />
     <Compile Include="Dao\DownDeptDao.cs" />
     <Compile Include="Dao\DownDistDao.cs" />
     <Compile Include="Dao\DownInBillDao.cs" />
@@ -72,6 +75,7 @@
     <Compile Include="Dao\DownReachDao.cs" />
     <Compile Include="Dao\DownRouteDao.cs" />
     <Compile Include="Dao\DownSaleRegionDao.cs" />
+    <Compile Include="Dao\DownSortingInfoDao.cs" />
     <Compile Include="Dao\DownSortingOrderDao.cs" />
     <Compile Include="Dao\DownSupplierDao.cs" />
     <Compile Include="Dao\DownUnitDao.cs" />

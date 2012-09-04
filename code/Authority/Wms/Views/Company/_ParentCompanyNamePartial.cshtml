@@ -20,7 +20,7 @@
         var parentCompanyNameRow = $('#parentCompanyNameDetail').datagrid('getSelected');
         if (parentCompanyNameRow) {
             $('#companyId').val(parentCompanyNameRow.ID);
-            $('#companyName').val(parentCompanyNameRow.ParentCompanyName);
+            $('#companyName').val(parentCompanyNameRow.CompanyName);
             $('#parentCompanyNameData').dialog('close');
         }
         else {
@@ -58,7 +58,7 @@
                     <th field="CompanyCode" width="180">
                         公司名称
                     </th>
-                    <th field="ParentCompanyName" width="180">
+                    <th field="CompanyName" width="180">
                         公司名称
                     </th>
                     <th field="IsActive" width="180">

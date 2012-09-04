@@ -34,13 +34,14 @@
 
     function save() {
         var sortlineCode = $('#lineCode').combobox('getValue'), deliverLineCode = "";
+        var sortDate = $('#orderDate').datebox('getValue');
         if (sortlineCode != "" && sortlineCode != null) {
             var rows = $('#sortingOrderAllot').datagrid('getSelections');
             if (rows.length > 0) {
                 for (var i = 0; i < rows.length; i++) {
                     deliverLineCode += rows[i].DeliverLineCode + ",";
                 }
-                $.getJSON('/SortOrderDispatch/Create/', { SortingLineCode: sortlineCode, DeliverLineCodes: deliverLineCode }, function (result) {
+                $.getJSON('/SortOrderDispatch/Create/', { SortingLineCode: sortlineCode, DeliverLineCodes: deliverLineCode, orderDate: sortDate }, function (result) {
                     if (result) {
                         if (result.success) {
                             $.messager.alert(g_MsgBoxTitle, result.msg, "info");
@@ -76,15 +77,27 @@
 
     $(function () {
         $('#sortingOrderAllot').datagrid({
-            onCheck: function () {//选中复选框执行
-                SelectQuantity();
+            onClickRow: function () {
+                var quantitySum = 0;
+                var rows = $('#sortingOrderAllot').datagrid('getSelections');
+                if (rows.length > 0) {
+                    for (var i = 0; i < rows.length; i++) {
+                        quantitySum = parseInt(quantitySum) + rows[i].QuantitySum;
+                    }
+                    $('#checkQuantitySum').text(quantitySum);
+                } else {
+                    $('#checkQuantitySum').text(0);
+                }
             },
-            onCheckAll: function () {//选中所有复选框执行
-                SelectQuantity();
-            },
-            onUncheckAll: function () {//取消所有复选框执行
-                $('#checkQuantitySum').text(0);
-            },
+            //            onCheck: function () {//选中复选框执行
+            //                SelectQuantity();
+            //            },
+            //            onCheckAll: function () {//选中所有复选框执行
+            //                SelectQuantity();
+            //            },
+            //            onUncheckAll: function () {//取消所有复选框执行
+            //                $('#checkQuantitySum').text(0);
+            //            },
             onLoadSuccess: function () {//数据加载完后执行
                 countSum();
             }

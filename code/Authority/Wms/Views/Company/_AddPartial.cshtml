@@ -55,8 +55,8 @@
     }
 
     function parentCompanyNameSearchClick() {
-        $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级名称');
-        $('#parentCompanyNameDetail').datagrid({ url: '/Company/Details/' });
+        $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
+        $('#parentCompanyNameDetail').datagrid({ url: '/Company/GetParentName/' });
         $("#parentCompanyNameDetail").datagrid('reload');
     }
 </script>

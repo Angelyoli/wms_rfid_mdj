@@ -36,6 +36,19 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         /// <summary>
+        /// 查询卷烟产品编号
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetProductCode()
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownProductDao dao = new DownProductDao();
+                return dao.GetProductCode();
+            }
+        }
+
+        /// <summary>
         /// 下载卷烟产品信息表
         /// </summary>
         /// <returns></returns>
@@ -50,83 +63,16 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         /// <summary>
-        /// 查询卷烟产品编号
+        /// 根据卷烟编码查询计量单位信息
         /// </summary>
+        /// <param name="product"></param>
         /// <returns></returns>
-        public DataTable GetProductCode()
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownProductDao dao = new DownProductDao();
-                return dao.GetProductCode();
-            }
-        }
-
-        /// <summary>
-        /// 查询卷烟信息
-        /// </summary>
-        /// <returns></returns>
-        public DataTable ProductInfo()
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownProductDao dao = new DownProductDao();
-                return dao.ProductInfo();
-            }
-        }
-
-        /// <summary>
-        /// 把数据插入到数据库
-        /// </summary>
-        /// <param name="ds"></param>
-        public void Insert(DataSet ds)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownProductDao dao = new DownProductDao();
-                dao.Insert(ds);
-            }
-        }
-
-        /// <summary>
-        /// 根据计量单位编号查询数据
-        /// </summary>
-        /// <param name="ulistCode"></param>
-        /// <returns></returns>
-        public DataTable FindUnitCode(string ulistCode)
+        public DataTable FindUnitListCode(string product)
         {
             using (PersistentManager pm = new PersistentManager())
             {
                 DownUnitDao dao = new DownUnitDao();
-                return dao.FindUnitCodeByUlistCode(ulistCode);
-            }
-        }
-
-        public DataTable GetProductCode(string code)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownProductDao dao = new DownProductDao();
-                return dao.GetProductCode(code);
-            }
-        }
-
-
-        public DataTable FindProductInfo(string productcode)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownProductDao dao = new DownProductDao();
-                return dao.FindProductInfo(productcode);
-            }
-        }
-
-        public DataTable FindUnitListInfo(string unitListCode)
-        {
-            using (PersistentManager pm = new PersistentManager())
-            {
-                DownProductDao dao = new DownProductDao();
-                return dao.FindUnitListInfo(unitListCode);
+                return dao.FindUnitListCOde(product);
             }
         }
 
@@ -141,7 +87,7 @@ namespace THOK.WMS.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in brandTable.Rows)
             {
-                DataTable ulistCodeTable = this.FindUnitListCOde(row["BRAND_CODE"].ToString().Trim());               
+                DataTable ulistCodeTable = this.FindUnitListCode(row["BRAND_N"].ToString().Trim());
                 DataRow inbrddr = ds.Tables["WMS_PRODUCT"].NewRow();
                 inbrddr["product_code"] = row["BRAND_N"];
                 inbrddr["product_name"] = row["BRAND_NAME"];
@@ -182,7 +128,7 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         /// <summary>
-        /// 构建四个虚拟数据表，2个上传给中烟的，2个
+        /// 构建卷烟虚拟表
         /// </summary>
         /// <returns></returns>
         private DataSet GenerateEmptyTables()
@@ -192,7 +138,7 @@ namespace THOK.WMS.DownloadWms.Bll
             inbrtable.Columns.Add("product_code");
             inbrtable.Columns.Add("product_name");
             inbrtable.Columns.Add("uniform_code");
-            inbrtable.Columns.Add("custom_code");           
+            inbrtable.Columns.Add("custom_code");
             inbrtable.Columns.Add("short_code");
             inbrtable.Columns.Add("unit_list_code");
             inbrtable.Columns.Add("unit_code");
@@ -223,45 +169,24 @@ namespace THOK.WMS.DownloadWms.Bll
             inbrtable.Columns.Add("is_active");
             inbrtable.Columns.Add("update_time");
 
-            DataTable inpr = ds.Tables.Add("DWV_IINF_BRAND");
-            inpr.Columns.Add("PRODUCTCODE");
-            inpr.Columns.Add("PRODUCTN");
-            inpr.Columns.Add("PRODUCTCLASS");
-            inpr.Columns.Add("PRODUCTNAME");
-            inpr.Columns.Add("SHORTNAME");
-            inpr.Columns.Add("SUPPLIERCODE");
-            inpr.Columns.Add("BARCODE");
-            inpr.Columns.Add("ABCODE");
-            inpr.Columns.Add("UNITCODE");
-            inpr.Columns.Add("JIANTIAORATE");
-            inpr.Columns.Add("TIAOBAORATE");
-            inpr.Columns.Add("BAOZHIRATE");
-            inpr.Columns.Add("JIANCODE");
-            inpr.Columns.Add("TIAOCODE");
-            inpr.Columns.Add("ZHICODE");
-            inpr.Columns.Add("IS_BARAND");
-            inpr.Columns.Add("MEMO");
             return ds;
         }
-        #endregion
-
-        #region 从营系统据下产品信息 - 广西浪潮
 
         /// <summary>
-        /// 根据模糊计量单位和卷烟编码去中间表取得对应的计量单位
+        /// 把数据插入到数据库
         /// </summary>
-        /// <param name="unitcode"></param>
-        /// <param name="product"></param>
-        /// <returns></returns>
-        public DataTable FindUnitListCOde(string product)
+        /// <param name="ds"></param>
+        public void Insert(DataSet ds)
         {
             using (PersistentManager pm = new PersistentManager())
             {
-                DownUnitDao dao = new DownUnitDao();
-                return dao.FindUnitListCOde(product);
+                DownProductDao dao = new DownProductDao();
+                dao.Insert(ds);
             }
         }
 
-        #endregion
+       
+       
+        #endregion      
     }
 }

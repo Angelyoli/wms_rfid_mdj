@@ -21,6 +21,8 @@
         if (companyRow) {
             $('#companyId').val(companyRow.ID);
             $('#companyName').val(companyRow.CompanyName);
+            $('#companyname-id').val(companyRow.ID);
+            $('#companyname-name').val(companyRow.CompanyName);
             $('#companyData').dialog('close');
         }
         else {
@@ -55,7 +57,7 @@
                     <th field="ID" hidden="true" width="60">
                         公司ID
                     </th>
-                    <th field="CompanyCode" width="60">
+                    <th field="CompanyCode" width="180">
                         公司编号
                     </th>
                     <th field="CompanyName" width="180">

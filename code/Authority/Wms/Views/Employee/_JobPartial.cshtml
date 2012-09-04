@@ -20,6 +20,8 @@
         if (jobRow) {
             $('#jobId').val(jobRow.ID);
             $('#jobName').val(jobRow.JobName);
+            $('#job-id').val(jobRow.ID);
+            $('#job-name').val(jobRow.JobName);
             $('#jobData').dialog('close');
         }
         else {
@@ -53,7 +55,7 @@
                     <th field="ID" hidden="true" width="60">
                         岗位ID
                     </th>
-                    <th field="JobCode" hidden="true" width="60">
+                    <th field="JobCode" width="60">
                         岗位编号
                     </th>
                     <th field="JobName" width="60">

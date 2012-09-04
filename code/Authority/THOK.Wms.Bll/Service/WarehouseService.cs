@@ -16,6 +16,13 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public ICompanyRepository CompanyRepository { get; set; }
+        [Dependency]
+        public IShelfRepository ShelfRepository { get; set; }
+        [Dependency]
+        public IAreaRepository AreaRepository { get; set; }
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
+
 
         protected override Type LogPrefix
         {
@@ -37,6 +44,40 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = warehouse.ToArray() };
         }
 
+        public object GetDetail(int page, int rows, string type,string id)
+        {
+            IQueryable<Warehouse> wareQuery = WarehouseRepository.GetQueryable();
+            IQueryable<Shelf> shelfQuery = ShelfRepository.GetQueryable();
+            IQueryable<Area> areaQuery = AreaRepository.GetQueryable();
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+            var warehouse = wareQuery.OrderBy(b => b.WarehouseCode).AsEnumerable().Select(b => new { b.WarehouseCode, b.WarehouseName, b.WarehouseType, b.Description, b.ShortName, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            if (type=="ware")
+            {
+                warehouse = warehouse.Where(w => w.WarehouseCode == id);
+            }
+            else if (type == "area")
+            {
+                var WarehouseCode = areaQuery.Where(a => a.AreaCode == id).Select(a => new { a.WarehouseCode }).ToArray();
+                warehouse = warehouse.Where(w => w.WarehouseCode == WarehouseCode[0].WarehouseCode);
+            }
+            else if (type == "shelf")
+            {
+                var WarehouseCode = shelfQuery.Where(s => s.ShelfCode == id).Select(s => new { s.WarehouseCode }).ToArray();
+                warehouse = warehouse.Where(w=>w.WarehouseCode==WarehouseCode[0].WarehouseCode);
+            }
+            else if (type == "cell")
+            {
+                var WarehouseCode = cellQuery.Where(c => c.CellCode == id).Select(c => new { c.WarehouseCode}).ToArray();
+                warehouse = warehouse.Where(w=>w.WarehouseCode==WarehouseCode[0].WarehouseCode);
+            }
+            else
+            {
+                warehouse = warehouse.Select(w => w);
+            }
+            int total = warehouse.Count();
+            warehouse = warehouse.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = warehouse.ToArray() };
+        }
         public new bool Add(Warehouse warehouse)
         {
             var ware = new Warehouse();
