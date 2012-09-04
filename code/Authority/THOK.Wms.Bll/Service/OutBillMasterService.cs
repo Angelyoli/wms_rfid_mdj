@@ -305,8 +305,11 @@ namespace THOK.Wms.Bll.Service
                 }
                 else//如果出库主单指定了货位那么就从指定的货位出库
                 {
+                    outbm.VerifyDate = DateTime.Now;
+                    outbm.UpdateTime = DateTime.Now;
+                    outbm.VerifyPersonID = employee.ID;
                     result = OutAllot(outbm);
-                    errorInfo=infoStr;
+                    errorInfo = infoStr;
                 }
             }
             return result;
@@ -321,67 +324,73 @@ namespace THOK.Wms.Bll.Service
         {
             try
             {
-                bool result = false;
-                //出库单出库
-                var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == outBillMaster.TargetCellCode
-                                                                        && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
-
-                if (!Locker.Lock(storages))
+                using (var scope = new TransactionScope())
                 {
-                    throw new Exception("锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！");
-                }
-                outBillMaster.OutBillDetails.AsParallel().ForAll(
-               (Action<OutBillDetail>)delegate(OutBillDetail o)
-               {
-                   var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
-                   foreach (var s in ss)
+                    bool result = false;
+                    //出库单出库
+                    var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == outBillMaster.TargetCellCode
+                                                                            && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
+
+                    if (!Locker.Lock(storages))
+                    {
+                        throw new Exception("锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！");
+                    }
+                    var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
+                        .Where(o => o.BillNo == outBillMaster.BillNo);
+                    outDetails.ToArray().AsParallel().ForAll(
+                   (Action<OutBillDetail>)delegate(OutBillDetail o)
                    {
-                       lock (s)
+                       var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
+                       foreach (var s in ss)
                        {
-                           if (o.BillQuantity - o.AllotQuantity > 0)
+                           lock (s)
                            {
-                               decimal allotQuantity = s.Quantity;
-                               decimal billQuantity = o.BillQuantity - o.AllotQuantity;
-                               allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                               o.AllotQuantity += allotQuantity;
-                               o.RealQuantity += allotQuantity;
-                               s.Quantity -= allotQuantity;
+                               if (o.BillQuantity - o.AllotQuantity > 0)
+                               {
+                                   decimal allotQuantity = s.Quantity;
+                                   decimal billQuantity = o.BillQuantity - o.AllotQuantity;
+                                   allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                                   o.AllotQuantity += allotQuantity;
+                                   o.RealQuantity += allotQuantity;
+                                   s.Quantity -= allotQuantity;
 
-                               var billAllot = new OutBillAllot()
-                               {
-                                   BillNo = outBillMaster.BillNo,
-                                   OutBillDetailId = o.ID,
-                                   ProductCode = o.ProductCode,
-                                   CellCode = s.CellCode,
-                                   StorageCode = s.StorageCode,
-                                   UnitCode = o.UnitCode,
-                                   AllotQuantity = allotQuantity,
-                                   RealQuantity = allotQuantity,
-                                   Status = "2"
-                               };
-                               lock (outBillMaster.OutBillAllots)
-                               {
-                                   outBillMaster.OutBillAllots.Add(billAllot);
+                                   var billAllot = new OutBillAllot()
+                                   {
+                                       BillNo = outBillMaster.BillNo,
+                                       OutBillDetailId = o.ID,
+                                       ProductCode = o.ProductCode,
+                                       CellCode = s.CellCode,
+                                       StorageCode = s.StorageCode,
+                                       UnitCode = o.UnitCode,
+                                       AllotQuantity = allotQuantity,
+                                       RealQuantity = allotQuantity,
+                                       Status = "2"
+                                   };
+                                   lock (outBillMaster.OutBillAllots)
+                                   {
+                                       outBillMaster.OutBillAllots.Add(billAllot);
+                                   }
                                }
+                               else
+                                   break;
                            }
-                           else
-                               break;
                        }
-                   }
 
-                   if (o.BillQuantity - o.AllotQuantity > 0)
-                   {
-                       infoStr = o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！";
-                   }
-               });
-           
-                result = true;
-                storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
-                //出库结单
-                outBillMaster.Status = "6";
-                outBillMaster.UpdateTime = DateTime.Now;
-                OutBillMasterRepository.SaveChanges();
-                return result;
+                       if (o.BillQuantity - o.AllotQuantity > 0)
+                       {
+                           throw new Exception(o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！");
+                       }
+                   });
+
+                    result = true;
+                    storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
+                    //出库结单
+                    outBillMaster.Status = "6";
+                    outBillMaster.UpdateTime = DateTime.Now;
+                    OutBillMasterRepository.SaveChanges();
+                    scope.Complete();
+                    return result;
+                }
             }
             catch (AggregateException ex)
             {
