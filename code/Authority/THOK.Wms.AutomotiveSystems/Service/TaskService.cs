@@ -772,5 +772,20 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
             StorageRepository.SaveChanges();
         }
+        
+        public bool ProcessSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId, ref string error)
+        {
+            bool result = false;
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                result = false;
+                error = e.Message;
+            }
+            return result;
+        }
     }
 }
