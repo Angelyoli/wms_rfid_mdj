@@ -12,7 +12,7 @@ namespace THOK.WMS.DownloadWms.Bll
         #region 从营销系统下载线路信息
 
         /// <summary>
-        /// 下载线路信息
+        /// 从营销系统下载线路信息
         /// </summary>
         /// <returns></returns>
         public bool DownRouteInfo()
@@ -36,7 +36,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 tag = false;
             return tag;
         }
-
        /// <summary>
        /// 下载线路信息
        /// </summary>
@@ -145,5 +144,67 @@ namespace THOK.WMS.DownloadWms.Bll
             return ds;
         }
         #endregion
+
+
+        /// <summary>
+        /// 从分拣下载线路信息
+        /// </summary>
+        /// <returns></returns>
+        public bool DownSortRouteInfo()
+        {
+            bool tag = true;
+            DataTable RouteCodeDt = this.GetRouteCode();
+            string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
+            routeCodeList = UtinString.StringMake(routeCodeList);
+            routeCodeList = "DELIVERLINECODE NOT IN(" + routeCodeList + ")";
+            DataTable RouteDt = this.GetSortRouteInfo(routeCodeList);
+
+            if (RouteDt.Rows.Count > 0)
+            {
+                DataSet lineds = this.InsertSortRouteCode(RouteDt);
+                this.Insert(lineds);
+            }
+            else
+                tag = false;
+            return tag;
+        }
+
+        /// <summary>
+        /// 添加数据到虚拟表中
+        /// </summary>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        private DataSet InsertSortRouteCode(DataTable routeCodeTable)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            foreach (DataRow row in routeCodeTable.Rows)
+            {
+                DataRow routeDr = ds.Tables["DWV_OUT_DELIVER_LINE"].NewRow();
+                routeDr["deliver_line_code"] = row["DELIVERLINECODE"].ToString().Trim();
+                routeDr["custom_code"] = row["DELIVERLINECODE"].ToString().Trim();
+                routeDr["deliver_line_name"] = row["DELIVERLINENAME"].ToString().Trim();
+                routeDr["dist_code"] = row["DELIVERLINECODE"];
+                routeDr["deliver_order"] = 0;
+                routeDr["description"] = "";
+                routeDr["is_active"] = "1";
+                routeDr["update_time"] = DateTime.Now;
+                ds.Tables["DWV_OUT_DELIVER_LINE"].Rows.Add(routeDr);
+            }
+            return ds;
+        }
+
+
+        /// <summary>
+        /// 从分拣线下载线路信息
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetSortRouteInfo(string routeCodeList)
+        {
+            using (PersistentManager dbPm = new PersistentManager())
+            {
+                DownRouteDao dao = new DownRouteDao();
+                return dao.GetSortRouteInfo(routeCodeList);
+            }
+        }
     }
 }
