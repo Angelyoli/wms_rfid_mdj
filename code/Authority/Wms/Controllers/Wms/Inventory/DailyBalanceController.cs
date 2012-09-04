@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
+using THOK.Wms.DownloadWms.Bll;
 
 namespace Wms.Controllers.Wms.Inventory
 {
@@ -59,6 +60,8 @@ namespace Wms.Controllers.Wms.Inventory
         // GET: /DailyBalance/DoDailyBalance/
         public ActionResult DoDailyBalance(string warehouseCode, string settleDate)
         {
+            DownBusinessSystemsDailyBalanceBll dbll = new DownBusinessSystemsDailyBalanceBll();
+            //dbll.DownDayEndInfo(settleDate);
             string errorInfo = string.Empty;
             bool bResult = DailyBalanceService.DoDailyBalance(warehouseCode, settleDate,ref errorInfo);
             string msg = bResult ? "日结成功！" : "日结失败！";
