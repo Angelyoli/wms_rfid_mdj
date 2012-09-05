@@ -677,7 +677,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                        && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
 
                 var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
-                    .Where(o => o.BillNo == sortWork.OutBillNo);
+                    .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
                 outDetails.ToArray().AsParallel().ForAll(
                     (Action<OutBillDetail>)delegate(OutBillDetail o)
                     {
@@ -797,22 +797,39 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
 
                 //todo @条要换成支；加标志以记录分拣订单状态；并用状态查询已分拣订单；
+                var sortOrder = sortOrderQuery.Join(sortOrderDispatchQuery,
+                                        o => new { o.OrderDate, o.DeliverLineCode },
+                                        d => new { d.OrderDate, d.DeliverLineCode },
+                                        (o, d) => new {d.SortingLineCode,o }
+                                    ).Where(r=> r.o.OrderDate == orderdate
+                                        && r.SortingLineCode == sortingLineCode)
+                                    .Select(r=>r.o).FirstOrDefault();
+                if (sortOrder != null)
+                {
+                    sortOrder.Status = "1";
+                }
+                else
+                {
+                    throw new Exception("当前订单不存在请确认！");
+                }
+
                 var tmp1 = sortOrderQuery.Join(sortOrderDetailQuery,
                                 m => m.OrderID,
                                 d => d.OrderID,
-                                (m, d) => new { m.OrderDate, m.DeliverLineCode, m.OrderID, d.ProductCode, d.ProductName, Quantity = d.RealQuantity * d.Product.UnitList.Unit02.Count}
+                                (m, d) => new { m.OrderDate, m.DeliverLineCode, m.OrderID, m.Status,d.ProductCode, d.ProductName, Quantity = d.RealQuantity * d.Product.UnitList.Unit02.Count}
                             ).Join(sortOrderDispatchQuery,
                                 r => new { r.OrderDate, r.DeliverLineCode },
                                 d => new { d.OrderDate, d.DeliverLineCode },
-                                (r, d) => new { r.OrderDate, d.SortingLineCode, d.SortWorkDispatchID, r.DeliverLineCode, r.OrderID, r.ProductCode, r.ProductName, r.Quantity }
+                                (r, d) => new { r.OrderDate, d.SortingLineCode, d.SortWorkDispatchID, r.DeliverLineCode, r.OrderID,r.Status, r.ProductCode, r.ProductName, r.Quantity }
                             ).Join(sortWorkDispatchQuery,
                                 r => r.SortWorkDispatchID,
                                 w => w.ID,
-                                (r, w) => new { r.OrderDate, r.SortingLineCode, r.SortWorkDispatchID, w.DispatchStatus, r.DeliverLineCode, r.OrderID, r.ProductCode, r.ProductName, r.Quantity }
+                                (r, w) => new { r.OrderDate, r.SortingLineCode, r.SortWorkDispatchID, w.DispatchStatus, r.DeliverLineCode, r.OrderID, r.Status, r.ProductCode, r.ProductName, r.Quantity }
                             ).Where(r => r.OrderDate == orderdate
                                 && r.SortingLineCode == sortingLineCode
                                 && r.SortWorkDispatchID != null
                                 && r.DispatchStatus == "2"
+                                && r.Status == "1"
                             ).GroupBy(r => new { r.ProductCode, r.ProductName })
                             .Select(r => new { r.Key.ProductCode,r.Key.ProductName,Quantity = - r.Sum(q=>q.Quantity)});
                 

@@ -225,6 +225,10 @@
     <Compile Include="Migrations\201209040747532_modify_BusinessSystemsDailyBalance_id_Identity.Designer.cs">
       <DependentUpon>201209040747532_modify_BusinessSystemsDailyBalance_id_Identity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201209050220248_modify_sort_order_status.cs" />
+    <Compile Include="Migrations\201209050220248_modify_sort_order_status.Designer.cs">
+      <DependentUpon>201209050220248_modify_sort_order_status.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
