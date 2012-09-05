@@ -381,7 +381,7 @@ namespace THOK.Wms.Bll.Service
                             return false;
                         }
                         var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
-                                            .Where(o => o.BillNo == sortWork.OutBillNo);
+                                            .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
                         outDetails.ToArray().AsParallel().ForAll(
                             (Action<OutBillDetail>)delegate(OutBillDetail o)
                             {
