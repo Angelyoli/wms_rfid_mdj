@@ -75,6 +75,7 @@
     <Compile Include="EntityRepository\OutBillMasterRepository.cs" />
     <Compile Include="EntityRepository\OutSearchDetailRepository.cs" />
     <Compile Include="EntityRepository\ProductRepository.cs" />
+    <Compile Include="EntityRepository\ProductWarningRepository.cs" />
     <Compile Include="EntityRepository\ProfitLossBillDetailRepository.cs" />
     <Compile Include="EntityRepository\ProfitLossBillMasterRepository.cs" />
     <Compile Include="EntityRepository\ShelfRepository.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Interfaces\IOutBillMasterRepository.cs" />
     <Compile Include="Interfaces\IOutSearchDetailRepository.cs" />
     <Compile Include="Interfaces\IProductRepository.cs" />
+    <Compile Include="Interfaces\IProductWarningRepository.cs" />
     <Compile Include="Interfaces\IProfitLossBillDetailRepository.cs" />
     <Compile Include="Interfaces\IProfitLossBillMasterRepository.cs" />
     <Compile Include="Interfaces\IShelfRepository.cs" />

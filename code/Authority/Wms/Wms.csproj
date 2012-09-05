@@ -1026,6 +1026,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\App_Data\" />
+    <Folder Include="Controllers\Wms\ProductQuality\" />
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
