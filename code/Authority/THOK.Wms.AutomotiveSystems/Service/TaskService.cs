@@ -42,6 +42,16 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
+
+        [Dependency]
+        public ISortOrderRepository SortOrderRepository { get; set; }
+
+        [Dependency]
+        public ISortOrderDetailRepository SortOrderDetailRepository { get; set; }
+
+        [Dependency]
+        public ISortingLineRepository SortingLineRepository { get; set; }
+
         [Dependency]
         public IStorageLocker Locker { get; set; }
  
@@ -778,7 +788,78 @@ namespace THOK.Wms.AutomotiveSystems.Service
             bool result = false;
             try
             {
+                var sortOrderQuery = SortOrderRepository.GetQueryable();
+                var sortOrderDetailQuery = SortOrderDetailRepository.GetQueryable();
+                var sortOrderDispatchQuery = SortOrderDispatchRepository.GetQueryable();
+                var sortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
+                var sortingLineQuery = SortingLineRepository.GetQueryable();
+                var storageQuery = StorageRepository.GetQueryable();
+                var moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
 
+                //todo @条要换成支；加标志以记录分拣订单状态；并用状态查询已分拣订单；
+                var tmp1 = sortOrderQuery.Join(sortOrderDetailQuery,
+                                m => m.OrderID,
+                                d => d.OrderID,
+                                (m, d) => new { m.OrderDate, m.DeliverLineCode, m.OrderID, d.ProductCode, d.ProductName, Quantity = d.RealQuantity * d.Product.UnitList.Unit02.Count}
+                            ).Join(sortOrderDispatchQuery,
+                                r => new { r.OrderDate, r.DeliverLineCode },
+                                d => new { d.OrderDate, d.DeliverLineCode },
+                                (r, d) => new { r.OrderDate, d.SortingLineCode, d.SortWorkDispatchID, r.DeliverLineCode, r.OrderID, r.ProductCode, r.ProductName, r.Quantity }
+                            ).Join(sortWorkDispatchQuery,
+                                r => r.SortWorkDispatchID,
+                                w => w.ID,
+                                (r, w) => new { r.OrderDate, r.SortingLineCode, r.SortWorkDispatchID, w.DispatchStatus, r.DeliverLineCode, r.OrderID, r.ProductCode, r.ProductName, r.Quantity }
+                            ).Where(r => r.OrderDate == orderdate
+                                && r.SortingLineCode == sortingLineCode
+                                && r.SortWorkDispatchID != null
+                                && r.DispatchStatus == "2"
+                            ).GroupBy(r => new { r.ProductCode, r.ProductName })
+                            .Select(r => new { r.Key.ProductCode,r.Key.ProductName,Quantity = - r.Sum(q=>q.Quantity)});
+                
+                var tmp2 = sortingLineQuery
+                             .Join(storageQuery,
+                                l => l.CellCode,
+                                s => s.CellCode,
+                                (l, s) => new { l.SortingLineCode,s.CellCode, s.ProductCode, s.Product.ProductName, s.Quantity }
+                             ).Where(r => r.SortingLineCode == sortingLineCode)
+                             .GroupBy(r => new { r.ProductCode, r.ProductName })
+                             .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) });
+
+                var tmp3 = sortingLineQuery
+                             .Join(moveBillDetailQuery,
+                                l => l.CellCode,
+                                m => m.InCellCode,
+                                (l, m) => new { l.SortingLineCode, m.InCellCode, m.ProductCode, m.Product.ProductName, m.RealQuantity, m.CanRealOperate }
+                             ).Where(r => r.SortingLineCode == sortingLineCode
+                                && r.CanRealOperate == "1")
+                             .GroupBy(r => new { r.ProductCode,r.ProductName,r.RealQuantity})
+                             .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.RealQuantity) });
+
+                var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
+                               .GroupBy(r => new { r.ProductCode, r.ProductName })
+                               .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
+                               .Where(r=>r.Quantity <300000);
+
+                var tmp5 = sortingLineQuery
+                             .Join(moveBillDetailQuery,
+                                l => l.CellCode,
+                                m => m.InCellCode,
+                                (l, m) => new { l.SortingLineCode, m}
+                             ).Where(r => r.SortingLineCode == sortingLineCode
+                                && r.m.CanRealOperate == "0")
+                             .Select(r => r.m);
+                var tmp6 = tmp5.ToArray().OrderBy(m => m.RealQuantity);
+
+                tmp4.ToArray().AsParallel().ForAll(t =>
+                    {
+                        var tmp7 = tmp5.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
+                        if (tmp7 != null)
+                        {
+                            tmp7.CanRealOperate = "1";
+                        }
+                    });
+                MoveBillDetailRepository.SaveChanges();
+                result = true;
             }
             catch (Exception e)
             {
