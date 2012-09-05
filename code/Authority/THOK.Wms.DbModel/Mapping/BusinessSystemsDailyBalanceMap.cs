@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using THOK.Common.Ef.MappingStrategy;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace THOK.Wms.DbModel.Mapping
 {
@@ -13,6 +14,10 @@ namespace THOK.Wms.DbModel.Mapping
         {
             // Primary Key
             this.HasKey(t => t.ID);
+
+            this.Property(t => t.ID)
+                .IsRequired()
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity); 
 
             // Properties
             this.Property(t => t.SettleDate)

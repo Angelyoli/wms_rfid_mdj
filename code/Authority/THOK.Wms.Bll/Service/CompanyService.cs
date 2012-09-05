@@ -79,36 +79,45 @@ namespace THOK.Wms.Bll.Service
             bool result = false;
             var comp = new Company();
             var parent = CompanyRepository.GetQueryable().FirstOrDefault(p => p.ID == company.ParentCompanyID);
-            if (comp != null)
-            {
-                try
-                {
-                    comp.ID = Guid.NewGuid();
-                    comp.CompanyCode = company.CompanyCode;
-                    comp.CompanyName = company.CompanyName;
-                    comp.CompanyType = company.CompanyType;
-                    comp.Description = company.Description;
-                    comp.ParentCompany = parent ?? comp;
-                    comp.UniformCode = company.UniformCode;
-                    comp.WarehouseCapacity = company.WarehouseCapacity;
-                    comp.WarehouseCount = company.WarehouseCount;
-                    comp.WarehouseSpace = company.WarehouseSpace;
-                    comp.SortingCount = company.SortingCount;
-                    comp.IsActive = company.IsActive;
-                    comp.UpdateTime = DateTime.Now;
 
-                    CompanyRepository.Add(comp);
-                    CompanyRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
+            var comExist = CompanyRepository.GetQueryable().FirstOrDefault(c => c.CompanyCode == company.CompanyCode);
+            if (comExist == null)
+            {
+                if (comp != null)
                 {
-                    strResult = "原因：" + ex.Message;
+                    try
+                    {
+                        comp.ID = Guid.NewGuid();
+                        comp.CompanyCode = company.CompanyCode;
+                        comp.CompanyName = company.CompanyName;
+                        comp.CompanyType = company.CompanyType;
+                        comp.Description = company.Description;
+                        comp.ParentCompany = parent ?? comp;
+                        comp.UniformCode = company.UniformCode;
+                        comp.WarehouseCapacity = company.WarehouseCapacity;
+                        comp.WarehouseCount = company.WarehouseCount;
+                        comp.WarehouseSpace = company.WarehouseSpace;
+                        comp.SortingCount = company.SortingCount;
+                        comp.IsActive = company.IsActive;
+                        comp.UpdateTime = DateTime.Now;
+
+                        CompanyRepository.Add(comp);
+                        CompanyRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
                 }
             }
             else
             {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                strResult = "原因：该编号已存在！";
             }
             return result;
         }
@@ -118,8 +127,7 @@ namespace THOK.Wms.Bll.Service
             strResult = string.Empty;
             bool result = false;
             Guid cid = new Guid(companyID);
-            var com = CompanyRepository.GetQueryable()
-                .FirstOrDefault(c => c.ID == cid);
+            var com = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == cid);
             if (com != null)
             {
                 try
@@ -147,6 +155,7 @@ namespace THOK.Wms.Bll.Service
             bool result = false;
             var comp = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == company.ID);
             var par = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == company.ParentCompanyID);
+
             if (comp != null)
             {
                 try

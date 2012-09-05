@@ -23,22 +23,13 @@
     function DailyBalance() {
         var settleDate = $('#SettleDate').datebox('getValue');
         var warehouseCode = $('#wareHouse2').combo('getValue');
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: '/DailyBalance/DoDailyBalance/', type: "GET", dataType: "text",
-            data: { 'WarehouseCode': warehouseCode, 'SettleDate': settleDate },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+
+        $.ajaxSender.send('/DailyBalance/DoDailyBalance/',
+                { 'WarehouseCode': warehouseCode, 'SettleDate': settleDate },
+                function (data) {
                     $('#details').datagrid('reload');
                     $('#dlg-Daily').dialog('close');
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
+                }, $('#dlg-Daily'));
     };
 </script>
 

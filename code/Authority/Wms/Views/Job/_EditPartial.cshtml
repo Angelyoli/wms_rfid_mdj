@@ -19,6 +19,7 @@ function editClick() {
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
+        $('#inputJobCode').attr("readonly", true);
     } else {
         $.messager.alert('错误', '没有选择行！','info');
     }
