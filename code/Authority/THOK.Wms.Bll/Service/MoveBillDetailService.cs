@@ -283,6 +283,14 @@ namespace THOK.Wms.Bll.Service
                 }
                 inFrozenQuantity = inStorage.InFrozenQuantity;
             }
+            if (inCell.IsSingle=="1")
+            {
+                if (inStorage.ProductCode!=moveBillDetail.ProductCode)
+                {
+                    strResult = "货位：<"+inCell.CellName+">是非货位管理货位不能移入不同品牌的卷烟！";
+                    return false;
+                }
+            }
             //判断移出数量是否合理
             bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, outStorage.InFrozenQuantity, outFrozenQuantity, outCell.MaxQuantity*product.Unit.Count, outStorage.Quantity, "out");            
             if (Locker.LockStorage(outStorage, product) != null)
