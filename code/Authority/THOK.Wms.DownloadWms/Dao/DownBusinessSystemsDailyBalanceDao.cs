@@ -19,7 +19,13 @@ namespace THOK.Wms.DownloadWms.Dao
 
        public void InsertDayEnd(DataSet ds)
        {
-           BatchInsert(ds.Tables["WMS_BUSINESS_SYSTEMS_DAILY_BALANCE"], "WMS_BUSINESS_SYSTEMS_DAILY_BALANCE");
+           foreach (DataRow row in ds.Tables["WMS_BUSINESS_SYSTEMS_DAILY_BALANCE"].Rows)
+           {
+               string sql = "INSERT INTO WMS_BUSINESS_SYSTEMS_DAILY_BALANCE(settle_date,warehouse_code,product_code,unit_code,beginning,entry_amount,delivery_amount,profit_amount,loss_amount,ending" +
+                  ") VALUES('" + row["settle_date"] + "','" + "0101" + "','" + row["product_code"] + "'," +
+                  "'" + row["unit_code"] + "'," + row["beginning"] + "," + row["entry_amount"] + "," + row["delivery_amount"] + "," + row["profit_amount"] + "," + row["loss_amount"] + "," + row["ending"] + ")";
+               this.ExecuteNonQuery(sql);
+           }
        }
 
        public void Delete(string settledate)
