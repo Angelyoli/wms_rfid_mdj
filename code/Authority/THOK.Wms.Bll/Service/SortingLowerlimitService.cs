@@ -26,7 +26,7 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
         {
             IQueryable<SortingLowerlimit> lowerLimitQuery = SortingLowerlimitRepository.GetQueryable();
-            var lowerLimit = lowerLimitQuery.OrderBy(b => b.SortingLineCode).Where(s => s.SortingLineCode == s.SortingLineCode);
+            var lowerLimit = lowerLimitQuery.OrderBy(b => new { b.SortingLineCode,b.ProductCode }).Where(s => s.SortingLineCode == s.SortingLineCode);
             if (sortingLineCode != string.Empty && sortingLineCode != null)
             {
                 lowerLimit = lowerLimit.Where(l => l.SortingLineCode.Contains(sortingLineCode));

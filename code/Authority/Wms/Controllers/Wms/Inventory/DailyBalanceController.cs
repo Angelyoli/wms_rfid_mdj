@@ -61,7 +61,7 @@ namespace Wms.Controllers.Wms.Inventory
         public ActionResult DoDailyBalance(string warehouseCode, string settleDate)
         {
             DownBusinessSystemsDailyBalanceBll dbll = new DownBusinessSystemsDailyBalanceBll();
-            //dbll.DownDayEndInfo(settleDate);
+            dbll.DownDayEndInfo(settleDate);
             string errorInfo = string.Empty;
             bool bResult = DailyBalanceService.DoDailyBalance(warehouseCode, settleDate,ref errorInfo);
             string msg = bResult ? "日结成功！" : "日结失败！";
