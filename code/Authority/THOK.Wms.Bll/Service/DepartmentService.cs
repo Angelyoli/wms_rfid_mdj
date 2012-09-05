@@ -51,7 +51,7 @@ namespace THOK.Wms.Bll.Service
                 d.Description,
                 d.DepartmentLeaderID,
                 EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName,
-                companyID = d.Company.ID,
+                CompanyID = d.Company.ID,
                 d.Company.CompanyName,
                 ParentDepartmentID = d.ParentDepartmentID,
                 ParentDepartmentName = d.ParentDepartment.DepartmentName,
