@@ -8,6 +8,7 @@ using System.Transactions;
 using THOK.Wms.SignalR.Common;
 using THOK.Wms.DbModel;
 using Entities.Extensions;
+using THOK.Wms.Dal.EntityRepository;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
@@ -32,6 +33,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         [Dependency]
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
+
+        [Dependency]
+        public IOutBillDetailRepository OutBillDetailRepository { get; set; }
 
         [Dependency]
         public ISortOrderDispatchRepository SortOrderDispatchRepository { get; set; }
@@ -662,7 +666,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     .Where(s => s.CellCode == sortWork.SortingLine.CellCode
                        && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
 
-                sortWork.OutBillMaster.OutBillDetails.AsParallel().ForAll(
+                var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
+                    .Where(o => o.BillNo == sortWork.OutBillNo);
+                outDetails.ToArray().AsParallel().ForAll(
                     (Action<OutBillDetail>)delegate(OutBillDetail o)
                     {
                         var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
@@ -765,6 +771,21 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 item.Product = null;
             }
             StorageRepository.SaveChanges();
+        }
+        
+        public bool ProcessSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId, ref string error)
+        {
+            bool result = false;
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                result = false;
+                error = e.Message;
+            }
+            return result;
         }
     }
 }

@@ -44,9 +44,9 @@
             $('#isActive_emp').combo({
                 hasDownArrow: true
             });
-
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
+            $('#inputEmployeeCode').attr("readonly", true);
         } else {
             $.messager.alert('错误', '没有选择行！');
         }

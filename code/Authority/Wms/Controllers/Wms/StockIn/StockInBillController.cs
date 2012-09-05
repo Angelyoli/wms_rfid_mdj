@@ -233,8 +233,8 @@ namespace Authority.Controllers.Wms.StockIn
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownInBillBll ibll = new DownInBillBll();
-            DownDayEndBll dbll = new DownDayEndBll();
-            dbll.DownDayEndInfo();
+            DownBusinessSystemsDailyBalanceBll dbll = new DownBusinessSystemsDailyBalanceBll();
+            dbll.DownDayEndInfo(beginDate);
             ubll.DownUnitCodeInfo();
             pbll.DownProductInfo();           
             bool bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo);

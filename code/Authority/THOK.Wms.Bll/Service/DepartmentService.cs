@@ -72,32 +72,40 @@ namespace THOK.Wms.Bll.Service
             var depart = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == department.ParentDepartmentID);
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.ID == department.DepartmentLeaderID);
             var company = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == department.CompanyID);
-            if (newDepartment != null)
+            var departExist = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.DepartmentCode == department.DepartmentCode);
+            if (departExist == null)
             {
-                try
+                if (newDepartment != null)
                 {
-                    newDepartment.ID = Guid.NewGuid();
-                    newDepartment.DepartmentCode = department.DepartmentCode;
-                    newDepartment.DepartmentName = department.DepartmentName;
-                    newDepartment.ParentDepartment = depart ?? newDepartment;
-                    newDepartment.DepartmentLeader = employee;
-                    newDepartment.Description = department.Description;
-                    newDepartment.Company = company;
-                    newDepartment.UniformCode = department.UniformCode;
-                    newDepartment.IsActive = department.IsActive;
-                    newDepartment.UpdateTime = DateTime.Now;
-                    DepartmentRepository.Add(newDepartment);
-                    DepartmentRepository.SaveChanges();
-                    result = true;
+                    try
+                    {
+                        newDepartment.ID = Guid.NewGuid();
+                        newDepartment.DepartmentCode = department.DepartmentCode;
+                        newDepartment.DepartmentName = department.DepartmentName;
+                        newDepartment.ParentDepartment = depart ?? newDepartment;
+                        newDepartment.DepartmentLeader = employee;
+                        newDepartment.Description = department.Description;
+                        newDepartment.Company = company;
+                        newDepartment.UniformCode = department.UniformCode;
+                        newDepartment.IsActive = department.IsActive;
+                        newDepartment.UpdateTime = DateTime.Now;
+                        DepartmentRepository.Add(newDepartment);
+                        DepartmentRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    strResult = "原因：" + ex.Message;
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
                 }
             }
             else
             {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                strResult = "原因：该编号已存在！";
             }
             return result;
         }
@@ -138,6 +146,7 @@ namespace THOK.Wms.Bll.Service
             var parent = DepartmentRepository.GetQueryable().FirstOrDefault(p => p.ID == department.ParentDepartmentID);
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.ID == department.DepartmentLeaderID);
             var company = CompanyRepository.GetQueryable().FirstOrDefault(c => c.ID == department.CompanyID);
+
             if (depart != null)
             {
                 try
