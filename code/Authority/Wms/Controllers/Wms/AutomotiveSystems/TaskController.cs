@@ -54,7 +54,7 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
 
         public ActionResult SendSortInfo(string orderdate,string batchId,string sortingLineCode, string orderId)
         {
-            string msg = @"<?xml version='1.0' encoding='GB2312'?>
+            string msg = @"<?xml version='1.0' encoding='GB2312' ?>
                             <message>
 			                    <!--** 操作是否成功 true/false **-->
 		                        <issuccess text='{0}'></issuccess>
