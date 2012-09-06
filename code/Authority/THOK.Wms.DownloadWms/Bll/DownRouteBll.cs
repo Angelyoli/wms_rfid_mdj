@@ -12,7 +12,7 @@ namespace THOK.WMS.DownloadWms.Bll
         #region 从营销系统下载线路信息
 
         /// <summary>
-        /// 下载线路信息
+        /// 从营销系统下载线路信息
         /// </summary>
         /// <returns></returns>
         public bool DownRouteInfo()
@@ -21,13 +21,12 @@ namespace THOK.WMS.DownloadWms.Bll
             DataTable RouteCodeDt = this.GetRouteCode();
             string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
             routeCodeList = UtinString.StringMake(routeCodeList);
-            //routeCodeList = "deliver_line_code NOT IN (" + routeCodeList + ")";
             DataTable RouteDt = this.GetRouteInfo("");
 
             if (RouteDt.Rows.Count > 0)
             {
                 DataTable routeTable = this.InsertRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
-                DataRow[] line = routeTable.Select("deliver_line_code NOT IN(" + routeCodeList + ")");
+                DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
                 if (line.Length > 0)
                 {
                     DataSet lineds = this.InsertRouteCode(line);
@@ -37,38 +36,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 tag = false;
             return tag;
         }
-
-        /// <summary>
-        /// 自动下载线路信息，下载前清楚线路表
-        /// </summary>
-        /// <returns></returns>
-       public bool GetDownRouteInfo()
-       {
-           bool tag = true;
-           this.DeleteRoute();//下载清除线路表
-           DataTable RouteDt = this.GetRouteInfo();
-           if (RouteDt.Rows.Count > 0)
-           {
-               DataSet deptDs = this.InsertRouteCode(RouteDt);
-               this.Insert(deptDs);
-           }
-           else
-               tag = false;
-           return tag;
-       }
-
-       /// <summary>
-       /// 清除线路表
-       /// </summary>
-       public void DeleteRoute()
-       {
-           using (PersistentManager dbPm = new PersistentManager())
-           {
-               DownRouteDao dao = new DownRouteDao();
-               dao.Delete();
-           }
-       }
-
        /// <summary>
        /// 下载线路信息
        /// </summary>
@@ -82,19 +49,7 @@ namespace THOK.WMS.DownloadWms.Bll
                return dao.GetRouteInfo(routeCodeList);
            }
        }
-       /// <summary>
-       /// 自动下载线路信息
-       /// </summary>
-       /// <returns></returns>
-       public DataTable GetRouteInfo()
-       {
-           using (PersistentManager dbPm = new PersistentManager("YXConnection"))
-           {
-               DownRouteDao dao = new DownRouteDao();
-               dao.SetPersistentManager(dbPm);
-               return dao.GetRouteInfo();
-           }
-       }
+      
 
        /// <summary>
        /// 查询仓库线路编号
@@ -189,5 +144,71 @@ namespace THOK.WMS.DownloadWms.Bll
             return ds;
         }
         #endregion
+
+
+        /// <summary>
+        /// 从分拣下载线路信息
+        /// </summary>
+        /// <returns></returns>
+        public bool DownSortRouteInfo()
+        {
+            bool tag = true;
+            DataTable RouteCodeDt = this.GetRouteCode();
+            string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
+            routeCodeList = UtinString.StringMake(routeCodeList);
+            DataTable RouteDt = this.GetSortRouteInfo("");
+
+            if (RouteDt.Rows.Count > 0)
+            {
+                DataTable routeTable = this.InsertSortRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
+                DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
+                if (line.Length > 0)
+                {
+                    DataSet lineds = this.InsertRouteCode(line);
+                    this.Insert(lineds);
+                }
+            }
+            else
+                tag = false;
+            return tag;
+        }
+
+        /// <summary>
+        /// 添加数据到虚拟表中
+        /// </summary>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        private DataSet InsertSortRouteCode(DataTable routeCodeTable)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            foreach (DataRow row in routeCodeTable.Rows)
+            {
+                DataRow routeDr = ds.Tables["DWV_OUT_DELIVER_LINE"].NewRow();
+                routeDr["deliver_line_code"] = row["DELIVERLINECODE"].ToString().Trim() + "_" + row["DIST_BILL_ID"].ToString().Trim();
+                routeDr["custom_code"] = row["DELIVERLINECODE"].ToString().Trim();
+                routeDr["deliver_line_name"] = row["DELIVERYMAN_NAME"].ToString().Trim() + "----(" + row["DELIVERLINENAME"].ToString() + ")";
+                routeDr["dist_code"] = row["DELIVERLINECODE"];
+                routeDr["deliver_order"] = 0;
+                routeDr["description"] = "";
+                routeDr["is_active"] = "1";
+                routeDr["update_time"] = DateTime.Now;
+                ds.Tables["DWV_OUT_DELIVER_LINE"].Rows.Add(routeDr);
+            }
+            return ds;
+        }
+
+
+        /// <summary>
+        /// 从分拣线下载线路信息
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetSortRouteInfo(string routeCodeList)
+        {
+            using (PersistentManager dbPm = new PersistentManager())
+            {
+                DownRouteDao dao = new DownRouteDao();
+                return dao.GetSortRouteInfo(routeCodeList);
+            }
+        }
     }
 }

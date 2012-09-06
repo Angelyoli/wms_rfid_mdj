@@ -8,6 +8,7 @@ using System.Transactions;
 using THOK.Wms.SignalR.Common;
 using THOK.Wms.DbModel;
 using Entities.Extensions;
+using THOK.Wms.Dal.EntityRepository;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
@@ -34,10 +35,23 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
 
         [Dependency]
+        public IOutBillDetailRepository OutBillDetailRepository { get; set; }
+
+        [Dependency]
         public ISortOrderDispatchRepository SortOrderDispatchRepository { get; set; }
 
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
+
+        [Dependency]
+        public ISortOrderRepository SortOrderRepository { get; set; }
+
+        [Dependency]
+        public ISortOrderDetailRepository SortOrderDetailRepository { get; set; }
+
+        [Dependency]
+        public ISortingLineRepository SortingLineRepository { get; set; }
+
         [Dependency]
         public IStorageLocker Locker { get; set; }
  
@@ -278,7 +292,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     }
                 }
                 result.IsSuccess = true;
-                result.BillDetails = billDetails.OrderByDescending(i=>i.Status).OrderBy(b=>b.StorageName).ToArray();
+                result.BillDetails = billDetails.OrderByDescending(i=>i.Status)
+                    .ThenBy(b=>b.StorageName).ToArray();
             }
             catch (Exception e)
             {
@@ -307,6 +322,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     inAllot.Status = "1";
                                     inAllot.Operator = billDetail.Operator;
+                                    inAllot.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName,
@@ -325,6 +341,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     outAllot.Status = "1";
                                     outAllot.Operator = billDetail.Operator;
+                                    outAllot.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName,
@@ -343,6 +360,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     moveDetail.Status = "1";
                                     moveDetail.Operator = billDetail.Operator;
+                                    moveDetail.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName,
@@ -361,6 +379,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     checkDetail.Status = "1";
                                     checkDetail.Operator = billDetail.Operator;
+                                    checkDetail.StartTime = DateTime.Now;
                                     if (useTag == "1")
                                     {
                                         OperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellName,
@@ -406,6 +425,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     inAllot.Status = "0";
                                     inAllot.Operator = string.Empty;
+                                    inAllot.StartTime = null;
                                     if (useTag == "1")                                    
                                         CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
                                 }
@@ -421,6 +441,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     outAllot.Status = "0";
                                     outAllot.Operator = string.Empty;
+                                    outAllot.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
                                 }
@@ -436,6 +457,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     moveDetail.Status = "0";
                                     moveDetail.Operator = string.Empty;
+                                    moveDetail.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
                                 }
@@ -451,6 +473,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 {
                                     checkDetail.Status = "0";
                                     checkDetail.Operator = string.Empty;
+                                    checkDetail.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
                                 }
@@ -502,9 +525,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         inAllot.Status = "2";
                                         inAllot.RealQuantity += quantity;
                                         inAllot.Storage.Quantity += quantity;
+                                        if(inAllot.Storage.Cell.IsSingle=="1")//货位管理更改入库时间
+                                            inAllot.Storage.StorageTime = DateTime.Now;
                                         inAllot.Storage.InFrozenQuantity -= quantity;
                                         inAllot.InBillDetail.RealQuantity += quantity;
                                         inAllot.InBillMaster.Status = "5";
+                                        inAllot.FinishTime = DateTime.Now;
                                         if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
                                         {
                                             inAllot.InBillMaster.Status = "6";
@@ -537,7 +563,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         outAllot.Storage.Quantity -= quantity;
                                         outAllot.Storage.OutFrozenQuantity -= quantity;
                                         outAllot.OutBillDetail.RealQuantity += quantity;
-                                        outAllot.OutBillMaster.Status = "5"; 
+                                        outAllot.OutBillMaster.Status = "5";
+                                        outAllot.FinishTime = DateTime.Now;
                                         if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
                                         {
                                             outAllot.OutBillMaster.Status = "6";
@@ -569,9 +596,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                                        //判断移入的事件是否小于移出的时间
+                                        if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
+                                            moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
                                         moveDetail.MoveBillMaster.Status = "3";
-
+                                        moveDetail.FinishTime = DateTime.Now;
                                         var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
+                                        //修改分拣调度作业状态
                                         if (sortwork != null)
                                         {
                                             sortwork.DispatchStatus = "3";
@@ -606,6 +637,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.RealQuantity = quantity;
                                     checkDetail.Storage.IsLock = "0";
                                     checkDetail.CheckBillMaster.Status = "3";
+                                    checkDetail.FinishTime = DateTime.Now;
                                     if (checkDetail.CheckBillMaster.CheckBillDetails.All(c => c.Status == "2"))
                                     {
                                         checkDetail.CheckBillMaster.Status = "4";
@@ -619,6 +651,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                         }
                     }
                     InBillAllotRepository.SaveChanges();
+                    //把库存为0，入库，出库冻结量为0，无锁的库存数据的卷烟编码清空
+                    UpdateStorageInfo();
                     scope.Complete();
                 }
                 result.IsSuccess = true;
@@ -641,8 +675,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var storages = StorageRepository.GetQueryable()
                     .Where(s => s.CellCode == sortWork.SortingLine.CellCode
                        && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
-
-                sortWork.OutBillMaster.OutBillDetails.AsParallel().ForAll(
+                var outAllots = sortWork.OutBillMaster.OutBillAllots;
+                var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
+                    .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
+                outDetails.ToArray().AsParallel().ForAll(
                     (Action<OutBillDetail>)delegate(OutBillDetail o)
                     {
                         var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
@@ -698,11 +734,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 sortWork.UpdateTime = DateTime.Now;
 
                 //分拣订单线路调度完成
-                var sortOrderDetail = SortOrderDispatchRepository.GetQueryable().Where(s => s.SortWorkDispatchID == sortWork.ID).ToArray();
-                foreach (var sortOrder in sortOrderDetail)
-                {
-                    sortOrder.WorkStatus = "2";
-                }
+                //var sortOrderDetail = SortOrderDispatchRepository.GetQueryable().Where(s => s.SortWorkDispatchID == sortWork.ID).ToArray();
+                //foreach (var sortOrder in sortOrderDetail)
+                //{
+                //    sortOrder.WorkStatus = "2";
+                //}
                 return true;
             }
             return true;
@@ -735,6 +771,119 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             WHERE STORAGEID = '{0}'";
             sql = string.Format(sql, storageId, billId, detailId);
             StorageRepository.GetObjectSet().ExecuteStoreCommand(sql);
+        }
+
+        private void UpdateStorageInfo()
+        {
+            var storages = StorageRepository.GetQueryable().Where(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0 && s.OutFrozenQuantity == 0).ToArray();
+            foreach (var item in storages)
+            {
+                item.Product = null;
+            }
+            StorageRepository.SaveChanges();
+        }
+        
+        public bool ProcessSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId, ref string error)
+        {
+            bool result = false;
+            try
+            {
+                var sortOrderQuery = SortOrderRepository.GetQueryable();
+                var sortOrderDetailQuery = SortOrderDetailRepository.GetQueryable();
+                var sortOrderDispatchQuery = SortOrderDispatchRepository.GetQueryable();
+                var sortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
+                var sortingLineQuery = SortingLineRepository.GetQueryable();
+                var storageQuery = StorageRepository.GetQueryable();
+                var moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
+
+                //todo @条要换成支；加标志以记录分拣订单状态；并用状态查询已分拣订单；
+                var sortOrder = sortOrderQuery.Join(sortOrderDispatchQuery,
+                                        o => new { o.OrderDate, o.DeliverLineCode },
+                                        d => new { d.OrderDate, d.DeliverLineCode },
+                                        (o, d) => new {d.SortingLineCode,o }
+                                    ).Where(r=> r.o.OrderDate == orderdate
+                                        && r.SortingLineCode == sortingLineCode)
+                                    .Select(r=>r.o).FirstOrDefault();
+                if (sortOrder != null)
+                {
+                    sortOrder.Status = "1";
+                }
+                else
+                {
+                    throw new Exception("当前订单不存在请确认！");
+                }
+
+                var tmp1 = sortOrderQuery.Join(sortOrderDetailQuery,
+                                m => m.OrderID,
+                                d => d.OrderID,
+                                (m, d) => new { m.OrderDate, m.DeliverLineCode, m.OrderID, m.Status,d.ProductCode, d.ProductName, Quantity = d.RealQuantity * d.Product.UnitList.Unit02.Count}
+                            ).Join(sortOrderDispatchQuery,
+                                r => new { r.OrderDate, r.DeliverLineCode },
+                                d => new { d.OrderDate, d.DeliverLineCode },
+                                (r, d) => new { r.OrderDate, d.SortingLineCode, d.SortWorkDispatchID, r.DeliverLineCode, r.OrderID,r.Status, r.ProductCode, r.ProductName, r.Quantity }
+                            ).Join(sortWorkDispatchQuery,
+                                r => r.SortWorkDispatchID,
+                                w => w.ID,
+                                (r, w) => new { r.OrderDate, r.SortingLineCode, r.SortWorkDispatchID, w.DispatchStatus, r.DeliverLineCode, r.OrderID, r.Status, r.ProductCode, r.ProductName, r.Quantity }
+                            ).Where(r => r.OrderDate == orderdate
+                                && r.SortingLineCode == sortingLineCode
+                                && r.SortWorkDispatchID != null
+                                && r.DispatchStatus == "2"
+                                && r.Status == "1"
+                            ).GroupBy(r => new { r.ProductCode, r.ProductName })
+                            .Select(r => new { r.Key.ProductCode,r.Key.ProductName,Quantity = - r.Sum(q=>q.Quantity)});
+                
+                var tmp2 = sortingLineQuery
+                             .Join(storageQuery,
+                                l => l.CellCode,
+                                s => s.CellCode,
+                                (l, s) => new { l.SortingLineCode,s.CellCode, s.ProductCode, s.Product.ProductName, s.Quantity }
+                             ).Where(r => r.SortingLineCode == sortingLineCode)
+                             .GroupBy(r => new { r.ProductCode, r.ProductName })
+                             .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) });
+
+                var tmp3 = sortingLineQuery
+                             .Join(moveBillDetailQuery,
+                                l => l.CellCode,
+                                m => m.InCellCode,
+                                (l, m) => new { l.SortingLineCode, m.InCellCode, m.ProductCode, m.Product.ProductName, m.RealQuantity, m.CanRealOperate }
+                             ).Where(r => r.SortingLineCode == sortingLineCode
+                                && r.CanRealOperate == "1")
+                             .GroupBy(r => new { r.ProductCode,r.ProductName,r.RealQuantity})
+                             .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.RealQuantity) });
+
+                var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
+                               .GroupBy(r => new { r.ProductCode, r.ProductName })
+                               .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
+                               .Where(r=>r.Quantity <300000);
+
+                var tmp5 = sortingLineQuery
+                             .Join(moveBillDetailQuery,
+                                l => l.CellCode,
+                                m => m.InCellCode,
+                                (l, m) => new { l.SortingLineCode, m}
+                             ).Where(r => r.SortingLineCode == sortingLineCode
+                                && r.m.CanRealOperate == "0")
+                             .Select(r => r.m);
+                var tmp6 = tmp5.ToArray().OrderBy(m => m.RealQuantity);
+
+                tmp4.ToArray().AsParallel().ForAll(t =>
+                    {
+                        var tmp7 = tmp5.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
+                        if (tmp7 != null)
+                        {
+                            tmp7.CanRealOperate = "1";
+                        }
+                    });
+                MoveBillDetailRepository.SaveChanges();
+                result = true;
+            }
+            catch (Exception e)
+            {
+                result = false;
+                error = e.Message;
+            }
+            return result;
         }
     }
 }

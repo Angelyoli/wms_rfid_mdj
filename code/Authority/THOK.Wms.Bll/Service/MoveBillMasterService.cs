@@ -116,88 +116,126 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
-        public bool Add(MoveBillMaster moveBillMaster, string userName)
+        public bool Add(MoveBillMaster moveBillMaster, string userName, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var mbm = new MoveBillMaster();
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (employee != null)
             {
-                mbm.BillNo = moveBillMaster.BillNo;
-                mbm.BillDate = moveBillMaster.BillDate;
-                mbm.BillTypeCode = moveBillMaster.BillTypeCode;
-                mbm.WarehouseCode = moveBillMaster.WarehouseCode;
-                mbm.OperatePersonID = employee.ID;
-                mbm.Status = "1";
-                mbm.VerifyPersonID = moveBillMaster.VerifyPersonID;
-                mbm.VerifyDate = moveBillMaster.VerifyDate;
-                mbm.Description = moveBillMaster.Description;
-                //mbm.IsActive = moveBillMaster.IsActive;
-                mbm.IsActive = "1";
-                mbm.UpdateTime = DateTime.Now;
-                mbm.Origin = "1";
-
-                MoveBillMasterRepository.Add(mbm);
-                MoveBillMasterRepository.SaveChanges();
-                result = true;
-            }
-            return result;
-        }
-
-        public bool Delete(string BillNo,out string strResult)
-        {
-            bool result = false;
-            var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
-            if (LockBillMaster(BillNo))
-            {
-                if (mbm != null)
+                try
                 {
-                    MoveBillCreater.DeleteMoveBillDetail(mbm);
-                    Del(MoveBillDetailRepository, mbm.MoveBillDetails);
-                    MoveBillMasterRepository.Delete(mbm);
-                    MoveBillMasterRepository.SaveChanges();
-                    result = true;
-                }
-            }
-            else
-            {
-                result = false;
-            }
-            strResult = resultStr;
-            return result;
-        }
-
-        public bool Save(MoveBillMaster moveBillMaster,out string strResult)
-        {
-            bool result = false;
-            var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == moveBillMaster.BillNo && i.Status == "1");
-            if (LockBillMaster(moveBillMaster.BillNo))
-            {
-                if (mbm != null)
-                {
+                    mbm.BillNo = moveBillMaster.BillNo;
                     mbm.BillDate = moveBillMaster.BillDate;
                     mbm.BillTypeCode = moveBillMaster.BillTypeCode;
                     mbm.WarehouseCode = moveBillMaster.WarehouseCode;
-                    mbm.OperatePersonID = moveBillMaster.OperatePersonID;
+                    mbm.OperatePersonID = employee.ID;
                     mbm.Status = "1";
                     mbm.VerifyPersonID = moveBillMaster.VerifyPersonID;
                     mbm.VerifyDate = moveBillMaster.VerifyDate;
                     mbm.Description = moveBillMaster.Description;
                     //mbm.IsActive = moveBillMaster.IsActive;
                     mbm.IsActive = "1";
-                    mbm.Origin = "1";
                     mbm.UpdateTime = DateTime.Now;
+                    mbm.Origin = "1";
 
-                    mbm.LockTag = string.Empty;
+                    MoveBillMasterRepository.Add(mbm);
                     MoveBillMasterRepository.SaveChanges();
                     result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "新增失败，原因：" + ex.Message;
                 }
             }
             else
             {
+                strResult = "找不到当前登陆用户！请重新登陆！";
+            }
+            return result;
+        }
+
+        public bool Delete(string BillNo,out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
+            if (LockBillMaster(BillNo))
+            {
+                if (mbm != null)
+                {
+                    try
+                    {
+                        MoveBillCreater.DeleteMoveBillDetail(mbm);
+                        Del(MoveBillDetailRepository, mbm.MoveBillDetails);
+                        MoveBillMasterRepository.Delete(mbm);
+                        MoveBillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "删除失败，原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "删除失败！未找到当前需要删除的数据！";
+                    result = false;
+                }
+            }
+            else
+            {
+                strResult = resultStr;
                 result = false;
             }
-            strResult = resultStr;
+            return result;
+        }
+
+        public bool Save(MoveBillMaster moveBillMaster,out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == moveBillMaster.BillNo && i.Status == "1");
+            if (LockBillMaster(moveBillMaster.BillNo))
+            {
+                if (mbm != null)
+                {
+                    try
+                    {
+                        mbm.BillDate = moveBillMaster.BillDate;
+                        mbm.BillTypeCode = moveBillMaster.BillTypeCode;
+                        mbm.WarehouseCode = moveBillMaster.WarehouseCode;
+                        mbm.OperatePersonID = moveBillMaster.OperatePersonID;
+                        mbm.Status = "1";
+                        mbm.VerifyPersonID = moveBillMaster.VerifyPersonID;
+                        mbm.VerifyDate = moveBillMaster.VerifyDate;
+                        mbm.Description = moveBillMaster.Description;
+                        //mbm.IsActive = moveBillMaster.IsActive;
+                        mbm.IsActive = "1";
+                        mbm.Origin = "1";
+                        mbm.UpdateTime = DateTime.Now;
+
+                        mbm.LockTag = string.Empty;
+                        MoveBillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "保存失败，原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "保存失败，未找到该条数据！";
+                    result = false;
+                }
+            }
+            else
+            {
+                strResult = resultStr;
+                result = false;
+            }
             return result;
         }
 
@@ -240,6 +278,7 @@ namespace THOK.Wms.Bll.Service
         #region//移库主单审核、反审、结单方法
         public bool Audit(string BillNo, string userName, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
@@ -247,41 +286,70 @@ namespace THOK.Wms.Bll.Service
             {
                 if (mbm != null)
                 {
-                    mbm.Status = "2";
-                    mbm.VerifyDate = DateTime.Now;
-                    mbm.UpdateTime = DateTime.Now;
-                    mbm.VerifyPersonID = employee.ID;
-                    mbm.LockTag = string.Empty;
-                    MoveBillMasterRepository.SaveChanges();
-                    result = true;
+                    try
+                    {
+                        mbm.Status = "2";
+                        mbm.VerifyDate = DateTime.Now;
+                        mbm.UpdateTime = DateTime.Now;
+                        mbm.VerifyPersonID = employee.ID;
+                        mbm.LockTag = string.Empty;
+                        MoveBillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "审核失败，原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "审核失败，未找到该条数据！";
+                    result = false;
                 }
             }
             else
             {
+                strResult = resultStr;
                 result = false;
             }
-            strResult = resultStr;
             return result;
         }
 
         public bool AntiTrial(string BillNo, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "2");
             if (LockBillMaster(BillNo))
             {
                 if (mbm != null)
                 {
-                    mbm.Status = "1";
-                    mbm.VerifyDate = null;
-                    mbm.UpdateTime = DateTime.Now;
-                    mbm.VerifyPersonID = null;
-                    mbm.LockTag = string.Empty;
-                    MoveBillMasterRepository.SaveChanges();
-                    result = true;
+                    try
+                    {
+                        mbm.Status = "1";
+                        mbm.VerifyDate = null;
+                        mbm.UpdateTime = DateTime.Now;
+                        mbm.VerifyPersonID = null;
+                        mbm.LockTag = string.Empty;
+                        MoveBillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "反审失败，原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "反审失败，未找到该条数据！";
+                    result = false;
                 }
             }
-            strResult = resultStr;
+            else
+            {
+                strResult = resultStr;
+                result = false;
+            }
             return result;
         }
 

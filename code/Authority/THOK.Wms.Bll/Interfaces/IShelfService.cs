@@ -10,6 +10,8 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(string warehouseCode, string areaCode, string shelfCode);
 
+        object GetDetail(string type, string id);
+
         bool Add(Shelf shelf);
 
         bool Delete(string shelfCode);

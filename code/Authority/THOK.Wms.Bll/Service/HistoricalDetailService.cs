@@ -67,13 +67,13 @@ namespace THOK.Wms.Bll.Service
             if (!beginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(beginDate);
-                Allquery = Allquery.Where(i => i.BillDate >= begin).OrderBy(a => a.BillDate);
+                Allquery = Allquery.Where(i => i.BillDate >= begin).OrderByDescending(a => a.BillDate);
             }
 
             if (!endDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(endDate);
-                Allquery = Allquery.Where(i => i.BillDate <= end).OrderBy(a => a.BillDate);
+                Allquery = Allquery.Where(i => i.BillDate <= end).OrderByDescending(a => a.BillDate);
             }
             Allquery = Allquery.Where(a => 1==1).OrderBy(a => a.WarehouseName);
             int total = Allquery.Count();

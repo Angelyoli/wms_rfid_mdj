@@ -60,7 +60,7 @@ namespace Authority.Controllers.Wms.SortingInfo
 
         //
         // POST: /SortingOrder/DownSortOrder/
-        public ActionResult DownSortOrder(string beginDate, string endDate)
+        public ActionResult DownSortOrder(string beginDate, string endDate,string sortLineCode)
         {
             string errorInfo = string.Empty;
             string lineErrorInfo = string.Empty;

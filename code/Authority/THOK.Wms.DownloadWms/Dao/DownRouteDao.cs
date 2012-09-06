@@ -8,10 +8,8 @@ namespace THOK.WMS.DownloadWms.Dao
 {
     public class DownRouteDao : BaseDao
     {
-        #region 下载送货线路信息
-
         /// <summary>
-        /// 下载送货线路表信息
+        /// 从营销下载送货线路表信息
         /// </summary>
         public DataTable GetRouteInfo(string routeCodeList)
         {
@@ -21,14 +19,16 @@ namespace THOK.WMS.DownloadWms.Dao
         }
 
         /// <summary>
-        /// 下载送货线路表信息
+        /// 从分拣下载送货线路表信息
         /// </summary>
-        public DataTable GetRouteInfo()
+        public DataTable GetSortRouteInfo(string routeCodeList)
         {
-            string sql = "SELECT * FROM V_WMS_DELIVER_LINE ";
+            string sql = string.Format(@"SELECT DIST_BILL_ID,DELIVERYMAN_CODE,DELIVERYMAN_NAME,DELIVERLINECODE,DELIVERLINENAME FROM WMS_SORT_ORDER WHERE {0}
+                                               GROUP BY DIST_BILL_ID,DELIVERYMAN_CODE,DELIVERYMAN_NAME,DELIVERLINECODE,DELIVERLINENAME", routeCodeList);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
+    
         /// <summary>
         /// 查询线路表中的线路代码
         /// </summary>
@@ -48,15 +48,6 @@ namespace THOK.WMS.DownloadWms.Dao
             BatchInsert(ds.Tables["DWV_OUT_DELIVER_LINE"], "wms_deliver_line");
         }
 
-        /// <summary>
-        /// 清除送货线路表
-        /// </summary>
-        public void Delete()
-        {
-            string sql = "DELETE wms_deliver_line";
-            this.ExecuteNonQuery(sql);
-        }
-
-        #endregion
+      
     }
 }

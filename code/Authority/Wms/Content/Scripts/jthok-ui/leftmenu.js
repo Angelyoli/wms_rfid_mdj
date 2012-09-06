@@ -20,29 +20,29 @@
                     clearMenu();
                     $('#login-bg').addClass("login");
                     show('#c', 306, 551);
-//                    $('#dlg-logon').dialog('open');
+                    //                    $('#dlg-logon').dialog('open');
                 }
                 else {
                     hide('#c');
                     initMenu();
                     $('#welcome').html('欢迎：' + data.Identity.Name);
 
-//                    if (window.ActiveXObject) {
-//                    
-//                        var WsShell = new ActiveXObject('WScript.Shell')
-//                        WsShell.SendKeys('{F11}');
-//                    }
-//                    if (window.name == "fullscreen") return;
-//                    var a = window.open("", "fullscreen", "fullscreen=yes")
-//                    a.location = window.location.href
-//                    window.opener = null
-//                    window.close()
+                    //                    if (window.ActiveXObject) {
+                    //                    
+                    //                        var WsShell = new ActiveXObject('WScript.Shell')
+                    //                        WsShell.SendKeys('{F11}');
+                    //                    }
+                    //                    if (window.name == "fullscreen") return;
+                    //                    var a = window.open("", "fullscreen", "fullscreen=yes")
+                    //                    a.location = window.location.href
+                    //                    window.opener = null
+                    //                    window.close()
                 }
             }
             else {
                 $('#login - bg').addClass("login");
                 show('#c', 306, 551);
-//                $('#dlg-logon').dialog('open');
+                //                $('#dlg-logon').dialog('open');
             }
         });
     }
@@ -52,7 +52,7 @@
         clearMenu();
         $.getJSON("/Home/GetMenu/?t=" + new Date(), function (data) {
             menus_root = data[0];
-            initMainMenu(menus_root);
+            //initMainMenu(menus_root);
             initLeftMenu(menus_root);
         });
         tabEven();
@@ -200,11 +200,18 @@
             $('#tabs').tabs('add', {
                 title: subtitle,
                 fit: true,
+                selected: true,
                 width: 'auto',
                 height: 'auto',
                 content: '',
-                closable: closable,
-                icon: icon
+                closable: false,
+                icon: icon,
+                tools: [{
+                    iconCls: 'x-tabs-close',
+                    handler: function () {
+                        $('#tabs').tabs('close',subtitle);
+                    }
+                }]
             });
 
             $('#tabs').tabs('select', subtitle);
@@ -223,7 +230,7 @@
         $(".tabs-inner").off('dblclick contextmenu');
         /*双击关闭TAB选项卡*/
         $(".tabs-inner").bind('dblclick', function () {
-            var subtitle = $(this).children(".tabs-closable").text();
+            var subtitle = $(this).children(".tabs-title").text();
             $('#tabs').tabs('close', subtitle);
         })
         /*为选项卡绑定右键*/

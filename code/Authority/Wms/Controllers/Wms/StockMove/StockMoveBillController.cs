@@ -75,9 +75,10 @@ namespace Authority.Controllers.Wms.StockMove
         [HttpPost]
         public ActionResult Create(MoveBillMaster moveBillMaster)
         {
-            bool bResult = MoveBillMasterService.Add(moveBillMaster, this.User.Identity.Name.ToString());
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.Add(moveBillMaster, this.User.Identity.Name.ToString(),out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //

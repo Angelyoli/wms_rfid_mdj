@@ -61,7 +61,7 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string OrderDate, string SortingLineCode, string DispatchStatus)
         {
             IQueryable<SortWorkDispatch> SortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
-            var sortWorkDispatch = SortWorkDispatchQuery.Where(s => s.SortingLineCode == s.SortingLineCode);
+            var sortWorkDispatch = SortWorkDispatchQuery.Where(s => s.DispatchStatus != "4");
             if (OrderDate != string.Empty && OrderDate != null)
             {
                 OrderDate = Convert.ToDateTime(OrderDate).ToString("yyyyMMdd");
@@ -75,7 +75,7 @@ namespace THOK.Wms.Bll.Service
             {
                 sortWorkDispatch = sortWorkDispatch.Where(s => s.DispatchStatus == DispatchStatus);
             }
-            var temp = sortWorkDispatch.OrderBy(b => b.SortingLineCode).AsEnumerable().Select(b => new
+            var temp = sortWorkDispatch.OrderBy(b => new { b.OrderDate, b.SortingLineCode, b.DispatchStatus }).AsEnumerable().Select(b => new
             {
                 b.ID,
                 b.OrderDate,
@@ -380,8 +380,10 @@ namespace THOK.Wms.Bll.Service
                             errorInfo = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
                             return false;
                         }
-
-                        sortWork.OutBillMaster.OutBillDetails.AsParallel().ForAll(
+                        var outAllots = sortWork.OutBillMaster.OutBillAllots;
+                        var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
+                                            .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
+                        outDetails.ToArray().AsParallel().ForAll(
                             (Action<OutBillDetail>)delegate(OutBillDetail o)
                             {
                                 var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
@@ -459,5 +461,6 @@ namespace THOK.Wms.Bll.Service
                 return false;
             }
         }
+
     }
 }

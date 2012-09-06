@@ -4,17 +4,35 @@
         $('#beginDate').datebox({ editable: false });
         $('#endDate').datebox({ editable: false });
         $('#beginDate').datebox('setValue', "");
-        $('#endDate').datebox('setValue', "");
+        $('#endDate').datebox('setValue', "");        
+        $('#SortingLineCode').combogrid({
+            width: 130,
+            panelWidth: 340,
+            url: '/SortingLine/Details/?page=1&rows=20',
+            idField: 'SortingLineCode',
+            textField: 'SortingLineName',
+            mode: 'local',
+            editable: false,
+            fitColumns: true,
+            columns: [[
+					{ field: 'SortingLineCode', title: '分拣线编码', align: 'left', width: 40 },
+					{ field: 'SortingLineName', title: '分拣线名称', align: 'left', width: 40 },
+                    { field: 'SortingLineType', title: '分拣线类型', align: 'left', width: 20 },
+					{ field: 'IsActive', title: '是否可用', align: 'left', width: 20 }
+				]]
+        });
+        $('#SortingLineCode').combogrid('clear');
     }
 
     function generateCheckClick() {
         var begin = $('#beginDate').datebox('getValue');
         var end = $('#endDate').datebox('getValue');
-        if ((begin != "" || begin != null) && (end != "" || end != null)) {
+        var sortCode = $('#SortingLineCode').combo('getValue');
+        if (begin != "" && end != "" ) {
             var j_waitDialog = ShowWaitMessageDialog();
             $.ajax({
                 url: "/SortingOrder/DownSortOrder/", type: "GET", dataType: "text",
-                data: { 'beginDate': begin, "endDate": end },
+                data: { 'beginDate': begin, "endDate": end, sortLineCode: sortCode },
                 complete: function () { HideWaitMessageDialog(j_waitDialog); },
                 success: function (responseText) {
                     var result = $.evalJSON(responseText);
@@ -46,6 +64,10 @@
                <tr>
                 <td width="60" style="text-align:right">结束日期:</td>
                 <td><input id="endDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
+              </tr>
+              <tr>
+                <td width="80" style="text-align:right">分拣线名称：</td>
+                <td><input type="text" id="SortingLineCode" style="width: 140px"/></td>
               </tr>
             </table>
         </form>

@@ -151,30 +151,42 @@ namespace THOK.Wms.Bll.Service
         /// <param name="inBillMaster">入库主单</param>
         /// <param name="userName">用户名</param>
         /// <returns></returns>
-        public bool Add(InBillMaster inBillMaster, string userName)
+        public bool Add(InBillMaster inBillMaster, string userName, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = new InBillMaster();
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (employee != null)
             {
-                ibm.BillNo = inBillMaster.BillNo;
-                ibm.BillDate = inBillMaster.BillDate;
-                ibm.BillTypeCode = inBillMaster.BillTypeCode;
-                ibm.WarehouseCode = inBillMaster.WarehouseCode;
-                ibm.OperatePersonID = employee.ID;
-                ibm.Status = "1";
-                ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
-                ibm.VerifyDate = inBillMaster.VerifyDate;
-                ibm.Description = inBillMaster.Description;
-                //ibm.IsActive = inBillMaster.IsActive;
-                ibm.IsActive = "1";
-                ibm.UpdateTime = DateTime.Now;
-                ibm.TargetCellCode = inBillMaster.TargetCellCode;
+                try
+                {
+                    ibm.BillNo = inBillMaster.BillNo;
+                    ibm.BillDate = inBillMaster.BillDate;
+                    ibm.BillTypeCode = inBillMaster.BillTypeCode;
+                    ibm.WarehouseCode = inBillMaster.WarehouseCode;
+                    ibm.OperatePersonID = employee.ID;
+                    ibm.Status = "1";
+                    ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
+                    ibm.VerifyDate = inBillMaster.VerifyDate;
+                    ibm.Description = inBillMaster.Description;
+                    //ibm.IsActive = inBillMaster.IsActive;
+                    ibm.IsActive = "1";
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
-                InBillMasterRepository.Add(ibm);
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                    InBillMasterRepository.Add(ibm);
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "新增失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "找不到当前登陆用户！请重新登陆！";
             }
             return result;
         }
@@ -184,16 +196,28 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="BillNo">入库单号</param>
         /// <returns></returns>
-        public bool Delete(string BillNo)
+        public bool Delete(string BillNo, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
             if (ibm != null)
             {
-                Del(InBillDetailRepository, ibm.InBillDetails);
-                InBillMasterRepository.Delete(ibm);
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                try
+                {
+                    Del(InBillDetailRepository, ibm.InBillDetails);
+                    InBillMasterRepository.Delete(ibm);
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult="删除失败，原因："+ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "删除失败！未找到当前需要删除的数据！";
             }
             return result;
         }
@@ -203,27 +227,39 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="inBillMaster">入库主单</param>
         /// <returns></returns>
-        public bool Save(InBillMaster inBillMaster)
+        public bool Save(InBillMaster inBillMaster, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == inBillMaster.BillNo && i.Status == "1");
             if (ibm != null)
             {
-                ibm.BillDate = inBillMaster.BillDate;
-                ibm.BillTypeCode = inBillMaster.BillTypeCode;
-                ibm.WarehouseCode = inBillMaster.WarehouseCode;
-                ibm.OperatePersonID = inBillMaster.OperatePersonID;
-                ibm.Status = "1";
-                ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
-                ibm.VerifyDate = inBillMaster.VerifyDate;
-                ibm.Description = inBillMaster.Description;
-                //ibm.IsActive = inBillMaster.IsActive;
-                ibm.IsActive = "1";
-                ibm.UpdateTime = DateTime.Now;
-                ibm.TargetCellCode = inBillMaster.TargetCellCode;
+                try
+                {
+                    ibm.BillDate = inBillMaster.BillDate;
+                    ibm.BillTypeCode = inBillMaster.BillTypeCode;
+                    ibm.WarehouseCode = inBillMaster.WarehouseCode;
+                    ibm.OperatePersonID = inBillMaster.OperatePersonID;
+                    ibm.Status = "1";
+                    ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
+                    ibm.VerifyDate = inBillMaster.VerifyDate;
+                    ibm.Description = inBillMaster.Description;
+                    //ibm.IsActive = inBillMaster.IsActive;
+                    ibm.IsActive = "1";
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult="保存失败，原因："+ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "保存失败，未找到该条数据！";
             }
             return result;
         }
@@ -295,7 +331,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 else//如果入库主单指定了货位那么就进行入库分配
                 {
-                    result = InAllot(ibm);
+                    result = InAllot(ibm, employee.ID);
                     strResult = resultStr;
                 }
             }
@@ -307,7 +343,7 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="inBillMaster">入库主单</param>
         /// <returns></returns>
-        public bool InAllot(InBillMaster inBillMaster)
+        public bool InAllot(InBillMaster inBillMaster,Guid employeeId)
         {
             try
             {
@@ -365,6 +401,8 @@ namespace THOK.Wms.Bll.Service
                });
                 //入库结单
                 inBillMaster.Status = "6";
+                inBillMaster.VerifyDate = DateTime.Now;
+                inBillMaster.VerifyPersonID = employeeId;
                 inBillMaster.UpdateTime = DateTime.Now;
                 InBillMasterRepository.SaveChanges();
                 return true;
@@ -381,18 +419,30 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="BillNo">入库单号</param>
         /// <returns></returns>
-        public bool AntiTrial(string BillNo)
+        public bool AntiTrial(string BillNo, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "2");
             if (ibm != null)
             {
-                ibm.Status = "1";
-                ibm.VerifyDate = null;
-                ibm.UpdateTime = DateTime.Now;
-                ibm.VerifyPersonID = null;
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                try
+                {
+                    ibm.Status = "1";
+                    ibm.VerifyDate = null;
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.VerifyPersonID = null;
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "反审失败，原因："+ex.Message ;
+                }
+            }
+            else
+            {
+                strResult = "反审失败，未找到该条数据！";
             }
             return result;
         }

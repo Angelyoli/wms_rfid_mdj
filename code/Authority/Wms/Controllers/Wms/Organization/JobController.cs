@@ -30,7 +30,7 @@ namespace Authority.Controllers.Wms.Organization
         }
 
         //
-        // GET: /Department/Details/
+        // GET: /Job/Details/
 
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
@@ -42,36 +42,54 @@ namespace Authority.Controllers.Wms.Organization
         }
 
         //
-        // POST: /Department/Create/
+        // POST: /Job/Create/
 
         [HttpPost]
         public ActionResult Create(Job job)
         {
-            bool bResult = JobService.Add(job);
+            string strResult = string.Empty;
+            bool bResult = JobService.Add(job, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
-        // POST: /Department/Edit/5
+        // POST: /Job/Edit/5
 
         public ActionResult Edit(Job job)
         {
-            bool bResult = JobService.Save(job);
+            string strResult = string.Empty;
+            bool bResult = JobService.Save(job, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
-        // POST: /Department/Delete/
+        // POST: /Job/Delete/
 
         [HttpPost]
         public ActionResult Delete(string jobId)
         {
-            bool bResult = JobService.Delete(jobId);
+            string strResult = string.Empty;
+            bool bResult = false;
+            bResult = JobService.Delete(jobId, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
+        // POST: /Job/GetJob/
+        public ActionResult GetJob(int page, int rows, string queryString, string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "JobCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var job = JobService.GetJob(page, rows, queryString, value);
+            return Json(job, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

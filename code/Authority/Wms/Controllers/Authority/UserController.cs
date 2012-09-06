@@ -31,14 +31,14 @@ namespace Authority.Controllers.Authority
         }
 
         // GET: /User/Details/
-        public ActionResult Details(int page, int rows,FormCollection collection)
+        public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string userName = collection["UserName"]??"";
-            string chineseName= collection["ChineseName"]??"";
-            string isLock= collection["IsLock"]??"";
-            string isAdmin= collection["IsAdmin"]??"";
-            string memo= collection["Memo"]??"";
-            var users= UserService.GetDetails(page, rows, userName, chineseName, isLock, isAdmin, memo);
+            string userName = collection["UserName"] ?? "";
+            string chineseName = collection["ChineseName"] ?? "";
+            string isLock = collection["IsLock"] ?? "";
+            string isAdmin = collection["IsAdmin"] ?? "";
+            string memo = collection["Memo"] ?? "";
+            var users = UserService.GetDetails(page, rows, userName, chineseName, isLock, isAdmin, memo);
             return Json(users, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -63,7 +63,7 @@ namespace Authority.Controllers.Authority
         [HttpPost]
         public ActionResult Create(string userName, string pwd, string ChineseName, bool isLock, bool isAdmin, string loginPc, string memo)
         {
-            pwd = string.IsNullOrEmpty(pwd) || string.IsNullOrEmpty(pwd.Trim())? "123456" : pwd;
+            pwd = string.IsNullOrEmpty(pwd) || string.IsNullOrEmpty(pwd.Trim()) ? "123456" : pwd;
             bool bResult = UserService.Add(userName, pwd, ChineseName, isLock, isAdmin, memo);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
@@ -73,9 +73,9 @@ namespace Authority.Controllers.Authority
         [HttpPost]
         public ActionResult AddUserRole(string userId, string roleIDstr)
         {
-            bool bResult = UserService.AddUserRole(userId,roleIDstr);
+            bool bResult = UserService.AddUserRole(userId, roleIDstr);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);           
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
         // POST: /User/Edit/
@@ -103,6 +103,21 @@ namespace Authority.Controllers.Authority
             bool bResult = UserService.DeleteUserRole(userRoleIdStr);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        // POST: /User/GetUser/
+        public ActionResult GetUser(int page, int rows, string queryString, string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "UserName";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var user = UserService.GetUser(page, rows, queryString, value);
+            return Json(user, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }
