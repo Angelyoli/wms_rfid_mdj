@@ -11,20 +11,26 @@ namespace THOK.Wms.DownloadWms.Dao
     {
         public DataTable GetSortingOrder(string parameter)
         {
-            string sql = string.Format(@"SELECT S.*,C.COMPANY_CODE,C.SALE_REGION_CODE,C.SALE_SCOPE,C.DELIVER_ORDER FROM WMS_SORT_ORDER S
-                                            LEFT JOIN WMS_CUSTOMER C ON S.CUSTOMER_CODE=C.CUSTOMER_CODE WHERE {0}", parameter);
+            string sql = string.Format(@"SELECT * FROM SORTORDER WHERE {0}", parameter);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
         public DataTable GetSortingDetail(string parameter)
         {
             string sql = string.Format(@"SELECT S.*,P.TRADE_PRICE,(P.TRADE_PRICE*REALQUANTITY) AS AMOUNT_PRICE,
-                                                    U.UNIT_CODE02,U.QUANTITY01 FROM WMS_SORT_ORDER_DETAIL S
-                                                    LEFT JOIN WMS_PRODUCT P ON S.PRODUCT_CODE=P.PRODUCT_CODE
+                                                    U.UNIT_CODE02,U.QUANTITY01 FROM SORTORDERDETAIL S
+                                                    LEFT JOIN WMS_PRODUCT P ON S.PRODUCTCODE=P.PRODUCT_CODE
                                                     LEFT JOIN WMS_UNIT_LIST U ON P.UNIT_LIST_CODE=U.UNIT_LIST_CODE WHERE {0}", parameter);
             return this.ExecuteQuery(sql).Tables[0];
         }
-        
+
+        public DataTable GetDispatchLine(string parameter)
+        {
+            string sql = string.Format(@"SELECT ORDERDATE,DIST_BILL_ID,DELIVERYMAN_CODE,DELIVERYMAN_NAME,DELIVERLINECODE,DELIVERLINENAME FROM SORTORDER WHERE {0}
+                                        GROUP BY ORDERDATE,DIST_BILL_ID,DELIVERYMAN_CODE,DELIVERYMAN_NAME,DELIVERLINECODE,DELIVERLINENAME", parameter);
+            return this.ExecuteQuery(sql).Tables[0];
+        }
+
         public void InsertSortingOrder(DataSet ds)
         {
             BatchInsert(ds.Tables["WMS_SORT_ORDER"], "WMS_SORT_ORDER");
