@@ -551,10 +551,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                         {
                             //生成移库不完整,可能是库存不足；
                             hasError = true;
-                            errorInfo += product.Product.ProductCode + "(" + product.Product.ProductName + ")  库存不足！";
+                            errorInfo += item.SortingLine.SortingLineName+"  卷烟：" + product.Product.ProductCode + "(" + product.Product.ProductName + ")  库存不足！";
                         }
                     }
-                    if (!hasError)
+                    if (!hasError && Result)
                     {
                         MoveBillMasterRepository.SaveChanges();
                         errorInfo += "分拣线：" + item.SortingLine.SortingLineName + " 根据下限生成移库单成功！";

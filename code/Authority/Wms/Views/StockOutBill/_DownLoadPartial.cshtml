@@ -10,7 +10,7 @@
     function outDateClick() {
         var begin = $('#outbeginDate').datebox('getValue');
         var end = $('#outendDate').datebox('getValue');
-        if ((begin != "" || begin != null) && (end != "" || end != null)) {
+        if (begin != "" && end != "") {
             var j_waitDialog = ShowWaitMessageDialog();
             $.ajax({
                 url: "/StockOutBill/DownOutBillMaster/", type: "GET", dataType: "text",
