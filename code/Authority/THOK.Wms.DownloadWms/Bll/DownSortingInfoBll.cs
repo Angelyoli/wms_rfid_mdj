@@ -46,7 +46,7 @@ namespace THOK.Wms.DownloadWms.Bll
                         {
                             try
                             {
-                                DataRow[] masterDisp = masterdt.Select("GROUP BY DELIVERLINECODE,ORDERDATE");
+                                DataRow[] masterDisp = masterds.Tables["WMS_SORT_ORDER"].Select("GROUP BY DELIVERLINECODE,ORDERDATE");
                                 DataSet dispDs = this.SaveDispatch(masterDisp, sortingLine);
                                 this.Insert(dispDs);
                                 tag = true;
@@ -126,7 +126,7 @@ namespace THOK.Wms.DownloadWms.Bll
                 masterrow["description"] = "";
                 masterrow["is_active"] = "1";
                 masterrow["update_time"] = DateTime.Now;
-                masterrow["deliver_line_code"] = row["DeliverLineCode"].ToString().Trim();// +"_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
+                masterrow["deliver_line_code"] = row["DeliverLineCode"].ToString().Trim() + "_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
                 ds.Tables["WMS_SORT_ORDER"].Rows.Add(masterrow);
             }
             return ds;

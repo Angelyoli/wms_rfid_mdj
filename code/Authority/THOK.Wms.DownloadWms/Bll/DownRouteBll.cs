@@ -156,13 +156,17 @@ namespace THOK.WMS.DownloadWms.Bll
             DataTable RouteCodeDt = this.GetRouteCode();
             string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
             routeCodeList = UtinString.StringMake(routeCodeList);
-            routeCodeList = "DELIVERLINECODE NOT IN(" + routeCodeList + ")";
-            DataTable RouteDt = this.GetSortRouteInfo(routeCodeList);
+            DataTable RouteDt = this.GetSortRouteInfo("");
 
             if (RouteDt.Rows.Count > 0)
             {
-                DataSet lineds = this.InsertSortRouteCode(RouteDt);
-                this.Insert(lineds);
+                DataTable routeTable = this.InsertSortRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
+                DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
+                if (line.Length > 0)
+                {
+                    DataSet lineds = this.InsertRouteCode(line);
+                    this.Insert(lineds);
+                }
             }
             else
                 tag = false;
@@ -180,9 +184,9 @@ namespace THOK.WMS.DownloadWms.Bll
             foreach (DataRow row in routeCodeTable.Rows)
             {
                 DataRow routeDr = ds.Tables["DWV_OUT_DELIVER_LINE"].NewRow();
-                routeDr["deliver_line_code"] = row["DELIVERLINECODE"].ToString().Trim();
+                routeDr["deliver_line_code"] = row["DELIVERLINECODE"].ToString().Trim() + "_" + row["DIST_BILL_ID"].ToString().Trim();
                 routeDr["custom_code"] = row["DELIVERLINECODE"].ToString().Trim();
-                routeDr["deliver_line_name"] = row["DELIVERLINENAME"].ToString().Trim();
+                routeDr["deliver_line_name"] = row["DELIVERYMAN_NAME"].ToString().Trim() + "----(" + row["DELIVERLINENAME"].ToString() + ")";
                 routeDr["dist_code"] = row["DELIVERLINECODE"];
                 routeDr["deliver_order"] = 0;
                 routeDr["description"] = "";

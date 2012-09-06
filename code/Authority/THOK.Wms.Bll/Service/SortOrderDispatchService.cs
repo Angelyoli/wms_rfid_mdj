@@ -116,19 +116,38 @@ namespace THOK.Wms.Bll.Service
         public object GetWorkStatus()
         {
             IQueryable<SortOrderDispatch> sortDispatchQuery = SortOrderDispatchRepository.GetQueryable();
-            var sortDispatch = sortDispatchQuery.Where(s => s.WorkStatus == "1");
-            var temp = sortDispatch.OrderBy(b => b.SortingLineCode).AsEnumerable().Select(b => new
-            {
-                b.ID,
-                b.SortingLineCode,
-                b.SortingLine.SortingLineName,
-                b.OrderDate,
-                b.DeliverLineCode,
-                WorkStatus = b.WorkStatus == "1" ? "未作业" : "已作业",
-                b.DeliverLine.DeliverLineName,
-                IsActive = b.IsActive == "1" ? "可用" : "不可用",
-                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-            });
+            IQueryable<SortOrder> sortOrderQuery = SortOrderRepository.GetQueryable();
+
+            var temp = sortDispatchQuery.Where(s => s.WorkStatus == "1").ToArray().AsEnumerable()
+                                           .Join(sortOrderQuery,
+                                                dp => new { dp.OrderDate, dp.DeliverLineCode },
+                                                om => new { om.OrderDate, om.DeliverLineCode },
+                                                (dp, om) => new
+                                                {
+                                                    dp.ID,
+                                                    dp.OrderDate,
+                                                    dp.SortingLine,
+                                                    dp.DeliverLine,
+                                                    dp.IsActive,
+                                                    dp.UpdateTime,
+                                                    dp.WorkStatus,
+                                                    om.QuantitySum
+                                                }
+                                           ).Select(r => new { r.ID, r.OrderDate, r.SortingLine, r.DeliverLine, r.WorkStatus, r.IsActive, r.UpdateTime, r.QuantitySum })
+                                            .GroupBy(g => new { g.ID, g.OrderDate, g.DeliverLine, g.SortingLine, g.IsActive, g.UpdateTime, g.WorkStatus })
+                                            .Select(r => new
+                                            {
+                                                r.Key.ID,
+                                                r.Key.OrderDate,
+                                                r.Key.SortingLine.SortingLineCode,
+                                                r.Key.SortingLine.SortingLineName,
+                                                r.Key.DeliverLine.DeliverLineCode,
+                                                r.Key.DeliverLine.DeliverLineName,
+                                                IsActive = r.Key.IsActive == "1" ? "可用" : "不可用",
+                                                UpdateTime = r.Key.UpdateTime.ToString("yyyy-MM-dd"),
+                                                WorkStatus = r.Key.WorkStatus == "1" ? "未作业" : "已作业",
+                                                QuantitySum = r.Sum(q => q.QuantitySum)
+                                            });
             return temp.ToArray();
         }
 
