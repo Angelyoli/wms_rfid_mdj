@@ -61,7 +61,6 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             Response.ContentEncoding = gb2312;
             Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
             Response.ContentType = "application/ms-excel";
-
             string[] str = {
                                "20",        //[0]大标题字体大小
                                "700",       //[1]大标题字体粗宽
