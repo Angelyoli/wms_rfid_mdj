@@ -158,13 +158,21 @@ namespace Authority.Controllers.Wms.StockMove
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GeneratePalletTag(string billNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.GeneratePalletTag(billNo, ref strResult);
+            string msg = bResult ? "BC类烟自动组盘成功" : "BC类烟自动组盘失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
         //
         // POST: /MoveBillMaster/moveBillMasterSettle/
 
-        public ActionResult MoveBillMasterSettle(string BillNo)
+        public ActionResult MoveBillMasterSettle(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = MoveBillMasterService.Settle(BillNo, out strResult);
+            bool bResult = MoveBillMasterService.Settle(billNo, out strResult);
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

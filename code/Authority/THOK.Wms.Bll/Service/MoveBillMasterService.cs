@@ -461,5 +461,11 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+
+
+        public bool GeneratePalletTag(string billNo, ref string strResult)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
