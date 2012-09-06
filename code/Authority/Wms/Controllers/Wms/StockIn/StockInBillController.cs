@@ -117,9 +117,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailCreate(InBillDetail inBillDetail)
         {
-            bool bResult = InBillDetailService.Add(inBillDetail);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Add(inBillDetail, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -128,9 +129,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailDelete(string ID)
         {
-            bool bResult = InBillDetailService.Delete(ID);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Delete(ID, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -159,9 +161,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailEdit(InBillDetail inBillDetail)
         {
-            bool bResult = InBillDetailService.Save(inBillDetail);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Save(inBillDetail, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //

@@ -18,7 +18,7 @@
             });
         } else if (row.attributes == "cell") {
             $('#dlg').dialog('close');
-            alert("货位下不能增加！");
+            $.messager.alert(g_MsgBoxTitle,"货位下不能新增", "error");
             $('#details').treegrid('reload');
         } else if (row.attributes == "ware") {
             divid = "area";

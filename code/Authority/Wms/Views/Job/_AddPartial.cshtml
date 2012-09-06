@@ -49,28 +49,25 @@
         });
     }
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 340px; height: 240px;
-    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 510px; height: 250px; padding: 2px 2px" closed="true" 
+    buttons="#dlg-buttons">
     <div class="easyui-layout" fit="true">
-        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
-            border: 1px solid #ccc;">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;border: 1px solid #ccc;">
             <form id="fm" method="post" novalidate>
-            <table width="300">
+            <table width="460">
                 <tr>
                     <td width="60">
                         岗位编码:
                     </td>
-                    <td width="168">
-                        <input name="JobCode" id="inputJobCode" class="easyui-validatebox" validType="maxLength[8]" required="true" /><input name="ID"
-                            style="display: none" />
+                    <td width="160">
+                        <input name="JobCode" id="inputJobCode" class="easyui-validatebox" validtype="maxLength[8]" required="true" />
+                        <input name="ID" style="display: none" />
                     </td>
-                </tr>
-                <tr>
-                    <td width="60">
+                     <td width="60" >
                         岗位名称：
                     </td>
                     <td width="168">
-                        <input name="JobName" class="easyui-validatebox" validType="maxLength[50]" required="true" />
+                        <input name="JobName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
                     </td>
                 </tr>
                 <tr>
@@ -85,11 +82,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td width="60">
+                    <td width="60" align="right">
                         描述:
                     </td>
                     <td width="168" colspan="3">
-                        <textarea name="Description" id="desId" style="width: 128px; height: 60px"></textarea>
+                        <textarea name="Description" id="desId"  style="width: 351px; height: 80px"></textarea>
                     </td>
                 </tr>
             </table>

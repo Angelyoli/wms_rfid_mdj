@@ -53,78 +53,107 @@ namespace THOK.Wms.Bll.Service
             return "";
         }
 
-        public new bool Add(InBillDetail inBillDetail)
+        public bool Add(InBillDetail inBillDetail, out string strResult)
         {
-            IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-            var isExistProduct = inBillDetailQuery.FirstOrDefault(i=>i.BillNo==inBillDetail.BillNo&&i.ProductCode==inBillDetail.ProductCode);
-            var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
-            if (isExistProduct == null)
+            strResult = string.Empty;
+            bool result = false;
+            try
             {
-                var ibd = new InBillDetail();
-                ibd.BillNo = inBillDetail.BillNo;
-                ibd.ProductCode = inBillDetail.ProductCode;
-                ibd.UnitCode = inBillDetail.UnitCode;
-                ibd.Price = inBillDetail.Price;
-                ibd.BillQuantity = inBillDetail.BillQuantity*unit.Count;
-                ibd.AllotQuantity = 0;
-                ibd.RealQuantity = 0;
-                ibd.Description = inBillDetail.Description;
-
-                InBillDetailRepository.Add(ibd);
-                InBillDetailRepository.SaveChanges();
-            }
-            else
-            {
-                var ibd = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);
-                ibd.UnitCode = inBillDetail.UnitCode;
-                ibd.BillQuantity = ibd.BillQuantity + inBillDetail.BillQuantity*unit.Count;
-                InBillDetailRepository.SaveChanges();
-            }
-            return true;
-        }
-
-        public bool Delete(string ID)
-        {
-            IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-            int intID = Convert.ToInt32(ID);
-            var ibd = inBillDetailQuery.FirstOrDefault(i=>i.ID==intID);
-            InBillDetailRepository.Delete(ibd);
-            InBillDetailRepository.SaveChanges();
-            return true;
-        }
-
-        public bool Save(InBillDetail inBillDetail)
-        {
-            bool result=false;
-            IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-            var ibd = inBillDetailQuery.FirstOrDefault(i=>i.BillNo==inBillDetail.BillNo&&inBillDetail.ProductCode==inBillDetail.ProductCode);
-            var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
-            if ((ibd!= null&&ibd.ID==inBillDetail.ID)||ibd==null)
-            {
-                if(ibd==null)
+                IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
+                var isExistProduct = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);
+                var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
+                if (isExistProduct == null)
                 {
-                    ibd=inBillDetailQuery.FirstOrDefault(i=>i.BillNo==inBillDetail.BillNo&&i.ID==inBillDetail.ID);
+                    var ibd = new InBillDetail();
+                    ibd.BillNo = inBillDetail.BillNo;
+                    ibd.ProductCode = inBillDetail.ProductCode;
+                    ibd.UnitCode = inBillDetail.UnitCode;
+                    ibd.Price = inBillDetail.Price;
+                    ibd.BillQuantity = inBillDetail.BillQuantity * unit.Count;
+                    ibd.AllotQuantity = 0;
+                    ibd.RealQuantity = 0;
+                    ibd.Description = inBillDetail.Description;
+
+                    InBillDetailRepository.Add(ibd);
+                    InBillDetailRepository.SaveChanges();
+                    result = true;
                 }
-                ibd.BillNo=inBillDetail.BillNo;
-                ibd.ProductCode = inBillDetail.ProductCode;
-                ibd.UnitCode = inBillDetail.UnitCode;
-                ibd.Price = inBillDetail.Price;
-                ibd.BillQuantity = inBillDetail.BillQuantity * unit.Count;
-                ibd.Description = inBillDetail.Description;
+                else
+                {
+                    var ibd = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);
+                    ibd.UnitCode = inBillDetail.UnitCode;
+                    ibd.BillQuantity = ibd.BillQuantity + inBillDetail.BillQuantity * unit.Count;
+                    InBillDetailRepository.SaveChanges();
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                strResult = "新增失败，原因："+ex.Message;
+            }
+            return result;
+        }
+
+        public bool Delete(string ID, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            try
+            {
+                IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
+                int intID = Convert.ToInt32(ID);
+                var ibd = inBillDetailQuery.FirstOrDefault(i => i.ID == intID);
+                InBillDetailRepository.Delete(ibd);
                 InBillDetailRepository.SaveChanges();
                 result = true;
             }
-            else if(ibd != null && ibd.ID != inBillDetail.ID)
+            catch (Exception ex)
             {
-                bool delDetail=this.Delete(inBillDetail.ID.ToString());
-                ibd.BillNo=inBillDetail.BillNo;
-                ibd.ProductCode=inBillDetail.ProductCode;
-                ibd.UnitCode=inBillDetail.UnitCode;
-                ibd.Price=inBillDetail.Price;
-                ibd.BillQuantity=ibd.BillQuantity+inBillDetail.BillQuantity*unit.Count;
-                ibd.Description=inBillDetail.Description;
-                InBillDetailRepository.SaveChanges();
-                result=true;
+                strResult="删除失败，原因："+ex.Message;
+            }
+            return result;
+        }
+
+        public bool Save(InBillDetail inBillDetail, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result=false;
+            try
+            {
+                IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
+                var ibd = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && inBillDetail.ProductCode == inBillDetail.ProductCode);
+                var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
+                if ((ibd != null && ibd.ID == inBillDetail.ID) || ibd == null)
+                {
+                    if (ibd == null)
+                    {
+                        ibd = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ID == inBillDetail.ID);
+                    }
+                    ibd.BillNo = inBillDetail.BillNo;
+                    ibd.ProductCode = inBillDetail.ProductCode;
+                    ibd.UnitCode = inBillDetail.UnitCode;
+                    ibd.Price = inBillDetail.Price;
+                    ibd.BillQuantity = inBillDetail.BillQuantity * unit.Count;
+                    ibd.Description = inBillDetail.Description;
+                    InBillDetailRepository.SaveChanges();
+                    result = true;
+                }
+                else if (ibd != null && ibd.ID != inBillDetail.ID)
+                {
+                    bool delDetail = this.Delete(inBillDetail.ID.ToString(),out strResult);
+                    ibd.BillNo = inBillDetail.BillNo;
+                    ibd.ProductCode = inBillDetail.ProductCode;
+                    ibd.UnitCode = inBillDetail.UnitCode;
+                    ibd.Price = inBillDetail.Price;
+                    ibd.BillQuantity = ibd.BillQuantity + inBillDetail.BillQuantity * unit.Count;
+                    ibd.Description = inBillDetail.Description;
+                    InBillDetailRepository.SaveChanges();
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                strResult="修改失败，原因："+ex.Message;
             }
             return result;
         }
