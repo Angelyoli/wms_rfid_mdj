@@ -1,0 +1,21 @@
+﻿<script type="text/javascript">
+    function editClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg').dialog('open').dialog('setTitle', '编辑产品预警信息');
+            $('#Productfm').form('load', row);
+            $('#Productfm .easyui-validatebox').validatebox({
+                required: true
+            });
+            $('form input').removeAttr("disabled");
+            $('form textarea').removeAttr("disabled");
+            $('#p').attr("readonly", true);
+            $('#cc').combo({
+                hasDownArrow: true
+            });
+            url = '/ProductWarning/Edit/';
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    };
+</script>

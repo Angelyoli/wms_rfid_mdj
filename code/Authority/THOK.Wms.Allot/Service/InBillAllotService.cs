@@ -57,30 +57,29 @@ namespace THOK.Wms.Allot.Service
         public object Search(string billNo, int page, int rows)
         {
             var allotQuery = InBillAllotRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo)                                  
-                                  .OrderBy(a => a.ID)
-                                  .Select(a => new { 
-                                      a.ID,
-                                      a.BillNo,
-                                      a.ProductCode,
-                                      a.Product.ProductName,
-                                      a.CellCode,
-                                      a.Cell.CellName,
-                                      a.StorageCode,
-                                      a.UnitCode,
-                                      a.Unit.UnitName,
-                                      AllotQuantity = a.AllotQuantity / a.Unit.Count,
-                                      RealQuantity = a.RealQuantity / a.Unit.Count,
-                                      a.OperatePersonID,
-                                      a.StartTime,
-                                      a.FinishTime,
-                                      a.Status
-                                    });
-
+            var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
-            var allotBill = query.ToArray();            
-            return new { total, rows = query.ToArray() }; 
+
+            var temp = query.ToArray().Select(a => new
+                                      {
+                                          a.ID,
+                                          a.BillNo,
+                                          a.ProductCode,
+                                          a.Product.ProductName,
+                                          a.CellCode,
+                                          a.Cell.CellName,
+                                          a.StorageCode,
+                                          a.UnitCode,
+                                          a.Unit.UnitName,
+                                          AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                                          RealQuantity = a.RealQuantity / a.Unit.Count,
+                                          a.OperatePersonID,
+                                          StartTime = a.StartTime == null ? "" : ((DateTime)a.StartTime).ToString("yyyy-MM-dd"),
+                                          FinishTime = a.FinishTime == null ? "" : ((DateTime)a.FinishTime).ToString("yyyy-MM-dd"),
+                                          Status = WhatStatus(a.Status)
+                                      });
+            return new { total, rows = temp.ToArray() };
         }
 
         public bool AllotCancel(string billNo, out string strResult)

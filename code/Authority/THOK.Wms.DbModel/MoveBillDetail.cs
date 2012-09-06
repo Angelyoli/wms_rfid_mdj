@@ -9,6 +9,7 @@ namespace THOK.Wms.DbModel
     {
         public int ID { get; set; }
         public string BillNo { get; set; }
+        public int? PalletTag { get; set; }
         public string ProductCode { get; set; }
         public string OutCellCode { get; set; }
         public string OutStorageCode { get; set; }

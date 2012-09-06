@@ -283,6 +283,14 @@ namespace THOK.Wms.Bll.Service
                 }
                 inFrozenQuantity = inStorage.InFrozenQuantity;
             }
+            if (inCell.IsSingle=="1")
+            {
+                if (inStorage.Product!=null && inStorage.Product.ProductCode !=moveBillDetail.ProductCode)
+                {
+                    strResult = "货位：<"+inCell.CellName+">是非货位管理货位不能移入不同品牌的卷烟！";
+                    return false;
+                }
+            }
             //判断移出数量是否合理
             bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, outStorage.InFrozenQuantity, outFrozenQuantity, outCell.MaxQuantity*product.Unit.Count, outStorage.Quantity, "out");            
             if (Locker.LockStorage(outStorage, product) != null)
@@ -340,90 +348,6 @@ namespace THOK.Wms.Bll.Service
             }
             strResult = resultStr;
             return result;
-        }
-
-        /// <summary>
-        /// 库存加锁
-        /// </summary>
-        /// <param name="billNo">订单号</param>
-        /// <param name="cell">货位</param>
-        /// <returns></returns>
-        private Storage LockStorage(string billNo, Cell cell)
-        {
-            try
-            {
-                cell.LockTag = billNo;
-                CellRepository.SaveChanges();
-            }
-            catch (Exception)
-            {
-                CellRepository.Detach(cell);
-                return null;
-            }
-
-            Storage storage = null;
-            try
-            {
-                if (cell.IsSingle == "1")
-                {
-                    if (cell.Storages.Count == 0)
-                    {
-                        storage = new Storage()
-                        {
-                            StorageCode = Guid.NewGuid().ToString(),
-                            CellCode = cell.CellCode,
-                            IsLock = "0",
-                            LockTag = billNo,
-                            IsActive = "0",
-                            StorageTime = DateTime.Now,
-                            UpdateTime = DateTime.Now
-                        };
-                        cell.Storages.Add(storage);
-                    }
-                    else if (cell.Storages.Count == 1)
-                    {
-                        storage = cell.Storages.Single();
-                        storage.LockTag = billNo;
-                    }
-                }
-                else
-                {
-                    storage = cell.Storages.Where(s => s.LockTag == null || s.LockTag == string.Empty
-                                                && s.Quantity == 0
-                                                && s.InFrozenQuantity == 0)
-                                          .FirstOrDefault();
-                    if (storage != null)
-                    {
-                        storage.LockTag = billNo;
-                    }
-                    else
-                    {
-                        storage = new Storage()
-                        {
-                            StorageCode = Guid.NewGuid().ToString(),
-                            CellCode = cell.CellCode,
-                            IsLock = "0",
-                            LockTag = billNo,
-                            IsActive = "0",
-                            StorageTime = DateTime.Now,
-                            UpdateTime = DateTime.Now
-                        };
-                        cell.Storages.Add(storage);
-                    }
-                }
-                StorageRepository.SaveChanges();
-            }
-            catch (Exception)
-            {
-                StorageRepository.Detach(storage);
-                cell.Storages.Remove(storage);
-                storage = null;
-            }
-
-            cell.LockTag = string.Empty;
-            CellRepository.SaveChanges();
-
-            return storage;
         }
 
         /// <summary>

@@ -117,9 +117,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailCreate(InBillDetail inBillDetail)
         {
-            bool bResult = InBillDetailService.Add(inBillDetail);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Add(inBillDetail, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -128,9 +129,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailDelete(string ID)
         {
-            bool bResult = InBillDetailService.Delete(ID);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Delete(ID, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -159,9 +161,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailEdit(InBillDetail inBillDetail)
         {
-            bool bResult = InBillDetailService.Save(inBillDetail);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Save(inBillDetail, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -214,7 +217,7 @@ namespace Authority.Controllers.Wms.StockIn
 
         //
         // POST: /StockInBill/DownInBillMaster/
-        public ActionResult DownInBillMaster(string beginDate, string endDate)
+        public ActionResult DownInBillMaster(string beginDate, string endDate, string wareCode, string billType)
         {
             string errorInfo = string.Empty;
             if (beginDate == string.Empty || endDate == string.Empty)
@@ -230,12 +233,10 @@ namespace Authority.Controllers.Wms.StockIn
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownInBillBll ibll = new DownInBillBll();
-            DownBusinessSystemsDailyBalanceBll dbll = new DownBusinessSystemsDailyBalanceBll();
-            dbll.DownDayEndInfo(beginDate);
             ubll.DownUnitCodeInfo();
-            pbll.DownProductInfo();           
-            bool bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo);
-           
+            pbll.DownProductInfo();
+            bool bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+
             //bool bResult = InBillMasterService.DownInBillMaster(beginDate, endDate, out errorInfo);
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);

@@ -380,8 +380,9 @@ namespace THOK.Wms.Bll.Service
                             errorInfo = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
                             return false;
                         }
+                        var outAllots = sortWork.OutBillMaster.OutBillAllots;
                         var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
-                                            .Where(o => o.BillNo == sortWork.OutBillNo);
+                                            .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
                         outDetails.ToArray().AsParallel().ForAll(
                             (Action<OutBillDetail>)delegate(OutBillDetail o)
                             {
