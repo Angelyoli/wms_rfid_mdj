@@ -884,7 +884,7 @@ namespace THOK.Wms.Bll.Service
 
             foreach (var item in cellInfo)
             {
-                dt.Rows.Add("'"+item.ProductCode, item.ProductName, item.ProductQuantity);
+                dt.Rows.Add(item.ProductCode, item.ProductName, item.ProductQuantity);
             }
             return dt;
         }
