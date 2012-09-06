@@ -12,9 +12,9 @@ namespace THOK.Wms.DbModel
         }
 
         public string ProductCode { get; set; }
-        public decimal MinLimited { get; set; }
-        public decimal MaxLimited { get; set; }
-        public decimal AssemblyTime { get;set;}
+        public decimal ?MinLimited { get; set; }
+        public decimal ?MaxLimited { get; set; }
+        public decimal ?AssemblyTime { get;set;}
         public string Memo { get; set; }
     }
 }

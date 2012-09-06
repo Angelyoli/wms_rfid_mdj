@@ -15,5 +15,12 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string productCode);
 
         bool Save(ProductWarning productWarning);
+
+        object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitType);
+
+        //object GetTimeOut(int page,int rows,string productCode);
+
+        object GetProductDetails(int page, int rows, string QueryString, string Value);
+
     }
 }
