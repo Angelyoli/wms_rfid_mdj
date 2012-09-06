@@ -28,15 +28,15 @@ namespace THOK.Wms.DownloadWms.Bll
                     }
                     //查询仓库7天内的订单号
                     DataTable orderdt = this.GetOrderId();
-                    string orderlist = UtinString.StringMake(orderdt, "order_id");
-                    orderlist = UtinString.StringMake(orderlist);
+                    string orderlist = UtinString.MakeString(orderdt, "order_id");
+                    //orderlist = UtinString.StringMake(orderlist);
                     string orderlistDate = "OrderDate >='" + startDate + "' AND OrderDate <='" + endDate + "' AND OrderID NOT IN(" + orderlist + ")" + sort;
                     DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询订单信息
 
-                    string ordermasterlist = UtinString.StringMake(masterdt, "OrderID");//取得根据时间查询的订单号
-                    string ordermasterid = UtinString.StringMake(ordermasterlist);
-                    ordermasterid = "OrderID IN (" + ordermasterid + ")";
-                    DataTable detaildt = this.GetSortingOrderDetail(ordermasterid);//根据订单号查询明细
+                    string ordermasterlist = UtinString.MakeString(masterdt, "OrderID");//取得根据时间查询的订单号
+                    //string ordermasterid = UtinString.StringMake(ordermasterlist);
+                    ordermasterlist = "OrderID IN (" + ordermasterlist + ")";
+                    DataTable detaildt = this.GetSortingOrderDetail(ordermasterlist);//根据订单号查询明细
                     if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
                     {
                         DataSet masterds = this.SaveSortingOrder(masterdt);
