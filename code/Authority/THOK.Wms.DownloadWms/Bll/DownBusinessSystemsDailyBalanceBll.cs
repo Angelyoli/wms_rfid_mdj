@@ -17,6 +17,14 @@ namespace THOK.Wms.DownloadWms.Bll
        public bool DownDayEndInfo(string SettleDate)
         {
             bool tag = true;
+            if (SettleDate == string.Empty || SettleDate == null)
+            {
+                SettleDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                SettleDate = Convert.ToDateTime(SettleDate).ToString("yyyyMMdd");
+            }
             string parameter = " SettleDate='" + SettleDate + "'";
             this.DeleteDayEnd(SettleDate);
             DataTable dayEnd = this.GetDayEndInfo(parameter);
@@ -51,7 +59,7 @@ namespace THOK.Wms.DownloadWms.Bll
            {
                DataRow[] unitRow = unitList.Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
                DataRow masterrow = ds.Tables["WMS_BUSINESS_SYSTEMS_DAILY_BALANCE"].NewRow();
-               masterrow["id"] = row["DailyBalanceID"].ToString().Trim();
+               //masterrow["id"] = row["DailyBalanceID"].ToString().Trim();
                masterrow["settle_date"] = row["SettleDate"].ToString().Trim();
                masterrow["warehouse_code"] = row["WarehouseCode"].ToString().Trim();
                masterrow["product_code"] = row["BRAND_N"].ToString().Trim();
@@ -96,7 +104,7 @@ namespace THOK.Wms.DownloadWms.Bll
         {
             DataSet ds = new DataSet();
             DataTable inbrtable = ds.Tables.Add("WMS_BUSINESS_SYSTEMS_DAILY_BALANCE");
-            inbrtable.Columns.Add("id");
+            //inbrtable.Columns.Add("id");
             inbrtable.Columns.Add("settle_date");
             inbrtable.Columns.Add("warehouse_code");
             inbrtable.Columns.Add("product_code");

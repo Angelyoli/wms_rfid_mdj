@@ -24,7 +24,7 @@ namespace THOK.WMS.DownloadWms.Bll
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public bool GetInBill(string startDate, string endDate, string EmployeeCode, out string errorInfo)
+        public bool GetInBill(string startDate, string endDate, string EmployeeCode,string wareCode,string billtype, out string errorInfo)
         {
             bool tag = false;
             Employee = EmployeeCode;
@@ -46,7 +46,7 @@ namespace THOK.WMS.DownloadWms.Bll
 
                 if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
                 {
-                    DataSet masterds = this.InBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString());
+                    DataSet masterds = this.InBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
 
                     DataSet detailds = this.InBillDetail(detaildt);
                     this.Insert(masterds, detailds);
@@ -104,7 +104,7 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public DataSet InBillMaster(DataTable inBillMasterdr, string employeeId)
+        public DataSet InBillMaster(DataTable inBillMasterdr, string employeeId,string wareCode,string billType)
         {
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in inBillMasterdr.Rows)
@@ -115,8 +115,8 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataRow masterrow = ds.Tables["WMS_IN_BILLMASTER"].NewRow();
                 masterrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
                 masterrow["bill_date"] = Convert.ToDateTime(createdate);
-                masterrow["bill_type_code"] = "1001";//row["ORDER_TYPE"].ToString().Trim();
-                masterrow["warehouse_code"] = "0101";//row["DIST_CTR_CODE"].ToString().Trim();
+                masterrow["bill_type_code"] = billType;//row["ORDER_TYPE"].ToString().Trim();
+                masterrow["warehouse_code"] = wareCode;//row["DIST_CTR_CODE"].ToString().Trim();
                 masterrow["status"] = "1";
                 masterrow["verify_date"] = null;
                 masterrow["is_active"] = "1";

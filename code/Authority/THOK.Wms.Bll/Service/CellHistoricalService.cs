@@ -102,7 +102,7 @@ namespace THOK.Wms.Bll.Service
                 //    DateTime begin = DateTime.Now.AddDays(-30);
                 //    CellHistoryAllQuery = CellHistoryAllQuery.Where(i => i.BillDate >= begin);
                 //}
-                if (!endDate.Equals(string.Empty) && endDate != "null02")
+                if (!endDate.Equals(string.Empty) && endDate != "null02")//null02 同null01 代表传回来的日期是空值
                 {
                     DateTime end = Convert.ToDateTime(endDate);
                     CellHistoryAllQuery = CellHistoryAllQuery.Where(c => c.BillDate <= end);

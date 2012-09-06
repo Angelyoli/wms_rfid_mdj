@@ -675,7 +675,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var storages = StorageRepository.GetQueryable()
                     .Where(s => s.CellCode == sortWork.SortingLine.CellCode
                        && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
-
+                var outAllots = sortWork.OutBillMaster.OutBillAllots;
                 var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
                     .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
                 outDetails.ToArray().AsParallel().ForAll(

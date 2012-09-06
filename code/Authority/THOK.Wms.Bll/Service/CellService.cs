@@ -524,7 +524,7 @@ namespace THOK.Wms.Bll.Service
                         Tree areaTree = new Tree();
                         areaTree.id = area.AreaCode;
                         areaTree.text = "库区：" + area.AreaName;
-                        areaTree.state = "open";
+                        areaTree.state = "closed";
                         areaTree.attributes = "area";
 
                         var shelfs = ShelfRepository.GetQueryable().Where(s => s.Area.AreaCode == area.AreaCode)
