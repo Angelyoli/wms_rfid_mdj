@@ -229,6 +229,10 @@
     <Compile Include="Migrations\201209050220248_modify_sort_order_status.Designer.cs">
       <DependentUpon>201209050220248_modify_sort_order_status.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201209060246572_ProductWarning.cs" />
+    <Compile Include="Migrations\201209060246572_ProductWarning.Designer.cs">
+      <DependentUpon>201209060246572_ProductWarning.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
