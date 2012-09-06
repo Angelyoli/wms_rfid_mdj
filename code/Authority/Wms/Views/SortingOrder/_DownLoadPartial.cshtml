@@ -27,7 +27,7 @@
     function generateCheckClick() {
         var begin = $('#beginDate').datebox('getValue');
         var end = $('#endDate').datebox('getValue');
-        var sortCode = $('#SortingLineCode').combo('getValue'); ;
+        var sortCode = $('#SortingLineCode').combo('getValue');
         if ((begin != "" || begin != null) && (end != "" || end != null)) {
             var j_waitDialog = ShowWaitMessageDialog();
             $.ajax({
@@ -67,7 +67,7 @@
               </tr>
               <tr>
                 <td width="80" style="text-align:right">分拣线名称：</td>
-                <td><input type="text" id="SortingLineCode" /></td>
+                <td><input type="text" id="SortingLineCode" style="width: 140px"/></td>
               </tr>
             </table>
         </form>

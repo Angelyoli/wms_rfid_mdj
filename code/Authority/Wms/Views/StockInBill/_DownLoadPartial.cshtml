@@ -1,22 +1,68 @@
 ﻿<script type="text/javascript">
     function downloadClick() {
+        downLoad();
         $('#dlg_in_date').dialog('open').dialog('setTitle', '请选择时间');
         $('#inbeginDate').datebox({ editable: false });
         $('#inendDate').datebox({ editable: false });
         $('#inbeginDate').datebox('setValue', "");
         $('#inendDate').datebox('setValue', "");
+        $('#downWare').combogrid('clear');
+        $('#downBiiType').combogrid('clear');
     }
+
+    function downLoad() {
+
+        $('#downWare').combogrid({
+            required: true,
+            disabled: false,
+            width: 130,
+            panelWidth: 340,
+            url: '/StockInBill/GetWareHouseDetail/?IsActive=1',
+            idField: 'WarehouseCode',
+            textField: 'WarehouseName',
+            mode: 'local',
+            editable: false,
+            fitColumns: true,
+            columns: [[
+                    { field: 'WarehouseCode', title: '仓库编码', align: 'left', width: 40 },
+                    { field: 'WarehouseName', title: '仓库名称', align: 'left', width: 30 },
+                    { field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
+                ]]
+        });
+
+        $('#downBiiType').combogrid({
+            required: true,
+            disabled: false,
+            width: 130,
+            panelWidth: 340,
+            url: '/StockInBill/GetBillTypeDetail/?BillClass=0001&IsActive=1',
+            idField: 'BillTypeCode',
+            textField: 'BillTypeName',
+            mode: 'local',
+            editable: false,
+            fitColumns: true,
+            columns: [[
+                    { field: 'BillTypeCode', title: '订单类型编码', align: 'left', width: 40 },
+                    { field: 'BillTypeName', title: '订单类型名称', align: 'left', width: 30 },
+                    { field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
+                ]]
+        });
+
+    }
+
 
     function inDateClick() {        
         var begin = "";
         var end = "";
         begin = $('#inbeginDate').datebox('getValue');
         end = $('#inendDate').datebox('getValue');
+        var downware = $('#downWare').combo('getValue');
+        var downbilltype = $('#downBiiType').combo('getValue');
         if ((begin != "" || begin != null) && (end != "" || end != null)) {
             var j_waitDialog = ShowWaitMessageDialog();
             $.ajax({
                 url: "/StockInBill/DownInBillMaster/", type: "GET", dataType: "text",
-                data: { 'beginDate': begin, "endDate": end },
+                data: { 'beginDate': begin, "endDate": end, wareCode: downware, billType: downbilltype },
                 complete: function () { HideWaitMessageDialog(j_waitDialog); },
                 success: function (responseText) {
                     var result = $.evalJSON(responseText);
@@ -37,7 +83,7 @@
     }
 </script>
 <div id="dlg_in_date" class="easyui-dialog" modal="true"
-        style="width:290px;height:160px;padding:4px 4px"
+        style="width:290px;height:200px;padding:4px 4px"
         closed="true" buttons="#dlg_allot_modify_buttons" align="center">
         <form id="fm_in_date" method="post" novalidate>           
             <table align="left" width="240">            
@@ -48,6 +94,14 @@
                <tr>
                 <td width="60" style="text-align:right">结束日期:</td>
                 <td><input id="inendDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
+              </tr>
+              <tr>
+                <td width="80" style="text-align:right">仓库名称：</td>
+                <td><input type="text" id="downWare" style="width: 140px"/></td>
+              </tr>
+              <tr>
+                <td width="80" style="text-align:right">单据类型：</td>
+                <td><input type="text" id="downBiiType" style="width: 140px"/></td>
               </tr>
             </table>
         </form>
