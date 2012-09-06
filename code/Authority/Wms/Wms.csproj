@@ -121,6 +121,7 @@
     <Compile Include="Controllers\Wms\Inventory\DistributionController.cs" />
     <Compile Include="Controllers\Wms\Inventory\HistoricalDetailController.cs" />
     <Compile Include="Controllers\Wms\Inventory\StockledgerController.cs" />
+    <Compile Include="Controllers\Wms\ProductQuality\ProductWarningController.cs" />
     <Compile Include="Controllers\Wms\SortingInfo\SortOrderDispatchController.cs" />
     <Compile Include="Controllers\Wms\SortingInfo\SortWorkDispatchController.cs" />
     <Compile Include="Controllers\Wms\StockMove\StockMoveBillController.cs" />
@@ -1026,7 +1027,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\App_Data\" />
-    <Folder Include="Controllers\Wms\ProductQuality\" />
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
@@ -1455,6 +1455,12 @@
     <Content Include="Views\Warehouse2\_EditPartial.cshtml" />
     <Content Include="Views\Warehouse2\_DeletePartial.cshtml" />
     <Content Include="Views\Warehouse2\_AddPartial.cshtml" />
+    <Content Include="Views\ProductWarning\Index.cshtml" />
+    <Content Include="Views\ProductWarning\_AddPartial.cshtml" />
+    <Content Include="Views\ProductWarning\_ProductPartial.cshtml" />
+    <Content Include="Views\ProductWarning\_DeletePartial.cshtml" />
+    <Content Include="Views\ProductWarning\_EditPartial.cshtml" />
+    <Content Include="Views\ProductWarning\_SearchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

@@ -233,6 +233,18 @@
     <Compile Include="Migrations\201209060246572_ProductWarning.Designer.cs">
       <DependentUpon>201209060246572_ProductWarning.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201209060643392_move_bill_pallettag.cs" />
+    <Compile Include="Migrations\201209060643392_move_bill_pallettag.Designer.cs">
+      <DependentUpon>201209060643392_move_bill_pallettag.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209060657468_move_bill_pallettag2.cs" />
+    <Compile Include="Migrations\201209060657468_move_bill_pallettag2.Designer.cs">
+      <DependentUpon>201209060657468_move_bill_pallettag2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209060736146_modify_orderdate_fixed_length.cs" />
+    <Compile Include="Migrations\201209060736146_modify_orderdate_fixed_length.Designer.cs">
+      <DependentUpon>201209060736146_modify_orderdate_fixed_length.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
