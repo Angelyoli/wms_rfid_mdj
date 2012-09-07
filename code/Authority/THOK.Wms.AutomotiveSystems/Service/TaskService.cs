@@ -800,10 +800,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var sortOrder = sortOrderQuery.Join(sortOrderDispatchQuery,
                                         o => new { o.OrderDate, o.DeliverLineCode },
                                         d => new { d.OrderDate, d.DeliverLineCode },
-                                        (o, d) => new {d.SortingLineCode,o }
-                                    ).Where(r=> r.o.OrderDate == orderdate
-                                        && r.SortingLineCode == sortingLineCode)
-                                    .Select(r=>r.o).FirstOrDefault();
+                                        (o, d) => new { d.SortingLineCode, o }
+                                    ).Where(r => r.o.OrderDate == orderdate 
+                                             && r.o.OrderID == orderId
+                                             && r.SortingLineCode == sortingLineCode)
+                                    .Select(r => r.o).FirstOrDefault();
                 if (sortOrder != null)
                 {
                     sortOrder.Status = "1";
@@ -870,7 +871,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                 tmp4.ToArray().AsParallel().ForAll(t =>
                     {
-                        var tmp7 = tmp5.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
+                        var tmp7 = tmp6.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
                         if (tmp7 != null)
                         {
                             tmp7.CanRealOperate = "1";
