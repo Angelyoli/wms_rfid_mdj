@@ -870,7 +870,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                 tmp4.ToArray().AsParallel().ForAll(t =>
                     {
-                        var tmp7 = tmp5.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
+                        var tmp7 = tmp6.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
                         if (tmp7 != null)
                         {
                             tmp7.CanRealOperate = "1";
