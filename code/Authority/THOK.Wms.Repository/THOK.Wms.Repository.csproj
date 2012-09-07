@@ -253,6 +253,10 @@
     <Compile Include="Migrations\201209070750186_modify_orderdate_var.Designer.cs">
       <DependentUpon>201209070750186_modify_orderdate_var.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201209070836386_modify_sortorder.cs" />
+    <Compile Include="Migrations\201209070836386_modify_sortorder.Designer.cs">
+      <DependentUpon>201209070836386_modify_sortorder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
