@@ -31,8 +31,8 @@ namespace Wms.Controllers.Wms.ProductQuality
         }
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string productCode = collection["ProductCode"];
-            decimal minLimited =decimal.Parse(collection["MinLimited"]);
+            string productCode = collection["ProductCode"] ?? "";
+            decimal minLimited = decimal.Parse(collection["MinLimited"]);
             decimal maxLimited = decimal.Parse(collection["MaxLimited"]);
             decimal assemblyTime = decimal.Parse(collection["AssemblyTime"]);
             var productWarn = ProductWarningServer.GetDetail(page, rows, productCode, minLimited, maxLimited, assemblyTime);
