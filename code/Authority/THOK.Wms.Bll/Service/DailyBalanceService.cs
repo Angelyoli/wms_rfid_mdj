@@ -48,7 +48,7 @@ namespace THOK.Wms.Bll.Service
             }
 
             var dailyBalances = dailyBalance.Where(c => c.WarehouseCode.Contains(warehouseCode))
-                                       .OrderByDescending(c => c.SettleDate)
+                                       .OrderBy(c => c.SettleDate)
                                        .GroupBy(c => c.SettleDate)
                                        .Select(c => new
                                        {
@@ -64,7 +64,7 @@ namespace THOK.Wms.Bll.Service
                                        });
             
             int total = dailyBalances.Count();
-            dailyBalances = dailyBalances.OrderBy(s => s.SettleDate).Skip((page - 1) * rows).Take(rows);
+            dailyBalances = dailyBalances.OrderByDescending(s => s.SettleDate).Skip((page - 1) * rows).Take(rows);
 
             string unitName = "标准件";
             decimal count = 10000;
