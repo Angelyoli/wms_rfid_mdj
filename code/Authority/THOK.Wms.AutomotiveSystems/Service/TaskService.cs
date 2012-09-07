@@ -807,6 +807,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 if (sortOrder != null)
                 {
                     sortOrder.Status = "1";
+                    SortOrderRepository.SaveChanges();
                 }
                 else
                 {
@@ -828,7 +829,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             ).Where(r => r.OrderDate == orderdate
                                 && r.SortingLineCode == sortingLineCode
                                 && r.SortWorkDispatchID != null
-                                && r.DispatchStatus == "2"
+                                && (r.DispatchStatus == "2" || r.DispatchStatus == "3")
                                 && r.Status == "1"
                             ).GroupBy(r => new { r.ProductCode, r.ProductName })
                             .Select(r => new { r.Key.ProductCode,r.Key.ProductName,Quantity = - r.Sum(q=>q.Quantity)});
@@ -863,7 +864,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 m => m.InCellCode,
                                 (l, m) => new { l.SortingLineCode, m}
                              ).Where(r => r.SortingLineCode == sortingLineCode
-                                && r.m.CanRealOperate == "0")
+                                && r.m.CanRealOperate != "1")
                              .Select(r => r.m);
                 var tmp6 = tmp5.ToArray().OrderBy(m => m.RealQuantity);
 
