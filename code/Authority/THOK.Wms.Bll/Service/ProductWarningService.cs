@@ -26,8 +26,8 @@ namespace THOK.Wms.Bll.Service
          public object GetDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, decimal assemblyTime)
          {
              IQueryable<ProductWarning> productWarningQuery = ProductWarningRepository.GetQueryable();
-             var productWarning = productWarningQuery.Where(p => p.ProductCode == productCode
-                 || p.MinLimited == minLimited || p.MaxLimited == maxLimited || p.AssemblyTime == assemblyTime)
+             var productWarning = productWarningQuery.Where(p => p.ProductCode.Contains( productCode)
+                 && p.MinLimited == minLimited && p.MaxLimited == maxLimited && p.AssemblyTime == assemblyTime)
                  .OrderBy(p => p.ProductCode)
                  .Select(p => new 
                  {
@@ -93,6 +93,18 @@ namespace THOK.Wms.Bll.Service
         #region 产品短缺、超储查询
          public object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitType)
          {
+             IQueryable<ProductWarning> productWarningQuery = ProductWarningRepository.GetQueryable();
+             var productWarning = productWarningQuery.Where(p => p.ProductCode.Contains(productCode)
+                 && p.MinLimited == minLimited && p.MaxLimited == maxLimited )
+                 .OrderBy(p => p.ProductCode)
+                 .Select(p => new
+                 {
+                     p.ProductCode,
+                     p.MinLimited,
+                     p.MaxLimited,
+                     p.AssemblyTime,
+                     p.Memo
+                 });
             if (unitType == null || unitType=="")
             {
                 unitType = "1";
@@ -108,7 +120,7 @@ namespace THOK.Wms.Bll.Service
                      UnitName01 =t.Max(p => p.Product.UnitList.Unit01.UnitName),
                      UnitName02 =t.Max(p => p.Product.UnitList.Unit02.UnitName),
                      Count01 =t.Max(p => p.Product.UnitList.Unit01.Count),
-                     Count02 = t.Max(p => p.Product.UnitList.Unit02.Count),
+                     Count02 = t.Max(p => p.Product.UnitList.Unit02.Count)
                  });
              var productWarn = Qty.Where(q => q.quantity <= minLimited && q.quantity >= maxLimited);
              int total = productWarn.Count();
@@ -151,48 +163,13 @@ namespace THOK.Wms.Bll.Service
         #endregion
 
         #region 积压产品查询
-         //public object GetTimeOut(int page, int rows, string productCode)
-         //{
-         //    IQueryable<Storage> Storage = StorageRepository.GetQueryable();
-         //    IQueryable<ProductWarning> ProductWarn = ProductWarningRepository.GetQueryable();
-         //    var productTimeOut = ProductWarn.Where(p => p.ProductCode == productCode).Select(p => p.AssemblyTime).ToArray();
-         //    var productInfo = Storage.Where(s => s.Product.ProductCode == productCode
-         //        &&decimal.Parse((DateTime.Now-s.StorageTime).TotalDays.ToString())>=productTimeOut[0])
-         //        .Select(s => new 
-         //        { 
-         //            productCode=s.Product.ProductCode,
-         //            productName=s.Product.ProductName,
-         //            cellCode=s.Cell.CellCode,
-         //            cellName=s.Cell.CellName,
-         //            quantity=s.Quantity,
-         //            storageTime=s.StorageTime,
-         //            days=(DateTime.Now-s.StorageTime).TotalDays
-         //        });
-         //    int total = productInfo.Count();
-         //    productInfo = productInfo.OrderBy(p => p.productCode);
-         //    productInfo = productInfo.Skip((page - 1) * rows).Take(rows);
-         //    return new { total,rows=productInfo.ToArray()};
-         //}
-         public object GetProductDetails(int page, int rows, string QueryString, string Value)
+         public object GetProductDetails(int page, int rows, string productCode, decimal assemblyTime)
          {
-             string ProductName = "";
-             string ProductCode = "";
-             if (QueryString == "ProductCode")
-             {
-                 ProductCode = Value;
-             }
-             else
-             {
-                 ProductName = Value;
-             }
-             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
              IQueryable<Storage> Storage = StorageRepository.GetQueryable();
              IQueryable<ProductWarning> ProductWarn = ProductWarningRepository.GetQueryable();
-             var product = ProductQuery.Where(c => c.ProductName.Contains(ProductName) && c.ProductCode.Contains(ProductCode) && c.IsActive == "1")
-               .OrderBy(c => c.ProductCode)
-               .Select(c => c.ProductCode).ToArray();
-             var productTimeOut = ProductWarn.Where(p => p.ProductCode == product[0]).Select(p => p.AssemblyTime).ToArray();
-             var productInfo = Storage.Where(s => s.Product.ProductCode == product[0]
+             var productTimeOut = ProductWarn.Where(p => p.ProductCode.Contains(productCode) && p.AssemblyTime==assemblyTime)
+                 .Select(p => p.AssemblyTime).ToArray();
+             var productInfo = Storage.Where(s => s.Product.ProductCode == productTimeOut[0].ToString()
                  && decimal.Parse((DateTime.Now - s.StorageTime).TotalDays.ToString()) >= productTimeOut[0])
                  .Select(s => new
                  {

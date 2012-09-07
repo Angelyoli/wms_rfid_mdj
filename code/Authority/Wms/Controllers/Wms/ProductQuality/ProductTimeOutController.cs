@@ -14,7 +14,7 @@ namespace Wms.Controllers.Wms.ProductQuality
     public class ProductTimeOutController : Controller
     {
         [Dependency]
-        public IProductWarningService ProductWarningServer { get; set; }
+        public IProductWarningService ProductWarningService { get; set; }
         //
         // GET: /ProductTimeOut/
         public ActionResult Index(string moduleID)
@@ -25,23 +25,16 @@ namespace Wms.Controllers.Wms.ProductQuality
             ViewBag.ModuleID = moduleID;
             return View();
         }
-        //public ActionResult Details(int page, int rows, string productCode)
-        //{
-        //    var productTimeOut = ProductWarningServer.GetTimeOut(page, rows, productCode);
-        //    return Json(productTimeOut, "text", JsonRequestBehavior.AllowGet);
-        //}
         [HttpPost]
-        public ActionResult GetProductDetails(int page, int rows, string QueryString, string Value)
+        public ActionResult GetProductDetails(int page, int rows, FormCollection collection)
         {
-            if (QueryString == null)
+            string productCode = collection["ProductCode"] ?? "";
+            decimal assemblyTime=180;
+            if (collection["AssemblyTime"] != null && collection["AssemblyTime"] != "")
             {
-                QueryString = "ProductCode";
+               assemblyTime= decimal.Parse(collection["AssemblyTime"]);
             }
-            if (Value == null)
-            {
-                Value = "";
-            }
-            var product = ProductWarningServer.GetProductDetails(page, rows, QueryString, Value);
+            var product = ProductWarningService.GetProductDetails(page, rows, productCode, assemblyTime);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 

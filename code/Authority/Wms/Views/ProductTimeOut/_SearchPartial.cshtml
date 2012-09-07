@@ -1,8 +1,7 @@
 ﻿<script type="text/javascript">
 
     //选择商品信息
-    function productSelect() 
-    {
+    function productSelect() {
         $('#productData').dialog('open').dialog('setTitle', '选择商品信息');
         $('#productDetail').datagrid({ url: '/StockInBill/GetProductDetails/' });
         $("#productDetail").datagrid('reload');
@@ -10,13 +9,10 @@
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
     };
-    function select()
-     {
+    function select() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.ProductCode = $('#productCode').val();
-        queryParams.MinLimited = $('#minLimited').val();
-        queryParams.MaxLimited = $('#maxLimited').val();
-        queryParams.UnitType = $('#unit_Type').combo('getValue');
+        queryParams.ProductCode = $('#assemblyTime').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
@@ -26,39 +22,26 @@
         $('#dlg-search').dialog('close');
     }
 </script>
-<div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:320px;padding:2px 2px"closed="true" buttons="#dlg-buttons-search">
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width:280px;height:320px;padding:2px 2px"closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">
         <div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " overflow: scroll; padding: 1px; margin: 1px">
             <table>
                 <tr>
                     <td>商品代码:</td>
                     <td align="left"><input type="text" id="productCode" editable="false"/>
-                    <a href="#" onclick="productSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
+                    <a href="#" onclick="productSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true" style="width: 150px></a>
                     </td>
                 </tr>
                 <tr>
                     <td>商品名称:</td>
-                    <td align="left"><input type="text" id="productName" editable="false"/>
+                    <td align="left"><input type="text" id="productName" editable="false" style="width: 150px"/>
                     </td>
                 </tr>
                 <tr>
-                    <td>商品数量下限：</td>
-                    <td align="left"><input type="text" id="minLimited" /></td>
+                    <td>积压时间(天):</td>
+                    <td align="left"><input type="text" id="productName" editable="false" style="width: 150px"/>
+                    </td>
                 </tr>
-                 <tr>
-                    <td>商品数量上限：</td>
-                    <td align="left"><input type="text" id="maxLimited" /></td>
-                </tr>
-                <tr>
-                    <td>换算单位:</td>
-                    <td align="left">     
-		                <select id="unit_Type" class="easyui-combobox" style=" height: 40px" editable="false">
-                            <option value="">请选择</option>                       
-                            <option value="1">标准单位</option>
-                            <option value="2">自然单位</option>
-                   </select>
-	            </td>
-              </tr>
             </table>
         </div>
     </div>
