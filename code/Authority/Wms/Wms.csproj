@@ -38,6 +38,9 @@
     <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\log4net.dll</HintPath>
@@ -56,6 +59,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\packages\npoi.1.2.5\.net 4.0\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="SignalR, Version=0.5.1.10625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SignalR.Server.0.5.2\lib\net40\SignalR.dll</HintPath>
@@ -155,6 +161,7 @@
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
+    <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcel2Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\ShelfController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\StorageController.cs" />
@@ -1209,6 +1216,9 @@
     <Content Include="Views\Employee\_UserNamePartial.cshtml" />
     <Content Include="Views\CellHistorical\Index.cshtml" />
     <Content Include="Views\CellHistorical\_SearchPartial.cshtml" />
+    <Content Include="Views\ExportExcel2\_PrintPartial.cshtml" />
+    <Content Include="Views\ExportExcel2\Index.cshtml" />
+    <Content Include="Views\ExportExcel2\_SearchPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

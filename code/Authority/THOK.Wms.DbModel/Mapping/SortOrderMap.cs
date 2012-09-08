@@ -20,6 +20,7 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.CompanyCode)
                 .HasMaxLength(20);
+
             this.Property(t => t.DeliverLineCode)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -30,7 +31,7 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.OrderDate)
                 .IsRequired()
-                .IsFixedLength()
+                //.IsFixedLength()
                 .HasMaxLength(14);
 
             this.Property(t => t.OrderType)
@@ -39,7 +40,7 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.CustomerCode)
                 .IsRequired()
-                .HasMaxLength(10);
+                .HasMaxLength(50);
 
             this.Property(t => t.CustomerName)
                 .IsRequired()

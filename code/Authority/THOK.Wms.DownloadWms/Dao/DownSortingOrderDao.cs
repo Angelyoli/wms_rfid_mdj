@@ -37,7 +37,7 @@ namespace THOK.WMS.DownloadWms.Dao
        /// <param name="ds"></param>
        public void InsertSortingOrder(DataSet ds)
        {
-           BatchInsert(ds.Tables["DWV_OUT_ORDER"], "wms_sort_order");
+           BatchInsert(ds.Tables["DWV_OUT_ORDER"], "WMS_SORT_ORDER");
        }
 
        /// <summary>
@@ -46,7 +46,7 @@ namespace THOK.WMS.DownloadWms.Dao
        /// <param name="ds"></param>
        public void InsertSortingOrderDetail(DataSet ds)
        {
-           BatchInsert(ds.Tables["DWV_OUT_ORDER_DETAIL"], "wms_sort_order_detail");
+           BatchInsert(ds.Tables["DWV_OUT_ORDER_DETAIL"], "WMS_SORT_ORDER_DETAIL");
        }
 
        /// <summary>
@@ -55,7 +55,7 @@ namespace THOK.WMS.DownloadWms.Dao
        /// <returns></returns>
        public DataTable GetOrderId()
        {
-           string sql = " SELECT order_id FROM wms_sort_order WHERE order_date>DATEADD(DAY, -3, CONVERT(VARCHAR(14), GETDATE(), 112)) ";
+           string sql = " SELECT ORDER_ID FROM WMS_SORT_ORDER WHERE order_date>DATEADD(DAY, -3, CONVERT(VARCHAR(14), GETDATE(), 112)) ";
            return this.ExecuteQuery(sql).Tables[0];
        }
 

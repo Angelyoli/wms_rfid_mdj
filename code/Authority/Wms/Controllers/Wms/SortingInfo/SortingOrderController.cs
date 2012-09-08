@@ -7,6 +7,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
+using THOK.Wms.DownloadWms.Bll;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -60,12 +61,13 @@ namespace Authority.Controllers.Wms.SortingInfo
 
         //
         // POST: /SortingOrder/DownSortOrder/
-        public ActionResult DownSortOrder(string beginDate, string endDate,string sortLineCode)
+        public ActionResult DownSortOrder(string beginDate, string endDate, string sortLineCode, bool isSortDown,string batch)
         {
             string errorInfo = string.Empty;
             string lineErrorInfo = string.Empty;
             string custErrorInfo = string.Empty;
-
+            bool bResult = false;
+            bool lineResult = false;
             if (beginDate == string.Empty || endDate == string.Empty)
             {
                 beginDate = DateTime.Now.ToString("yyyyMMdd");
@@ -76,17 +78,23 @@ namespace Authority.Controllers.Wms.SortingInfo
                 beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
                 endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
             }
-
+            DownSortingInfoBll dsinfo = new DownSortingInfoBll();
             DownRouteBll bll = new DownRouteBll();
             DownSortingOrderBll sbll = new DownSortingOrderBll();
             DownCustomerBll cbll = new DownCustomerBll();
-            bool lineResult = bll.DownRouteInfo();
             bool custResult = cbll.DownCustomerInfo();
-            bool bResult = sbll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
-
-            //bool lineResult = DeliverLineService.DownDeliverLine(out lineErrorInfo);
-            //bool custResult = CustomerService.DownDeliverLine(out custErrorInfo);           
-            //bool bResult = SortOrderService.DownSortOrder(beginDate, endDate, out errorInfo);
+            if (isSortDown)
+            {
+                //从分拣下载分拣数据
+                lineResult = bll.DownSortRouteInfo();
+                bResult = dsinfo.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+            }
+            else
+            {
+                //从营销下载分拣数据
+                lineResult = bll.DownRouteInfo();                
+                bResult = sbll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+            }
 
             string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;
             string msg = bResult ? "下载成功" : "下载失败";

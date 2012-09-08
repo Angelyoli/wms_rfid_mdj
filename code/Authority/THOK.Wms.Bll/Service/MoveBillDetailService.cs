@@ -285,7 +285,7 @@ namespace THOK.Wms.Bll.Service
             }
             if (inCell.IsSingle=="1")
             {
-                if (inStorage.ProductCode!=moveBillDetail.ProductCode)
+                if (inStorage.Product!=null && inStorage.Product.ProductCode !=moveBillDetail.ProductCode)
                 {
                     strResult = "货位：<"+inCell.CellName+">是非货位管理货位不能移入不同品牌的卷烟！";
                     return false;
