@@ -245,7 +245,6 @@ namespace THOK.Wms.Bll.Service
                     i.Price,
                     i.Description
                 });
-                dt = new System.Data.DataTable();
                 dt.Columns.Add("商品编码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
