@@ -17,5 +17,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Save(InBillDetail inBillDetail, out string strResult);
 
         object GetProductDetails(int page, int rows,string QueryString, string Value);
+
+        System.Data.DataTable GetInBillDetail(int page, int rows, string BillNo);
     }
 }

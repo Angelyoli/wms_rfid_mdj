@@ -1471,6 +1471,7 @@
     <Content Include="Views\ProductWarning\_DeletePartial.cshtml" />
     <Content Include="Views\ProductWarning\_EditPartial.cshtml" />
     <Content Include="Views\ProductWarning\_SearchPartial.cshtml" />
+    <Content Include="Views\StockInBill\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
