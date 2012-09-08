@@ -127,7 +127,9 @@
     <Compile Include="Controllers\Wms\Inventory\DistributionController.cs" />
     <Compile Include="Controllers\Wms\Inventory\HistoricalDetailController.cs" />
     <Compile Include="Controllers\Wms\Inventory\StockledgerController.cs" />
+    <Compile Include="Controllers\Wms\ProductQuality\ProductTimeOutController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductWarningController.cs" />
+    <Compile Include="Controllers\Wms\ProductQuality\QuantityLimitsController.cs" />
     <Compile Include="Controllers\Wms\SortingInfo\SortOrderDispatchController.cs" />
     <Compile Include="Controllers\Wms\SortingInfo\SortWorkDispatchController.cs" />
     <Compile Include="Controllers\Wms\StockMove\StockMoveBillController.cs" />
@@ -1472,7 +1474,11 @@
     <Content Include="Views\ProductWarning\_EditPartial.cshtml" />
     <Content Include="Views\ProductWarning\_SearchPartial.cshtml" />
     <Content Include="Views\StockInBill\_PrintPartial.cshtml" />
-  </ItemGroup>
+    <Content Include="Views\QuantityLimits\Index.cshtml" />
+    <Content Include="Views\QuantityLimits\_ProductPartial.cshtml" />
+    <Content Include="Views\QuantityLimits\_SearchPartial.cshtml" />
+    <Content Include="Views\ProductTimeOut\Index.cshtml" />
+    </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>

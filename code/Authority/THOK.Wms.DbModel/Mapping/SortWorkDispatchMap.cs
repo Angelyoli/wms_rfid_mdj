@@ -17,7 +17,7 @@ namespace THOK.Wms.DbModel.Mapping
             // Properties
             this.Property(t => t.OrderDate)
                 .IsRequired()
-                .IsFixedLength()
+                //.IsFixedLength()
                 .HasMaxLength(14);
 
             this.Property(t => t.SortingLineCode)

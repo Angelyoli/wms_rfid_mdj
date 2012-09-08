@@ -9,7 +9,7 @@
     function DailyDetail(warehouseCode, settleDate) {
             settle_Date = settleDate;
             warehouse_Code = warehouseCode;
-            $('#infos').datagrid({ url: '/DailyBalance/InfoDetails/?WarehouseCode=' + warehouseCode + '&&SettleDate=' + settleDate });           
+            $('#infos').datagrid({ url: '/DailyBalance/InfoCheck/?WarehouseCode=' + warehouseCode + '&&SettleDate=' + settleDate });           
             $('#InfoDetails').dialog('open').dialog('setTitle', '日结明细');
     }
     function BalanceAgain(warehouseCode, settleDate) {
