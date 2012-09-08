@@ -16,8 +16,10 @@
     function productSave() {
         var productRow = $('#productDetail').datagrid('getSelected');
         if (productRow) {
+            $('#productCodeAdd').val(productRow.ProductCode);
             $('#productCode').val(productRow.ProductCode);
             $('#productName').val(productRow.ProductName);
+            $('#productNameAdd').val(productRow.ProductName);
             $('#unitCode').val(productRow.UnitCode);
             $('#unitName').val(productRow.UnitName);
             $('#price').val(productRow.BuyPrice);

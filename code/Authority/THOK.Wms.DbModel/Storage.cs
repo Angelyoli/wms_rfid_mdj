@@ -32,6 +32,7 @@ namespace THOK.Wms.DbModel
 
        public virtual Product Product { get; set; }
        public virtual Cell Cell { get; set; }
+       public virtual ProductWarning ProductWarning { get; set; }
 
        public virtual ICollection<MoveBillDetail> MoveBillDetailOutStorages { get; set; }
        public virtual ICollection<MoveBillDetail> MoveBillDetailInStorages { get; set; }
