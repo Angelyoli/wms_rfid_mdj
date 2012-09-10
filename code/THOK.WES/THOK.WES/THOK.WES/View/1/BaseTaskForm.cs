@@ -153,10 +153,10 @@ namespace THOK.WES.View
             task.GetBillDetailCompleted += new Task.GetBillDetailCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
             {
                 InTask = false;
-                if (billDetails.Length != 0)
+                if (billDetails != null && billDetails.Length != 0)
                 {
-                    dgvMain.AutoGenerateColumns = false;                    
-                    dgvMain.DataSource = billDetails;                    
+                    dgvMain.AutoGenerateColumns = false;
+                    dgvMain.DataSource = billDetails;
                     foreach (BillDetail billDetail in billDetails)
                     {
                         if (billDetail.Status == "1")
@@ -190,7 +190,7 @@ namespace THOK.WES.View
                 if (dgvMain.SelectedRows.Count != 0)
                 {
                     DisplayPlWailt();
-                    IList<BillDetail> billDetails = new List<BillDetail>();                    
+                    IList<BillDetail> billDetails = new List<BillDetail>();
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         BillDetail billDetail = new BillDetail();
@@ -198,19 +198,19 @@ namespace THOK.WES.View
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
-                        billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);  
+                        billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
                         billDetail.Operator = Environment.MachineName;
                         billDetails.Add(billDetail);
                     }
-                    BillDetail [] tmp = new BillDetail[billDetails.Count];
-                    billDetails.CopyTo(tmp,0);
+                    BillDetail[] tmp = new BillDetail[billDetails.Count];
+                    billDetails.CopyTo(tmp, 0);
 
                     Task task = new Task(Application.OpenForms[0], url);
                     task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
                         RefreshData();
                     });
-                    task.Apply(tmp,UseTag);
+                    task.Apply(tmp, UseTag);
                 }
                 else
                     MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -264,7 +264,7 @@ namespace THOK.WES.View
         {
             try
             {
-                if (dgvMain.SelectedRows.Count > 1 )
+                if (dgvMain.SelectedRows.Count > 1)
                 {
                     MessageBox.Show("当前操作只允许操作一个任务！", "提示",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -272,20 +272,20 @@ namespace THOK.WES.View
                 }
 
                 if (dgvMain.SelectedRows.Count == 1)
-                {                    
+                {
                     IList<BillDetail> billDetails = new List<BillDetail>();
                     BillDetail billDetail = new BillDetail();
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         if (row.Cells["StatusName"].Value.ToString() == "已申请")
-                        {                            
+                        {
                             billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
                             billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                             billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                             billDetail.Operator = Environment.MachineName;
 
                             billDetail.OperatePieceQuantity = Convert.ToInt32(row.Cells["OperatePieceQuantity"].Value);
-                            billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["OperateBarQuantity"].Value);                            
+                            billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["OperateBarQuantity"].Value);
 
                             operateStorageName = row.Cells["Storage"].Value.ToString();
                             targetStorageName = row.Cells["TargetStorage"].Value.ToString();
@@ -302,7 +302,7 @@ namespace THOK.WES.View
 
                     if (confirmForm.ShowDialog() == DialogResult.OK)
                     {
-                        DisplayPlWailt();                        
+                        DisplayPlWailt();
 
                         if (BillTypes == "4")
                         {
@@ -394,7 +394,7 @@ namespace THOK.WES.View
         {
             this.plWailt.Visible = false;
             this.btnSearch.Enabled = true;
-            this.btnExit.Enabled = true ;
+            this.btnExit.Enabled = true;
         }
 
         private void btnExit_Click(object sender, EventArgs e)

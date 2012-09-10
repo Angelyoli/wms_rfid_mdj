@@ -109,6 +109,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public void GetBillDetail(BillMaster[] billMasters, string productCode, string OperateType, string OperateAreas, string Operator, Result result)
         {
             BillDetail[] billDetails = new BillDetail[] { };
+            var ops = OperateAreas.Split(',').Select(a => Convert.ToInt32(a)).ToArray();
+            
             try
             {
                 foreach (var billMaster in billMasters)
@@ -117,12 +119,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     switch (billMaster.BillType)
                     {
                         case "1"://入库单
-                            var inBillDetails = InBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
+                            var inBillDetails = InBillAllotRepository.GetQueryable()
+                                .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.ProductCode == productCode || productCode == string.Empty)                                    
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType=="3")))
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .Select(i => new BillDetail() { 
                                     BillNo = i.BillNo, 
                                     BillType = "1" ,
@@ -149,12 +150,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(inBillDetails).ToArray();
                             break;
                         case "2"://出库单
-                            var outBillDetails = OutBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
+                            var outBillDetails = OutBillAllotRepository.GetQueryable()
+                                .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -189,11 +189,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 billNo = outBillMaster.MoveBillMasterBillNo;
                                 //todo;
                                 var moveBillDetailss = MoveBillDetailRepository.GetQueryable()
+                                        .WhereIn(m => m.InCell.Layer, ops)
                                         .Where(i => i.BillNo == billNo
                                             && (i.CanRealOperate == "1" || OperateType != "Real")
-                                            && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                            && (OperateAreas.Contains(i.InCell.Layer.ToString())
-                                                || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))
+                                            && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                                        
                                         .ToArray()
                                         .Select(i => new BillDetail()
                                         {
@@ -223,12 +222,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             }
                             break;                           
                         case "3"://移库单
-                            var moveBillDetails = MoveBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
+                            var moveBillDetails = MoveBillDetailRepository.GetQueryable()
+                                .WhereIn(m => m.InCell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.InCell.Layer.ToString()) 
-                                        || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))                               
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                               
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -256,11 +254,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
                             break;
                         case "4"://盘点单
-                            var checkBillDetails = CheckBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
+                            var checkBillDetails = CheckBillDetailRepository.GetQueryable()
+                                .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
