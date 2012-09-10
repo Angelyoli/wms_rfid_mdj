@@ -1,8 +1,7 @@
 ﻿<script type="text/javascript">
 
     //选择商品信息
-    function productSelect() 
-    {
+    function productSelect() {
         $('#productData').dialog('open').dialog('setTitle', '选择商品信息');
         $('#productDetail').datagrid({ url: '/StockInBill/GetProductDetails/' });
         $("#productDetail").datagrid('reload');
@@ -10,13 +9,10 @@
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
     };
-    function select()
-     {
+    function select() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.ProductCode = $('#productCode').val();
-        queryParams.MinLimited = $('#minLimited').val();
-        queryParams.MaxLimited = $('#maxLimited').val();
-        queryParams.UnitType = $('#unit_Type').combo('getValue');
+        queryParams.assemblyTime = $('#assemblyTime').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
@@ -42,23 +38,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>商品数量下限<=</td>
-                    <td align="left"><input type="text" id="minLimited" /></td>
+                    <td>积压时间(天):</td>
+                    <td align="left"><input type="text" id="assemblyTime" editable="false" style="width: 150px"/>
+                    </td>
                 </tr>
-                 <tr>
-                    <td>商品数量上限>=</td>
-                    <td align="left"><input type="text" id="maxLimited" /></td>
-                </tr>
-                <tr>
-                    <td>换算单位:</td>
-                    <td align="left">     
-		                <select id="unit_Type" class="easyui-combobox" style=" height: 40px" editable="false">
-                            <option value="">请选择</option>                       
-                            <option value="1">标准单位</option>
-                            <option value="2">自然单位</option>
-                   </select>
-	            </td>
-              </tr>
             </table>
         </div>
     </div>

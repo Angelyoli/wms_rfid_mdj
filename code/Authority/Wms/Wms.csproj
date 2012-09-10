@@ -1480,6 +1480,8 @@
     <Content Include="Views\ProductTimeOut\Index.cshtml" />
     <Content Include="Views\StockOutBill\_PrintPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductTimeOut\_ProductPartial.cshtml" />
+    <Content Include="Views\ProductTimeOut\_SearchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
