@@ -16,7 +16,7 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool Save(ProductWarning productWarning);
 
-        object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitType);
+        object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitCode);
 
         //object GetTimeOut(int page,int rows,string productCode);
 
