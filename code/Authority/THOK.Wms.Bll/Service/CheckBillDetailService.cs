@@ -159,19 +159,19 @@ namespace THOK.Wms.Bll.Service
                     //Status = WhatStatus(i.Status)
                     i.Status
                 });
-                dt.Columns.Add("BillNo", typeof(string));
-                dt.Columns.Add("CellCode", typeof(string));
-                dt.Columns.Add("CellName", typeof(string));
-                dt.Columns.Add("StorageCode", typeof(string));
-                dt.Columns.Add("ProductCode", typeof(string));
-                dt.Columns.Add("ProductName", typeof(string));
-                dt.Columns.Add("UnitCode", typeof(string));
-                dt.Columns.Add("UnitName", typeof(string));
-                dt.Columns.Add("Quantity", typeof(string));
-                dt.Columns.Add("OperatePersonName", typeof(string));
+                dt.Columns.Add("盘点单号", typeof(string));
+                dt.Columns.Add("货位编码", typeof(string));
+                dt.Columns.Add("货位名称", typeof(string));
+                dt.Columns.Add("储存名称", typeof(string));
+                dt.Columns.Add("产品编码", typeof(string));
+                dt.Columns.Add("产品名称", typeof(string));
+                dt.Columns.Add("单位编码", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("数量", typeof(string));
+                dt.Columns.Add("作业人员", typeof(string));
                 //dt.Columns.Add("StartTime", typeof(string));
                 //dt.Columns.Add("FinishTime", typeof(string));
-                dt.Columns.Add("Status", typeof(string));
+                dt.Columns.Add("完成状态", typeof(string));
                 foreach (var c in checkBillDetail)
                 {
                     dt.Rows.Add

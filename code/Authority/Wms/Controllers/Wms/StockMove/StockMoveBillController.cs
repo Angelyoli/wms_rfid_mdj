@@ -203,7 +203,7 @@ namespace Authority.Controllers.Wms.StockMove
 
             System.Data.DataTable dt = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo);
 
-            string strHeaderText = "移库信息表";
+            string strHeaderText = "移库信息明细";
             #region
             string filename = strHeaderText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
             Response.Clear();
