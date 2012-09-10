@@ -82,6 +82,7 @@
     <Compile Include="Common\StorageLocker.cs" />
     <Compile Include="Common\MoveBillCreater.cs" />
     <Compile Include="Common\OutBillCreater.cs" />
+    <Compile Include="Connection\AutomotiveSystemsConnection.cs" />
     <Compile Include="Connection\ConnectionBase.cs" />
     <Compile Include="Connection\DispatchSortWorkConnection.cs" />
     <Compile Include="Dispatch\Interfaces\ISortOrderWorkDispatchService.cs" />
