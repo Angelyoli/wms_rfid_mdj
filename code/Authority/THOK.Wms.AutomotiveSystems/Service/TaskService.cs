@@ -9,6 +9,7 @@ using THOK.Wms.SignalR.Common;
 using THOK.Wms.DbModel;
 using Entities.Extensions;
 using THOK.Wms.Dal.EntityRepository;
+using THOK.Wms.SignalR.Connection;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
@@ -854,7 +855,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
                                .GroupBy(r => new { r.ProductCode, r.ProductName })
                                .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
-                               .Where(r=>r.Quantity <300000);
+                               .Where(r=>r.Quantity <300000).ToArray();
 
                 var tmp5 = sortingLineQuery
                              .Join(moveBillDetailQuery,
@@ -866,14 +867,20 @@ namespace THOK.Wms.AutomotiveSystems.Service
                              .Select(r => r.m);
                 var tmp6 = tmp5.ToArray().OrderBy(m => m.RealQuantity);
 
-                tmp4.ToArray().AsParallel().ForAll(t =>
+                bool tmp8 = false;
+                tmp4.AsParallel().ForAll(t =>
                     {
                         var tmp7 = tmp6.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
                         if (tmp7 != null)
                         {
                             tmp7.CanRealOperate = "1";
+                            tmp8 = true;
                         }
                     });
+                if (tmp8)
+                {
+                    Notify();
+                }
                 MoveBillDetailRepository.SaveChanges();
                 result = true;
             }
@@ -883,6 +890,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 error = e.Message;
             }
             return result;
+        }
+
+        private void Notify()
+        {
+            AutomotiveSystemsNotify.Notify();
         }
     }
 }

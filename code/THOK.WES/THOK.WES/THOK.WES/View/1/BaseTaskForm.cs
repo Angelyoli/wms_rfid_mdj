@@ -10,6 +10,7 @@ using THOK.WES;
 using THOK.WES.Interface;
 using THOK.WES.Interface.Model;
 using System.Collections;
+using SignalR.Client;
 
 namespace THOK.WES.View
 {
@@ -55,6 +56,7 @@ namespace THOK.WES.View
         /// </summary>
         private string UseRfid = "";
 
+        private Connection connection = null;
         public BaseTaskForm()
         {
             InitializeComponent();
@@ -62,6 +64,9 @@ namespace THOK.WES.View
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
+            connection = new Connection(@"http://59.61.87.212:8090/automotiveSystems");
+            connection.Received += new Action<string>(connection_Received);
+            connection.Closed += new Action(connection_Closed);
 
             if (configUtil.GetConfig("DeviceType")["Device"] == "0")
             {
@@ -408,6 +413,7 @@ namespace THOK.WES.View
             {
                 btnOpType.Text = "正常";
                 OperateType = "NoReal";
+                connection.Stop();
             }
             else
             {
@@ -415,6 +421,31 @@ namespace THOK.WES.View
                 OperateType = "Real";
 
                 //todo 连接实时作业信息服务器；
+                connection.Start().ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        Console.WriteLine("Failed to start: {0}", task.Exception.GetBaseException());
+                    }
+                });
+            }
+            RefreshData();
+        }
+
+        delegate void RefreshTask();
+        void connection_Received(string data)
+        {
+            if (data == "TaskStart")
+            {
+                Application.OpenForms[0].Invoke(new RefreshTask(RefreshData));
+            }
+        }
+
+        void connection_Closed()
+        {
+            if (OperateType == "Real")
+            {
+                connection.Start();
             }
         }
     }

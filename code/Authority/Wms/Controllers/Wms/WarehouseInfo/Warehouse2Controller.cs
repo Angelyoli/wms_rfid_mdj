@@ -8,6 +8,7 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Service;
+using THOK.Wms.SignalR.Connection;
 namespace Wms.Controllers.Wms.WarehouseInfo
 {
     public class Warehouse2Controller : Controller
@@ -23,6 +24,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
 
         public ActionResult Index(string moduleID)
         {
+            AutomotiveSystemsNotify.Notify();
             ViewBag.hasSearch = true;
             ViewBag.hasAdd = true;
             ViewBag.hasEdit = true;
