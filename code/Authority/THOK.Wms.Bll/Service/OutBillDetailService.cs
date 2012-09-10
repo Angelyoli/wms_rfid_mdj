@@ -9,7 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class OutBillDetailService:ServiceBase<OutBillDetail>,IOutBillDetailService
+    public class OutBillDetailService : ServiceBase<OutBillDetail>, IOutBillDetailService
     {
         [Dependency]
         public IOutBillDetailRepository OutBillDetailRepository { get; set; }
@@ -123,7 +123,7 @@ namespace THOK.Wms.Bll.Service
             var storage = StorageRepository.GetQueryable().Where(s => s.ProductCode == outBillDetail.ProductCode);//
             var storageQuantity = storage.Sum(s => (s.Quantity - s.OutFrozenQuantity));
 
-            if ((outbm != null && outbm.ID == outBillDetail.ID)||outbm==null)
+            if ((outbm != null && outbm.ID == outBillDetail.ID) || outbm == null)
             {
                 if (outbm == null)
                 {
@@ -164,10 +164,58 @@ namespace THOK.Wms.Bll.Service
                 else
                     errorInfo = "当前库存小于您输入的数量！请从新输入！";
             }
-            
+
             return result;
         }
 
         #endregion
+
+        public System.Data.DataTable GetOutBillDetail(int page, int rows, string BillNo)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            if (BillNo != "" && BillNo != null)
+            {
+                IQueryable<OutBillDetail> outBillDetailQuery = OutBillDetailRepository.GetQueryable();
+                var outBillDetail = outBillDetailQuery.Where(i => i.BillNo.Contains(BillNo))
+                                                      .OrderBy(i => i.BillNo).Select(i => i)
+                                                      .Select(i => new
+                {
+                    i.ID,
+                    i.BillNo,
+                    i.ProductCode,
+                    i.Product.ProductName,
+                    i.UnitCode,
+                    i.Unit.UnitName,
+                    BillQuantity = i.BillQuantity / i.Unit.Count,
+                    AllotQuantity = i.AllotQuantity / i.Unit.Count,
+                    RealQuantity = i.RealQuantity / i.Unit.Count,
+                    i.Price,
+                    i.Description
+                });
+                dt.Columns.Add("商品编码", typeof(string));
+                dt.Columns.Add("商品名称", typeof(string));
+                dt.Columns.Add("单位编码", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("订单数量", typeof(string));
+                dt.Columns.Add("已分配数量", typeof(string));
+                dt.Columns.Add("实际出库量", typeof(string));
+                dt.Columns.Add("备注", typeof(string));
+                foreach (var o in outBillDetail)
+                {
+                    dt.Rows.Add
+                        (
+                              o.ProductCode
+                            , o.ProductName
+                            , o.UnitCode
+                            , o.UnitName
+                            , o.BillQuantity
+                            , o.AllotQuantity
+                            , o.RealQuantity
+                            , o.Description
+                        );
+                }
+            }
+            return dt;
+        }
     }
 }

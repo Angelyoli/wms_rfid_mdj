@@ -1,0 +1,11 @@
+﻿<script type="text/javascript">
+    function printClick() {
+
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            window.location.href = '/StockOutBill/CreateExcelToClient/?billNo=' + row.BillNo;
+        } else {
+            $.messager.alert('系统提示', '未选中行', "info");
+        }
+    }
+</script>

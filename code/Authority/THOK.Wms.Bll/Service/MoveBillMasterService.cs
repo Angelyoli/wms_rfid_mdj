@@ -12,7 +12,7 @@ using System.Transactions;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class MoveBillMasterService:ServiceBase<MoveBillMaster>, IMoveBillMasterService
+    public class MoveBillMasterService : ServiceBase<MoveBillMaster>, IMoveBillMasterService
     {
         [Dependency]
         public IMoveBillMasterRepository MoveBillMasterRepository { get; set; }
@@ -63,7 +63,7 @@ namespace THOK.Wms.Bll.Service
             return statusStr;
         }
 
-        public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode,string CheckPersonCode, string Status, string IsActive)
+        public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive)
         {
             IQueryable<MoveBillMaster> moveBillMasterQuery = MoveBillMasterRepository.GetQueryable();
             var moveBillMaster = moveBillMasterQuery.Where(i => i.BillNo.Contains(BillNo)
@@ -73,7 +73,7 @@ namespace THOK.Wms.Bll.Service
                     && i.Status.Contains(Status))
                 .OrderByDescending(t => t.BillDate)
                 .OrderByDescending(t => t.BillNo)
-                .Select(i =>i);
+                .Select(i => i);
 
             if (!beginDate.Equals(string.Empty))
             {
@@ -94,7 +94,7 @@ namespace THOK.Wms.Bll.Service
             int total = moveBillMaster.Count();
             moveBillMaster = moveBillMaster.Skip((page - 1) * rows).Take(rows);
 
-            var temp =moveBillMaster.ToArray().AsEnumerable().Select(i=>new
+            var temp = moveBillMaster.ToArray().AsEnumerable().Select(i => new
             {
                 i.BillNo,
                 BillDate = i.BillDate.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -156,7 +156,7 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        public bool Delete(string BillNo,out string strResult)
+        public bool Delete(string BillNo, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
@@ -192,7 +192,7 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        public bool Save(MoveBillMaster moveBillMaster,out string strResult)
+        public bool Save(MoveBillMaster moveBillMaster, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
@@ -466,6 +466,56 @@ namespace THOK.Wms.Bll.Service
         public bool GeneratePalletTag(string billNo, ref string strResult)
         {
             throw new NotImplementedException();
+        }
+
+        public System.Data.DataTable GetMoveBill(int page, int rows, string BillNo)
+        {
+            IQueryable<MoveBillMaster> moveBillMasterQuery = MoveBillMasterRepository.GetQueryable();
+            var moveBillMaster = moveBillMasterQuery.Where(i => i.BillNo.Contains(BillNo) && i.Status != "4").Select(i => new
+            {
+                i.BillNo,
+                //BillDate = i.BillDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                //i.OperatePersonID,
+                //i.BillTypeCode,
+                BillTypeName = i.BillType.BillTypeName,
+                i.WarehouseCode,
+                //i.Warehouse.WarehouseName,
+                //OperatePersonCode = i.OperatePerson.EmployeeCode,
+                OperatePersonName = i.OperatePerson.EmployeeName,
+                i.Status,
+                //VerifyPersonID = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeCode,
+                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
+                //VerifyDate = (i.VerifyDate == null ? "" : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd HH:mm:ss")),
+                //Status = WhatStatus(i.Status),
+                Description = i.Description
+                //IsActive = i.IsActive == "1" ? "可用" : "不可用",
+                //UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("移库单号", typeof(string));
+            //dt.Columns.Add("BillDate", typeof(string));
+            dt.Columns.Add("订单类型", typeof(string));
+            dt.Columns.Add("仓库编码", typeof(string));
+            dt.Columns.Add("经办人", typeof(string));
+            dt.Columns.Add("处理状态", typeof(string));
+            dt.Columns.Add("审核人", typeof(string));
+            //dt.Columns.Add("VerifyDate", typeof(string));
+            dt.Columns.Add("备注", typeof(string));
+            //dt.Columns.Add("UpdateTime", typeof(string));
+            foreach (var m in moveBillMaster)
+            {
+                dt.Rows.Add
+                    (
+                          m.BillNo
+                        , m.BillTypeName
+                        , m.WarehouseCode
+                        , m.OperatePersonName
+                        , m.Status
+                        , m.VerifyPersonName
+                        , m.Description
+                    );
+            }
+            return dt;
         }
     }
 }
