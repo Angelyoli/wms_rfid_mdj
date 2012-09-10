@@ -30,7 +30,7 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
         [Dependency]
-        public IStorageLocker Locker { get; set; } 
+        public IStorageLocker Locker { get; set; }
 
         [Dependency]
         public IProfitLossBillMasterRepository ProfitLossBillMasterRepository { get; set; }
@@ -76,7 +76,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<CheckBillMaster> CheckBillMasterQuery = CheckBillMasterRepository.GetQueryable();
             //var checkBillMasters = CheckBillMasterQuery.Where(i => i.BillNo.Contains(BillNo) && i.OperatePerson.EmployeeName.Contains(OperatePersonCode));
             var checkBillMasters = CheckBillMasterQuery.Where(i => i.BillNo.Contains(BillNo)
-                && i.Status!="5")
+                && i.Status != "5")
                 .OrderByDescending(t => t.BillDate)
                 .OrderByDescending(t => t.BillNo)
                 .Select(i => i);
@@ -87,7 +87,7 @@ namespace THOK.Wms.Bll.Service
             if (!beginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(beginDate);
-                checkBillMasters = checkBillMasters.Where(i =>Convert.ToDateTime(i.BillDate) >= begin);
+                checkBillMasters = checkBillMasters.Where(i => Convert.ToDateTime(i.BillDate) >= begin);
             }
             if (!endDate.Equals(string.Empty))
             {
@@ -114,7 +114,7 @@ namespace THOK.Wms.Bll.Service
             int total = checkBillMasters.Count();
             checkBillMasters = checkBillMasters.Skip((page - 1) * rows).Take(rows);
 
-            var temp=checkBillMasters.ToArray().AsEnumerable().Select(i => new
+            var temp = checkBillMasters.ToArray().AsEnumerable().Select(i => new
                 {
                     i.BillNo,
                     BillDate = i.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
@@ -241,7 +241,7 @@ namespace THOK.Wms.Bll.Service
             }
             var storages = storageQuery.Where(s => (ware.Contains(s.Cell.Shelf.Area.Warehouse.WarehouseCode) || area.Contains(s.Cell.Shelf.Area.AreaCode) || shelf.Contains(s.Cell.Shelf.ShelfCode) || cell.Contains(s.Cell.CellCode)) && s.Quantity > 0 && s.IsLock == "0")
                                        .OrderBy(s => s.StorageCode)
-                                       .Select(s=>s);
+                                       .Select(s => s);
 
             int total = storages.Count();
             storages = storages.Skip((page - 1) * rows).Take(rows);
@@ -326,11 +326,11 @@ namespace THOK.Wms.Bll.Service
                                         checkDetail.RealQuantity = stor.Quantity;
                                         checkDetail.Status = "0";
                                         CheckBillDetailRepository.Add(checkDetail);
-                                       
+
                                         var storage = storageQuery.Where(s => s.StorageCode == stor.StorageCode).FirstOrDefault();
                                         storage.IsLock = "1";
                                     }
-                                    
+
                                     result = true;
                                 }
                                 else
@@ -431,7 +431,7 @@ namespace THOK.Wms.Bll.Service
 
                 var storages = storageQuery.Where(s => s.ProductCode != null && products.Contains(s.ProductCode) && s.Quantity > 0 && s.IsLock == "0")
                                       .OrderBy(s => s.StorageCode)
-                                      .Select(s =>s);
+                                      .Select(s => s);
                 int total = storages.Count();
                 storages = storages.Skip((page - 1) * rows).Take(rows);
 
@@ -896,5 +896,61 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+
+        public System.Data.DataTable GetCheckBill(int page, int rows, string BillNo)
+        {
+            IQueryable<CheckBillMaster> CheckBillMasterQuery = CheckBillMasterRepository.GetQueryable();
+            var checkBillMasters = CheckBillMasterQuery.Where(i => i.BillNo.Contains(BillNo) && i.Status != "5").Select(i => i);
+            if (!BillNo.Equals(string.Empty) && BillNo != null)
+            {
+                checkBillMasters = checkBillMasters.Where(i => i.BillNo.Contains(BillNo));
+            }
+            var temp = checkBillMasters.ToArray().AsEnumerable().Select(i => new
+            {
+                i.BillNo,
+                BillTypeName = i.BillType.BillTypeName,
+                WarehouseName = i.Warehouse.WarehouseName,
+                OperatePersonName = i.OperatePerson.EmployeeName,
+                i.Status,
+                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
+                i.Description
+                //BillDate = i.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                //i.Warehouse.WarehouseCode,                
+                //OperatePersonCode = i.OperatePerson.EmployeeCode,                
+                //VerifyPersonCode = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeCode,
+                //VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
+                //BillTypeCode = i.BillType.BillTypeCode,                
+                //VerifyDate = i.VerifyDate == null ? string.Empty : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss"),
+                //Status = WhatStatus(i.Status),
+                //IsActive = i.IsActive == "1" ? "可用" : "不可用",
+                //UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("BillNo", typeof(string));
+            //dt.Columns.Add("BillDate", typeof(string));
+            dt.Columns.Add("BillTypeName", typeof(string));
+            dt.Columns.Add("WarehouseName", typeof(string));
+            dt.Columns.Add("OperatePersonName", typeof(string));
+            dt.Columns.Add("Status", typeof(string));
+            dt.Columns.Add("VerifyPersonName", typeof(string));
+            //dt.Columns.Add("VerifyDate", typeof(string));
+            dt.Columns.Add("Description", typeof(string));
+            //dt.Columns.Add("UpdateTime", typeof(string));
+            foreach (var t in temp)
+            {
+                dt.Rows.Add
+                    (
+                          t.BillNo
+                        , t.BillTypeName
+                        , t.WarehouseName
+                        , t.OperatePersonName
+                        , t.Status
+                        , t.VerifyPersonName
+                        , t.Description 
+                    );
+            }
+            return dt;
+        }
     }
 }

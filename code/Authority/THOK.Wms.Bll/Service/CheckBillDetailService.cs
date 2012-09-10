@@ -52,7 +52,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<CheckBillDetail> checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
             if (BillNo != null && BillNo != string.Empty)
             {
-                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i =>i);
+                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => i);
                 int total = checkBillDetail.Count();
                 checkBillDetail = checkBillDetail.Skip((page - 1) * rows).Take(rows);
 
@@ -76,7 +76,7 @@ namespace THOK.Wms.Bll.Service
                     OperatePersonName = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeName,
                     StartTime = i.StartTime == null ? string.Empty : i.StartTime.ToString(),
                     FinishTime = i.FinishTime == null ? string.Empty : i.FinishTime.ToString(),
-                    Status=WhatStatus(i.Status)
+                    Status = WhatStatus(i.Status)
                 });
                 return new { total, rows = temp.ToArray() };
             }
@@ -116,7 +116,7 @@ namespace THOK.Wms.Bll.Service
                 CheckBillDetailRepository.Add(checkDetail);
                 CheckBillDetailRepository.SaveChanges();
             }
-            return true;            
+            return true;
         }
 
         public bool Delete(string BillNo)
@@ -130,5 +130,67 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+        public System.Data.DataTable GetCheckBillDetail(int page, int rows, string BillNo)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            IQueryable<CheckBillDetail> checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
+            if (BillNo != null && BillNo != string.Empty)
+            {
+                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+                {
+                    i.BillNo,
+                    i.Cell.CellCode,
+                    i.Cell.CellName,
+                    i.StorageCode,
+                    i.Product.ProductCode,
+                    i.Product.ProductName,
+                    i.Unit.UnitCode,
+                    i.Unit.UnitName,
+                    Quantity = i.Quantity / i.Unit.Count,
+                    RealProductCode = i.RealProduct.ProductCode,
+                    RealProductName = i.RealProduct.ProductName,
+                    RealUnitCode = i.RealUnit.UnitCode,
+                    RealUnitName = i.RealUnit.UnitName,
+                    OperatePersonCode = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeCode,
+                    OperatePersonName = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeName,
+                    //StartTime = i.StartTime == null ? string.Empty : i.StartTime.ToString(),
+                    //FinishTime = i.FinishTime == null ? string.Empty : i.FinishTime.ToString(),
+                    //Status = WhatStatus(i.Status)
+                    i.Status
+                });
+                dt.Columns.Add("BillNo", typeof(string));
+                dt.Columns.Add("CellCode", typeof(string));
+                dt.Columns.Add("CellName", typeof(string));
+                dt.Columns.Add("StorageCode", typeof(string));
+                dt.Columns.Add("ProductCode", typeof(string));
+                dt.Columns.Add("ProductName", typeof(string));
+                dt.Columns.Add("UnitCode", typeof(string));
+                dt.Columns.Add("UnitName", typeof(string));
+                dt.Columns.Add("Quantity", typeof(string));
+                dt.Columns.Add("OperatePersonName", typeof(string));
+                //dt.Columns.Add("StartTime", typeof(string));
+                //dt.Columns.Add("FinishTime", typeof(string));
+                dt.Columns.Add("Status", typeof(string));
+                foreach (var c in checkBillDetail)
+                {
+                    dt.Rows.Add
+                        (
+                              c.BillNo
+                            , c.CellCode
+                            , c.CellName
+                            , c.StorageCode
+                            , c.ProductCode
+                            , c.ProductName
+                            , c.UnitCode
+                            , c.UnitName
+                            , c.Quantity
+                            , c.OperatePersonName
+                            , c.Status
+                        );
+                }
+            }
+            return dt;
+        }
     }
 }

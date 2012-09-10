@@ -450,5 +450,54 @@ namespace THOK.Wms.Allot.Service
             }
             return result;
         }
+
+
+        public System.Data.DataTable AllotSearch(int page, int rows, string billNo)
+        {
+            var allotQuery = InBillAllotRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(a => new
+            {
+                a.ProductCode,
+                a.Product.ProductName,
+                a.Cell.CellName,
+                a.StorageCode,
+                a.UnitCode,
+                a.Unit.UnitName,
+                AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                RealQuantity = a.RealQuantity / a.Unit.Count,
+                a.OperatePersonID,
+                a.StartTime,
+                a.FinishTime,
+                a.Status
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("商品编码", typeof(string));
+            dt.Columns.Add("商品名称", typeof(string));
+            dt.Columns.Add("储位名称", typeof(string));
+            dt.Columns.Add("单位名称", typeof(string));
+            dt.Columns.Add("分配数量", typeof(string));
+            dt.Columns.Add("实际数量", typeof(string));
+            dt.Columns.Add("作业人员", typeof(string));
+            //dt.Columns.Add("StartTime", typeof(string));
+            //dt.Columns.Add("FinishTime", typeof(string));
+            dt.Columns.Add("作业状态", typeof(string));
+            foreach (var q in query)
+            {
+                dt.Rows.Add
+                    (
+                        q.ProductCode,
+                        q.ProductName,
+                        q.CellName,
+                        q.UnitName,
+                        q.AllotQuantity,
+                        q.RealQuantity,
+                        q.OperatePersonID,
+                        //q.StartTime,
+                        //q.FinishTime,
+                        q.Status
+                    );
+            }
+            return dt;
+        }
     }
 }

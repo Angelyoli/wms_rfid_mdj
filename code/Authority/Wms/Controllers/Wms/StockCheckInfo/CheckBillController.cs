@@ -6,6 +6,23 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.WebUtil;
+using NPOI;
+using NPOI.HPSF;
+using NPOI.HSSF.UserModel;
+using NPOI.HSSF.Util;
+using NPOI.POIFS;
+using NPOI.SS.UserModel;
+using NPOI.Util;
+using NPOI.SS;
+using NPOI.DDF;
+using NPOI.SS.Util;
+using NPOI.SS.Formula.Eval;
+using System.Collections;
+using System.Text.RegularExpressions;
+using System.Web.UI;
+using THOK.Wms.Bll.Service;
+using System.IO;
+using System.Text;
 
 namespace Authority.Controllers.Wms.StockCheckInfo
 {
