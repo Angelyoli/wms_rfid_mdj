@@ -1,19 +1,5 @@
-﻿<script>
-    function ProductQueryClick() {
-        $('#details').datagrid({ url: '/ProductTimeOut/GetProductDetails/?QueryString=' + $('#queryType').combobox('getValue') + '&Value=' + $('#ProductInfo').val() });
-        $("#details").datagrid('reload');
-    };
-</script>
-<div region="center" split="true" border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">    
-    <div>
-        <select id="queryType" name="QueryString" class="easyui-combobox" style="width: 100px;" readonly="true">
-		                <option value="ProductCode">商品代码</option>
-		                <option value="ProductName">商品名称</option>
-	                </select>
-                    <input id="ProductInfo">
-        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ProductQueryClick()" id="ProductQuery">查询</a>
-    </div>
-    <table id="details" class="easyui-datagrid"
+﻿ <div region="center" split="true" border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">    
+ <table id="details" class="easyui-datagrid"
             url="/ProductTimeOut/GetProductDetails/" border="false" singleSelect="true"
         fit="true" toolbar="#tool"  pagination="true" rownumbers="true">
         <thead>
