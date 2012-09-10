@@ -10,7 +10,6 @@ using System.IO;
 using System.Text;
 using NPOI;
 using NPOI.HPSF;
-using NPOI.HSSF;
 using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
 using NPOI.POIFS;
@@ -57,11 +56,9 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             Response.BufferOutput = false;
             //Response.ContentEncoding = System.Text.Encoding.UTF8;
             //HttpUtility.UrlDecode(filename+".xls",System.Text.Encoding.UTF8); //乱码转换
-            Encoding gb2312 = Encoding.GetEncoding("gb2312");
-            Response.ContentEncoding = gb2312;
+            Response.ContentEncoding = Encoding.GetEncoding("gb2312");
             Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
             Response.ContentType = "application/ms-excel";
-
             string[] str = {
                                "20",        //[0]大标题字体大小
                                "700",       //[1]大标题字体粗宽
