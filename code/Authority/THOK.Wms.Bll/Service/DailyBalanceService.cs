@@ -304,7 +304,7 @@ namespace THOK.Wms.Bll.Service
                                         n.ProfitAmount == n.BSys_ProfitAmount &&
                                         n.LossAmount == n.BSys_LossAmount &&
                                         n.Ending == n.BSys_Ending ?
-                                        "true" : "false",
+                                        "T" : "F",
                             Status1 = n.Beginning == n.BSys_Beginning ?
                                 "T" : "F",
                             Status2 = n.EntryAmount == n.BSys_EntryAmount ?
@@ -317,17 +317,16 @@ namespace THOK.Wms.Bll.Service
                                 "T" : "F",
                             Status6 = n.Ending == n.BSys_Ending ?
                                 "true" : "F"
-                        }).OrderByDescending(n => n.SettleDate)
-                            .OrderBy(n => n.Status)
-                            .OrderBy(n => n.WarehouseName)
-                            .OrderBy(n => n.ProductCode);
+                        }).OrderBy(n => n.Status)
+                          .OrderBy(n => n.WarehouseName)
+                          .OrderBy(n => n.ProductCode);
+
             int total = InfoCheck.Count();
             var infoCheck = InfoCheck.Skip((page - 1) * rows).Take(rows);
 
+            //两个系统产品日结结果比对结果按照单位换算
             string unitName = "";
             decimal count = 1;
-
-            //两个系统产品日结结果比对结果按照单位换算
 
             //标准单位（标准件||标准条）
             if (unitType == "1" || unitType == "2")
