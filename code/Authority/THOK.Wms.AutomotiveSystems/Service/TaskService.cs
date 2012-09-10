@@ -800,10 +800,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var sortOrder = sortOrderQuery.Join(sortOrderDispatchQuery,
                                         o => new { o.OrderDate, o.DeliverLineCode },
                                         d => new { d.OrderDate, d.DeliverLineCode },
-                                        (o, d) => new {d.SortingLineCode,o }
-                                    ).Where(r=> r.o.OrderDate == orderdate
-                                        && r.SortingLineCode == sortingLineCode)
-                                    .Select(r=>r.o).FirstOrDefault();
+                                        (o, d) => new { d.SortingLineCode, o }
+                                    ).Where(r => r.o.OrderDate == orderdate 
+                                             && r.o.OrderID == orderId
+                                             && r.SortingLineCode == sortingLineCode)
+                                    .Select(r => r.o).FirstOrDefault();
                 if (sortOrder != null)
                 {
                     sortOrder.Status = "1";

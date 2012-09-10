@@ -322,6 +322,7 @@ namespace THOK.Wms.SignalR.Common
                 detail.UnitCode = sourceStorage.Product.UnitCode;
                 detail.RealQuantity = moveQuantity;
                 detail.Status = "0";
+                detail.CanRealOperate = "0";
                 moveBillMaster.MoveBillDetails.Add(detail);
                 sourceStorage.OutFrozenQuantity += moveQuantity;
                 targetStorage.ProductCode = sourceStorage.ProductCode;
