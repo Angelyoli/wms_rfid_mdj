@@ -20,7 +20,7 @@ namespace THOK.Wms.Bll.Interfaces
 
         //object GetTimeOut(int page,int rows,string productCode);
 
-        object GetProductDetails(int page, int rows, string QueryString, string Value);
+        object GetProductDetails(int page, int rows, string productCode, decimal assemblyTime);
 
     }
 }

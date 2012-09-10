@@ -16,10 +16,10 @@ namespace Wms.Controllers.Wms.ProductQuality
         //
         // GET: /QuantityLimits/
         [Dependency]
-        public IStorageService StorageServer { get; set; }
+        public IStorageService StorageService { get; set; }
 
         [Dependency]
-        public IProductWarningService ProductWarningServer { get; set; }
+        public IProductWarningService ProductWarningService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -32,10 +32,18 @@ namespace Wms.Controllers.Wms.ProductQuality
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string productCode = collection["ProductCode"] ?? "";
-            decimal minLimited = decimal.Parse(collection["MinLimited"]);
-            decimal maxLimited = decimal.Parse(collection["MaxLimited"]);
+            decimal minLimited=0;
+            decimal maxLimited=100000;
+            if (collection["MinLimited"] != null && collection["MinLimited"] != "")
+            {
+                minLimited = decimal.Parse(collection["MinLimited"]);
+            }
+            if (collection["MaxLimited"] != null && collection["MaxLimited"] != "")
+            {
+                maxLimited = decimal.Parse(collection["MaxLimited"]);
+            }
             string unitType = collection["UnitType"] ?? "";
-            var productWarn = ProductWarningServer.GetQtyLimitsDetail(page, rows, productCode, minLimited, maxLimited, unitType);
+            var productWarn = ProductWarningService.GetQtyLimitsDetail(page, rows, productCode, minLimited, maxLimited, unitType);
             return Json(productWarn, "text", JsonRequestBehavior.AllowGet);
         }
     }

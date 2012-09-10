@@ -16,7 +16,7 @@ namespace Wms.Controllers.Wms.ProductQuality
         //
         // GET: /ProductWarning/
         [Dependency]
-        public IProductWarningService ProductWarningServer { get; set; }
+        public IProductWarningService ProductWarningService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -32,27 +32,39 @@ namespace Wms.Controllers.Wms.ProductQuality
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string productCode = collection["ProductCode"] ?? "";
-            decimal minLimited = decimal.Parse(collection["MinLimited"]);
-            decimal maxLimited = decimal.Parse(collection["MaxLimited"]);
-            decimal assemblyTime = decimal.Parse(collection["AssemblyTime"]);
-            var productWarn = ProductWarningServer.GetDetail(page, rows, productCode, minLimited, maxLimited, assemblyTime);
+            decimal minLimited=0;
+            decimal maxLimited=100000;
+            decimal assemblyTime=180;
+            if (collection["MinLimited"] != null && collection["MinLimited"] != "")
+            {
+                minLimited = decimal.Parse(collection["MinLimited"]);
+            }
+            if (collection["MaxLimited"] != null && collection["MaxLimited"] != "")
+            {
+                maxLimited = decimal.Parse(collection["MaxLimited"]);
+            }
+            if (collection["AssemblyTime"] != null && collection["AssemblyTime"] != "")
+            {
+                assemblyTime = decimal.Parse(collection["AssemblyTime"]);
+            }
+            var productWarn = ProductWarningService.GetDetail(page, rows, productCode, minLimited, maxLimited, assemblyTime);
             return Json(productWarn, "text", JsonRequestBehavior.AllowGet);
         }
         public ActionResult Create(ProductWarning productWarning)
         {
-            bool bResult = ProductWarningServer.Add(productWarning);
+            bool bResult = ProductWarningService.Add(productWarning);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
         public ActionResult Delete(string ProductCode)
         {
-            bool bResult = ProductWarningServer.Delete(ProductCode);
+            bool bResult = ProductWarningService.Delete(ProductCode);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
         public ActionResult Edit(ProductWarning productWarning)
         {
-            bool bResult = ProductWarningServer.Save(productWarning);
+            bool bResult = ProductWarningService.Save(productWarning);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
