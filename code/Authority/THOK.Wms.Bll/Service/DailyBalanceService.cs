@@ -195,7 +195,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<DailyBalance> dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
             IQueryable<BusinessSystemsDailyBalance> BusinessSystemsDailyBalanceQuery = BusinessSystemsDailyBalanceRepository.GetQueryable();
             var query = dailyBalanceQuery.Where(d => d.WarehouseCode.Contains(warehouseCode) && d.SettleDate == date)
-                                         .Select(d => new
+                                         .Select(d => new //本系统产品日结结果
                                          {
                                              d.SettleDate,
                                              d.ProductCode,
@@ -221,7 +221,7 @@ namespace THOK.Wms.Bll.Service
                                              BSys_LossAmount = decimal.Zero,
                                              BSys_Ending = decimal.Zero
                                          }).Concat(BusinessSystemsDailyBalanceQuery.Where(b => b.WarehouseCode.Contains(warehouseCode) && b.SettleDate == date)
-                                                                                   .Select(b => new
+                                                                                   .Select(b => new //营销系统产品日结结果
                                                                                     {
                                                                                         b.SettleDate,
                                                                                         b.ProductCode,
@@ -247,8 +247,8 @@ namespace THOK.Wms.Bll.Service
                                                                                         BSys_LossAmount = b.LossAmount,
                                                                                         BSys_Ending = b.Ending
                                                                                     }));
-            var InfoCheck =query.GroupBy(q => new {q.SettleDate, q.WarehouseCode, q.ProductCode})
-                        .Select(q => new
+            var InfoCheck = query.GroupBy(q => new { q.SettleDate, q.WarehouseCode, q.ProductCode })
+                        .Select(q => new   //两个系统产品日结结果汇总
                         {
                             q.Key.SettleDate,
                             q.Key.WarehouseCode,
@@ -272,13 +272,59 @@ namespace THOK.Wms.Bll.Service
                             BSys_DeliveryAmount = q.Sum(i => i.BSys_DeliveryAmount),
                             BSys_ProfitAmount = q.Sum(i => i.BSys_ProfitAmount),
                             BSys_LossAmount = q.Sum(i => i.BSys_LossAmount),
-                            BSys_Ending = q.Sum(i => i.BSys_Ending)
-                        }) .OrderByDescending(i => i.SettleDate)
-                           .OrderBy(i => i.WarehouseName)
-                           .OrderBy(i => i.ProductCode);
+                            BSys_Ending = q.Sum(i => i.BSys_Ending),
+                        }).Select(n => new //两个系统产品日结结果比对
+                        {
+                            n.SettleDate,
+                            n.WarehouseCode,
+                            n.ProductCode,
+                            n.ProductName,
+                            n.WarehouseName,
+                            n.UnitCode01,
+                            n.UnitName01,
+                            n.UnitCode02,
+                            n.UnitName02,
+                            n.Count01,
+                            n.Count02,
+                            n.Beginning,
+                            n.EntryAmount,
+                            n.DeliveryAmount,
+                            n.ProfitAmount,
+                            n.LossAmount,
+                            n.Ending,
+                            n.BSys_Beginning,
+                            n.BSys_EntryAmount,
+                            n.BSys_DeliveryAmount,
+                            n.BSys_ProfitAmount,
+                            n.BSys_LossAmount,
+                            n.BSys_Ending,
+                            Status = n.Beginning == n.BSys_Beginning &&
+                                        n.EntryAmount == n.BSys_EntryAmount &&
+                                        n.DeliveryAmount == n.BSys_DeliveryAmount &&
+                                        n.ProfitAmount == n.BSys_ProfitAmount &&
+                                        n.LossAmount == n.BSys_LossAmount &&
+                                        n.Ending == n.BSys_Ending ?
+                                        "T" : "F",
+                            Status1 = n.Beginning == n.BSys_Beginning ?
+                                "T" : "F",
+                            Status2 = n.EntryAmount == n.BSys_EntryAmount ?
+                                "T" : "F",
+                            Status3 = n.DeliveryAmount == n.BSys_DeliveryAmount ?
+                                "T" : "F",
+                            Status4 = n.ProfitAmount == n.BSys_ProfitAmount ?
+                                "T" : "F",
+                            Status5 = n.LossAmount == n.BSys_LossAmount ?
+                                "T" : "F",
+                            Status6 = n.Ending == n.BSys_Ending ?
+                                "true" : "F"
+                        }).OrderBy(n => n.Status)
+                          .OrderBy(n => n.WarehouseName)
+                          .OrderBy(n => n.ProductCode);
+
             int total = InfoCheck.Count();
             var infoCheck = InfoCheck.Skip((page - 1) * rows).Take(rows);
 
+            //两个系统产品日结结果比对结果按照单位换算
             string unitName = "";
             decimal count = 1;
 
@@ -323,13 +369,12 @@ namespace THOK.Wms.Bll.Service
                     Ending = i.Ending == i.BSys_Ending ?
                     (i.Ending / count).ToString() :
                     (i.Ending / count).ToString() + "≠" + (i.BSys_Ending / count).ToString(),
-                    Status = i.Beginning == i.BSys_Beginning &&
-                             i.EntryAmount == i.BSys_EntryAmount &&
-                             i.DeliveryAmount == i.BSys_DeliveryAmount &&
-                             i.ProfitAmount == i.BSys_ProfitAmount &&
-                             i.LossAmount == i.BSys_LossAmount &&
-                             i.Ending == i.BSys_Ending ?
-                    "true":"false"
+                    i.Status1,
+                    i.Status2,
+                    i.Status3,
+                    i.Status4,
+                    i.Status5,
+                    i.Status6
                 });
                 return new { total, rows = dailyBalance.ToArray() };
             }
@@ -364,13 +409,12 @@ namespace THOK.Wms.Bll.Service
                     Ending = i.Ending == i.BSys_Ending ?
                     (i.Ending / (unitType == "3" ?i.Count01 : i.Count02)).ToString() :
                     (i.Ending / (unitType == "3" ? i.Count01 : i.Count02)).ToString() + "≠" + (i.BSys_Ending / (unitType == "3" ? i.Count01 : i.Count02)).ToString(),
-                    Status = i.Beginning == i.BSys_Beginning &&
-                             i.EntryAmount == i.BSys_EntryAmount &&
-                             i.DeliveryAmount == i.BSys_DeliveryAmount &&
-                             i.ProfitAmount == i.BSys_ProfitAmount &&
-                             i.LossAmount == i.BSys_LossAmount &&
-                             i.Ending == i.BSys_Ending ?
-                    "true" : "false"
+                    i.Status1,
+                    i.Status2,
+                    i.Status3,
+                    i.Status4,
+                    i.Status5,
+                    i.Status6
                 });
                 return new { total, rows = dailyBalance.ToArray() };
             }
