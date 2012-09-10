@@ -100,7 +100,7 @@ namespace Authority.Controllers.Wms.StockOut
             System.Data.DataTable dt2 = OutBillAllotService.AllotSearch(page, rows, billNo);
 
             string strHeaderText = "出库单据分配";
-            string strColHeadText = "出库单据分配明细";
+            string strHeaderText2 = "出库单据分配明细";
             #region
             string filename = strHeaderText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
             Response.Clear();
@@ -118,12 +118,12 @@ namespace Authority.Controllers.Wms.StockOut
                                "Arial",     //[6]小标题字体
                            };
             #endregion
-            return new FileStreamResult(ExportDT(dt, dt2, strHeaderText, strColHeadText, str), "application/ms-excel");
+            return new FileStreamResult(ExportDT(dt, dt2, strHeaderText, strHeaderText2, str), "application/ms-excel");
         }
 
         #region 导出双表Excel公用方法
         /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        static MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string strHeaderText, string strColHeadText, string[] str)
+        static MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string strHeaderText, string strHeaderText2, string[] str)
         {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(strHeaderText) as HSSFSheet;
@@ -136,6 +136,7 @@ namespace Authority.Controllers.Wms.StockOut
             int[] arrColWidth = new int[dt.Columns.Count];
             foreach (System.Data.DataColumn item in dt.Columns)
             {
+                //936是指GB2312编码
                 arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;
             }
             for (int i = 0; i < dt.Rows.Count; i++)
@@ -277,13 +278,13 @@ namespace Authority.Controllers.Wms.StockOut
                 {
                     if (rowIndex2 != 1)
                     {
-                        sheet = workbook.CreateSheet(strColHeadText) as HSSFSheet;
+                        sheet = workbook.CreateSheet(strHeaderText2) as HSSFSheet;
                     }
                     #region 表头及样式
                     {
                         HSSFRow headerRow2 = sheet.CreateRow(0) as HSSFRow;
                         headerRow2.HeightInPoints = 25;
-                        headerRow2.CreateCell(0).SetCellValue(strColHeadText);
+                        headerRow2.CreateCell(0).SetCellValue(strHeaderText2);
 
                         HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
                         headStyle2.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
@@ -307,12 +308,12 @@ namespace Authority.Controllers.Wms.StockOut
                         font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
                         font.Boldweight = Convert.ToInt16(str[3]);          //[3]
                         headStyle2.SetFont(font);
-                        foreach (System.Data.DataColumn column in dt2.Columns)
+                        foreach (System.Data.DataColumn column2 in dt2.Columns)
                         {
-                            headerRow2.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-                            headerRow2.GetCell(column.Ordinal).CellStyle = headStyle2;
+                            headerRow2.CreateCell(column2.Ordinal).SetCellValue(column2.ColumnName);
+                            headerRow2.GetCell(column2.Ordinal).CellStyle = headStyle2;
                             //设置列宽
-                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
+                            sheet.SetColumnWidth(column2.Ordinal, (arrColWidth2[column2.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
                         }
                         //headerRow.Dispose();
                     }

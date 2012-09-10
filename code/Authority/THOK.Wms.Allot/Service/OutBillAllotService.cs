@@ -490,18 +490,18 @@ namespace THOK.Wms.Allot.Service
                 a.OperatePersonID,
                 a.StartTime,
                 a.FinishTime,
-                a.Status
+                Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "2" ? "已完成" : "空"
             });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("商品编码", typeof(string));
             dt.Columns.Add("商品名称", typeof(string));
             dt.Columns.Add("储位名称", typeof(string));
             dt.Columns.Add("单位名称", typeof(string));
-            dt.Columns.Add("分配数量", typeof(string));
-            dt.Columns.Add("实际数量", typeof(string));
+            dt.Columns.Add("分配数量", typeof(int));
+            dt.Columns.Add("实际数量", typeof(int));
             dt.Columns.Add("作业人员", typeof(string));
-            //dt.Columns.Add("开始时间", typeof(string));
-            //dt.Columns.Add("完成时间", typeof(string));
+            dt.Columns.Add("开始时间", typeof(string));
+            dt.Columns.Add("完成时间", typeof(string));
             dt.Columns.Add("作业状态", typeof(string));
             foreach (var q in query)
             {
@@ -514,8 +514,8 @@ namespace THOK.Wms.Allot.Service
                         q.AllotQuantity,
                         q.RealQuantity,
                         q.OperatePersonID,
-                        //q.StartTime,
-                        //q.FinishTime,
+                        q.StartTime,
+                        q.FinishTime,
                         q.Status
                     );
             }

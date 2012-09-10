@@ -401,36 +401,30 @@ namespace THOK.Wms.Bll.Service
                 IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
                 var moveBillDetail = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
                 {
-                    //i.ID,
-                    //i.BillNo,
                     OutCellName = i.OutCell.CellName,
-                    i.OutStorageCode,
+                    OutStorageCode = i.OutStorageCode,
                     InCellName = i.InCell.CellName,
-                    i.InStorageCode,
-                    i.ProductCode,
+                    InStorageCode = i.InStorageCode,
+                    ProductCode = i.ProductCode,
                     ProductName = i.Product.ProductName,
-                    i.UnitCode,
+                    UnitCode = i.UnitCode,
                     UnitName = i.Unit.UnitName,
+                    RealQuantity = i.RealQuantity / i.Unit.Count,
                     OperatePersonName = i.OperatePerson == null ? string.Empty : i.OperatePerson.EmployeeName,
-                    i.Status
-                    //i.OutCellCode,    
-                    //RealQuantity = i.RealQuantity / i.Unit.Count,
-                    //OperatePersonID = i.OperatePersonID == null ? string.Empty : i.OperatePersonID.ToString(),
-                    //StartTime = i.StartTime == null ? null : ((DateTime)i.StartTime).ToString("yyyy-MM-dd HH:mm:ss"),
-                    //FinishTime = i.FinishTime == null ? null : ((DateTime)i.FinishTime).ToString("yyyy-MM-dd HH:mm:ss"),
-                    //Status = WhatStatus(i.Status)
+                    Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空",
                 });
                 dt.Columns.Add("移出储位名称", typeof(string));
                 dt.Columns.Add("移出存储编码", typeof(string));
                 dt.Columns.Add("移入储位名称", typeof(string));
                 dt.Columns.Add("移入存储编码", typeof(string));
-                //dt.Columns.Add("ProductCode", typeof(string));
-                //dt.Columns.Add("ProductName", typeof(string));
-                //dt.Columns.Add("UnitCode", typeof(string));
-                //dt.Columns.Add("UnitName", typeof(string));                
+                dt.Columns.Add("产品代码", typeof(string));
+                dt.Columns.Add("产品名称", typeof(string));
+                dt.Columns.Add("单位编码", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("数量", typeof(int));
                 dt.Columns.Add("作业人员", typeof(string));
                 dt.Columns.Add("作业状态", typeof(string));
-                //dt.Columns.Add("RealQuantity", typeof(int));
+                
                 //dt.Columns.Add("Description", typeof(string));
                 foreach (var m in moveBillDetail)
                 {
@@ -440,10 +434,11 @@ namespace THOK.Wms.Bll.Service
                             , m.OutStorageCode
                             , m.InCellName
                             , m.InStorageCode
-                            //, m.ProductCode
-                            //, m.ProductName
-                            //, m.UnitCode
-                            //, m.UnitName
+                            , m.ProductCode
+                            , m.ProductName
+                            , m.UnitCode
+                            , m.UnitName
+                            , m.RealQuantity
                             , m.OperatePersonName
                             , m.Status
                         );

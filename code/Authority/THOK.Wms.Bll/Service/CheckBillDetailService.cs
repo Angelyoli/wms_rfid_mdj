@@ -154,10 +154,9 @@ namespace THOK.Wms.Bll.Service
                     RealUnitName = i.RealUnit.UnitName,
                     OperatePersonCode = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeCode,
                     OperatePersonName = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeName,
-                    //StartTime = i.StartTime == null ? string.Empty : i.StartTime.ToString(),
-                    //FinishTime = i.FinishTime == null ? string.Empty : i.FinishTime.ToString(),
-                    //Status = WhatStatus(i.Status)
-                    i.Status
+                    i.StartTime,
+                    i.FinishTime,
+                    Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空"
                 });
                 dt.Columns.Add("盘点单号", typeof(string));
                 dt.Columns.Add("货位编码", typeof(string));
@@ -167,10 +166,10 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("产品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("数量", typeof(string));
+                dt.Columns.Add("数量", typeof(int));
                 dt.Columns.Add("作业人员", typeof(string));
-                //dt.Columns.Add("StartTime", typeof(string));
-                //dt.Columns.Add("FinishTime", typeof(string));
+                dt.Columns.Add("开始时间", typeof(string));
+                dt.Columns.Add("结束时间", typeof(string));
                 dt.Columns.Add("完成状态", typeof(string));
                 foreach (var c in checkBillDetail)
                 {
@@ -186,6 +185,8 @@ namespace THOK.Wms.Bll.Service
                             , c.UnitName
                             , c.Quantity
                             , c.OperatePersonName
+                            , c.StartTime
+                            , c.FinishTime
                             , c.Status
                         );
                 }

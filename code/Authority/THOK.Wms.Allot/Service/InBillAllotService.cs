@@ -87,7 +87,7 @@ namespace THOK.Wms.Allot.Service
             Locker.LockKey = billNo;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable()
-                                            .FirstOrDefault(i => i.BillNo == billNo 
+                                            .FirstOrDefault(i => i.BillNo == billNo
                                                 && i.Status == "3");
             if (ibm != null)
             {
@@ -115,10 +115,10 @@ namespace THOK.Wms.Allot.Service
                                     if (i.Storage.ProductCode == i.ProductCode
                                         && i.Storage.InFrozenQuantity >= i.AllotQuantity)
                                     {
-                                        lock(i.InBillDetail)
+                                        lock (i.InBillDetail)
                                         {
                                             i.InBillDetail.AllotQuantity -= i.AllotQuantity;
-                                        }                                        
+                                        }
                                         i.Storage.InFrozenQuantity -= i.AllotQuantity;
                                         i.Storage.LockTag = string.Empty;
                                     }
@@ -135,7 +135,7 @@ namespace THOK.Wms.Allot.Service
                                 .DeleteEntity(i => i.BillNo == ibm.BillNo);
                             //InBillAllotRepository.GetObjectQuery()
                             //    .DeleteAll(i => i.BillNo == ibm.BillNo,null);
-                            
+
                             ibm.Status = "2";
                             ibm.UpdateTime = DateTime.Now;
                             InBillMasterRepository.SaveChanges();
@@ -215,7 +215,7 @@ namespace THOK.Wms.Allot.Service
         {
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "3");
-            var cell = CellRepository.GetQueryable().Single(c=>c.CellCode == cellCode);
+            var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
@@ -238,11 +238,11 @@ namespace THOK.Wms.Allot.Service
                                 storage = null;
                             }
                         }
-                        if (storage != null )
+                        if (storage != null)
                         {
                             decimal q1 = allotDetail.InBillDetail.BillQuantity - allotDetail.InBillDetail.AllotQuantity;
                             decimal q2 = allotQuantity * allotDetail.Unit.Count;
-                            if (q1 >= q2 || q1==0)
+                            if (q1 >= q2 || q1 == 0)
                             {
                                 try
                                 {
@@ -387,7 +387,7 @@ namespace THOK.Wms.Allot.Service
                 {
                     Storage storage = Locker.LockStorage(cell);
                     if (storage != null)
-                    {                       
+                    {
                         if (allotQuantity > 0)
                         {
                             InBillAllot billAllot = null;
@@ -466,20 +466,20 @@ namespace THOK.Wms.Allot.Service
                 AllotQuantity = a.AllotQuantity / a.Unit.Count,
                 RealQuantity = a.RealQuantity / a.Unit.Count,
                 a.OperatePersonID,
-                a.StartTime,
-                a.FinishTime,
-                a.Status
+                StartTime = a.StartTime,
+                FinishTime = a.FinishTime,
+                Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "3" ? "已完成" : ""
             });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("商品编码", typeof(string));
             dt.Columns.Add("商品名称", typeof(string));
             dt.Columns.Add("储位名称", typeof(string));
             dt.Columns.Add("单位名称", typeof(string));
-            dt.Columns.Add("分配数量", typeof(string));
-            dt.Columns.Add("实际数量", typeof(string));
+            dt.Columns.Add("分配数量", typeof(int));
+            dt.Columns.Add("实际数量", typeof(int));
             dt.Columns.Add("作业人员", typeof(string));
-            //dt.Columns.Add("StartTime", typeof(string));
-            //dt.Columns.Add("FinishTime", typeof(string));
+            dt.Columns.Add("开始时间", typeof(string));
+            dt.Columns.Add("完成时间", typeof(string));
             dt.Columns.Add("作业状态", typeof(string));
             foreach (var q in query)
             {
@@ -492,8 +492,8 @@ namespace THOK.Wms.Allot.Service
                         q.AllotQuantity,
                         q.RealQuantity,
                         q.OperatePersonID,
-                        //q.StartTime,
-                        //q.FinishTime,
+                        q.StartTime,
+                        q.FinishTime,
                         q.Status
                     );
             }
