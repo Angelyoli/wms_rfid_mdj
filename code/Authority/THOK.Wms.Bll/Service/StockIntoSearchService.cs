@@ -9,7 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class StockIntoSearchService :ServiceBase<InBillMaster>,IStockIntoSearchService
+    public class StockIntoSearchService : ServiceBase<InBillMaster>, IStockIntoSearchService
     {
         [Dependency]
         public IStockIntoSearchRepository StockIntoSearchRepository { get; set; }
@@ -73,7 +73,7 @@ namespace THOK.Wms.Bll.Service
             {
                 StockIntoSearch = StockIntoSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
-            
+
             StockIntoSearch = StockIntoSearch.OrderBy(i => i.BillNo);
             int total = StockIntoSearch.Count();
             StockIntoSearch = StockIntoSearch.Skip((page - 1) * rows).Take(rows);
@@ -99,7 +99,7 @@ namespace THOK.Wms.Bll.Service
             var StockIntoDetail = StockIntoQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo);
             int total = StockIntoDetail.Count();
             var StockIntoDetails = StockIntoDetail.Skip((page - 1) * rows).Take(rows);
-            var StockInto =StockIntoDetails.Select(i => new
+            var StockInto = StockIntoDetails.Select(i => new
                  {
                      i.ID,
                      i.BillNo,
@@ -115,6 +115,52 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = StockInto.ToArray() };
         }
 
+        #endregion
+
+        #region IStockIntoSearch 成员
+        public System.Data.DataTable GetIntoDetail(int page, int rows, string BillNo)
+        {
+            IQueryable<InBillDetail> StockIntoQuery = InBillDetailRepository.GetQueryable();
+            var StockIntoDetail = StockIntoQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+            {
+                i.ID,
+                i.BillNo,
+                i.ProductCode,
+                i.Product.ProductName,
+                i.UnitCode,
+                i.Unit.UnitName,
+                BillQuantity = i.BillQuantity / i.Unit.Count,
+                RealQuantity = i.RealQuantity / i.Unit.Count,
+                i.Price,
+                i.Description
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("序号", typeof(string));
+            dt.Columns.Add("产品代码", typeof(string));
+            dt.Columns.Add("产品名称", typeof(string));
+            dt.Columns.Add("单位编码", typeof(string));
+            dt.Columns.Add("单位名称", typeof(string));
+            dt.Columns.Add("数量", typeof(int));
+            dt.Columns.Add("已入库量", typeof(int));
+            dt.Columns.Add("单价", typeof(double));
+            dt.Columns.Add("备注", typeof(string));
+            foreach (var i in StockIntoDetail)
+            {
+                dt.Rows.Add
+                    (
+                        i.ID,
+                        i.ProductCode,
+                        i.ProductName,
+                        i.UnitCode,
+                        i.UnitName,
+                        i.BillQuantity,
+                        i.RealQuantity,
+                        i.Price,
+                        i.Description
+                    );
+            }
+            return dt;
+        } 
         #endregion
     }
 }
