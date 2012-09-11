@@ -7,28 +7,28 @@ namespace THOK.Common
 {
     public class ExportExcel
     {
-        #region 导出单表Excel公用方法
+        #region 导出单表Excel
         /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dtSource, string strHeaderText, string[] str, string exportDate)
+        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt, string headText, string[] str, string exportDate)
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(strHeaderText) as NPOI.HSSF.UserModel.HSSFSheet;
+            NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText) as NPOI.HSSF.UserModel.HSSFSheet;
 
             NPOI.HSSF.UserModel.HSSFCellStyle dateStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;
             dateStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
 
             //取得列宽
-            int[] arrColWidth = new int[dtSource.Columns.Count];
-            foreach (System.Data.DataColumn item in dtSource.Columns)
+            int[] arrColWidth = new int[dt.Columns.Count];
+            foreach (System.Data.DataColumn item in dt.Columns)
             {
                 arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;
             }
-            for (int i = 0; i < dtSource.Rows.Count; i++)
+            for (int i = 0; i < dt.Rows.Count; i++)
             {
-                for (int j = 0; j < dtSource.Columns.Count; j++)
+                for (int j = 0; j < dt.Columns.Count; j++)
                 {
-                    int intTemp = Encoding.GetEncoding(936).GetBytes(dtSource.Rows[i][j].ToString()).Length;
+                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt.Rows[i][j].ToString()).Length;
                     if (intTemp > arrColWidth[j])
                     {
                         arrColWidth[j] = intTemp;
@@ -36,7 +36,7 @@ namespace THOK.Common
                 }
             }
             int rowIndex = 0;
-            foreach (System.Data.DataRow row in dtSource.Rows)
+            foreach (System.Data.DataRow row in dt.Rows)
             {
                 #region 新建表，填充表头，填充列头，样式
                 if (rowIndex == 0)
@@ -49,8 +49,7 @@ namespace THOK.Common
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(0) as NPOI.HSSF.UserModel.HSSFRow;
                         headerRow.HeightInPoints = 25;
-                        headerRow.CreateCell(0).SetCellValue(strHeaderText);
-
+                        headerRow.CreateCell(0).SetCellValue(headText);
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
@@ -59,15 +58,14 @@ namespace THOK.Common
                         font.Boldweight = Convert.ToInt16(str[1]);          //[1]
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
-                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dtSource.Columns.Count - 1));
-                        //headerRow.Dispose();
+                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt.Columns.Count - 1));
                     }
                     #endregion
                     #region 导出时间
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(1) as NPOI.HSSF.UserModel.HSSFRow;
                         headerRow.CreateCell(0).SetCellValue(exportDate);
-                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dtSource.Columns.Count - 1));
+                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt.Columns.Count - 1));
                     }
                     #endregion
                     #region 列头及样式
@@ -80,14 +78,13 @@ namespace THOK.Common
                         font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
                         font.Boldweight = Convert.ToInt16(str[3]);          //[3]
                         headStyle.SetFont(font);
-                        foreach (System.Data.DataColumn column in dtSource.Columns)
+                        foreach (System.Data.DataColumn column in dt.Columns)
                         {
                             headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                             headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                             //设置列宽
                             sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
                         }
-                        //headerRow.Dispose();
                     }
                     #endregion
                     rowIndex = 3;
@@ -95,7 +92,7 @@ namespace THOK.Common
                 #endregion
                 #region 填充内容
                 NPOI.HSSF.UserModel.HSSFRow dataRow = sheet.CreateRow(rowIndex) as NPOI.HSSF.UserModel.HSSFRow;
-                foreach (System.Data.DataColumn column in dtSource.Columns)
+                foreach (System.Data.DataColumn column in dt.Columns)
                 {
                     NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
                     string drValue = row[column].ToString();
@@ -149,17 +146,18 @@ namespace THOK.Common
         }       
         #endregion
 
-        #region 导出双表Excel公用方法
+        #region 导出双表Excel
         /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string strHeaderText, string strHeaderText2, string[] str, string exportDate)
+        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string headText, string headText2, string[] str, string exportDate)
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(strHeaderText) as NPOI.HSSF.UserModel.HSSFSheet;
+            NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText) as NPOI.HSSF.UserModel.HSSFSheet;
 
             NPOI.HSSF.UserModel.HSSFCellStyle dateStyle = workbook.CreateCellStyle() as  NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;
             dateStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
 
+            #region 取得列宽 dt
             //取得列宽
             int[] arrColWidth = new int[dt.Columns.Count];
             foreach (System.Data.DataColumn item in dt.Columns)
@@ -177,8 +175,10 @@ namespace THOK.Common
                         arrColWidth[j] = intTemp;
                     }
                 }
-            }
-            #region dt2
+            } 
+            #endregion
+
+            #region 取得列宽 dt2
             int[] arrColWidth2 = new int[dt2.Columns.Count];
             foreach (System.Data.DataColumn item in dt2.Columns)
             {
@@ -197,6 +197,7 @@ namespace THOK.Common
             }
             #endregion
 
+            #region 建表 dt
             int rowIndex = 0;
             foreach (System.Data.DataRow row in dt.Rows)
             {
@@ -211,7 +212,7 @@ namespace THOK.Common
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(0) as NPOI.HSSF.UserModel.HSSFRow;
                         headerRow.HeightInPoints = 25;
-                        headerRow.CreateCell(0).SetCellValue(strHeaderText);
+                        headerRow.CreateCell(0).SetCellValue(headText);
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
@@ -302,9 +303,10 @@ namespace THOK.Common
                 }
                 #endregion
                 rowIndex++;
-            }
+            } 
+            #endregion
 
-            #region dt2
+            #region 建表 dt2
             int rowIndex2 = 0;
             foreach (System.Data.DataRow row in dt2.Rows)
             {
@@ -313,13 +315,13 @@ namespace THOK.Common
                 {
                     if (rowIndex2 != 1)
                     {
-                        sheet = workbook.CreateSheet(strHeaderText2) as NPOI.HSSF.UserModel.HSSFSheet;
+                        sheet = workbook.CreateSheet(headText2) as NPOI.HSSF.UserModel.HSSFSheet;
                     }
                     #region 表头及样式
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow2 = sheet.CreateRow(0) as NPOI.HSSF.UserModel.HSSFRow;
                         headerRow2.HeightInPoints = 25;
-                        headerRow2.CreateCell(0).SetCellValue(strHeaderText2);
+                        headerRow2.CreateCell(0).SetCellValue(headText2);
 
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle2.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
@@ -357,7 +359,6 @@ namespace THOK.Common
                             //设置列宽
                             sheet.SetColumnWidth(column2.Ordinal, (arrColWidth2[column2.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
                         }
-                        //headerRow.Dispose();
                     }
                     #endregion
                     rowIndex2 = 3;
@@ -420,20 +421,5 @@ namespace THOK.Common
             return ms;
         }        
         #endregion
-
-        //#region 若是数值数组则为真
-        //public static bool isNumeric(String message, out double result)
-        //{
-        //    System.Text.RegularExpressions.Regex rex = new System.Text.RegularExpressions.Regex(@"^[-]?\d+[.]?\d*$");
-        //    result = -1;
-        //    if (rex.IsMatch(message))
-        //    {
-        //        result = double.Parse(message);
-        //        return true;
-        //    }
-        //    else
-        //        return false;
-        //} 
-        //#endregion
     }
 }
