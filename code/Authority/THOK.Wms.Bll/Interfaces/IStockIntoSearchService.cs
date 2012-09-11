@@ -11,5 +11,7 @@ namespace THOK.Wms.Bll.Interfaces
         object GetDetails(int page, int rows, string BillNo, string WarehouseCode, string BeginDate, string EndDate, string OperatePersonCode, string CheckPersonCode, string Operate_Status);
 
         object GetDetailInfos(int page, int rows, string BillNo);
+
+        System.Data.DataTable GetIntoDetail(int page, int rows, string BillNo);
     }
 }

@@ -42,5 +42,30 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = orderDetail.ToArray() };
         }
         #endregion
+
+        public System.Data.DataTable GetOrderDetail(int page, int rows, string OrderID)
+        {
+            IQueryable<SortOrderDetail> OrderDetailQuery = OrderSearchDetailRepository.GetQueryable();
+            var OrderDetails = OrderDetailQuery.Where(i => i.OrderID.Contains(OrderID)).OrderBy(i => i.OrderID)
+                .Select(o => new
+                {
+                    o.OrderID,
+                    o.Price,
+                    o.ProductCode,
+                    o.Product.ProductName,
+                    o.OrderDetailID,
+                    o.RealQuantity,
+                    o.UnitCode,
+                    o.UnitName,
+                    o.Amount
+                });
+            System.Data.DataTable dt=new System.Data.DataTable();
+            dt.Columns.Add("",typeof(string));
+            foreach (var o in OrderDetails)
+            {
+                
+            }
+            return dt;
+        }
     }
 }
