@@ -1,31 +1,29 @@
-ï»¿<script type="text/javascript">
+<script type="text/javascript">
     function editClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
             AddLoad();
-            showDialog('ç¼–è¾‘');
-            addDialog.dialog('open');
             url = '/Company/Edit/';
-            //            $('#dlg').dialog('open').dialog('setTitle', 'ç¼–è¾‘');
+            $('#dlg').dialog('open').dialog('setTitle', '±à¼­');
             $('#companyfm').form('load', row);
             $('#companyfm .easyui-validatebox').validatebox({
                 required: true
             });
             //CompantyType
-            if (row.CompanyType == "é…é€ä¸­å¿ƒ") {
+            if (row.CompanyType == "ÅäËÍÖĞĞÄ") {
                 $('company_type').combo('setValue', 1).combo('setText', row.CompanyType);
             }
-            else if (row.CompanyType == "å¸‚å…¬å¸") {
+            else if (row.CompanyType == "ÊĞ¹«Ë¾") {
                 $('company_type').combo('setValue', 2).combo('setText', row.CompanyType);
             }
-            else if (row.CompanyType == "å¿å…¬å¸") {
+            else if (row.CompanyType == "ÏØ¹«Ë¾") {
                 $('company_type').combo('setValue', 3).combo('setText', row.CompanyType);
             }
             $('#company_type').combo({
                 hasDownArrow: true
             });
             //IsActive
-            if (row.IsActive == 'å¯ç”¨') {
+            if (row.IsActive == '¿ÉÓÃ') {
                 $('#isActive_com').combo('setValue', 1).combo('setText', row.IsActive);
             } else {
                 $('#isActive_com').combo('setValue', 0).combo('setText', row.IsActive);
@@ -36,9 +34,10 @@
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
             $('#inputCompanyCode').attr("readonly", true);
-
+            
         } else {
-            $.messager.alert('é”™è¯¯', 'æ²¡æœ‰é€‰æ‹©è¡Œï¼', 'info');
+            $.messager.alert('´íÎó', 'Ã»ÓĞÑ¡ÔñĞĞ£¡','info');
         }
     };
 </script>
+   

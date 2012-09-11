@@ -1,5 +1,6 @@
 ﻿<script type="text/javascript">
     var url;
+    var addDialog;
     $(function () {
         $.extend($.fn.validatebox.defaults.rules, {
             maxLength: {
@@ -10,9 +11,53 @@
             }
         });
     })
+
+    //加载新增和编辑窗体
+    function showDialog(title) {
+        if (addDialog == null) {
+            addDialog = $('<div></div>').dialog({
+                title: title,
+                width: 510,
+                height: 300,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Company/AddPage/',
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        save();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        addDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                    if (title == '编辑') {
+                        var erow = $('#details').datagrid('getSelected');
+                        $('#companyfm').form('load', erow);
+                    }
+                    else if (title == '删除') {
+                        var drow = $('#details').datagrid('getSelected');
+                        $('#companyfm').form('load', drow);
+                    }
+                }
+            });
+        }
+        else {
+            addDialog.dialog({ title: title });
+        }
+     }
+
     function addClick() {
         AddLoad();
-        $('#dlg').dialog('open').dialog('setTitle', '新增');
+        showDialog('新增');
+        addDialog.dialog('open');
+
         $('#companyfm').form('clear');
         $('#companyfm .easyui-validatebox').validatebox({
             required: true
@@ -39,11 +84,11 @@
             onSubmit: function () {
                 return $(this).form('validate');
             },
-            success: function (result) {               
+            success: function (result) {
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#dlg').dialog('close');
+                    addDialog.dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
@@ -75,118 +120,3 @@
         $("#parentCompanyNameDetail").datagrid('reload');
     }
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 510px; height: 300px;
-    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
-    <div class="easyui-layout" fit="true">
-        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
-            border: 1px solid #ccc;">
-            <form id="companyfm" method="post">
-            <table width="480">
-                <tr>
-                    <td width="60">
-                        公司编码:
-                    </td>
-                    <td width="168">
-                        <input name="CompanyCode" id="inputCompanyCode" class="easyui-validatebox" validtype="maxLength[8]"
-                            required="true" />
-                        <input name="ID" style="display: none" />
-                    </td>
-                    <td width="60">
-                        公司名称：
-                    </td>
-                    <td width="168">
-                        <input name="CompanyName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60">
-                        上级名称:
-                    </td>
-                    <td width="168">
-                        <input name="ParentCompanyID" type="text" id="companyId" style="display: none;" />
-                        <input name="ParentCompanyName" type="text" id="companyName" readonly="readonly" />
-                        <a href="#" id="parentCompanyNameSearch" class="easyui-linkbutton" iconcls="icon-search"
-                            plain="true" onclick="parentCompanyNameSearchClick()"></a>
-                    </td>
-                    <td width="60">
-                        统一编码：
-                    </td>
-                    <td width="168">
-                        <input name="UniformCode" validtype="maxLength[8]" />
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60">
-                        仓库面积:
-                    </td>
-                    <td width="168">
-                        <input name="WarehouseSpace" class="easyui-numberbox" min="0" max="999999999" type="text"
-                            required="true" missingmessage="请输入面积（必须为数字）" />
-                    </td>
-                    <td width="60">
-                        仓库个数：
-                    </td>
-                    <td width="168">
-                        <input name="WarehouseCount" class="easyui-numberbox" min="0" max="999999999" type="text"
-                            required="true" missingmessage="请输入个数（必须为数字）" />
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60">
-                        仓库容量:
-                    </td>
-                    <td width="168">
-                        <input name="WarehouseCapacity" class="easyui-numberbox" min="0" max="999999999"
-                            type="text" required="true" missingmessage="请输入容量（必须为数字）" />
-                    </td>
-                    <td width="60">
-                        分拣线数：
-                    </td>
-                    <td width="168">
-                        <input name="SortingCount" class="easyui-numberbox" min="0" max="999999999" type="text"
-                            required="true" missingmessage="请输入分拣线数（必须为数字）" />
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60">
-                        公司类型：
-                    </td>
-                    <td width="168">
-                        <select id="company_type" name="CompanyType" class="easyui-combobox" required="true"
-                            style="width: 129px">
-                            <option value="1">配送中心</option>
-                            <option value="2">市公司</option>
-                            <option value="3">县公司</option>
-                        </select>
-                    </td>
-                    <td>
-                        状态:
-                    </td>
-                    <td>
-                        <select id="isActive_com" name="IsActive" class="easyui-combobox" required="true"
-                            style="width: 129px">
-                            <option value="1">可用</option>
-                            <option value="0">不可用</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60">
-                        描述:
-                    </td>
-                    <td width="168" colspan="3">
-                        <textarea name="Description" id="desId"  style="width: 367px; height: 60px"></textarea>
-                        @*class="easyui-validatebox" required="false" validtype="maxLength[0,100]" invalidmessage='文本过长'*@
-                    </td>
-                </tr>
-            </table>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="dlg-buttons">
-    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
-    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
-        取消</a>
-</div>
-@Html.Partial("_ParentCompanyNamePartial")

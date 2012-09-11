@@ -991,6 +991,9 @@
     <Content Include="Scripts\jquery.ztree.exedit-3.3.min.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
+    <Content Include="Views\Company\_%40EditPartial.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Views\Module\_DeletePartial.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1094,11 +1097,10 @@
     <Content Include="Views\Authorize\_DeletePartial.cshtml" />
     <Content Include="Views\Authorize\_EditPartial.cshtml" />
     <Content Include="Views\Authorize\_SearchPartial.cshtml" />
-    <Content Include="Views\Company\_AddPartial.cshtml" />
-    <Content Include="Views\Company\_DeletePartial.cshtml" />
-    <Content Include="Views\Company\_EditPartial.cshtml" />
+    <Content Include="Views\Company\_%40AddPartial.cshtml" />
+    <Content Include="Views\Company\_%40DeletePartial.cshtml" />
     <Content Include="Views\Company\_HelpPartial.cshtml" />
-    <Content Include="Views\Company\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\_%40SearchPartial.cshtml" />
     <Content Include="Views\Company\_PrintPartial.cshtml" />
     <Content Include="Views\Department\_AddPartial.cshtml" />
     <Content Include="Views\Department\_DeletePartial.cshtml" />
@@ -1206,6 +1208,12 @@
     <Content Include="Views\Employee\_UserNamePartial.cshtml" />
     <Content Include="Views\CellHistorical\Index.cshtml" />
     <Content Include="Views\CellHistorical\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\SearchPage.cshtml" />
+    <Content Include="Views\Company\_AddPartial.cshtml" />
+    <Content Include="Views\Company\AddPage.cshtml" />
+    <Content Include="Views\Company\_EditPartial.cshtml" />
+    <Content Include="Views\Company\_DeletePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
