@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.WES", "THOK.WES\THOK.WES.csproj", "{4257E4C1-5452-47F6-8BC1-74CBE7445339}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.WES.App", "THOK.WES.App\THOK.WES.App.csproj", "{7B7A5CA4-08F9-4160-8A83-C4B806F512EC}"

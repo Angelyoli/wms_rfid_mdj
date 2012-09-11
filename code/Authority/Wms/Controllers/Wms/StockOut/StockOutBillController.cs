@@ -185,6 +185,5 @@ namespace Authority.Controllers.Wms.StockOut
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
-
     }
 }

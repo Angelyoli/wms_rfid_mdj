@@ -9,5 +9,7 @@ namespace THOK.Wms.Bll.Interfaces
     public interface IDifferSearchDetailService : IService<ProfitLossBillDetail>
     {
         object GetDetails(int page, int rows, string BillNo);
+
+        System.Data.DataTable GetDifferDetail(int page, int rows, string BillNo);
     }
 }

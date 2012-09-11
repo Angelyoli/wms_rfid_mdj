@@ -9,6 +9,7 @@ using THOK.Wms.SignalR.Common;
 using THOK.Wms.DbModel;
 using Entities.Extensions;
 using THOK.Wms.Dal.EntityRepository;
+using THOK.Wms.SignalR.Connection;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
@@ -109,6 +110,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public void GetBillDetail(BillMaster[] billMasters, string productCode, string OperateType, string OperateAreas, string Operator, Result result)
         {
             BillDetail[] billDetails = new BillDetail[] { };
+            var ops = OperateAreas.Split(',').Select(a => Convert.ToInt32(a)).ToArray();
+            
             try
             {
                 foreach (var billMaster in billMasters)
@@ -117,12 +120,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     switch (billMaster.BillType)
                     {
                         case "1"://入库单
-                            var inBillDetails = InBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
+                            var inBillDetails = InBillAllotRepository.GetQueryable()
+                                .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.ProductCode == productCode || productCode == string.Empty)                                    
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType=="3")))
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .Select(i => new BillDetail() { 
                                     BillNo = i.BillNo, 
                                     BillType = "1" ,
@@ -149,12 +151,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(inBillDetails).ToArray();
                             break;
                         case "2"://出库单
-                            var outBillDetails = OutBillAllotRepository.GetQueryable().ToArray().AsEnumerable()
+                            var outBillDetails = OutBillAllotRepository.GetQueryable()
+                                .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -189,11 +190,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 billNo = outBillMaster.MoveBillMasterBillNo;
                                 //todo;
                                 var moveBillDetailss = MoveBillDetailRepository.GetQueryable()
+                                        .WhereIn(m => m.InCell.Layer, ops)
                                         .Where(i => i.BillNo == billNo
                                             && (i.CanRealOperate == "1" || OperateType != "Real")
-                                            && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                            && (OperateAreas.Contains(i.InCell.Layer.ToString())
-                                                || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))
+                                            && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                                        
                                         .ToArray()
                                         .Select(i => new BillDetail()
                                         {
@@ -223,12 +223,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             }
                             break;                           
                         case "3"://移库单
-                            var moveBillDetails = MoveBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
+                            var moveBillDetails = MoveBillDetailRepository.GetQueryable()
+                                .WhereIn(m => m.InCell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.InCell.Layer.ToString()) 
-                                        || (OperateAreas.Contains("0") && i.InCell.Area.AreaType == "3")))                               
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                               
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -256,11 +255,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
                             break;
                         case "4"://盘点单
-                            var checkBillDetails = CheckBillDetailRepository.GetQueryable().ToArray().AsEnumerable()
+                            var checkBillDetails = CheckBillDetailRepository.GetQueryable()
+                                .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator))
-                                    && (OperateAreas.Contains(i.Cell.Layer.ToString())
-                                        || (OperateAreas.Contains("0") && i.Cell.Area.AreaType == "3")))
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .Select(i => new BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -800,13 +798,15 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var sortOrder = sortOrderQuery.Join(sortOrderDispatchQuery,
                                         o => new { o.OrderDate, o.DeliverLineCode },
                                         d => new { d.OrderDate, d.DeliverLineCode },
-                                        (o, d) => new {d.SortingLineCode,o }
-                                    ).Where(r=> r.o.OrderDate == orderdate
-                                        && r.SortingLineCode == sortingLineCode)
-                                    .Select(r=>r.o).FirstOrDefault();
+                                        (o, d) => new { d.SortingLineCode, o }
+                                    ).Where(r => r.o.OrderDate == orderdate 
+                                             && r.o.OrderID == orderId
+                                             && r.SortingLineCode == sortingLineCode)
+                                    .Select(r => r.o).FirstOrDefault();
                 if (sortOrder != null)
                 {
                     sortOrder.Status = "1";
+                    SortOrderRepository.SaveChanges();
                 }
                 else
                 {
@@ -828,7 +828,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             ).Where(r => r.OrderDate == orderdate
                                 && r.SortingLineCode == sortingLineCode
                                 && r.SortWorkDispatchID != null
-                                && r.DispatchStatus == "2"
+                                && (r.DispatchStatus == "2" || r.DispatchStatus == "3")
                                 && r.Status == "1"
                             ).GroupBy(r => new { r.ProductCode, r.ProductName })
                             .Select(r => new { r.Key.ProductCode,r.Key.ProductName,Quantity = - r.Sum(q=>q.Quantity)});
@@ -855,7 +855,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
                                .GroupBy(r => new { r.ProductCode, r.ProductName })
                                .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
-                               .Where(r=>r.Quantity <300000);
+                               .Where(r=>r.Quantity <300000).ToArray();
 
                 var tmp5 = sortingLineQuery
                              .Join(moveBillDetailQuery,
@@ -863,18 +863,24 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 m => m.InCellCode,
                                 (l, m) => new { l.SortingLineCode, m}
                              ).Where(r => r.SortingLineCode == sortingLineCode
-                                && r.m.CanRealOperate == "0")
+                                && r.m.CanRealOperate != "1")
                              .Select(r => r.m);
                 var tmp6 = tmp5.ToArray().OrderBy(m => m.RealQuantity);
 
-                tmp4.ToArray().AsParallel().ForAll(t =>
+                bool tmp8 = false;
+                tmp4.AsParallel().ForAll(t =>
                     {
-                        var tmp7 = tmp5.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
+                        var tmp7 = tmp6.FirstOrDefault(p=>p.ProductCode == t.ProductCode);
                         if (tmp7 != null)
                         {
                             tmp7.CanRealOperate = "1";
+                            tmp8 = true;
                         }
                     });
+                if (tmp8)
+                {
+                    Notify();
+                }
                 MoveBillDetailRepository.SaveChanges();
                 result = true;
             }
@@ -884,6 +890,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 error = e.Message;
             }
             return result;
+        }
+
+        private void Notify()
+        {
+            AutomotiveSystemsNotify.Notify();
         }
     }
 }

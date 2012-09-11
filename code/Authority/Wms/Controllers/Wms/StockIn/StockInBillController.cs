@@ -42,7 +42,7 @@ namespace Authority.Controllers.Wms.StockIn
         {
             return View();
         }
-        
+
         //
         // GET: /InBillMaster/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
@@ -55,7 +55,7 @@ namespace Authority.Controllers.Wms.StockIn
             string CheckPersonCode = collection["CheckPersonCode"] ?? string.Empty;
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var inBillMaster = InBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, BeginDate, EndDate,OperatePersonCode,CheckPersonCode, Status, IsActive);
+            var inBillMaster = InBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, BeginDate, EndDate, OperatePersonCode, CheckPersonCode, Status, IsActive);
             return Json(inBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -64,7 +64,7 @@ namespace Authority.Controllers.Wms.StockIn
 
         public ActionResult InBillDetails(int page, int rows, string BillNo)
         {
-            var inBillDetail = InBillDetailService.GetDetails(page,rows,BillNo);
+            var inBillDetail = InBillDetailService.GetDetails(page, rows, BillNo);
             return Json(inBillDetail, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -106,7 +106,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult Delete(string BillNo)
         {
             string strResult = string.Empty;
-            bool bResult = InBillMasterService.Delete(BillNo,out strResult);
+            bool bResult = InBillMasterService.Delete(BillNo, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -150,7 +150,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult AntiTrial(string BillNo)
         {
             string strResult = string.Empty;
-            bool bResult = InBillMasterService.AntiTrial(BillNo,out strResult);
+            bool bResult = InBillMasterService.AntiTrial(BillNo, out strResult);
             string msg = bResult ? "反审成功" : "反审失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -173,7 +173,7 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult GetBillTypeDetail(string BillClass, string IsActive)
         {
-            var billType = InBillMasterService.GetBillTypeDetail(BillClass,IsActive);
+            var billType = InBillMasterService.GetBillTypeDetail(BillClass, IsActive);
             return Json(billType, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -181,7 +181,7 @@ namespace Authority.Controllers.Wms.StockIn
         // POST: /InBillMaster/GetWareHouseDetail/
 
         [HttpPost]
-        public ActionResult GetWareHouseDetail( string IsActive)
+        public ActionResult GetWareHouseDetail(string IsActive)
         {
             var wareHouse = InBillMasterService.GetWareHouseDetail(IsActive);
             return Json(wareHouse, "text", JsonRequestBehavior.AllowGet);
@@ -193,15 +193,15 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult GetProductDetails(int page, int rows, string QueryString, string Value)
         {
-            if (QueryString==null)
+            if (QueryString == null)
             {
                 QueryString = "ProductCode";
             }
-            if (Value==null)
+            if (Value == null)
             {
                 Value = "";
             }
-            var product = InBillDetailService.GetProductDetails(page,rows,QueryString,Value);
+            var product = InBillDetailService.GetProductDetails(page, rows, QueryString, Value);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 

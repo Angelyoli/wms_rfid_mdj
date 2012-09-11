@@ -12,7 +12,7 @@ using System.Transactions;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class MoveBillMasterService:ServiceBase<MoveBillMaster>, IMoveBillMasterService
+    public class MoveBillMasterService : ServiceBase<MoveBillMaster>, IMoveBillMasterService
     {
         [Dependency]
         public IMoveBillMasterRepository MoveBillMasterRepository { get; set; }
@@ -63,7 +63,7 @@ namespace THOK.Wms.Bll.Service
             return statusStr;
         }
 
-        public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode,string CheckPersonCode, string Status, string IsActive)
+        public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive)
         {
             IQueryable<MoveBillMaster> moveBillMasterQuery = MoveBillMasterRepository.GetQueryable();
             var moveBillMaster = moveBillMasterQuery.Where(i => i.BillNo.Contains(BillNo)
@@ -73,7 +73,7 @@ namespace THOK.Wms.Bll.Service
                     && i.Status.Contains(Status))
                 .OrderByDescending(t => t.BillDate)
                 .OrderByDescending(t => t.BillNo)
-                .Select(i =>i);
+                .Select(i => i);
 
             if (!beginDate.Equals(string.Empty))
             {
@@ -94,7 +94,7 @@ namespace THOK.Wms.Bll.Service
             int total = moveBillMaster.Count();
             moveBillMaster = moveBillMaster.Skip((page - 1) * rows).Take(rows);
 
-            var temp =moveBillMaster.ToArray().AsEnumerable().Select(i=>new
+            var temp = moveBillMaster.ToArray().AsEnumerable().Select(i => new
             {
                 i.BillNo,
                 BillDate = i.BillDate.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -156,7 +156,7 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        public bool Delete(string BillNo,out string strResult)
+        public bool Delete(string BillNo, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
@@ -192,7 +192,7 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        public bool Save(MoveBillMaster moveBillMaster,out string strResult)
+        public bool Save(MoveBillMaster moveBillMaster, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;

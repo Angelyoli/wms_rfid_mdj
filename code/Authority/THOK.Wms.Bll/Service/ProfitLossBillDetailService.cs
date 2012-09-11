@@ -12,7 +12,7 @@ using THOK.Wms.SignalR.Common;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class ProfitLossBillDetailService:ServiceBase<ProfitLossBillDetail>,IProfitLossBillDetailService
+    public class ProfitLossBillDetailService : ServiceBase<ProfitLossBillDetail>, IProfitLossBillDetailService
     {
         [Dependency]
         public IProfitLossBillDetailRepository ProfitLossBillDetailRepository { get; set; }
@@ -76,7 +76,7 @@ namespace THOK.Wms.Bll.Service
         /// <returns></returns>
         public bool Add(ProfitLossBillDetail profitLossBillDetail, out string strResult)
         {
-            bool result=false;
+            bool result = false;
             try
             {
                 IQueryable<ProfitLossBillDetail> profitLossBillDetailQuery = ProfitLossBillDetailRepository.GetQueryable();
@@ -117,7 +117,7 @@ namespace THOK.Wms.Bll.Service
             }
             catch (Exception ex)
             {
-                strResult="新增失败，原因："+ex.Message;
+                strResult = "新增失败，原因：" + ex.Message;
             }
             return result;
         }
@@ -131,7 +131,7 @@ namespace THOK.Wms.Bll.Service
         /// <param name="maxQuantity">当前货位的最大存储量</param>
         /// <param name="currentQuantity">当前货位的库存数量</param>
         /// <returns></returns>
-        public bool IsQuntityRight(decimal inputQuantity,decimal inFrozenQuantity,decimal outFrozenQuantity,decimal maxQuantity,decimal currentQuantity)
+        public bool IsQuntityRight(decimal inputQuantity, decimal inFrozenQuantity, decimal outFrozenQuantity, decimal maxQuantity, decimal currentQuantity)
         {
             bool result = false;
             if (inputQuantity > 0)
@@ -146,7 +146,7 @@ namespace THOK.Wms.Bll.Service
                     return result;
                 }
             }
-            else if (inputQuantity<0)
+            else if (inputQuantity < 0)
             {
                 if (Math.Abs(inputQuantity) <= (currentQuantity - outFrozenQuantity))
                 {
@@ -157,7 +157,7 @@ namespace THOK.Wms.Bll.Service
                     resultStr = "出库数量必须小于或等于[当前库存量-出库冻结量]";
                     return result;
                 }
-            }            
+            }
             return result;
         }
 
@@ -166,10 +166,10 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="ID">损益单细单ID</param>
         /// <returns></returns>
-        public bool Delete(string ID,out string strResult)
+        public bool Delete(string ID, out string strResult)
         {
             strResult = string.Empty;
-            bool result=false;
+            bool result = false;
             try
             {
                 IQueryable<ProfitLossBillDetail> profitLossBillDetailQuery = ProfitLossBillDetailRepository.GetQueryable();
@@ -210,7 +210,7 @@ namespace THOK.Wms.Bll.Service
             }
             catch (Exception ex)
             {
-                strResult = "删除失败，原因："+ex.Message;
+                strResult = "删除失败，原因：" + ex.Message;
             }
             return result;
         }
@@ -220,7 +220,7 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="profitLossBillDetail">损益细单</param>
         /// <returns></returns>
-        public bool Save(ProfitLossBillDetail profitLossBillDetail,out string strResult)
+        public bool Save(ProfitLossBillDetail profitLossBillDetail, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
@@ -269,11 +269,60 @@ namespace THOK.Wms.Bll.Service
             }
             catch (Exception ex)
             {
-                strResult="修改失败，原因："+ex.Message;
+                strResult = "修改失败，原因：" + ex.Message;
             }
             return result;
         }
 
+        #endregion
+
+        #region IProfitLossBillDetailService 成员
+        /// <summary>获得损益细单信息</summary>
+        public System.Data.DataTable GetProfitLoassBillDetail(int page, int rows, string BillNo)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            if (BillNo != "" && BillNo != null)
+            {
+                IQueryable<ProfitLossBillDetail> ProfitLossBillDetailQuery = ProfitLossBillDetailRepository.GetQueryable();
+                var profitLossBillDetail = ProfitLossBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+                {
+                    i.CellCode,
+                    i.StorageCode,
+                    i.ProductCode,
+                    i.Product.ProductName,
+                    i.UnitCode,
+                    i.Unit.UnitName,
+                    i.Price,
+                    Quantity = i.Quantity / i.Unit.Count,
+                    i.Description
+                });
+                dt.Columns.Add("储位编码", typeof(string));
+                dt.Columns.Add("存储编码", typeof(string));
+                dt.Columns.Add("产品代码", typeof(string));
+                dt.Columns.Add("产品名称", typeof(string));
+                dt.Columns.Add("单位编码", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("单价", typeof(double));
+                dt.Columns.Add("数量", typeof(int));
+                dt.Columns.Add("备注", typeof(string));
+                foreach (var p in profitLossBillDetail)
+                {
+                    dt.Rows.Add
+                        (
+                            p.CellCode,
+                            p.StorageCode,
+                            p.ProductCode,
+                            p.ProductName,
+                            p.UnitCode,
+                            p.UnitName,
+                            p.Price,
+                            p.Quantity,
+                            p.Description
+                        );
+                }
+            }
+            return dt;
+        } 
         #endregion
     }
 }

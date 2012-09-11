@@ -11,7 +11,7 @@ using THOK.Wms.SignalR.Common;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class MoveBillDetailService:ServiceBase<MoveBillDetail>, IMoveBillDetailService
+    public class MoveBillDetailService : ServiceBase<MoveBillDetail>, IMoveBillDetailService
     {
         [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
@@ -105,7 +105,7 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="moveBillDetail"></param>
         /// <returns></returns>
-        public bool Add(MoveBillDetail moveBillDetail,out string strResult)
+        public bool Add(MoveBillDetail moveBillDetail, out string strResult)
         {
             bool result = false;
             try
@@ -127,13 +127,13 @@ namespace THOK.Wms.Bll.Service
                     inStorage = Locker.LockStorage(inCell);
                 }
                 //判断移出数量是否合理
-                bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity, outCell.MaxQuantity*product.Unit.Count, outStorage.Quantity, "out");
+                bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity * unit.Count, outStorage.InFrozenQuantity, outStorage.OutFrozenQuantity, outCell.MaxQuantity * product.Unit.Count, outStorage.Quantity, "out");
                 if (Locker.LockStorage(outStorage, product) != null)
                 {
                     if (inStorage != null)
                     {
                         //判断移入数量是否合理
-                        bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, inStorage.InFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity*product.Unit.Count, inStorage.Quantity, "in");
+                        bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity * unit.Count, inStorage.InFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity * product.Unit.Count, inStorage.Quantity, "in");
                         if (isInQuantityRight && isOutQuantityRight)
                         {
                             var mbd = new MoveBillDetail();
@@ -183,13 +183,13 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="ID">移库细单ID</param>
         /// <returns></returns>
-        public bool Delete(string ID,out string strResult)
+        public bool Delete(string ID, out string strResult)
         {
             bool result = false;
             IQueryable<MoveBillDetail> moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
             int intID = Convert.ToInt32(ID);
             var mbd = moveBillDetailQuery.FirstOrDefault(i => i.ID == intID);
-            var outStorage=StorageRepository.GetQueryable().FirstOrDefault(s=>s.StorageCode==mbd.OutStorageCode);
+            var outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == mbd.OutStorageCode);
             var inStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == mbd.InStorageCode);
             var product = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == mbd.ProductCode);
             var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == mbd.UnitCode);
@@ -228,12 +228,12 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="moveBillDetail"></param>
         /// <returns></returns>
-        public bool Save(MoveBillDetail moveBillDetail,out string strResult)
+        public bool Save(MoveBillDetail moveBillDetail, out string strResult)
         {
             bool result = false;
             decimal inFrozenQuantity = 0;
             decimal outFrozenQuantity = 0;
-            if (moveBillDetail.OutCellCode==moveBillDetail.InCellCode)
+            if (moveBillDetail.OutCellCode == moveBillDetail.InCellCode)
             {
                 strResult = "移入和移出货位不能一样！";
                 return false;
@@ -248,7 +248,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                product = ProductRepository.GetQueryable().FirstOrDefault(p=>p.ProductCode==moveBillDetail.ProductCode);
+                product = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == moveBillDetail.ProductCode);
             }
             var outCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.OutCellCode);
             var inCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
@@ -261,8 +261,8 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                oldOutStorage = StorageRepository.GetQueryable().FirstOrDefault(s=>s.StorageCode==mbd.OutStorageCode);
-                outStorage = StorageRepository.GetQueryable().FirstOrDefault(s=>s.StorageCode==moveBillDetail.OutStorageCode);
+                oldOutStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == mbd.OutStorageCode);
+                outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == moveBillDetail.OutStorageCode);
                 outFrozenQuantity = outStorage.OutFrozenQuantity;
             }
             Storage inStorage = null;
@@ -274,67 +274,67 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                oldInStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode==mbd.InStorageCode);
+                oldInStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == mbd.InStorageCode);
                 inStorage = Locker.LockStorage(inCell);
-                if (inStorage==null)
+                if (inStorage == null)
                 {
                     strResult = "移入库存加锁失败！";
                     return false;
                 }
                 inFrozenQuantity = inStorage.InFrozenQuantity;
             }
-            if (inCell.IsSingle=="1")
+            if (inCell.IsSingle == "1")
             {
-                if (inStorage.Product!=null && inStorage.Product.ProductCode !=moveBillDetail.ProductCode)
+                if (inStorage.Product != null && inStorage.Product.ProductCode != moveBillDetail.ProductCode)
                 {
-                    strResult = "货位：<"+inCell.CellName+">是非货位管理货位不能移入不同品牌的卷烟！";
+                    strResult = "货位：<" + inCell.CellName + ">是非货位管理货位不能移入不同品牌的卷烟！";
                     return false;
                 }
             }
             //判断移出数量是否合理
-            bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, outStorage.InFrozenQuantity, outFrozenQuantity, outCell.MaxQuantity*product.Unit.Count, outStorage.Quantity, "out");            
+            bool isOutQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity * unit.Count, outStorage.InFrozenQuantity, outFrozenQuantity, outCell.MaxQuantity * product.Unit.Count, outStorage.Quantity, "out");
             if (Locker.LockStorage(outStorage, product) != null)
             {
                 //if (Locker.LockStorage(inStorage, product) != null)
                 //{
-                    //判断移入数量是否合理
-                    bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity*unit.Count, inFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity*product.Unit.Count, inStorage.Quantity, "in");
-                    if (isOutQuantityRight && isInQuantityRight)
+                //判断移入数量是否合理
+                bool isInQuantityRight = IsQuntityRight(moveBillDetail.RealQuantity * unit.Count, inFrozenQuantity, inStorage.OutFrozenQuantity, inCell.MaxQuantity * product.Unit.Count, inStorage.Quantity, "in");
+                if (isOutQuantityRight && isInQuantityRight)
+                {
+                    if (mbd.OutStorageCode == moveBillDetail.OutStorageCode)
                     {
-                        if (mbd.OutStorageCode == moveBillDetail.OutStorageCode)
-                        {
-                            outStorage.OutFrozenQuantity -= mbd.RealQuantity;
-                            outStorage.OutFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
-                        }
-                        else
-                        {
-                            oldOutStorage.OutFrozenQuantity -= mbd.RealQuantity;
-                            outStorage.OutFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
-                        }
-                        if (mbd.InCellCode == moveBillDetail.InCellCode)
-                        {
-                            inStorage.InFrozenQuantity -= mbd.RealQuantity;
-                            inStorage.InFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
-                        }
-                        else
-                        {
-                            oldInStorage.InFrozenQuantity -= mbd.RealQuantity;
-                            inStorage.InFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
-                        }
-                        mbd.ProductCode = moveBillDetail.ProductCode;
-                        mbd.OutCellCode = moveBillDetail.OutCellCode;
-                        mbd.OutStorageCode = moveBillDetail.OutStorageCode;
-                        mbd.InCellCode = moveBillDetail.InCellCode;
-                        mbd.InStorageCode = inStorage.StorageCode;
-                        mbd.UnitCode = moveBillDetail.UnitCode;
-                        mbd.RealQuantity = moveBillDetail.RealQuantity * unit.Count;
-                        mbd.Status = "0";
-                        outStorage.LockTag = string.Empty;
-                        inStorage.LockTag = string.Empty;
-                        inStorage.ProductCode = product.ProductCode;
-                        MoveBillDetailRepository.SaveChanges();
-                        result = true;
+                        outStorage.OutFrozenQuantity -= mbd.RealQuantity;
+                        outStorage.OutFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
                     }
+                    else
+                    {
+                        oldOutStorage.OutFrozenQuantity -= mbd.RealQuantity;
+                        outStorage.OutFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
+                    }
+                    if (mbd.InCellCode == moveBillDetail.InCellCode)
+                    {
+                        inStorage.InFrozenQuantity -= mbd.RealQuantity;
+                        inStorage.InFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
+                    }
+                    else
+                    {
+                        oldInStorage.InFrozenQuantity -= mbd.RealQuantity;
+                        inStorage.InFrozenQuantity += moveBillDetail.RealQuantity * unit.Count;
+                    }
+                    mbd.ProductCode = moveBillDetail.ProductCode;
+                    mbd.OutCellCode = moveBillDetail.OutCellCode;
+                    mbd.OutStorageCode = moveBillDetail.OutStorageCode;
+                    mbd.InCellCode = moveBillDetail.InCellCode;
+                    mbd.InStorageCode = inStorage.StorageCode;
+                    mbd.UnitCode = moveBillDetail.UnitCode;
+                    mbd.RealQuantity = moveBillDetail.RealQuantity * unit.Count;
+                    mbd.Status = "0";
+                    outStorage.LockTag = string.Empty;
+                    inStorage.LockTag = string.Empty;
+                    inStorage.ProductCode = product.ProductCode;
+                    MoveBillDetailRepository.SaveChanges();
+                    result = true;
+                }
                 //}
                 //else
                 //{
@@ -360,10 +360,10 @@ namespace THOK.Wms.Bll.Service
         /// <param name="currentQuantity">当前数量</param>
         /// <param name="inOrOut">移出还是移入</param>
         /// <returns></returns>
-        public bool IsQuntityRight(decimal inputQuantity, decimal inFrozenQuantity, decimal outFrozenQuantity, decimal maxQuantity, decimal currentQuantity,string inOrOut)
+        public bool IsQuntityRight(decimal inputQuantity, decimal inFrozenQuantity, decimal outFrozenQuantity, decimal maxQuantity, decimal currentQuantity, string inOrOut)
         {
             bool result = false;
-            if (inOrOut=="in")
+            if (inOrOut == "in")
             {
                 if (inputQuantity <= (maxQuantity - inFrozenQuantity - currentQuantity))
                 {
@@ -375,7 +375,7 @@ namespace THOK.Wms.Bll.Service
                     return result;
                 }
             }
-            else if (inOrOut=="out")
+            else if (inOrOut == "out")
             {
                 if (Math.Abs(inputQuantity) <= (currentQuantity - outFrozenQuantity))
                 {
@@ -390,6 +390,63 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
+        #endregion
+
+        #region IMoveBillDetail 成员
+        /// <summary>获得移库细单信息</summary>
+        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            if (BillNo != "" && BillNo != null)
+            {
+                IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
+                var moveBillDetail = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+                {
+                    OutCellName = i.OutCell.CellName,
+                    OutStorageCode = i.OutStorageCode,
+                    InCellName = i.InCell.CellName,
+                    InStorageCode = i.InStorageCode,
+                    ProductCode = i.ProductCode,
+                    ProductName = i.Product.ProductName,
+                    UnitCode = i.UnitCode,
+                    UnitName = i.Unit.UnitName,
+                    RealQuantity = i.RealQuantity / i.Unit.Count,
+                    OperatePersonName = i.OperatePerson == null ? string.Empty : i.OperatePerson.EmployeeName,
+                    Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空",
+                });
+                dt.Columns.Add("移出储位名称", typeof(string));
+                dt.Columns.Add("移出存储编码", typeof(string));
+                dt.Columns.Add("移入储位名称", typeof(string));
+                dt.Columns.Add("移入存储编码", typeof(string));
+                dt.Columns.Add("产品代码", typeof(string));
+                dt.Columns.Add("产品名称", typeof(string));
+                dt.Columns.Add("单位编码", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("数量", typeof(int));
+                dt.Columns.Add("作业人员", typeof(string));
+                dt.Columns.Add("作业状态", typeof(string));
+
+                //dt.Columns.Add("Description", typeof(string));
+                foreach (var m in moveBillDetail)
+                {
+                    dt.Rows.Add
+                        (
+                              m.OutCellName
+                            , m.OutStorageCode
+                            , m.InCellName
+                            , m.InStorageCode
+                            , m.ProductCode
+                            , m.ProductName
+                            , m.UnitCode
+                            , m.UnitName
+                            , m.RealQuantity
+                            , m.OperatePersonName
+                            , m.Status
+                        );
+                }
+            }
+            return dt;
+        } 
         #endregion
     }
 }

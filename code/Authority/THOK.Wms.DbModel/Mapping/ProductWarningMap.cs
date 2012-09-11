@@ -19,6 +19,10 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .HasMaxLength(20);
 
+            this.Property(t => t.UnitCode)
+               .IsRequired()
+               .HasMaxLength(20);
+
             this.Property(t => t.MinLimited)
                 .HasPrecision(18, 2);
 
@@ -33,10 +37,16 @@ namespace THOK.Wms.DbModel.Mapping
 
             // Table & Column Mappings
             this.Property(t => t.ProductCode).HasColumnName(ColumnMap.Value.To("ProductCode"));
+            this.Property(t => t.UnitCode).HasColumnName(ColumnMap.Value.To("UnitCode"));
             this.Property(t => t.MinLimited).HasColumnName(ColumnMap.Value.To("MinLimited"));
             this.Property(t => t.MaxLimited).HasColumnName(ColumnMap.Value.To("MaxLimited"));
             this.Property(t => t.AssemblyTime).HasColumnName(ColumnMap.Value.To("AssemblyTime"));
             this.Property(t => t.Memo).HasColumnName(ColumnMap.Value.To("Memo"));
+
+            this.HasRequired(t => t.Unit)
+               .WithMany()
+               .HasForeignKey(d => d.UnitCode)
+               .WillCascadeOnDelete(false);
         }
     }
 }
