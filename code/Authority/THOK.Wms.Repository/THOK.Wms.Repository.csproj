@@ -261,6 +261,10 @@
     <Compile Include="Migrations\201209100210598_modify_product_warning.Designer.cs">
       <DependentUpon>201209100210598_modify_product_warning.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201209110331487_modify_productwarning_01.cs" />
+    <Compile Include="Migrations\201209110331487_modify_productwarning_01.Designer.cs">
+      <DependentUpon>201209110331487_modify_productwarning_01.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

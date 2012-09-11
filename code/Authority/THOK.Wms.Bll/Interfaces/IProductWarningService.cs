@@ -10,13 +10,15 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, decimal assemblyTime);
 
+        object GetStorageByTime();
+
         bool Add(ProductWarning productWarning);
 
         bool Delete(string productCode);
 
         bool Save(ProductWarning productWarning);
 
-        object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitType);
+        object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitCode);
 
         //object GetTimeOut(int page,int rows,string productCode);
 
