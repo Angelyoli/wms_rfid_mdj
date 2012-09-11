@@ -28,6 +28,7 @@ namespace Wms
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapConnection<AutomotiveSystemsConnection>("automotiveSystems", "automotiveSystems/{*operation}");
             routes.MapConnection<AllotStockInConnection>("allotStockIn", "allotStockIn/{*operation}");
             routes.MapConnection<AllotStockOutConnection>("allotStockOut", "allotStockOut/{*operation}");
             routes.MapConnection<DispatchSortWorkConnection>("allotSortWork", "allotSortWork/{*operation}");

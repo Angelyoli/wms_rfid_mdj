@@ -1435,7 +1435,7 @@
     <Content Include="Views\SortWorkDispatch\_AntiTrialPartial.cshtml" />
     <Content Include="Views\SortWorkDispatch\_SettlePartial.cshtml" />
     <Content Include="Views\StockOutBill\_SettlePartial.cshtml" />
-    <Content Include="Views\DailyBalance\__Detail2.cshtml" />
+    <Content Include="Views\DailyBalance\_Detail2.cshtml" />
     <Content Include="Views\StockInBill\_SettlePartial.cshtml" />
     <Content Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\StockIntoSearch\_Detail.cshtml" />
