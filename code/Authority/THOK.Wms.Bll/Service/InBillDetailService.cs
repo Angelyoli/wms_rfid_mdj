@@ -224,6 +224,7 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
+        #region IInBillDetailService 成员
         public System.Data.DataTable GetInBillDetail(int page, int rows, string BillNo)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -233,7 +234,6 @@ namespace THOK.Wms.Bll.Service
                 var inBillDetail = inBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => i);
                 var temp = inBillDetail.ToArray().AsEnumerable().Select(i => new
                 {
-                    i.ID,
                     i.BillNo,
                     i.ProductCode,
                     i.Product.ProductName,
@@ -249,9 +249,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("订单数量", typeof(string));
-                dt.Columns.Add("已分配数量", typeof(string));
-                dt.Columns.Add("实际入库量", typeof(string));
+                dt.Columns.Add("订单数量", typeof(int));
+                dt.Columns.Add("已分配数量", typeof(int));
+                dt.Columns.Add("实际入库量", typeof(int));
                 dt.Columns.Add("备注", typeof(string));
                 foreach (var item in temp)
                 {
@@ -269,6 +269,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }

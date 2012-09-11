@@ -1219,6 +1219,7 @@
     <Content Include="Views\ExportExcel2\_PrintPartial.cshtml" />
     <Content Include="Views\ExportExcel2\Index.cshtml" />
     <Content Include="Views\ExportExcel2\_SearchPartial.cshtml" />
+    <Content Include="Views\CheckBill\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -1480,8 +1481,14 @@
     <Content Include="Views\ProductTimeOut\Index.cshtml" />
     <Content Include="Views\StockOutBill\_PrintPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_PrintPartial.cshtml" />
+    <Content Include="Views\ProfitLossBill\_PrintPartial.cshtml" />
     <Content Include="Views\ProductTimeOut\_ProductPartial.cshtml" />
     <Content Include="Views\ProductTimeOut\_SearchPartial.cshtml" />
+    <Content Include="Views\StockIntoSearch\_PrintPartial.cshtml" />
+    <Content Include="Views\StockOutSearch\_PrintPartial.cshtml" />
+    <Content Include="Views\StockMoveSearch\_PrintPartial.cshtml" />
+    <Content Include="Views\StockCheckSearch\_PrintPartial.cshtml" />
+    <Content Include="Views\StockDifferSearch\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

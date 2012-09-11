@@ -71,7 +71,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             return new FileStreamResult(ExportDT(dt, excelname, str), "application/ms-excel");
         }
 
-        #region 导出到Excel公用方法
+        #region 导出到单表Excel公用方法
         /// <summary>DataTable导出到Excel的MemoryStream</summary>
         static MemoryStream ExportDT(DataTable dtSource, string strHeaderText, string[] str)
         {

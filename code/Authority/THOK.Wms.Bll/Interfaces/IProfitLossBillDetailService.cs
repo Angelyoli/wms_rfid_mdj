@@ -15,5 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string ID, out string strResult);
 
         bool Save(ProfitLossBillDetail profitLossBillDetail, out string strResult);
+
+        System.Data.DataTable GetProfitLoassBillDetail(int page, int rows, string BillNo);
     }
 }

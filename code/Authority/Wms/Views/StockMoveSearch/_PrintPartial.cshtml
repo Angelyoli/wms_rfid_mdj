@@ -3,7 +3,7 @@
 
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            window.location.href = '/StockOutBillAllot/CreateExcelToClient/?billNo=' + row.BillNo;
+            window.location.href = '/StockMoveBill/CreateExcelToClient/?billNo=' + row.BillNo;
         } else {
             $.messager.alert('系统提示', '未选中行', "info");
         }
