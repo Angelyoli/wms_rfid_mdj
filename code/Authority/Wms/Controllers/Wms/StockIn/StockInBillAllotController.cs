@@ -29,22 +29,22 @@ using System.Text;
 namespace Authority.Controllers.Wms.StockIn
 {
     public class StockInBillAllotController : Controller
-    {        
+    {
         [Dependency]
         public IInBillAllotService InBillAllotService { get; set; }
         [Dependency]
         public IInBillDetailService InBillDetailService { get; set; }
 
-        public ActionResult Search(string billNo,int page, int rows)
+        public ActionResult Search(string billNo, int page, int rows)
         {
-            var result = InBillAllotService.Search(billNo,page,rows);
+            var result = InBillAllotService.Search(billNo, page, rows);
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllotDelete(string billNo,long id)
+        public ActionResult AllotDelete(string billNo, long id)
         {
             string strResult = string.Empty;
-            bool bResult = InBillAllotService.AllotDelete(billNo,id,out strResult);
+            bool bResult = InBillAllotService.AllotDelete(billNo, id, out strResult);
             string msg = bResult ? "删除分配明细成功" : "删除分配明细失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -52,7 +52,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult AllotEdit(string billNo, long id, string cellCode, int allotQuantity)
         {
             string strResult = string.Empty;
-            bool bResult = InBillAllotService.AllotEdit(billNo, id,cellCode,allotQuantity,out strResult);
+            bool bResult = InBillAllotService.AllotEdit(billNo, id, cellCode, allotQuantity, out strResult);
             string msg = bResult ? "修改分配成功" : "修改分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -60,7 +60,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult AllotConfirm(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = InBillAllotService.AllotConfirm(billNo,out strResult);
+            bool bResult = InBillAllotService.AllotConfirm(billNo, out strResult);
             string msg = bResult ? "确认分配成功" : "确认分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -89,20 +89,16 @@ namespace Authority.Controllers.Wms.StockIn
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-
-        // POST: /StockInBillAllot/CreateExcelToClient/
+        #region /StockInBillAllot/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
-
-            //System.Data.DataTable dt = InBillMasterService.GetStockInBill(page, rows, billNo);
             System.Data.DataTable dt = InBillDetailService.GetInBillDetail(page, rows, billNo);
             System.Data.DataTable dt2 = InBillAllotService.AllotSearch(page, rows, billNo);
-
-            string strHeaderText = "入库单据分配";
-            string strHeaderText2 = "入库单据分配明细";
-            #region
+            string strHeaderText = "入库单明细";
+            string strHeaderText2 = "入库单分配明细";
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
             string filename = strHeaderText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
             Response.Clear();
             Response.BufferOutput = false;
@@ -118,13 +114,13 @@ namespace Authority.Controllers.Wms.StockIn
                                "微软雅黑",  //[5]大标题字体
                                "Arial",     //[6]小标题字体
                            };
-            #endregion
-            return new FileStreamResult(ExportDT(dt, dt2, strHeaderText, strHeaderText2, str), "application/ms-excel");
-        }
+            return new FileStreamResult(ExportDT(dt, dt2, strHeaderText, strHeaderText2, str, exportDate), "application/ms-excel");
+        } 
+        #endregion
 
         #region 导出双表Excel公用方法
         /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        static MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string strHeaderText, string strHeaderText2, string[] str)
+        static MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string strHeaderText, string strHeaderText2, string[] str, string exportDate)
         {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(strHeaderText) as HSSFSheet;
@@ -188,19 +184,27 @@ namespace Authority.Controllers.Wms.StockIn
 
                         HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
+
                         HSSFFont font = workbook.CreateFont() as HSSFFont;
                         font.FontName = str[5];                             //[5]
                         font.FontHeightInPoints = Convert.ToInt16(str[0]);  //[0]
                         font.Boldweight = Convert.ToInt16(str[1]);          //[1]
                         headStyle.SetFont(font);
+
                         headerRow.GetCell(0).CellStyle = headStyle;
                         sheet.AddMergedRegion(new Region(0, 0, 0, dt.Columns.Count - 1));
-                        //headerRow.Dispose();
                     }
+                    #endregion
+                    #region 导出时间
+                    {
+                        HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
+                        headerRow.CreateCell(0).SetCellValue(exportDate);
+                        sheet.AddMergedRegion(new Region(1, 0, 1, dt.Columns.Count - 1));
+                    } 
                     #endregion
                     #region 列头及样式
                     {
-                        HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
+                        HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
                         HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         HSSFFont font = workbook.CreateFont() as HSSFFont;
@@ -215,10 +219,9 @@ namespace Authority.Controllers.Wms.StockIn
                             //设置列宽
                             sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
                         }
-                        //headerRow.Dispose();
                     }
                     #endregion
-                    rowIndex = 2;
+                    rowIndex = 3;
                 }
                 #endregion
                 #region 填充内容
@@ -299,9 +302,16 @@ namespace Authority.Controllers.Wms.StockIn
                         //headerRow.Dispose();
                     }
                     #endregion
-                    #region 列头及样式
+                    #region 导出时间
                     {
                         HSSFRow headerRow2 = sheet.CreateRow(1) as HSSFRow;
+                        headerRow2.CreateCell(0).SetCellValue(exportDate);
+                        sheet.AddMergedRegion(new Region(1, 0, 1, dt2.Columns.Count - 1));
+                    }
+                    #endregion
+                    #region 列头及样式
+                    {
+                        HSSFRow headerRow2 = sheet.CreateRow(2) as HSSFRow;
                         HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
                         headStyle2.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         HSSFFont font = workbook.CreateFont() as HSSFFont;
@@ -319,7 +329,7 @@ namespace Authority.Controllers.Wms.StockIn
                         //headerRow.Dispose();
                     }
                     #endregion
-                    rowIndex2 = 2;
+                    rowIndex2 = 3;
                 }
                 #endregion
                 #region 填充内容
@@ -376,8 +386,6 @@ namespace Authority.Controllers.Wms.StockIn
             workbook.Write(ms);
             ms.Flush();
             ms.Position = 0;
-            //sheet;
-            //workbook.Dispose();
             return ms;
 
         }

@@ -94,7 +94,7 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult Create(MoveBillMaster moveBillMaster)
         {
             string strResult = string.Empty;
-            bool bResult = MoveBillMasterService.Add(moveBillMaster, this.User.Identity.Name.ToString(),out strResult);
+            bool bResult = MoveBillMasterService.Add(moveBillMaster, this.User.Identity.Name.ToString(), out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -195,16 +195,14 @@ namespace Authority.Controllers.Wms.StockMove
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        // POST: /MoveBillMaster/CreateExcelToClient/
+        #region /MoveBillMaster/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
-
             System.Data.DataTable dt = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo);
-
-            string strHeaderText = "移库信息明细";
-            #region
+            string strHeaderText = "移库单明细";
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
             string filename = strHeaderText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
             Response.Clear();
             Response.BufferOutput = false;
@@ -220,13 +218,13 @@ namespace Authority.Controllers.Wms.StockMove
                                "微软雅黑",  //[5]大标题字体
                                "Arial",     //[6]小标题字体
                            };
-            #endregion
-            return new FileStreamResult(ExportDT(dt, strHeaderText, str), "application/ms-excel");
-        }
+            return new FileStreamResult(ExportDT(dt, strHeaderText, str, exportDate), "application/ms-excel");
+        } 
+        #endregion
 
         #region 导出到单表Excel公用方法
         /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        static MemoryStream ExportDT(DataTable dtSource, string strHeaderText, string[] str)
+        static MemoryStream ExportDT(DataTable dtSource, string strHeaderText, string[] str, string exportDate)
         {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(strHeaderText) as HSSFSheet;
@@ -280,9 +278,16 @@ namespace Authority.Controllers.Wms.StockMove
                         //headerRow.Dispose();
                     }
                     #endregion
-                    #region 列头及样式
+                    #region 导出时间
                     {
                         HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
+                        headerRow.CreateCell(0).SetCellValue(exportDate);
+                        sheet.AddMergedRegion(new Region(1, 0, 1, dtSource.Columns.Count - 1));
+                    }
+                    #endregion
+                    #region 列头及样式
+                    {
+                        HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
                         HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         HSSFFont font = workbook.CreateFont() as HSSFFont;
@@ -300,7 +305,7 @@ namespace Authority.Controllers.Wms.StockMove
                         //headerRow.Dispose();
                     }
                     #endregion
-                    rowIndex = 2;
+                    rowIndex = 3;
                 }
                 #endregion
                 #region 填充内容

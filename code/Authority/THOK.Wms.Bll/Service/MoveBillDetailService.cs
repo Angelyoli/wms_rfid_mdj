@@ -415,9 +415,9 @@ namespace THOK.Wms.Bll.Service
                     Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空",
                 });
                 dt.Columns.Add("移出储位名称", typeof(string));
-                dt.Columns.Add("移出存储编码", typeof(string));
+                //dt.Columns.Add("移出存储编码", typeof(string));
                 dt.Columns.Add("移入储位名称", typeof(string));
-                dt.Columns.Add("移入存储编码", typeof(string));
+                //dt.Columns.Add("移入存储编码", typeof(string));
                 dt.Columns.Add("产品代码", typeof(string));
                 dt.Columns.Add("产品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
@@ -432,9 +432,9 @@ namespace THOK.Wms.Bll.Service
                     dt.Rows.Add
                         (
                               m.OutCellName
-                            , m.OutStorageCode
+                            //, m.OutStorageCode
                             , m.InCellName
-                            , m.InStorageCode
+                            //, m.InStorageCode
                             , m.ProductCode
                             , m.ProductName
                             , m.UnitCode
