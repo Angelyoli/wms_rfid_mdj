@@ -19,6 +19,8 @@ namespace THOK.Wms.Bll.Service
          public IProductRepository ProductRepository { get; set; }
          [Dependency]
          public IUnitRepository UnitRepository { get; set; }
+         [Dependency]
+         public IDailyBalanceRepository DailyBalanceRepository { get; set; }
 
          protected override Type LogPrefix
          {
@@ -145,6 +147,19 @@ namespace THOK.Wms.Bll.Service
              productInfo = productInfo.OrderBy(p => p.ProductCode);
              productInfo = productInfo.Skip((page - 1) * rows).Take(rows);
              return new { total, rows = productInfo.ToArray() };
+         }
+        #endregion
+
+        #region
+         public object GetStorageByTime()
+         {
+             IQueryable<DailyBalance> EndQuantity = DailyBalanceRepository.GetQueryable();
+             var storageQuantity = EndQuantity.GroupBy(e=>e.SettleDate).Select(e => new 
+             {
+                TimeInter=e.Max(m=>m.SettleDate).Date,
+                TotalQuantity=e.Sum(s=>s.Ending)
+             });
+             return storageQuantity.ToArray();
          }
         #endregion
 

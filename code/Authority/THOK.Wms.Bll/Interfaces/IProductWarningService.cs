@@ -10,6 +10,8 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, decimal assemblyTime);
 
+        object GetStorageByTime();
+
         bool Add(ProductWarning productWarning);
 
         bool Delete(string productCode);
