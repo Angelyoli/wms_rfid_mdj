@@ -36,6 +36,7 @@ namespace THOK.Wms.Allot.Service
             get { return this.GetType(); }
         }
 
+        #region IInBillAllotService 成员
         public string WhatStatus(string status)
         {
             string statusStr = "";
@@ -449,9 +450,10 @@ namespace THOK.Wms.Allot.Service
                 strResult = "当前订单状态不是已分配，或当前订单不存在！";
             }
             return result;
-        }
+        } 
+        #endregion
 
-
+        #region IInBillAllotService 成员
         public System.Data.DataTable AllotSearch(int page, int rows, string billNo)
         {
             var allotQuery = InBillAllotRepository.GetQueryable();
@@ -468,7 +470,7 @@ namespace THOK.Wms.Allot.Service
                 a.OperatePersonID,
                 StartTime = a.StartTime,
                 FinishTime = a.FinishTime,
-                Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "3" ? "已完成" : ""
+                Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "2" ? "已完成" : ""
             });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("商品编码", typeof(string));
@@ -498,6 +500,7 @@ namespace THOK.Wms.Allot.Service
                     );
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }

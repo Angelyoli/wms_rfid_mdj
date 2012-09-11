@@ -392,7 +392,8 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
-
+        #region IMoveBillDetail 成员
+        /// <summary>获得移库细单信息</summary>
         public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -424,7 +425,7 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("数量", typeof(int));
                 dt.Columns.Add("作业人员", typeof(string));
                 dt.Columns.Add("作业状态", typeof(string));
-                
+
                 //dt.Columns.Add("Description", typeof(string));
                 foreach (var m in moveBillDetail)
                 {
@@ -445,6 +446,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }

@@ -1484,7 +1484,8 @@
     <Content Include="Views\ProfitLossBill\_PrintPartial.cshtml" />
     <Content Include="Views\ProductTimeOut\_ProductPartial.cshtml" />
     <Content Include="Views\ProductTimeOut\_SearchPartial.cshtml" />
-    </ItemGroup>
+    <Content Include="Views\StockIntoSearch\_PrintPartial.cshtml" />
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>

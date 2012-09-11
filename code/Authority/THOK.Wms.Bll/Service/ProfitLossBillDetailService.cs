@@ -276,6 +276,8 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
+        #region IProfitLossBillDetailService 成员
+        /// <summary>获得损益细单信息</summary>
         public System.Data.DataTable GetProfitLoassBillDetail(int page, int rows, string BillNo)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -320,6 +322,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }

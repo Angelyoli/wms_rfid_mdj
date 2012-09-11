@@ -44,6 +44,7 @@ namespace THOK.Wms.Allot.Service
             get { return this.GetType(); }
         }
 
+        #region IOutBillAllotService 成员
         public string WhatStatus(string status)
         {
             string statusStr = "";
@@ -474,8 +475,10 @@ namespace THOK.Wms.Allot.Service
                 strResult = "当前订单状态不是已确认，或当前订单不存在！";
             }
             return result;
-        }
+        } 
+        #endregion
 
+        #region IOutBillAllotService 成员
         public System.Data.DataTable AllotSearch(int page, int rows, string billNo)
         {
             var allotQuery = OutBillAllotRepository.GetQueryable();
@@ -520,6 +523,7 @@ namespace THOK.Wms.Allot.Service
                     );
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }

@@ -170,6 +170,7 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
+        #region IOutBillDetailService 成员
         public System.Data.DataTable GetOutBillDetail(int page, int rows, string BillNo)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -216,6 +217,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }

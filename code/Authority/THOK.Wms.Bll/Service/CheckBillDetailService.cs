@@ -131,6 +131,8 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
+        #region ICheckBillDetailService 成员
+        /// <summary>获得盘点细单信息</summary>
         public System.Data.DataTable GetCheckBillDetail(int page, int rows, string BillNo)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -192,6 +194,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }
