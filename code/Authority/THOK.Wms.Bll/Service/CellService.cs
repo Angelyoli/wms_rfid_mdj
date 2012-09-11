@@ -185,7 +185,9 @@ namespace THOK.Wms.Bll.Service
                 }
                 set = wareSet;
             }
-            return set.ToArray();
+            int total = set.Count();
+            var sets = set.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = sets.ToArray() };
         }
         public new bool Add(Cell cell, out string errorInfo)
         {
