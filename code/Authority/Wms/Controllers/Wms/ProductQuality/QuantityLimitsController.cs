@@ -32,6 +32,7 @@ namespace Wms.Controllers.Wms.ProductQuality
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string productCode = collection["ProductCode"] ?? "";
+            string unitCode = collection["UnitCode"] ?? "";
             decimal minLimited=0;
             decimal maxLimited=100000;
             if (collection["MinLimited"] != null && collection["MinLimited"] != "")
@@ -42,8 +43,7 @@ namespace Wms.Controllers.Wms.ProductQuality
             {
                 maxLimited = decimal.Parse(collection["MaxLimited"]);
             }
-            string unitType = collection["UnitType"] ?? "";
-            var productWarn = ProductWarningService.GetQtyLimitsDetail(page, rows, productCode, minLimited, maxLimited, unitType);
+            var productWarn = ProductWarningService.GetQtyLimitsDetail(page, rows, productCode, minLimited, maxLimited, unitCode);
             return Json(productWarn, "text", JsonRequestBehavior.AllowGet);
         }
     }

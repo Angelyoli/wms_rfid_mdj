@@ -29,7 +29,5 @@ namespace THOK.Wms.Bll.Interfaces
         bool Settle(string BillNo, out string strResult);
 
         bool GeneratePalletTag(string billNo, ref string strResult);
-
-        System.Data.DataTable GetMoveBill(int page, int rows, string BillNo);
     }
 }

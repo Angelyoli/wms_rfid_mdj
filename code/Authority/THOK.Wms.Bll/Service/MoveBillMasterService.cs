@@ -467,55 +467,5 @@ namespace THOK.Wms.Bll.Service
         {
             throw new NotImplementedException();
         }
-
-        public System.Data.DataTable GetMoveBill(int page, int rows, string BillNo)
-        {
-            IQueryable<MoveBillMaster> moveBillMasterQuery = MoveBillMasterRepository.GetQueryable();
-            var moveBillMaster = moveBillMasterQuery.Where(i => i.BillNo.Contains(BillNo) && i.Status != "4").Select(i => new
-            {
-                i.BillNo,
-                //BillDate = i.BillDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                //i.OperatePersonID,
-                //i.BillTypeCode,
-                BillTypeName = i.BillType.BillTypeName,
-                i.WarehouseCode,
-                //i.Warehouse.WarehouseName,
-                //OperatePersonCode = i.OperatePerson.EmployeeCode,
-                OperatePersonName = i.OperatePerson.EmployeeName,
-                i.Status,
-                //VerifyPersonID = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeCode,
-                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
-                //VerifyDate = (i.VerifyDate == null ? "" : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd HH:mm:ss")),
-                //Status = WhatStatus(i.Status),
-                Description = i.Description
-                //IsActive = i.IsActive == "1" ? "可用" : "不可用",
-                //UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-            });
-            System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("移库单号", typeof(string));
-            //dt.Columns.Add("BillDate", typeof(string));
-            dt.Columns.Add("订单类型", typeof(string));
-            dt.Columns.Add("仓库编码", typeof(string));
-            dt.Columns.Add("经办人", typeof(string));
-            dt.Columns.Add("处理状态", typeof(string));
-            dt.Columns.Add("审核人", typeof(string));
-            //dt.Columns.Add("VerifyDate", typeof(string));
-            dt.Columns.Add("备注", typeof(string));
-            //dt.Columns.Add("UpdateTime", typeof(string));
-            foreach (var m in moveBillMaster)
-            {
-                dt.Rows.Add
-                    (
-                          m.BillNo
-                        , m.BillTypeName
-                        , m.WarehouseCode
-                        , m.OperatePersonName
-                        , m.Status
-                        , m.VerifyPersonName
-                        , m.Description
-                    );
-            }
-            return dt;
-        }
     }
 }

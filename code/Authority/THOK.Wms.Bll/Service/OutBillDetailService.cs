@@ -170,6 +170,7 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
+        #region IOutBillDetailService 成员
         public System.Data.DataTable GetOutBillDetail(int page, int rows, string BillNo)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -196,9 +197,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("订单数量", typeof(string));
-                dt.Columns.Add("已分配数量", typeof(string));
-                dt.Columns.Add("实际出库量", typeof(string));
+                dt.Columns.Add("订单数量", typeof(int));
+                dt.Columns.Add("已分配数量", typeof(int));
+                dt.Columns.Add("实际出库量", typeof(int));
                 dt.Columns.Add("备注", typeof(string));
                 foreach (var o in outBillDetail)
                 {
@@ -216,6 +217,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        }
+        } 
+        #endregion
     }
 }

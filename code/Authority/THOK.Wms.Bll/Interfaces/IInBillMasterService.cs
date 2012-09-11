@@ -29,7 +29,5 @@ namespace THOK.Wms.Bll.Interfaces
         bool Settle(string BillNo,out string strResult);
 
         bool DownInBillMaster(string BeginDate, string EndDate, out string errorInfo);
-
-        System.Data.DataTable GetStockInBill(int page, int rows, string BillNo);
     }
 }

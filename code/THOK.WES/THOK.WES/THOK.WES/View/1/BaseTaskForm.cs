@@ -64,7 +64,7 @@ namespace THOK.WES.View
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
-            connection = new Connection(@"http://59.61.87.212:8090/automotiveSystems");
+            connection = new Connection(url + @"/automotiveSystems");
             connection.Received += new Action<string>(connection_Received);
             connection.Closed += new Action(connection_Closed);
 

@@ -15,5 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string BillNo);
 
         bool Save(CheckBillDetail inBillDetail);
+
+        System.Data.DataTable GetCheckBillDetail(int page, int rows, string BillNo);
     }
 }

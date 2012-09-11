@@ -24,6 +24,7 @@ using System.Web.UI;
 using THOK.Wms.Bll.Service;
 using System.IO;
 using System.Text;
+using System.Data;
 
 namespace Authority.Controllers.Wms.StockMove
 {
@@ -200,11 +201,9 @@ namespace Authority.Controllers.Wms.StockMove
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
 
-            System.Data.DataTable dt = MoveBillMasterService.GetMoveBill(page, rows, billNo);
-            System.Data.DataTable dt2 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo);
+            System.Data.DataTable dt = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo);
 
-            string strHeaderText = "移库信息表";
-            string strColHeadText = "明细";
+            string strHeaderText = "移库信息明细";
             #region
             string filename = strHeaderText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
             Response.Clear();
@@ -222,58 +221,39 @@ namespace Authority.Controllers.Wms.StockMove
                                "Arial",     //[6]小标题字体
                            };
             #endregion
-            return new FileStreamResult(ExportDT(dt, dt2, strHeaderText, strColHeadText, str), "application/ms-excel");
+            return new FileStreamResult(ExportDT(dt, strHeaderText, str), "application/ms-excel");
         }
 
-        #region 导出双表Excel公用方法
+        #region 导出到单表Excel公用方法
         /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        static MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string strHeaderText, string strColHeadText, string[] str)
+        static MemoryStream ExportDT(DataTable dtSource, string strHeaderText, string[] str)
         {
             HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet sheet = workbook.CreateSheet() as HSSFSheet;
+            HSSFSheet sheet = workbook.CreateSheet(strHeaderText) as HSSFSheet;
 
             HSSFCellStyle dateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
             HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
             dateStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
 
             //取得列宽
-            int[] arrColWidth = new int[dt.Columns.Count];
-            foreach (System.Data.DataColumn item in dt.Columns)
+            int[] arrColWidth = new int[dtSource.Columns.Count];
+            foreach (DataColumn item in dtSource.Columns)
             {
                 arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;
             }
-            for (int i = 0; i < dt.Rows.Count; i++)
+            for (int i = 0; i < dtSource.Rows.Count; i++)
             {
-                for (int j = 0; j < dt.Columns.Count; j++)
+                for (int j = 0; j < dtSource.Columns.Count; j++)
                 {
-                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt.Rows[i][j].ToString()).Length;
+                    int intTemp = Encoding.GetEncoding(936).GetBytes(dtSource.Rows[i][j].ToString()).Length;
                     if (intTemp > arrColWidth[j])
                     {
                         arrColWidth[j] = intTemp;
                     }
                 }
             }
-            #region dt2
-            int[] arrColWidth2 = new int[dt2.Columns.Count];
-            foreach (System.Data.DataColumn item in dt2.Columns)
-            {
-                arrColWidth2[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;
-            }
-            for (int i = 0; i < dt2.Rows.Count; i++)
-            {
-                for (int j = 0; j < dt2.Columns.Count; j++)
-                {
-                    int intTemp2 = Encoding.GetEncoding(936).GetBytes(dt2.Rows[i][j].ToString()).Length;
-                    if (intTemp2 > arrColWidth2[j])
-                    {
-                        arrColWidth2[j] = intTemp2;
-                    }
-                }
-            }
-            #endregion
-
             int rowIndex = 0;
-            foreach (System.Data.DataRow row in dt.Rows)
+            foreach (DataRow row in dtSource.Rows)
             {
                 #region 新建表，填充表头，填充列头，样式
                 if (rowIndex == 0)
@@ -296,7 +276,7 @@ namespace Authority.Controllers.Wms.StockMove
                         font.Boldweight = Convert.ToInt16(str[1]);          //[1]
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
-                        sheet.AddMergedRegion(new Region(0, 0, 0, dt.Columns.Count - 1));
+                        sheet.AddMergedRegion(new Region(0, 0, 0, dtSource.Columns.Count - 1));
                         //headerRow.Dispose();
                     }
                     #endregion
@@ -310,7 +290,7 @@ namespace Authority.Controllers.Wms.StockMove
                         font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
                         font.Boldweight = Convert.ToInt16(str[3]);          //[3]
                         headStyle.SetFont(font);
-                        foreach (System.Data.DataColumn column in dt.Columns)
+                        foreach (DataColumn column in dtSource.Columns)
                         {
                             headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                             headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
@@ -325,7 +305,7 @@ namespace Authority.Controllers.Wms.StockMove
                 #endregion
                 #region 填充内容
                 HSSFRow dataRow = sheet.CreateRow(rowIndex) as HSSFRow;
-                foreach (System.Data.DataColumn column in dt.Columns)
+                foreach (DataColumn column in dtSource.Columns)
                 {
                     HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
                     string drValue = row[column].ToString();
@@ -371,111 +351,10 @@ namespace Authority.Controllers.Wms.StockMove
                 #endregion
                 rowIndex++;
             }
-
-            #region dt2
-            int rowIndex2 = 5;
-            foreach (System.Data.DataRow row in dt2.Rows)
-            {
-                #region 新建表，填充表头，填充列头，样式
-                if (rowIndex2 == 5)
-                {
-                    if (rowIndex2 != 5)
-                    {
-                        sheet = workbook.CreateSheet() as HSSFSheet;
-                    }
-                    #region 表头及样式
-                    {
-                        HSSFRow headerRow2 = sheet.CreateRow(5) as HSSFRow;
-                        headerRow2.HeightInPoints = 25;
-                        headerRow2.CreateCell(0).SetCellValue(strColHeadText);
-
-                        HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
-                        headStyle2.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
-                        HSSFFont font = workbook.CreateFont() as HSSFFont;
-                        font.FontName = str[5];                             //[5]
-                        font.FontHeightInPoints = Convert.ToInt16(str[0]);  //[0]
-                        font.Boldweight = Convert.ToInt16(str[1]);          //[1]
-                        headStyle2.SetFont(font);
-                        headerRow2.GetCell(0).CellStyle = headStyle2;
-                        sheet.AddMergedRegion(new Region(5, 0, 5, dt2.Columns.Count - 1));
-                        //headerRow.Dispose();
-                    }
-                    #endregion
-                    #region 列头及样式
-                    {
-                        HSSFRow headerRow2 = sheet.CreateRow(6) as HSSFRow;
-                        HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
-                        headStyle2.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
-                        HSSFFont font = workbook.CreateFont() as HSSFFont;
-                        font.FontName = str[6];                             //[6]
-                        font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
-                        font.Boldweight = Convert.ToInt16(str[3]);          //[3]
-                        headStyle2.SetFont(font);
-                        foreach (System.Data.DataColumn column in dt2.Columns)
-                        {
-                            headerRow2.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-                            headerRow2.GetCell(column.Ordinal).CellStyle = headStyle2;
-                            //设置列宽
-                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
-                        }
-                        //headerRow.Dispose();
-                    }
-                    #endregion
-                    rowIndex2 = 7;
-                }
-                #endregion
-                #region 填充内容
-                HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
-                foreach (System.Data.DataColumn column in dt2.Columns)
-                {
-                    HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
-                    string drValue = row[column].ToString();
-                    switch (column.DataType.ToString())
-                    {
-                        case "System.String": //字符串类型
-                            string result = drValue;
-                            newCell.SetCellValue(result);
-                            break;
-                        case "System.DateTime": //日期类型
-                            DateTime dateV;
-                            DateTime.TryParse(drValue, out dateV);
-                            newCell.SetCellValue(dateV);
-                            newCell.CellStyle = dateStyle; //格式化显示
-                            break;
-                        case "System.Boolean": //布尔型
-                            bool boolV = false;
-                            bool.TryParse(drValue, out boolV);
-                            newCell.SetCellValue(boolV);
-                            break;
-                        case "System.Int16": //整型
-                        case "System.Int32":
-                        case "System.Int64":
-                        case "System.Byte":
-                            int intV = 0;
-                            int.TryParse(drValue, out intV);
-                            newCell.SetCellValue(intV);
-                            break;
-                        case "System.Decimal": //浮点型
-                        case "System.Double":
-                            double doubV = 0;
-                            double.TryParse(drValue, out doubV);
-                            newCell.SetCellValue(doubV);
-                            break;
-                        case "System.DBNull": //空值处理
-                            newCell.SetCellValue("");
-                            break;
-                        default:
-                            newCell.SetCellValue("");
-                            break;
-                    }
-                }
-                #endregion
-                rowIndex2++;
-            }
-            #endregion
-
             MemoryStream ms = new MemoryStream();
+
             workbook.Write(ms);
+
             ms.Flush();
             ms.Position = 0;
             //sheet;

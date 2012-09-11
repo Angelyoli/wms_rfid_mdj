@@ -9,5 +9,7 @@ namespace THOK.Wms.Bll.Interfaces
     public interface ICheckSearchDetailService : IService<CheckBillDetail>
     {
         object GetDetails(int page, int rows, string BillNo);
+
+        System.Data.DataTable GetCheckDetail(int page, int rows, string BillNo);
     }
 }
