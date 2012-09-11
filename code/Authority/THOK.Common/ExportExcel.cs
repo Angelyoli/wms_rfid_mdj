@@ -188,10 +188,10 @@ namespace THOK.Common
             {
                 for (int j = 0; j < dt2.Columns.Count; j++)
                 {
-                    int intTemp2 = Encoding.GetEncoding(936).GetBytes(dt2.Rows[i][j].ToString()).Length;
-                    if (intTemp2 > arrColWidth2[j])
+                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt2.Rows[i][j].ToString()).Length;
+                    if (intTemp > arrColWidth2[j])
                     {
-                        arrColWidth2[j] = intTemp2;
+                        arrColWidth2[j] = intTemp;
                     }
                 }
             }
@@ -220,7 +220,6 @@ namespace THOK.Common
                         font.FontHeightInPoints = Convert.ToInt16(str[0]);  //[0]
                         font.Boldweight = Convert.ToInt16(str[1]);          //[1]
                         headStyle.SetFont(font);
-
                         headerRow.GetCell(0).CellStyle = headStyle;
                         sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt.Columns.Count - 1));
                     }
@@ -319,43 +318,43 @@ namespace THOK.Common
                     }
                     #region 表头及样式
                     {
-                        NPOI.HSSF.UserModel.HSSFRow headerRow2 = sheet.CreateRow(0) as NPOI.HSSF.UserModel.HSSFRow;
-                        headerRow2.HeightInPoints = 25;
-                        headerRow2.CreateCell(0).SetCellValue(headText2);
+                        NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(0) as NPOI.HSSF.UserModel.HSSFRow;
+                        headerRow.HeightInPoints = 25;
+                        headerRow.CreateCell(0).SetCellValue(headText2);
 
-                        NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
-                        headStyle2.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
+                        NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
+                        headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
                         font.FontName = str[5];                             //[5]
                         font.FontHeightInPoints = Convert.ToInt16(str[0]);  //[0]
                         font.Boldweight = Convert.ToInt16(str[1]);          //[1]
-                        headStyle2.SetFont(font);
-                        headerRow2.GetCell(0).CellStyle = headStyle2;
+                        headStyle.SetFont(font);
+                        headerRow.GetCell(0).CellStyle = headStyle;
                         sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt2.Columns.Count - 1));
                         //headerRow.Dispose();
                     }
                     #endregion
                     #region 导出时间
                     {
-                        NPOI.HSSF.UserModel.HSSFRow headerRow2 = sheet.CreateRow(1) as NPOI.HSSF.UserModel.HSSFRow;
-                        headerRow2.CreateCell(0).SetCellValue(exportDate);
+                        NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(1) as NPOI.HSSF.UserModel.HSSFRow;
+                        headerRow.CreateCell(0).SetCellValue(exportDate);
                         sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt2.Columns.Count - 1));
                     }
                     #endregion
                     #region 列头及样式
                     {
-                        NPOI.HSSF.UserModel.HSSFRow headerRow2 = sheet.CreateRow(2) as NPOI.HSSF.UserModel.HSSFRow;
-                        NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
-                        headStyle2.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
+                        NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(2) as NPOI.HSSF.UserModel.HSSFRow;
+                        NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
+                        headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
                         font.FontName = str[6];                             //[6]
                         font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
                         font.Boldweight = Convert.ToInt16(str[3]);          //[3]
-                        headStyle2.SetFont(font);
+                        headStyle.SetFont(font);
                         foreach (System.Data.DataColumn column2 in dt2.Columns)
                         {
-                            headerRow2.CreateCell(column2.Ordinal).SetCellValue(column2.ColumnName);
-                            headerRow2.GetCell(column2.Ordinal).CellStyle = headStyle2;
+                            headerRow.CreateCell(column2.Ordinal).SetCellValue(column2.ColumnName);
+                            headerRow.GetCell(column2.Ordinal).CellStyle = headStyle;
                             //设置列宽
                             sheet.SetColumnWidth(column2.Ordinal, (arrColWidth2[column2.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
                         }
