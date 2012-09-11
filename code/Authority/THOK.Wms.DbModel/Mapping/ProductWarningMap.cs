@@ -44,7 +44,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.Memo).HasColumnName(ColumnMap.Value.To("Memo"));
 
             this.HasRequired(t => t.Unit)
-               .WithMany(t => t.ProductWarnings)
+               .WithMany()
                .HasForeignKey(d => d.UnitCode)
                .WillCascadeOnDelete(false);
         }

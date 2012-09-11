@@ -111,11 +111,11 @@ namespace THOK.Wms.Bll.Service
                  {
                      ProductCode =t.Max(p=>p.Product.ProductCode),
                      ProductName=t.Max(p=>p.Product.ProductName),
-                     UnitCode=t.Max(p=>p.ProductWarning.UnitCode),
-                     UnitName = t.Max(p => p.ProductWarning.Unit.UnitName),
+                     //UnitCode=t.Max(p=>p.ProductWarning.UnitCode),
+                     //UnitName = t.Max(p => p.ProductWarning.Unit.UnitName),
                      Quantity = t.Sum(p => p.Quantity/unit.Count),
-                     MinLimited = t.Max(p => p.ProductWarning.MinLimited / unit.Count),
-                     MaxLimited = t.Max(p => p.ProductWarning.MaxLimited / unit.Count)
+                     //MinLimited = t.Max(p => p.ProductWarning.MinLimited / unit.Count),
+                     //MaxLimited = t.Max(p => p.ProductWarning.MaxLimited / unit.Count)
                  });
              var productWarn = Qty.Where(q => q.Quantity <= minLimited && q.Quantity >= maxLimited);
              int total = productWarn.Count();
@@ -128,25 +128,26 @@ namespace THOK.Wms.Bll.Service
         #region 积压产品查询
          public object GetProductDetails(int page, int rows, string productCode, decimal assemblyTime)
          {
-             IQueryable<Storage> Storage = StorageRepository.GetQueryable();
-             IQueryable<ProductWarning> ProductWarning = ProductWarningRepository.GetQueryable();
-             var productInfo = Storage.Where(s => s.Product.ProductCode.Contains(s.ProductWarning.ProductCode)
-                 && s.Product.ProductCode.Contains(productCode)
-                 && decimal.Parse((DateTime.Now - s.StorageTime).TotalDays.ToString()) >= assemblyTime)
-                 .Select(s => new
-                 {
-                     ProductCode = s.Product.ProductCode,
-                     productName = s.Product.ProductName,
-                     cellCode = s.Cell.CellCode,
-                     cellName = s.Cell.CellName,
-                     quantity = s.Quantity/s.Product.Unit.Count,
-                     storageTime = s.StorageTime,
-                     days = (DateTime.Now - s.StorageTime).TotalDays
-                 });
-             int total = productInfo.Count();
-             productInfo = productInfo.OrderBy(p => p.ProductCode);
-             productInfo = productInfo.Skip((page - 1) * rows).Take(rows);
-             return new { total, rows = productInfo.ToArray() };
+             //IQueryable<Storage> Storage = StorageRepository.GetQueryable();
+             //IQueryable<ProductWarning> ProductWarning = ProductWarningRepository.GetQueryable();
+             //var productInfo = Storage.Where(s => s.Product.ProductCode.Contains(s.ProductWarning.ProductCode)
+             //    && s.Product.ProductCode.Contains(productCode)
+             //    && decimal.Parse((DateTime.Now - s.StorageTime).TotalDays.ToString()) >= assemblyTime)
+             //    .Select(s => new
+             //    {
+             //        ProductCode = s.Product.ProductCode,
+             //        productName = s.Product.ProductName,
+             //        cellCode = s.Cell.CellCode,
+             //        cellName = s.Cell.CellName,
+             //        quantity = s.Quantity/s.Product.Unit.Count,
+             //        storageTime = s.StorageTime,
+             //        days = (DateTime.Now - s.StorageTime).TotalDays
+             //    });
+             //int total = productInfo.Count();
+             //productInfo = productInfo.OrderBy(p => p.ProductCode);
+             //productInfo = productInfo.Skip((page - 1) * rows).Take(rows);
+             //return new { total, rows = productInfo.ToArray() };
+             return null;
          }
         #endregion
 
