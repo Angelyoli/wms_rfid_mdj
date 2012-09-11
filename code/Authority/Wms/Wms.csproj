@@ -99,6 +99,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Authority\AuthorizeController.cs" />
     <Compile Include="Controllers\Authority\FunctionController.cs" />
+    <Compile Include="Controllers\Authority\HelpContentController.cs" />
     <Compile Include="Controllers\Authority\LoginLogController.cs" />
     <Compile Include="Controllers\Authority\ModuleController.cs" />
     <Compile Include="Controllers\Authority\RoleController.cs" />
@@ -1239,6 +1240,7 @@
     <Content Include="Views\ExportExcel2\Index.cshtml" />
     <Content Include="Views\ExportExcel2\_SearchPartial.cshtml" />
     <Content Include="Views\CheckBill\_PrintPartial.cshtml" />
+    <Content Include="Views\HelpContent\Index.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
