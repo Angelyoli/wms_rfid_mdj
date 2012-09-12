@@ -1,5 +1,27 @@
-﻿@{
-    ViewBag.Title = "Index";
-}
+﻿<script type="text/javascript">
+    $(function () {
 
-<h2>Index</h2>
+    });
+</script>
+ 
+<div region="center" split="true" border="false" >    
+   <table id="details" class="easyui-treegrid" border="false" 
+   			url="/HelpContent/Details/" rownumbers="true" singleSelect="true"
+			idField="ModuleID" treeField="ModuleName" toolbar="#tool" pagination="false" fit="true" >
+		<thead>
+			<tr>
+                <th field="ContentCode" width="80">目录编码</th>
+                <th field="ContentName" width="100">目录名称</th>
+                <th field="ContentText" width="100">文档内容</th>
+                <th field="ContentPath" width="100">目录路径</th>
+                <th field="NodeType" width="100" hidden="true">节点类型</th>
+                <th field="FatherNodeName" width="80" >上级目录</th>
+                <th field="ModuleID"  width="80" hidden="true">模块ID</th>
+                <th field="ModuleName"  width="80">模块名称</th>
+                <th field="NodeOrder" width="100">节点顺序</th>
+                <th field="IsActive" width="80" >是否可用</th>
+                <th field="UpdateTime" width="125" >更新时间</th>
+            </tr>
+		</thead>
+	</table>
+</div>
