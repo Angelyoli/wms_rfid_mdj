@@ -1,11 +1,10 @@
-ï»¿<script type="text/javascript">
+<script type="text/javascript">
     function deleteClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
             url = '/Company/Delete/?companyID=' + row.ID;
-            showDialog('åˆ é™¤');
-            addDialog.dialog('open');
             $('#companyfm').form('load', row);
+            $('#dlg').dialog('open').dialog('setTitle', 'É¾³ı');
             $('#companyfm .easyui-validatebox').validatebox({
                 required: false
             });
@@ -14,16 +13,13 @@
             $('#isActive_com').combo({
                 hasDownArrow: false
             });
-            $('#company_type').combo({
-                hasDownArrow: false
-            });
-            if (row.IsActive == 'å¯ç”¨') {
+            if (row.IsActive == 'ÆôÓÃ') {
                 $('#isActive_com').combo('setValue', 1).combo('setText', row.IsActive);
             } else {
                 $('#isActive_com').combo('setValue', 0).combo('setText', row.IsActive);
             }
         } else {
-            $.messager.alert('é”™è¯¯', 'æ²¡æœ‰é€‰æ‹©è¡Œï¼', 'info');
+            $.messager.alert('´íÎó', 'Ã»ÓĞÑ¡ÔñĞĞ£¡','info');
         }
     };
 </script>
