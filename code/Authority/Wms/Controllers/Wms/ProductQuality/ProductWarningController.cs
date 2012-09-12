@@ -32,9 +32,9 @@ namespace Wms.Controllers.Wms.ProductQuality
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string productCode = collection["ProductCode"] ?? "";
-            decimal minLimited=0;
+            decimal minLimited=100000;
             decimal maxLimited=100000;
-            decimal assemblyTime=180;
+            decimal assemblyTime=3600;
             if (collection["MinLimited"] != null && collection["MinLimited"] != "")
             {
                 minLimited = decimal.Parse(collection["MinLimited"]);

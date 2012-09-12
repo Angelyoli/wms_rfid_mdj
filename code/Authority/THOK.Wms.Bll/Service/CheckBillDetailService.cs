@@ -161,9 +161,9 @@ namespace THOK.Wms.Bll.Service
                     Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空"
                 });
                 dt.Columns.Add("盘点单号", typeof(string));
-                dt.Columns.Add("货位编码", typeof(string));
+                //dt.Columns.Add("货位编码", typeof(string));
                 dt.Columns.Add("货位名称", typeof(string));
-                dt.Columns.Add("储存名称", typeof(string));
+                //dt.Columns.Add("储存名称", typeof(string));
                 dt.Columns.Add("产品编码", typeof(string));
                 dt.Columns.Add("产品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
@@ -178,9 +178,9 @@ namespace THOK.Wms.Bll.Service
                     dt.Rows.Add
                         (
                               c.BillNo
-                            , c.CellCode
+                            //, c.CellCode
                             , c.CellName
-                            , c.StorageCode
+                            //, c.StorageCode
                             , c.ProductCode
                             , c.ProductName
                             , c.UnitCode

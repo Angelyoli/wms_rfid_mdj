@@ -1241,6 +1241,7 @@
     <Content Include="Views\ExportExcel2\_SearchPartial.cshtml" />
     <Content Include="Views\CheckBill\_PrintPartial.cshtml" />
     <Content Include="Views\HelpContent\Index.cshtml" />
+    <Content Include="Views\CurrentStock\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
