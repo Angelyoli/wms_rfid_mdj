@@ -175,7 +175,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
             Response.ContentType = "application/ms-excel";
 
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, headText, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion
