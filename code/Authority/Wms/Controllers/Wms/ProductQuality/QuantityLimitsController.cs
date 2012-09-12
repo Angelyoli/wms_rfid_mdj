@@ -33,7 +33,7 @@ namespace Wms.Controllers.Wms.ProductQuality
         {
             string productCode = collection["ProductCode"] ?? "";
             string unitCode = collection["UnitCode"] ?? "";
-            decimal minLimited=0;
+            decimal minLimited =100000;
             decimal maxLimited=100000;
             if (collection["MinLimited"] != null && collection["MinLimited"] != "")
             {
