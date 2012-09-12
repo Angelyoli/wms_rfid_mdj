@@ -7,6 +7,9 @@
             addDialog.dialog('open');
             url = '/Company/Edit/';
             //            $('#dlg').dialog('open').dialog('setTitle', '编辑');
+            $('form input').removeAttr("disabled");
+            $('form textarea').removeAttr("disabled");
+            $('#inputCompanyCode').attr("readonly", true);
             $('#companyfm').form('load', row);
             $('#companyfm .easyui-validatebox').validatebox({
                 required: true
@@ -33,10 +36,6 @@
             $('#isActive_com').combo({
                 hasDownArrow: true
             });
-            $('form input').removeAttr("disabled");
-            $('form textarea').removeAttr("disabled");
-            $('#inputCompanyCode').attr("readonly", true);
-
         } else {
             $.messager.alert('错误', '没有选择行！', 'info');
         }
