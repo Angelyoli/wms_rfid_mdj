@@ -1,0 +1,22 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        ware = "", area = "";
+        var roots = $('#warehouseTree').combotree('tree').tree('getRoots');
+        //仓库
+        for (i = 0; i < roots.length; i++) {
+            if (roots[i].attributes == "ware" && roots[i].checked == true) {
+                ware += roots[i].id + ",";
+            }
+            else {
+                areaChildren = $('#warehouseTree').tree('getChildren', roots[i].target);
+                //库区
+                for (j = 0; j < areaChildren.length; j++) {
+                    if (areaChildren[j].attributes == "area" && areaChildren[j].checked == true) {
+                        area += areaChildren[j].id + ",";
+                    }
+                }
+            }
+        }
+        window.location.href = "/CurrentStock/CreateExcelToClient/?productCode=" + $('#productCode').val() + "&ware=" + ware + "&area=" + area + "&unitType=" + $('#unit_Type').combo('getValue');
+    }
+</script>

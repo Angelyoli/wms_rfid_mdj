@@ -9,7 +9,5 @@ namespace THOK.Wms.Bll.Interfaces
     public interface IMoveSearchDetailService : IService<MoveBillDetail>
     {
         object GetDetails(int page, int rows, string BillNo);
-
-        System.Data.DataTable GetMoveDetail(int page, int rows, string BillNo);
     }
 }
