@@ -37,7 +37,7 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new UserModuleMap());
             modelBuilder.Configurations.Add(new UserRoleMap());
             modelBuilder.Configurations.Add(new UserSystemMap());
-
+            modelBuilder.Configurations.Add(new HelpContentMap());
             #endregion
 
             #region wms
