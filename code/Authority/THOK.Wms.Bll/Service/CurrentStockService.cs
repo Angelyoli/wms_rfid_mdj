@@ -58,7 +58,7 @@ namespace THOK.Wms.Bll.Service
                      Count02 = s.Max(p => p.Product.UnitList.Unit02.Count),
                  });
             int total = storage.Count();
-            storage = storage.OrderBy(s => s.ProductName);
+            storage = storage.OrderBy(s => s.ProductCode);
             storage = storage.Skip((page - 1) * rows).Take(rows);
             if (unitType == "1")
             {
@@ -74,6 +74,7 @@ namespace THOK.Wms.Bll.Service
                     UnitName2 = unitName2,
                     Quantity1 = d.Quantity / count1,
                     Quantity2 = d.Quantity / count2,
+                    Quantity3 = (d.Quantity % count1) / count2,
                     Quantity = d.Quantity
                 });
                 return new { total, rows = currentstorage.ToArray() };
@@ -88,6 +89,7 @@ namespace THOK.Wms.Bll.Service
                     UnitName2 = d.UnitName02,
                     Quantity1 = d.Quantity / d.Count01,
                     Quantity2 = d.Quantity / d.Count02,
+                    Quantity3 = (d.Quantity % d.Count01) / d.Count02,
                     Quantity = d.Quantity
                 });
                 return new { total, rows = currentstorage.ToArray() };
@@ -134,7 +136,7 @@ namespace THOK.Wms.Bll.Service
                      Count01 = s.Max(p => p.Product.UnitList.Unit01.Count),
                      Count02 = s.Max(p => p.Product.UnitList.Unit02.Count),
                  });
-            storage = storage.OrderBy(s => s.ProductName);
+            storage = storage.OrderBy(s => s.ProductCode);
             if (unitType == "1")
             {
                 string unitName1 = "标准件";
@@ -148,17 +150,19 @@ namespace THOK.Wms.Bll.Service
                     UnitName1 = unitName1,
                     UnitName2 = unitName2,
                     Quantity1 = d.Quantity / count1,
-                    Quantity2 = d.Quantity / count2,
+                    Quantity2 = d.Quantity  / count2,
+                    Quantity3 = (d.Quantity % count1) / count2,
                     Quantity = d.Quantity
                 });
                 //return new { total, rows = currentstorage.ToArray() };
                 dt.Columns.Add("商品代码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
-                dt.Columns.Add("商品数量（支）", typeof(int));
+                dt.Columns.Add("商品数量（支）", typeof(decimal));
                 dt.Columns.Add("单位（件）", typeof(string));
-                dt.Columns.Add("数量（件）", typeof(int));
+                dt.Columns.Add("数量（件）", typeof(decimal));
                 dt.Columns.Add("单位（条）", typeof(string));
-                dt.Columns.Add("数量（条）", typeof(int));
+                dt.Columns.Add("数量（条）", typeof(decimal));
+                dt.Columns.Add("尾数（条）", typeof(decimal));
                 foreach (var c in currentstorage)
                 {
                     dt.Rows.Add
@@ -169,7 +173,8 @@ namespace THOK.Wms.Bll.Service
                             c.UnitName1,
                             c.Quantity1,
                             c.UnitName2,
-                            c.Quantity2
+                            c.Quantity2,
+                            c.Quantity3
                         );
                 }
                 return dt;
@@ -184,16 +189,18 @@ namespace THOK.Wms.Bll.Service
                     UnitName2 = d.UnitName02,
                     Quantity1 = d.Quantity / d.Count01,
                     Quantity2 = d.Quantity / d.Count02,
+                    Quantity3 = (d.Quantity % d.Count01) / d.Count02,
                     Quantity = d.Quantity
                 });
                 //return new { total, rows = currentstorage.ToArray() };
                 dt.Columns.Add("商品代码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
-                dt.Columns.Add("商品数量（支）", typeof(int));
+                dt.Columns.Add("商品数量（支）", typeof(decimal));
                 dt.Columns.Add("单位（件）", typeof(string));
-                dt.Columns.Add("数量（件）", typeof(int));
+                dt.Columns.Add("数量（件）", typeof(decimal));
                 dt.Columns.Add("单位（条）", typeof(string));
-                dt.Columns.Add("数量（条）", typeof(int));
+                dt.Columns.Add("数量（条）", typeof(decimal));
+                dt.Columns.Add("尾数（条）", typeof(decimal));
                 foreach (var c in currentstorage)
                 {
                     dt.Rows.Add
@@ -204,7 +211,8 @@ namespace THOK.Wms.Bll.Service
                             c.UnitName1,
                             c.Quantity1,
                             c.UnitName2,
-                            c.Quantity2
+                            c.Quantity2,
+                            c.Quantity3
                         );
                 }
                 return dt;
