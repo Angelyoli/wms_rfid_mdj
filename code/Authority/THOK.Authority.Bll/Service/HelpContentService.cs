@@ -16,5 +16,14 @@ namespace THOK.Authority.Bll.Service
         {
             get { return this.GetType(); }
         }
+
+        #region IHelpContentService 成员
+
+        public bool Add(HelpContent helpContent, out string strResult)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
