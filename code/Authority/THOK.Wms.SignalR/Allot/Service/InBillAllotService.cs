@@ -56,7 +56,7 @@ namespace THOK.Wms.SignalR.Allot.Service
 
             //选择当前订单操作目标仓库；
             var cells = cellQuery.Where(c => c.WarehouseCode == billMaster.WarehouseCode
-                                            && c.Warehouse.IsActive == "1"
+                                            && c.Warehouse.IsActive == "1" 
                                             && c.Area.IsActive == "1"
                                             && c.IsActive == "1"
                                             && (areaCodes.Any(a => a == c.AreaCode)
@@ -72,7 +72,7 @@ namespace THOK.Wms.SignalR.Allot.Service
             //排除 件烟区,条烟区 货位是单一存储的空货位；
             string [] areaTypes = new string []{"2","3"};
             var cellList1 = cells.Where(c => areaTypes.All(a => a != c.Area.AreaType)
-                                            && c.IsSingle == "1"      
+                                            && c.IsSingle == "1" 
                                             && (c.Storages.Count==0
                                                     || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 
                                                         && s.Quantity == 0
@@ -84,13 +84,13 @@ namespace THOK.Wms.SignalR.Allot.Service
             //条烟区 货位是单一存储的货位（不必是空货位，因为条烟会多次存储到同一个货位）；
             areaTypes = new string[] {"3"};
             var cellList2 = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
-                                            && c.IsSingle == "1"      
+                                            && c.IsSingle == "1" 
                                         ).ToList();
 
             //件烟区 货位是单一存储的空货位； 
             areaTypes = new string[] {"2"};
             var cellList3 = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
-                                            && c.IsSingle == "1"     
+                                            && c.IsSingle == "1" 
                                             && (c.Storages.Count == 0
                                                     || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 
                                                         && s.Quantity == 0
@@ -105,12 +105,12 @@ namespace THOK.Wms.SignalR.Allot.Service
 
             //排除 件烟区，条烟区
             var cellQueryFromList1 = cellList1.Where(c => c.Storages.Count == 0
-                                                || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 
+                                                || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
                                                     && s.Quantity == 0 
                                                     && s.InFrozenQuantity == 0))
                                               .OrderBy(c=>c.Area.AllotInOrder);
             //条烟区
-            var cellQueryFromList2 = cellList2.OrderBy(c => c.Area.AllotInOrder);
+            var cellQueryFromList2 = cellList2.OrderBy(c => c.Area.AllotInOrder );
 
             //件烟区
             var cellQueryFromList3 = cellList3.Where(c => c.Storages.Count == 0

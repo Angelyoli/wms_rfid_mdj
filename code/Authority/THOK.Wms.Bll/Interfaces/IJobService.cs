@@ -10,10 +10,12 @@ namespace THOK.Wms.Bll.Interfaces
     {
        object GetDetails(int page, int rows, string JobCode, string JobName, string IsActive);
 
-       bool Add(Job job);
+       bool Add(Job job,out string strResult);
 
-       bool Delete(string JobId);
+       bool Delete(string JobId, out string strResult);
 
-       bool Save(Job job);
+       bool Save(Job job, out string strResult);
+
+       object GetJob(int page, int rows, string queryString, string value);
     }
 }

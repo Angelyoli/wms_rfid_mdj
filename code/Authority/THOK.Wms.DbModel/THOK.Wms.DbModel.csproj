@@ -85,6 +85,7 @@
     <Compile Include="Mapping\OutBillDetailMap.cs" />
     <Compile Include="Mapping\OutBillMasterMap.cs" />
     <Compile Include="Mapping\ProductMap.cs" />
+    <Compile Include="Mapping\ProductWarningMap.cs" />
     <Compile Include="Mapping\ProfitLossBillDetailMap.cs" />
     <Compile Include="Mapping\ProfitLossBillMasterMap.cs" />
     <Compile Include="Mapping\ShelfMap.cs" />
@@ -99,12 +100,14 @@
     <Compile Include="Mapping\UnitListMap.cs" />
     <Compile Include="Mapping\UnitMap.cs" />
     <Compile Include="Mapping\WarehouseMap.cs" />
+    <Compile Include="Mapping\BusinessSystemsDailyBalanceMap.cs" />
     <Compile Include="MoveBillDetail.cs" />
     <Compile Include="MoveBillMaster.cs" />
     <Compile Include="OutBillAllot.cs" />
     <Compile Include="OutBillDetail.cs" />
     <Compile Include="OutBillMaster.cs" />
     <Compile Include="Product.cs" />
+    <Compile Include="ProductWarning.cs" />
     <Compile Include="ProfitLossBillDetail.cs" />
     <Compile Include="ProfitLossBillMaster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -120,6 +123,7 @@
     <Compile Include="Unit.cs" />
     <Compile Include="UnitList.cs" />
     <Compile Include="Warehouse.cs" />
+    <Compile Include="BusinessSystemsDailyBalance.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

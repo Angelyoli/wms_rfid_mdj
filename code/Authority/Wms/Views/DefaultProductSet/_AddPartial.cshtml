@@ -18,7 +18,7 @@
                         },
                         function (data) {
                             $.fn.zTree.init($("#treeDemo"), setting, data);
-                        });    
+                        }, $('#dlg'));    
     }
     function productSearchClick() {
         $('#productData').dialog('open').dialog('setTitle', '选择卷烟信息');
@@ -74,7 +74,7 @@
                             $('#details').datagrid('reload');
                             $("#productCode").attr("value", "");
                             $("#productName").attr("value", "");
-                        });
+                        }, $('#dlg'));
         }
         else {
             $.messager.show({ title: '系统信息', msg: '保存失败！输入的信息不完整！' });

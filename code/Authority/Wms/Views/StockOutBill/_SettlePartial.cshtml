@@ -7,21 +7,11 @@
             } else {
                 $.messager.confirm('结单', '确认要结单吗？未完成的出库单结单后将无法在操作！结单有风险！操作需谨慎！', function (r) {
                     if (r) {
-                        var j_waitDialog = ShowWaitMessageDialog();
-                        $.ajax({
-                            url: '/StockOutBill/outBillMasterSettle/', type: "GET", dataType: "text",
-                            data: { 'BillNo': row.BillNo },
-                            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-                            success: function (responseText) {
-                                var result = $.evalJSON(responseText);
-                                if (result.success) {
-                                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                                    $('#details').datagrid('reload');
-                                } else {
-                                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                                }
-                            }
-                        });
+                        $.ajaxSender.send('/StockOutBill/outBillMasterSettle/',
+                            { BillNo: row.BillNo },
+                            function () {
+                                $('#details').datagrid('load');
+                            });     
                     }
                 });
             }

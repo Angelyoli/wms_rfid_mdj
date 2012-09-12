@@ -1,0 +1,15 @@
+﻿<?xml version="1.0"?>
+<Connections>
+	<Connection Name = "DefaultConnection" DatabaseType = "SQLSERVER">
+		<ConnectionString Value = "server=.;database =wms_rfid_db;UID =sa" />
+		<Password Name = "PWD" Value = "65CED0851FFD283F"/>
+	</Connection>
+	<Connection Name = "YXConnection" DatabaseType="DB2">
+		<ConnectionString Value="server=10.80.1.239:50000;database =gxv3td;UID=wzcc" />
+		<Password Name="PWD" Value="19BD8A6E3EC1B855"/>
+	</Connection>
+	<Connection Name = "AccConnection" DatabaseType = "OLEDB">
+		<ConnectionString Value = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=D:\User.mdb" />
+	</Connection>
+</Connections>
+

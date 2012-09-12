@@ -1,0 +1,36 @@
+﻿<script type="text/javascript">
+    $(function () {
+        var begin = "null01";
+        var end = "null02";
+        $('#warehouseTree').tree({
+            onClick: function (node) {
+                if (node) {
+                    types = node.attributes;
+                    ids = node.id;
+                    $('#listdetails').datagrid('options').url = '/CellHistorical/Details/?beginDate=' + begin + '&endDate=' + end + '&type=' + node.attributes + '&id=' + node.id;
+                    $('#listdetails').datagrid('reload');
+                }
+            }
+        });
+    });
+</script>
+<div id="sidebar" region="west" split="true"  style="width: 220px; overflow: scroll; padding: 1px; margin: 1px">
+    <ul id="warehouseTree" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul>
+</div>
+<div region="center" split="true" border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">    
+    <table id="listdetails" class="easyui-datagrid" url="/CellHistorical/Details/" border="false" singleSelect="true"
+        fit="true" pagination="true" rownumbers="true">
+        <thead>
+            <tr>
+                <th field="CellName" width="100" align="center">货位名称</th>
+                <th field="BillDate" width="100" align="center">变动日期</th>
+                <th field="BillTypeName" width="100" align="center">操作类型</th>
+                <th field="BillNo" width="100" align="center">所属订单</th>
+                <th field="ProductCode" width="80" align="center">商品编码</th>
+                <th field="ProductName" width="180" align="center">商品名称</th>
+                <th field="Quantity" width="80" align="center">数量</th>
+                <th field="UnitName" width="80" align="center">单位名称</th>
+            </tr>
+        </thead>
+    </table> 
+</div>

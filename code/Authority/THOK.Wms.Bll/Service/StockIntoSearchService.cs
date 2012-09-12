@@ -9,7 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class StockIntoSearchService :ServiceBase<InBillMaster>,IStockIntoSearchService
+    public class StockIntoSearchService : ServiceBase<InBillMaster>, IStockIntoSearchService
     {
         [Dependency]
         public IStockIntoSearchRepository StockIntoSearchRepository { get; set; }
@@ -73,7 +73,7 @@ namespace THOK.Wms.Bll.Service
             {
                 StockIntoSearch = StockIntoSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
-            
+
             StockIntoSearch = StockIntoSearch.OrderBy(i => i.BillNo);
             int total = StockIntoSearch.Count();
             StockIntoSearch = StockIntoSearch.Skip((page - 1) * rows).Take(rows);
@@ -99,7 +99,7 @@ namespace THOK.Wms.Bll.Service
             var StockIntoDetail = StockIntoQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo);
             int total = StockIntoDetail.Count();
             var StockIntoDetails = StockIntoDetail.Skip((page - 1) * rows).Take(rows);
-            var StockInto =StockIntoDetails.Select(i => new
+            var StockInto = StockIntoDetails.Select(i => new
                  {
                      i.ID,
                      i.BillNo,
@@ -116,5 +116,6 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
     }
 }

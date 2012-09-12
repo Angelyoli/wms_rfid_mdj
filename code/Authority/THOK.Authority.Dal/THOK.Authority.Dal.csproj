@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityRepository\HelpContentRepository.cs" />
     <Compile Include="EntityRepository\SystemEventLogRepository.cs" />
     <Compile Include="EntityRepository\SystemRepository.cs" />
     <Compile Include="EntityRepository\ModuleRepository.cs" />
@@ -69,22 +70,24 @@
     <Compile Include="EntityRepository\RoleSystemRepository.cs" />
     <Compile Include="EntityRepository\RoleFunctionRepository.cs" />
     <Compile Include="EntityRepository\UserRoleRepository.cs" />
+    <Compile Include="Interfaces\ICityRepository.cs" />
+    <Compile Include="Interfaces\IFunctionRepository.cs" />
+    <Compile Include="Interfaces\IHelpContentRepository.cs" />
+    <Compile Include="Interfaces\ILoginLogRepository.cs" />
+    <Compile Include="Interfaces\IModuleRepository.cs" />
+    <Compile Include="Interfaces\IPagination.cs" />
+    <Compile Include="Interfaces\IRoleFunctionRepository.cs" />
+    <Compile Include="Interfaces\IRoleModuleRepository.cs" />
+    <Compile Include="Interfaces\IRoleRepository.cs" />
+    <Compile Include="Interfaces\IRoleSystemRepository.cs" />
+    <Compile Include="Interfaces\IServerRepository.cs" />
     <Compile Include="Interfaces\ISystemEventLogRepository.cs" />
     <Compile Include="Interfaces\ISystemRepository.cs" />
-    <Compile Include="Interfaces\IModuleRepository.cs" />
-    <Compile Include="Interfaces\IUserRepository.cs" />
-    <Compile Include="Interfaces\ICityRepository.cs" />
-    <Compile Include="Interfaces\IRoleRepository.cs" />
-    <Compile Include="Interfaces\IFunctionRepository.cs" />
-    <Compile Include="Interfaces\IServerRepository.cs" />
-    <Compile Include="Interfaces\ILoginLogRepository.cs" />
-    <Compile Include="Interfaces\IUserSystemRepository.cs" />
-    <Compile Include="Interfaces\IUserModuleRepository.cs" />
     <Compile Include="Interfaces\IUserFunctionRepository.cs" />
-    <Compile Include="Interfaces\IRoleModuleRepository.cs" />
-    <Compile Include="Interfaces\IRoleSystemRepository.cs" />
-    <Compile Include="Interfaces\IRoleFunctionRepository.cs" />
+    <Compile Include="Interfaces\IUserModuleRepository.cs" />
+    <Compile Include="Interfaces\IUserRepository.cs" />
     <Compile Include="Interfaces\IUserRoleRepository.cs" />
+    <Compile Include="Interfaces\IUserSystemRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

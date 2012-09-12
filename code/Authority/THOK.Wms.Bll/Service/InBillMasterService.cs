@@ -10,6 +10,7 @@ using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Common;
 using System.Transactions;
+using THOK.Wms.Download.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -29,14 +30,26 @@ namespace THOK.Wms.Bll.Service
         public IInBillAllotRepository InBillAllotRepository { get; set; }
         [Dependency]
         public IStorageLocker Locker { get; set; }
+        [Dependency]
+        public IInBillMasterDownService InBillMasterDownService { get; set; }
+        [Dependency]
+        public IStorageRepository StorageRepository { get; set; }
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        #region IInBillMasterService 成员
+        public string resultStr = "";//错误提示信息
 
+        #region//入库主单增、删、改、查、生成单号方法
+        /// <summary>
+        /// 判断状态
+        /// </summary>
+        /// <param name="status">数据库查询出来的状态</param>
+        /// <returns>返回的状态</returns>
         public string WhatStatus(string status)
         {
             string statusStr = "";
@@ -64,6 +77,20 @@ namespace THOK.Wms.Bll.Service
             return statusStr;
         }
 
+        /// <summary>
+        /// 入库单查询
+        /// </summary>
+        /// <param name="page">页面传回的分页参数，页数</param>
+        /// <param name="rows">页面传回的分页参数，行数</param>
+        /// <param name="BillNo">入库单号</param>
+        /// <param name="WareHouseCode">仓库编码</param>
+        /// <param name="BeginDate">开始日期</param>
+        /// <param name="EndDate">结束日期</param>
+        /// <param name="OperatePersonCode">操作员编码</param>
+        /// <param name="CheckPersonCode">审核人编码</param>
+        /// <param name="Status">操作状态</param>
+        /// <param name="IsActive">是否可用</param>
+        /// <returns></returns>
         public object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string BeginDate, string EndDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive)
         {
             IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();
@@ -90,7 +117,7 @@ namespace THOK.Wms.Bll.Service
 
             if (!CheckPersonCode.Equals(string.Empty))
             {
-                inBillMaster = inBillMaster.Where(i=>i.VerifyPerson.EmployeeCode==CheckPersonCode);
+                inBillMaster = inBillMaster.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
             int total = inBillMaster.Count();
             inBillMaster = inBillMaster.Skip((page - 1) * rows).Take(rows);
@@ -118,78 +145,130 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = tmp.ToArray() };
         }
 
-        public bool Add(InBillMaster inBillMaster, string userName)
+        /// <summary>
+        /// 入库单新增
+        /// </summary>
+        /// <param name="inBillMaster">入库主单</param>
+        /// <param name="userName">用户名</param>
+        /// <returns></returns>
+        public bool Add(InBillMaster inBillMaster, string userName, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = new InBillMaster();
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (employee != null)
             {
-                ibm.BillNo = inBillMaster.BillNo;
-                ibm.BillDate = inBillMaster.BillDate;
-                ibm.BillTypeCode = inBillMaster.BillTypeCode;
-                ibm.WarehouseCode = inBillMaster.WarehouseCode;
-                ibm.OperatePersonID = employee.ID;
-                ibm.Status = "1";
-                ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
-                ibm.VerifyDate = inBillMaster.VerifyDate;
-                ibm.Description = inBillMaster.Description;
-                //ibm.IsActive = inBillMaster.IsActive;
-                ibm.IsActive = "1";
-                ibm.UpdateTime = DateTime.Now;
-                ibm.TargetCellCode = inBillMaster.TargetCellCode;
+                try
+                {
+                    ibm.BillNo = inBillMaster.BillNo;
+                    ibm.BillDate = inBillMaster.BillDate;
+                    ibm.BillTypeCode = inBillMaster.BillTypeCode;
+                    ibm.WarehouseCode = inBillMaster.WarehouseCode;
+                    ibm.OperatePersonID = employee.ID;
+                    ibm.Status = "1";
+                    ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
+                    ibm.VerifyDate = inBillMaster.VerifyDate;
+                    ibm.Description = inBillMaster.Description;
+                    //ibm.IsActive = inBillMaster.IsActive;
+                    ibm.IsActive = "1";
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
-                InBillMasterRepository.Add(ibm);
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                    InBillMasterRepository.Add(ibm);
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "新增失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "找不到当前登陆用户！请重新登陆！";
             }
             return result;
         }
 
-        public bool Delete(string BillNo)
+        /// <summary>
+        /// 入库单删除
+        /// </summary>
+        /// <param name="BillNo">入库单号</param>
+        /// <returns></returns>
+        public bool Delete(string BillNo, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
             if (ibm != null)
             {
-                Del(InBillDetailRepository, ibm.InBillDetails);
-                InBillMasterRepository.Delete(ibm);
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                try
+                {
+                    Del(InBillDetailRepository, ibm.InBillDetails);
+                    InBillMasterRepository.Delete(ibm);
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "删除失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "删除失败！未找到当前需要删除的数据！";
             }
             return result;
         }
 
-        public bool Save(InBillMaster inBillMaster)
+        /// <summary>
+        /// 入库单修改
+        /// </summary>
+        /// <param name="inBillMaster">入库主单</param>
+        /// <returns></returns>
+        public bool Save(InBillMaster inBillMaster, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == inBillMaster.BillNo && i.Status == "1");
             if (ibm != null)
             {
-                ibm.BillDate = inBillMaster.BillDate;
-                ibm.BillTypeCode = inBillMaster.BillTypeCode;
-                ibm.WarehouseCode = inBillMaster.WarehouseCode;
-                ibm.OperatePersonID = inBillMaster.OperatePersonID;
-                ibm.Status = "1";
-                ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
-                ibm.VerifyDate = inBillMaster.VerifyDate;
-                ibm.Description = inBillMaster.Description;
-                //ibm.IsActive = inBillMaster.IsActive;
-                ibm.IsActive = "1";
-                ibm.UpdateTime = DateTime.Now;
-                ibm.TargetCellCode = inBillMaster.TargetCellCode;
+                try
+                {
+                    ibm.BillDate = inBillMaster.BillDate;
+                    ibm.BillTypeCode = inBillMaster.BillTypeCode;
+                    ibm.WarehouseCode = inBillMaster.WarehouseCode;
+                    ibm.OperatePersonID = inBillMaster.OperatePersonID;
+                    ibm.Status = "1";
+                    ibm.VerifyPersonID = inBillMaster.VerifyPersonID;
+                    ibm.VerifyDate = inBillMaster.VerifyDate;
+                    ibm.Description = inBillMaster.Description;
+                    //ibm.IsActive = inBillMaster.IsActive;
+                    ibm.IsActive = "1";
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.TargetCellCode = inBillMaster.TargetCellCode;
 
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "保存失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "保存失败，未找到该条数据！";
             }
             return result;
         }
 
-        #endregion
-
-        #region IInBillMasterService 成员
-
-
+        /// <summary>
+        /// 生成入库单号
+        /// </summary>
+        /// <param name="userName">用户名</param>
+        /// <returns></returns>
         public object GenInBillNo(string userName)
         {
             IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();
@@ -223,15 +302,20 @@ namespace THOK.Wms.Bll.Service
             };
             return findBillInfo;
         }
-
         #endregion
 
-        #region IInBillMasterService 成员
-
-
-        public bool Audit(string BillNo, string userName)
+        #region//入库主单审核、反审、结单、非货位管理入库方法
+        /// <summary>
+        /// 入库单审核
+        /// </summary>
+        /// <param name="BillNo">入库单号</param>
+        /// <param name="userName">用户名</param>
+        /// <param name="strResult">操作提示信息</param>
+        /// <returns></returns>
+        public bool Audit(string BillNo, string userName, out string strResult)
         {
             bool result = false;
+            strResult = string.Empty;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "1");
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             if (ibm != null)
@@ -247,7 +331,8 @@ namespace THOK.Wms.Bll.Service
                 }
                 else//如果入库主单指定了货位那么就进行入库分配
                 {
-                    result = InAllot(ibm);
+                    result = InAllot(ibm, employee.ID);
+                    strResult = resultStr;
                 }
             }
             return result;
@@ -258,87 +343,109 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="inBillMaster">入库主单</param>
         /// <returns></returns>
-        public bool InAllot(InBillMaster inBillMaster)
+        public bool InAllot(InBillMaster inBillMaster, Guid employeeId)
         {
-            bool result = false;
-            return result;
+            try
+            {
+                var inBillDetails = inBillMaster.InBillDetails.ToArray();
+                var cell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inBillMaster.TargetCellCode);
+                //入库单入库
+                inBillMaster.InBillDetails.AsParallel().ForAll(
+               (Action<InBillDetail>)delegate(InBillDetail i)
+               {
+                   if (i.BillQuantity - i.AllotQuantity > 0)
+                   {
+                       Storage inStorage = null;
+                       lock (cell)
+                       {
+                           inStorage = Locker.LockStorage(cell);
+                           if (inStorage == null)
+                           {
+                               throw new Exception("锁定储位失败，储位其他人正在操作，无法分配请稍候重试！");
+                           }
+                           inStorage.LockTag = inBillMaster.BillNo;
+                       }
+                       if (inStorage.Quantity == 0
+                           && inStorage.InFrozenQuantity == 0)
+                       {
+                           decimal allotQuantity = i.BillQuantity;
+                           i.AllotQuantity += allotQuantity;
+                           i.RealQuantity += allotQuantity;
+                           inStorage.ProductCode = i.ProductCode;
+                           inStorage.Quantity += allotQuantity;
+                           inStorage.LockTag = string.Empty;
+
+                           var billAllot = new InBillAllot()
+                           {
+                               BillNo = inBillMaster.BillNo,
+                               InBillDetailId = i.ID,
+                               ProductCode = i.ProductCode,
+                               CellCode = inStorage.CellCode,
+                               StorageCode = inStorage.StorageCode,
+                               UnitCode = i.UnitCode,
+                               AllotQuantity = allotQuantity,
+                               RealQuantity = allotQuantity,
+                               Status = "2"
+                           };
+
+                           lock (inBillMaster.InBillAllots)
+                           {
+                               inBillMaster.InBillAllots.Add(billAllot);
+                           }
+                       }
+                       else
+                       {
+                           throw new Exception("储位数量不等于0，无法分配请稍候重试！");
+                       }
+                   }
+               });
+                //入库结单
+                inBillMaster.Status = "6";
+                inBillMaster.VerifyDate = DateTime.Now;
+                inBillMaster.VerifyPersonID = employeeId;
+                inBillMaster.UpdateTime = DateTime.Now;
+                InBillMasterRepository.SaveChanges();
+                return true;
+            }
+            catch (AggregateException ex)
+            {
+                resultStr = "审核失败，详情：" + ex.InnerExceptions.Select(i => i.Message).Aggregate((m, n) => m + n);
+                return false;
+            }
         }
 
-        #endregion
-
-        #region IInBillMasterService 成员
-
-
-        public bool AntiTrial(string BillNo)
+        /// <summary>
+        /// 入库单反审
+        /// </summary>
+        /// <param name="BillNo">入库单号</param>
+        /// <returns></returns>
+        public bool AntiTrial(string BillNo, out string strResult)
         {
+            strResult = string.Empty;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo && i.Status == "2");
             if (ibm != null)
             {
-                ibm.Status = "1";
-                ibm.VerifyDate = null;
-                ibm.UpdateTime = DateTime.Now;
-                ibm.VerifyPersonID = null;
-                InBillMasterRepository.SaveChanges();
-                result = true;
+                try
+                {
+                    ibm.Status = "1";
+                    ibm.VerifyDate = null;
+                    ibm.UpdateTime = DateTime.Now;
+                    ibm.VerifyPersonID = null;
+                    InBillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "反审失败，原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "反审失败，未找到该条数据！";
             }
             return result;
         }
-
-        #endregion
-
-        #region IInBillMasterService 成员
-
-        /// <summary>
-        /// 根据条件查询订单类型
-        /// </summary>
-        /// <param name="BillClass">订单类别</param>
-        /// <param name="IsActive">是否可用</param>
-        /// <returns></returns>
-        public object GetBillTypeDetail(string BillClass, string IsActive)
-        {
-            IQueryable<BillType> billtypeQuery = BillTypeRepository.GetQueryable();
-            var billtype = billtypeQuery.Where(b => b.BillClass == BillClass
-                && b.IsActive.Contains(IsActive)).ToArray().OrderBy(b => b.BillTypeCode).Select(b => new
-            {
-                b.BillTypeCode,
-                b.BillTypeName,
-                b.BillClass,
-                b.Description,
-                IsActive = b.IsActive == "1" ? "可用" : "不可用",
-                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-            });
-            return billtype.ToArray();
-        }
-
-        #endregion
-
-        #region IInBillMasterService 成员
-
-        /// <summary>
-        /// 根据条件查询仓库信息
-        /// </summary>
-        /// <param name="IsActive">是否可用</param>
-        /// <returns></returns>
-        public object GetWareHouseDetail(string IsActive)
-        {
-            IQueryable<Warehouse> wareQuery = WarehouseRepository.GetQueryable();
-            var warehouse = wareQuery.Where(w => w.IsActive == IsActive).OrderBy(w => w.WarehouseCode).ToArray().Select(w => new
-                {
-                    w.WarehouseCode,
-                    w.WarehouseName,
-                    w.WarehouseType,
-                    w.Description,
-                    w.ShortName,
-                    IsActive = w.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = w.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
-                });
-            return warehouse.ToArray();
-        }
-
-        #endregion
-
-        #region IInBillMasterService 成员
 
         /// <summary>
         /// 入库单结单
@@ -372,18 +479,18 @@ namespace THOK.Wms.Bll.Service
 
                         inAllot.AsParallel().ForAll(
                             (Action<InBillAllot>)delegate(InBillAllot i)
-                        {
-                            if (i.Storage.ProductCode == i.ProductCode
-                                && i.Storage.InFrozenQuantity >= i.AllotQuantity)
                             {
-                                i.Storage.InFrozenQuantity -= i.AllotQuantity;
-                                i.Storage.LockTag = string.Empty;
+                                if (i.Storage.ProductCode == i.ProductCode
+                                    && i.Storage.InFrozenQuantity >= i.AllotQuantity)
+                                {
+                                    i.Storage.InFrozenQuantity -= i.AllotQuantity;
+                                    i.Storage.LockTag = string.Empty;
+                                }
+                                else
+                                {
+                                    throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
+                                }
                             }
-                            else
-                            {
-                                throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
-                            }
-                        }
                         );
 
                         ibm.Status = "6";
@@ -400,7 +507,167 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
-
         #endregion
+
+        #region//入库主单查询订单类型、查询仓库信息方法
+        /// <summary>
+        /// 根据条件查询订单类型
+        /// </summary>
+        /// <param name="BillClass">订单类别</param>
+        /// <param name="IsActive">是否可用</param>
+        /// <returns></returns>
+        public object GetBillTypeDetail(string BillClass, string IsActive)
+        {
+            IQueryable<BillType> billtypeQuery = BillTypeRepository.GetQueryable();
+            var billtype = billtypeQuery.Where(b => b.BillClass == BillClass
+                && b.IsActive.Contains(IsActive)).ToArray().OrderBy(b => b.BillTypeCode).Select(b => new
+            {
+                b.BillTypeCode,
+                b.BillTypeName,
+                b.BillClass,
+                b.Description,
+                IsActive = b.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            return billtype.ToArray();
+        }
+
+        /// <summary>
+        /// 根据条件查询仓库信息
+        /// </summary>
+        /// <param name="IsActive">是否可用</param>
+        /// <returns></returns>
+        public object GetWareHouseDetail(string IsActive)
+        {
+            IQueryable<Warehouse> wareQuery = WarehouseRepository.GetQueryable();
+            var warehouse = wareQuery.Where(w => w.IsActive == IsActive).OrderBy(w => w.WarehouseCode).ToArray().Select(w => new
+                {
+                    w.WarehouseCode,
+                    w.WarehouseName,
+                    w.WarehouseType,
+                    w.Description,
+                    w.ShortName,
+                    IsActive = w.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = w.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                });
+            return warehouse.ToArray();
+        }
+        #endregion
+
+        public bool DownInBillMaster(string BeginDate, string EndDate, out string errorInfo)
+        {
+            errorInfo = string.Empty;
+            bool result = false;
+            string inBillStr = "";
+            string inBillMasterStr = "";
+            try
+            {
+                var inBillNos = InBillMasterRepository.GetQueryable().Where(i => i.BillNo == i.BillNo).Select(i => new { i.BillNo }).ToArray();
+
+                for (int i = 0; i < inBillNos.Length; i++)
+                {
+                    inBillStr += inBillNos[i].BillNo + ",";
+                }
+                InBillMaster[] inBillMasterList = InBillMasterDownService.GetInBillMaster(inBillStr);
+                foreach (var master in inBillMasterList)
+                {
+                    var inBillMaster = new InBillMaster();
+                    inBillMaster.BillNo = master.BillNo;
+                    inBillMaster.BillDate = master.BillDate;
+                    inBillMaster.BillTypeCode = master.BillTypeCode;
+                    inBillMaster.WarehouseCode = master.WarehouseCode;
+                    inBillMaster.Status = "1";
+                    inBillMaster.IsActive = master.IsActive;
+                    inBillMaster.UpdateTime = DateTime.Now;
+                    InBillMasterRepository.Add(inBillMaster);
+                    inBillMasterStr += master.BillNo + ",";
+                }
+                if (inBillMasterStr != string.Empty)
+                {
+                    InBillDetail[] inBillDetailList = InBillMasterDownService.GetInBillDetail(inBillMasterStr);
+                    foreach (var detail in inBillDetailList)
+                    {
+                        var inBillDetail = new InBillDetail();
+                        inBillDetail.BillNo = detail.BillNo;
+                        inBillDetail.ProductCode = detail.ProductCode;
+                        inBillDetail.UnitCode = detail.UnitCode;
+                        inBillDetail.Price = detail.Price;
+                        inBillDetail.BillQuantity = detail.BillQuantity;
+                        inBillDetail.AllotQuantity = detail.AllotQuantity;
+                        inBillDetail.RealQuantity = detail.RealQuantity;
+                        inBillDetail.Description = detail.Description;
+                        InBillDetailRepository.Add(inBillDetail);
+                    }
+                }
+                InBillMasterRepository.SaveChanges();
+                result = true;
+            }
+            catch (Exception e)
+            {
+                errorInfo = "出错，原因：" + e.Message;
+            }
+            return result;
+        }
+
+        /// <summary>入库单查询</summary>
+        public System.Data.DataTable GetStockInBill(int page, int rows, string BillNo)
+        {
+            IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();
+            var inBillMaster = inBillMasterQuery.Where(i => i.BillNo.Contains(BillNo) && i.Status != "6")
+                    .Select(i =>  new
+            {
+                i.BillNo,
+                i.WarehouseCode,
+                i.Warehouse.WarehouseName,
+                i.BillTypeCode,
+                i.BillType.BillTypeName,
+                OperatePersonName = i.OperatePerson.EmployeeName,
+                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
+                Status = i.Status,
+                //i.VerifyDate,                
+                //BillDate = i.BillDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                //UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                i.Description,
+                i.TargetCellCode
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("入库单号", typeof(string));     //01
+            dt.Columns.Add("仓库编码", typeof(string));     //02
+            dt.Columns.Add("仓库名称", typeof(string));     //03
+            dt.Columns.Add("订单类型编码", typeof(string)); //04
+            dt.Columns.Add("订单类型", typeof(string));     //05
+            //dt.Columns.Add("操作员ID", typeof(Guid));       //06
+            dt.Columns.Add("操作员", typeof(string));       //07
+            //dt.Columns.Add("审核人ID", typeof(Guid));       //08
+            dt.Columns.Add("审核人", typeof(string));       //09
+            dt.Columns.Add("处理状态", typeof(string));     //10
+            //dt.Columns.Add("制单时间", typeof(string));   //11
+            //dt.Columns.Add("审核时间", typeof(DateTime));   //12
+            //dt.Columns.Add("更新时间", typeof(DateTime));   //13
+            dt.Columns.Add("备注", typeof(string));         //14
+            dt.Columns.Add("目标货位编码", typeof(string)); //15
+            foreach (var t in inBillMaster)
+            {
+                dt.Rows.Add
+                (
+                        t.BillNo,           //01 入库单号
+                        t.WarehouseCode,    //02 仓库编码
+                        t.WarehouseName,    //03 仓库名称
+                        t.BillTypeCode,     //04 订单类型编码
+                        t.BillTypeName,     //05 订单类型
+                        //i.OperatePersonID,  //06 操作员
+                        t.OperatePersonName, //07 操作员
+                        //i.VerifyPersonID,   //08 审核人ID
+                        t.VerifyPersonName, //09 审核人
+                        t.Status           //10 处理状态
+                        //t.BillDate         //11 制单时间
+                       // t.VerifyDate,       //12 审核时间
+                        //t.UpdateTime,       //13 更新时间
+                        //t.Description      //14 备注
+                        //t.TargetCellCode    //15 目标货位编码
+                );
+            }
+            return dt;
+        }
     }
 }

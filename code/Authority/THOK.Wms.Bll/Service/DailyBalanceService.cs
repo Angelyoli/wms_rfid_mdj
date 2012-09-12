@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
@@ -14,6 +12,8 @@ namespace THOK.Wms.Bll.Service
     {
         [Dependency]
         public IDailyBalanceRepository DailyBalanceRepository { get; set; }
+        [Dependency]
+        public IBusinessSystemsDailyBalanceRepository BusinessSystemsDailyBalanceRepository { get; set; }
         [Dependency]
         public IUnitRepository UnitRepository { get; set; }
         [Dependency]
@@ -64,7 +64,7 @@ namespace THOK.Wms.Bll.Service
                                        });
             
             int total = dailyBalances.Count();
-            dailyBalances = dailyBalances.OrderBy(s => s.SettleDate).Skip((page - 1) * rows).Take(rows);
+            dailyBalances = dailyBalances.OrderByDescending(s => s.SettleDate).Skip((page - 1) * rows).Take(rows);
 
             string unitName = "标准件";
             decimal count = 10000;
@@ -99,7 +99,7 @@ namespace THOK.Wms.Bll.Service
             }
             IQueryable<DailyBalance> dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
             var query = dailyBalanceQuery.Where(i => i.WarehouseCode.Contains(warehouseCode) && i.SettleDate == date)
-                                         .OrderBy(i => i.SettleDate)
+                                         .OrderByDescending(i => i.SettleDate)
                                          .OrderBy(i => i.Warehouse.WarehouseName)
                                          .OrderBy(i => i.ProductCode)
                                          .Select(i => new
@@ -122,10 +122,6 @@ namespace THOK.Wms.Bll.Service
                                              LossAmount = i.LossAmount,
                                              Ending = i.Ending
                                          });
-
-            
-            
-
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -189,74 +185,241 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = query.ToArray() };
         }
 
-        //public object GetDailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate)
-        //{
-        //    var inQuery = InBillDetailRepository.GetQueryable().AsEnumerable();
-        //    var outQuery = OutBillDetailRepository.GetQueryable().AsEnumerable();
-        //    var profitLossQuery = ProfitLossBillDetailRepository.GetQueryable().AsEnumerable();
+        public object GetInfoCheck(int page, int rows, string warehouseCode, string settleDate, string unitType)
+        {
+            DateTime date = Convert.ToDateTime(settleDate);
+            if (unitType == null || unitType == "")
+            {
+                unitType = "1";
+            }
+            IQueryable<DailyBalance> dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
+            IQueryable<BusinessSystemsDailyBalance> BusinessSystemsDailyBalanceQuery = BusinessSystemsDailyBalanceRepository.GetQueryable();
+            var query = dailyBalanceQuery.Where(d => d.WarehouseCode.Contains(warehouseCode) && d.SettleDate == date)
+                                         .Select(d => new //本系统产品日结结果
+                                         {
+                                             d.SettleDate,
+                                             d.ProductCode,
+                                             d.Product.ProductName,
+                                             UnitCode01 = d.Product.UnitList.Unit01.UnitCode,
+                                             UnitName01 = d.Product.UnitList.Unit01.UnitName,
+                                             UnitCode02 = d.Product.UnitList.Unit02.UnitCode,
+                                             UnitName02 = d.Product.UnitList.Unit02.UnitName,
+                                             Count01 = d.Product.UnitList.Unit01.Count,
+                                             Count02 = d.Product.UnitList.Unit02.Count,
+                                             d.WarehouseCode,
+                                             d.Warehouse.WarehouseName,
+                                             Beginning = d.Beginning,
+                                             EntryAmount = d.EntryAmount,
+                                             DeliveryAmount = d.DeliveryAmount,
+                                             ProfitAmount = d.ProfitAmount,
+                                             LossAmount = d.LossAmount,
+                                             Ending = d.Ending,
+                                             BSys_Beginning = decimal.Zero,
+                                             BSys_EntryAmount = decimal.Zero,
+                                             BSys_DeliveryAmount = decimal.Zero,
+                                             BSys_ProfitAmount = decimal.Zero,
+                                             BSys_LossAmount = decimal.Zero,
+                                             BSys_Ending = decimal.Zero
+                                         }).Concat(BusinessSystemsDailyBalanceQuery.Where(b => b.WarehouseCode.Contains(warehouseCode) && b.SettleDate == date)
+                                                                                   .Select(b => new //营销系统产品日结结果
+                                                                                    {
+                                                                                        b.SettleDate,
+                                                                                        b.ProductCode,
+                                                                                        b.Product.ProductName,
+                                                                                        UnitCode01 = b.Product.UnitList.Unit01.UnitCode,
+                                                                                        UnitName01 = b.Product.UnitList.Unit01.UnitName,
+                                                                                        UnitCode02 = b.Product.UnitList.Unit02.UnitCode,
+                                                                                        UnitName02 = b.Product.UnitList.Unit02.UnitName,
+                                                                                        Count01 = b.Product.UnitList.Unit01.Count,
+                                                                                        Count02 = b.Product.UnitList.Unit02.Count,
+                                                                                        b.WarehouseCode,
+                                                                                        b.Warehouse.WarehouseName,
+                                                                                        Beginning = decimal.Zero,
+                                                                                        EntryAmount = decimal.Zero,
+                                                                                        DeliveryAmount = decimal.Zero,
+                                                                                        ProfitAmount = decimal.Zero,
+                                                                                        LossAmount = decimal.Zero,
+                                                                                        Ending = decimal.Zero,
+                                                                                        BSys_Beginning = b.Beginning,
+                                                                                        BSys_EntryAmount = b.EntryAmount,
+                                                                                        BSys_DeliveryAmount = b.DeliveryAmount,
+                                                                                        BSys_ProfitAmount = b.ProfitAmount,
+                                                                                        BSys_LossAmount = b.LossAmount,
+                                                                                        BSys_Ending = b.Ending
+                                                                                    }));
+            var InfoCheck = query.GroupBy(q => new { q.SettleDate, q.WarehouseCode, q.ProductCode })
+                        .Select(q => new   //两个系统产品日结结果汇总
+                        {
+                            q.Key.SettleDate,
+                            q.Key.WarehouseCode,
+                            q.Key.ProductCode,
+                            ProductName = q.Max(i => i.ProductName),
+                            WarehouseName = q.Max(i => i.WarehouseName),
+                            UnitCode01 = q.Max(i => i.UnitCode01),
+                            UnitName01 = q.Max(i => i.UnitName01),
+                            UnitCode02 = q.Max(i => i.UnitCode02),
+                            UnitName02 = q.Max(i => i.UnitName02),
+                            Count01 = q.Max(i => i.Count01),
+                            Count02 = q.Max(i => i.Count02),
+                            Beginning = q.Sum(i => i.Beginning),
+                            EntryAmount = q.Sum(i => i.EntryAmount),
+                            DeliveryAmount = q.Sum(i => i.DeliveryAmount),
+                            ProfitAmount = q.Sum(i => i.ProfitAmount),
+                            LossAmount = q.Sum(i => i.LossAmount),
+                            Ending = q.Sum(i => i.Ending),
+                            BSys_Beginning = q.Sum(i => i.BSys_Beginning),
+                            BSys_EntryAmount = q.Sum(i => i.BSys_EntryAmount),
+                            BSys_DeliveryAmount = q.Sum(i => i.BSys_DeliveryAmount),
+                            BSys_ProfitAmount = q.Sum(i => i.BSys_ProfitAmount),
+                            BSys_LossAmount = q.Sum(i => i.BSys_LossAmount),
+                            BSys_Ending = q.Sum(i => i.BSys_Ending),
+                        }).Select(n => new //两个系统产品日结结果比对
+                        {
+                            n.SettleDate,
+                            n.WarehouseCode,
+                            n.ProductCode,
+                            n.ProductName,
+                            n.WarehouseName,
+                            n.UnitCode01,
+                            n.UnitName01,
+                            n.UnitCode02,
+                            n.UnitName02,
+                            n.Count01,
+                            n.Count02,
+                            n.Beginning,
+                            n.EntryAmount,
+                            n.DeliveryAmount,
+                            n.ProfitAmount,
+                            n.LossAmount,
+                            n.Ending,
+                            n.BSys_Beginning,
+                            n.BSys_EntryAmount,
+                            n.BSys_DeliveryAmount,
+                            n.BSys_ProfitAmount,
+                            n.BSys_LossAmount,
+                            n.BSys_Ending,
+                            Status = n.Beginning == n.BSys_Beginning &&
+                                        n.EntryAmount == n.BSys_EntryAmount &&
+                                        n.DeliveryAmount == n.BSys_DeliveryAmount &&
+                                        n.ProfitAmount == n.BSys_ProfitAmount &&
+                                        n.LossAmount == n.BSys_LossAmount &&
+                                        n.Ending == n.BSys_Ending ?
+                                        "T" : "F",
+                            Status1 = n.Beginning == n.BSys_Beginning ?
+                                "T" : "F",
+                            Status2 = n.EntryAmount == n.BSys_EntryAmount ?
+                                "T" : "F",
+                            Status3 = n.DeliveryAmount == n.BSys_DeliveryAmount ?
+                                "T" : "F",
+                            Status4 = n.ProfitAmount == n.BSys_ProfitAmount ?
+                                "T" : "F",
+                            Status5 = n.LossAmount == n.BSys_LossAmount ?
+                                "T" : "F",
+                            Status6 = n.Ending == n.BSys_Ending ?
+                                "true" : "F"
+                        }).OrderBy(n => n.Status)
+                          .OrderBy(n => n.WarehouseName)
+                          .OrderBy(n => n.ProductCode);
 
-        //    var query = inQuery.Where(a => a.InBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
-        //    {
-        //        BillDate = a.InBillMaster.BillDate.ToString("yyyy-MM-dd"),
-        //        a.InBillMaster.Warehouse.WarehouseCode,
-        //        a.InBillMaster.Warehouse.WarehouseName,
-        //        a.BillNo,
-        //        a.InBillMaster.BillType.BillTypeCode,
-        //        a.InBillMaster.BillType.BillTypeName,
-        //        a.ProductCode,
-        //        a.Product.ProductName,
-        //        RealQuantity=a.RealQuantity,
-        //        Beginning=0.00.ToString(),
-        //        EntryAmount = a.RealQuantity.ToString(),
-        //        ProfitAmount = 0.00.ToString(),
-        //        LossAmount = 0.00.ToString(),
-        //        Ending = 0.00.ToString(),
-        //        a.Unit.UnitName
-        //    }).Union(outQuery.Where(a => a.OutBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
-        //    {
-        //        BillDate = a.OutBillMaster.BillDate.ToString("yyyy-MM-dd"),
-        //        a.OutBillMaster.Warehouse.WarehouseCode,
-        //        a.OutBillMaster.Warehouse.WarehouseName,
-        //        a.BillNo,
-        //        a.OutBillMaster.BillType.BillTypeCode,
-        //        a.OutBillMaster.BillType.BillTypeName,
-        //        a.ProductCode,
-        //        a.Product.ProductName,
-        //        RealQuantity = a.RealQuantity,
-        //        Beginning = 0.00.ToString(),
-        //        EntryAmount = 0.00.ToString(),
-        //        ProfitAmount = 0.00.ToString(),
-        //        LossAmount = 0.00.ToString(),
-        //        Ending = 0.00.ToString(),
-        //        a.Unit.UnitName
-        //    })).Union(profitLossQuery.Where(a => a.ProfitLossBillMaster.WarehouseCode.Contains(warehouseCode)).Select(a => new
-        //    {
-        //        BillDate = a.ProfitLossBillMaster.BillDate.ToString("yyyy-MM-dd"),
-        //        a.ProfitLossBillMaster.Warehouse.WarehouseCode,
-        //        a.ProfitLossBillMaster.Warehouse.WarehouseName,
-        //        a.BillNo,
-        //        a.ProfitLossBillMaster.BillType.BillTypeCode,
-        //        a.ProfitLossBillMaster.BillType.BillTypeName,
-        //        a.ProductCode,
-        //        a.Product.ProductName,
-        //        RealQuantity = a.Quantity,
-        //        Beginning = 0.00.ToString(),
-        //        EntryAmount = 0.00.ToString(),
-        //        ProfitAmount =a.Quantity> 0 ? a.Quantity.ToString() : 0.00.ToString(),
-        //        LossAmount = a.Quantity < 0 ? (-a.Quantity).ToString() : 0.00.ToString(),
-        //        Ending = 0.00.ToString(),
-        //        a.Unit.UnitName
-        //    }));
+            int total = InfoCheck.Count();
+            var infoCheck = InfoCheck.Skip((page - 1) * rows).Take(rows);
 
-        //    if (!settleDate.Equals(string.Empty))
-        //    {
-        //        DateTime date = Convert.ToDateTime(settleDate);
-        //        query = query.Where(i => Convert.ToDateTime(i.BillDate) == date);
-        //    }
-        //    int total = query.Count();
-        //    query = query.Skip((page - 1) * rows).Take(rows);
-        //    return new { total, rows = query.ToArray() };
-        //}
+            //两个系统产品日结结果比对结果按照单位换算
+            string unitName = "";
+            decimal count = 1;
+
+            //标准单位（标准件||标准条）
+            if (unitType == "1" || unitType == "2")
+            {
+                if (unitType == "1")
+                {
+                    unitName = "标准件";
+                    count = 10000;
+                }
+
+                if (unitType == "2")
+                {
+                    unitName = "标准条";
+                    count = 200;
+                }
+                var dailyBalance = infoCheck.ToArray().Select(i => new
+                {
+                    SettleDate = i.SettleDate.ToString("yyyy-MM-dd"),
+                    i.ProductCode,
+                    i.ProductName,
+                    UnitCode = "",
+                    UnitName = unitName,
+                    i.WarehouseCode,
+                    i.WarehouseName,
+                    Beginning = i.Beginning == i.BSys_Beginning ?
+                    (i.Beginning / count).ToString() :
+                    (i.Beginning / count).ToString() + "≠" + (i.BSys_Beginning / count).ToString(),
+                    EntryAmount = i.EntryAmount == i.BSys_EntryAmount ?
+                    (i.EntryAmount / count).ToString() :
+                    (i.EntryAmount / count).ToString() + "≠" + (i.BSys_EntryAmount / count).ToString(),
+                    DeliveryAmount = i.DeliveryAmount == i.BSys_DeliveryAmount ?
+                    (i.DeliveryAmount / count).ToString() :
+                    (i.DeliveryAmount / count).ToString() + "≠" + (i.BSys_DeliveryAmount / count).ToString(),
+                    ProfitAmount = i.ProfitAmount == i.BSys_ProfitAmount ?
+                    (i.ProfitAmount / count).ToString() :
+                    (i.ProfitAmount / count).ToString() + "≠" + (i.BSys_ProfitAmount / count).ToString(),
+                    LossAmount = i.LossAmount == i.BSys_LossAmount ?
+                    (i.LossAmount / count).ToString() :
+                    (i.LossAmount / count).ToString() + "≠" + (i.BSys_LossAmount / count).ToString(),
+                    Ending = i.Ending == i.BSys_Ending ?
+                    (i.Ending / count).ToString() :
+                    (i.Ending / count).ToString() + "≠" + (i.BSys_Ending / count).ToString(),
+                    i.Status1,
+                    i.Status2,
+                    i.Status3,
+                    i.Status4,
+                    i.Status5,
+                    i.Status6
+                });
+                return new { total, rows = dailyBalance.ToArray() };
+            }
+
+            //自然件
+            if (unitType == "3" || unitType == "4")
+            {
+                var dailyBalance = infoCheck.ToArray().Select(i => new
+                {
+                    SettleDate = i.SettleDate.ToString("yyyy-MM-dd"),
+                    i.ProductCode,
+                    i.ProductName,
+                    UnitCode = unitType == "3" ? i.UnitCode01 : i.UnitCode02,
+                    UnitName = unitType == "3" ? i.UnitName01 : i.UnitName02,
+                    i.WarehouseCode,
+                    i.WarehouseName,
+                    Beginning = i.Beginning == i.BSys_Beginning ?
+                    (i.Beginning / (unitType == "3" ? i.Count01 : i.Count02)).ToString() :
+                    (i.Beginning / (unitType == "3" ? i.Count01 : i.Count02)).ToString() + "≠" + (i.BSys_Beginning / (unitType == "3" ? i.Count01 : i.Count02)).ToString(),
+                    EntryAmount = i.EntryAmount == i.BSys_EntryAmount ?
+                    (i.EntryAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() :
+                    (i.EntryAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() + "≠" + (i.BSys_EntryAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString(),
+                    DeliveryAmount = i.DeliveryAmount == i.BSys_DeliveryAmount ?
+                    (i.DeliveryAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() :
+                    (i.DeliveryAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() + "≠" + (i.BSys_DeliveryAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString(),
+                    ProfitAmount = i.ProfitAmount == i.BSys_ProfitAmount ?
+                    (i.ProfitAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() :
+                    (i.ProfitAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() + "≠" + (i.BSys_ProfitAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString(),
+                    LossAmount = i.LossAmount == i.BSys_LossAmount ?
+                    (i.LossAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() :
+                    (i.LossAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString() + "≠" + (i.BSys_LossAmount / (unitType == "3" ? i.Count01 : i.Count02)).ToString(),
+                    Ending = i.Ending == i.BSys_Ending ?
+                    (i.Ending / (unitType == "3" ?i.Count01 : i.Count02)).ToString() :
+                    (i.Ending / (unitType == "3" ? i.Count01 : i.Count02)).ToString() + "≠" + (i.BSys_Ending / (unitType == "3" ? i.Count01 : i.Count02)).ToString(),
+                    i.Status1,
+                    i.Status2,
+                    i.Status3,
+                    i.Status4,
+                    i.Status5,
+                    i.Status6
+                });
+                return new { total, rows = dailyBalance.ToArray() };
+            }
+            return new { total, rows = query.ToArray() };
+        }
 
         public Boolean DoDailyBalance(string warehouseCode, string settleDate,ref string errorInfo)
         {

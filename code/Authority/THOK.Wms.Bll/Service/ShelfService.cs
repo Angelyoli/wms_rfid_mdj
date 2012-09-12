@@ -49,6 +49,22 @@ namespace THOK.Wms.Bll.Service
             return shelf.ToArray();
         }
 
+        public object GetDetail(string type, string id)
+        {
+            IQueryable<Shelf> shelfQuery = ShelfRepository.GetQueryable();
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+            var shelf = shelfQuery.OrderBy(b => b.ShelfCode).AsEnumerable().Select(b => new { b.ShelfCode, b.ShelfName, b.ShelfType, b.ShortName, b.CellCols, b.CellRows, b.ImgX, b.ImgY, b.Description, b.Area.AreaCode, b.Area.AreaName, b.Warehouse.WarehouseCode, b.Warehouse.WarehouseName, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            if (type=="shelf")
+            {
+                shelf = shelf.Where(s => s.ShelfCode == id);
+            }
+            else if (type == "cell")
+            {
+                var shelfCode = cellQuery.Where(c => c.CellCode == id).Select(c => new { c.ShelfCode }).ToArray();
+                shelf = shelf.Where(s => s.ShelfCode == shelfCode[0].ShelfCode);
+            }  
+            return shelf.ToArray();
+        }
         public new bool Add(Shelf shelf)
         {
             var shelfAdd = new Shelf();

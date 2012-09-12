@@ -10,7 +10,7 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string BillNo, string WareHouseCode, string beginDate, string endDate, string OperatePersonCode, string CheckPersonCode, string Status, string IsActive);
 
-        bool Add(MoveBillMaster moveBillMaster, string userName);
+        bool Add(MoveBillMaster moveBillMaster, string userName, out string strResult);
 
         bool Delete(string BillNo, out string strResult);
 
@@ -27,5 +27,7 @@ namespace THOK.Wms.Bll.Interfaces
         object GetWareHouseDetail(string IsActive);
 
         bool Settle(string BillNo, out string strResult);
+
+        bool GeneratePalletTag(string billNo, ref string strResult);
     }
 }

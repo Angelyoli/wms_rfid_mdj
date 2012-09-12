@@ -30,5 +30,7 @@ namespace THOK.Authority.Bll.Interfaces
 
         bool AddUserRole(string userID, string roleIDStr);
 
+        object GetUser(int page, int rows, string queryString, string value);
+
     }
 }

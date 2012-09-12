@@ -15,9 +15,10 @@
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
-        });       
+        });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
+        $('#inputJobCode').attr("readonly", false);
         $('#isActive_job').combo({
             hasDownArrow: true
         });
@@ -25,6 +26,10 @@
     };
 
     function save() {
+        if ($("#desId").val().length > 100) {
+            $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
+            return false
+        }
         $('#fm').form('submit', {
             url: url,
             onSubmit: function () {
@@ -44,38 +49,53 @@
         });
     }
 </script>
-
-<div id="dlg" class="easyui-dialog" modal="true"  style="width:360px;height:260px;padding:2px 2px"  closed="true" buttons="#dlg-buttons">
-		<div class="easyui-layout" fit="true">
-			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
-	            <form id="fm" method="post" novalidate>
-                     <table width="300">
-                      <tr>
-                        <td width="60">岗位编码:</td>
-                        <td width="168"><input name="JobCode" class="easyui-validatebox" required="true"/><input name="ID"  style="display:none" /></td>
-                      </tr>
-                        <tr>
-                        <td width="60">岗位名称：</td>
-                        <td width="168"><input name="JobName" class="easyui-validatebox" required="true"/></td>
-                      </tr>                      
-                      <tr>
-                      <td width="60">是否可用：</td>
-                        <td><select id="isActive_job" name="IsActive" class="easyui-combobox" style="width:130px">
-		                        <option value="1">可用</option>
-		                        <option value="0">不可用</option>
-	                        </select>
-	                    </td>
-                      </tr>
-                      <tr>
-                        <td width="60">描述:</td>
-                        <td width="168" colspan="3" ><textarea name="Description" style="width: 160px; height: 60px"></textarea> </td>
-                      </tr>
-                    </table>
-	            </form>
-            </div>
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 510px; height: 250px; padding: 2px 2px" closed="true" 
+    buttons="#dlg-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;border: 1px solid #ccc;">
+            <form id="fm" method="post" novalidate>
+            <table width="460">
+                <tr>
+                    <td width="60">
+                        岗位编码:
+                    </td>
+                    <td width="160">
+                        <input name="JobCode" id="inputJobCode" class="easyui-validatebox" validtype="maxLength[8]" required="true" />
+                        <input name="ID" style="display: none" />
+                    </td>
+                     <td width="60" >
+                        岗位名称：
+                    </td>
+                    <td width="168">
+                        <input name="JobName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        是否可用：
+                    </td>
+                    <td>
+                        <select id="isActive_job" name="IsActive" class="easyui-combobox" style="width: 130px">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60" align="right">
+                        描述:
+                    </td>
+                    <td width="168" colspan="3">
+                        <textarea name="Description" id="desId"  style="width: 351px; height: 80px"></textarea>
+                    </td>
+                </tr>
+            </table>
+            </form>
         </div>
+    </div>
 </div>
 <div id="dlg-buttons">
-	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
-	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
+        取消</a>
 </div>

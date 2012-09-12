@@ -7,6 +7,8 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.WMS.DownloadWms.Bll;
+using THOK.Wms.DownloadWms.Bll;
 
 namespace Authority.Controllers.Wms.StockIn
 {
@@ -36,6 +38,11 @@ namespace Authority.Controllers.Wms.StockIn
             return View();
         }
 
+        public ActionResult SearchPage()
+        {
+            return View();
+        }
+
         //
         // GET: /InBillMaster/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
@@ -48,7 +55,7 @@ namespace Authority.Controllers.Wms.StockIn
             string CheckPersonCode = collection["CheckPersonCode"] ?? string.Empty;
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var inBillMaster = InBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, BeginDate, EndDate,OperatePersonCode,CheckPersonCode, Status, IsActive);
+            var inBillMaster = InBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, BeginDate, EndDate, OperatePersonCode, CheckPersonCode, Status, IsActive);
             return Json(inBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -57,7 +64,7 @@ namespace Authority.Controllers.Wms.StockIn
 
         public ActionResult InBillDetails(int page, int rows, string BillNo)
         {
-            var inBillDetail = InBillDetailService.GetDetails(page,rows,BillNo);
+            var inBillDetail = InBillDetailService.GetDetails(page, rows, BillNo);
             return Json(inBillDetail, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -76,9 +83,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult Create(InBillMaster inBillMaster)
         {
-            bool bResult = InBillMasterService.Add(inBillMaster, this.User.Identity.Name.ToString());
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Add(inBillMaster, this.User.Identity.Name.ToString(), out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -87,18 +95,20 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult Edit(InBillMaster inBillMaster)
         {
-            bool bResult = InBillMasterService.Save(inBillMaster);
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Save(inBillMaster, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
         // POST: /InBillMaster/Delete/
         public ActionResult Delete(string BillNo)
         {
-            bool bResult = InBillMasterService.Delete(BillNo);
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Delete(BillNo, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -107,9 +117,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailCreate(InBillDetail inBillDetail)
         {
-            bool bResult = InBillDetailService.Add(inBillDetail);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Add(inBillDetail, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -118,27 +129,30 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailDelete(string ID)
         {
-            bool bResult = InBillDetailService.Delete(ID);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Delete(ID, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
         // POST: /InBillMaster/Audit/
         public ActionResult Audit(string BillNo)
         {
-            bool bResult = InBillMasterService.Audit(BillNo, this.User.Identity.Name.ToString());
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.Audit(BillNo, this.User.Identity.Name.ToString(), out strResult);
             string msg = bResult ? "审核成功" : "审核失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
         // POST: /InBillMaster/AntiTria/
         public ActionResult AntiTrial(string BillNo)
         {
-            bool bResult = InBillMasterService.AntiTrial(BillNo);
+            string strResult = string.Empty;
+            bool bResult = InBillMasterService.AntiTrial(BillNo, out strResult);
             string msg = bResult ? "反审成功" : "反审失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -147,9 +161,10 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult InBillDetailEdit(InBillDetail inBillDetail)
         {
-            bool bResult = InBillDetailService.Save(inBillDetail);
+            string strResult = string.Empty;
+            bool bResult = InBillDetailService.Save(inBillDetail, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -158,7 +173,7 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult GetBillTypeDetail(string BillClass, string IsActive)
         {
-            var billType = InBillMasterService.GetBillTypeDetail(BillClass,IsActive);
+            var billType = InBillMasterService.GetBillTypeDetail(BillClass, IsActive);
             return Json(billType, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -166,7 +181,7 @@ namespace Authority.Controllers.Wms.StockIn
         // POST: /InBillMaster/GetWareHouseDetail/
 
         [HttpPost]
-        public ActionResult GetWareHouseDetail( string IsActive)
+        public ActionResult GetWareHouseDetail(string IsActive)
         {
             var wareHouse = InBillMasterService.GetWareHouseDetail(IsActive);
             return Json(wareHouse, "text", JsonRequestBehavior.AllowGet);
@@ -178,27 +193,53 @@ namespace Authority.Controllers.Wms.StockIn
         [HttpPost]
         public ActionResult GetProductDetails(int page, int rows, string QueryString, string Value)
         {
-            if (QueryString==null)
+            if (QueryString == null)
             {
                 QueryString = "ProductCode";
             }
-            if (Value==null)
+            if (Value == null)
             {
                 Value = "";
             }
-            var product = InBillDetailService.GetProductDetails(page,rows,QueryString,Value);
+            var product = InBillDetailService.GetProductDetails(page, rows, QueryString, Value);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 
         //
         // POST: /InBillMaster/inBillMasterSettle/
-
         public ActionResult InBillMasterSettle(string BillNo)
         {
             string strResult = string.Empty;
             bool bResult = InBillMasterService.Settle(BillNo, out strResult);
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /StockInBill/DownInBillMaster/
+        public ActionResult DownInBillMaster(string beginDate, string endDate, string wareCode, string billType)
+        {
+            string errorInfo = string.Empty;
+            if (beginDate == string.Empty || endDate == string.Empty)
+            {
+                beginDate = DateTime.Now.ToString("yyyyMMdd");
+                endDate = DateTime.Now.ToString("yyyyMMdd");
+            }
+            else
+            {
+                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+            }
+            DownUnitBll ubll = new DownUnitBll();
+            DownProductBll pbll = new DownProductBll();
+            DownInBillBll ibll = new DownInBillBll();
+            ubll.DownUnitCodeInfo();
+            pbll.DownProductInfo();
+            bool bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+
+            //bool bResult = InBillMasterService.DownInBillMaster(beginDate, endDate, out errorInfo);
+            string msg = bResult ? "下载成功" : "下载失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

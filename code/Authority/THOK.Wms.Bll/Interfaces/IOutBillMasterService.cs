@@ -23,5 +23,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool AntiTrial(string billNo, out string errorInfo);
 
         bool Settle(string billNo,out string errorInfo);
+
+        bool DownOutBillMaster(string beginDate, string endDate, out string errorInfo);
     }
 }

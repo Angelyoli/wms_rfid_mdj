@@ -47,18 +47,20 @@ namespace Authority.Controllers.Organization
         [HttpPost]
         public ActionResult Create(Company company)
         {
-            bool bResult = CompanyService.Add(company);
+            string strResult = string.Empty;
+            bool bResult = CompanyService.Add(company, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
-        
+
         //
         // GET: /Company/Edit/
         public ActionResult Edit(Company company)
         {
-            bool bResult = CompanyService.Save(company);
+            string strResult = string.Empty;
+            bool bResult = CompanyService.Save(company, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
@@ -66,9 +68,26 @@ namespace Authority.Controllers.Organization
         [HttpPost]
         public ActionResult Delete(string companyID)
         {
-            bool bResult = CompanyService.Delete(companyID);
+            string strResult = string.Empty;
+            bool bResult = CompanyService.Delete(companyID, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // POST: /Company/GetParentName/
+        public ActionResult GetParentName(int page, int rows, string queryString, string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "CompanyCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var company = CompanyService.GetParentName(page, rows, queryString, value);
+            return Json(company, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

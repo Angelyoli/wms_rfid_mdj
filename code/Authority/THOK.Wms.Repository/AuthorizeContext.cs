@@ -37,7 +37,7 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new UserModuleMap());
             modelBuilder.Configurations.Add(new UserRoleMap());
             modelBuilder.Configurations.Add(new UserSystemMap());
-
+            modelBuilder.Configurations.Add(new HelpContentMap());
             #endregion
 
             #region wms
@@ -86,6 +86,10 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new SortingLowerlimitMap());
             modelBuilder.Configurations.Add(new SortOrderDispatchMap());
             modelBuilder.Configurations.Add(new SortWorkDispatchMap());
+
+            modelBuilder.Configurations.Add(new BusinessSystemsDailyBalanceMap());
+            modelBuilder.Configurations.Add(new ProductWarningMap());
+
             #endregion
         }
     }

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Allot.Interfaces;
 using THOK.WebUtil;
+using THOK.Wms.Bll.Interfaces;
 
 namespace Authority.Controllers.Wms.StockOut
 {
@@ -13,6 +14,8 @@ namespace Authority.Controllers.Wms.StockOut
     {
         [Dependency]
         public IOutBillAllotService OutBillAllotService { get; set; }
+        [Dependency]
+        public IOutBillDetailService OutBillDetailService { get; set; }
 
         public ActionResult Search(string billNo, int page, int rows)
         {
@@ -39,7 +42,7 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult AllotConfirm(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = OutBillAllotService.AllotConfirm(billNo, this.User.Identity.Name.ToString(),ref strResult);
+            bool bResult = OutBillAllotService.AllotConfirm(billNo, this.User.Identity.Name.ToString(), ref strResult);
             string msg = bResult ? "确认分配成功" : "确认分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -47,7 +50,7 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult AllotCancelConfirm(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = OutBillAllotService.AllotCancelConfirm(billNo,out strResult);
+            bool bResult = OutBillAllotService.AllotCancelConfirm(billNo, out strResult);
             string msg = bResult ? "取消分配确认成功" : "取消分配确认失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -67,5 +70,32 @@ namespace Authority.Controllers.Wms.StockOut
             string msg = bResult ? "添加分配成功" : "添加分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /StockOutBillAllot/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string billNo = Request.QueryString["billNo"];
+
+            System.Data.DataTable dt1 = OutBillDetailService.GetOutBillDetail(page, rows, billNo);
+            System.Data.DataTable dt2 = OutBillAllotService.AllotSearch(page, rows, billNo);
+            string headText1 = "出库单据分配";
+            string headText2 = "出库单据分配明细";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, dt2, headText1, headText2, headFont, headSize,
+                colHeadFont, colHeadSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

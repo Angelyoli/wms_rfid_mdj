@@ -1,11 +1,11 @@
 <script type="text/javascript">
     var url;
 
-    function AddLoad() { 
-       $('#Status').combo({
+    function AddLoad() {
+        $('#Status').combo({
             required: true,
             editable: false,
-            panelHeight: 85,
+            panelHeight: 100,
             panelWidth: 130
         });
         $('#isActive_emp').combo({
@@ -17,63 +17,8 @@
         $('#sex').combo({
             required: true,
             editable: false,
-            panelHeight: 45,
+            panelHeight: 65,
             panelWidth: 130
-        });
-
-        $('#depar-add').combogrid({
-            disabled: false,
-            width: 130,
-            panelWidth: 340,
-            url: '/Department/Details/?page=1&rows=10',
-            idField: 'ID',
-            textField: 'DepartmentName',
-            mode: 'local',
-            editable: false,
-            fitColumns: true,
-            columns: [[
-					{ field: 'ID', title: '部门ID', hidden: true, width: 30 },
-					{ field: 'DepartmentCode', title: '部门编码', align: 'left', width: 40 },
-					{ field: 'DepartmentName', title: '部门名称', align: 'left', width: 30 },
-					{ field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
-				]]
-        });
-
-        $('#user-add').combogrid({
-            disabled: false,
-            width: 130,
-            panelWidth: 340,
-            url: '/User/Details/?page=1&rows=10',
-            idField: 'UserName',
-            textField: 'UserName',
-            mode: 'local',
-            editable: false,
-            fitColumns: true,
-            columns: [[
-					{ field: 'UserID', title: '用户ID', hidden: true, width: 30 },
-					{ field: 'UserName', title: '用户名称', align: 'left', width: 40 },
-					{ field: 'ChineseName', title: '中文名', align: 'left', width: 30 },
-					{ field: 'IsAdmin', title: '是否是管理员', align: 'left', width: 30 }
-				]]
-        });
-
-        $('#job-add').combogrid({
-            required: true,
-            disabled: false,
-            width: 130,
-            panelWidth: 340,
-            url: '/Job/Details/?page=1&rows=10',
-            idField: 'ID',
-            textField: 'JobName',
-            mode: 'local',
-            editable: false,
-            fitColumns: true,
-            columns: [[
-					{ field: 'ID', title: '岗位ID', hidden: true, width: 30 },
-					{ field: 'JobCode', title: '岗位编码', align: 'left', width: 40 },
-					{ field: 'JobName', title: '岗位名称', align: 'left', width: 30 },
-					{ field: 'IsActive', title: '是否可用', align: 'left', width: 30 }
-				]]
         });
     }
 
@@ -86,6 +31,7 @@
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
+        $('#inputEmployeeCode').attr("readonly", false);
         $('#isActive_emp').combo({
             hasDownArrow: true
         });
@@ -93,6 +39,10 @@
     };
 
     function save() {
+        if ($("#desId").val().length > 100) {
+            $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
+            return false
+        }
         $('#fm').form('submit', {
             url: url,
             onSubmit: function () {
@@ -102,8 +52,8 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#dlg').dialog('close'); 
-                    $('#details').datagrid('reload'); 
+                    $('#dlg').dialog('close');
+                    $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
                     $('#details').datagrid('reload');
@@ -111,75 +61,139 @@
             }
         });
     }
+    function departNameSearchClick() {
+        $('#departNameData').dialog('open').dialog('setTitle', '选择负责人');
+        $('#departNameDetail').datagrid({ url: '/Department/GetDepartment/' });
+        $("#departNameDetail").datagrid('reload');
+    }
+    function jobSearchClick() {
+        $('#jobData').dialog('open').dialog('setTitle', '选择岗位');
+        $('#jobDetail').datagrid({ url: '/Job/GetJob/' });
+        $("#jobDetail").datagrid('reload');
+    }
+    function userSearchClick() {
+        $('#userData').dialog('open').dialog('setTitle', '选择用户');
+        $('#userDetail').datagrid({ url: '/User/GetUser/' });
+        $("#userDetail").datagrid('reload');
+    }
 </script>
-
-    <div id="dlg" class="easyui-dialog" modal="true"  style="width:560px;height:320px;padding:2px 2px" closed="true" buttons="#dlg-buttons">
-		<div class="easyui-layout" fit="true">
-			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
-	            <form id="fm" method="post" novalidate>
-                    <table width="520">
-                      <tr>
-                        <td width="60" align="right">员工编码：</td>
-                        <td width="168"><input name="EmployeeCode" class="easyui-validatebox" required="true"/><input name="ID" style="display:none"/></td>
-                        <td width="60" align="right">员工姓名：</td>
-                        <td width="168"><input name="EmployeeName" class="easyui-validatebox" required="true"/></td>
-                      </tr>
-                      <tr>
-                       <td  align="right">性别：</td>
-                        <td ><select id="sex" name="Sex" class="easyui-combobox" style="width: 130px" class="easyui-validatebox" required="true">
-		                        <option value="女">女</option>
-		                        <option value="男">男</option>
-		                        <option value="保密">保密</option>
-	                        </select></td>
-                        <td align="right">电话：</td>
-                        <td ><input name="Tel" class="easyui-numberbox"  type="text" required="true" missingmessage="请输入电话号码（必须为数字）"/></td>
-                      </tr>
-                      <tr>
-                        <td align="right">状态：</td>
-                        <td><select id="Status" name="Status" class="easyui-combobox" style="width: 130px">
-		                        <option value="3701">在职</option>
-		                        <option value="3702">离职</option>
-                                <option value="3703">退休</option>
-		                        <option value="3704">试用</option>
-                                <option value="3705">外调</option>
-		                        <option value="3706">停薪留职</option>
-                                 <option value="3707">借用</option>
-                                 <option value="3708">其他</option>
-	                        </select>
-	                    </td>
-                        <td align="right">是否可用：</td>
-                        <td><select id="isActive_emp" name="IsActive" class="easyui-combobox" style="width: 130px">
-		                        <option value="1">可用</option>
-		                        <option value="0">不可用</option>
-	                        </select>
-	                    </td>
-                      </tr>
-                      <tr>
-                       <td align="right">部门名称：</td>
-                        <td width="168">
-                        <input name="DepartmentID" id="depar-add"  />
-                        </td>
-                        <td width="60" align="right">岗位：</td>
-                        <td width="168">
-                        <input name="JobID" id="job-add" required="true" />
-                        </td>
-                      </tr>
-                      <tr>
-                       <td align="right">用户名称：</td>
-                        <td width="168" colspan="3">
-                        <input name="UserName" id="user-add"  />
-                        </td>
-                      </tr>
-                       <tr>
-                       <td width="60" align="right">描述：</td>
-                        <td width="168" colspan="3" ><textarea name="Description" style="width: 380px; height: 80px"></textarea> </td>
-                      </tr>
-                    </table>
-	            </form>
-            </div>
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 560px; height: 320px;
+    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <form id="fm" method="post" novalidate>
+            <table width="520">
+                <tr>
+                    <td width="60" align="right">
+                        员工编码：
+                    </td>
+                    <td width="168">
+                        <input name="EmployeeCode" id="inputEmployeeCode" class="easyui-validatebox" validtype="maxLength[8]"
+                            required="true" />
+                        <input name="ID" style="display: none" />
+                    </td>
+                    <td width="60" align="right">
+                        员工姓名：
+                    </td>
+                    <td width="168">
+                        <input name="EmployeeName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        性别：
+                    </td>
+                    <td>
+                        <select id="sex" name="Sex" class="easyui-combobox" style="width: 130px" class="easyui-validatebox"
+                            required="true">
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                            <option value="保密">保密</option>
+                        </select>
+                    </td>
+                    <td align="right">
+                        电话：
+                    </td>
+                    <td>
+                        <input name="Tel" class="easyui-numberbox" type="text" min="6" max="13" required="true"
+                            missingmessage="请输入电话号码（必须为数字）" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        状态：
+                    </td>
+                    <td>
+                        <select id="Status" name="Status" class="easyui-combobox" style="width: 130px">
+                            <option value="3701">在职</option>
+                            <option value="3702">离职</option>
+                            <option value="3703">退休</option>
+                            <option value="3704">试用</option>
+                            <option value="3705">外调</option>
+                            <option value="3706">停薪留职</option>
+                            <option value="3707">借用</option>
+                            <option value="3708">其他</option>
+                        </select>
+                    </td>
+                    <td align="right">
+                        是否可用：
+                    </td>
+                    <td>
+                        <select id="isActive_emp" name="IsActive" class="easyui-combobox" style="width: 130px">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        部门名称：
+                    </td>
+                    <td width="168">
+                        <input name="DepartmentID" id="departId" style="display: none;" />
+                        <input name="DepartmentName" id="departName" readonly="readonly" class="easyui-validatebox" />
+                        <a href="#" id="departNameSearch" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="departNameSearchClick()"></a>
+                    </td>
+                    <td width="60" align="right">
+                        岗位：
+                    </td>
+                    <td width="168">
+                        <input name="JobID" id="jobId" required="true" style="display: none;" />
+                        <input name="JobName" id="jobName" required="true" readonly="readonly" class="easyui-validatebox" />
+                        <a href="#" id="jobSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                            onclick="jobSearchClick()"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        用户名称：
+                    </td>
+                    <td width="168" colspan="3">
+                        <input name="UserName" id="user-add" readonly="readonly" class="easyui-validatebox" />
+                        <a href="#" id="userSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                            onclick="userSearchClick()"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60" align="right">
+                        描述：
+                    </td>
+                    <td width="168" colspan="3">
+                        <textarea name="Description" id="desId" style="width: 385px; height: 80px"></textarea>
+                    </td>
+                </tr>
+            </table>
+            </form>
         </div>
     </div>
-<div id="dlg-buttons">
-	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
-	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
 </div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
+        取消</a>
+</div>
+@Html.Partial("_DepartmentNamePartial")
+@Html.Partial("_JobPartial")
+@Html.Partial("_UserNamePartial")

@@ -36,6 +36,7 @@ namespace THOK.Wms.Allot.Service
             get { return this.GetType(); }
         }
 
+        #region IInBillAllotService 成员
         public string WhatStatus(string status)
         {
             string statusStr = "";
@@ -57,30 +58,29 @@ namespace THOK.Wms.Allot.Service
         public object Search(string billNo, int page, int rows)
         {
             var allotQuery = InBillAllotRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo)                                  
-                                  .OrderBy(a => a.ID)
-                                  .Select(a => new { 
-                                      a.ID,
-                                      a.BillNo,
-                                      a.ProductCode,
-                                      a.Product.ProductName,
-                                      a.CellCode,
-                                      a.Cell.CellName,
-                                      a.StorageCode,
-                                      a.UnitCode,
-                                      a.Unit.UnitName,
-                                      AllotQuantity = a.AllotQuantity / a.Unit.Count,
-                                      RealQuantity = a.RealQuantity / a.Unit.Count,
-                                      a.OperatePersonID,
-                                      a.StartTime,
-                                      a.FinishTime,
-                                      a.Status
-                                    });
-
+            var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
-            var allotBill = query.ToArray();            
-            return new { total, rows = query.ToArray() }; 
+
+            var temp = query.ToArray().Select(a => new
+                                      {
+                                          a.ID,
+                                          a.BillNo,
+                                          a.ProductCode,
+                                          a.Product.ProductName,
+                                          a.CellCode,
+                                          a.Cell.CellName,
+                                          a.StorageCode,
+                                          a.UnitCode,
+                                          a.Unit.UnitName,
+                                          AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                                          RealQuantity = a.RealQuantity / a.Unit.Count,
+                                          a.OperatePersonID,
+                                          StartTime = a.StartTime == null ? "" : ((DateTime)a.StartTime).ToString("yyyy-MM-dd"),
+                                          FinishTime = a.FinishTime == null ? "" : ((DateTime)a.FinishTime).ToString("yyyy-MM-dd"),
+                                          Status = WhatStatus(a.Status)
+                                      });
+            return new { total, rows = temp.ToArray() };
         }
 
         public bool AllotCancel(string billNo, out string strResult)
@@ -88,7 +88,7 @@ namespace THOK.Wms.Allot.Service
             Locker.LockKey = billNo;
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable()
-                                            .FirstOrDefault(i => i.BillNo == billNo 
+                                            .FirstOrDefault(i => i.BillNo == billNo
                                                 && i.Status == "3");
             if (ibm != null)
             {
@@ -116,10 +116,10 @@ namespace THOK.Wms.Allot.Service
                                     if (i.Storage.ProductCode == i.ProductCode
                                         && i.Storage.InFrozenQuantity >= i.AllotQuantity)
                                     {
-                                        lock(i.InBillDetail)
+                                        lock (i.InBillDetail)
                                         {
                                             i.InBillDetail.AllotQuantity -= i.AllotQuantity;
-                                        }                                        
+                                        }
                                         i.Storage.InFrozenQuantity -= i.AllotQuantity;
                                         i.Storage.LockTag = string.Empty;
                                     }
@@ -136,7 +136,7 @@ namespace THOK.Wms.Allot.Service
                                 .DeleteEntity(i => i.BillNo == ibm.BillNo);
                             //InBillAllotRepository.GetObjectQuery()
                             //    .DeleteAll(i => i.BillNo == ibm.BillNo,null);
-                            
+
                             ibm.Status = "2";
                             ibm.UpdateTime = DateTime.Now;
                             InBillMasterRepository.SaveChanges();
@@ -216,7 +216,7 @@ namespace THOK.Wms.Allot.Service
         {
             bool result = false;
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "3");
-            var cell = CellRepository.GetQueryable().Single(c=>c.CellCode == cellCode);
+            var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
@@ -239,11 +239,11 @@ namespace THOK.Wms.Allot.Service
                                 storage = null;
                             }
                         }
-                        if (storage != null )
+                        if (storage != null)
                         {
                             decimal q1 = allotDetail.InBillDetail.BillQuantity - allotDetail.InBillDetail.AllotQuantity;
                             decimal q2 = allotQuantity * allotDetail.Unit.Count;
-                            if (q1 >= q2)
+                            if (q1 >= q2 || q1 == 0)
                             {
                                 try
                                 {
@@ -378,7 +378,129 @@ namespace THOK.Wms.Allot.Service
         /// <returns></returns>
         public bool AllotAdd(string billNo, long id, string cellCode, int allotQuantity, out string strResult)
         {
-            throw new NotImplementedException();
-        }
+            bool result = false;
+            var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo);
+            var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
+            var ibd = InBillDetailRepository.GetQueryable().FirstOrDefault(i => i.ID == id);
+            if (ibm != null)
+            {
+                if (string.IsNullOrEmpty(ibm.LockTag))
+                {
+                    Storage storage = Locker.LockStorage(cell);
+                    if (storage != null)
+                    {
+                        if (allotQuantity > 0)
+                        {
+                            InBillAllot billAllot = null;
+                            decimal q1 = ibd.BillQuantity - ibd.AllotQuantity;
+                            decimal q2 = allotQuantity * ibd.Unit.Count;
+                            if (q2 <= q1 && q2 <= (cell.MaxQuantity * ibd.Unit.Count - (storage.Quantity + storage.InFrozenQuantity)))
+                            {
+                                try
+                                {
+                                    billAllot = new InBillAllot()
+                                    {
+                                        BillNo = billNo,
+                                        InBillDetailId = ibd.ID,
+                                        ProductCode = ibd.ProductCode,
+                                        CellCode = storage.CellCode,
+                                        StorageCode = storage.StorageCode,
+                                        UnitCode = ibd.UnitCode,
+                                        AllotQuantity = q2,
+                                        RealQuantity = 0,
+                                        Status = "0"
+                                    };
+                                    ibd.AllotQuantity += q2;
+                                    storage.InFrozenQuantity += q2;
+                                    storage.ProductCode = ibd.ProductCode;
+                                    ibm.InBillAllots.Add(billAllot);
+                                    ibm.Status = "3";
+                                    storage.LockTag = string.Empty;
+                                    StorageRepository.SaveChanges();
+                                    strResult = "手工分配成功！";
+                                    result = true;
+                                }
+                                catch (Exception)
+                                {
+                                    strResult = "保存添加失败，订单或储位其他人正在操作！";
+                                }
+                            }
+                            else
+                            {
+                                strResult = "分配数量超过订单数量,或者大于储位的最大数量！";
+                            }
+                        }
+                        else
+                        {
+                            strResult = "分配数量必须大于0！";
+                        }
+                    }
+                    else
+                    {
+                        strResult = "当前选择的储位不可用，或者分配数量超过最大托盘数，其他人正在操作！";
+                    }
+                }
+                else
+                {
+                    strResult = "当前订单其他人正在操作，请稍候重试！";
+                }
+            }
+            else
+            {
+                strResult = "当前订单状态不是已分配，或当前订单不存在！";
+            }
+            return result;
+        } 
+        #endregion
+
+        #region IInBillAllotService 成员
+        public System.Data.DataTable AllotSearch(int page, int rows, string billNo)
+        {
+            var allotQuery = InBillAllotRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(a => new
+            {
+                a.ProductCode,
+                a.Product.ProductName,
+                a.Cell.CellName,
+                a.StorageCode,
+                a.UnitCode,
+                a.Unit.UnitName,
+                AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                RealQuantity = a.RealQuantity / a.Unit.Count,
+                a.OperatePersonID,
+                StartTime = a.StartTime,
+                FinishTime = a.FinishTime,
+                Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "2" ? "已完成" : ""
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("商品编码", typeof(string));
+            dt.Columns.Add("商品名称", typeof(string));
+            dt.Columns.Add("储位名称", typeof(string));
+            dt.Columns.Add("单位名称", typeof(string));
+            dt.Columns.Add("分配数量", typeof(int));
+            dt.Columns.Add("实际数量", typeof(int));
+            dt.Columns.Add("作业人员", typeof(string));
+            dt.Columns.Add("开始时间", typeof(string));
+            dt.Columns.Add("完成时间", typeof(string));
+            dt.Columns.Add("作业状态", typeof(string));
+            foreach (var q in query)
+            {
+                dt.Rows.Add
+                    (
+                        q.ProductCode,
+                        q.ProductName,
+                        q.CellName,
+                        q.UnitName,
+                        q.AllotQuantity,
+                        q.RealQuantity,
+                        q.OperatePersonID,
+                        q.StartTime,
+                        q.FinishTime,
+                        q.Status
+                    );
+            }
+            return dt;
+        } 
+        #endregion
     }
 }

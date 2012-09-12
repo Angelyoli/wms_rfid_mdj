@@ -8,6 +8,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.SignalR.Common;
 using System.Transactions;
+using THOK.Wms.Download.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -31,10 +32,18 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IStorageLocker Locker { get; set; }
 
+        [Dependency]
+        public IOutBillMasterDownService OutBillMasterDownService { get; set; }
+
+        [Dependency]
+        public IStorageRepository StorageRepository { get; set; }
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
+
+        public string infoStr = "";//错误信息字符串
 
         public string WhatStatus(string status)
         {
@@ -70,7 +79,7 @@ namespace THOK.Wms.Bll.Service
             var outBillMaster = OutBillMasterQuery
                                     .OrderByDescending(t => t.BillDate)
                                     .OrderByDescending(t => t.BillNo)
-                                    .Select(i =>i);
+                                    .Select(i => i);
             if (!BillNo.Equals(string.Empty) && BillNo != null)
             {
                 outBillMaster = outBillMaster.Where(i => i.BillNo.Contains(BillNo));
@@ -296,7 +305,8 @@ namespace THOK.Wms.Bll.Service
                 }
                 else//如果出库主单指定了货位那么就从指定的货位出库
                 {
-                    result = OutAllot(outbm);
+                    result = OutAllot(outbm, employee.ID);
+                    errorInfo = infoStr;
                 }
             }
             return result;
@@ -307,10 +317,82 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="outBillMaster">出库主单</param>
         /// <returns></returns>
-        public bool OutAllot(OutBillMaster outBillMaster)
+        public bool OutAllot(OutBillMaster outBillMaster, Guid employeeId)
         {
-            bool result=false;
-            return result;
+            try
+            {
+                bool result = false;
+                //出库单出库
+                var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == outBillMaster.TargetCellCode
+                                                                        && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
+
+                if (!Locker.Lock(storages))
+                {
+                    throw new Exception("锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！");
+                }
+                var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
+                    .Where(o => o.BillNo == outBillMaster.BillNo);
+                outDetails.ToArray().AsParallel().ForAll(
+               (Action<OutBillDetail>)delegate(OutBillDetail o)
+               {
+                   var ss = storages.Where(s => s.ProductCode == o.ProductCode).ToArray();
+                   foreach (var s in ss)
+                   {
+                       lock (s)
+                       {
+                           if (o.BillQuantity - o.AllotQuantity > 0)
+                           {
+                               decimal allotQuantity = s.Quantity;
+                               decimal billQuantity = o.BillQuantity - o.AllotQuantity;
+                               allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                               o.AllotQuantity += allotQuantity;
+                               o.RealQuantity += allotQuantity;
+                               s.Quantity -= allotQuantity;
+
+                               var billAllot = new OutBillAllot()
+                               {
+                                   BillNo = outBillMaster.BillNo,
+                                   OutBillDetailId = o.ID,
+                                   ProductCode = o.ProductCode,
+                                   CellCode = s.CellCode,
+                                   StorageCode = s.StorageCode,
+                                   UnitCode = o.UnitCode,
+                                   AllotQuantity = allotQuantity,
+                                   RealQuantity = allotQuantity,
+                                   Status = "2"
+                               };
+                               lock (outBillMaster.OutBillAllots)
+                               {
+                                   outBillMaster.OutBillAllots.Add(billAllot);
+                               }
+                           }
+                           else
+                               break;
+                       }
+                   }
+
+                   if (o.BillQuantity - o.AllotQuantity > 0)
+                   {
+                       throw new Exception(o.ProductCode + " " + o.Product.ProductName + "库存不足，未能结单！");
+                   }
+               });
+
+                result = true;
+                storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
+                //出库结单
+                outBillMaster.Status = "6";
+                outBillMaster.VerifyDate = DateTime.Now;
+                outBillMaster.VerifyPersonID = employeeId;
+                outBillMaster.UpdateTime = DateTime.Now;
+                OutBillMasterRepository.SaveChanges();
+
+                return result;
+            }
+            catch (AggregateException ex)
+            {
+                infoStr = "审核失败，详情：" + ex.InnerExceptions.Select(i => i.Message).Aggregate((m, n) => m + n);
+                return false;
+            }
         }
 
         /// <summary>
@@ -447,6 +529,115 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return result;
+        }
+
+
+        public bool DownOutBillMaster(string beginDate, string endDate, out string errorInfo)
+        {
+            errorInfo = string.Empty;
+            bool result = false;
+            string outBillStr = "";
+            string outBillMasterStr = "";
+            try
+            {
+                var outBillNos = OutBillMasterRepository.GetQueryable().Where(i => i.BillNo == i.BillNo).Select(i => new { i.BillNo }).ToArray();
+
+                for (int i = 0; i < outBillNos.Length; i++)
+                {
+                    outBillStr += outBillNos[i].BillNo + ",";
+                }
+                OutBillMaster[] outBillMasterList = OutBillMasterDownService.GetOutBillMaster(outBillStr);
+                foreach (var master in outBillMasterList)
+                {
+                    var outBillMaster = new OutBillMaster();
+                    outBillMaster.BillNo = master.BillNo;
+                    outBillMaster.BillDate = master.BillDate;
+                    outBillMaster.BillTypeCode = master.BillTypeCode;
+                    outBillMaster.WarehouseCode = master.WarehouseCode;
+                    outBillMaster.Status = "1";
+                    outBillMaster.IsActive = master.IsActive;
+                    outBillMaster.UpdateTime = DateTime.Now;
+                    OutBillMasterRepository.Add(outBillMaster);
+                    outBillMasterStr += master.BillNo + ",";
+                }
+                if (outBillMasterStr != string.Empty)
+                {
+                    OutBillDetail[] outBillDetailList = OutBillMasterDownService.GetOutBillDetail(outBillMasterStr);
+                    foreach (var detail in outBillDetailList)
+                    {
+                        var outBillDetail = new OutBillDetail();
+                        outBillDetail.BillNo = detail.BillNo;
+                        outBillDetail.ProductCode = detail.ProductCode;
+                        outBillDetail.UnitCode = detail.UnitCode;
+                        outBillDetail.Price = detail.Price;
+                        outBillDetail.BillQuantity = detail.BillQuantity;
+                        outBillDetail.AllotQuantity = detail.AllotQuantity;
+                        outBillDetail.RealQuantity = detail.RealQuantity;
+                        outBillDetail.Description = detail.Description;
+                        OutBillDetailRepository.Add(outBillDetail);
+                    }
+                }
+                OutBillMasterRepository.SaveChanges();
+                result = true;
+            }
+            catch (Exception e)
+            {
+                errorInfo = "出错，原因：" + e.Message;
+            }
+            return result;
+        }
+
+        public System.Data.DataTable GetStockOut(int page, int rows, string BillNo)
+        {
+            IQueryable<OutBillMaster> OutBillMasterQuery = OutBillMasterRepository.GetQueryable().Where(o => o.Status != "6");
+
+            var outBillMaster = OutBillMasterQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(s => new
+            {
+                s.BillNo,
+                s.Warehouse.WarehouseName,
+                s.BillType.BillTypeName,
+                //BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                OperatePersonName = s.OperatePerson.EmployeeName,
+                //s.OperatePersonID,
+                //Status = WhatStatus(s.Status),
+                s.Status,
+                VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
+                //VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                Description = s.Description,
+                //UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                s.TargetCellCode
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("出库单号", typeof(string));
+            dt.Columns.Add("仓库名称", typeof(string));
+            dt.Columns.Add("订单类型", typeof(string));
+            dt.Columns.Add("操作员", typeof(string));
+            dt.Columns.Add("审核人", typeof(string));
+            dt.Columns.Add("处理状态", typeof(string));
+            //dt.Columns.Add("BillDate", typeof(string));
+            //dt.Columns.Add("VerifyDate", typeof(string));
+            //dt.Columns.Add("UpdateTime", typeof(string));
+            dt.Columns.Add("备注", typeof(string));
+            dt.Columns.Add("目标货位编码", typeof(string));
+
+            foreach (var o in outBillMaster)
+            {
+                dt.Rows.Add
+                    (
+                          o.BillNo
+                        , o.WarehouseName
+                        , o.BillTypeName
+                        , o.OperatePersonName
+                        , o.VerifyPersonName
+                        , o.Status
+                    //, o.BillDate
+                    //, o.VerifyDate
+                    //, o.UpdateTime
+                        , o.Description
+                        , o.TargetCellCode
+                    );
+            }
+            return dt;
         }
     }
 }

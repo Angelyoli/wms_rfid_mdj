@@ -20,6 +20,7 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.CompanyCode)
                 .HasMaxLength(20);
+
             this.Property(t => t.DeliverLineCode)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -30,7 +31,7 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.OrderDate)
                 .IsRequired()
-                .IsFixedLength()
+                //.IsFixedLength()
                 .HasMaxLength(14);
 
             this.Property(t => t.OrderType)
@@ -39,7 +40,7 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.CustomerCode)
                 .IsRequired()
-                .HasMaxLength(10);
+                .HasMaxLength(50);
 
             this.Property(t => t.CustomerName)
                 .IsRequired()
@@ -70,10 +71,14 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsFixedLength()
                 .HasMaxLength(1);
 
+            this.Property(t => t.Status)
+                .IsRequired()
+                .IsFixedLength()
+                .HasMaxLength(1);
+            
             this.Property(t => t.UpdateTime)
                 .IsRequired();
-
-
+            
             // Table & Column Mappings
             this.Property(t => t.OrderID).HasColumnName(ColumnMap.Value.To("OrderID"));
             this.Property(t => t.CompanyCode).HasColumnName(ColumnMap.Value.To("CompanyCode"));
@@ -89,6 +94,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.DeliverOrder).HasColumnName(ColumnMap.Value.To("DeliverOrder"));
             this.Property(t => t.Description).HasColumnName(ColumnMap.Value.To("Description"));
             this.Property(t => t.IsActive).HasColumnName(ColumnMap.Value.To("IsActive"));
+            this.Property(t => t.Status).HasColumnName(ColumnMap.Value.To("Status")); 
             this.Property(t => t.UpdateTime).HasColumnName(ColumnMap.Value.To("UpdateTime"));
 
 

@@ -15,8 +15,6 @@ namespace Authority.Controllers.Wms.SortingInfo
         [Dependency]
         public ISortWorkDispatchService SortWorkDispatchService { get; set; }
 
-        [Dependency]
-        public ISortOrderWorkDispatchService SortOrderWorkDispatchService { get; set; }
         //
         // GET: /SortWorkDispatch/
         public ActionResult Index(string moduleID)

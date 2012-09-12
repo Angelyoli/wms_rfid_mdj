@@ -71,10 +71,11 @@ namespace TestProject
         [TestMethod()]
         public void GetSortOrderTest()
         {
-            SortingService target = new SortingService(); // TODO: 初始化为适当的值
+            SortingDownService target = new SortingDownService(); // TODO: 初始化为适当的值
             SortOrder[] expected = null; // TODO: 初始化为适当的值
             SortOrder[] actual;
-            actual = target.GetSortOrder();
+            actual = target.GetSortOrder("","","");
+
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("验证此测试方法的正确性。");
         }

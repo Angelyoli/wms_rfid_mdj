@@ -247,6 +247,43 @@
         }
     }
 
+    //选择单位信息
+    function unitSelect() {
+        var outCellCode = $('#outCellCode').val();
+        var productCode = $('#productCode').val();
+        if (outCellCode != "" && outCellCode != null) {
+            $('#unitData').dialog('open').dialog('setTitle', '选择单位信息');
+            $('#unitDetail').datagrid({ url: '/Unit/FindUnit/?productCode=' + productCode });
+            $("#unitDetail").datagrid('reload');
+        } else {
+            $.messager.confirm('错误', '请先选择移出货位信息！');
+        }
+    }
+
+    function lowerMove() {
+        $.messager.confirm('确认', '确认要根据下限生成移库单么？', function (r) {
+            if (r) {
+                var j_waitDialog = ShowWaitMessageDialog();
+                $.ajax({
+                    url: '/SortingLowerLimit/LowerLimitMove/', type: "GET", dataType: "text",
+                    data: { 'isEnableStocking': false },
+                    complete: function () { HideWaitMessageDialog(j_waitDialog); },
+                    success: function (responseText) {
+                        var result = $.evalJSON(responseText);
+                        if (result.success) {
+                            $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                            $('#dlg').dialog('close');
+                            $('#details').datagrid('reload');
+                        } else {
+                            $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                            $('#dlg').dialog('close');
+                            $('#details').datagrid('reload');
+                        }
+                    }
+                });
+            }
+        });
+    }
 </script>
 
 <div id="dlg" class="easyui-dialog" modal="true"
@@ -317,6 +354,7 @@
 </div>
 
 <div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="lowerMove()">下限生成</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
 </div>
@@ -368,7 +406,9 @@
   </tr>
   <tr>
     <td style=" text-align:right">单位编码</td>
-    <td align="left"><input type="text" name="UnitCode" class="easyui-validatebox" required="true"  readonly="true" id="unitCode" readonly="true"/></td>
+    <td align="left"><input type="text" name="UnitCode" class="easyui-validatebox" required="true"  readonly="true" id="unitCode" readonly="true"/>
+    <a href="#" onclick="unitSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true" >
+    </td>
     <td></td>
   </tr>
   <tr>
@@ -393,3 +433,4 @@
 </div>
 
 @Html.Partial("_CellPartial")
+@Html.Partial("_UnitPartial")

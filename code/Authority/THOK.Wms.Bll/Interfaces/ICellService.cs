@@ -10,6 +10,8 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string cellCode);
 
+        object  GetDetail(int page, int rows, string type, string id);
+
         bool Add(Cell cell, out string errorInfo);
 
         bool Delete(string cellCode);

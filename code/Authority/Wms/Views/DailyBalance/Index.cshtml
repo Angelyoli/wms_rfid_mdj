@@ -3,7 +3,7 @@
     var settle_Date;
     var warehouse_Code;
     function formatAction(value, row, index) {
-        var e = '<a href="#" onclick=DailyDetail("' + row.WarehouseCode + '","' + row.SettleDate + '")>日结明细</a> <a href="#"  onclick=BalanceAgain("' + row.WarehouseCode + '","' + row.SettleDate + '")>重新日结</a>';
+        var e = '<a href="#" onclick=DailyDetail("' + row.WarehouseCode + '","' + row.SettleDate + '")>日结明细</a> <a href="#" onclick=DailyCheck("' + row.WarehouseCode + '","' + row.SettleDate + '")>日结核对</a> <a href="#"  onclick=BalanceAgain("' + row.WarehouseCode + '","' + row.SettleDate + '")>重新日结</a>';
         return e
     }
     function DailyDetail(warehouseCode, settleDate) {
@@ -12,23 +12,19 @@
             $('#infos').datagrid({ url: '/DailyBalance/InfoDetails/?WarehouseCode=' + warehouseCode + '&&SettleDate=' + settleDate });           
             $('#InfoDetails').dialog('open').dialog('setTitle', '日结明细');
     }
+    function DailyCheck(warehouseCode, settleDate) {
+        settle_Date = settleDate;
+        warehouse_Code = warehouseCode;
+        $('#checkDetails').datagrid({ url: '/DailyBalance/InfoCheck/?WarehouseCode=' + warehouseCode + '&&SettleDate=' + settleDate });
+        $('#InfoCheck').dialog('open').dialog('setTitle', '日结核对');
+    }
     function BalanceAgain(warehouseCode, settleDate) {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: '/DailyBalance/DoDailyBalance/', type: "GET", dataType: "text",
-            data: { 'WarehouseCode': warehouseCode, 'SettleDate': settleDate },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+        $.ajaxSender.send('/DailyBalance/DoDailyBalance/',
+                { 'WarehouseCode': warehouseCode, 'SettleDate': settleDate },
+                function (data) {
                     $('#details').datagrid('reload');
                     $('#dlg-Daily').dialog('close');
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
+                });
     }
 </script>
 
@@ -47,9 +43,10 @@
                 <th field="LossAmount" width="80">报损量</th>
                 <th field="ProfitAmount" width="80">报益量</th>
                 <th field="Ending" width="80">结余量</th>
-                <th field="detail" width="80"  align="center" formatter="formatAction">操作</th>
+                <th field="detail" width="120"  align="center" formatter="formatAction">操作</th>
             </tr>
         </thead>
     </table>
 </div>
 @Html.Partial("_Detail")
+@Html.Partial("_Detail2")

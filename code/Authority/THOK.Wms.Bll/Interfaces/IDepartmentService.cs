@@ -10,10 +10,12 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string DepartmentCode, string DepartmentName, string DepartmentLeaderID, string CompanyID);
 
-        bool Add(Department department);
+        bool Add(Department department, out string strResult);
 
-        bool Delete(string departmentId);
+        bool Delete(string departmentId, out string strResult);
 
-        bool Save(Department department);
+        bool Save(Department department, out string strResult);
+
+        object GetDepartment(int page, int rows, string queryString, string value);
     }
 }

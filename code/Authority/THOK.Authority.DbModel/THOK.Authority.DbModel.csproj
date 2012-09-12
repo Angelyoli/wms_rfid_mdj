@@ -47,9 +47,11 @@
   <ItemGroup>
     <Compile Include="City.cs" />
     <Compile Include="Function.cs" />
+    <Compile Include="HelpContent.cs" />
     <Compile Include="LoginLog.cs" />
     <Compile Include="Mapping\CityMap.cs" />
     <Compile Include="Mapping\FunctionMap.cs" />
+    <Compile Include="Mapping\HelpContentMap.cs" />
     <Compile Include="Mapping\LoginLogMap.cs" />
     <Compile Include="Mapping\ModuleMap.cs" />
     <Compile Include="Mapping\RoleFunctionMap.cs" />

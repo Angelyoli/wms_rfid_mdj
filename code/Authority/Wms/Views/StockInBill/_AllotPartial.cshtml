@@ -35,19 +35,6 @@
 
     var modifyUrl;
 
-    //删除入库单明细
-    function allotDelete() {
-        var detailRow = $('#allotBillDetails').datagrid('getSelected');
-        if (detailRow) {
-            $('#dlg_allot_modify').dialog('open').dialog('setTitle', '删除');
-            $('#fm_allot').form('load', detailRow);
-            $('#allotQuantity').attr("readonly", true);
-            modifyUrl = '/StockInBillAllot/AllotDelete/';
-        } else {
-            $.messager.confirm('错误', '没有选择行！');
-        }
-    }
-
     //新增入库单明细分配
     function allotAdd() {
         var detailRow = $('#inAllotBillDetails').datagrid('getSelected');
@@ -58,7 +45,7 @@
                 $('#fm_allot').form('load', detailRow);
                 $('form input').removeAttr("disabled");
                 $('form textarea').removeAttr("disabled");
-                $('#allQuantity').attr("value", '')
+                $('#allQuantity').attr("value", '');
                 modifyUrl = '/StockInBillAllot/AllotAdd/';
             } else {
                 $.messager.confirm('错误', '所选卷烟已分配完成！');
@@ -68,7 +55,7 @@
         }
     }
 
-    //修改入库单明细    
+    //修改入库单分配明细    
     function allotEdit() {
         var detailRow = $('#allotBillDetails').datagrid('getSelected');
         if (detailRow) {
@@ -83,73 +70,61 @@
         }
     }
 
+    //删除入库单明细
+    function allotDelete() {
+        var detailRow = $('#allotBillDetails').datagrid('getSelected');
+        if (detailRow) {
+            $('#dlg_allot_modify').dialog('open').dialog('setTitle', '删除');
+            $('#fm_allot').form('load', detailRow);
+            $('#allotQuantity').attr("readonly", true);
+            modifyUrl = '/StockInBillAllot/AllotDelete/';
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    }
+
+    function cancelAllot() {
+        $.ajaxSender.send('/StockInBillAllot/AllotCancel/',
+                        { billNo: billNo },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                            $('#inBillDetails').datagrid('reload');
+                            $('#inAllotBillDetails').datagrid('reload');
+                            $('#allotBillDetails').datagrid('reload');
+                        }, $('#dlg-allot'));
+    }
+
     function AllotModifySave() {
         if ($('#fm_allot').form('validate')) {
-            $.ajaxSender.send(modifyUrl, $('#fm_allot').serializeArray(), function (data) {
+            $.ajaxSender.send(modifyUrl, 
+                $('#fm_allot').serializeArray(), 
+                function (data) {
                 $('#details').datagrid('reload');
                 $('#inAllotBillDetails').datagrid('reload');
                 $('#allotBillDetails').datagrid('reload');
                 $('#dlg_allot_modify').dialog('close');
-            });       
+            }, $('#dlg_allot_modify'));
         }
     }
 
     function confirmAllot() {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: "/StockInBillAllot/AllotConfirm/", type: "GET", dataType: "text",
-            data: { billNo: billNo },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#details').datagrid('reload');                    
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
+        $.ajaxSender.send('/StockInBillAllot/AllotConfirm/',
+                        { billNo: billNo },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                        }, $('#dlg-allot')); 
     };
 
     function cancelConfirm() {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: "/StockInBillAllot/AllotCancelConfirm/", type: "GET", dataType: "text",
-            data: { billNo: billNo },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#details').datagrid('reload');
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
+        $.ajaxSender.send('/StockInBillAllot/AllotCancelConfirm/',
+                        { billNo: billNo },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                        }, $('#dlg-allot'));
     }
-
-    // 取消分配
-    function cancelAllot() {
-        var j_waitDialog = ShowWaitMessageDialog();
-        $.ajax({
-            url: "/StockInBillAllot/AllotCancel/", type: "GET", dataType: "text",
-            data: { billNo: billNo },
-            complete: function () { HideWaitMessageDialog(j_waitDialog); },
-            success: function (responseText) {
-                var result = $.evalJSON(responseText);
-                if (result.success) {
-                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#details').datagrid('reload');
-                    $('#inBillDetails').datagrid('reload');
-                    $('#inAllotBillDetails').datagrid('reload');
-                    $('#allotBillDetails').datagrid('reload');
-                } else {
-                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                }
-            }
-        });
+    //手工选择移入的货位
+    function allotInSelect() {
+        moveInCellSelect("in");
     }
 </script>
 
@@ -234,7 +209,7 @@
                   <tr>
                     <td >产品代码</td>
                     <td align="left">
-                        <input type="text" name="ProductCode" readonly="true" />
+                        <input type="text" name="ProductCode" readonly="true" id="inAllotAddProductCode"/>
                     </td>
                   </tr>
                   <tr>
@@ -244,13 +219,14 @@
                   <tr>
                     <td >储位编码</td>
                     <td align="left">
-                      <input type="text" name="CellCode" class="easyui-validatebox" required="true" readonly="true" missingmessage="请选择储位！"/>
+                      <input type="text" name="CellCode" id="cellCode" class="easyui-validatebox" required="true" readonly="true" missingmessage="请选择储位！"/>
                       <a href="#" onclick="javascript:inCellSelect($('input[name=CellCode]'),$('input[name=CellName]'))" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
+                      @*<a href="#" onclick="allotInSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true">*@
                     </td>
                   </tr>
                   <tr>
                     <td >储位名称</td>
-                    <td align="left"><input type="text" name="CellName" class="easyui-validatebox" readonly="true" /></td>
+                    <td align="left"><input type="text" name="CellName" id=cellName class="easyui-validatebox" readonly="true" /></td>
                   </tr>
                   <tr>
                     <td >单位编码</td>
@@ -274,4 +250,4 @@
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="AllotModifySave()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg_allot_modify').dialog('close')">取消</a>
 </div>
-
+@Html.Partial("_MoveInCellPartial")
