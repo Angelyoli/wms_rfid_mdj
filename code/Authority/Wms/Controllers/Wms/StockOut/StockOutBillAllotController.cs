@@ -42,7 +42,7 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult AllotConfirm(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = OutBillAllotService.AllotConfirm(billNo, this.User.Identity.Name.ToString(),ref strResult);
+            bool bResult = OutBillAllotService.AllotConfirm(billNo, this.User.Identity.Name.ToString(), ref strResult);
             string msg = bResult ? "确认分配成功" : "确认分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -50,7 +50,7 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult AllotCancelConfirm(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = OutBillAllotService.AllotCancelConfirm(billNo,out strResult);
+            bool bResult = OutBillAllotService.AllotCancelConfirm(billNo, out strResult);
             string msg = bResult ? "取消分配确认成功" : "取消分配确认失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -76,29 +76,26 @@ namespace Authority.Controllers.Wms.StockOut
         {
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
-            System.Data.DataTable dt = OutBillDetailService.GetOutBillDetail(page, rows, billNo);
+
+            System.Data.DataTable dt1 = OutBillDetailService.GetOutBillDetail(page, rows, billNo);
             System.Data.DataTable dt2 = OutBillAllotService.AllotSearch(page, rows, billNo);
-            string strHeaderText = "出库单明细";
-            string strHeaderText2 = "出库单分配明细";
+            string headText1 = "出库单据分配";
+            string headText2 = "出库单据分配明细";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
-            string filename = strHeaderText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
             Response.Clear();
             Response.BufferOutput = false;
-            Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
             Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
             Response.ContentType = "application/ms-excel";
-            string[] str = {
-                               "20",        //[0]大标题字体大小
-                               "700",       //[1]大标题字体粗宽
-                               "10",        //[2]列标题字体大小
-                               "700",       //[3]列标题字体粗宽
-                               "300",       //[4]excel中有数据表格的大小
-                               "微软雅黑",  //[5]大标题字体
-                               "Arial",     //[6]小标题字体
-                           };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, dt2, strHeaderText, strHeaderText2, str, exportDate);
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, dt2, headText1, headText2, headFont, headSize,
+                colHeadFont, colHeadSize, colHeadWidth, exportDate);
             return new FileStreamResult(ms, "application/ms-excel");
-        } 
+        }
         #endregion
     }
 }
