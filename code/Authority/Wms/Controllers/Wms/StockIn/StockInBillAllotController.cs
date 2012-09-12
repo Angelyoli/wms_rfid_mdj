@@ -78,8 +78,8 @@ namespace Authority.Controllers.Wms.StockIn
             string billNo = Request.QueryString["billNo"];
             System.Data.DataTable dt1 = InBillDetailService.GetInBillDetail(page, rows, billNo);
             System.Data.DataTable dt2 = InBillAllotService.AllotSearch(page, rows, billNo);
-            string headText1 = "入库单明细";
-            string headText2 = "入库单分配明细";
+            string headText1 = "入库单据分配";
+            string headText2 = "入库单据分配明细";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
@@ -87,7 +87,7 @@ namespace Authority.Controllers.Wms.StockIn
 
             Response.Clear();
             Response.BufferOutput = false;
-            Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
             Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
             Response.ContentType = "application/ms-excel";
 

@@ -79,8 +79,8 @@ namespace Authority.Controllers.Wms.StockOut
 
             System.Data.DataTable dt1 = OutBillDetailService.GetOutBillDetail(page, rows, billNo);
             System.Data.DataTable dt2 = OutBillAllotService.AllotSearch(page, rows, billNo);
-            string headText1 = "出库单明细";
-            string headText2 = "出库单分配明细";
+            string headText1 = "出库单据分配";
+            string headText2 = "出库单据分配明细";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
@@ -88,7 +88,7 @@ namespace Authority.Controllers.Wms.StockOut
 
             Response.Clear();
             Response.BufferOutput = false;
-            Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
             Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
             Response.ContentType = "application/ms-excel";
 
