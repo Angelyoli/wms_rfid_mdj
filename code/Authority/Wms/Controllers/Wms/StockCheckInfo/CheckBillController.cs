@@ -163,24 +163,19 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
             System.Data.DataTable dt = CheckBillDetailService.GetCheckBillDetail(page, rows, billNo);
-            string strHeaderText = "盘点单明细";
+            string headText = "盘点单明细";
+            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
-            string filename = strHeaderText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
             Response.Clear();
             Response.BufferOutput = false;
-            Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
             Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
             Response.ContentType = "application/ms-excel";
-            string[] str = {
-                               "20",        //[0]大标题字体大小
-                               "700",       //[1]大标题字体粗宽
-                               "10",        //[2]列标题字体大小
-                               "700",       //[3]列标题字体粗宽
-                               "300",       //[4]excel中有数据表格的大小
-                               "微软雅黑",  //[5]大标题字体
-                               "Arial",     //[6]小标题字体
-                           };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, strHeaderText, str, exportDate);
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion

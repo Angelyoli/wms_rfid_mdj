@@ -58,8 +58,9 @@ namespace THOK.Authority.DbModel.Mapping
             this.HasRequired(t => t.FatherNode)
                 .WithMany(t => t.HelpContents)
                 .HasForeignKey(d => d.FatherNodeID);
+
             this.HasRequired(t => t.Module)
-                .WithMany(t => t.HelpModules)
+                .WithMany()
                 .HasForeignKey(d => d.ModuleID);
 
         }

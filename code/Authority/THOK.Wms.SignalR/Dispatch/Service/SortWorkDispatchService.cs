@@ -260,6 +260,13 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 SortWorkDispatchRepository.SaveChanges();
                                 scope.Complete();
                                 ps.Messages.Add(item.SortingLine.SortingLineName + " 调度成功！");
+
+                                if (cancellationToken.IsCancellationRequested) return;
+                                if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
+                                {
+                                    MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
+                                }
+                                MoveBillMasterRepository.SaveChanges();
                             }
                             else
                             {
@@ -279,13 +286,6 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     return;
                 }
             }
-
-            if (cancellationToken.IsCancellationRequested) return;
-            if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
-            {
-                MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
-            }
-            MoveBillMasterRepository.SaveChanges();
 
             ps.State = StateType.Info;
             ps.Messages.Add("调度完成!");
@@ -508,59 +508,81 @@ namespace THOK.Wms.SignalR.Dispatch.Service
          
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
+            MoveBillMaster lastMoveBillMaster = null;
             if (sortLowerlimit.Count() > 0)
             {
                 foreach (var item in sortLowerlimit)
                 {
-                    MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(item.SortingLine.Cell.WarehouseCode,
-                                                                                                    item.SortingLine.MoveBillTypeCode,
-                                                                                                    operatePersonID);
-                    moveBillMaster.Origin = "1";
-                    moveBillMaster.Description = "根据 " + item.SortingLine.SortingLineName + "下限生成移库单！";
-                    bool hasError = false;
-                    foreach (var product in item.product.ToArray())
+                    if (item.product.Count() > 0)
                     {
-
-                        //获取分拣备货区库存                    
-                        var storageQuantity = storageQuery.Where(s => s.ProductCode == product.Product.ProductCode)
-                                                          .Join(sortingLineQuery,
-                                                                s => s.Cell,
-                                                                l => l.Cell,
-                                                                (s, l) => new { l.SortingLineCode, s.Quantity }
-                                                          )
-                                                          .Where(r => r.SortingLineCode == product.SortingLine.SortingLineCode);
-
-                        decimal storQuantity = 0;
-                        if (storageQuantity.Count() > 0)
+                        if (lastMoveBillMaster != null && lastMoveBillMaster.WarehouseCode != item.SortingLine.Cell.WarehouseCode)
                         {
-                            storQuantity = storageQuantity.Sum(s => s.Quantity);
+                            if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
+                            {
+                                MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
+                            }
                         }
 
-                        //获取移库量（按整件计）
-                        decimal quantity = 0;
-                        if (isEnableStocking)
-                            quantity = Math.Ceiling(product.SumQuantity - storQuantity);
+                        MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(item.SortingLine.Cell.WarehouseCode,
+                                                                                                        item.SortingLine.MoveBillTypeCode,
+                                                                                                        operatePersonID);
+                        moveBillMaster.Origin = "1";
+                        moveBillMaster.Description = "根据 " + item.SortingLine.SortingLineName + "下限生成移库单！";
+                        bool hasError = false;
+                        lastMoveBillMaster = moveBillMaster;
+                        foreach (var product in item.product.ToArray())
+                        {
+
+                            //获取分拣备货区库存                    
+                            var storageQuantity = storageQuery.Where(s => s.ProductCode == product.Product.ProductCode)
+                                                              .Join(sortingLineQuery,
+                                                                    s => s.Cell,
+                                                                    l => l.Cell,
+                                                                    (s, l) => new { l.SortingLineCode, s.Quantity }
+                                                              )
+                                                              .Where(r => r.SortingLineCode == product.SortingLine.SortingLineCode);
+
+                            decimal storQuantity = 0;
+                            if (storageQuantity.Count() > 0)
+                            {
+                                storQuantity = storageQuantity.Sum(s => s.Quantity);
+                            }
+
+                            //获取移库量（按整件计）
+                            decimal quantity = 0;
+                            if (isEnableStocking)
+                                quantity = Math.Ceiling(product.SumQuantity - storQuantity);
+                            else
+                                quantity = Math.Ceiling(product.SumQuantity);
+
+                            CancellationToken cancellationToken = new CancellationToken();
+                            ProgressState ps = new ProgressState();
+                            AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps, cellCode);
+
+                            if (quantity > 0)
+                            {
+                                //生成移库不完整,可能是库存不足；
+                                hasError = true;
+                                errorInfo += item.SortingLine.SortingLineName + "  卷烟：" + product.Product.ProductCode + "(" + product.Product.ProductName + ")  库存不足！";
+                            }
+                        }
+                        if (!hasError && Result)
+                        {
+                            MoveBillMasterRepository.SaveChanges();
+                            errorInfo += "分拣线：" + item.SortingLine.SortingLineName + " 根据下限生成移库单成功！";
+
+                            if (lastMoveBillMaster != null)
+                            {
+                                if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
+                                {
+                                    MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
+                                }
+                            }
+                            MoveBillMasterRepository.SaveChanges();
+                        }
                         else
-                            quantity = Math.Ceiling(product.SumQuantity);
-
-                        CancellationToken cancellationToken = new CancellationToken();
-                        ProgressState ps = new ProgressState();
-                        AlltoMoveBill(moveBillMaster, product.Product, item.SortingLine.Cell, ref quantity, cancellationToken, ps, cellCode);
-
-                        if (quantity > 0)
-                        {
-                            //生成移库不完整,可能是库存不足；
-                            hasError = true;
-                            errorInfo += item.SortingLine.SortingLineName+"  卷烟：" + product.Product.ProductCode + "(" + product.Product.ProductName + ")  库存不足！";
-                        }
+                            Result = false;
                     }
-                    if (!hasError && Result)
-                    {
-                        MoveBillMasterRepository.SaveChanges();
-                        errorInfo += "分拣线：" + item.SortingLine.SortingLineName + " 根据下限生成移库单成功！";
-                    }
-                    else
-                        Result = false;
                 }
             }
             return Result;
