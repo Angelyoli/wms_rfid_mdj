@@ -682,7 +682,7 @@ namespace THOK.Wms.Repository.Migrations
                        ModuleID = new Guid("008DD08E-CC34-4f41-98A6-3FAC28F89CED"),
                        ModuleName = "°ïÖúÄ¿Â¼",
                        ShowOrder = 1,
-                       ModuleURL = "/HelpContents/",
+                       ModuleURL = "/HelpContent/",
                        IndicateImage = "icon-Son_HelpContents",
                        DeskTopImage = "image-Son_HelpContents",
                        System = system,
