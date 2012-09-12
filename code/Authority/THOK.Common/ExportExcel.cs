@@ -375,7 +375,7 @@ namespace THOK.Common
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         headerRow.GetCell(0).CellStyle = headStyle;
-                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt1.Columns.Count - 1));
+                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt2.Columns.Count - 1));
                     }
                     #endregion
                     #region 列头及样式
@@ -388,12 +388,12 @@ namespace THOK.Common
                         font.FontHeightInPoints = colHeadSize;
                         font.Boldweight = 700;
                         headStyle.SetFont(font);
-                        foreach (System.Data.DataColumn column2 in dt2.Columns)
+                        foreach (System.Data.DataColumn column in dt2.Columns)
                         {
-                            headerRow.CreateCell(column2.Ordinal).SetCellValue(column2.ColumnName);
-                            headerRow.GetCell(column2.Ordinal).CellStyle = headStyle;
+                            headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
+                            headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                             //设置列宽
-                            sheet.SetColumnWidth(column2.Ordinal, (arrColWidth2[column2.Ordinal] + 1) * colHeadWidth);  //[4]
+                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth2[column.Ordinal] + 1) * colHeadWidth);  //[4]
                         }
                     }
                     #endregion
