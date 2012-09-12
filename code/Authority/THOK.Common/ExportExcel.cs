@@ -8,8 +8,21 @@ namespace THOK.Common
     public class ExportExcel
     {
         #region 导出单表Excel
-        /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt, string headText, string[] str, string exportDate)
+        /// <summary>
+        /// DataTable导出到Excel的MemoryStream
+        /// </summary>
+        /// <param name="dt">DataTable</param>
+        /// <param name="headText">标题</param>
+        /// <param name="headFont">字体</param>
+        /// <param name="headSize">大小</param>
+        /// <param name="colHeadFont">列头</param>
+        /// <param name="colHeadSize">大小</param>
+        /// <param name="colHeadWidth">宽度</param>
+        /// <param name="exportDate">导出时间</param>
+        /// <returns></returns>
+        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt,
+            string headText, string headFont, Int16 headSize,
+            string colHeadFont, Int16 colHeadSize, Int16 colHeadWidth, string exportDate)
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
             NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText) as NPOI.HSSF.UserModel.HSSFSheet;
@@ -48,14 +61,14 @@ namespace THOK.Common
                     #region 表头及样式
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(0) as NPOI.HSSF.UserModel.HSSFRow;
-                        headerRow.HeightInPoints = 25;
+                        //headerRow.HeightInPoints = Convert.ToInt16(Convert.ToInt16(str[0]) * 1.4);
                         headerRow.CreateCell(0).SetCellValue(headText);
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
-                        font.FontName = str[5];                             //[5]
-                        font.FontHeightInPoints = Convert.ToInt16(str[0]);  //[0]
-                        font.Boldweight = Convert.ToInt16(str[1]);          //[1]
+                        font.FontName = headFont;
+                        font.FontHeightInPoints = headSize;
+                        font.Boldweight = 700;
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
                         sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt.Columns.Count - 1));
@@ -65,6 +78,9 @@ namespace THOK.Common
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(1) as NPOI.HSSF.UserModel.HSSFRow;
                         headerRow.CreateCell(0).SetCellValue(exportDate);
+                        NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
+                        headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
+                        headerRow.GetCell(0).CellStyle = headStyle;
                         sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt.Columns.Count - 1));
                     }
                     #endregion
@@ -74,16 +90,16 @@ namespace THOK.Common
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
-                        font.FontName = str[6];                             //[6]
-                        font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
-                        font.Boldweight = Convert.ToInt16(str[3]);          //[3]
+                        font.FontName = colHeadFont;
+                        font.FontHeightInPoints = colHeadSize;
+                        font.Boldweight = 700;
                         headStyle.SetFont(font);
                         foreach (System.Data.DataColumn column in dt.Columns)
                         {
                             headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                             headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                             //设置列宽
-                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
+                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * colHeadWidth);
                         }
                     }
                     #endregion
@@ -143,39 +159,56 @@ namespace THOK.Common
             ms.Flush();
             ms.Position = 0;
             return ms;
-        }       
+        }
         #endregion
 
         #region 导出双表Excel
-        /// <summary>DataTable导出到Excel的MemoryStream</summary>
-        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt, System.Data.DataTable dt2, string headText, string headText2, string[] str, string exportDate)
+        /// <summary>
+        /// DataTable导出到Excel的MemoryStream
+        /// </summary>
+        /// <param name="dt1">DataTable</param>
+        /// <param name="dt2">DataTable</param>
+        /// <param name="headText1">标题</param>
+        /// <param name="headText2">标题</param>
+        /// <param name="headFont">字体</param>
+        /// <param name="headSize">大小</param>
+        /// <param name="colHeadFont">字体</param>
+        /// <param name="colHeadSize">大小</param>
+        /// <param name="colHeadWidth">宽度</param>
+        /// <param name="exportDate">导出时间</param>
+        /// <returns></returns>
+        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt1, System.Data.DataTable dt2, 
+            string headText1, string headText2,
+            string headFont, Int16 headSize,
+            string colHeadFont, Int16 colHeadSize, Int16 colHeadWidth,
+            string exportDate)
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText) as NPOI.HSSF.UserModel.HSSFSheet;
+            NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText1) as NPOI.HSSF.UserModel.HSSFSheet;
 
-            NPOI.HSSF.UserModel.HSSFCellStyle dateStyle = workbook.CreateCellStyle() as  NPOI.HSSF.UserModel.HSSFCellStyle;
+            NPOI.HSSF.UserModel.HSSFCellStyle dateStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;
             dateStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
 
-            #region 取得列宽 dt
+            #region 取得列宽 dt1
             //取得列宽
-            int[] arrColWidth = new int[dt.Columns.Count];
-            foreach (System.Data.DataColumn item in dt.Columns)
+            int[] arrColWidth = new int[dt1.Columns.Count];
+            foreach (System.Data.DataColumn item in dt1.Columns)
             {
                 //936是指GB2312编码
                 arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;
             }
-            for (int i = 0; i < dt.Rows.Count; i++)
+            for (int i = 0; i < dt1.Rows.Count; i++)
             {
-                for (int j = 0; j < dt.Columns.Count; j++)
+                for (int j = 0; j < dt1.Columns.Count; j++)
                 {
-                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt.Rows[i][j].ToString()).Length;
+                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt1.Rows[i][j].ToString()).Length;
                     if (intTemp > arrColWidth[j])
                     {
                         arrColWidth[j] = intTemp;
                     }
                 }
-            } 
+            }
             #endregion
 
             #region 取得列宽 dt2
@@ -197,9 +230,9 @@ namespace THOK.Common
             }
             #endregion
 
-            #region 建表 dt
+            #region 建表 dt1
             int rowIndex = 0;
-            foreach (System.Data.DataRow row in dt.Rows)
+            foreach (System.Data.DataRow row in dt1.Rows)
             {
                 #region 新建表，填充表头，填充列头，样式
                 if (rowIndex == 0)
@@ -212,16 +245,16 @@ namespace THOK.Common
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(0) as NPOI.HSSF.UserModel.HSSFRow;
                         headerRow.HeightInPoints = 25;
-                        headerRow.CreateCell(0).SetCellValue(headText);
+                        headerRow.CreateCell(0).SetCellValue(headText1);
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
-                        font.FontName = str[5];                             //[5]
-                        font.FontHeightInPoints = Convert.ToInt16(str[0]);  //[0]
-                        font.Boldweight = Convert.ToInt16(str[1]);          //[1]
+                        font.FontName = headFont;
+                        font.FontHeightInPoints = headSize;
+                        font.Boldweight = 700;
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
-                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt.Columns.Count - 1));
+                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt1.Columns.Count - 1));
                     }
                     #endregion
                     #region 导出时间
@@ -230,7 +263,8 @@ namespace THOK.Common
                         headerRow.CreateCell(0).SetCellValue(exportDate);
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
-                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt.Columns.Count - 1));
+                        headerRow.GetCell(0).CellStyle = headStyle;
+                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt1.Columns.Count - 1));
                     }
                     #endregion
                     #region 列头及样式
@@ -239,16 +273,16 @@ namespace THOK.Common
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
-                        font.FontName = str[6];                             //[6]
-                        font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
-                        font.Boldweight = Convert.ToInt16(str[3]);          //[3]
+                        font.FontName = colHeadFont;
+                        font.FontHeightInPoints = colHeadSize;
+                        font.Boldweight = 700;
                         headStyle.SetFont(font);
-                        foreach (System.Data.DataColumn column in dt.Columns)
+                        foreach (System.Data.DataColumn column in dt1.Columns)
                         {
                             headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                             headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                             //设置列宽
-                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
+                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * colHeadWidth);  //[4]
                         }
                     }
                     #endregion
@@ -257,7 +291,7 @@ namespace THOK.Common
                 #endregion
                 #region 填充内容
                 NPOI.HSSF.UserModel.HSSFRow dataRow = sheet.CreateRow(rowIndex) as NPOI.HSSF.UserModel.HSSFRow;
-                foreach (System.Data.DataColumn column in dt.Columns)
+                foreach (System.Data.DataColumn column in dt1.Columns)
                 {
                     NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
                     string drValue = row[column].ToString();
@@ -302,7 +336,7 @@ namespace THOK.Common
                 }
                 #endregion
                 rowIndex++;
-            } 
+            }
             #endregion
 
             #region 建表 dt2
@@ -325,9 +359,9 @@ namespace THOK.Common
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
-                        font.FontName = str[5];                             //[5]
-                        font.FontHeightInPoints = Convert.ToInt16(str[0]);  //[0]
-                        font.Boldweight = Convert.ToInt16(str[1]);          //[1]
+                        font.FontName = headFont;
+                        font.FontHeightInPoints = headSize;
+                        font.Boldweight = 700;
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
                         sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt2.Columns.Count - 1));
@@ -338,7 +372,10 @@ namespace THOK.Common
                     {
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(1) as NPOI.HSSF.UserModel.HSSFRow;
                         headerRow.CreateCell(0).SetCellValue(exportDate);
-                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt2.Columns.Count - 1));
+                        NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
+                        headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
+                        headerRow.GetCell(0).CellStyle = headStyle;
+                        sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt1.Columns.Count - 1));
                     }
                     #endregion
                     #region 列头及样式
@@ -347,16 +384,16 @@ namespace THOK.Common
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
-                        font.FontName = str[6];                             //[6]
-                        font.FontHeightInPoints = Convert.ToInt16(str[2]);  //[2]
-                        font.Boldweight = Convert.ToInt16(str[3]);          //[3]
+                        font.FontName = colHeadFont;
+                        font.FontHeightInPoints = colHeadSize;
+                        font.Boldweight = 700;
                         headStyle.SetFont(font);
                         foreach (System.Data.DataColumn column2 in dt2.Columns)
                         {
                             headerRow.CreateCell(column2.Ordinal).SetCellValue(column2.ColumnName);
                             headerRow.GetCell(column2.Ordinal).CellStyle = headStyle;
                             //设置列宽
-                            sheet.SetColumnWidth(column2.Ordinal, (arrColWidth2[column2.Ordinal] + 1) * Convert.ToInt32(str[4]));  //[4]
+                            sheet.SetColumnWidth(column2.Ordinal, (arrColWidth2[column2.Ordinal] + 1) * colHeadWidth);  //[4]
                         }
                     }
                     #endregion
@@ -418,7 +455,7 @@ namespace THOK.Common
             ms.Flush();
             ms.Position = 0;
             return ms;
-        }        
+        }
         #endregion
     }
 }
