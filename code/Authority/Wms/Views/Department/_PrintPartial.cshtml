@@ -1,3 +1,9 @@
 ﻿<script type="text/javascript">
-    window.location.href = "/Department/CreateExcelToClient/?departmentCode" + $('#DepartmentCode').val() + "&departmentName=" + $('#DepartmentName').val() + "&departmentLeaderId=" + $('#employeename-id').val() + "&companyId=" + $('#companyname-id').val();
+    function printClick() {
+        window.location.href = "/Department/CreateExcelToClient/"
+                                + "?departmentCode=" + $('#DepartmentCode').val()
+                                + "&departmentName=" + $('#DepartmentName').val()
+                                + "&departmentLeaderId=" + $('#employeename-id').val()
+                                + "&companyId=" + $('#companyname-id').val();
+    }
 </script>

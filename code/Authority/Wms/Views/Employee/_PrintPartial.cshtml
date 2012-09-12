@@ -1,3 +1,11 @@
 ﻿<script type="text/javascript">
-    window.location.href = "/Employee/CreateExcelToClient/?employeeCode=" + $('#EmployeeCode').val() + "&employeeName=" + $('#EmployeeName').val() + "&departmentId=" + $('#department-id').val() + "&jobId=" + $('#job-id').val() + "&status=" + $('#Status_Search').combo('getValue') + "&isActive=" + $('#isActive').combo('getValue');
+    function printClick() {
+        window.location.href = "/Employee/CreateExcelToClient/"
+                                 + "?employeeCode=" + $('#EmployeeCode').val()
+                                 + "&employeeName=" + $('#EmployeeName').val()
+                                 + "&departmentId=" + $('#department-id').val()
+                                 + "&jobId=" + $('#job-id').val()
+                                 + "&status=" + $('#Status_Search').combo('getValue')
+                                 + "&isActive=" + $('#isActive').combo('getValue');
+    }
 </script>

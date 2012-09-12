@@ -1,5 +1,9 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        window.location.href = "/Company/CreateExcelToClient/?companyCode=" + $('#CompanyCode').val() + "&companyName=" + $('#CompanyName').val() + "&companyType=" + $('#companyType').combo('getValue') + "&isActive=" + $('#isActive').combo('getValue');
+        window.location.href = "/Company/CreateExcelToClient/"
+                                 + "?companyCode=" + $('#CompanyCode').val()
+                                 + "&companyName=" + $('#CompanyName').val()
+                                 + "&companyType=" + $('#companyType').combo('getValue')
+                                 + "&isActive=" + $('#isActive').combo('getValue');
     }
 </script>

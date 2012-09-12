@@ -1,3 +1,8 @@
 ﻿<script type="text/javascript">
-    window.location.href = "/Job/CreateExcelToClient/?jobCode=" + $('#JobCode').val() + "&jobName=" + $('#JobName').val() + "&isActive=" + $('#isActive').combo('getValue');
+    function printClick() {
+        window.location.href = "/Job/CreateExcelToClient/"
+                                + "?jobCode=" + $('#JobCode').val()
+                                + "&jobName=" + $('#JobName').val() 
+                                + "&isActive=" + $('#isActive').combo('getValue');
+    }
 </script>

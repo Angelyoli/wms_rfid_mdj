@@ -102,7 +102,7 @@ namespace Authority.Controllers.Organization
             int page = 0, rows = 0;
             string departmentCode = Request.QueryString["departmentCode"];
             string departmentName = Request.QueryString["departmentName"];
-            string departmentLeaderId = Request.QueryString["departmentType"];
+            string departmentLeaderId = Request.QueryString["departmentLeaderId"];
             string companyId = Request.QueryString["companyId"];
 
             System.Data.DataTable dt = DepartmentService.GetDepartment(page, rows, departmentCode, departmentName, departmentLeaderId, companyId);
