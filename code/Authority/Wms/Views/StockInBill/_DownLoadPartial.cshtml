@@ -58,25 +58,29 @@
         end = $('#inendDate').datebox('getValue');
         var downware = $('#downWare').combo('getValue');
         var downbilltype = $('#downBiiType').combo('getValue');
-        if ((begin != "" || begin != null) && (end != "" || end != null)) {
-            var j_waitDialog = ShowWaitMessageDialog();
-            $.ajax({
-                url: "/StockInBill/DownInBillMaster/", type: "GET", dataType: "text",
-                data: { 'beginDate': begin, "endDate": end, wareCode: downware, billType: downbilltype },
-                complete: function () { HideWaitMessageDialog(j_waitDialog); },
-                success: function (responseText) {
-                    var result = $.evalJSON(responseText);
-                    if (result.success) {
-                        $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                        $("#details").datagrid('reload');
-                        $('#dlg_in_date').dialog('close');
-                    } else {
-                        $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
-                        $("#details").datagrid('reload');
-                        $('#dlg_in_date').dialog('close');
+        if (begin != "" && end != "") {
+            if (downware != "" && downbilltype != "") {
+                var j_waitDialog = ShowWaitMessageDialog();
+                $.ajax({
+                    url: "/StockInBill/DownInBillMaster/", type: "GET", dataType: "text",
+                    data: { 'beginDate': begin, "endDate": end, wareCode: downware, billType: downbilltype },
+                    complete: function () { HideWaitMessageDialog(j_waitDialog); },
+                    success: function (responseText) {
+                        var result = $.evalJSON(responseText);
+                        if (result.success) {
+                            $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                            $("#details").datagrid('reload');
+                            $('#dlg_in_date').dialog('close');
+                        } else {
+                            $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                            $("#details").datagrid('reload');
+                            $('#dlg_in_date').dialog('close');
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                $.messager.alert('错误', '请选择仓库名称和单据类型！');
+            }
         } else {
             $.messager.alert('错误', '没选时间！请选择时间！');
         }

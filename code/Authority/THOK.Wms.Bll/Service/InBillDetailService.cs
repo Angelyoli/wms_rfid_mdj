@@ -9,7 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class InBillDetailService:ServiceBase<InBillDetail>,IInBillDetailService
+    public class InBillDetailService : ServiceBase<InBillDetail>, IInBillDetailService
     {
         [Dependency]
         public IInBillDetailRepository InBillDetailRepository { get; set; }
@@ -30,7 +30,7 @@ namespace THOK.Wms.Bll.Service
             if (BillNo != "" && BillNo != null)
             {
                 IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-                var inBillDetail = inBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i =>i);
+                var inBillDetail = inBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => i);
                 int total = inBillDetail.Count();
                 inBillDetail = inBillDetail.Skip((page - 1) * rows).Take(rows);
 
@@ -89,7 +89,7 @@ namespace THOK.Wms.Bll.Service
             }
             catch (Exception ex)
             {
-                strResult = "新增失败，原因："+ex.Message;
+                strResult = "新增失败，原因：" + ex.Message;
             }
             return result;
         }
@@ -109,7 +109,7 @@ namespace THOK.Wms.Bll.Service
             }
             catch (Exception ex)
             {
-                strResult="删除失败，原因："+ex.Message;
+                strResult = "删除失败，原因：" + ex.Message;
             }
             return result;
         }
@@ -117,7 +117,7 @@ namespace THOK.Wms.Bll.Service
         public bool Save(InBillDetail inBillDetail, out string strResult)
         {
             strResult = string.Empty;
-            bool result=false;
+            bool result = false;
             try
             {
                 IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
@@ -140,7 +140,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 else if (ibd != null && ibd.ID != inBillDetail.ID)
                 {
-                    bool delDetail = this.Delete(inBillDetail.ID.ToString(),out strResult);
+                    bool delDetail = this.Delete(inBillDetail.ID.ToString(), out strResult);
                     ibd.BillNo = inBillDetail.BillNo;
                     ibd.ProductCode = inBillDetail.ProductCode;
                     ibd.UnitCode = inBillDetail.UnitCode;
@@ -153,7 +153,7 @@ namespace THOK.Wms.Bll.Service
             }
             catch (Exception ex)
             {
-                strResult="修改失败，原因："+ex.Message;
+                strResult = "修改失败，原因：" + ex.Message;
             }
             return result;
         }
@@ -176,7 +176,7 @@ namespace THOK.Wms.Bll.Service
                 ProductName = Value;
             }
             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
-            var product = ProductQuery.Where(c => c.ProductName.Contains(ProductName) && c.ProductCode.Contains(ProductCode)&& c.IsActive=="1")
+            var product = ProductQuery.Where(c => c.ProductName.Contains(ProductName) && c.ProductCode.Contains(ProductCode) && c.IsActive == "1")
                 .OrderBy(c => c.ProductCode)
                 .Select(c => c);
             int total = product.Count();
@@ -222,6 +222,54 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
+        #endregion
+
+        #region IInBillDetailService 成员
+        public System.Data.DataTable GetInBillDetail(int page, int rows, string BillNo)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            if (BillNo != "" && BillNo != null)
+            {
+                IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
+                var inBillDetail = inBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => i);
+                var temp = inBillDetail.ToArray().AsEnumerable().Select(i => new
+                {
+                    i.BillNo,
+                    i.ProductCode,
+                    i.Product.ProductName,
+                    i.UnitCode,
+                    i.Unit.UnitName,
+                    BillQuantity = i.BillQuantity / i.Unit.Count,
+                    RealQuantity = i.RealQuantity / i.Unit.Count,
+                    AllotQuantity = i.AllotQuantity / i.Unit.Count,
+                    i.Price,
+                    i.Description
+                });
+                dt.Columns.Add("商品编码", typeof(string));
+                dt.Columns.Add("商品名称", typeof(string));
+                dt.Columns.Add("单位编码", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("订单数量", typeof(int));
+                dt.Columns.Add("已分配数量", typeof(int));
+                dt.Columns.Add("实际入库量", typeof(int));
+                dt.Columns.Add("备注", typeof(string));
+                foreach (var item in temp)
+                {
+                    dt.Rows.Add
+                        (
+                            item.ProductCode,
+                            item.ProductName,
+                            item.UnitCode,
+                            item.UnitName,
+                            item.BillQuantity,
+                            item.AllotQuantity,
+                            item.RealQuantity,
+                            item.Description
+                        );
+                }
+            }
+            return dt;
+        } 
         #endregion
     }
 }

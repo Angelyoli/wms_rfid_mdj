@@ -38,5 +38,31 @@ namespace Authority.Controllers.Wms.Inventory
             var storage = CurrentStockService.GetCellDetails(page, rows, productCode, ware, area, unitType);
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
+
+        // /CurrentStock/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string productCode = Request.QueryString["productCode"];
+            string ware = Request.QueryString["ware"];
+            string area = Request.QueryString["area"];
+            string unitType = Request.QueryString["unitType"];
+
+            System.Data.DataTable dt = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType);
+            string headText = "当前库存";
+            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
     }
 }

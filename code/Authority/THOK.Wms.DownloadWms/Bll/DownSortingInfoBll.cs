@@ -12,7 +12,7 @@ namespace THOK.Wms.DownloadWms.Bll
     public class DownSortingInfoBll
     {
         //选择时间下载分拣数据
-        public bool GetSortingOrderDate(string startDate, string endDate,string sortingLine, out string errorInfo)
+        public bool GetSortingOrderDate(string startDate, string endDate,string sortingLine,string batch, out string errorInfo)
         {
             bool tag = false;
             errorInfo = string.Empty;
@@ -24,30 +24,29 @@ namespace THOK.Wms.DownloadWms.Bll
                     string sort = string.Empty;
                     if (sortingLine != string.Empty || sortingLine != null)
                     {
-                        sort = " AND SORTINGLINECODE='" + sortingLine + "'";
+                        sort = " AND SORTINGLINECODE='" + sortingLine + "' AND BATCHID='" + batch + "'";
                     }
                     //查询仓库7天内的订单号
-                    DataTable orderdt = this.GetOrderId();
-                    string orderlist = UtinString.StringMake(orderdt, "order_id");
-                    orderlist = UtinString.StringMake(orderlist);
-                    string orderlistDate = "OrderDate >='" + startDate + "' AND OrderDate <='" + endDate + "' AND OrderID NOT IN(" + orderlist + ")" + sort;
-                    DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询订单信息
+                    DataTable orderdt = this.GetOrderId(startDate, endDate);
+                    string orderlist = UtinString.MakeString(orderdt, "order_id");
+                    string orderlistDate = "ORDERDATE >='" + startDate + "' AND ORDERDATE <='" + endDate + "'" + sort;
+                    DataTable masterdt = this.GetSortingOrder(orderlistDate);
+                    DataRow[] masterdr = masterdt.Select("ORDERID NOT IN(" + orderlist + ")");
 
-                    string ordermasterlist = UtinString.StringMake(masterdt, "OrderID");//取得根据时间查询的订单号
-                    string ordermasterid = UtinString.StringMake(ordermasterlist);
-                    ordermasterid = "OrderID IN (" + ordermasterid + ")";
-                    DataTable detaildt = this.GetSortingOrderDetail(ordermasterid);//根据订单号查询明细
-                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                    string ordermasterlist = UtinString.MakeString(masterdr, "OrderID");                
+                    ordermasterlist = "OrderID IN (" + ordermasterlist + ")";
+                    DataTable detaildt = this.GetSortingOrderDetail(ordermasterlist);
+                    if (masterdr.Count() > 0 && detaildt.Rows.Count > 0)
                     {
-                        DataSet masterds = this.SaveSortingOrder(masterdt);
+                        DataSet masterds = this.SaveSortingOrder(masterdr);
                         DataSet detailds = this.SaveSortingOrderDetail(detaildt);
                         this.Insert(masterds, detailds);
                         if (sort != string.Empty)
                         {
                             try
                             {
-                                DataRow[] masterDisp = masterdt.Select("GROUP BY DELIVERLINECODE,ORDERDATE");
-                                DataSet dispDs = this.SaveDispatch(masterDisp, sortingLine);
+                                DataTable diapLine = this.GetDispatchLine(ordermasterlist);
+                                DataSet dispDs = this.SaveDispatch(diapLine, sortingLine);
                                 this.Insert(dispDs);
                                 tag = true;
                             }
@@ -73,12 +72,12 @@ namespace THOK.Wms.DownloadWms.Bll
         }
 
         //查询数仓3天内分拣订单
-        public DataTable GetOrderId()
+        public DataTable GetOrderId(string startDate, string endDate)
         {
             using (PersistentManager dbpm = new PersistentManager())
             {
                 DownSortingInfoDao dao = new DownSortingInfoDao();
-                return dao.GetOrderId();
+                return dao.GetOrderId(startDate, endDate);
             }
         }
 
@@ -88,8 +87,17 @@ namespace THOK.Wms.DownloadWms.Bll
             using (PersistentManager dbpm = new PersistentManager())
             {
                 DownSortingInfoDao dao = new DownSortingInfoDao();
-                //dao.SetPersistentManager(dbpm);
                 return dao.GetSortingOrder(parameter);
+            }
+        }
+
+        //下载调度信息
+        public DataTable GetDispatchLine(string parameter)
+        {
+            using (PersistentManager dbpm = new PersistentManager())
+            {
+                DownSortingInfoDao dao = new DownSortingInfoDao();
+                return dao.GetDispatchLine(parameter);
             }
         }
 
@@ -105,28 +113,28 @@ namespace THOK.Wms.DownloadWms.Bll
         }
 
         //保存主表信息
-        public DataSet SaveSortingOrder(DataTable masterdt)
+        public DataSet SaveSortingOrder(DataRow[] masterdt)
         {
             DataSet ds = this.GenerateEmptyTables();
-            foreach (DataRow row in masterdt.Rows)
+            foreach (DataRow row in masterdt.ToArray())
             {
                 DataRow masterrow = ds.Tables["WMS_SORT_ORDER"].NewRow();
                 masterrow["order_id"] = row["OrderID"].ToString().Trim();//订单编号
-                masterrow["company_code"] = row["COMPANY_CODE"].ToString().Trim();//所属单位编号
+                masterrow["company_code"] = row["COMPANY_CODE"].ToString().Trim(); //所属单位编号
                 masterrow["sale_region_code"] = row["SALE_REGION_CODE"].ToString().Trim();//营销部编号
-                masterrow["order_date"] = row["OrderDate"].ToString().Trim();//订单日期
+                masterrow["order_date"] = row["OrderDate"].ToString();//订单日期
                 masterrow["order_type"] = row["SALE_SCOPE"].ToString().Trim();//订单类型
                 masterrow["customer_code"] = row["CustomerCode"].ToString().Trim();//客户编号
                 masterrow["customer_name"] = row["CustomerName"].ToString().Trim();//客户名称
                 masterrow["quantity_sum"] = Convert.ToDecimal(row["QuantitySum"].ToString());//总数量
-                masterrow["amount_sum"] = 0;//总金额
-                masterrow["detail_num"] = 0;//明细数
-                masterrow["deliver_order"] = row["DELIVER_ORDER"].ToString().Trim();
-                masterrow["DeliverDate"] = DateTime.Now;
+                masterrow["amount_sum"] = 0;
+                masterrow["detail_num"] = 0;
+                masterrow["deliver_order"] = row["DeliverOrder"];
+                masterrow["DeliverDate"] = DateTime.Now.ToString("yyyyMMdd");
                 masterrow["description"] = "";
                 masterrow["is_active"] = "1";
                 masterrow["update_time"] = DateTime.Now;
-                masterrow["deliver_line_code"] = row["DeliverLineCode"].ToString().Trim();// +"_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
+                masterrow["deliver_line_code"] = row["DELIVERLINECODE"].ToString()+ "_" + row["DIST_BILL_ID"].ToString();
                 ds.Tables["WMS_SORT_ORDER"].Rows.Add(masterrow);
             }
             return ds;
@@ -135,19 +143,14 @@ namespace THOK.Wms.DownloadWms.Bll
         //保存细表信息
         public DataSet SaveSortingOrderDetail(DataTable detaildt)
         {
-            //DownSortingInfoDao dao = new DownSortingInfoDao();
-            //DataTable unitList = dao.GetUnitList();
             DataSet ds = this.GenerateEmptyTables();
             try
             {
-                //int i = 0;
                 foreach (DataRow row in detaildt.Rows)
                 {
-                    //DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["ProductCode"].ToString().Trim()));
                     DataRow detailrow = ds.Tables["WMS_SORT_ORDER_DETAIL"].NewRow();
-                    //i++;
                     detailrow["order_detail_id"] = row["OrderDetailID"].ToString().Trim();
-                    detailrow["order_id"] = row["OrderID"].ToString().Trim();
+                    detailrow["order_id"] = row["OrderID"].ToString().Trim().Trim();
                     detailrow["product_code"] = row["ProductCode"].ToString().Trim();
                     detailrow["product_name"] = row["ProductName"].ToString().Trim();
                     detailrow["unit_code"] = row["UNIT_CODE02"].ToString();
@@ -169,20 +172,20 @@ namespace THOK.Wms.DownloadWms.Bll
         }
 
         //保存线路调度表信息
-        public DataSet SaveDispatch(DataRow[] masterRow, string sortingLine)
+        public DataSet SaveDispatch(DataTable diapTable, string sortingLine)
         {
             DataSet ds = this.GenerateEmptyTables();
-            foreach (DataRow row in masterRow)
+            foreach (DataRow row in diapTable.Rows)
             {
-                DataRow masterrow = ds.Tables["WMS_SORT_ORDER_DISPATCH"].NewRow();
-                masterrow["order_date"] = row["OrderDate"].ToString().Trim();//订单时间
-                masterrow["sorting_line_code"] = sortingLine;//调度分拣线
-                masterrow["deliver_line_code"] = row["DeliverLineCode"].ToString().Trim();//调度线路编码
-                masterrow["is_active"] = "1";//是否可用
-                masterrow["update_time"] = DateTime.Now;//调度时间
-                masterrow["sort_work_dispatch_id"] = null;//作业调度ID
-                masterrow["work_status"] = "1";//调度状态
-                ds.Tables["WMS_SORT_ORDER_DISPATCH"].Rows.Add(masterrow);
+                DataRow disprow = ds.Tables["WMS_SORT_ORDER_DISPATCH"].NewRow();
+                disprow["order_date"] = row["OrderDate"].ToString();//订单时间
+                disprow["sorting_line_code"] = sortingLine;//调度分拣线
+                disprow["deliver_line_code"] = row["DELIVERLINECODE"].ToString() + "_" + row["DIST_BILL_ID"].ToString();
+                disprow["is_active"] = "1";//是否可用
+                disprow["update_time"] = DateTime.Now;//调度时间
+                disprow["sort_work_dispatch_id"] = null;//作业调度ID
+                disprow["work_status"] = "1";//调度状态
+                ds.Tables["WMS_SORT_ORDER_DISPATCH"].Rows.Add(disprow);
             }
             return ds;
         }
@@ -253,14 +256,14 @@ namespace THOK.Wms.DownloadWms.Bll
             detailtable.Columns.Add("unit_quantity");
 
             DataTable dispatchtable = ds.Tables.Add("WMS_SORT_ORDER_DISPATCH");
-            detailtable.Columns.Add("id");
-            detailtable.Columns.Add("order_date");
-            detailtable.Columns.Add("sorting_line_code");
-            detailtable.Columns.Add("deliver_line_code");
-            detailtable.Columns.Add("is_active");
-            detailtable.Columns.Add("update_time");
-            detailtable.Columns.Add("sort_work_dispatch_id");
-            detailtable.Columns.Add("work_status");
+            dispatchtable.Columns.Add("id");
+            dispatchtable.Columns.Add("order_date");
+            dispatchtable.Columns.Add("sorting_line_code");
+            dispatchtable.Columns.Add("deliver_line_code");
+            dispatchtable.Columns.Add("is_active");
+            dispatchtable.Columns.Add("update_time");
+            dispatchtable.Columns.Add("sort_work_dispatch_id");
+            dispatchtable.Columns.Add("work_status");
             return ds;
         }
     }

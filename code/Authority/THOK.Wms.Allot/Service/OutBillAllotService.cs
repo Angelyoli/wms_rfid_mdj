@@ -11,7 +11,7 @@ using Entities.Extensions;
 
 namespace THOK.Wms.Allot.Service
 {
-    public class OutBillAllotService:ServiceBase<OutBillAllot>,IOutBillAllotService
+    public class OutBillAllotService : ServiceBase<OutBillAllot>, IOutBillAllotService
     {
         [Dependency]
         public IOutBillAllotRepository OutBillAllotRepository { get; set; }
@@ -29,7 +29,7 @@ namespace THOK.Wms.Allot.Service
         [Dependency]
         public ICellRepository CellRepository { get; set; }
         [Dependency]
-        public IStorageRepository StorageRepository { get; set; }        
+        public IStorageRepository StorageRepository { get; set; }
         [Dependency]
         public IMoveBillCreater MoveBillCreater { get; set; }
         [Dependency]
@@ -37,13 +37,14 @@ namespace THOK.Wms.Allot.Service
         [Dependency]
         public IEmployeeRepository EmployeeRepository { get; set; }
         [Dependency]
-        public IStorageLocker Locker { get; set; } 
+        public IStorageLocker Locker { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
+        #region IOutBillAllotService 成员
         public string WhatStatus(string status)
         {
             string statusStr = "";
@@ -65,30 +66,30 @@ namespace THOK.Wms.Allot.Service
         public object Search(string billNo, int page, int rows)
         {
             var allotQuery = OutBillAllotRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo)
-                                  .OrderBy(a => a.ID)
-                                  .Select(a => new
-                                  {
-                                      a.ID,
-                                      a.BillNo,
-                                      a.ProductCode,
-                                      a.Product.ProductName,
-                                      a.CellCode,
-                                      a.Cell.CellName,
-                                      a.StorageCode,
-                                      a.UnitCode,
-                                      a.Unit.UnitName,
-                                      AllotQuantity = a.AllotQuantity / a.Unit.Count,
-                                      RealQuantity = a.RealQuantity / a.Unit.Count,
-                                      a.OperatePersonID,
-                                      a.StartTime,
-                                      a.FinishTime,
-                                      a.Status
-                                  });
-
+            var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = query.ToArray() }; 
+
+            var temp = query.ToArray().Select(a => new
+                                        {
+                                            a.ID,
+                                            a.BillNo,
+                                            a.ProductCode,
+                                            a.Product.ProductName,
+                                            a.CellCode,
+                                            a.Cell.CellName,
+                                            a.StorageCode,
+                                            a.UnitCode,
+                                            a.Unit.UnitName,
+                                            AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                                            RealQuantity = a.RealQuantity / a.Unit.Count,
+                                            a.OperatePersonID,
+                                            StartTime = a.StartTime == null ? "" : ((DateTime)a.StartTime).ToString("yyyy-MM-dd"),
+                                            FinishTime = a.FinishTime == null ? "" : ((DateTime)a.FinishTime).ToString("yyyy-MM-dd"),
+                                            Status = WhatStatus(a.Status)
+                                        });
+
+            return new { total, rows = temp.ToArray() };
         }
 
         public bool AllotCancel(string billNo, out string strResult)
@@ -312,12 +313,12 @@ namespace THOK.Wms.Allot.Service
                             decimal q1 = allotDetail.OutBillDetail.BillQuantity - allotDetail.OutBillDetail.AllotQuantity;
                             decimal q2 = allotQuantity * allotDetail.Unit.Count;
                             decimal q3 = storage.Quantity - storage.OutFrozenQuantity;
-                            if (q1 >= q2 && q2<= q3)
+                            if (q1 >= q2 && q2 <= q3)
                             {
                                 try
                                 {
-                                    allotDetail.OutBillDetail.AllotQuantity -= allotDetail.AllotQuantity;                                    
-                                    allotDetail.OutBillDetail.AllotQuantity += q2;                                    
+                                    allotDetail.OutBillDetail.AllotQuantity -= allotDetail.AllotQuantity;
+                                    allotDetail.OutBillDetail.AllotQuantity += q2;
                                     storage.OutFrozenQuantity += q2;
                                     storage.LockTag = string.Empty;
                                     allotDetail.CellCode = storage.Cell.CellCode;
@@ -434,7 +435,7 @@ namespace THOK.Wms.Allot.Service
                     {
                         using (var scope = new TransactionScope())
                         {
-                            if (ibm.MoveBillMaster!=null)
+                            if (ibm.MoveBillMaster != null)
                             {
                                 try
                                 {
@@ -474,6 +475,55 @@ namespace THOK.Wms.Allot.Service
                 strResult = "当前订单状态不是已确认，或当前订单不存在！";
             }
             return result;
-        }                
+        } 
+        #endregion
+
+        #region IOutBillAllotService 成员
+        public System.Data.DataTable AllotSearch(int page, int rows, string billNo)
+        {
+            var allotQuery = OutBillAllotRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(a => new
+            {
+                a.ProductCode,
+                a.Product.ProductName,
+                a.Cell.CellName,
+                a.Unit.UnitName,
+                AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                RealQuantity = a.RealQuantity / a.Unit.Count,
+                a.OperatePersonID,
+                a.StartTime,
+                a.FinishTime,
+                Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "2" ? "已完成" : "空"
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("商品编码", typeof(string));
+            dt.Columns.Add("商品名称", typeof(string));
+            dt.Columns.Add("储位名称", typeof(string));
+            dt.Columns.Add("单位名称", typeof(string));
+            dt.Columns.Add("分配数量", typeof(int));
+            dt.Columns.Add("实际数量", typeof(int));
+            dt.Columns.Add("作业人员", typeof(string));
+            dt.Columns.Add("开始时间", typeof(string));
+            dt.Columns.Add("完成时间", typeof(string));
+            dt.Columns.Add("作业状态", typeof(string));
+            foreach (var q in query)
+            {
+                dt.Rows.Add
+                    (
+                        q.ProductCode,
+                        q.ProductName,
+                        q.CellName,
+                        q.UnitName,
+                        q.AllotQuantity,
+                        q.RealQuantity,
+                        q.OperatePersonID,
+                        q.StartTime,
+                        q.FinishTime,
+                        q.Status
+                    );
+            }
+            return dt;
+        } 
+        #endregion
     }
 }

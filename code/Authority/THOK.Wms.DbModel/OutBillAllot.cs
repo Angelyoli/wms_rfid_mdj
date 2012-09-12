@@ -12,7 +12,7 @@ namespace THOK.Wms.DbModel
         }
         public int ID { get; set; }
         public string BillNo { get; set; }
-        public int OutPalletTag { get; set; }
+        public int? PalletTag { get; set; }
         public string ProductCode { get; set; }
         public int OutBillDetailId { get; set; }
         public string CellCode { get; set; }

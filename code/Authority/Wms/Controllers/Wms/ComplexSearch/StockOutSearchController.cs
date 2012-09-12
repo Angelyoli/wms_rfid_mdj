@@ -21,6 +21,7 @@ namespace Authority.Controllers.Wms.ComplexSearch
         {
             ViewBag.hasSearch = true;
             ViewBag.hasHelp = true;
+            ViewBag.hasPrint = true;
             ViewBag.ModuleID = moduleID;
             return View();
         }

@@ -76,7 +76,7 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult Create(MoveBillMaster moveBillMaster)
         {
             string strResult = string.Empty;
-            bool bResult = MoveBillMasterService.Add(moveBillMaster, this.User.Identity.Name.ToString(),out strResult);
+            bool bResult = MoveBillMasterService.Add(moveBillMaster, this.User.Identity.Name.ToString(), out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -158,15 +158,46 @@ namespace Authority.Controllers.Wms.StockMove
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GeneratePalletTag(string billNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterService.GeneratePalletTag(billNo, ref strResult);
+            string msg = bResult ? "BC类烟自动组盘成功" : "BC类烟自动组盘失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
         //
         // POST: /MoveBillMaster/moveBillMasterSettle/
 
-        public ActionResult MoveBillMasterSettle(string BillNo)
+        public ActionResult MoveBillMasterSettle(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = MoveBillMasterService.Settle(BillNo, out strResult);
+            bool bResult = MoveBillMasterService.Settle(billNo, out strResult);
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /MoveBillMaster/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string billNo = Request.QueryString["billNo"];
+            System.Data.DataTable dt = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo);
+            string headText = "移库单明细";
+            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt,null, headText,null, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        } 
+        #endregion
     }
 }

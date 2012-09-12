@@ -27,5 +27,7 @@ namespace THOK.Wms.Bll.Interfaces
         object GetWareHouseDetail(string IsActive);
 
         bool Settle(string BillNo, out string strResult);
+
+        bool GeneratePalletTag(string billNo, ref string strResult);
     }
 }

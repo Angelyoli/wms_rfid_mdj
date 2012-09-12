@@ -52,7 +52,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<CheckBillDetail> checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
             if (BillNo != null && BillNo != string.Empty)
             {
-                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i =>i);
+                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => i);
                 int total = checkBillDetail.Count();
                 checkBillDetail = checkBillDetail.Skip((page - 1) * rows).Take(rows);
 
@@ -76,7 +76,7 @@ namespace THOK.Wms.Bll.Service
                     OperatePersonName = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeName,
                     StartTime = i.StartTime == null ? string.Empty : i.StartTime.ToString(),
                     FinishTime = i.FinishTime == null ? string.Empty : i.FinishTime.ToString(),
-                    Status=WhatStatus(i.Status)
+                    Status = WhatStatus(i.Status)
                 });
                 return new { total, rows = temp.ToArray() };
             }
@@ -116,7 +116,7 @@ namespace THOK.Wms.Bll.Service
                 CheckBillDetailRepository.Add(checkDetail);
                 CheckBillDetailRepository.SaveChanges();
             }
-            return true;            
+            return true;
         }
 
         public bool Delete(string BillNo)
@@ -129,6 +129,72 @@ namespace THOK.Wms.Bll.Service
             throw new NotImplementedException();
         }
 
+        #endregion
+
+        #region ICheckBillDetailService 成员
+        /// <summary>获得盘点细单信息</summary>
+        public System.Data.DataTable GetCheckBillDetail(int page, int rows, string BillNo)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            IQueryable<CheckBillDetail> checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
+            if (BillNo != null && BillNo != string.Empty)
+            {
+                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+                {
+                    i.BillNo,
+                    i.Cell.CellCode,
+                    i.Cell.CellName,
+                    i.StorageCode,
+                    i.Product.ProductCode,
+                    i.Product.ProductName,
+                    i.Unit.UnitCode,
+                    i.Unit.UnitName,
+                    Quantity = i.Quantity / i.Unit.Count,
+                    RealProductCode = i.RealProduct.ProductCode,
+                    RealProductName = i.RealProduct.ProductName,
+                    RealUnitCode = i.RealUnit.UnitCode,
+                    RealUnitName = i.RealUnit.UnitName,
+                    OperatePersonCode = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeCode,
+                    OperatePersonName = i.OperatePersonID == null ? string.Empty : i.OperatePerson.EmployeeName,
+                    i.StartTime,
+                    i.FinishTime,
+                    Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空"
+                });
+                dt.Columns.Add("盘点单号", typeof(string));
+                //dt.Columns.Add("货位编码", typeof(string));
+                dt.Columns.Add("货位名称", typeof(string));
+                //dt.Columns.Add("储存名称", typeof(string));
+                dt.Columns.Add("产品编码", typeof(string));
+                dt.Columns.Add("产品名称", typeof(string));
+                dt.Columns.Add("单位编码", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("数量", typeof(int));
+                dt.Columns.Add("作业人员", typeof(string));
+                dt.Columns.Add("开始时间", typeof(string));
+                dt.Columns.Add("结束时间", typeof(string));
+                dt.Columns.Add("完成状态", typeof(string));
+                foreach (var c in checkBillDetail)
+                {
+                    dt.Rows.Add
+                        (
+                              c.BillNo
+                            //, c.CellCode
+                            , c.CellName
+                            //, c.StorageCode
+                            , c.ProductCode
+                            , c.ProductName
+                            , c.UnitCode
+                            , c.UnitName
+                            , c.Quantity
+                            , c.OperatePersonName
+                            , c.StartTime
+                            , c.FinishTime
+                            , c.Status
+                        );
+                }
+            }
+            return dt;
+        } 
         #endregion
     }
 }

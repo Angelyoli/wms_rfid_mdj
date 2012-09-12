@@ -1,0 +1,101 @@
+﻿ <script type="text/javascript">
+    var url;
+    function addClick() {
+        $('#dlg').dialog('open').dialog('setTitle', '新增');
+        $('#Productfm').form('clear');
+        $('#productCodeAdd').attr("readonly", false);
+        $('#Productfm .easyui-validatebox').validatebox({
+            required: true
+        });
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+
+        url = '/ProductWarning/Create/';
+    };
+    //选择单位信息
+    function unitSelect() {
+        var productCode = $('#productCodeAdd').val();
+        if (productCode != "" && productCode != null) {
+            $('#unitData').dialog('open').dialog('setTitle', '选择单位信息');
+            $('#unitDetail').datagrid({ url: '/Unit/FindUnit/?productCode=' + productCode });
+            $("#unitDetail").datagrid('reload');
+        } else {
+            $.messager.confirm('错误', '请先选择产品信息！');
+        }
+    }
+    function save() {
+        $('#Productfm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#dlg').dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+    </script>
+  <div id="dlg" class="easyui-dialog" modal="true" 
+        style="width:280px;height:380px;padding:2px 2px"
+        closed="true" buttons="#dlg-buttons">
+		<div class="easyui-layout" fit="true">
+			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
+	            <form id="Productfm" method="post" novalidate>
+                    <table >
+                        <tr>
+                            <td style=" text-align:right">产品编码</td>
+                            <td><input name="ProductCode" id="productCodeAdd" required="true" readonly="true">
+                            <a href="#" onclick="productSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a></td>
+                        </tr>
+                        <tr>
+                            <td style=" text-align:right">产品名称</td>
+                             <td align="left"><input type="text" name="ProductName" class="easyui-validatebox" required="true" id="productNameAdd" readonly="true"/></td>
+                        </tr>
+                        <tr>
+                        <td >单位编码</td>
+                        <td align="left"><label>
+                          <input type="text" name="UnitCode" class="easyui-validatebox" required="true" id="unitCodeAdd" readonly="true"/>
+                          <a href="#" onclick="unitSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true" >
+                        </label></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td >单位名称</td>
+                        <td align="left"><input type="text" name="UnitName" class="easyui-validatebox" required="true" id="unitNameAdd"  readonly="true" /></td>
+                        <td></td>
+                      </tr>
+                        <tr>
+                            <td style=" text-align:right">数量下限</td>
+                            <td align="left"><input name="minLimited" /></td>
+                        </tr>
+                        <tr>
+                            <td style=" text-align:right">数量上限</td>
+                            <td align="left"><input name="maxLimited" /></td>
+                        </tr>
+                        <tr>
+                            <td style=" text-align:right">积压时间</td>
+                            <td align="left"><input name="assemblyTime" /></td>
+                        </tr>
+                        <tr>
+                        <td>备注:</td>
+                        <td colspan="5"><textarea name="memo" style="height: 50px;width:180px;"></textarea></td>
+                      </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="dlg-buttons">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+</div>
+@Html.Partial("_ProductPartial")
+@Html.Partial("_UnitPartial")

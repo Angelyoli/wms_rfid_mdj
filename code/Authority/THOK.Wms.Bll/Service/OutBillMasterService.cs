@@ -43,7 +43,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public string infoStr= "";//错误信息字符串
+        public string infoStr = "";//错误信息字符串
 
         public string WhatStatus(string status)
         {
@@ -79,7 +79,7 @@ namespace THOK.Wms.Bll.Service
             var outBillMaster = OutBillMasterQuery
                                     .OrderByDescending(t => t.BillDate)
                                     .OrderByDescending(t => t.BillNo)
-                                    .Select(i =>i);
+                                    .Select(i => i);
             if (!BillNo.Equals(string.Empty) && BillNo != null)
             {
                 outBillMaster = outBillMaster.Where(i => i.BillNo.Contains(BillNo));
@@ -317,7 +317,7 @@ namespace THOK.Wms.Bll.Service
         /// </summary>
         /// <param name="outBillMaster">出库主单</param>
         /// <returns></returns>
-        public bool OutAllot(OutBillMaster outBillMaster,Guid employeeId)
+        public bool OutAllot(OutBillMaster outBillMaster, Guid employeeId)
         {
             try
             {
@@ -585,6 +585,59 @@ namespace THOK.Wms.Bll.Service
                 errorInfo = "出错，原因：" + e.Message;
             }
             return result;
+        }
+
+        public System.Data.DataTable GetStockOut(int page, int rows, string BillNo)
+        {
+            IQueryable<OutBillMaster> OutBillMasterQuery = OutBillMasterRepository.GetQueryable().Where(o => o.Status != "6");
+
+            var outBillMaster = OutBillMasterQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(s => new
+            {
+                s.BillNo,
+                s.Warehouse.WarehouseName,
+                s.BillType.BillTypeName,
+                //BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                OperatePersonName = s.OperatePerson.EmployeeName,
+                //s.OperatePersonID,
+                //Status = WhatStatus(s.Status),
+                s.Status,
+                VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
+                //VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                Description = s.Description,
+                //UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                s.TargetCellCode
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("出库单号", typeof(string));
+            dt.Columns.Add("仓库名称", typeof(string));
+            dt.Columns.Add("订单类型", typeof(string));
+            dt.Columns.Add("操作员", typeof(string));
+            dt.Columns.Add("审核人", typeof(string));
+            dt.Columns.Add("处理状态", typeof(string));
+            //dt.Columns.Add("BillDate", typeof(string));
+            //dt.Columns.Add("VerifyDate", typeof(string));
+            //dt.Columns.Add("UpdateTime", typeof(string));
+            dt.Columns.Add("备注", typeof(string));
+            dt.Columns.Add("目标货位编码", typeof(string));
+
+            foreach (var o in outBillMaster)
+            {
+                dt.Rows.Add
+                    (
+                          o.BillNo
+                        , o.WarehouseName
+                        , o.BillTypeName
+                        , o.OperatePersonName
+                        , o.VerifyPersonName
+                        , o.Status
+                    //, o.BillDate
+                    //, o.VerifyDate
+                    //, o.UpdateTime
+                        , o.Description
+                        , o.TargetCellCode
+                    );
+            }
+            return dt;
         }
     }
 }

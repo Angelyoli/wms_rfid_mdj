@@ -229,6 +229,42 @@
     <Compile Include="Migrations\201209050220248_modify_sort_order_status.Designer.cs">
       <DependentUpon>201209050220248_modify_sort_order_status.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201209060246572_ProductWarning.cs" />
+    <Compile Include="Migrations\201209060246572_ProductWarning.Designer.cs">
+      <DependentUpon>201209060246572_ProductWarning.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209060643392_move_bill_pallettag.cs" />
+    <Compile Include="Migrations\201209060643392_move_bill_pallettag.Designer.cs">
+      <DependentUpon>201209060643392_move_bill_pallettag.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209060657468_move_bill_pallettag2.cs" />
+    <Compile Include="Migrations\201209060657468_move_bill_pallettag2.Designer.cs">
+      <DependentUpon>201209060657468_move_bill_pallettag2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209060736146_modify_orderdate_fixed_length.cs" />
+    <Compile Include="Migrations\201209060736146_modify_orderdate_fixed_length.Designer.cs">
+      <DependentUpon>201209060736146_modify_orderdate_fixed_length.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209070611163_modify_product_warning_data.cs" />
+    <Compile Include="Migrations\201209070611163_modify_product_warning_data.Designer.cs">
+      <DependentUpon>201209070611163_modify_product_warning_data.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209070750186_modify_orderdate_var.cs" />
+    <Compile Include="Migrations\201209070750186_modify_orderdate_var.Designer.cs">
+      <DependentUpon>201209070750186_modify_orderdate_var.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209070836386_modify_sortorder.cs" />
+    <Compile Include="Migrations\201209070836386_modify_sortorder.Designer.cs">
+      <DependentUpon>201209070836386_modify_sortorder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209100210598_modify_product_warning.cs" />
+    <Compile Include="Migrations\201209100210598_modify_product_warning.Designer.cs">
+      <DependentUpon>201209100210598_modify_product_warning.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209110331487_modify_productwarning_01.cs" />
+    <Compile Include="Migrations\201209110331487_modify_productwarning_01.Designer.cs">
+      <DependentUpon>201209110331487_modify_productwarning_01.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -23,8 +23,8 @@ namespace THOK.WMS.DownloadWms.Dao
         /// </summary>
         public DataTable GetSortRouteInfo(string routeCodeList)
         {
-            string sql = string.Format(@"SELECT DELIVERLINECODE,DELIVERLINENAME FROM WMS_SORT_ORDER WHERE {0}
-                                               GROUP BY DELIVERLINECODE,DELIVERLINENAME", routeCodeList);
+            string sql = string.Format(@"SELECT DIST_BILL_ID,DELIVERYMAN_CODE,DELIVERYMAN_NAME,DELIVERLINECODE,DELIVERLINENAME FROM SORTORDER {0}
+                                               GROUP BY DIST_BILL_ID,DELIVERYMAN_CODE,DELIVERYMAN_NAME,DELIVERLINECODE,DELIVERLINENAME", routeCodeList);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
