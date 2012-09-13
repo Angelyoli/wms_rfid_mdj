@@ -1,5 +1,6 @@
 <script type="text/javascript">
     var url;
+    var addDialog;
     function AddLoad() {
         $('#isActive_depart').combo({
             required: true,
@@ -9,15 +10,59 @@
         });
     }
 
+    //加载新增和编辑窗体
+    function showDialog(title) {
+        if (addDialog == null) {
+            addDialog = $('<div></div>').dialog({
+                title: title,
+                width: 550,
+                height: 300,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Department/AddPage/',
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        save();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        addDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                    if (title == '编辑') {
+                        var erow = $('#details').datagrid('getSelected');
+                        $('#fm').form('load', erow);
+                    }
+                    else if (title == '删除') {
+                        var drow = $('#details').datagrid('getSelected');
+                        $('#fm').form('load', drow);
+                        $('form input').attr("disabled", "disabled");
+                        $('form textarea').attr("disabled", "disabled");
+                    }
+                }
+            });
+        }
+        else {
+            addDialog.dialog({ title: title });
+        }
+    }
+
     function addClick() {
         AddLoad();
-        $('#dlg').dialog('open').dialog('setTitle', '新增');
+        showDialog('新增');
+        addDialog.dialog('open');
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
         });
-        $('form input').removeAttr("disabled");
-        $('form textarea').removeAttr("disabled");
         $('#inputDepartCode').attr("readonly", false);
         $('#isActive_depart').combo({
             hasDownArrow: true
@@ -30,6 +75,8 @@
             $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
             return false
         }
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('submit', {
             url: url,
             onSubmit: function () {
@@ -39,7 +86,7 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#dlg').dialog('close');
+                    addDialog.dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
@@ -64,95 +111,3 @@
         $("#companyDetail").datagrid('reload');
     }
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 550px; height: 300px;
-    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
-    <div class="easyui-layout" fit="true">
-        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
-            border: 1px solid #ccc;">
-            <form id="fm" method="post" novalidate>
-            <table width="500">
-                <tr>
-                    <td width="60" align="right">
-                        部门编码：
-                    </td>
-                    <td width="168">
-                        <input name="DepartmentCode" id="inputDepartCode" class="easyui-validatebox" validtype="maxLength[8]"
-                            required="true" /><input name="ID" style="display: none" />
-                    </td>
-                    <td width="60" align="right">
-                        部门名称：
-                    </td>
-                    <td width="168">
-                        <input name="DepartmentName" class="easyui-validatebox" validtype="maxLength[50]"
-                            required="true" />
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right" width="80">
-                        负责人：
-                    </td>
-                    <td width="168">
-                        <input name="DepartmentLeaderID" id="employeeId" style="display: none;" />
-                        <input name="EmployeeName" id="employeeName" readonly="readonly" class="easyui-validatebox" />
-                        <a href="#" id="departmentLeaderSearch" class="easyui-linkbutton" iconcls="icon-search"
-                            plain="true" onclick="departmentLeaderSearchClick()"></a>
-                    </td>
-                    <td align="right">
-                        公司名称：
-                    </td>
-                    <td width="168">
-                        <input name="CompanyID" id="companyId" style="display: none;" />
-                        <input name="CompanyName" id="companyName" readonly="readonly" class="easyui-validatebox" />
-                        <a href="#" id="companySearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
-                            onclick="companySearchClick()"></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        上级部门：
-                    </td>
-                    <td>
-                        <input name="ParentDepartmentID" id="parentDepartId" style="display: none;" />
-                        <input name="ParentDepartmentName" id="parentDepartName" readonly="readonly" />
-                        <a href="#" id="parentCodeSearch" class="easyui-linkbutton" iconcls="icon-search"
-                            plain="true" onclick="parentCodeSearchClick()"></a>
-                    </td>
-                    <td align="right">
-                        是否可用：
-                    </td>
-                    <td>
-                        <select id="isActive_depart" name="IsActive" class="easyui-combobox" style="width: 129px">
-                            <option value="1">可用</option>
-                            <option value="0">不可用</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        统一编码：
-                    </td>
-                    <td width="168" colspan="3">
-                        <input name="UniformCode" required="true" type="text" />
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60" align="right">
-                        描述：
-                    </td>
-                    <td width="168" colspan="3">
-                        <textarea name="Description" id="desId" style="width: 366px; height: 80px"></textarea>
-                    </td>
-                </tr>
-            </table>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="dlg-buttons">
-    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
-    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
-        取消</a>
-</div>
-@Html.Partial("_ParentCodePartial")
-@Html.Partial("_DepartmentLeaderPartial")
-@Html.Partial("_CompanyPartial")

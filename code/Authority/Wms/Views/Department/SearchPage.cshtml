@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+    <div class="easyui-layout" fit="true" border="false">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <table width="250">
+                <tr>
+                    <td width="60">
+                        部门编码：
+                    </td>
+                    <td width="168" align="left">
+                        <input id="DepartmentCode" type="text"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        部门编码：
+                    </td>
+                    <td align="left">
+                        <input id="DepartmentName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        负责人：
+                    </td>
+                    <td colspan="3" align="left">
+                        <input type="text" id="employeename-id" style="display: none;" />
+                        <input type="text" id="employeename-name" readonly="readonly"/>
+                        <a href="#" id="departmentleader-link" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="departmentLeaderSearchClick()"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        所在公司：
+                    </td>
+                    <td colspan="3" align="left">
+                        <input type="text" id="companyname-id" style="display: none;" />
+                        <input type="text" id="companyname-name" readonly="readonly" />
+                        <a href="#" id="companyname-link" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="companySearchClick()"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+@Html.Partial("_DepartmentLeaderPartial")
+@Html.Partial("_CompanyPartial")
