@@ -20,9 +20,11 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitCode);
 
-        //object GetTimeOut(int page,int rows,string productCode);
 
         object GetProductDetails(int page, int rows, string productCode, decimal assemblyTime);
+
+        object GetWarningPrompt();
+        object GetCellInfo();
 
     }
 }
