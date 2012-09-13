@@ -107,8 +107,9 @@ namespace THOK.Wms.Bll.Service
                 {
                     JobRepository.Delete(job);
                     JobRepository.SaveChanges();
+                    result = true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     strResult = "原因：已在使用";
                 }
