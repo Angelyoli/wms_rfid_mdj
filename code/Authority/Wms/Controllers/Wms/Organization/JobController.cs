@@ -29,6 +29,16 @@ namespace Authority.Controllers.Wms.Organization
             return View();
         }
 
+        public ActionResult AddPage()
+        {
+            return View();
+        }
+
+        public ActionResult SearchPage()
+        {
+            return View();
+        }
+
         //
         // GET: /Job/Details/
 

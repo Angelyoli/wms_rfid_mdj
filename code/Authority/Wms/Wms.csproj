@@ -1527,6 +1527,8 @@
     <Content Include="Views\QuantityLimits\_UnitPartial.cshtml" />
     <Content Include="Views\StorageAnalysis\Index.cshtml" />
     <Content Include="Views\Warehouse2\_PrintPartial.cshtml" />
+    <Content Include="Views\Job\AddPage.cshtml" />
+    <Content Include="Views\Job\SearchPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
