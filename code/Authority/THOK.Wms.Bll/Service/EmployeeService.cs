@@ -208,5 +208,82 @@ namespace THOK.Wms.Bll.Service
             employee = employee.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = employee.ToArray() };
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="EmployeeCode"></param>
+        /// <param name="EmployeeName"></param>
+        /// <param name="DepartmentID"></param>
+        /// <param name="JobID"></param>
+        /// <param name="Status"></param>
+        /// <param name="IsActive"></param>
+        /// <returns></returns>
+        public System.Data.DataTable GetEmployee(int page, int rows, string employeeCode, string employeeName, string departmentID, string jobID, string status, string isActive)
+        {
+            IQueryable<Employee> employeeQuery = EmployeeRepository.GetQueryable();
+            var employee = employeeQuery.Where(e => e.EmployeeCode.Contains(employeeCode)
+                && e.EmployeeName.Contains(employeeName)
+                && e.Status.Contains(status)
+                && e.IsActive.Contains(isActive));
+
+            if (!departmentID.Equals(string.Empty))
+            {
+                Guid gDepartID = new Guid(departmentID);
+                employee = employee.Where(e => e.DepartmentID == gDepartID);
+            }
+            if (!jobID.Equals(string.Empty))
+            {
+                Guid gJobID = new Guid(jobID);
+                employee = employee.Where(e => e.JobID == gJobID);
+            }
+            var temp = employee.AsEnumerable().OrderByDescending(e => e.UpdateTime).Select(e => new
+            {
+                e.ID,
+                e.EmployeeCode,
+                e.EmployeeName,
+                DepartmentID = e.DepartmentID == null ? string.Empty : e.DepartmentID.ToString(),
+                DepartmentName = e.DepartmentID == null ? string.Empty : e.Department.DepartmentName,
+                e.Description,
+                JobID = e.Job == null ? string.Empty : e.Job.ID.ToString(),
+                JobName = e.Job == null ? string.Empty : e.Job.JobName,
+                e.Sex,
+                e.Tel,
+                e.UserName,
+                Status = e.Status == "3701" ? "在职" : e.Status == "3702" ? "离职" : e.Status == "3703" ? "退休" : e.Status == "3704" ? "试用" : e.Status == "3705" ? "外调" : e.Status == "3706" ? "停薪留职" : e.Status == "3707" ? "借用" : e.Status == "3708" ? "其他" : "",
+                IsActive = e.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = e.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("员工编码", typeof(string));
+            dt.Columns.Add("员工姓名", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("部门名称", typeof(string));
+            dt.Columns.Add("岗位名称", typeof(string));
+            dt.Columns.Add("性别", typeof(string));
+            dt.Columns.Add("电话", typeof(string));
+            dt.Columns.Add("状态", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in temp)
+            {
+                dt.Rows.Add
+                    (
+                        item.EmployeeCode,
+                        item.EmployeeName,
+                        item.Description,
+                        item.DepartmentName,
+                        item.JobName,
+                        item.Sex,
+                        item.Tel,
+                        item.Status,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+            }
+            return dt;
+        }
     }
 }

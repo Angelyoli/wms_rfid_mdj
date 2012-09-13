@@ -17,5 +17,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Save(Department department, out string strResult);
 
         object GetDepartment(int page, int rows, string queryString, string value);
+
+        System.Data.DataTable GetDepartment(int page, int rows, string departmentCode, string departmentName, string departmentLeaderID, string companyID);
     }
 }

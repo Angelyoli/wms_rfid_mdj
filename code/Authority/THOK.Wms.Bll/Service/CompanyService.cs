@@ -227,5 +227,93 @@ namespace THOK.Wms.Bll.Service
             company = company.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = company.ToArray() };
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="CompanyCode"></param>
+        /// <param name="CompanyName"></param>
+        /// <param name="CompanyType"></param>
+        /// <param name="IsActive"></param>
+        /// <returns></returns>
+        public System.Data.DataTable GetCompany(int page, int rows, string companyCode, string companyName, string companyType, string isActive)
+        {
+            IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
+            var company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode)
+                && c.CompanyName.Contains(companyName)
+                && c.CompanyType.Contains(companyType))
+                .OrderByDescending(c => c.UpdateTime).AsEnumerable()
+                .Select(c => new
+                {
+                    c.CompanyCode,
+                    c.CompanyName,
+                    c.UniformCode,
+                    c.Description,
+                    CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
+                    c.WarehouseCapacity,
+                    c.WarehouseCount,
+                    c.WarehouseSpace,
+                    c.SortingCount,
+                    ParentCompanyName = c.ParentCompany.CompanyName,
+                    c.ParentCompanyID,
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            if (!isActive.Equals(""))
+            {
+                company = companyQuery.Where(c => c.CompanyCode.Contains(companyCode)
+                    && c.CompanyName.Contains(companyName)
+                    && c.CompanyType.Contains(companyType)
+                    && c.IsActive.Contains(isActive))
+                .OrderByDescending(c => c.UpdateTime).AsEnumerable()
+                .Select(c => new
+                {
+                    c.CompanyCode,
+                    c.CompanyName,
+                    c.UniformCode,
+                    c.Description,
+                    CompanyType = c.CompanyType == "1" ? "配送中心" : c.CompanyType == "2" ? "市公司" : "县公司",
+                    c.WarehouseCapacity,
+                    c.WarehouseCount,
+                    c.WarehouseSpace,
+                    c.SortingCount,
+                    ParentCompanyName = c.ParentCompany.CompanyName,
+                    c.ParentCompanyID,
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            }
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("公司编码", typeof(string));
+            dt.Columns.Add("公司名称", typeof(string));
+            dt.Columns.Add("公司类型", typeof(string));
+            dt.Columns.Add("上级名称", typeof(string));
+            dt.Columns.Add("仓库面积", typeof(int));
+            dt.Columns.Add("仓库个数", typeof(int));
+            dt.Columns.Add("仓库容量", typeof(int));
+            dt.Columns.Add("分拣线数", typeof(int));
+            dt.Columns.Add("状态", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in company)
+            {
+                dt.Rows.Add
+                    (
+                        item.CompanyCode,
+                        item.CompanyName,
+                        item.CompanyType,
+                        item.ParentCompanyName,
+                        item.WarehouseSpace,
+                        item.WarehouseCount,
+                        item.WarehouseCapacity,
+                        item.SortingCount,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+
+            }
+            return dt;
+        }
     }
 }
