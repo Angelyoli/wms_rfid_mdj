@@ -1,0 +1,14 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/Product/CreateExcelToClient/"
+                                + "?productCode=" + $('#PC').val()
+                                + "&customCode=" + $('#CC').val()
+                                + "&productName=" + $('#PN').val()
+                                + "&brandCode=" + $('#brandCode2').val()
+                                + "&uniformCode=" + $('#NC').val()
+                                + "&abcTypeCode=" + $('#ATC').combo('getValue')
+                                + "&shortCode=" + $('#SC').val()
+                                + "&priceLevelCode=" + $('#PLC').combo('getValue')
+                                + "&supplierCode=" + $('#supplierCode2').val();
+    }
+</script>

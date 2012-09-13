@@ -89,7 +89,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             return Json(warehouseCode, "text", JsonRequestBehavior.AllowGet);
         }
 
-        #region /Warehouse/CreateExcelToClient/
+        #region /Warehouse2/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
