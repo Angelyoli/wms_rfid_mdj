@@ -30,11 +30,11 @@ namespace THOK.Common
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
             NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText1) as NPOI.HSSF.UserModel.HSSFSheet;
-            //sheet.CreateRow(0).Height = 1000;
+            sheet.PrintSetup.FitHeight = 0;//这个很啃爹，=1 打印的时候只有一页，还给我缩放什么的，搞了我半天。
 
             NPOI.HSSF.UserModel.HSSFCellStyle cellStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;
-            cellStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
+            cellStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
 
             #region 取得列宽 dt1
             //取得列宽
@@ -54,6 +54,13 @@ namespace THOK.Common
                         arrColWidth[j] = intTemp;
                     }
                 }
+                //int columnWidth = sheet.GetColumnWidth(i) / 256;
+                //if (columnWidth < arrColWidth[i]-1)
+                //{
+                //    columnWidth = arrColWidth[i];
+                //}
+                ////设置列宽
+                //sheet.SetColumnWidth(i, columnWidth * 256);
             }
             #endregion
 
@@ -155,16 +162,16 @@ namespace THOK.Common
                     #endregion
                     #region 填充内容
                     NPOI.HSSF.UserModel.HSSFRow dataRow = sheet.CreateRow(rowIndex) as NPOI.HSSF.UserModel.HSSFRow;
+                    NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                     foreach (System.Data.DataColumn column in dt1.Columns)
                     {
-                        NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
-                        NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
-                        headStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
-                        headStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
-                        headStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
-                        headStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
-                        dataRow.GetCell(column.Ordinal).CellStyle = headStyle;
+                        headStyle2.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle2.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle2.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle2.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
+                        dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
 
+                        NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
                         string drValue = row[column].ToString();
                         switch (column.DataType.ToString())
                         {
@@ -238,7 +245,9 @@ namespace THOK.Common
                             font.Boldweight = 700;
                             headStyle.SetFont(font);
                             headerRow.GetCell(0).CellStyle = headStyle;
-                            sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt2.Columns.Count - 1));
+                            NPOI.SS.Util.CellRangeAddress region = new NPOI.SS.Util.CellRangeAddress(0, 0, 0, dt2.Columns.Count - 1);//同上
+                            sheet.AddMergedRegion(region);
+                            sheet.SetEnclosedBorderOfRegion(region, NPOI.SS.UserModel.BorderStyle.THIN, NPOI.HSSF.Util.HSSFColor.BLACK.index);
                         }
                         #endregion
                         #region 导出时间
@@ -248,7 +257,9 @@ namespace THOK.Common
                             NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                             headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                             headerRow.GetCell(0).CellStyle = headStyle;
-                            sheet.AddMergedRegion(new NPOI.SS.Util.Region(1, 0, 1, dt2.Columns.Count - 1));
+                            NPOI.SS.Util.CellRangeAddress region = new NPOI.SS.Util.CellRangeAddress(1, 1, 0, dt2.Columns.Count - 1);
+                            sheet.AddMergedRegion(region);
+                            sheet.SetEnclosedBorderOfRegion(region, NPOI.SS.UserModel.BorderStyle.THIN, NPOI.HSSF.Util.HSSFColor.BLACK.index);
                         }
                         #endregion
                         #region 列头及样式
@@ -266,7 +277,7 @@ namespace THOK.Common
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                 headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                                 //设置列宽
-                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth2[column.Ordinal] + 1) * colHeadWidth);  //[4]
+                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth2[column.Ordinal] + 1) * 256);  //[4]
                             }
                         }
                         #endregion
@@ -275,8 +286,15 @@ namespace THOK.Common
                     #endregion
                     #region 填充内容
                     NPOI.HSSF.UserModel.HSSFRow dataRow = sheet.CreateRow(rowIndex2) as NPOI.HSSF.UserModel.HSSFRow;
+                    NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                     foreach (System.Data.DataColumn column in dt2.Columns)
                     {
+                        headStyle2.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle2.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle2.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle2.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
+                        dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
+
                         NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
                         string drValue = row[column].ToString();
                         switch (column.DataType.ToString())
@@ -324,14 +342,11 @@ namespace THOK.Common
             }
             #endregion
 
-            //sheet.SetColumnWidth(1, 100 * 256);
-            //sheet.PrintSetup.FitHeight = 1;
-            sheet.PrintSetup.FitHeight = 0;
-
+            #region 页眉页脚
             sheet.Header.Center = "&D";    //日期
             sheet.Footer.Left = "页脚";
-            sheet.Footer.Right = "&P";     //页码
-
+            sheet.Footer.Right = "&P";     //页码 
+            #endregion
 
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             workbook.Write(ms);

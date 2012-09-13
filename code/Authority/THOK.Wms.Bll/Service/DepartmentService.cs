@@ -57,7 +57,7 @@ namespace THOK.Wms.Bll.Service
                 ParentDepartmentName = d.ParentDepartment.DepartmentName,
                 d.UniformCode,
                 IsActive = d.IsActive == "1" ? "可用" : "不可用",
-                UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
             int total = temp.Count();
             temp = temp.Skip((page - 1) * rows).Take(rows);
@@ -246,7 +246,7 @@ namespace THOK.Wms.Bll.Service
                 ParentDepartmentName = d.ParentDepartment.DepartmentName,
                 d.UniformCode,
                 IsActive = d.IsActive == "1" ? "可用" : "不可用",
-                UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("部门编码", typeof(string));

@@ -33,7 +33,7 @@ namespace THOK.Wms.Bll.Service
                     j.JobName,
                     j.Description,
                     IsActive = j.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                    UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 });
             if (!IsActive.Equals(""))
             {
@@ -46,7 +46,7 @@ namespace THOK.Wms.Bll.Service
                         j.JobName,
                         j.Description,
                         IsActive = j.IsActive == "1" ? "可用" : "不可用",
-                        UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                        UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                     });
             }
             int total = job.Count();
@@ -204,7 +204,7 @@ namespace THOK.Wms.Bll.Service
                     j.JobName,
                     j.Description,
                     IsActive = j.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                    UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 });
             if (!isActive.Equals(""))
             {
@@ -217,7 +217,7 @@ namespace THOK.Wms.Bll.Service
                         j.JobName,
                         j.Description,
                         IsActive = j.IsActive == "1" ? "可用" : "不可用",
-                        UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                        UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
                     });
             }
             System.Data.DataTable dt = new System.Data.DataTable();
