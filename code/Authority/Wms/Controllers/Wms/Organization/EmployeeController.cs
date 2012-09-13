@@ -97,5 +97,35 @@ namespace Authority.Controllers.Organization
             var employee = EmployeeService.GetEmployee(page, rows, queryString, value);
             return Json(employee, "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /Employee/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string employeeCode = Request.QueryString["employeeCode"];
+            string employeeName = Request.QueryString["employeeName"];
+            string departmentId = Request.QueryString["departmentId"];
+            string jobId = Request.QueryString["jobId"];
+            string status = Request.QueryString["status"];
+            string isActive = Request.QueryString["isActive"];
+
+            System.Data.DataTable dt = EmployeeService.GetEmployee(page, rows, employeeCode, employeeName, departmentId, jobId, status, isActive);
+            string headText = "员工信息";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize,
+                colHeadFont, colHeadSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        } 
+        #endregion
     }
 }

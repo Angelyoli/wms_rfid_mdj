@@ -17,5 +17,7 @@ namespace THOK.Wms.Bll.Interfaces
        bool Save(Job job, out string strResult);
 
        object GetJob(int page, int rows, string queryString, string value);
+
+       System.Data.DataTable GetJob(int page, int rows, string jobCode, string jobName, string isActive);
     }
 }
