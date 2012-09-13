@@ -81,7 +81,7 @@ namespace THOK.Common
             #endregion
 
             int a = dt1.Rows.Count;
-            if (a < 65536)
+            if (a < 65536)  /* excel中的一个sheet最大容量65536行 */
             {
                 #region 建表 dt1
                 int rowIndex = 0;
@@ -144,7 +144,9 @@ namespace THOK.Common
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                 headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                                 //设置列宽
-                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * colHeadWidth);  //[4]
+                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);
+                                //sheet.SetColumnWidth(0, 30 * 256);
+                                //sheet.AutoSizeColumn((arrColWidth[column.Ordinal] + 1) * 256);
                             }
                         }
                         #endregion
@@ -237,7 +239,6 @@ namespace THOK.Common
                             headStyle.SetFont(font);
                             headerRow.GetCell(0).CellStyle = headStyle;
                             sheet.AddMergedRegion(new NPOI.SS.Util.Region(0, 0, 0, dt2.Columns.Count - 1));
-                            //headerRow.Dispose();
                         }
                         #endregion
                         #region 导出时间
@@ -324,10 +325,10 @@ namespace THOK.Common
             #endregion
 
             //sheet.SetColumnWidth(1, 100 * 256);
-            //sheet.PrintSetup.FitHeight = 1;
-            //sheet.Header.Center = "&D";    //日期
-            //sheet.Footer.Left = "bb";
-            //sheet.Footer.Right = "&P";     //页码
+            sheet.PrintSetup.FitHeight = 1;
+            sheet.Header.Center = "&D";    //日期
+            sheet.Footer.Left = "页脚";
+            sheet.Footer.Right = "&P";     //页码
 
 
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
