@@ -31,9 +31,14 @@ namespace THOK.Common
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
             NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText1) as NPOI.HSSF.UserModel.HSSFSheet;
 
-            NPOI.HSSF.UserModel.HSSFCellStyle dateStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
+            NPOI.HSSF.UserModel.HSSFCellStyle cellStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;
-            dateStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
+            cellStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
+
+            NPOI.HSSF.UserModel.HSSFFont myFontBoldBorder = (NPOI.HSSF.UserModel.HSSFFont)workbook.CreateFont();
+            myFontBoldBorder.FontHeightInPoints = 18;
+            myFontBoldBorder.Boldweight = (short)NPOI.SS.UserModel.FontBoldWeight.NORMAL;
+            cellStyle.SetFont(myFontBoldBorder);
 
             #region 取得列宽 dt1
             //取得列宽
@@ -97,6 +102,10 @@ namespace THOK.Common
                         headerRow.CreateCell(0).SetCellValue(headText1);
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
+                        //headStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
+                        //headStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
+                        //headStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
+                        //headStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
                         font.FontName = headFont;
                         font.FontHeightInPoints = headSize;
@@ -121,6 +130,10 @@ namespace THOK.Common
                         NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(2) as NPOI.HSSF.UserModel.HSSFRow;
                         NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                         headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
+                        headStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
                         NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
                         font.FontName = colHeadFont;
                         font.FontHeightInPoints = colHeadSize;
@@ -143,6 +156,8 @@ namespace THOK.Common
                 foreach (System.Data.DataColumn column in dt1.Columns)
                 {
                     NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
+                    NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
+
                     string drValue = row[column].ToString();
                     switch (column.DataType.ToString())
                     {
@@ -154,7 +169,7 @@ namespace THOK.Common
                             DateTime dateV;
                             DateTime.TryParse(drValue, out dateV);
                             newCell.SetCellValue(dateV);
-                            newCell.CellStyle = dateStyle; //格式化显示
+                            newCell.CellStyle = cellStyle; //格式化显示
                             break;
                         case "System.Boolean": //布尔型
                             bool boolV = false;
@@ -182,6 +197,11 @@ namespace THOK.Common
                             newCell.SetCellValue("");
                             break;
                     }
+                    headStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
+                    headStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
+                    headStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
+                    headStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
+                    dataRow.GetCell(column.Ordinal).CellStyle = headStyle;
                 }
                 #endregion
                 rowIndex++;
@@ -267,7 +287,7 @@ namespace THOK.Common
                                 DateTime dateV;
                                 DateTime.TryParse(drValue, out dateV);
                                 newCell.SetCellValue(dateV);
-                                newCell.CellStyle = dateStyle; //格式化显示
+                                newCell.CellStyle = cellStyle; //格式化显示
                                 break;
                             case "System.Boolean": //布尔型
                                 bool boolV = false;
