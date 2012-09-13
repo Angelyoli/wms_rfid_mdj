@@ -49,7 +49,7 @@ namespace THOK.WMS.DownloadWms.Dao
         }
 
 
-        //删除7天之前的线路表，调度表，分拣中间表和分拣表（包含细表）
+        //删除7天之前的线路表，调度表，分拣中间表和分拣表（包含细表）,作业调度表
         public void DeleteTable()
         {
             string sql = @" DELETE SORTORDERDETAIL WHERE ORDERID IN(
@@ -70,7 +70,10 @@ namespace THOK.WMS.DownloadWms.Dao
                             DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112))
 
                             DELETE WMS_DELIVER_LINE WHERE UPDATE_TIME<
-                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112)) ";
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112)) 
+
+                            DELETE WMS_SORT_WORK_DISPATCH WHERE ORDER_DATE<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112))";
             this.ExecuteNonQuery(sql);
         }
       

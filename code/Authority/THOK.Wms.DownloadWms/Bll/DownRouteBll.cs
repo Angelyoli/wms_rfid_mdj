@@ -212,7 +212,7 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         /// <summary>
-        /// 删除7天之前的线路表，分拣中间表和分拣表(包含细表)
+        /// 删除7天之前的线路表，分拣中间表和分拣表(包含细表)，作业调度表
         /// </summary>
         public void DeleteTable()
         {
