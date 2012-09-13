@@ -81,6 +81,8 @@
             $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
             return false
         }
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#companyfm').form('submit', {
             url: url,
             onSubmit: function () {

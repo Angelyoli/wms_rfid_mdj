@@ -1254,6 +1254,8 @@
     <Content Include="Views\HelpContent\_SearchPartial.cshtml" />
     <Content Include="Views\DefaultProductSet\_PrintPartial.cshtml" />
     <Content Include="Views\CellAnalysis\Index.cshtml" />
+    <Content Include="Views\Department\AddPage.cshtml" />
+    <Content Include="Views\Department\SearchPage.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -1529,6 +1531,8 @@
     <Content Include="Views\StorageAnalysis\Index.cshtml" />
     <Content Include="Views\Warehouse2\_PrintPartial.cshtml" />
     <Content Include="Views\Product\_PrintPartial.cshtml" />
+    <Content Include="Views\Job\AddPage.cshtml" />
+    <Content Include="Views\Job\SearchPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
