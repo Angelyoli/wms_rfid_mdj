@@ -78,22 +78,23 @@ namespace Authority.Controllers.Wms.SortingInfo
                 beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
                 endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
             }
-            DownSortingInfoBll dsinfo = new DownSortingInfoBll();
-            DownRouteBll bll = new DownRouteBll();
-            DownSortingOrderBll sbll = new DownSortingOrderBll();
-            DownCustomerBll cbll = new DownCustomerBll();
-            bool custResult = cbll.DownCustomerInfo();
+            DownSortingInfoBll sortBll = new DownSortingInfoBll();
+            DownRouteBll routeBll = new DownRouteBll();
+            DownSortingOrderBll orderBll = new DownSortingOrderBll();
+            DownCustomerBll custBll = new DownCustomerBll();
+            routeBll.DeleteTable();
+            bool custResult = custBll.DownCustomerInfo();
             if (isSortDown)
             {
                 //从分拣下载分拣数据
-                lineResult = bll.DownSortRouteInfo();
-                bResult = dsinfo.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+                lineResult = routeBll.DownSortRouteInfo();
+                bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
             }
             else
             {
                 //从营销下载分拣数据
-                lineResult = bll.DownRouteInfo();                
-                bResult = sbll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                lineResult = routeBll.DownRouteInfo();                
+                bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
             }
 
             string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;

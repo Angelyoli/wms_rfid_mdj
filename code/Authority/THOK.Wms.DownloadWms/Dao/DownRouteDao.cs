@@ -48,6 +48,34 @@ namespace THOK.WMS.DownloadWms.Dao
             BatchInsert(ds.Tables["DWV_OUT_DELIVER_LINE"], "wms_deliver_line");
         }
 
+
+        //删除7天之前的线路表，调度表，分拣中间表和分拣表（包含细表）,作业调度表
+        public void DeleteTable()
+        {
+            string sql = @" DELETE SORTORDERDETAIL WHERE ORDERID IN(
+                            SELECT ORDERID FROM  SORTORDER WHERE ORDERDATE<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112)) )
+
+                            DELETE SORTORDER WHERE ORDERDATE<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112))
+
+                            DELETE WMS_SORT_ORDER_DETAIL WHERE ORDER_ID IN(
+                            SELECT ORDER_ID FROM  WMS_SORT_ORDER WHERE ORDER_DATE<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112)))
+
+                            DELETE WMS_SORT_ORDER WHERE ORDER_DATE<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112))
+
+                            DELETE WMS_SORT_ORDER_DISPATCH WHERE ORDER_DATE<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112))
+
+                            DELETE WMS_DELIVER_LINE WHERE UPDATE_TIME<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112)) 
+
+                            DELETE WMS_SORT_WORK_DISPATCH WHERE ORDER_DATE<
+                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112))";
+            this.ExecuteNonQuery(sql);
+        }
       
     }
 }
