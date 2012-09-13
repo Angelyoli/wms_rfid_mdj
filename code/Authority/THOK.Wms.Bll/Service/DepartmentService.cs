@@ -206,5 +206,72 @@ namespace THOK.Wms.Bll.Service
             department = department.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = department.ToArray() };
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="DepartmentCode"></param>
+        /// <param name="DepartmentName"></param>
+        /// <param name="DepartmentLeaderID"></param>
+        /// <param name="CompanyID"></param>
+        /// <returns></returns>
+        public System.Data.DataTable GetDepartment(int page, int rows, string departmentCode, string departmentName, string departmentLeaderID, string companyID)
+        {
+            IQueryable<Department> departQuery = DepartmentRepository.GetQueryable();
+            var department = departQuery.Where(d => d.DepartmentCode.Contains(departmentCode)
+                && d.DepartmentName.Contains(departmentName));
+
+            if (!companyID.Equals(string.Empty))
+            {
+                Guid compId = new Guid(companyID);
+                department = department.Where(d => d.Company.ID == compId);
+            }
+            if (!departmentLeaderID.Equals(string.Empty))
+            {
+                Guid empId = new Guid(departmentLeaderID);
+                department = department.Where(d => d.DepartmentLeader.ID == empId);
+            }
+            var temp = department.AsEnumerable().OrderByDescending(d => d.UpdateTime).AsEnumerable().Select(d => new
+            {
+                d.DepartmentCode,
+                d.DepartmentName,
+                d.Description,
+                d.DepartmentLeaderID,
+                EmployeeName = d.DepartmentLeaderID == null ? string.Empty : d.DepartmentLeader.EmployeeName,
+                CompanyID = d.Company.ID,
+                d.Company.CompanyName,
+                ParentDepartmentID = d.ParentDepartmentID,
+                ParentDepartmentName = d.ParentDepartment.DepartmentName,
+                d.UniformCode,
+                IsActive = d.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = d.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("部门编码", typeof(string));
+            dt.Columns.Add("部门名称", typeof(string));
+            dt.Columns.Add("负责人名称", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("公司名称", typeof(string));
+            dt.Columns.Add("上级名称", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in temp)
+            {
+                dt.Rows.Add
+                    (
+                        item.DepartmentCode,
+                        item.DepartmentName,
+                        item.EmployeeName,
+                        item.Description,
+                        item.CompanyName,
+                        item.ParentDepartmentName,
+                        item.IsActive,
+                        item.UpdateTime
+                    );   
+            }
+            return dt;
+        }
     }
 }

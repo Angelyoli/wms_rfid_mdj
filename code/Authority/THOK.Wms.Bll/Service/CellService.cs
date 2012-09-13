@@ -925,5 +925,187 @@ namespace THOK.Wms.Bll.Service
             }
             return cellCodeStr;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="type"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public System.Data.DataTable GetCell(int page, int rows, string type, string id)
+        {
+            var warehouses = WarehouseRepository.GetQueryable();
+            var areas = AreaRepository.GetQueryable();
+            var shelfs = ShelfRepository.GetQueryable();
+            var cells = CellRepository.GetQueryable();
+            HashSet<WareTree> wareSet = new HashSet<WareTree>();
+            HashSet<WareTree> areaSet = new HashSet<WareTree>();
+            HashSet<WareTree> shelfSet = new HashSet<WareTree>();
+            HashSet<WareTree> cellSet = new HashSet<WareTree>();
+            var set = wareSet;
+            if (type == "area")
+            {
+                areas = areas.Where(a => a.AreaCode == id).OrderBy(a => a.AreaCode).Select(a => a);
+                foreach (var area in areas)//库区
+                {
+                    WareTree areaTree = new WareTree();
+                    areaTree.Code = area.AreaCode;
+                    areaTree.Name = "库区：" + area.AreaName;
+                    areaTree.AreaCode = area.AreaCode;
+                    areaTree.AreaName = area.AreaName;
+                    areaTree.WarehouseCode = area.Warehouse.WarehouseCode;
+                    areaTree.WarehouseName = area.Warehouse.WarehouseName;
+                    areaTree.Type = area.AreaType;
+                    areaTree.Description = area.Description;
+                    areaTree.IsActive = area.IsActive == "1" ? "可用" : "不可用";
+                    areaTree.UpdateTime = area.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss");
+                    areaTree.ShortName = area.ShortName;
+                    areaTree.AllotInOrder = area.AllotInOrder;
+                    areaTree.AllotOutOrder = area.AllotOutOrder;
+                    areaTree.attributes = "area";
+                    areaSet.Add(areaTree);
+                }
+                set = areaSet;
+            }
+            else if (type == "shelf")
+            {
+                shelfs = shelfs.Where(a => a.ShelfCode == id).OrderBy(a => a.ShelfCode).Select(a => a);
+                cells = CellRepository.GetQueryable().Where(c => c.Shelf.ShelfCode == id)
+                                                    .OrderBy(c => c.CellCode).Select(c => c);
+                foreach (var shelf in shelfs)//货架
+                {
+                    WareTree shelfTree = new WareTree();
+                    shelfTree.Code = shelf.ShelfCode;
+                    shelfTree.Name = "货架：" + shelf.ShelfName;
+                    shelfTree.ShelfCode = shelf.ShelfCode;
+                    shelfTree.ShelfName = shelf.ShelfName;
+                    shelfTree.WarehouseCode = shelf.Warehouse.WarehouseCode;
+                    shelfTree.WarehouseName = shelf.Warehouse.WarehouseName;
+                    shelfTree.AreaCode = shelf.Area.AreaCode;
+                    shelfTree.AreaName = shelf.Area.AreaName;
+                    shelfTree.Type = shelf.ShelfType;
+                    shelfTree.Description = shelf.Description;
+                    shelfTree.IsActive = shelf.IsActive == "1" ? "可用" : "不可用";
+                    shelfTree.UpdateTime = shelf.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss");
+                    shelfTree.ShortName = shelf.ShortName;
+                    shelfTree.attributes = "shelf";
+                    foreach (var cell in cells)//货位
+                    {
+                        WareTree cellTree = new WareTree();
+                        cellTree.Code = cell.CellCode;
+                        cellTree.Name = "货位：" + cell.CellName;
+                        cellTree.CellCode = cell.CellCode;
+                        cellTree.CellName = cell.CellName;
+                        cellTree.WarehouseCode = cell.Warehouse.WarehouseCode;
+                        cellTree.WarehouseName = cell.Warehouse.WarehouseName;
+                        cellTree.AreaCode = cell.Area.AreaCode;
+                        cellTree.AreaName = cell.Area.AreaName;
+                        cellTree.ShelfCode = cell.Shelf.ShelfCode;
+                        cellTree.ShelfName = cell.Shelf.ShelfName;
+                        cellTree.Type = cell.CellType;
+                        cellTree.Description = cell.Description;
+                        cellTree.IsActive = cell.IsActive == "1" ? "可用" : "不可用";
+                        cellTree.UpdateTime = cell.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss");
+                        cellTree.ShortName = cell.ShortName;
+                        cellTree.Layer = cell.Layer;
+                        cellTree.MaxQuantity = cell.MaxQuantity;
+                        cellTree.ProductName = cell.Product == null ? string.Empty : cell.Product.ProductName;
+                        cellTree.attributes = "cell";
+                        cellSet.Add(cellTree);
+                    }
+                    shelfSet.Add(shelfTree);
+                }
+                set = cellSet;
+            }
+            else if (type == "cell")
+            {
+                cells = cells.Where(a => a.CellCode == id).OrderBy(a => a.CellCode).Select(a => a);
+                foreach (var cell in cells)//货位
+                {
+                    WareTree cellTree = new WareTree();
+                    cellTree.Code = cell.CellCode;
+                    cellTree.Name = "货位：" + cell.CellName;
+                    cellTree.CellCode = cell.CellCode;
+                    cellTree.CellName = cell.CellName;
+                    cellTree.WarehouseCode = cell.Warehouse.WarehouseCode;
+                    cellTree.WarehouseName = cell.Warehouse.WarehouseName;
+                    cellTree.AreaCode = cell.Area.AreaCode;
+                    cellTree.AreaName = cell.Area.AreaName;
+                    cellTree.ShelfCode = cell.Shelf.ShelfCode;
+                    cellTree.ShelfName = cell.Shelf.ShelfName;
+                    cellTree.Type = cell.CellType;
+                    cellTree.Description = cell.Description;
+                    cellTree.IsActive = cell.IsActive == "1" ? "可用" : "不可用";
+                    cellTree.UpdateTime = cell.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss");
+                    cellTree.ShortName = cell.ShortName;
+                    cellTree.Layer = cell.Layer;
+                    cellTree.MaxQuantity = cell.MaxQuantity;
+                    cellTree.ProductName = cell.Product == null ? string.Empty : cell.Product.ProductName;
+                    cellTree.attributes = "cell";
+                    cellSet.Add(cellTree);
+                }
+                set = cellSet;
+            }
+            else
+            {
+                if (type == null || type == string.Empty)
+                {
+                    warehouses = warehouses.Where(w => w.WarehouseCode == "0101").OrderBy(w => w.WarehouseCode).Select(w => w);
+                }
+                else if (type == "ware")
+                {
+                    warehouses = warehouses.Where(w => w.WarehouseCode == id).OrderBy(w => w.WarehouseCode).Select(w => w);
+                }
+                foreach (var warehouse in warehouses)//仓库
+                {
+                    WareTree wareTree = new WareTree();
+                    wareTree.Code = warehouse.WarehouseCode;
+                    wareTree.Name = "仓库：" + warehouse.WarehouseName;
+                    wareTree.WarehouseCode = warehouse.WarehouseCode;
+                    wareTree.WarehouseName = warehouse.WarehouseName;
+                    wareTree.Type = warehouse.WarehouseType;
+                    wareTree.Description = warehouse.Description;
+                    wareTree.IsActive = warehouse.IsActive == "1" ? "可用" : "不可用";
+                    wareTree.UpdateTime = warehouse.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss");
+                    wareTree.ShortName = warehouse.ShortName;
+                    wareTree.attributes = "ware";
+                    warehouses = warehouses.Where(w => w.WarehouseCode == id);
+                    wareSet.Add(wareTree);
+                }
+                set = wareSet;
+            }
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("名称", typeof(string));
+            dt.Columns.Add("简称", typeof(string));
+            dt.Columns.Add("类型", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("预设卷烟名称", typeof(string));
+            dt.Columns.Add("货位层号", typeof(int));
+            dt.Columns.Add("货位最大量", typeof(int));
+            dt.Columns.Add("时间", typeof(string));
+            dt.Columns.Add("入库顺序", typeof(int));
+            dt.Columns.Add("出库顺序", typeof(int));
+            foreach (var item in set)
+            {
+                dt.Rows.Add
+                    (
+                        item.Name,
+                        item.ShortName,
+                        item.Type,
+                        item.Description,
+                        item.IsActive,
+                        item.ProductName,
+                        item.Layer,
+                        item.MaxQuantity,
+                        item.UpdateTime,
+                        item.AllotInOrder,
+                        item.AllotOutOrder
+                    );
+            }
+            return dt;
+        }
     }
 }

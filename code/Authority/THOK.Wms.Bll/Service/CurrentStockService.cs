@@ -23,7 +23,7 @@ namespace THOK.Wms.Bll.Service
 
         public object GetCellDetails(int page, int rows, string productCode, string ware, string area, string unitType)
         {
-            if (unitType == null || unitType=="")
+            if (unitType == null || unitType == "")
             {
                 unitType = "1";
             }
@@ -52,9 +52,9 @@ namespace THOK.Wms.Bll.Service
                      ProductCode = s.Max(p => p.Product.ProductCode),
                      ProductName = s.Max(p => p.Product.ProductName),
                      Quantity = s.Sum(p => p.Quantity),
-                     UnitName01 =s.Max(p => p.Product.UnitList.Unit01.UnitName),
-                     UnitName02 =s.Max(p => p.Product.UnitList.Unit02.UnitName),
-                     Count01 =s.Max(p => p.Product.UnitList.Unit01.Count),
+                     UnitName01 = s.Max(p => p.Product.UnitList.Unit01.UnitName),
+                     UnitName02 = s.Max(p => p.Product.UnitList.Unit02.UnitName),
+                     Count01 = s.Max(p => p.Product.UnitList.Unit01.Count),
                      Count02 = s.Max(p => p.Product.UnitList.Unit02.Count),
                  });
             int total = storage.Count();
@@ -150,31 +150,22 @@ namespace THOK.Wms.Bll.Service
                     UnitName1 = unitName1,
                     UnitName2 = unitName2,
                     Quantity1 = d.Quantity / count1,
-                    Quantity2 = d.Quantity  / count2,
+                    Quantity2 = d.Quantity / count2,
                     Quantity3 = (d.Quantity % count1) / count2,
                     Quantity = d.Quantity
                 });
-                //return new { total, rows = currentstorage.ToArray() };
-                dt.Columns.Add("商品代码", typeof(string));
-                dt.Columns.Add("商品名称", typeof(string));
-                dt.Columns.Add("商品数量（支）", typeof(decimal));
-                dt.Columns.Add("单位（件）", typeof(string));
+                dt.Columns.Add("卷烟编码", typeof(string));
+                dt.Columns.Add("卷烟名称", typeof(string));
                 dt.Columns.Add("数量（件）", typeof(decimal));
-                dt.Columns.Add("单位（条）", typeof(string));
                 dt.Columns.Add("数量（条）", typeof(decimal));
-                dt.Columns.Add("尾数（条）", typeof(decimal));
                 foreach (var c in currentstorage)
                 {
                     dt.Rows.Add
                         (
                             c.ProductCode,
                             c.ProductName,
-                            c.Quantity,
-                            c.UnitName1,
                             c.Quantity1,
-                            c.UnitName2,
-                            c.Quantity2,
-                            c.Quantity3
+                            c.Quantity2
                         );
                 }
                 return dt;
@@ -192,32 +183,22 @@ namespace THOK.Wms.Bll.Service
                     Quantity3 = (d.Quantity % d.Count01) / d.Count02,
                     Quantity = d.Quantity
                 });
-                //return new { total, rows = currentstorage.ToArray() };
-                dt.Columns.Add("商品代码", typeof(string));
-                dt.Columns.Add("商品名称", typeof(string));
-                dt.Columns.Add("商品数量（支）", typeof(decimal));
-                dt.Columns.Add("单位（件）", typeof(string));
+                dt.Columns.Add("卷烟编码", typeof(string));
+                dt.Columns.Add("卷烟名称", typeof(string));
                 dt.Columns.Add("数量（件）", typeof(decimal));
-                dt.Columns.Add("单位（条）", typeof(string));
                 dt.Columns.Add("数量（条）", typeof(decimal));
-                dt.Columns.Add("尾数（条）", typeof(decimal));
                 foreach (var c in currentstorage)
                 {
                     dt.Rows.Add
                         (
                             c.ProductCode,
                             c.ProductName,
-                            c.Quantity,
-                            c.UnitName1,
                             c.Quantity1,
-                            c.UnitName2,
-                            c.Quantity2,
-                            c.Quantity3
+                            c.Quantity2
                         );
                 }
                 return dt;
             }
-            //return new { total, rows = storage.ToArray() };
             return dt;
         }
     }

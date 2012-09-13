@@ -17,5 +17,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Save(Company company, out string strResult);
 
         object GetParentName(int page, int rows, string queryString, string value);
+
+        System.Data.DataTable GetCompany(int page, int rows, string companyCode, string companyName, string companyType, string isActive);
     }
 }
