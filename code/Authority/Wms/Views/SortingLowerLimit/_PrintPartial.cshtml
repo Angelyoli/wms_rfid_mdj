@@ -1,0 +1,10 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/SortingLowerLimit/CreateExcelToClient/"
+                                + "?sortingLineCode=" + $('#SortingLineCode').val()
+                                + "&sortingLineName=" + $('#SortingLineName').val()
+                                + "&productCode=" + $('#ProductCode').val()
+                                + "&productName=" + $('#ProductName').val()
+                                + "&isActive=" + $('#status').combo('getValue');
+    }
+</script>

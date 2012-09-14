@@ -30,7 +30,7 @@ namespace THOK.Common
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
             NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText1) as NPOI.HSSF.UserModel.HSSFSheet;
-            sheet.PrintSetup.FitHeight = 0;//这个很啃爹，=1 打印的时候只有一页，还给我缩放什么的，搞了我半天。
+            sheet.PrintSetup.FitHeight = 0;//=1 打印的时候只有一页，会缩放。
 
             NPOI.HSSF.UserModel.HSSFCellStyle cellStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;

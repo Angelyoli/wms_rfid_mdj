@@ -81,5 +81,33 @@ namespace Authority.Controllers.Wms.SortingInfo
             string msg = bResult ? "生成成功" : "生成失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /SortingLowerLimit/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string sortingLineCode = Request.QueryString["sortingLineCode"];
+            string sortingLineName = Request.QueryString["sortingLineName"];
+            string productName = Request.QueryString["productName"];
+            string productCode = Request.QueryString["productCode"];
+            string isActive = Request.QueryString["IsActive"];
+
+            System.Data.DataTable dt = SortingLowerlimitService.GetSortingLowerlimit(page, rows, sortingLineCode, sortingLineName, productName,productCode, isActive);
+            string headText = "备货区下限设置";
+            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }
