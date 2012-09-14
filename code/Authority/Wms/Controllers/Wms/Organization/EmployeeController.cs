@@ -30,6 +30,16 @@ namespace Authority.Controllers.Organization
             return View();
         }
 
+        public ActionResult AddPage()
+        {
+            return View();
+        }
+
+        public ActionResult SearchPage()
+        {
+            return View();
+        }
+
         //
         // GET: /Employee/Details/
 
