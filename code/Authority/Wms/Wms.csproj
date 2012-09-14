@@ -1256,13 +1256,13 @@
     <Content Include="Views\CellAnalysis\Index.cshtml" />
     <Content Include="Views\Department\AddPage.cshtml" />
     <Content Include="Views\Department\SearchPage.cshtml" />
-
     <Content Include="Views\Brand\_PrintPartial.cshtml" />
     <Content Include="Views\CheckBillType\_PrintPartial.cshtml" />
-
     <Content Include="Views\Employee\AddPage.cshtml" />
     <Content Include="Views\Employee\SearchPage.cshtml" />
-
+    <Content Include="Views\Distribution\_PrintPartial.cshtml" />
+    <Content Include="Views\Cargospace\_PrintPartial.cshtml" />
+    <Content Include="Views\DailyBalance\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -1547,6 +1547,7 @@
     <Content Include="Views\StockOutBillType\_PrintPartial.cshtml" />
     <Content Include="Views\StockMoveBillType\_PrintPartial.cshtml" />
     <Content Include="Views\ProfitLossBillType\_PrintPartial.cshtml" />
+    <Content Include="Views\Stockledger\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
