@@ -165,13 +165,14 @@ namespace THOK.Common
                     NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                     foreach (System.Data.DataColumn column in dt1.Columns)
                     {
+                        NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
+
                         headStyle2.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
                         dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
 
-                        NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
                         string drValue = row[column].ToString();
                         switch (column.DataType.ToString())
                         {
@@ -289,13 +290,14 @@ namespace THOK.Common
                     NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                     foreach (System.Data.DataColumn column in dt2.Columns)
                     {
+                        NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
+
                         headStyle2.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
                         dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
 
-                        NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
                         string drValue = row[column].ToString();
                         switch (column.DataType.ToString())
                         {
