@@ -37,7 +37,7 @@
                     </td>
                     <td width="168">
                         <input name="CompanyID" id="companyId" style="display: none;" />
-                        <input name="CompanyName" id="companyName" readonly="readonly" class="easyui-validatebox" />
+                        <input name="CompanyName" id="companyName" readonly="readonly" class="easyui-validatebox" required="true"/>
                         <a href="#" id="companySearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                             onclick="companySearchClick()"></a>
                     </td>
@@ -48,7 +48,7 @@
                     </td>
                     <td>
                         <input name="ParentDepartmentID" id="parentDepartId" style="display: none;" />
-                        <input name="ParentDepartmentName" id="parentDepartName" readonly="readonly" />
+                        <input name="ParentDepartmentName" id="parentDepartName" readonly="readonly" class="easyui-validatebox" required="true"/>
                         <a href="#" id="parentCodeSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="parentCodeSearchClick()"></a>
                     </td>
