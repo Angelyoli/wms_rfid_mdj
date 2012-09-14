@@ -128,6 +128,7 @@
     <Compile Include="Controllers\Wms\Inventory\DistributionController.cs" />
     <Compile Include="Controllers\Wms\Inventory\HistoricalDetailController.cs" />
     <Compile Include="Controllers\Wms\Inventory\StockledgerController.cs" />
+    <Compile Include="Controllers\Wms\ProductQuality\CellAnalysisController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductTimeOutController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductWarningController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\QuantityLimitsController.cs" />
@@ -1251,6 +1252,8 @@
     <Content Include="Views\HelpContent\Index.cshtml" />
     <Content Include="Views\CurrentStock\_PrintPartial.cshtml" />
     <Content Include="Views\HelpContent\_SearchPartial.cshtml" />
+    <Content Include="Views\DefaultProductSet\_PrintPartial.cshtml" />
+    <Content Include="Views\CellAnalysis\Index.cshtml" />
     <Content Include="Views\Department\AddPage.cshtml" />
     <Content Include="Views\Department\SearchPage.cshtml" />
     <Content Include="Views\Employee\AddPage.cshtml" />
@@ -1529,6 +1532,7 @@
     <Content Include="Views\QuantityLimits\_UnitPartial.cshtml" />
     <Content Include="Views\StorageAnalysis\Index.cshtml" />
     <Content Include="Views\Warehouse2\_PrintPartial.cshtml" />
+    <Content Include="Views\Product\_PrintPartial.cshtml" />
     <Content Include="Views\Job\AddPage.cshtml" />
     <Content Include="Views\Job\SearchPage.cshtml" />
   </ItemGroup>
@@ -1552,7 +1556,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>5617</DevelopmentServerPort>
+          <DevelopmentServerPort>9543</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

@@ -420,6 +420,43 @@ namespace THOK.Wms.Bll.Service
             return cell;
         }
         
+        public System.Data.DataTable GetCellByE(int page, int rows, string QueryString, string Value)
+         {
+             string productCode = "", productName = "";
+ 
+             if (QueryString == "ProductCode")
+             {
+                 productCode = Value;
+             }
+             else
+             {
+                 productName = Value;
+             }
+             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+             var cell = cellQuery.Where(c => c.Product != null && c.DefaultProductCode.Contains(productCode) && c.Product.ProductName.Contains(productName))
+                  .GroupBy(c => c.Product)
+                  .Select(c => new
+                  {
+                      ProductCode = c.Key.ProductCode,
+                      ProductName = c.Key.ProductName,
+                      ProductQuantity = c.Count()
+                  });
+             System.Data.DataTable dt = new System.Data.DataTable();
+             dt.Columns.Add("卷烟编码", typeof(string));
+             dt.Columns.Add("卷烟名称", typeof(string));
+             dt.Columns.Add("卷烟数量", typeof(string));
+             foreach (var item in cell)
+             {
+                 dt.Rows.Add
+                     (
+                         item.ProductCode,
+                         item.ProductName,
+                         item.ProductQuantity
+                     );
+             }
+             return dt;
+         }
+
         /// <summary>查找卷烟信息</summary>
         public object GetCellInfo(string productCode)
         {
