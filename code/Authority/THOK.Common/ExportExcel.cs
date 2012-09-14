@@ -151,7 +151,7 @@ namespace THOK.Common
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                 headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                                 //设置列宽
-                                //sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);
+                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);
                                 //sheet.SetColumnWidth(0, 30 * 256);
                                 //sheet.AutoSizeColumn((arrColWidth[column.Ordinal] + 1) * 256);
                             }
@@ -163,16 +163,19 @@ namespace THOK.Common
                     #region 填充内容
                     NPOI.HSSF.UserModel.HSSFRow dataRow = sheet.CreateRow(rowIndex) as NPOI.HSSF.UserModel.HSSFRow;
                     NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
+                    NPOI.HSSF.UserModel.HSSFFont contentFont = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
+                    contentFont.FontName="宋体";
+                    contentFont.FontHeightInPoints = colHeadSize;
                     foreach (System.Data.DataColumn column in dt1.Columns)
                     {
                         NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
-
+ 
                         headStyle2.BorderBottom = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderLeft = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderRight = NPOI.SS.UserModel.BorderStyle.THIN;
                         headStyle2.BorderTop = NPOI.SS.UserModel.BorderStyle.THIN;
+                        headStyle2.SetFont(contentFont);
                         dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
-
                         string drValue = row[column].ToString();
                         switch (column.DataType.ToString())
                         {

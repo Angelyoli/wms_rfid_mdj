@@ -51,7 +51,7 @@ namespace Authority.Controllers.Wms.Inventory
             System.Data.DataTable dt = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType, out areaName);
             string headText = "当前库存--" + areaName;
             string headFontName = "微软雅黑"; Int16 headFontSize = 20;
-            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; Int16 colHeadWidth = 300;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 12; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
             string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
 
