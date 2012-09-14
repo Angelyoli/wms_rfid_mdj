@@ -11,5 +11,7 @@ namespace THOK.Wms.Bll.Interfaces
         //object GetCellDetails(int page, int rows, string type, string id);
 
         object GetCellDetails(int page, int rows, string beginDate, string endDate, string type, string id);
+
+        System.Data.DataTable GetCellHistory(int page, int rows, string beginDate, string endDate, string type, string id);
     }
 }
