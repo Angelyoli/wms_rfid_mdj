@@ -306,5 +306,95 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = storage.ToArray() };
         }
 
+
+        public System.Data.DataTable GetDistribution(int page, int rows, string type, string id, string unitType, string productCode)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            if (unitType == null || unitType == "")
+            {
+                unitType = "1";
+            }
+            if (productCode == null || productCode == "")
+            {
+                productCode = "New";
+            }
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+            var storages = storageQuery.Where(s => s.StorageCode != null && s.ProductCode == productCode);
+
+            if (type == "ware")
+            {
+                storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id && s.ProductCode == productCode);
+            }
+            else if (type == "area")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.Area.AreaCode == id && s.ProductCode == productCode);
+            }
+            else if (type == "shelf")
+            {
+                storages = storageQuery.Where(s => s.Cell.Shelf.ShelfCode == id && s.ProductCode == productCode);
+            }
+            var storage = storages.OrderBy(s => s.Product.ProductName).Where(s => s.Quantity > 0);
+            
+            if (unitType == "1")
+            {                
+                decimal count1 = 10000;
+                decimal count2 = 200;
+                var currentstorage = storage.ToArray().Select(d => new
+                {
+                    ProductCode = d.ProductCode,
+                    ProductName = d.Product.ProductName,
+                    Quantity1 = d.Quantity / count1,
+                    Quantity2 = d.Quantity / count2,
+                    StorageTime = d.StorageTime.ToString("yyyy-MM-dd")
+                });
+                dt.Columns.Add("商品编码", typeof(string));
+                dt.Columns.Add("商品名称", typeof(string));
+                dt.Columns.Add("数量（件）", typeof(string));
+                dt.Columns.Add("数量（条）", typeof(string));
+                dt.Columns.Add("入库时间", typeof(string));
+                foreach (var item in currentstorage)
+                {
+                    dt.Rows.Add
+                        (
+                            item.ProductCode,
+                            item.ProductName,
+                            item.Quantity1,
+                            item.Quantity2,
+                            item.StorageTime
+                        );
+                }
+                return dt;
+            }
+            if (unitType == "2")
+            {
+                var currentstorage = storage.ToArray().Select(d => new
+                {
+                    ProductCode = d.ProductCode,
+                    ProductName = d.Product.ProductName,
+                    Quantity1 = d.Quantity / d.Product.UnitList.Unit01.Count,
+                    Quantity2 = d.Quantity / d.Product.UnitList.Unit02.Count,
+                    Quantity = d.Quantity,
+                    StorageTime = d.StorageTime.ToString("yyyy-MM-dd")
+                });
+                dt.Columns.Add("商品编码", typeof(string));
+                dt.Columns.Add("商品名称", typeof(string));
+                dt.Columns.Add("数量（件）", typeof(string));
+                dt.Columns.Add("数量（条）", typeof(string));
+                dt.Columns.Add("入库时间", typeof(string));
+                foreach (var item in currentstorage)
+                {
+                    dt.Rows.Add
+                        (
+                            item.ProductCode,
+                            item.ProductName,
+                            item.Quantity1,
+                            item.Quantity2,
+                            item.StorageTime
+                        );
+                }
+                return dt;
+            }
+            return dt;
+        }
     }
 }

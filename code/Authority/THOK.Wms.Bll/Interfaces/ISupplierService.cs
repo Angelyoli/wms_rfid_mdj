@@ -15,5 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string SupplierCode);
 
         bool Save(Supplier supplier);
+
+        System.Data.DataTable GetSupplier(int page, int rows, string SupplierCode, string SupplierName, string IsActive);
     }
 }

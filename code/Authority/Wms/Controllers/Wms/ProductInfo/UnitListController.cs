@@ -81,5 +81,51 @@ namespace Authority.Controllers.Wms.ProductInfo
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
+        #region /UnitList/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string unitListCode = Request.QueryString["unitListCode"];
+            string unitListName = Request.QueryString["unitListName"];
+            string uniformCode = Request.QueryString["uniformCode"];
+            string unitCode1 = Request.QueryString["unitCode1"];
+            string unitCode2 = Request.QueryString["unitCode2"];
+            string unitCode3 = Request.QueryString["unitCode3"];
+            string unitCode4 = Request.QueryString["unitCode4"];
+            string isActive = Request.QueryString["isActive"];
+            UnitList unitlist = new UnitList();
+            unitlist.UnitListCode = unitListCode;
+            unitlist.UnitListName = unitListName;
+            unitlist.UniformCode = uniformCode;
+            unitlist.UnitCode01 = unitCode1;
+            unitlist.UnitCode02 = unitCode2;
+            unitlist.UnitCode03 = unitCode3;
+            unitlist.UnitCode04 = unitCode4;
+            unitlist.IsActive = isActive;
+
+            System.Data.DataTable dt = UnitListService.GetUnitList(page, rows, unitlist);
+            string headText = "单位系列";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            this.GetResponse(headText);
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize,
+                colHeadFont, colHeadSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
+
+        #region this.GetResponse
+        private void GetResponse(string headText)
+        {
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+        }
+        #endregion
     }
 }
