@@ -116,8 +116,7 @@
                         电话：
                     </td>
                     <td>
-                        <input name="Tel" class="easyui-numberbox" type="text" min="6" max="13" required="true"
-                            missingmessage="请输入电话号码（必须为数字）" />
+                        <input name="Tel" class="easyui-numberbox" type="text" missingmessage="请输入电话号码（必须为数字）" />
                     </td>
                 </tr>
                 <tr>
@@ -152,7 +151,7 @@
                     </td>
                     <td width="168">
                         <input name="DepartmentID" id="departId" style="display: none;" />
-                        <input name="DepartmentName" id="departName" readonly="readonly" class="easyui-validatebox" />
+                        <input name="DepartmentName" id="departName" readonly="readonly" />
                         <a href="#" id="departNameSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="departNameSearchClick()"></a>
                     </td>
@@ -171,7 +170,7 @@
                         用户名称：
                     </td>
                     <td width="168" colspan="3">
-                        <input name="UserName" id="user-add" readonly="readonly" class="easyui-validatebox" />
+                        <input name="UserName" id="user-add" readonly="readonly" />
                         <a href="#" id="userSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                             onclick="userSearchClick()"></a>
                     </td>
