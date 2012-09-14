@@ -22,7 +22,7 @@
         });
     }
 
-    //¼ÓÔØÐÂÔö¡¢±à¼­ºÍÉ¾³ý´°Ìå
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½
     function showDialog(title) {
         if (addDialog == null) {
             addDialog = $('<div></div>').dialog({
@@ -34,24 +34,24 @@
                 modal: true,
                 href: '/Employee/AddPage/',
                 buttons: [{
-                    text: 'È·¶¨',
+                    text: 'È·ï¿½ï¿½',
                     iconCls: 'icon-ok',
                     handler: function () {
                         save();
                     }
                 }, {
-                    text: 'È¡Ïû',
+                    text: 'È¡ï¿½ï¿½',
                     iconCls: 'icon-cancel',
                     handler: function () {
                         addDialog.dialog('close');
                     }
                 }],
                 onLoad: function () {
-                    if (title == '±à¼­') {
+                    if (title == 'ï¿½à¼­') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', erow);
                     }
-                    else if (title == 'É¾³ý') {
+                    else if (title == 'É¾ï¿½ï¿½') {
                         var drow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', drow);
                         $('form input').attr("disabled", "disabled");
@@ -67,7 +67,7 @@
 
     function addClick() {
         AddLoad();
-        showDialog('ÐÂÔö');
+        showDialog('ï¿½ï¿½ï¿½ï¿½');
         addDialog.dialog('open');
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
@@ -86,7 +86,7 @@
 
     function save() {
         if ($("#desId").val().length > 100) {
-            $.messager.alert("ÌáÊ¾", "ÃèÊöÓ¦Ð¡ÓÚ100¸ö×Ö(°üÀ¨¿Õ¸ñ)", "info");
+            $.messager.alert("ï¿½ï¿½Ê¾", "ï¿½ï¿½ï¿½ï¿½Ó¦Ð¡ï¿½ï¿½100ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½)", "info");
             return false
         }
         $('form input').removeAttr("disabled");
@@ -110,17 +110,17 @@
         });
     }
     function departNameSearchClick() {
-        $('#departNameData').dialog('open').dialog('setTitle', 'Ñ¡Ôñ¸ºÔðÈË');
+        $('#departNameData').dialog('open').dialog('setTitle', 'Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½');
         $('#departNameDetail').datagrid({ url: '/Department/GetDepartment/' });
         $("#departNameDetail").datagrid('reload');
     }
     function jobSearchClick() {
-        $('#jobData').dialog('open').dialog('setTitle', 'Ñ¡Ôñ¸ÚÎ»');
+        $('#jobData').dialog('open').dialog('setTitle', 'Ñ¡ï¿½ï¿½ï¿½Î»');
         $('#jobDetail').datagrid({ url: '/Job/GetJob/' });
         $("#jobDetail").datagrid('reload');
     }
     function userSearchClick() {
-        $('#userData').dialog('open').dialog('setTitle', 'Ñ¡ÔñÓÃ»§');
+        $('#userData').dialog('open').dialog('setTitle', 'Ñ¡ï¿½ï¿½ï¿½Ã»ï¿½');
         $('#userDetail').datagrid({ url: '/User/GetUser/' });
         $("#userDetail").datagrid('reload');
     }
