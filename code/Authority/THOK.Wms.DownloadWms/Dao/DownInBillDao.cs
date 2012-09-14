@@ -72,7 +72,51 @@ namespace THOK.WMS.DownloadWms.Dao
         {
             string sql = "SELECT * FROM WMS_EMPLOYEE WHERE USER_NAME='" + userName + "'";
             return this.ExecuteQuery(sql).Tables[0];
-        }  
+        }
+
+        /// <summary>
+        /// 查询营销系统入库单据主表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMiddleInBillMaster(string inBillNoList)
+        {
+            string sql = string.Format(@"SELECT BB_UUID AS BILL_NO,BB_INPUT_DATE AS BILL_DATE FROM S_BILL_BASE WHERE {0}", inBillNoList);
+            return this.ExecuteQuery(sql).Tables[0];
+        }
+
+        /// <summary>
+        /// 查询营销系统入库明细表
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMiddleInBillDetail(string inBillNoList)
+        {
+            string sql = string.Format(@"SELECT BD_BB_UUID AS BILL_NO,
+                                        SUBSTRING(BD_BCIG_CODE,8,5) AS PRODUCT_CODE,
+                                        BD_BCIG_NAME AS PRODUCT_NAME,BD_BILL_PNUM AS QUANTITY,
+                                        BD_BILL_ALL_BNUM AS TIAO,BD_BILL_ALL_NUM1 AS BILL_QUANTITY                                       
+                                        FROM S_BILL_DETAIL WHERE {0}", inBillNoList);
+            return this.ExecuteQuery(sql).Tables[0];
+        }
+
+
+        /// <summary>
+        /// 插入数据到中间表
+        /// </summary>
+        /// <param name="ds"></param>
+        public void InsertMiddle(DataSet ds)
+        {
+            BatchInsert(ds.Tables["WMS_MIDDLE_IN_BILLDETAIL"], "wms_middle_in_Bill");
+        }
+
+        /// <summary>
+        /// 查询中间表7天内单据
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetMiddleBillNo()
+        {
+            string sql = "SELECT BILL_NO FROM WMS_MIDDLE_IN_BILL WHERE BILL_DATE>=DATEADD(DAY, -4, CONVERT(VARCHAR(14), GETDATE(), 112)) ORDER BY BILL_DATE";
+            return this.ExecuteQuery(sql).Tables[0];
+        }
 
     }
 }
