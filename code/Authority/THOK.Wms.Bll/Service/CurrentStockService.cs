@@ -13,6 +13,8 @@ namespace THOK.Wms.Bll.Service
     {
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
+        [Dependency]
+        public IAreaRepository AreaRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -100,14 +102,21 @@ namespace THOK.Wms.Bll.Service
         #endregion
 
 
-        public System.Data.DataTable GetCurrentStock(int page, int rows, string productCode, string ware, string area, string unitType)
+        public System.Data.DataTable GetCurrentStock(int page, int rows, string productCode, string ware, string area, string unitType, out string areaName)
         {
+            areaName = string.Empty;
             if (unitType == null || unitType == "")
             {
                 unitType = "1";
             }
             System.Data.DataTable dt = new System.Data.DataTable();
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+            IQueryable<Area> areaQuery = AreaRepository.GetQueryable();
+            var areas = areaQuery.Where(a => area.Contains(a.AreaCode)).ToArray();
+            foreach (var item in areas)
+            {
+                areaName += item.AreaName;
+            }
             var storages = storageQuery.Where(s => s.Quantity > 0);
             if (ware != null && ware != string.Empty || area != null && area != string.Empty)
             {
@@ -121,6 +130,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 storages = storages.Where(s => (ware.Contains(s.Cell.Shelf.Area.Warehouse.WarehouseCode) || area.Contains(s.Cell.Shelf.Area.AreaCode)));
             }
+            
             if (productCode != string.Empty)
             {
                 storages = storages.Where(s => s.ProductCode == productCode);
@@ -136,7 +146,7 @@ namespace THOK.Wms.Bll.Service
                      Count01 = s.Max(p => p.Product.UnitList.Unit01.Count),
                      Count02 = s.Max(p => p.Product.UnitList.Unit02.Count),
                  });
-            storage = storage.OrderBy(s => s.ProductCode);
+            storage = storage.OrderBy(s => s.ProductCode);           
             if (unitType == "1")
             {
                 string unitName1 = "标准件";
@@ -165,7 +175,7 @@ namespace THOK.Wms.Bll.Service
                             c.ProductCode,
                             c.ProductName,
                             c.Quantity1,
-                            c.Quantity2
+                            c.Quantity3
                         );
                 }
                 return dt;
@@ -194,7 +204,7 @@ namespace THOK.Wms.Bll.Service
                             c.ProductCode,
                             c.ProductName,
                             c.Quantity1,
-                            c.Quantity2
+                            c.Quantity3
                         );
                 }
                 return dt;

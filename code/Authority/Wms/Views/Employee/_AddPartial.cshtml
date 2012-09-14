@@ -1,6 +1,6 @@
 <script type="text/javascript">
     var url;
-
+    var addDialog;
     function AddLoad() {
         $('#Status').combo({
             required: true,
@@ -22,9 +22,55 @@
         });
     }
 
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à¼­ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½
+    function showDialog(title) {
+        if (addDialog == null) {
+            addDialog = $('<div></div>').dialog({
+                title: title,
+                width: 560,
+                height: 320,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Employee/AddPage/',
+                buttons: [{
+                    text: 'È·ï¿½ï¿½',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        save();
+                    }
+                }, {
+                    text: 'È¡ï¿½ï¿½',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        addDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                    if (title == 'ï¿½à¼­') {
+                        var erow = $('#details').datagrid('getSelected');
+                        $('#fm').form('load', erow);
+                    }
+                    else if (title == 'É¾ï¿½ï¿½') {
+                        var drow = $('#details').datagrid('getSelected');
+                        $('#fm').form('load', drow);
+                        $('form input').attr("disabled", "disabled");
+                        $('form textarea').attr("disabled", "disabled");
+                    }
+                }
+            });
+        }
+        else {
+            addDialog.dialog({ title: title });
+        }
+    }
+
     function addClick() {
         AddLoad();
-        $('#dlg').dialog('open').dialog('setTitle', 'ÐÂÔö');
+        showDialog('ï¿½ï¿½ï¿½ï¿½');
+        addDialog.dialog('open');
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
@@ -40,9 +86,11 @@
 
     function save() {
         if ($("#desId").val().length > 100) {
-            $.messager.alert("ÌáÊ¾", "ÃèÊöÓ¦Ð¡ÓÚ100¸ö×Ö(°üÀ¨¿Õ¸ñ)", "info");
+            $.messager.alert("ï¿½ï¿½Ê¾", "ï¿½ï¿½ï¿½ï¿½Ó¦Ð¡ï¿½ï¿½100ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½)", "info");
             return false
         }
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('submit', {
             url: url,
             onSubmit: function () {
@@ -52,7 +100,7 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#dlg').dialog('close');
+                    addDialog.dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
@@ -62,137 +110,18 @@
         });
     }
     function departNameSearchClick() {
-        $('#departNameData').dialog('open').dialog('setTitle', 'Ñ¡Ôñ¸ºÔðÈË');
+        $('#departNameData').dialog('open').dialog('setTitle', 'Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½');
         $('#departNameDetail').datagrid({ url: '/Department/GetDepartment/' });
         $("#departNameDetail").datagrid('reload');
     }
     function jobSearchClick() {
-        $('#jobData').dialog('open').dialog('setTitle', 'Ñ¡Ôñ¸ÚÎ»');
+        $('#jobData').dialog('open').dialog('setTitle', 'Ñ¡ï¿½ï¿½ï¿½Î»');
         $('#jobDetail').datagrid({ url: '/Job/GetJob/' });
         $("#jobDetail").datagrid('reload');
     }
     function userSearchClick() {
-        $('#userData').dialog('open').dialog('setTitle', 'Ñ¡ÔñÓÃ»§');
+        $('#userData').dialog('open').dialog('setTitle', 'Ñ¡ï¿½ï¿½ï¿½Ã»ï¿½');
         $('#userDetail').datagrid({ url: '/User/GetUser/' });
         $("#userDetail").datagrid('reload');
     }
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 560px; height: 320px;
-    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
-    <div class="easyui-layout" fit="true">
-        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
-            border: 1px solid #ccc;">
-            <form id="fm" method="post" novalidate>
-            <table width="520">
-                <tr>
-                    <td width="60" align="right">
-                        Ô±¹¤±àÂë£º
-                    </td>
-                    <td width="168">
-                        <input name="EmployeeCode" id="inputEmployeeCode" class="easyui-validatebox" validtype="maxLength[8]"
-                            required="true" />
-                        <input name="ID" style="display: none" />
-                    </td>
-                    <td width="60" align="right">
-                        Ô±¹¤ÐÕÃû£º
-                    </td>
-                    <td width="168">
-                        <input name="EmployeeName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        ÐÔ±ð£º
-                    </td>
-                    <td>
-                        <select id="sex" name="Sex" class="easyui-combobox" style="width: 130px" class="easyui-validatebox"
-                            required="true">
-                            <option value="ÄÐ">ÄÐ</option>
-                            <option value="Å®">Å®</option>
-                            <option value="±£ÃÜ">±£ÃÜ</option>
-                        </select>
-                    </td>
-                    <td align="right">
-                        µç»°£º
-                    </td>
-                    <td>
-                        <input name="Tel" class="easyui-numberbox" type="text" missingmessage="ÇëÊäÈëµç»°ºÅÂë£¨±ØÐëÎªÊý×Ö£©" />
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        ×´Ì¬£º
-                    </td>
-                    <td>
-                        <select id="Status" name="Status" class="easyui-combobox" style="width: 130px">
-                            <option value="3701">ÔÚÖ°</option>
-                            <option value="3702">ÀëÖ°</option>
-                            <option value="3703">ÍËÐÝ</option>
-                            <option value="3704">ÊÔÓÃ</option>
-                            <option value="3705">Íâµ÷</option>
-                            <option value="3706">Í£Ð½ÁôÖ°</option>
-                            <option value="3707">½èÓÃ</option>
-                            <option value="3708">ÆäËû</option>
-                        </select>
-                    </td>
-                    <td align="right">
-                        ÊÇ·ñ¿ÉÓÃ£º
-                    </td>
-                    <td>
-                        <select id="isActive_emp" name="IsActive" class="easyui-combobox" style="width: 130px">
-                            <option value="1">¿ÉÓÃ</option>
-                            <option value="0">²»¿ÉÓÃ</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        ²¿ÃÅÃû³Æ£º
-                    </td>
-                    <td width="168">
-                        <input name="DepartmentID" id="departId" style="display: none;" />
-                        <input name="DepartmentName" id="departName" readonly="readonly" />
-                        <a href="#" id="departNameSearch" class="easyui-linkbutton" iconcls="icon-search"
-                            plain="true" onclick="departNameSearchClick()"></a>
-                    </td>
-                    <td width="60" align="right">
-                        ¸ÚÎ»£º
-                    </td>
-                    <td width="168">
-                        <input name="JobID" id="jobId" required="true" style="display: none;" />
-                        <input name="JobName" id="jobName" required="true" readonly="readonly" class="easyui-validatebox" />
-                        <a href="#" id="jobSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
-                            onclick="jobSearchClick()"></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        ÓÃ»§Ãû³Æ£º
-                    </td>
-                    <td width="168" colspan="3">
-                        <input name="UserName" id="user-add" readonly="readonly" />
-                        <a href="#" id="userSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
-                            onclick="userSearchClick()"></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60" align="right">
-                        ÃèÊö£º
-                    </td>
-                    <td width="168" colspan="3">
-                        <textarea name="Description" id="desId" style="width: 385px; height: 80px"></textarea>
-                    </td>
-                </tr>
-            </table>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="dlg-buttons">
-    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">È·¶¨</a>
-    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
-        È¡Ïû</a>
-</div>
-@Html.Partial("_DepartmentNamePartial")
-@Html.Partial("_JobPartial")
-@Html.Partial("_UserNamePartial")
