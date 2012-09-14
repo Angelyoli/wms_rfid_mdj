@@ -76,5 +76,44 @@ namespace Authority.Controllers.ProductInfo
             var product = ProductService.checkFindProduct();
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /Product/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string productName = Request.QueryString["productName"];
+            string productCode = Request.QueryString["productCode"];
+            string customCode = Request.QueryString["customCode"];
+            string brandCode = Request.QueryString["brandCode"];
+            string uniformCode = Request.QueryString["uniformCode"];
+            string abcTypeCode = Request.QueryString["abcTypeCode"];
+            string shortCode = Request.QueryString["shortCode"];
+            string priceLevelCode = Request.QueryString["priceLevelCode"];
+            string supplierCode = Request.QueryString["supplierCode"];
+
+            System.Data.DataTable dt = ProductService.GetProduct(page, rows, productName, productCode, customCode, brandCode, uniformCode, abcTypeCode, shortCode, priceLevelCode, supplierCode);
+            string headText = "公司信息";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            this.GetResponse(headText);
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize,
+                colHeadFont, colHeadSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
+
+        #region this.GetResponse
+        private void GetResponse(string headText)
+        {
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+        }
+        #endregion
     }
 }
