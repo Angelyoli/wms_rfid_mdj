@@ -242,7 +242,7 @@ namespace THOK.WMS.DownloadWms.Bll
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public bool GetInBill(string startDate, string endDate, string EmployeeCode, string wareCode, string billtype, out string errorInfo)
+        public bool GetInBillMiddle(string startDate, string endDate, string EmployeeCode, string wareCode, string billtype, out string errorInfo)
         {
             bool tag = false;
             Employee = EmployeeCode;
