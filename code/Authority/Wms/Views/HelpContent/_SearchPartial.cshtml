@@ -1,1 +1,85 @@
-﻿
+﻿<script type="text/javascript">
+
+    function searchClick() {
+        $('#isActive').combo({
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        $("input[type=text]").attr("value", "");
+    };
+
+    function S_select() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ContentName = $('#S_ContentName').val();
+        queryParams.ModuleName = $('#S_module_ID').val();
+        queryParams.IsActive = $('#S_isActive').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $('#details').datagrid({
+            pageNumber: 1,
+            pageSize: 10
+        });
+        $("#masters").datagrid('reload');
+        $('#dlg-search').dialog('close');
+    }
+    function helpSelect3() {
+        $('#helpData2').dialog('open').dialog('setTitle', '选择模块信息');
+        $('#helpDetail2').datagrid({ url: '/Module/Details2/' });
+        $("#helpDetail2").datagrid('reload');
+    }
+    function helpSelect4() {
+        $('#helpData1').dialog('open').dialog('setTitle', '选择父结点');
+        $('#helpDetail1').datagrid({ url: '/HelpContent/Details/' });
+        $("#helpDetail1").datagrid('reload');
+    }
+</script>
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 280px; height: 210px;
+    padding: 2px 2px" closed="true" buttons="#dlg-buttons-research">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <table width="250">
+                <tr>
+                    <td width="60">
+                        目录名称：
+                    </td>
+                    <td width="168">
+                        <input id="S_ContentName" type="text"/>
+                        <a href="#" id="S_ContentNameSearch" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="helpSelect4()"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        模块名称：
+                    </td>
+                    <td width="168">
+                        <input id="S_module_ID" type="text"/>
+                        <a href="#" id="S_module_IDSearch" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="helpSelect3()"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        状态:
+                    </td>
+                    <td>
+                        <select id="S_isActive" class="easyui-combobox" style="width: 130px">
+                            <option value="">请选择</option>
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-research">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="S_select()">查询</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">
+        取消</a>
+</div>
+@Html.Partial("_helpPartial1") 
+@Html.Partial("_helpPartial2") 

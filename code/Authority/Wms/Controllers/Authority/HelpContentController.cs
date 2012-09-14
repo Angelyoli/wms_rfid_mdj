@@ -7,6 +7,7 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Authority.DbModel;
 using THOK.Authority.Bll.Interfaces;
+using System;
 
 namespace Authority.Controllers.Authority
 {
@@ -37,6 +38,47 @@ namespace Authority.Controllers.Authority
             bool bResult = HelpContentService.Add(helpContent, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // GET: /HelpContent/Details/
+
+        public ActionResult Details(int page, int rows, string QueryString, string Value)
+        {
+            if (QueryString == null)
+            {
+                QueryString = "ContentName";
+            }
+            if (Value == null)
+            {
+                Value = "";
+            }
+            var product = HelpContentService.GetDetails(page, rows, QueryString, Value);
+            return Json(product, "text", JsonRequestBehavior.AllowGet);
+        }
+        // GET: /HelpContent/Details/
+
+        public ActionResult Details2(int page, int rows, FormCollection collection)
+        {
+            string ContentCode = collection["ContentCode"] ?? "";
+            string ContentName = collection["ContentName"] ?? "";
+            string ModuleName = collection["ModuleName"] ?? "";
+            string NodeType = collection["NodeType"] ?? "";
+            string FatherNodeID = collection["FatherNodeID"] ?? "";
+            string ModuleID = collection["ModuleID"] ?? "";
+            string NodeOrder = collection["NodeOrder"] ?? "";
+            string IsActive = collection["IsActive"] ?? "";
+            string UpdateTime = collection["UpdateTime"] ?? "";
+            var users = HelpContentService.GetDetails2(page, rows, ContentCode, ContentName, ModuleName, NodeType, FatherNodeID, NodeOrder, ModuleID, IsActive, UpdateTime);
+            return Json(users, "text", JsonRequestBehavior.AllowGet);
+        }
+        // POST: /HelpContent/Edit/
+        [HttpPost]
+        public ActionResult Edit(string ID, string ContentCode, string ContentName, string ContentPath, string NodeType , string FatherNodeID,string ModuleID,int NodeOrder, string IsActive)
+        {
+            bool bResult = HelpContentService.Save(ID, ContentCode, ContentName, ContentPath,  FatherNodeID,ModuleID,NodeOrder,IsActive);
+            string msg = bResult ? "修改成功" : "修改失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

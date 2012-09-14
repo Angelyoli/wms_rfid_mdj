@@ -2,8 +2,8 @@
     function editClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            url = '/UnitList/Edit/';
-            $('#dlg-add').dialog('open').dialog('setTitle', '编辑单位系列信息');
+            url = '/HelpContent/Edit/';
+            $('#dlg').dialog('open').dialog('setTitle', '编辑目录帮助信息');
             $('#helpfm').form('load', row);
             $('#helpfm .easyui-validatebox').validatebox({
                 required: true
@@ -14,8 +14,8 @@
                 $('#IsActive').combo('setValue', 0).combo('setText', row.IsActive);
             }
             $('form input').removeAttr("disabled");
-            $('#unitListCode').attr("readonly", true);
-            $('#IsActive').combo({
+            $('#ContentCode').attr("readonly", true);
+            $('#isActive_com').combo({
                 hasDownArrow: true
             });
         } else {

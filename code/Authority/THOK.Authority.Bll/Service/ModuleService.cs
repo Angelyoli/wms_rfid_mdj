@@ -863,5 +863,39 @@ namespace THOK.Authority.Bll.Service
         }
 
         #endregion
+
+
+        #region IModuleService 成员
+
+
+        public object GetDetails2(int page, int rows, string QueryString, string Value)
+        {
+            string SystemName = "";
+            string ModuleName = "";
+            if (QueryString == "SystemName")
+            {
+                SystemName = Value;
+            }
+            else
+            {
+                ModuleName = Value;
+            }
+            IQueryable<Module> ModuleQuery = ModuleRepository.GetQueryable();
+            var Module = ModuleQuery.Where(c => c.System.SystemName.Contains(SystemName) && c.ModuleName.Contains(ModuleName))
+                .OrderBy(c => c.ModuleName)
+                .Select(c => new
+                {
+                   c.ModuleID,
+                   c.ModuleName,
+                   c.ModuleURL,
+                   ParentModule = c.ParentModule.ModuleName,
+                   c.System.SystemName
+                });
+            int total = Module.Count();
+            Module = Module.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = Module.ToArray() };
+        }
+
+        #endregion
     }
 }
