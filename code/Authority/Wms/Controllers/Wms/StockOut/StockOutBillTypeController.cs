@@ -54,5 +54,39 @@ namespace Authority.Controllers.Wms.StockOut
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /StockOutBillType/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string billTypeCode = Request.QueryString["billTypeCode"];
+            string billTypeName = Request.QueryString["billTypeName"];
+            string billClass = "0002";
+            string isActive = Request.QueryString["isActive"];
+
+            System.Data.DataTable dt = BillTypeService.GetBillType(page, rows, billTypeCode, billTypeName, billClass, isActive);
+            string headText = "出库类型设置";
+            string headFont = "微软雅黑"; short headSize = 20;
+            string colHeadFont = "Arial"; short colHeadSize = 10; short colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            this.GetResponse(headText);
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize,
+                colHeadFont, colHeadSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
+
+        #region this.GetResponse
+        private void GetResponse(string headText)
+        {
+            string filename = headText + System.DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+        }
+        #endregion
     }
 }

@@ -71,5 +71,43 @@ namespace THOK.Wms.Bll.Service
                 return false;
             return true;
         }
+
+        public System.Data.DataTable GetBillType(int page, int rows, string BillTypeCode, string BillTypeName, string BillClass, string IsActive)
+        {
+            IQueryable<BillType> billtypeQuery = BillTypeRepository.GetQueryable();
+            var billtype = billtypeQuery.Where(b => b.BillClass == BillClass 
+                && b.BillTypeCode.Contains(BillTypeCode) 
+                && b.BillTypeName.Contains(BillTypeName) 
+                && b.IsActive.Contains(IsActive))
+                .OrderBy(b => b.BillTypeCode).AsEnumerable()
+                .Select(b => new { 
+                    b.BillTypeCode, 
+                    b.BillTypeName, 
+                    b.BillClass, 
+                    b.Description, 
+                    IsActive = b.IsActive == "1" ? "可用" : "不可用", 
+                    UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") 
+                });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("订单类型编码", typeof(string));
+            dt.Columns.Add("订单类型名称", typeof(string));
+            dt.Columns.Add("订单类别", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in billtype)
+            {
+                dt.Rows.Add
+                    (
+                        item.BillTypeCode,
+                        item.BillTypeName,
+                        item.BillClass,
+                        item.Description,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+            }
+            return dt;
+        }
     }
 }

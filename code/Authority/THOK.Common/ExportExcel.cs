@@ -151,7 +151,7 @@ namespace THOK.Common
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                 headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                                 //设置列宽
-                                //sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);
+                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);
                                 //sheet.SetColumnWidth(0, 30 * 256);
                                 //sheet.AutoSizeColumn((arrColWidth[column.Ordinal] + 1) * 256);
                             }
