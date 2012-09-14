@@ -119,6 +119,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     string billNo = billMaster.BillNo;
                     switch (billMaster.BillType)
                     {
+                        #region 读入库单细单
                         case "1"://入库单
                             var inBillDetails = InBillAllotRepository.GetQueryable()
                                 .WhereIn(m => m.Cell.Layer, ops)
@@ -150,6 +151,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .ToArray();
                             billDetails = billDetails.Concat(inBillDetails).ToArray();
                             break;
+                            #endregion
+                        #region 读出库单细单
                         case "2"://出库单
                             var outBillDetails = OutBillAllotRepository.GetQueryable()
                                 .WhereIn(m => m.Cell.Layer, ops)
@@ -221,7 +224,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         .ToArray();
                                 billDetails = billDetails.Concat(moveBillDetailss).ToArray();
                             }
-                            break;                           
+                            break;
+                        #endregion
+                        #region 读移库单细单
                         case "3"://移库单
                             var moveBillDetails = MoveBillDetailRepository.GetQueryable()
                                 .WhereIn(m => m.InCell.Layer, ops)
@@ -254,6 +259,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .ToArray();
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
                             break;
+                        #endregion
+                        #region 读盘点单细单
                         case "4"://盘点单
                             var checkBillDetails = CheckBillDetailRepository.GetQueryable()
                                 .WhereIn(m => m.Cell.Layer, ops)
@@ -287,6 +294,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             break;
                         default:
                             break;
+                        #endregion
                     }
                 }
                 result.IsSuccess = true;
@@ -502,6 +510,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     {
                         switch (billDetail.BillType)
                         {
+                            #region 完成入库单
                             case "1":
                                 var inAllot = InBillAllotRepository.GetQueryable()
                                     .Where(i => i.BillNo == billDetail.BillNo
@@ -538,6 +547,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     }
                                 }
                                 break;
+                            #endregion
+                            #region 完成出库单
                             case "2":
                                 var outAllot = OutBillAllotRepository.GetQueryable()
                                     .Where(i => i.BillNo == billDetail.BillNo
@@ -572,6 +583,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     }
                                 }
                                 break;
+                            #endregion
+                            #region 完成移库单
                             case "3":
                                 var moveDetail = MoveBillDetailRepository.GetQueryable()
                                     .Where(i => i.BillNo == billDetail.BillNo
@@ -617,6 +630,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     }
                                 }
                                 break;
+                            #endregion
+                            #region 完成盘点单
                             case "4":
                                 var checkDetail = CheckBillDetailRepository.GetQueryable()
                                     .Where(i => i.BillNo == billDetail.BillNo
@@ -646,6 +661,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 break;
                             default:
                                 break;
+                            #endregion
                         }
                     }
                     InBillAllotRepository.SaveChanges();
