@@ -77,17 +77,17 @@ namespace THOK.Authority.Bll.Service
         public object GetDetails(int page, int rows, string QueryString, string Value)
         {
             string ContentName = "";
-            string ModuleName = "";
+            string ContentCode = "";
             if (QueryString == "ContentName")
             {
                 ContentName = Value;
             }
             else
             {
-                ModuleName = Value;
+                ContentCode = Value;
             }
             IQueryable<HelpContent> HelpContentQuery = HelpContentRepository.GetQueryable();
-            var HelpContent = HelpContentQuery.Where(c => c.Module.ModuleName.Contains(ModuleName))
+            var HelpContent = HelpContentQuery.Where(c => c.ContentName.Contains(ContentName) && c.ContentCode.Contains(ContentCode))
                 .OrderBy(c => c.ContentCode)
                 .Select(c => c);
             if (!ContentName.Equals(string.Empty))
