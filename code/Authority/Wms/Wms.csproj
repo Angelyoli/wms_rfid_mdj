@@ -1253,6 +1253,8 @@
     <Content Include="Views\HelpContent\_SearchPartial.cshtml" />
     <Content Include="Views\Department\AddPage.cshtml" />
     <Content Include="Views\Department\SearchPage.cshtml" />
+    <Content Include="Views\Employee\AddPage.cshtml" />
+    <Content Include="Views\Employee\SearchPage.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
