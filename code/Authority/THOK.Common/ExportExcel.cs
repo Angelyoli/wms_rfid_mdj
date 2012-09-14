@@ -30,14 +30,19 @@ namespace THOK.Common
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
             NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText1) as NPOI.HSSF.UserModel.HSSFSheet;
-
+            //sheet.PrintSetup.Scale = 200;
+            sheet.PrintSetup.FitHeight = 1000;
+            sheet.PrintSetup.FitWidth = 1000;
+            sheet.PrintSetup.PaperSize = 9;
+            sheet.PrintSetup.UsePage = false;
             NPOI.HSSF.UserModel.HSSFCellStyle cellStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;
             cellStyle.DataFormat = format.GetFormat("yyyy-mm-dd");
-
+            
             NPOI.HSSF.UserModel.HSSFFont myFontBoldBorder = (NPOI.HSSF.UserModel.HSSFFont)workbook.CreateFont();
             myFontBoldBorder.FontHeightInPoints = 18;
             myFontBoldBorder.Boldweight = (short)NPOI.SS.UserModel.FontBoldWeight.NORMAL;
+            
             cellStyle.SetFont(myFontBoldBorder);
 
             #region 取得列宽 dt1
@@ -93,7 +98,7 @@ namespace THOK.Common
                 {
                     if (rowIndex != 0)
                     {
-                        sheet = workbook.CreateSheet() as NPOI.HSSF.UserModel.HSSFSheet;
+                        sheet = workbook.CreateSheet() as NPOI.HSSF.UserModel.HSSFSheet;                        
                     }
                     #region 表头及样式
                     {
