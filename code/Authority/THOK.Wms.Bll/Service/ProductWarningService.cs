@@ -21,6 +21,8 @@ namespace THOK.Wms.Bll.Service
          public IUnitRepository UnitRepository { get; set; }
          [Dependency]
          public IDailyBalanceRepository DailyBalanceRepository { get; set; }
+         [Dependency]
+         public ICellRepository CellRepository { get; set; }
 
          protected override Type LogPrefix
          {
@@ -117,68 +119,122 @@ namespace THOK.Wms.Bll.Service
         #region 产品短缺、超储查询
          public object GetQtyLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitCode)
          {
-             IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
              IQueryable<ProductWarning> ProductWarningQuery = ProductWarningRepository.GetQueryable();
              var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == unitCode);
-             var ProductWarning = ProductWarningQuery.Where(p => p.ProductCode.Contains(productCode)); 
-             var storageQuery = StorageQuery.Where(q => q.ProductCode.Contains(productCode))
-                                 .OrderBy(p => p.ProductCode).GroupBy(p=>p.ProductCode).Select(p=>p);
+             var ProductWarning = ProductWarningQuery.Where(p => p.ProductCode.Contains(productCode)).ToArray();
              if(productCode!="")
              {
-                 ProductWarning = ProductWarning.Where(p=>p.ProductCode == productCode);
+                 ProductWarning = ProductWarning.Where(p=>p.ProductCode == productCode).ToArray();
              }
               if (minLimited != 100000)
              {
-                 ProductWarning = ProductWarning.Where(p=>p.MinLimited<=minLimited * unit.Count);
+                 ProductWarning = ProductWarning.Where(p=>p.MinLimited<=minLimited * unit.Count).ToArray();
              }
              if (maxLimited != 100000)
              {
-                 ProductWarning = ProductWarning.Where(p => p.MaxLimited >= maxLimited * unit.Count);
+                 ProductWarning = ProductWarning.Where(p => p.MaxLimited >= maxLimited * unit.Count).ToArray();
              }
-             var priductWarning = ProductWarning.Select(t => new 
+             var productWarning = ProductWarning.Select(t => new 
                  {
                      ProductCode =t.ProductCode,
                      ProductName = ProductRepository.GetQueryable().FirstOrDefault(q => q.ProductCode == t.ProductCode).ProductName,
                      UnitCode=t.UnitCode,
                      UnitName = t.Unit.UnitName,
-                     Quantity = StorageRepository.GetQueryable().Where(s=>s.ProductCode==t.ProductCode).Sum(s=>s.Quantity),
-                     MinLimited = minLimited/t.Unit.Count,
-                     MaxLimited = maxLimited / t.Unit.Count
+                     Quantity = StorageRepository.GetQueryable().AsEnumerable().Where(s=>s.ProductCode==t.ProductCode).Sum(s=>s.Quantity)/t.Unit.Count,
+                     MinLimited =t.MinLimited/t.Unit.Count,
+                     MaxLimited = t.MaxLimited / t.Unit.Count
                  });
-             int total = priductWarning.Count();
-             priductWarning = priductWarning.OrderBy(q => q.ProductCode);
-             priductWarning = priductWarning.Skip((page - 1) * rows).Take(rows);
-             return new { total, rows = priductWarning.ToArray() };
+             productWarning = productWarning.Where(p=>p.Quantity>=p.MaxLimited ||p.Quantity<=p.MinLimited);
+             int total = productWarning.Count();
+             productWarning = productWarning.OrderBy(q => q.ProductCode);
+             productWarning = productWarning.Skip((page - 1) * rows).Take(rows);
+             return new { total, rows = productWarning.ToArray() };
          }
         #endregion
 
         #region 积压产品查询
          public object GetProductDetails(int page, int rows, string productCode, decimal assemblyTime)
          {
-             //IQueryable<Storage> Storage = StorageRepository.GetQueryable();
-             //IQueryable<ProductWarning> ProductWarning = ProductWarningRepository.GetQueryable();
-             //var productInfo = Storage.Where(s => s.Product.ProductCode.Contains(s.ProductWarning.ProductCode)
-             //    && s.Product.ProductCode.Contains(productCode)
-             //    && decimal.Parse((DateTime.Now - s.StorageTime).TotalDays.ToString()) >= assemblyTime)
-             //    .Select(s => new
-             //    {
-             //        ProductCode = s.Product.ProductCode,
-             //        productName = s.Product.ProductName,
-             //        cellCode = s.Cell.CellCode,
-             //        cellName = s.Cell.CellName,
-             //        quantity = s.Quantity/s.Product.Unit.Count,
-             //        storageTime = s.StorageTime,
-             //        days = (DateTime.Now - s.StorageTime).TotalDays
-             //    });
-             //int total = productInfo.Count();
-             //productInfo = productInfo.OrderBy(p => p.ProductCode);
-             //productInfo = productInfo.Skip((page - 1) * rows).Take(rows);
-             //return new { total, rows = productInfo.ToArray() };
-             return null;
+             IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+             IQueryable<ProductWarning> ProductWarningQuery = ProductWarningRepository.GetQueryable();
+             var ProductWarning = ProductWarningQuery.Where(p => p.ProductCode.Contains(productCode));
+             var storage = StorageQuery.Where(s => s.ProductCode.Contains(productCode));
+             var Storages = storage.Join(ProductWarning, s => s.ProductCode, p => p.ProductCode, (s, p) => new { storage = s, ProductWarning = p }).ToArray();
+
+             Storages = Storages.Where(s => !string.IsNullOrEmpty(s.ProductWarning.AssemblyTime.ToString())).ToArray();
+             if (Storages.Count() > 0)
+             {
+                 if (productCode != "")
+                 {
+                     Storages = Storages.Where(s => s.storage.ProductCode == productCode).ToArray();
+                 }
+                 if (assemblyTime != 360)
+                 {
+                     Storages = Storages.Where(s => s.ProductWarning.AssemblyTime >= assemblyTime).ToArray();
+                 }
+                 else
+                 {
+                     Storages = Storages.Where(s =>s.ProductWarning.AssemblyTime<=(DateTime.Now - s.storage.StorageTime).Days).ToArray();
+                 }
+             }
+             var ProductTimeOut = Storages.AsEnumerable()
+                 .Select(s => new
+                 {
+                     ProductCode = s.storage.ProductCode,
+                     ProductName = s.storage.Product.ProductName,
+                     cellCode = s.storage.CellCode,
+                     cellName = s.storage.Cell.CellName,
+                     quantity = s.storage.Quantity / s.storage.Product.Unit.Count,
+                     storageTime = s.storage.StorageTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                     days = (DateTime.Now - s.storage.StorageTime).Days
+                 });
+             int total = ProductTimeOut.Count();
+             ProductTimeOut = ProductTimeOut.OrderBy(p => p.ProductCode);
+             ProductTimeOut = ProductTimeOut.Skip((page - 1) * rows).Take(rows);
+             return new { total, rows = ProductTimeOut.ToArray() };
          }
         #endregion
 
-        #region
+        #region 预警提示信息
+         public object GetWarningPrompt()
+         {
+             var ProductWarning= ProductWarningRepository.GetQueryable();
+             var StorageQuery = StorageRepository.GetQueryable();
+             var Storages = StorageQuery.Join(ProductWarning, s => s.ProductCode, p => p.ProductCode, (s, p) => new { storage = s, ProductWarning = p }).ToArray();
+             var TimeOutWarning = Storages.Where(s => !string.IsNullOrEmpty(s.ProductWarning.AssemblyTime.ToString())).ToArray();
+             var QuantityLimitsWarning = Storages.Where(s => !string.IsNullOrEmpty(s.ProductWarning.MinLimited.ToString()))
+                                         .GroupBy(s=>s.storage.ProductCode)
+                                         .Select(s=>new{
+                                            productCode= s.Max(t=>t.storage.ProductCode),
+                                            quantityTotal=s.Sum(t=>t.storage.Quantity),
+                                            minlimits=s.Max(t=>t.ProductWarning.MinLimited)
+                                         }).ToArray();
+             var QuantityLimitsWarnings = Storages.Where(s =>! string.IsNullOrEmpty(s.ProductWarning.MaxLimited.ToString()))
+                                        .GroupBy(s => s.storage.ProductCode)
+                                        .Select(s => new
+                                        {
+                                            productCode = s.Max(t => t.storage.ProductCode),
+                                            quantityTotal = s.Sum(t => t.storage.Quantity),
+                                            maxlimits = s.Max(t => t.ProductWarning.MaxLimited)
+                                        }).ToArray();
+             if (TimeOutWarning.Count() > 0)
+             {
+                TimeOutWarning=TimeOutWarning.Where(t=>(DateTime.Now-t.storage.StorageTime).Days>=t.ProductWarning.AssemblyTime).ToArray();
+             }
+             if (QuantityLimitsWarning.Count() >= 0)
+             {
+                 QuantityLimitsWarning = QuantityLimitsWarning.Where(q=>q.quantityTotal<=q.minlimits).ToArray();
+             }
+             if (QuantityLimitsWarnings.Count() >= 0)
+             {
+                 QuantityLimitsWarnings = QuantityLimitsWarnings.Where(q => q.quantityTotal <= q.maxlimits).ToArray();
+             }
+             int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarning.Count();
+             return total;
+         }
+         #endregion
+
+        #region 库存分析数据
          public object GetStorageByTime()
          {
              IQueryable<DailyBalance> EndQuantity = DailyBalanceRepository.GetQueryable();
@@ -188,6 +244,18 @@ namespace THOK.Wms.Bll.Service
                 TotalQuantity=e.Sum(s=>s.Ending)
              });
              return storageQuantity.ToArray();
+         }
+        #endregion
+
+        #region  货位分析数据
+         public object GetCellInfo()
+         {
+             //IQueryable<Cell> CellQuery = CellRepository.GetQueryable();
+             //IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+             //int cellQuantity = CellQuery.Count();
+             //int storageQuantity = StorageQuery.Where(s => s.IsLock == "1" || s.Quantity > 0 || s.InFrozenQuantity > 0 || s.OutFrozenQuantity > 0).Count();
+
+             return null;
          }
         #endregion
 

@@ -3,9 +3,13 @@ function editClick() {
     var row = $('#details').datagrid('getSelected');
     if (row) {
         AddLoad();
+        showDialog('±‡º≠');
+        addDialog.dialog('open');
         url = '/Department/Edit';
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#inputDepartCode').attr("readonly", true);
         $('#fm').form('load', row);
-        $('#dlg').dialog('open').dialog('setTitle', '±‡º≠');
         $('#fm .easyui-validatebox').validatebox({
             required: true
         });
@@ -17,9 +21,6 @@ function editClick() {
         $('#isActive_depart').combo({
             hasDownArrow: true
         });
-        $('form input').removeAttr("disabled");
-        $('form textarea').removeAttr("disabled");
-        $('#inputDepartCode').attr("readonly", true);
     } else {
         $.messager.alert('¥ÌŒÛ', '√ª”–—°‘Ò––£°','info');
     }

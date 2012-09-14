@@ -29,11 +29,10 @@
     };
 
     function select() {
-        $("#details").treegrid({
+        $("#details").datagrid({
             url: '/Warehouse2/Details/?type=' + 'ware' + '&id=' + $('#ware-add').combogrid('getValue')
-            //Cell/Details/?wareCode=' + $('#ware-add').combogrid('getValue')
         });
-        $("#details").treegrid('reload');
+        $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
 

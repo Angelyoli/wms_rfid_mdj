@@ -3,8 +3,12 @@ function editClick() {
     var row = $('#details').datagrid('getSelected');
     if (row) {
         AddLoad();
+        showDialog('±‡º≠');
+        addDialog.dialog('open');
         url = '/Job/Edit/';
-        $('#dlg').dialog('open').dialog('setTitle', '±‡º≠');
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#inputJobCode').attr("readonly", true);
         $('#fm').form('load', row);
         $('#fm .easyui-validatebox').validatebox({
             required: true
@@ -17,9 +21,6 @@ function editClick() {
         $('#isActive_job').combo({
             hasDownArrow: true
         });
-        $('form input').removeAttr("disabled");
-        $('form textarea').removeAttr("disabled");
-        $('#inputJobCode').attr("readonly", true);
     } else {
         $.messager.alert('¥ÌŒÛ', '√ª”–—°‘Ò––£°','info');
     }

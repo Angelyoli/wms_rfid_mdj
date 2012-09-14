@@ -128,6 +128,7 @@
     <Compile Include="Controllers\Wms\Inventory\DistributionController.cs" />
     <Compile Include="Controllers\Wms\Inventory\HistoricalDetailController.cs" />
     <Compile Include="Controllers\Wms\Inventory\StockledgerController.cs" />
+    <Compile Include="Controllers\Wms\ProductQuality\CellAnalysisController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductTimeOutController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductWarningController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\QuantityLimitsController.cs" />
@@ -1021,6 +1022,9 @@
     <Content Include="Scripts\jquery.ztree.exedit-3.3.min.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
+    <Content Include="Views\Company\_%40EditPartial.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Views\Module\_DeletePartial.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1124,11 +1128,10 @@
     <Content Include="Views\Authorize\_DeletePartial.cshtml" />
     <Content Include="Views\Authorize\_EditPartial.cshtml" />
     <Content Include="Views\Authorize\_SearchPartial.cshtml" />
-    <Content Include="Views\Company\_AddPartial.cshtml" />
-    <Content Include="Views\Company\_DeletePartial.cshtml" />
-    <Content Include="Views\Company\_EditPartial.cshtml" />
+    <Content Include="Views\Company\_%40AddPartial.cshtml" />
+    <Content Include="Views\Company\_%40DeletePartial.cshtml" />
     <Content Include="Views\Company\_HelpPartial.cshtml" />
-    <Content Include="Views\Company\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\_%40SearchPartial.cshtml" />
     <Content Include="Views\Company\_PrintPartial.cshtml" />
     <Content Include="Views\Department\_AddPartial.cshtml" />
     <Content Include="Views\Department\_DeletePartial.cshtml" />
@@ -1236,13 +1239,23 @@
     <Content Include="Views\Employee\_UserNamePartial.cshtml" />
     <Content Include="Views\CellHistorical\Index.cshtml" />
     <Content Include="Views\CellHistorical\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\_SearchPartial.cshtml" />
+    <Content Include="Views\Company\SearchPage.cshtml" />
+    <Content Include="Views\Company\_AddPartial.cshtml" />
+    <Content Include="Views\Company\AddPage.cshtml" />
+    <Content Include="Views\Company\_EditPartial.cshtml" />
+    <Content Include="Views\Company\_DeletePartial.cshtml" />
     <Content Include="Views\ExportExcel2\_PrintPartial.cshtml" />
     <Content Include="Views\ExportExcel2\Index.cshtml" />
     <Content Include="Views\ExportExcel2\_SearchPartial.cshtml" />
     <Content Include="Views\CheckBill\_PrintPartial.cshtml" />
     <Content Include="Views\HelpContent\Index.cshtml" />
     <Content Include="Views\CurrentStock\_PrintPartial.cshtml" />
+    <Content Include="Views\HelpContent\_SearchPartial.cshtml" />
     <Content Include="Views\DefaultProductSet\_PrintPartial.cshtml" />
+    <Content Include="Views\CellAnalysis\Index.cshtml" />
+    <Content Include="Views\Department\AddPage.cshtml" />
+    <Content Include="Views\Department\SearchPage.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -1518,6 +1531,8 @@
     <Content Include="Views\StorageAnalysis\Index.cshtml" />
     <Content Include="Views\Warehouse2\_PrintPartial.cshtml" />
     <Content Include="Views\Product\_PrintPartial.cshtml" />
+    <Content Include="Views\Job\AddPage.cshtml" />
+    <Content Include="Views\Job\SearchPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
