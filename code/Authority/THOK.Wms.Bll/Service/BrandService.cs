@@ -9,7 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class BrandService:ServiceBase<Brand>,IBrandService
+    public class BrandService : ServiceBase<Brand>, IBrandService
     {
         [Dependency]
         public IBrandRepository BrandRepository { get; set; }
@@ -28,7 +28,7 @@ namespace THOK.Wms.Bll.Service
             var brand = brandQuery.Where(b => b.BrandCode.Contains(BrandCode) && b.BrandName.Contains(BrandName)).OrderBy(b => b.BrandCode).AsEnumerable().Select(b => new { b.BrandCode, b.UniformCode, b.CustomCode, b.BrandName, b.SupplierCode, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
             if (!IsActive.Equals(""))
             {
-               brand = brandQuery.Where(b => b.BrandCode.Contains(BrandCode) && b.BrandName.Contains(BrandName) && b.IsActive.Contains(IsActive)).OrderBy(b => b.BrandCode).AsEnumerable().Select(b => new { b.BrandCode, b.UniformCode, b.CustomCode, b.BrandName, b.SupplierCode, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+                brand = brandQuery.Where(b => b.BrandCode.Contains(BrandCode) && b.BrandName.Contains(BrandName) && b.IsActive.Contains(IsActive)).OrderBy(b => b.BrandCode).AsEnumerable().Select(b => new { b.BrandCode, b.UniformCode, b.CustomCode, b.BrandName, b.SupplierCode, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
             }
             int total = brand.Count();
             brand = brand.Skip((page - 1) * rows).Take(rows);
@@ -81,5 +81,54 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
-          }
+        public System.Data.DataTable GetBrand(int page, int rows, string BrandCode, string BrandName, string IsActive)
+        {
+            IQueryable<Brand> brandQuery = BrandRepository.GetQueryable();
+            var brand = brandQuery.Where(b => b.BrandCode.Contains(BrandCode) && b.BrandName.Contains(BrandName))
+                .OrderBy(b => b.BrandCode).AsEnumerable()
+                .Select(b => new 
+                { 
+                    b.BrandCode, 
+                    b.UniformCode, 
+                    b.CustomCode, 
+                    b.BrandName, 
+                    b.SupplierCode, 
+                    IsActive = b.IsActive == "1" ? "可用" : "不可用", 
+                    UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            if (!IsActive.Equals(""))
+            {
+                brand = brandQuery.Where(b => b.BrandCode.Contains(BrandCode) && b.BrandName.Contains(BrandName) && b.IsActive.Contains(IsActive))
+                    .OrderBy(b => b.BrandCode).AsEnumerable()
+                    .Select(b => new 
+                    { 
+                        b.BrandCode, 
+                        b.UniformCode, 
+                        b.CustomCode, 
+                        b.BrandName, 
+                        b.SupplierCode, 
+                        IsActive = b.IsActive == "1" ? "可用" : "不可用", 
+                        UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            }
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("统一编码", typeof(string));
+            dt.Columns.Add("自定义编码", typeof(string));
+            dt.Columns.Add("品牌名称", typeof(string));
+            dt.Columns.Add("厂商编码", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in brand)
+            {
+                dt.Rows.Add
+                    (
+                        item.UniformCode,
+                        item.CustomCode,
+                        item.BrandName,
+                        item.SupplierCode,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+            }
+            return dt;
+        }
+    }
 }

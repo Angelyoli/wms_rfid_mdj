@@ -1,0 +1,14 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            window.location.href = '/Stockledger/CreateExcelToClient/'
+                                    + '?warehouseCode=' + row.WarehouseCode
+                                    + '&productCode=' + row.ProductCode
+                                    + '&settleDate=' + row.SettleDate;
+        }
+        else {
+            $.messager.alert("系统提示","未选中行","info");
+        }
+    }
+</script>

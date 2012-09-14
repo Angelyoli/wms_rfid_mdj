@@ -1,0 +1,8 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/StockOutBillType/CreateExcelToClient/"
+                                + "?billTypeCode=" + $('#BillTypeCode').val()
+                                + "&billTypeName=" + $('#BillTypeName').val()
+                                + "&isActive=" + $('#IsActive').combo('getValue');
+    }
+</script>

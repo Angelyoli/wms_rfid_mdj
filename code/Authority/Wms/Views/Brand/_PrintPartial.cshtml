@@ -1,0 +1,8 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/Brand/CreateExcelToClient/"
+                                + "?brandCode=" + $('#BrandCode').val()
+                                + "&brandName=" + $('#BrandName').val()
+                                + "&isActive=" + $('#isActive').combo('getValue');
+    }
+</script>
