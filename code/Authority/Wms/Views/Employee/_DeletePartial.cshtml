@@ -3,6 +3,10 @@ function deleteClick() {
     var row = $('#details').datagrid('getSelected');
     if (row) {
         url = '/Employee/Delete/?demployeeId=' + row.ID;
+        showDialog('É¾³ý');
+        addDialog.dialog('open');
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('load', row);
         $('#dlg').dialog('open').dialog('setTitle', 'É¾³ý');
         $('#fm .easyui-validatebox').validatebox({

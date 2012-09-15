@@ -1,0 +1,8 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/Unit/CreateExcelToClient/"
+                                + "?unitCode=" + $('#UnitCode').val()
+                                + "&unitName=" + $('#UnitName').val()
+                                + "&isActive=" + $('#isActive').combo('getValue');
+    }
+</script>

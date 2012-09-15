@@ -260,13 +260,6 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 SortWorkDispatchRepository.SaveChanges();
                                 scope.Complete();
                                 ps.Messages.Add(item.SortingLine.SortingLineName + " 调度成功！");
-
-                                if (cancellationToken.IsCancellationRequested) return;
-                                if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
-                                {
-                                    MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
-                                }
-                                MoveBillMasterRepository.SaveChanges();
                             }
                             else
                             {
@@ -277,6 +270,12 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             }
                         }
                     }
+                    if (cancellationToken.IsCancellationRequested) return;
+                    if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
+                    {
+                        MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
+                    }
+                    MoveBillMasterRepository.SaveChanges();
                 }
                 catch (Exception e)
                 {
