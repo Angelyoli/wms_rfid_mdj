@@ -1,0 +1,8 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/SortWorkDispatch/CreateExcelToClient/"
+                                + "?orderDate=" + $('#SortingLineCode').combogrid('getValue')
+                                + "&sortingLineCode=" + $('#searchOrderDate').datebox('getValue')
+                                + "&dispatchStatus=" + $('#DispatchStatus').combo('getValue');
+    }
+</script>

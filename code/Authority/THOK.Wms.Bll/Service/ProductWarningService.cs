@@ -259,5 +259,173 @@ namespace THOK.Wms.Bll.Service
          }
         #endregion
 
+         public System.Data.DataTable GetProductWarning(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, decimal assemblyTime)
+         {
+             System.Data.DataTable dt = new System.Data.DataTable();
+             IQueryable<ProductWarning> productWarningQuery = ProductWarningRepository.GetQueryable();
+             var productWarning = productWarningQuery.Where(p => p.ProductCode.Contains(productCode)).OrderBy(p => p.ProductCode).Select(p => p).ToArray();
+             if (productCode != "")
+             {
+                 productWarning = productWarning.Where(p => p.ProductCode == productCode).ToArray();
+             }
+             if (minLimited != 100000)
+             {
+                 productWarning = productWarning.Where(p => p.MinLimited <= minLimited).ToArray();
+             }
+             if (maxLimited != 100000)
+             {
+                 productWarning = productWarning.Where(p => p.MaxLimited >= maxLimited).ToArray();
+             }
+             if (assemblyTime != 3600)
+             {
+                 productWarning = productWarning.Where(p => p.AssemblyTime >= assemblyTime).ToArray();
+             }
+             var productWarn = productWarning
+                 .Select(p => new
+                 {
+                     p.ProductCode,
+                     ProductName = ProductRepository.GetQueryable().FirstOrDefault(q => q.ProductCode == p.ProductCode).ProductName,
+                     p.UnitCode,
+                     p.Unit.UnitName,
+                     MinLimited = p.MinLimited / p.Unit.Count,
+                     MaxLimited = p.MaxLimited / p.Unit.Count,
+                     p.AssemblyTime,
+                     p.Memo
+                 });
+             dt.Columns.Add("商品编码", typeof(string));
+             dt.Columns.Add("商品名称", typeof(string));
+             dt.Columns.Add("单位编码", typeof(string));
+             dt.Columns.Add("单位名称", typeof(string));
+             dt.Columns.Add("数量下限", typeof(string));
+             dt.Columns.Add("数量上限", typeof(string));
+             dt.Columns.Add("积压时间", typeof(string));
+             dt.Columns.Add("备注", typeof(string));
+             foreach (var p in productWarn)
+             {
+                 dt.Rows.Add
+                     (
+                        p.ProductCode,
+                        p.ProductName,
+                        p.UnitCode,
+                        p.UnitName,
+                        p.MinLimited,
+                        p.MaxLimited,
+                        p.AssemblyTime,
+                        p.Memo
+                     );
+             }
+             return dt;
+         }
+
+         public System.Data.DataTable GetQuantityLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitCode)
+         {
+             System.Data.DataTable dt=new System.Data.DataTable();
+             IQueryable<ProductWarning> ProductWarningQuery = ProductWarningRepository.GetQueryable();
+             var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == unitCode);
+             var ProductWarning = ProductWarningQuery.Where(p => p.ProductCode.Contains(productCode)).ToArray();
+             if (productCode != "")
+             {
+                 ProductWarning = ProductWarning.Where(p => p.ProductCode == productCode).ToArray();
+             }
+             if (minLimited != 100000)
+             {
+                 ProductWarning = ProductWarning.Where(p => p.MinLimited <= minLimited * unit.Count).ToArray();
+             }
+             if (maxLimited != 100000)
+             {
+                 ProductWarning = ProductWarning.Where(p => p.MaxLimited >= maxLimited * unit.Count).ToArray();
+             }
+             var productWarning = ProductWarning.Select(t => new
+             {
+                 ProductCode = t.ProductCode,
+                 ProductName = ProductRepository.GetQueryable().FirstOrDefault(q => q.ProductCode == t.ProductCode).ProductName,
+                 UnitCode = t.UnitCode,
+                 UnitName = t.Unit.UnitName,
+                 Quantity = StorageRepository.GetQueryable().AsEnumerable().Where(s => s.ProductCode == t.ProductCode).Sum(s => s.Quantity) / t.Unit.Count,
+                 MinLimited = t.MinLimited / t.Unit.Count,
+                 MaxLimited = t.MaxLimited / t.Unit.Count
+             });
+             productWarning = productWarning.Where(p => p.Quantity >= p.MaxLimited || p.Quantity <= p.MinLimited);
+             dt.Columns.Add("商品代码", typeof(string));
+             dt.Columns.Add("商品名称", typeof(string));
+             dt.Columns.Add("单位编码", typeof(string));
+             dt.Columns.Add("单位名称", typeof(string));
+             dt.Columns.Add("商品总数量", typeof(string));
+             dt.Columns.Add("商品数量上限", typeof(string));
+             dt.Columns.Add("商品数量下限", typeof(string));
+             foreach (var p in productWarning)
+             {
+                 dt.Rows.Add
+                     (
+                        p.ProductCode,
+                        p.ProductName,
+                        p.UnitCode,
+                        p.UnitName,
+                        p.Quantity,
+                        p.MaxLimited,
+                        p.MinLimited
+                     );
+             }
+             return dt;
+         }
+
+         public System.Data.DataTable GetProductTimeOut(int page, int rows, string productCode, decimal assemblyTime)
+         {
+             System.Data.DataTable dt = new System.Data.DataTable();
+             IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+             IQueryable<ProductWarning> ProductWarningQuery = ProductWarningRepository.GetQueryable();
+             var ProductWarning = ProductWarningQuery.Where(p => p.ProductCode.Contains(productCode));
+             var storage = StorageQuery.Where(s => s.ProductCode.Contains(productCode));
+             var Storages = storage.Join(ProductWarning, s => s.ProductCode, p => p.ProductCode, (s, p) => new { storage = s, ProductWarning = p }).ToArray();
+
+             Storages = Storages.Where(s => !string.IsNullOrEmpty(s.ProductWarning.AssemblyTime.ToString())).ToArray();
+             if (Storages.Count() > 0)
+             {
+                 if (productCode != "")
+                 {
+                     Storages = Storages.Where(s => s.storage.ProductCode == productCode).ToArray();
+                 }
+                 if (assemblyTime != 360)
+                 {
+                     Storages = Storages.Where(s => s.ProductWarning.AssemblyTime >= assemblyTime).ToArray();
+                 }
+                 else
+                 {
+                     Storages = Storages.Where(s => s.ProductWarning.AssemblyTime <= (DateTime.Now - s.storage.StorageTime).Days).ToArray();
+                 }
+             }
+             var ProductTimeOut = Storages.AsEnumerable()
+                 .Select(s => new
+                 {
+                     ProductCode = s.storage.ProductCode,
+                     ProductName = s.storage.Product.ProductName,
+                     cellCode = s.storage.CellCode,
+                     cellName = s.storage.Cell.CellName,
+                     quantity = s.storage.Quantity / s.storage.Product.Unit.Count,
+                     storageTime = s.storage.StorageTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                     days = (DateTime.Now - s.storage.StorageTime).Days
+                 });
+             dt.Columns.Add("商品代码", typeof(string));
+             dt.Columns.Add("商品名称", typeof(string));
+             dt.Columns.Add("货位编码", typeof(string));
+             dt.Columns.Add("货位名称", typeof(string));
+             dt.Columns.Add("数量(件)", typeof(string));
+             dt.Columns.Add("入库时间", typeof(string));
+             dt.Columns.Add("积压时间(天)", typeof(string));
+             foreach (var p in ProductTimeOut)
+             {
+                 dt.Rows.Add
+                     (
+                        p.ProductCode,
+                        p.ProductName,
+                        p.cellCode,
+                        p.cellName,
+                        p.quantity,
+                        p.storageTime,
+                        p.days
+                     );
+             }
+             return dt;
+         }
     }
 }

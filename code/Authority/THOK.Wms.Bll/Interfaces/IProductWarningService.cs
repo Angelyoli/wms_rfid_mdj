@@ -26,5 +26,10 @@ namespace THOK.Wms.Bll.Interfaces
         object GetWarningPrompt();
         object GetCellInfo();
 
+        System.Data.DataTable GetProductWarning(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, decimal assemblyTime);
+
+        System.Data.DataTable GetQuantityLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitCode);
+
+        System.Data.DataTable GetProductTimeOut(int page, int rows, string productCode, decimal assemblyTime);
     }
 }

@@ -1553,6 +1553,8 @@
     <Content Include="Views\SortingLine\_PrintPartial.cshtml" />
     <Content Include="Views\SortingLowerLimit\_PrintPartial.cshtml" />
     <Content Include="Views\SortingOrder\_PrintPartial.cshtml" />
+    <Content Include="Views\SortOrderDispatch\_PrintPartial.cshtml" />
+    <Content Include="Views\SortWorkDispatch\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
