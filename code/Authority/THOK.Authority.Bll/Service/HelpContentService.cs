@@ -24,12 +24,6 @@ namespace THOK.Authority.Bll.Service
             strResult = string.Empty;
             bool result = false;
             var help = new HelpContent();
-            //var parent = HelpContentRepository.GetQueryable().FirstOrDefault(p => p.ID == helpContent.ID);
-
-            //var helpExist = HelpContentRepository.GetQueryable().FirstOrDefault(h => h.ContentCode == helpContent.ContentCode);
-            var helpExist = 1;
-            if (helpExist == 1)
-            {
                 if (helpContent != null)
                 {
                     try
@@ -54,15 +48,6 @@ namespace THOK.Authority.Bll.Service
                         strResult = "原因：" + ex.Message;
                     }
                 }
-                else
-                {
-                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
-                }
-            }
-            else
-            {
-                strResult = "原因：该编号已存在！";
-            }
             return result;
         }
 
@@ -115,19 +100,28 @@ namespace THOK.Authority.Bll.Service
         #region IHelpContentService 成员
 
 
-        public bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive)
+        public bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive, out string strResult)
         {
-            Guid new_ID = new Guid(ID);
-            var help = HelpContentRepository.GetQueryable()
-                .FirstOrDefault(i => i.ID == new_ID);
-            help.ContentCode = ContentCode;
-            help.ContentName = ContentName;
-            help.ContentPath = ContentPath;
-            help.FatherNodeID = new Guid(FatherNodeID);
-            help.ModuleID = new Guid(ModuleID);
-            help.NodeOrder = NodeOrder;
-            IsActive = help.IsActive == "1" ? "可用" : "不可用";
-            HelpContentRepository.SaveChanges();
+            strResult = string.Empty;
+            try
+            {
+                Guid new_ID = new Guid(ID);
+                var help = HelpContentRepository.GetQueryable()
+                    .FirstOrDefault(i => i.ID == new_ID);
+                help.ContentCode = ContentCode;
+                help.ContentName = ContentName;
+                help.ContentPath = ContentPath;
+                help.FatherNodeID = new Guid(FatherNodeID);
+                help.ModuleID = new Guid(ModuleID);
+                help.NodeOrder = NodeOrder;
+                IsActive = help.IsActive == "1" ? "可用" : "不可用";
+                HelpContentRepository.SaveChanges();
+               
+            }
+            catch (Exception ex)
+            {
+                strResult = "原因：" + ex.Message;
+            }
             return true;
         }
 
@@ -157,23 +151,43 @@ namespace THOK.Authority.Bll.Service
 
             var temp = HelpContent.ToArray().Select(c => new
             {
-               ContentCode2= c.ContentCode,
-               ContentName2= c.ContentName,
-               ContentPath2= c.ContentPath,
-               FatherNode2= c.FatherNode.ContentName,
-               ModuleID2= c.ModuleID,
-               ModuleName2 = c.Module.ModuleName,
-               FatherNodeID2= c.FatherNodeID,
-               NodeType2= c.NodeType,
-               NodeOrder2= c.NodeOrder,
-               IsActive2 = c.IsActive == "1" ? "可用" : "不可用",
-               UpdateTime2=c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+               ID=c.ID,
+               ContentCode= c.ContentCode,
+               ContentName= c.ContentName,
+               ContentPath= c.ContentPath,
+               FatherNode= c.FatherNode.ContentName,
+               ModuleID= c.ModuleID,
+               ModuleName = c.Module.ModuleName,
+               FatherNodeID= c.FatherNodeID,
+               NodeType= c.NodeType,
+               NodeOrder= c.NodeOrder,
+               IsActive = c.IsActive == "1" ? "可用" : "不可用",
+               UpdateTime=c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
             return new { total, rows = temp.ToArray() };
         }
 
         #endregion
 
-       
+
+
+        #region IHelpContentService 成员
+
+
+        public bool Delete(string ContentCode)
+        {
+            var help = HelpContentRepository.GetQueryable()
+                .FirstOrDefault(b => b.ContentCode == ContentCode);
+            if (ContentCode != null)
+            {
+                HelpContentRepository.Delete(help);
+                HelpContentRepository.SaveChanges();
+            }
+            else
+                return false;
+            return true;
+        }
+
+        #endregion
     }
 }

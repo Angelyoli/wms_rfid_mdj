@@ -4,8 +4,8 @@
         if (row) {
             url = '/UnitList/Edit/';
             $('#dlg-add').dialog('open').dialog('setTitle', '编辑单位系列信息');
-            $('#helpfm').form('load', row);
-            $('#helpfm .easyui-validatebox').validatebox({
+            $('#fm-add').form('load', row);
+            $('#fm-add.easyui-validatebox').validatebox({
                 required: true
             });
             if (row.IsActive == '可用') {

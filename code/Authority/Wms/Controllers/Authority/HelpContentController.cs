@@ -76,9 +76,21 @@ namespace Authority.Controllers.Authority
         [HttpPost]
         public ActionResult Edit(string ID, string ContentCode, string ContentName, string ContentPath, string NodeType , string FatherNodeID,string ModuleID,int NodeOrder, string IsActive)
         {
-            bool bResult = HelpContentService.Save(ID, ContentCode, ContentName, ContentPath,  FatherNodeID,ModuleID,NodeOrder,IsActive);
+            string strResult = string.Empty;
+            bool bResult = HelpContentService.Save(ID, ContentCode, ContentName, ContentPath, FatherNodeID, ModuleID, NodeOrder, IsActive, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+        //
+        // POST: /UnitList/Delete/
+
+        [HttpPost]
+        public ActionResult Delete(string ContentCode)
+        {
+            bool bResult = HelpContentService.Delete(ContentCode);
+            string msg = bResult ? "删除成功" : "删除失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

@@ -19,7 +19,7 @@
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
-        $('#ContentCode').attr("readonly", false);
+        $('#contentCode').attr("readonly", false);
         $('#Node_type').combo({
             hasDownArrow: true
         });
@@ -99,16 +99,16 @@
                         目录编码:
                     </td>
                     <td width="168">
-                        <input name="ContentCode" class="easyui-validatebox" id="ContentCode"  validtype="maxLength[8]"
+                        <input name="ContentCode" class="easyui-validatebox" id="contentCode"  validtype="maxLength[8]"
                             required="true" />
-                        <input name="ID" style="display: none" />
+                        <input name="ID"  style="display: none" />
                     </td>
                     
                     <td width="60">
                        目录名称:
                     </td>
                     <td width="168">
-                        <input name="ContentName" id="ContentName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                        <input name="ContentName" id="contentName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
                     </td>
                 </tr>
                 <tr>
@@ -116,13 +116,13 @@
                         目录路径:
                     </td>
                     <td width="168">
-                        <input name="ContentPath"  validtype="maxLength[50]" required="true" />
+                        <input name="ContentPath" id="contentPath" validtype="maxLength[50]" required="true" />
                     </td>
                     <td width="60">
                        节点顺序:
                     </td>
                      <td width="168">
-                        <input name="NodeOrder" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                        <input name="NodeOrder" id="nodeOrder" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
                     </td>
                     
                 </tr>

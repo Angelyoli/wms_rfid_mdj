@@ -2,22 +2,21 @@
     function editClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            url = '/HelpContent/Edit/';
-            $('#dlg').dialog('open').dialog('setTitle', '编辑目录帮助信息');
-            $('#helpfm').form('load', row);
-            $('#helpfm .easyui-validatebox').validatebox({
-                required: true
+            $('#dlg').dialog('open').dialog('setTitle', '删除目录信息');
+            $('#helpfm.easyui-validatebox').validatebox({
+                required:  true
             });
-            if (row.IsActive == '可用') {
-                $('#IsActive').combo('setValue', 1).combo('setText', row.IsActive);
-            } else {
-                $('#IsActive').combo('setValue', 0).combo('setText', row.IsActive);
-            }
             $('form input').removeAttr("disabled");
-            $('#ContentCode').attr("readonly", true);
-            $('#isActive_com').combo({
+            $('#IsActive').combo({
                 hasDownArrow: true
             });
+            $('#helpfm').form('load', row);
+            if (row.Status == '启用') {
+                $('#IsActive').combo('setValue', true).combo('setText', row.IsActive);
+            } else {
+                $('#IsActive').combo('setValue', false).combo('setText', row.IsActive);
+            }
+            url = '/HelpContent/Edit/';
         } else {
             $.messager.confirm('错误', '没有选择行！');
         }

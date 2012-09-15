@@ -1247,6 +1247,7 @@
     <Content Include="Views\HelpContent\_helpPartial1.cshtml" />
     <Content Include="Views\HelpContent\_helpPartial2.cshtml" />
     <Content Include="Views\HelpContent\_EditPartial.cshtml" />
+    <Content Include="Views\HelpContent\_DeletePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
