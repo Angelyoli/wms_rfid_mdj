@@ -128,7 +128,6 @@
     <Compile Include="Controllers\Wms\Inventory\DistributionController.cs" />
     <Compile Include="Controllers\Wms\Inventory\HistoricalDetailController.cs" />
     <Compile Include="Controllers\Wms\Inventory\StockledgerController.cs" />
-    <Compile Include="Controllers\Wms\ProductQuality\CellAnalysisController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductTimeOutController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductWarningController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\QuantityLimitsController.cs" />
@@ -1252,19 +1251,11 @@
     <Content Include="Views\HelpContent\Index.cshtml" />
     <Content Include="Views\CurrentStock\_PrintPartial.cshtml" />
     <Content Include="Views\HelpContent\_SearchPartial.cshtml" />
-    <Content Include="Views\DefaultProductSet\_PrintPartial.cshtml" />
-    <Content Include="Views\CellAnalysis\Index.cshtml" />
-    <Content Include="Views\Department\AddPage.cshtml" />
-    <Content Include="Views\Department\SearchPage.cshtml" />
-    <Content Include="Views\Brand\_PrintPartial.cshtml" />
-    <Content Include="Views\CheckBillType\_PrintPartial.cshtml" />
-    <Content Include="Views\Employee\AddPage.cshtml" />
-    <Content Include="Views\Employee\SearchPage.cshtml" />
-    <Content Include="Views\Distribution\_PrintPartial.cshtml" />
-    <Content Include="Views\Cargospace\_PrintPartial.cshtml" />
-    <Content Include="Views\DailyBalance\_PrintPartial.cshtml" />
-    <Content Include="Views\HistoricalDetail\_PrintPartial.cshtml" />
-    <Content Include="Views\CellHistorical\_PrintPartial.cshtml" />
+    <Content Include="Views\HelpContent\_AddPartial.cshtml" />
+    <Content Include="Views\HelpContent\_helpPartial1.cshtml" />
+    <Content Include="Views\HelpContent\_helpPartial2.cshtml" />
+    <Content Include="Views\HelpContent\_EditPartial.cshtml" />
+    <Content Include="Views\HelpContent\_DeletePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -1578,7 +1569,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>9543</DevelopmentServerPort>
+          <DevelopmentServerPort>2125</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
