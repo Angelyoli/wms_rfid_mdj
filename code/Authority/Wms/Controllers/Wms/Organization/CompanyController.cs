@@ -104,10 +104,10 @@ namespace Authority.Controllers.Organization
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string companyCode = Request.QueryString["companyCode"];
-            string companyName = Request.QueryString["companyName"];
-            string companyType = Request.QueryString["companyType"];
-            string isActive = Request.QueryString["isActive"];
+            string companyCode = Request.QueryString["companyCode"] ?? "";
+            string companyName = Request.QueryString["companyName"] ?? "";
+            string companyType = Request.QueryString["companyType"] ?? "";
+            string isActive = Request.QueryString["isActive"] ?? "";
             
             System.Data.DataTable dt = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
             string headText = "公司信息";
