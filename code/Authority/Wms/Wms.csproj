@@ -1550,6 +1550,13 @@
     <Content Include="Views\StockMoveBillType\_PrintPartial.cshtml" />
     <Content Include="Views\ProfitLossBillType\_PrintPartial.cshtml" />
     <Content Include="Views\Stockledger\_PrintPartial.cshtml" />
+    <Content Include="Views\SortingLine\_PrintPartial.cshtml" />
+    <Content Include="Views\SortingLowerLimit\_PrintPartial.cshtml" />
+    <Content Include="Views\SortingOrder\_PrintPartial.cshtml" />
+    <Content Include="Views\SortOrderDispatch\_PrintPartial.cshtml" />
+    <Content Include="Views\SortWorkDispatch\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductWarning\_PrintPartial.cshtml" />
+    <Content Include="Views\QuantityLimits\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

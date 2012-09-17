@@ -18,5 +18,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool Save(SortOrderDispatch sortDispatch);
 
+        System.Data.DataTable GetSortOrderDispatch(int page, int rows, string OrderDate, string SortingLineCode);
     }
 }

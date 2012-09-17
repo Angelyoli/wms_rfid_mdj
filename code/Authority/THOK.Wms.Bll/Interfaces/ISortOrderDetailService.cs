@@ -9,5 +9,7 @@ namespace THOK.Wms.Bll.Interfaces
     public interface ISortOrderDetailService : IService<SortOrderDetail>
     {
         object GetDetails(int page, int rows, string OrderID);
+
+        System.Data.DataTable GetSortOrderDetail(int page, int rows, string OrderID);
     }
 }

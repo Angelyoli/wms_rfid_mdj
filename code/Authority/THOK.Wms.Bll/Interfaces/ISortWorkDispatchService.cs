@@ -17,5 +17,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool AntiTrial(string id, ref string errorInfo);
 
         bool Settle(string id, ref string errorInfo);
+
+        System.Data.DataTable GetSortWorkDispatch(int page, int rows, string OrderDate, string SortingLineCode, string DispatchStatus);
     }
 }

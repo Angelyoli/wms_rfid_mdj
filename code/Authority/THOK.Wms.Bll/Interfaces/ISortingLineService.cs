@@ -17,5 +17,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Save(SortingLine sortingLine);
 
         object GetSortLine();
+
+        System.Data.DataTable GetSortingLine(int page, int rows, string sortingLineCode, string sortingLineName, string SortingLineType, string IsActive);
     }
 }

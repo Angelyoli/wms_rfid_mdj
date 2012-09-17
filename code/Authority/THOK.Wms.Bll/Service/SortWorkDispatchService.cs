@@ -373,7 +373,7 @@ namespace THOK.Wms.Bll.Service
                     {
                         //出库单作自动出库
                         var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == sortWork.SortingLine.CellCode
-                                                                                && s.Quantity - s.OutFrozenQuantity >0).ToArray();
+                                                                                && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
 
                         if (!Locker.Lock(storages))
                         {
@@ -429,8 +429,8 @@ namespace THOK.Wms.Bll.Service
                             }
                         );
 
-                        storages.AsParallel().ForAll(s=>s.LockTag = string.Empty);
-                    }                   
+                        storages.AsParallel().ForAll(s => s.LockTag = string.Empty);
+                    }
 
                     //出库结单
                     var outMaster = OutBillMasterRepository.GetQueryable()
@@ -462,5 +462,62 @@ namespace THOK.Wms.Bll.Service
             }
         }
 
+        public System.Data.DataTable GetSortWorkDispatch(int page, int rows, string OrderDate, string SortingLineCode, string DispatchStatus)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            IQueryable<SortWorkDispatch> SortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
+            var sortWorkDispatch = SortWorkDispatchQuery.Where(s => s.DispatchStatus != "4");
+            if (OrderDate != string.Empty && OrderDate != null)
+            {
+                OrderDate = Convert.ToDateTime(OrderDate).ToString("yyyyMMdd");
+                sortWorkDispatch = sortWorkDispatch.Where(s => s.OrderDate == OrderDate);
+            }
+            if (SortingLineCode != string.Empty && SortingLineCode != null)
+            {
+                sortWorkDispatch = sortWorkDispatch.Where(s => s.SortingLineCode == SortingLineCode);
+            }
+            if (DispatchStatus != string.Empty && DispatchStatus != null)
+            {
+                sortWorkDispatch = sortWorkDispatch.Where(s => s.DispatchStatus == DispatchStatus);
+            }
+            var temp = sortWorkDispatch.OrderBy(b => new { b.OrderDate, b.SortingLineCode, b.DispatchStatus })
+                .AsEnumerable().Select(b => new
+            {
+                b.ID,
+                b.OrderDate,
+                b.SortingLineCode,
+                b.SortingLine.SortingLineName,
+                b.OutBillNo,
+                b.MoveBillNo,
+                b.DispatchBatch,
+                DispatchStatus = WhatStatus(b.DispatchStatus),
+                IsActive = b.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+            dt.Columns.Add("订单日期", typeof(string));
+            dt.Columns.Add("分拣线编码", typeof(string));
+            dt.Columns.Add("分拣线名称", typeof(string));
+            dt.Columns.Add("作业调度批次", typeof(string));
+            dt.Columns.Add("出库单编号", typeof(string));
+            dt.Columns.Add("移库单编号", typeof(string));
+            dt.Columns.Add("作业状态", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var t in temp)
+            {
+                dt.Rows.Add(
+                                  t.OrderDate
+                                , t.SortingLineCode
+                                , t.SortingLineName
+                                , t.DispatchBatch
+                                , t.OutBillNo
+                                , t.MoveBillNo
+                                , t.DispatchStatus
+                                , t.IsActive
+                                , t.UpdateTime
+                            );
+            }
+            return dt;
+        }
     }
 }
