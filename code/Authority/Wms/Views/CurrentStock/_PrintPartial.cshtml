@@ -17,6 +17,10 @@
                 }
             }
         }
-        window.location.href = "/CurrentStock/CreateExcelToClient/?productCode=" + $('#productCode').val() + "&ware=" + ware + "&area=" + area + "&unitType=" + $('#unit_Type').combo('getValue');
+        window.location.href = "/CurrentStock/CreateExcelToClient/"
+                                + "?productCode=" + $('#productCode').val()
+                                + "&ware=" + ware
+                                + "&area=" + area 
+                                + "&unitType=" + $('#unit_Type').combo('getValue');
     }
 </script>

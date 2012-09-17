@@ -112,7 +112,7 @@ namespace THOK.Wms.Bll.Service
             SortOrderDispatchRepository.SaveChanges();
             return true;
         }
-        
+
         public object GetWorkStatus()
         {
             IQueryable<SortOrderDispatch> sortDispatchQuery = SortOrderDispatchRepository.GetQueryable();
@@ -152,5 +152,53 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+        public System.Data.DataTable GetSortOrderDispatch(int page, int rows, string OrderDate, string SortingLineCode)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+            IQueryable<SortOrderDispatch> sortDispatchQuery = SortOrderDispatchRepository.GetQueryable();
+            var sortDispatch = sortDispatchQuery.Where(s => s.WorkStatus != "2");
+            if (OrderDate != string.Empty && OrderDate != null)
+            {
+                OrderDate = Convert.ToDateTime(OrderDate).ToString("yyyyMMdd");
+                sortDispatch = sortDispatch.Where(s => s.OrderDate == OrderDate);
+            }
+            if (SortingLineCode != string.Empty && SortingLineCode != null)
+            {
+                sortDispatch = sortDispatch.Where(s => s.SortingLineCode == SortingLineCode);
+            }
+            var temp = sortDispatch.OrderBy(b => b.SortingLineCode).AsEnumerable().Select(b => new
+            {
+                b.ID,
+                b.SortingLineCode,
+                b.SortingLine.SortingLineName,
+                b.OrderDate,
+                b.DeliverLineCode,
+                WorkStatus = b.WorkStatus == "1" ? "未作业" : "已作业",
+                b.DeliverLine.DeliverLineName,
+                IsActive = b.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+            dt.Columns.Add("订单日期", typeof(string));
+            dt.Columns.Add("分拣线编码", typeof(string));
+            dt.Columns.Add("分拣线名称", typeof(string));
+            dt.Columns.Add("送货线路编码", typeof(string));
+            dt.Columns.Add("送货线路名称", typeof(string));
+            dt.Columns.Add("作业状态", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("修改时间", typeof(string));
+            foreach (var t in temp)
+            {
+                dt.Rows.Add(t.OrderDate,
+                            t.SortingLineCode,
+                            t.SortingLineName,
+                            t.DeliverLineCode,
+                            t.DeliverLineName,
+                            t.WorkStatus,
+                            t.IsActive,
+                            t.UpdateTime);
+            }
+            return dt;
+        }
     }
 }

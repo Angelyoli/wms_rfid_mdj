@@ -1460,7 +1460,7 @@
     <Content Include="Views\StockOutBill\_CellPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Views\StockInBill\_CellPartial.cshtml" />
+    <Content Include="Views\StockInBill\_%40CellPartial.cshtml" />
     <Content Include="Views\SortWorkDispatch\Index.cshtml" />
     <Content Include="Views\SortWorkDispatch\_AddPartial.cshtml" />
     <Content Include="Views\SortWorkDispatch\_DeletePartial.cshtml" />
@@ -1530,6 +1530,25 @@
     <Content Include="Views\QuantityLimits\_UnitPartial.cshtml" />
     <Content Include="Views\StorageAnalysis\Index.cshtml" />
     <Content Include="Views\Warehouse2\_PrintPartial.cshtml" />
+    <Content Include="Views\Product\_PrintPartial.cshtml" />
+    <Content Include="Views\Job\AddPage.cshtml" />
+    <Content Include="Views\Job\SearchPage.cshtml" />
+    <Content Include="Views\Supplier\_PrintPartial.cshtml" />
+    <Content Include="Views\Unit\_PrintPartial.cshtml" />
+    <Content Include="Views\UnitList\_PrintPartial.cshtml" />
+    <Content Include="Views\StockInBillType\_PrintPartial.cshtml" />
+    <Content Include="Views\StockOutBillType\_PrintPartial.cshtml" />
+    <Content Include="Views\StockMoveBillType\_PrintPartial.cshtml" />
+    <Content Include="Views\ProfitLossBillType\_PrintPartial.cshtml" />
+    <Content Include="Views\Stockledger\_PrintPartial.cshtml" />
+    <Content Include="Views\SortingLine\_PrintPartial.cshtml" />
+    <Content Include="Views\SortingLowerLimit\_PrintPartial.cshtml" />
+    <Content Include="Views\SortingOrder\_PrintPartial.cshtml" />
+    <Content Include="Views\SortOrderDispatch\_PrintPartial.cshtml" />
+    <Content Include="Views\SortWorkDispatch\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductWarning\_PrintPartial.cshtml" />
+    <Content Include="Views\QuantityLimits\_PrintPartial.cshtml" />
+    <Content Include="Views\StockMoveBill\_MoveInCellPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

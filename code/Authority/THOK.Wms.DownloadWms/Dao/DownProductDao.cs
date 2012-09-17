@@ -44,8 +44,9 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable FindProductCodeInfo(string productCode)
         {
-            string sql = "SELECT * FROM WMS_PRODUCT WHERE CUSTOM_CODE='" + productCode + "'";
+            string sql = "SELECT * FROM WMS_PRODUCT WHERE  " + productCode;
             return this.ExecuteQuery(sql).Tables[0];
         }
+        
     }
 }
