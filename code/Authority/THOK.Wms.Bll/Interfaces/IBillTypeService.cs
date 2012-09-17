@@ -15,6 +15,8 @@ namespace THOK.Wms.Bll.Interfaces
             bool Delete(string billtypeCode);
 
             bool Save(BillType billtype);
+
+            System.Data.DataTable GetBillType(int page, int rows, string BillTypeCode, string BillTypeName, string BillClass, string IsActive);
         }
    
 }

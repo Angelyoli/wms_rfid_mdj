@@ -22,5 +22,7 @@ namespace THOK.Wms.Bll.Interfaces
         object GetDetails(int page, int rows, string QueryString, string Value);
 
         bool DownUnit();
+
+        System.Data.DataTable GetUnit(int page, int rows, string UnitCode, string UnitName, string IsActive);
     }
 }

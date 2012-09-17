@@ -9,7 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
-    public class UnitService:ServiceBase<Unit>,IUnitService
+    public class UnitService : ServiceBase<Unit>, IUnitService
     {
         [Dependency]
         public IUnitRepository UnitRepository { get; set; }
@@ -31,10 +31,10 @@ namespace THOK.Wms.Bll.Service
             IQueryable<Unit> unitQuery = UnitRepository.GetQueryable();
             var unit = unitQuery.Where(u => u.UnitCode.Contains(UnitCode) && u.UnitName.Contains(UnitName))
                 .OrderBy(u => u.UnitCode)
-                .Select(u =>u);
+                .Select(u => u);
             if (!IsActive.Equals(""))
             {
-                unit = unit.Where(u=>u.IsActive.Contains(IsActive));
+                unit = unit.Where(u => u.IsActive.Contains(IsActive));
             }
             int total = unit.Count();
             unit = unit.Skip((page - 1) * rows).Take(rows);
@@ -68,7 +68,7 @@ namespace THOK.Wms.Bll.Service
                 .OrderBy(c => c.UnitCode).AsEnumerable()
                 .Select(c => new
                 {
-                    
+
                     IsActive = c.IsActive == "1" ? "可用" : "不可用",
                     c.UnitCode,
                     c.UnitName,
@@ -126,15 +126,53 @@ namespace THOK.Wms.Bll.Service
             var product = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == productCode);
             var unitList = product.UnitList;
             var r = (new Unit[] { unitList.Unit01, unitList.Unit02, unitList.Unit03, unitList.Unit04 }).Select(u => new { UnitCode = u.UnitCode, UnitName = u.UnitName });
-            return r; 
-       }
+            return r;
+        }
 
         #endregion
-
 
         public bool DownUnit()
         {
             throw new NotImplementedException();
+        }
+
+        public System.Data.DataTable GetUnit(int page, int rows, string UnitCode, string UnitName, string IsActive)
+        {
+            IQueryable<Unit> unitQuery = UnitRepository.GetQueryable();
+            var unit = unitQuery.Where(u => u.UnitCode.Contains(UnitCode) && u.UnitName.Contains(UnitName))
+                .OrderBy(u => u.UnitCode)
+                .Select(u => u);
+            if (!IsActive.Equals(""))
+            {
+                unit = unit.Where(u => u.IsActive.Contains(IsActive));
+            }
+            var temp = unit.ToArray().Select(u => new
+            {
+                u.UnitCode,
+                u.UnitName,
+                COUNT = u.Count,
+                IsActive = u.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = u.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                RowVersion = Convert.ToBase64String(u.RowVersion)
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("计量单位编码", typeof(string));
+            dt.Columns.Add("计量单位名称", typeof(string));
+            dt.Columns.Add("支数", typeof(string));
+            dt.Columns.Add("是否启用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in temp)
+            {
+                dt.Rows.Add
+                    (
+                        item.UnitCode,
+                        item.UnitName,
+                        item.COUNT,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+            }
+            return dt;
         }
     }
 }

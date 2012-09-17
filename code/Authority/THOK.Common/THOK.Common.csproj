@@ -67,6 +67,7 @@
     <Compile Include="Des.cs" />
     <Compile Include="EntityCollection.cs" />
     <Compile Include="ExportExcel.cs" />
+    <Compile Include="ExportExcel_test.cs" />
     <Compile Include="LoggerBase.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="NullHandler.cs" />

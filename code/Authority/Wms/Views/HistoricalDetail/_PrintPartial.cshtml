@@ -1,0 +1,10 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/HistoricalDetail/CreateExcelToClient/"
+                                + "?warehouseCode=" + $('#wareHouse').combo('getValue')
+                                + "&productCode=" + $('#productCode').val()
+                                + "&beginDate=" + $('#beginDate').datebox('getValue')
+                                + "&endDate=" + $('#endDate').datebox('getValue');
+
+    }
+</script>

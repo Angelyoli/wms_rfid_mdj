@@ -13,5 +13,9 @@ namespace THOK.Wms.Bll.Interfaces
         bool DoDailyBalance(string warehouseCode, string settleDate,ref string errorInfo);
         object GetInfoCheck(int page, int rows, string warehouseCode, string settleDate, string unitType);
         //object GetDailyBalanceInfos(int page, int rows, string warehouseCode, string settleDate);
+        
+        System.Data.DataTable GetInfoDetail(int page, int rows, string warehouseCode, string settleDate, string unitType);
+
+        System.Data.DataTable GetInfoChecking(int page, int rows, string warehouseCode, string settleDate, string unitType);
     }
 }
