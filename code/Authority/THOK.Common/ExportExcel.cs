@@ -126,6 +126,7 @@ namespace THOK.Common
                         #region 列头及样式
                         {
                             NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(2) as NPOI.HSSF.UserModel.HSSFRow;
+                            headerRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
                             NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                             headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER;
                             #region 画边框
@@ -143,7 +144,7 @@ namespace THOK.Common
                             {
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                 headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
-                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);//设置列宽
+                                sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth[column.Ordinal] * 1.4) * 256));//设置列宽
                             }
                         }
                         #endregion
