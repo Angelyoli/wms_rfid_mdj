@@ -1,11 +1,24 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var employeeCode = null
+          , employeeName = null
+          , departmentId = null
+          , jobId = null
+          , status = null
+          , isActive = null;
+
+        if ($('#EmployeeCode').val() == null) { employeeCode = "" } else { employeeCode = $('#EmployeeCode').val(); }
+        if ($('#EmployeeName').val() == null) { employeeName = "" } else { employeeName = $('#EmployeeName').val(); }
+        if ($('#job-id').val() == null) { jobId = ""; } else { jobId = $('#job-id').val(); }
+        if (document.getElementById('Status_Search') == null) { status = ""; } else { status = $('#Status_Search').combo('getValue'); }
+        if (document.getElementById("isActive") == null) { isActive = "" } else { isActive = $('#isActive').combo('getValue'); }
+
         window.location.href = "/Employee/CreateExcelToClient/"
-                                 + "?employeeCode=" + $('#EmployeeCode').val()
-                                 + "&employeeName=" + $('#EmployeeName').val()
-                                 + "&departmentId=" + $('#department-id').val()
-                                 + "&jobId=" + $('#job-id').val()
-                                 + "&status=" + $('#Status_Search').combo('getValue')
-                                 + "&isActive=" + $('#isActive').combo('getValue');
+                                 + "?employeeCode=" + employeeCode
+                                 + "&employeeName=" + employeeName
+                                 + "&departmentId=" + departmentId
+                                 + "&jobId=" + jobId
+                                 + "&status=" + status
+                                 + "&isActive=" + isActive;
     }
 </script>
