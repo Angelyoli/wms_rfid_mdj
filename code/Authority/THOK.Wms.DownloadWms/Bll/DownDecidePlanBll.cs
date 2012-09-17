@@ -41,11 +41,18 @@ namespace THOK.Wms.DownloadWms.Bll
 
                 if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
                 {
-                    DataSet middleds = this.MiddleTable(masterdt);                  
-                    DataSet masterds = this.MiddleInBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
-                    DataSet detailds = this.MiddleInBillDetail(detaildt);
-                    this.Insert(masterds, detailds, middleds);
-                    tag = true;
+                    try
+                    {
+                        DataSet middleds = this.MiddleTable(masterdt);
+                        DataSet masterds = this.MiddleInBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
+                        DataSet detailds = this.MiddleInBillDetail(detaildt);
+                        this.Insert(masterds, detailds, middleds);
+                        tag = true;
+                    }
+                    catch (Exception e)
+                    {
+                        errorInfo = e.Message;
+                    }
                 }
                 else
                     errorInfo = "没有新的入库单下载！";
