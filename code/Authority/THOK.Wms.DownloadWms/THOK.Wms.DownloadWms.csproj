@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Bll\DownCustomerBll.cs" />
     <Compile Include="Bll\DownBusinessSystemsDailyBalanceBll.cs" />
+    <Compile Include="Bll\DownDecidePlanBll.cs" />
     <Compile Include="Bll\DownDeptBll.cs" />
     <Compile Include="Bll\DownDistBll.cs" />
     <Compile Include="Bll\DownInBillBll.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Bll\DownUnitBll.cs" />
     <Compile Include="Dao\DownCustomerDao.cs" />
     <Compile Include="Dao\DownBusinessSystemsDailyBalanceDao.cs" />
+    <Compile Include="Dao\DownDecidePlanDao.cs" />
     <Compile Include="Dao\DownDeptDao.cs" />
     <Compile Include="Dao\DownDistDao.cs" />
     <Compile Include="Dao\DownInBillDao.cs" />
