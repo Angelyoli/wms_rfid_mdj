@@ -3410,7 +3410,7 @@ namespace THOK.Wms.Repository.Migrations
                  {
                      FunctionID = new Guid("F8BF2A92-5BFA-4E17-8764-2564A7625557"),
                      FunctionName = "Ôö¼Ó",
-                     ControlName = "print",
+                     ControlName = "add",
                      IndicateImage = "icon-add",
                      Module_ModuleID = new Guid("AB1BE2ED-1522-4722-ADC6-82654656589F")
                  },
@@ -3418,7 +3418,7 @@ namespace THOK.Wms.Repository.Migrations
                   {
                       FunctionID = new Guid("BC59ACEB-7F00-4C69-B4E1-21D29525E6B9"),
                       FunctionName = "ÐÞ¸Ä",
-                      ControlName = "print",
+                      ControlName = "edit",
                       IndicateImage = "icon-edit",
                       Module_ModuleID = new Guid("AB1BE2ED-1522-4722-ADC6-82654656589F")
                   },
@@ -3426,7 +3426,7 @@ namespace THOK.Wms.Repository.Migrations
                    {
                        FunctionID = new Guid("919AAF97-FB5B-42BB-8B6C-ED2612280809"),
                        FunctionName = "É¾³ý",
-                       ControlName = "print",
+                       ControlName = "delete",
                        IndicateImage = "icon-remove",
                        Module_ModuleID = new Guid("AB1BE2ED-1522-4722-ADC6-82654656589F")
                    },

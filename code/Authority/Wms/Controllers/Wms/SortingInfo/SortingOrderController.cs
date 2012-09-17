@@ -101,5 +101,29 @@ namespace Authority.Controllers.Wms.SortingInfo
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /SortingOrder/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string orderId = Request.QueryString["orderId"];
+
+            System.Data.DataTable dt = SortOrderDetailService.GetSortOrderDetail(page, rows, orderId);
+            string headText = "分拣订单管理";
+            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

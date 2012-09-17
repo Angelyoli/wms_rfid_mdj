@@ -15,5 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string id);
 
         bool Save(SortingLowerlimit sortLowerLimit);
+
+        System.Data.DataTable GetSortingLowerlimit(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive);
     }
 }

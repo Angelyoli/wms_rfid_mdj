@@ -1,0 +1,9 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        window.location.href = "/QuantityLimits/CreateExcelToClient/"
+                                + "?productCode=" + $('#productCode').val()
+                                + "&unitCode=" + $('#unitCode').val()
+                                + "&minLimited=" + $('#minLimited').val()
+                                + "&maxLimited=" + $('#maxLimited').val();
+    }
+</script>

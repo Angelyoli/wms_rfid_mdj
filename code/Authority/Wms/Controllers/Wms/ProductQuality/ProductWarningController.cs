@@ -74,5 +74,32 @@ namespace Wms.Controllers.Wms.ProductQuality
             var productWarn = ProductWarningService.GetWarningPrompt();
             return Json(productWarn, "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /ProductWarning/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string productCode = Request.QueryString["productCode"];
+            decimal minLimited = Convert.ToDecimal( Request.QueryString["minLimited"]);
+            decimal maxLimited = Convert.ToDecimal(Request.QueryString["maxLimited"]);
+            decimal assemblyTime = Convert.ToDecimal(Request.QueryString["assemblyTime"]);
+
+            System.Data.DataTable dt = ProductWarningService.GetProductWarning(page, rows, productCode,minLimited,maxLimited,assemblyTime);
+            string headText = "产品预警信息设置";
+            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; Int16 colHeadWidth = 300;
+            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+
+            Response.Clear();
+            Response.BufferOutput = false;
+            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            Response.ContentType = "application/ms-excel";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize, colHeadWidth, exportDate);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }
