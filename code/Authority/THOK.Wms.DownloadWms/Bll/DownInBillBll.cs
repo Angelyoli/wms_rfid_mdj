@@ -141,7 +141,7 @@ namespace THOK.WMS.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in inBillDetaildr.Rows)
             {
-                DataTable prodt = FindProductCodeInfo(row["BRAND_CODE"].ToString());//                
+                DataTable prodt = FindProductCodeInfo(" CUSTOM_CODE='" + row["BRAND_CODE"].ToString() + "'");//                
                 DataRow detailrow = ds.Tables["WMS_IN_BILLDETAIL"].NewRow();
                 detailrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
                 detailrow["product_code"] = prodt.Rows[0]["product_code"];
@@ -224,10 +224,16 @@ namespace THOK.WMS.DownloadWms.Bll
             detailtable.Columns.Add("allot_quantity");
             detailtable.Columns.Add("real_quantity");
             detailtable.Columns.Add("description");
+
+
+            DataTable middletable = ds.Tables.Add("WMS_MIDDLE_IN_BILLDETAIL");
+            middletable.Columns.Add("bill_no");
+            middletable.Columns.Add("bill_date");
             return ds;
         }
 
         #endregion
-       
+
+        
     }
 }

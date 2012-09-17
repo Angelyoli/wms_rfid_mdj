@@ -136,7 +136,7 @@ namespace THOK.WMS.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in outDetailTable.Rows)
             {
-                DataTable prodt = FindProductCodeInfo(row["BRAND_CODE"].ToString());
+                DataTable prodt = FindProductCodeInfo(" CUSTOM_CODE='" + row["BRAND_CODE"].ToString() + "'");
                 DataRow detailrow = ds.Tables["WMS_OUT_BILLDETAILA"].NewRow();
                 detailrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
                 detailrow["product_code"] = prodt.Rows[0]["product_code"];

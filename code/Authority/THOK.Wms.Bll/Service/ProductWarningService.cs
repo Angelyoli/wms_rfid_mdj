@@ -230,6 +230,8 @@ namespace THOK.Wms.Bll.Service
                  QuantityLimitsWarnings = QuantityLimitsWarnings.Where(q => q.quantityTotal <= q.maxlimits).ToArray();
              }
              int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarning.Count();
+             //var timeOutWarning = TimeOutWarning.Select(s => new { AssemblyTime = total });
+             //return timeOutWarning.ToArray();
              return total;
          }
          #endregion
@@ -238,12 +240,19 @@ namespace THOK.Wms.Bll.Service
          public object GetStorageByTime()
          {
              IQueryable<DailyBalance> EndQuantity = DailyBalanceRepository.GetQueryable();
-             var storageQuantity = EndQuantity.GroupBy(e=>e.SettleDate).Select(e => new 
+             var storageQuantity = EndQuantity.OrderBy(e=>e.SettleDate).GroupBy(e=>e.SettleDate).Select(e => new 
              {
-                TimeInter=e.Max(m=>m.SettleDate).Date,
-                TotalQuantity=e.Sum(s=>s.Ending)
-             });
-             return storageQuantity.ToArray();
+                TimeInter=e.Max(m=>m.SettleDate),
+                TotalQuantity=e.Sum(s=>s.Ending/s.Unit.Count)
+             }).ToArray();
+             int j = storageQuantity.Count();
+             decimal[,] array = new decimal[j, 2];
+             for (int i = 0; i < j; i++)
+             {
+                 array[i, 0] =decimal.Parse(storageQuantity[i].TimeInter.Date.ToFileTimeUtc().ToString());
+                 array[i, 1] = storageQuantity[i].TotalQuantity;
+             }
+             return array;
          }
         #endregion
 
