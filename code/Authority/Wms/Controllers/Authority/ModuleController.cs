@@ -34,7 +34,19 @@ namespace Authority.Controllers.Authority
             var modules = ModuleService.GetDetails(systemId);
             return Json(modules, "text", JsonRequestBehavior.AllowGet);
         }
-
+        public ActionResult Details2(int page, int rows, string QueryString, string Value)
+        {
+            if (QueryString == null)
+            {
+                QueryString = "SystemName";
+            }
+            if (Value == null)
+            {
+                Value = "";
+            }
+            var product = ModuleService.GetDetails2(page, rows, QueryString, Value);
+            return Json(product, "text", JsonRequestBehavior.AllowGet);
+        }
         // POST: /Module/Create/
         [HttpPost]
         public ActionResult Create(string moduleName, int showOrder, string moduleUrl, string indicateImage, string desktopImage, string systemId,string parentModuleID)

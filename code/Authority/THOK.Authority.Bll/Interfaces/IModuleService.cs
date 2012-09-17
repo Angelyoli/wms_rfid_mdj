@@ -27,5 +27,7 @@ namespace THOK.Authority.Bll.Interfaces
         object GetUserSystemDetails(string userID, string cityID, string systemID);
 
         bool ProcessUserPermissionStr(string userPermissionStr);
+
+        object GetDetails2(int page, int rows, string QueryString, string Value);
     }
 }
