@@ -357,7 +357,7 @@ namespace THOK.Common
                 }
 
                 #region 页眉页脚
-                sheet.Header.Center = "info";
+                sheet.Header.Center = "……";
                 sheet.Footer.Left = "&D";   //日期
                 sheet.Footer.Right = "&P";  //页码      
                 #endregion
