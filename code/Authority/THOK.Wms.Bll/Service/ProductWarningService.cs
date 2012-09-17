@@ -23,6 +23,8 @@ namespace THOK.Wms.Bll.Service
          public IDailyBalanceRepository DailyBalanceRepository { get; set; }
          [Dependency]
          public ICellRepository CellRepository { get; set; }
+         [Dependency]
+         public IAreaRepository AreaRepository { get; set; }
 
          protected override Type LogPrefix
          {
@@ -259,12 +261,24 @@ namespace THOK.Wms.Bll.Service
         #region  货位分析数据
          public object GetCellInfo()
          {
-             //IQueryable<Cell> CellQuery = CellRepository.GetQueryable();
-             //IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
-             //int cellQuantity = CellQuery.Count();
-             //int storageQuantity = StorageQuery.Where(s => s.IsLock == "1" || s.Quantity > 0 || s.InFrozenQuantity > 0 || s.OutFrozenQuantity > 0).Count();
-
-             return null;
+             IQueryable<Area> AreaQuery = AreaRepository.GetQueryable();
+             IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+             var storageQuantity = StorageQuery.Join(AreaQuery, s => s.Cell.AreaCode, a => a.AreaCode, (s, a) => new { storage = s, area = a });
+             var storage = storageQuantity.GroupBy(s => s.area.AreaCode).Where(s => s.Sum(t => t.storage.Quantity) > 0)
+                                .Select(s =>new
+                                {
+                                    areaName=s.Max(t=>t.area.AreaName),
+                                    totalQuantity=s.Sum(t=>t.storage.Quantity)
+                                }).ToArray();
+             var total = StorageQuery.Where(s=>s.Quantity>0).Sum(s=>s.Quantity);
+             int j = storage.Count();
+             object[,] array = new object[j,2];
+             for (int i = 0; i < j; i++)
+             {
+                 array[i, 0] = storage[i].areaName;
+                 array[i, 1] = Decimal.Round((storage[i].totalQuantity/total),4)*100;
+             }
+             return array;
          }
         #endregion
 
