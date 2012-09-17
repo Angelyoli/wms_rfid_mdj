@@ -1,9 +1,19 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var dptCode = null
+          , dptName = null
+          , dptLeaderId = null
+          , comId = null;
+
+        if ($('#DepartmentCode').val() == null) { dptCode = ""; } else { dptCode = $('#DepartmentCode').val(); }
+        if ($('#DepartmentName').val() == null) { dptName = ""; } else { dptName = $('#DepartmentName').val(); }
+        if ($('#employeename-id').val() == null) { dptLeaderId = ""; } else { dptLeaderId = $('#employeename-id').val(); }
+        if ($('#companyname-id').val() == null) { comId = ""; } else { comId = $('#companyname-id').val(); }
+
         window.location.href = "/Department/CreateExcelToClient/"
-                                + "?departmentCode=" + $('#DepartmentCode').val()
-                                + "&departmentName=" + $('#DepartmentName').val()
-                                + "&departmentLeaderId=" + $('#employeename-id').val()
-                                + "&companyId=" + $('#companyname-id').val();
+                                + "?departmentCode=" + dptCode
+                                + "&departmentName=" + dptName
+                                + "&departmentLeaderId=" + dptLeaderId
+                                + "&companyId=" + comId;
     }
 </script>
