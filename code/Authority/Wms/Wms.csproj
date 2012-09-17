@@ -1460,7 +1460,7 @@
     <Content Include="Views\StockOutBill\_CellPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Views\StockInBill\_CellPartial.cshtml" />
+    <Content Include="Views\StockInBill\_%40CellPartial.cshtml" />
     <Content Include="Views\SortWorkDispatch\Index.cshtml" />
     <Content Include="Views\SortWorkDispatch\_AddPartial.cshtml" />
     <Content Include="Views\SortWorkDispatch\_DeletePartial.cshtml" />
@@ -1548,6 +1548,7 @@
     <Content Include="Views\SortWorkDispatch\_PrintPartial.cshtml" />
     <Content Include="Views\ProductWarning\_PrintPartial.cshtml" />
     <Content Include="Views\QuantityLimits\_PrintPartial.cshtml" />
+    <Content Include="Views\StockMoveBill\_MoveInCellPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
