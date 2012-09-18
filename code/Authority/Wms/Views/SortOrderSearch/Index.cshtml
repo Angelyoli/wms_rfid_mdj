@@ -15,7 +15,7 @@
 <div region="center" split="true" border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">    
     <table id="details" class="easyui-datagrid" 
         url="/SortOrderSearch/Details/" border="false" singleSelect="true"
-        fit="true" toolbar="#tool"  pagination="true" rownumbers="true">
+        fit="true" toolbar="#tool"  pagination="true" rownumbers="true" pageSize="50">
         <thead>
             <tr>
                 <th field="OrderID" width="100" align="center">订单单号</th>
@@ -33,7 +33,7 @@
 <div region="south" split="true" border="false" style="height: 250px; border-top-style: solid; border-top-width: 1px; border-top-color: 99BBE8;">
 <table id="infoDetails" class="easyui-datagrid" 
         url="/SortOrderSearch/InfoDetails/" border="false" singleSelect="true"
-        fit="true"  pagination="true" rownumbers="true">
+        fit="true"  pagination="true" rownumbers="true" pageSize="50">
         <thead>
             <tr>
                 <th field="OrderDetailID" width="140" align="center">序号</th>

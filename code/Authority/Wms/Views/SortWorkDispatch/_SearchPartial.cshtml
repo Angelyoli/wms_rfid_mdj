@@ -13,7 +13,7 @@
         $('#SortingLineCode').combogrid({
             width: 130,
             panelWidth: 340,
-            url: '/SortingLine/Details/?page=1&rows=20',
+            url: '/SortingLine/Details/?page=1&rows=50',
             idField: 'SortingLineCode',
             textField: 'SortingLineName',
             mode: 'local',
@@ -36,7 +36,7 @@
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
-            pageSize: 10
+            pageSize: 50
         }); 
         $("#details").datagrid('reload');
         $('#searchdlg').dialog('close'); 

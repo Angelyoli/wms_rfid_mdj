@@ -4,7 +4,7 @@
             disabled: false,
             width: 140,
             panelWidth: 340,
-            url: '/Employee/Details/?page=1&rows=10',
+            url: '/Employee/Details/?page=1&rows=50',
             idField: 'EmployeeCode',
             textField: 'EmployeeName',
             mode: 'local',
@@ -22,7 +22,7 @@
             disabled: false,
             width: 140,
             panelWidth: 240,
-            url: '/Employee/Details/?page=1&rows=10&&IsActive=1',
+            url: '/Employee/Details/?page=1&rows=50&&IsActive=1',
             idField: 'EmployeeCode',
             textField: 'EmployeeName',
             mode: 'local',
@@ -60,7 +60,7 @@
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
-            pageSize: 10
+            pageSize: 50
         }); 
         $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
