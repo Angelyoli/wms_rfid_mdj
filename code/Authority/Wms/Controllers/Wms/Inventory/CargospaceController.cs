@@ -46,8 +46,7 @@ namespace Authority.Controllers.Wms.Inventory
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
-            this.GetResponse(headText);
-
+            
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize,
                 colHeadFont, colHeadSize, colHeadWidth, exportDate);
             return new FileStreamResult(ms, "application/ms-excel");

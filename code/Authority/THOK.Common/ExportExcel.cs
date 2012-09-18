@@ -9,14 +9,14 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.Util;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.Util;
+using System.Web;
 #endregion
 
 namespace THOK.Common
 {
     public class ExportExcel
     {
-        #region 导出EXCEL单表双表
-        /// <summary>DataTable导出到EXCEL的MemoryStream</summary>
+        /// <summary>导出EXCEL单表双表</summary>
         /// <param name="dt1">DataTable</param>
         /// <param name="dt2">DataTable</param>
         /// <param name="headText1">标题</param>
@@ -29,11 +29,11 @@ namespace THOK.Common
         /// <param name="exportDate">导出时间</param>
         /// <returns></returns>
         public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
-            , string headText1, string headText2
-            , string headFont, Int16 headSize
-            , string colHeadFont, Int16 colHeadSize, Int16 colHeadWidth
-            , string exportDate)
+                , string headText1, string headText2
+                , string headFont, Int16 headSize
+                , string colHeadFont, Int16 colHeadSize, Int16 colHeadWidth,string null_)
         {
+            string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(headText1) as HSSFSheet;
             HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
@@ -372,14 +372,31 @@ namespace THOK.Common
             ms.Position = 0;
             return ms;
         }
-        #endregion
+
+        /// <summary>
+        /// 浏览器下载
+        /// </summary>
+        /// <param name="filename">文件名</param>
+        public static void GetResponse(string headText)
+        {
+            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            HttpResponse response = System.Web.HttpContext.Current.Response;
+            response.Clear();
+            response.BufferOutput = false;
+            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            response.ContentType = "application/ms-excel";
+        }
 
         #region 单元格数据生成通用类
-        public static int CreateDataMethod(ISheet sheet1
-            , ICellStyle style
-            , DataTable dt
-            , int rowIndex
-            , HSSFCellStyle dateStyle)
+        public static int CreateDataMethod
+            (
+                  ISheet sheet1
+                , ICellStyle style
+                , DataTable dt
+                , int rowIndex
+                , HSSFCellStyle dateStyle
+            )
         {
             foreach (DataRow row in dt.Rows)
             {
