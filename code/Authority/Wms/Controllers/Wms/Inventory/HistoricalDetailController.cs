@@ -35,10 +35,10 @@ namespace Authority.Controllers.Wms.Inventory
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string warehouseCode = Request.QueryString["warehouseCode"];
-            string productCode = Request.QueryString["productCode"];
-            string beginDate = Request.QueryString["beginDate"];
-            string endDate = Request.QueryString["endDate"];
+            string warehouseCode = Request.QueryString["warehouseCode"] ?? "";
+            string productCode = Request.QueryString["productCode"] ?? "";
+            string beginDate = Request.QueryString["beginDate"] ?? "";
+            string endDate = Request.QueryString["endDate"] ?? "";
 
             System.Data.DataTable dt1 = HistoricalDetailService.GetHistoryDetail(page, rows, warehouseCode, productCode, beginDate,endDate);
 

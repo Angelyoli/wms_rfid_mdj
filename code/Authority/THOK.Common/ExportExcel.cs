@@ -26,8 +26,6 @@ namespace THOK.Common
         /// <param name="headSize">大小</param>
         /// <param name="colHeadFont">字体</param>
         /// <param name="colHeadSize">大小</param>
-        /// <param name="colHeadWidth">宽度</param>
-        /// <param name="exportDate">导出时间</param>
         /// <returns></returns>
         public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
                 , string headText1, string headText2
