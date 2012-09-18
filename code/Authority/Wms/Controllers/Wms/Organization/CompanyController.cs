@@ -115,16 +115,14 @@ namespace Authority.Controllers.Organization
             string companyCode = Request.QueryString["companyCode"] ?? "";
             string companyName = Request.QueryString["companyName"] ?? "";
             string companyType = Request.QueryString["companyType"] ?? "";
-            string isActive = Request.QueryString["isActive"] ?? "";            
+            string isActive = Request.QueryString["isActive"] ?? "";
             DataTable dt = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
+
             string headText = "公司信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
-           
-            
-            ExportExcel.GetResponse(headText);
-            MemoryStream ms = ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize,
-                colHeadFont, colHeadSize, colHeadWidth,null);
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+
+            MemoryStream ms = ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize, colHeadFont, colHeadSize);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

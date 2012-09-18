@@ -10,6 +10,7 @@ using NPOI.SS.Util;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.Util;
 using System.Web;
+using System.Web.Mvc;
 #endregion
 
 namespace THOK.Common
@@ -31,9 +32,20 @@ namespace THOK.Common
         public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
                 , string headText1, string headText2
                 , string headFont, Int16 headSize
-                , string colHeadFont, Int16 colHeadSize, Int16 colHeadWidth,string null_)
+                , string colHeadFont, Int16 colHeadSize)
         {
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
+
+            #region 浏览器下载
+            string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            HttpResponse response = System.Web.HttpContext.Current.Response;
+            response.Clear();
+            response.BufferOutput = false;
+            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            response.ContentType = "application/ms-excel"; 
+            #endregion
+
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(headText1) as HSSFSheet;
             HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
@@ -371,21 +383,6 @@ namespace THOK.Common
             ms.Flush();
             ms.Position = 0;
             return ms;
-        }
-
-        /// <summary>
-        /// 浏览器下载
-        /// </summary>
-        /// <param name="filename">文件名</param>
-        public static void GetResponse(string headText)
-        {
-            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
-            HttpResponse response = System.Web.HttpContext.Current.Response;
-            response.Clear();
-            response.BufferOutput = false;
-            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
-            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            response.ContentType = "application/ms-excel";
         }
 
         #region 单元格数据生成通用类
