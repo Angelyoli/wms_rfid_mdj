@@ -1,5 +1,24 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var productCode = null
+          , customCode = null
+          , productName = null
+          , brandCode = null
+          , uniformCode = null
+          , abcTypeCode = null
+          , shortCode = null
+          , priceLevelCode = null
+          , supplierCode = null;
+        if ($('#PC').val() == null) { productCode = ""; } else { productCode = $('#PC').val(); }
+        if ($('#CC').val() == null) { customCode = ""; } else { customCode = $('#CC').val(); }
+        if ($('#PN').val() == null) { productName = ""; } else { productName = $('#PN').val(); }
+        if ($('#brandCode2').val() == null) { brandCode = ""; } else { brandCode = $('#brandCode2').val(); }
+        if ($('#NC').val() == null) { uniformCode = ""; } else { uniformCode = $('#NC').val(); }
+        if (document.getElementById('ATC') == null) { abcTypeCode = ""; } else { abcTypeCode = $('#ATC').combo('getValue'); }
+        if ($('#SC').val() == null) { shortCode = ""; } else { shortCode = $('#SC').val(); }
+        if (document.getElementById('PLC') == null) { priceLevelCode = ""; } else { priceLevelCode = $('#PLC').combo('getValue'); }
+        if ($('#supplierCode2').val() == null) { supplierCode = ""; } else { supplierCode = $('#supplierCode2').val(); }
+
         window.location.href = "/Product/CreateExcelToClient/"
                                 + "?productCode=" + $('#PC').val()
                                 + "&customCode=" + $('#CC').val()

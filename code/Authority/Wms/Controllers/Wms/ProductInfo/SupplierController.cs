@@ -82,7 +82,7 @@ namespace Authority.Controllers.ProductInfo
             string isActive = Request.QueryString["isActive"];
 
             System.Data.DataTable dt = SupplierService.GetSupplier(page, rows, supplierCode, supplierName, isActive);
-            string headText = "公司信息";
+            string headText = "厂商信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");

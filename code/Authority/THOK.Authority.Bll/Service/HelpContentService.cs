@@ -17,7 +17,6 @@ namespace THOK.Authority.Bll.Service
             get { return this.GetType(); }
         }
 
-        #region IHelpContentService 成员
 
         public bool Add(HelpContent helpContent, out string strResult)
         {
@@ -50,14 +49,6 @@ namespace THOK.Authority.Bll.Service
                 }
             return result;
         }
-
-        #endregion
-
-        #region IHelpContentService 成员
-
-        #endregion
-        #region IHelpContentService 成员
-
 
         public object GetDetails(int page, int rows, string QueryString, string Value)
         {
@@ -95,11 +86,6 @@ namespace THOK.Authority.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
-        #endregion
-
-        #region IHelpContentService 成员
-
-
         public bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive, out string strResult)
         {
             strResult = string.Empty;
@@ -125,19 +111,12 @@ namespace THOK.Authority.Bll.Service
             return true;
         }
 
-        #endregion
-
-        #region IHelpContentService 成员
-
-
         public object GetDetails2(int page, int rows, string ContentCode, string ContentName, string ModuleName, string NodeType, string FatherNodeID, string NodeOrder, string ModuleID, string IsActive, string UpdateTime)
         {
             IQueryable<HelpContent> HelpContentQuery = HelpContentRepository.GetQueryable();
-            var HelpContent = HelpContentQuery.Where(c =>
-                c.ContentName.Contains(ContentName)
-                && c.Module.ModuleName.Contains(ModuleName))
-                .OrderBy(c => c.ContentCode)
-                .Select(c => c);
+            var HelpContent = HelpContentQuery.Where(c =>c.ContentName.Contains(ContentName) && c.Module.ModuleName.Contains(ModuleName))
+                                              .OrderBy(c => c.ContentCode)
+                                              .Select(c => c);
             if (!ContentCode.Equals(string.Empty))
             {
                 HelpContent = HelpContent.Where(p => p.ContentCode == ContentCode);
@@ -155,7 +134,7 @@ namespace THOK.Authority.Bll.Service
                ContentCode= c.ContentCode,
                ContentName= c.ContentName,
                ContentPath= c.ContentPath,
-               FatherNode= c.FatherNode.ContentName,
+               FatherNodeName = c.FatherNode.ContentName,
                ModuleID= c.ModuleID,
                ModuleName = c.Module.ModuleName,
                FatherNodeID= c.FatherNodeID,
@@ -166,13 +145,6 @@ namespace THOK.Authority.Bll.Service
             });
             return new { total, rows = temp.ToArray() };
         }
-
-        #endregion
-
-
-
-        #region IHelpContentService 成员
-
 
         public bool Delete(string ContentCode)
         {
@@ -187,7 +159,5 @@ namespace THOK.Authority.Bll.Service
                 return false;
             return true;
         }
-
-        #endregion
     }
 }

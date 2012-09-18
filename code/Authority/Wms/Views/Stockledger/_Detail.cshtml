@@ -1,4 +1,13 @@
-﻿<div id="InfoDetails" class="easyui-dialog" modal="true" 
+﻿<script type="text/javascript">
+    function F_Quantity(val, row) {
+        if (row.Status == "0") {
+            return '<span style="color:red;">' + val + '</span>';
+        } else {
+            return val;
+        }
+    }
+</script>
+<div id="InfoDetails" class="easyui-dialog" modal="true" 
         style="width:800px;height:420px;padding:2px 2px"
         closed="true">    
     <table id="infos" class="easyui-datagrid"
@@ -11,10 +20,10 @@
                 <th field="BillTypeName" width="80">单据业务</th>
                 <th field="ProductCode" width="80">商品代码</th>
                 <th field="ProductName" width="140">商品名称</th>
-                <th field="RealQuantity" width="80">账面数量</th>
-                <th field="JQuantity" width="100">数量（自然件）</th>
-                <th field="TQuantity" width="80">数量（条）</th>
+                <th field="RealQuantity" width="80" formatter="F_Quantity">账面数量</th>
                 <th field="UnitName" width="80">单据单位</th>
+                <th field="JQuantity" width="100">数量（自然件）</th>
+                <th field="TQuantity" width="80">数量（自然条）</th>
             </tr>
         </thead>
     </table>
