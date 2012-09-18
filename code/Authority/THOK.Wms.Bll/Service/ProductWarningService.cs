@@ -267,7 +267,7 @@ namespace THOK.Wms.Bll.Service
                                 .Select(s =>new
                                 {
                                     areaName=s.Max(t=>t.area.AreaName),
-                                    totalQuantity=Decimal.Round(s.Sum(t=>t.storage.Quantity)/total,4)*100
+                                    totalQuantity=Decimal.Round(s.Sum(t=>t.storage.Quantity)/total,5)*100
                                 }).ToArray();
             // var total = StorageQuery.Where(s=>s.Quantity>0).Sum(s=>s.Quantity);
              //int j = storage.Count();
