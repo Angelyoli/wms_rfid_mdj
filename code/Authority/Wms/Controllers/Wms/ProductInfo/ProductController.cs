@@ -92,7 +92,7 @@ namespace Authority.Controllers.ProductInfo
             string supplierCode = Request.QueryString["supplierCode"];
 
             System.Data.DataTable dt = ProductService.GetProduct(page, rows, productName, productCode, customCode, brandCode, uniformCode, abcTypeCode, shortCode, priceLevelCode, supplierCode);
-            string headText = "公司信息";
+            string headText = "卷烟信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
             string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");

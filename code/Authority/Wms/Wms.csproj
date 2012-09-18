@@ -1256,6 +1256,9 @@
     <Content Include="Views\HelpContent\_helpPartial2.cshtml" />
     <Content Include="Views\HelpContent\_EditPartial.cshtml" />
     <Content Include="Views\HelpContent\_DeletePartial.cshtml" />
+    <Content Include="Views\DailyBalance\_PrintPartial.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
