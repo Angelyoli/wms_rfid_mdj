@@ -20,7 +20,7 @@
 
 <div id="productCheckDiv" region="center" split="true" border="false" style="height:450px; display:block;">    
    <table id="details" class="easyui-treegrid" border="false" url="/Module/Details/" rownumbers="true" singleSelect="false" 
-			idField="ModuleID"  pagination="true" fit="true" >
+			idField="ModuleID"  pagination="true" fit="true" pageSize="50">
 		<thead>
 			<tr>
                 <th field="ck" checkbox="true"></th>
@@ -42,7 +42,7 @@
 
 <div id="generateDiv" region="center" split="true" border="false" style="display:none;">    
     <table id="details" class="easyui-datagrid" 
-        url="/System/Details/" border="false" singleSelect="true"
+        url="/System/Details/" border="false" singleSelect="true" pageSize="50"
         fit="true" toolbar="#tool"  pagination="true" rownumbers="true">
         <thead>
             <tr>

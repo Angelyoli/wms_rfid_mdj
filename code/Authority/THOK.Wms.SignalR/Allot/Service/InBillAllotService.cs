@@ -60,7 +60,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                                             && c.Area.IsActive == "1"
                                             && c.IsActive == "1"
                                             && (areaCodes.Any(a => a == c.AreaCode)
-                                                || (!areaCodes.Any() && c.Area.AllotInOrder < 10000)))
+                                                || (!areaCodes.Any() && c.Area.AllotInOrder >0)))
                                  .ToArray();   
 
             //1：主库区；2：件烟区；
