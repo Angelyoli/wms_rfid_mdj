@@ -19,6 +19,7 @@ namespace Wms.Controllers.Wms.ProductQuality
 
         public ActionResult Index(string moduleID)
         {
+            ViewBag.hasSearch = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
             return View();
