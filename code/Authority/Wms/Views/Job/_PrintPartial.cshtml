@@ -1,8 +1,14 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var jobCode = null, jobName = null, isActive = null;
+
+        if ($('#JobCode').val() == null) { jobCode = ""; } else { jobCode = $('#JobCode').val() }
+        if ($('#JobName').val() == null) { jobName = ""; } else { jobName = $('#JobName').val() }
+        if (document.getElementById('#isActive') == null) { isActive = ""; } else { isActive = $('#isActive').combo('getValue') }
+
         window.location.href = "/Job/CreateExcelToClient/"
-                                + "?jobCode=" + $('#JobCode').val()
-                                + "&jobName=" + $('#JobName').val() 
-                                + "&isActive=" + $('#isActive').combo('getValue');
+                                + "?jobCode=" + jobCode
+                                + "&jobName=" + jobName
+                                + "&isActive=" + isActive;
     }
 </script>

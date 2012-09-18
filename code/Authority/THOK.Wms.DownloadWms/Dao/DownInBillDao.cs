@@ -72,7 +72,6 @@ namespace THOK.WMS.DownloadWms.Dao
         {
             string sql = "SELECT * FROM WMS_EMPLOYEE WHERE USER_NAME='" + userName + "'";
             return this.ExecuteQuery(sql).Tables[0];
-        }  
-
+        }
     }
 }
