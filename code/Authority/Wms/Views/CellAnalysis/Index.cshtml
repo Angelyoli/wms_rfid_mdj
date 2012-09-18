@@ -33,6 +33,7 @@ $(function () { $.getJSON("/CellAnalysis/Details", function(data) {
 		        }
 		    },
 		    series: [{
+                type:'pie',
                 name: '货位利用率',
 		        data:data
             }]
