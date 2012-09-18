@@ -242,7 +242,7 @@ namespace THOK.Wms.Bll.Service
              IQueryable<DailyBalance> EndQuantity = DailyBalanceRepository.GetQueryable();
              var storageQuantity = EndQuantity.OrderBy(e=>e.SettleDate).GroupBy(e=>e.SettleDate).ToArray().Select(e => new 
              {
-                 TimeInter = decimal.Parse(e.Max(m => m.SettleDate).Date.ToFileTimeUtc().ToString().Substring(0,13)),
+                 TimeInter = decimal.Parse((((e.Max(m => m.SettleDate)).ToUniversalTime().Ticks - 621355968000000000) / 10000).ToString()),
                  TotalQuantity=e.Sum(s=>s.Ending/s.Unit.Count)
              });
              //int j = storageQuantity.Count();
