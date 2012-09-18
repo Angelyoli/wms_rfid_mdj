@@ -7,7 +7,7 @@
 
 		<script type="text/javascript" src="/Content/Scripts/jquery-easyui-1.3/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript">
-       $(function () { $.getJSON("/CellAnalysis/Details", function(data) { 
+       $(function () {
                var chart;
 		        $(document).ready(function () {
 		            chart = new Highcharts.Chart({
@@ -39,13 +39,20 @@
 		                    }
 		                },
 		                series: [{
+                            type: 'pie',
                             name: '货位利用率',
-		                    data:data
+		                    data:[['主库区',50],['条烟区',30],['件烟区',20]]
                         }]
-		            }) 
-                         // window.setInterval(getForm,2000);
-		        })
-                });
+		            });
+                         function getForm(){                               
+                                 jQuery.getJSON('/CellAnalysis/Details', null, function(data) {   
+                                     chart.series[0].setData(data);  
+                                });  
+                            }  
+//                            $(document).ready(function() {  
+//                                 window.setInterval(getForm,3000);   
+//                            });  
+		        });
                });
 		</script>
 	</head>
