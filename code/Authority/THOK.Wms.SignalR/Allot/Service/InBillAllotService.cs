@@ -56,12 +56,12 @@ namespace THOK.Wms.SignalR.Allot.Service
 
             //选择当前订单操作目标仓库；
             var cells = cellQuery.Where(c => c.WarehouseCode == billMaster.WarehouseCode
-                                            && c.Warehouse.IsActive == "1" 
+                                            && c.Warehouse.IsActive == "1"
                                             && c.Area.IsActive == "1"
                                             && c.IsActive == "1"
                                             && (areaCodes.Any(a => a == c.AreaCode)
-                                                || (!areaCodes.Any() && c.Area.AllotInOrder > 0)))
-                                 .ToArray();            
+                                                || (!areaCodes.Any() && c.Area.AllotInOrder < 10000)))
+                                 .ToArray();   
 
             //1：主库区；2：件烟区；
             //3；条烟区；4：暂存区；
@@ -71,55 +71,70 @@ namespace THOK.Wms.SignalR.Allot.Service
 
             //排除 件烟区,条烟区 货位是单一存储的空货位；
             string [] areaTypes = new string []{"2","3"};
-            var cellList1 = cells.Where(c => areaTypes.All(a => a != c.Area.AreaType)
-                                            && c.IsSingle == "1" 
-                                            && (c.Storages.Count==0
-                                                    || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 
-                                                        && s.Quantity == 0
-                                                        && s.InFrozenQuantity == 0
-                                                    )
-                                                )
-                                        ).ToList();
+            var cells1 = cells.Where(c=>areaTypes.All(a => a != c.Area.AreaType)
+                                    &&c.IsSingle == "1"
+                                    && (c.Storages.Count == 0
+                                            || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
+                                                && s.Quantity == 0
+                                                && s.InFrozenQuantity == 0)))
+                           .ToArray();
 
             //条烟区 货位是单一存储的货位（不必是空货位，因为条烟会多次存储到同一个货位）；
             areaTypes = new string[] {"3"};
-            var cellList2 = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
-                                            && c.IsSingle == "1" 
-                                        ).ToList();
+            var cell2 = cells.Where(c =>areaTypes.Any(a => a == c.Area.AreaType) 
+                                        && c.IsSingle == "1")
+                             .ToArray();
 
             //件烟区 货位是单一存储的空货位； 
             areaTypes = new string[] {"2"};
-            var cellList3 = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
-                                            && c.IsSingle == "1" 
+            var cell3 = cells.Where(c =>areaTypes.Any(a => a == c.Area.AreaType) 
+                                        && c.IsSingle == "1" 
+                                        && c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 
+                                            && s.Product != null
+                                            && (s.Quantity > 0 || s.InFrozenQuantity > 0)
+                                            && c.MaxQuantity * s.Product.Unit.Count > s.Quantity - s.InFrozenQuantity))
+                             .ToArray();
+
+            //件烟区 货位是单一存储的空货位； 
+            areaTypes = new string[] { "2" };
+            var cell4 = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
+                                         && c.IsSingle == "1"
                                             && (c.Storages.Count == 0
-                                                    || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 
+                                                    || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
                                                         && s.Quantity == 0
                                                         && s.InFrozenQuantity == 0
                                                     )
                                                 )
-                                        ).ToList();
+                                    )
+                             .ToArray();
 
             //非货位管理区
-            var cellList4 = cells.Where(c => c.IsSingle == "0").ToList();
+            var cell5 = cells.Where(c => c.IsSingle == "0")
+                             .ToArray();
 
 
             //排除 件烟区，条烟区
-            var cellQueryFromList1 = cellList1.Where(c => c.Storages.Count == 0
+            var cellQueryFromList1 = cells1.Where(c => c.Storages.Count == 0
                                                 || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
-                                                    && s.Quantity == 0 
-                                                    && s.InFrozenQuantity == 0))
-                                              .OrderBy(c=>c.Area.AllotInOrder);
-            //条烟区
-            var cellQueryFromList2 = cellList2.OrderBy(c => c.Area.AllotInOrder );
-
-            //件烟区
-            var cellQueryFromList3 = cellList3.Where(c => c.Storages.Count == 0
-                                                || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 
                                                     && s.Quantity == 0
                                                     && s.InFrozenQuantity == 0))
                                               .OrderBy(c => c.Area.AllotInOrder);
+            //条烟区
+            var cellQueryFromList2 = cell2.OrderBy(c => c.Area.AllotInOrder);
+
+            //件烟区
+            var cellQueryFromList3 = cell3.Where(c => c.Storages.Any(s=>c.MaxQuantity * s.Product.Unit.Count > s.Quantity - s.InFrozenQuantity))
+                                              .OrderBy(c => c.Area.AllotInOrder);
+
+            //件烟区
+            var cellQueryFromList4 = cell4.Where(c => c.Storages.Count == 0
+                                                || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
+                                                        && s.Quantity == 0
+                                                        && s.InFrozenQuantity == 0))
+                                              .OrderBy(c => c.Area.AllotInOrder);
+
             //非货位管理区
-            var cellQueryFromList4 = cellList4.OrderBy(c => c.Area.AllotInOrder);
+            var cellQueryFromList5 = cell5.OrderBy(c => c.Area.AllotInOrder % 10000);
             
             foreach (var billDetail in billDetails)
             {
@@ -141,20 +156,25 @@ namespace THOK.Wms.SignalR.Allot.Service
                                                         );
                 AllotBar(billMaster, billDetail, cs, cancellationToken, ps);
                 //分配条烟到条烟区；
-                if (cs.Count() == 0)
+                if (!cs.Any())
                 {
                     cs = cellQueryFromList2.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotBar(billMaster, billDetail, cs, cancellationToken, ps);
                 }
 
-                //分配未满一托盘的卷烟到件烟区；
-                cs = cellQueryFromList3;
-                if (cellQueryFromList2.Count() > 0)
+                //分配未满一托盘的卷烟到件烟区；                
+                if (cellQueryFromList2.Any())
                 {
+                    cs = cellQueryFromList3;
+                    AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
+                    cs = cellQueryFromList4;
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
                 }
                 else
                 {
+                    cs = cellQueryFromList3;
+                    AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
+                    cs = cellQueryFromList4;
                     AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
                 }    
 
@@ -176,7 +196,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配未分配卷烟到其他非货位管理货位；
                 while (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                 {
-                    var c = cellQueryFromList4.Where(i => !i.Storages.Any()
+                    var c = cellQueryFromList5.Where(i => !i.Storages.Any()
                                                         || i.Storages.Count() < i.MaxPalletQuantity
                                                             || i.Storages.Any(s=> string.IsNullOrEmpty(s.LockTag)
                                                                 && s.Quantity == 0
@@ -299,17 +319,20 @@ namespace THOK.Wms.SignalR.Allot.Service
                 {
                     if (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                     {
-                        decimal allotQuantity = c.MaxQuantity * billDetail.Product.Unit.Count;
-                        decimal billQuantity = Math.Floor((billDetail.BillQuantity - billDetail.AllotQuantity)
-                            / billDetail.Product.Unit.Count)
-                            * billDetail.Product.Unit.Count;
-                        allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-
-                        var targetStorage = Locker.LockStorage(c);
+                        var targetStorage = Locker.LockStorage(c);                       
                         if (targetStorage != null
-                            && targetStorage.Quantity == 0
-                            && targetStorage.InFrozenQuantity == 0)
+                            && (string.IsNullOrEmpty(targetStorage.ProductCode)
+                                || targetStorage.ProductCode == billDetail.ProductCode
+                                || (targetStorage.Quantity == 0
+                                    && targetStorage.InFrozenQuantity == 0)))
                         {
+                            decimal allotQuantity = c.MaxQuantity * billDetail.Product.Unit.Count 
+                                                        - targetStorage.Quantity 
+                                                        - targetStorage.InFrozenQuantity;
+                            decimal billQuantity = Math.Floor((billDetail.BillQuantity - billDetail.AllotQuantity)
+                                / billDetail.Product.Unit.Count)
+                                * billDetail.Product.Unit.Count;
+                            allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity; 
                             Allot(billMaster, billDetail, c, targetStorage, allotQuantity, ps);
                             Locker.UnLockStorage(targetStorage);
                         }
@@ -328,15 +351,18 @@ namespace THOK.Wms.SignalR.Allot.Service
                 {
                     if (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                     {
-                        decimal allotQuantity = c.MaxQuantity * billDetail.Product.Unit.Count;
-                        decimal billQuantity = billDetail.BillQuantity - billDetail.AllotQuantity;
-                        allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-
                         var targetStorage = Locker.LockStorage(c);
                         if (targetStorage != null
-                            && targetStorage.Quantity == 0
-                            && targetStorage.InFrozenQuantity == 0)
+                            && (string.IsNullOrEmpty(targetStorage.ProductCode)
+                                || targetStorage.ProductCode == billDetail.ProductCode
+                                || (targetStorage.Quantity == 0
+                                    && targetStorage.InFrozenQuantity == 0)))
                         {
+                            decimal allotQuantity = c.MaxQuantity * billDetail.Product.Unit.Count
+                                                        - targetStorage.Quantity
+                                                        - targetStorage.InFrozenQuantity; 
+                            decimal billQuantity = billDetail.BillQuantity - billDetail.AllotQuantity;
+                            allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
                             Allot(billMaster, billDetail, c, targetStorage, allotQuantity, ps);
                             Locker.UnLockStorage(targetStorage);
                         }
