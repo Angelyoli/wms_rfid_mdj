@@ -81,18 +81,10 @@ namespace Authority.Controllers.Wms.StockIn
             string headText1 = "入库单据分配";
             string headText2 = "入库单据分配明细";
             string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
-            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
-            string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
-
-            Response.Clear();
-            Response.BufferOutput = false;
-            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
-            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            Response.ContentType = "application/ms-excel";
-
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10; 
+           
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, dt2, headText1, headText2, headFont, headSize,
-                colHeadFont, colHeadSize, colHeadWidth, exportDate);
+                colHeadFont, colHeadSize);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion
