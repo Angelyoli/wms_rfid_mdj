@@ -22,25 +22,24 @@ namespace THOK.Common
         /// <param name="colHeadWidth">宽度</param>
         /// <param name="exportDate">导出时间</param>
         /// <returns></returns>
-        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt1, System.Data.DataTable dt2,
-            string headText1, string headText2,
-            string headFont, Int16 headSize,
-            string colHeadFont, Int16 colHeadSize, Int16 colHeadWidth,
-            string exportDate)
+        public static System.IO.MemoryStream ExportDT(System.Data.DataTable dt1, System.Data.DataTable dt2
+            ,string headText1, string headText2
+            ,string headFont, Int16 headSize
+            ,string colHeadFont, Int16 colHeadSize, Int16 colHeadWidth
+            ,string exportDate)
         {
             NPOI.HSSF.UserModel.HSSFWorkbook workbook = new NPOI.HSSF.UserModel.HSSFWorkbook();
             NPOI.HSSF.UserModel.HSSFSheet sheet = workbook.CreateSheet(headText1) as NPOI.HSSF.UserModel.HSSFSheet;
-            sheet.PrintSetup.FitHeight = 0;//=1 打印的时候只有一页，会缩放。
-
             NPOI.HSSF.UserModel.HSSFCellStyle cellStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
             NPOI.HSSF.UserModel.HSSFDataFormat format = workbook.CreateDataFormat() as NPOI.HSSF.UserModel.HSSFDataFormat;
             cellStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
+            sheet.PrintSetup.FitHeight = 0;
 
             int MaxSheetCount = dt1.Rows.Count;
             if (MaxSheetCount < 65536)  /* excel中的一个sheet最大容量65536行 */
             {
                 #region 取得列宽 dt1
-                int[] arrColWidth = new int[dt1.Columns.Count];//取得列宽
+                int[] arrColWidth = new int[dt1.Columns.Count];
                 foreach (System.Data.DataColumn item in dt1.Columns)
                 {
                     arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;//936是指GB2312编码
@@ -81,7 +80,7 @@ namespace THOK.Common
                 }
                 #endregion
 
-                //建表 dt1
+                #region 建表 dt1
                 int rowIndex = 0;
                 foreach (System.Data.DataRow row in dt1.Rows)
                 {
@@ -124,6 +123,7 @@ namespace THOK.Common
                         //列头及样式
                         {
                             NPOI.HSSF.UserModel.HSSFRow headerRow = sheet.CreateRow(2) as NPOI.HSSF.UserModel.HSSFRow;
+                            headerRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
                             NPOI.HSSF.UserModel.HSSFCellStyle headStyle = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                             headStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.CENTER; //居中
                             //边框
@@ -135,8 +135,8 @@ namespace THOK.Common
                             NPOI.HSSF.UserModel.HSSFFont font = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
                             font.FontName = colHeadFont;
                             font.FontHeightInPoints = colHeadSize;
-                            font.Boldweight = 700; 
-                            
+                            font.Boldweight = 700;
+
                             headStyle.SetFont(font);
                             foreach (System.Data.DataColumn column in dt1.Columns)
                             {
@@ -151,11 +151,12 @@ namespace THOK.Common
 
                     #region 填充内容
                     NPOI.HSSF.UserModel.HSSFRow dataRow = sheet.CreateRow(rowIndex) as NPOI.HSSF.UserModel.HSSFRow;
+                    dataRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
                     NPOI.HSSF.UserModel.HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as NPOI.HSSF.UserModel.HSSFCellStyle;
                     NPOI.HSSF.UserModel.HSSFFont contentFont = workbook.CreateFont() as NPOI.HSSF.UserModel.HSSFFont;
                     contentFont.FontName = colHeadFont;
                     contentFont.FontHeightInPoints = colHeadSize;
-
+                    
                     foreach (System.Data.DataColumn column in dt1.Columns)
                     {
                         NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
@@ -214,8 +215,9 @@ namespace THOK.Common
 
                     rowIndex++;
                 }
+                #endregion
 
-                //建表 dt2
+                #region 建表 dt2
                 if (dt2 != null && headText2 != null)
                 {
                     int rowIndex2 = 0;
@@ -355,6 +357,7 @@ namespace THOK.Common
                         rowIndex2++;
                     }
                 }
+                #endregion
 
                 #region 页眉页脚
                 sheet.Header.Center = "……";
@@ -367,6 +370,83 @@ namespace THOK.Common
             ms.Flush();
             ms.Position = 0;
             return ms;
+        }
+        #endregion
+
+        #region 单元格数据生成通用类
+        public static int CreateDataMethod(NPOI.SS.UserModel.ISheet sheet1
+            , NPOI.SS.UserModel.ICellStyle style
+            , System.Data.DataTable dtGetRowTable
+            , int rowIndex
+            , NPOI.HSSF.UserModel.HSSFCellStyle dateStyle)
+        {
+            foreach (System.Data.DataRow row in dtGetRowTable.Rows)
+            {
+                #region 填充内容
+                NPOI.HSSF.UserModel.HSSFRow dataRow = sheet1.CreateRow(rowIndex) as NPOI.HSSF.UserModel.HSSFRow;
+                foreach (System.Data.DataColumn column in dtGetRowTable.Columns)
+                {
+                    NPOI.HSSF.UserModel.HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as NPOI.HSSF.UserModel.HSSFCell;
+                    string drValue = row[column].ToString();
+                    #region 字段类型处理
+                    switch (column.DataType.ToString())
+                    {
+                        case "System.String": //字符串类型
+                            newCell.SetCellValue(drValue);
+                            newCell.CellStyle = style;
+                            break;
+                        case "System.DateTime": //日期类型
+                            DateTime dateV;
+                            DateTime.TryParse(drValue, out dateV);
+                            newCell.SetCellValue(dateV);
+                            newCell.CellStyle = dateStyle; //格式化显示
+                            break;
+                        case "System.Boolean": //布尔型
+                            bool boolV = false;
+                            bool.TryParse(drValue, out boolV);
+                            newCell.SetCellValue(boolV);
+                            newCell.CellStyle = style;
+                            break;
+                        case "System.Int16": //整型
+                        case "System.Int32":
+                        case "System.Int64":
+                        case "System.Byte":
+                            int intV = 0;
+                            int.TryParse(drValue, out intV);
+                            newCell.SetCellValue(intV);
+                            newCell.CellStyle = style;
+                            break;
+                        case "System.Decimal": //浮点型
+                        case "System.Double":
+                            double doubV = 0;
+                            double.TryParse(drValue, out doubV);
+                            newCell.SetCellValue(doubV);
+                            newCell.CellStyle = style;
+                            break;
+                        case "System.DBNull": //空值处理
+                            newCell.SetCellValue("");
+                            newCell.CellStyle = style;
+                            break;
+                        default:
+                            newCell.SetCellValue(drValue);
+                            newCell.CellStyle = style;
+                            break;
+                    }
+                    #endregion
+                    #region 插入留余空白列
+                    int iLastCell = sheet1.GetRow(4).LastCellNum + 1 - dtGetRowTable.Columns.Count;
+                    for (int i = 1; i < iLastCell; i++)
+                    {
+                        NPOI.HSSF.UserModel.HSSFCell newNullCell = dataRow.CreateCell(newCell.ColumnIndex + i) as NPOI.HSSF.UserModel.HSSFCell;
+                        newNullCell.SetCellValue("");
+                        newNullCell.CellStyle = style;
+                    }
+                    #endregion
+                }
+                #endregion
+                rowIndex++;
+            }
+            return rowIndex;
         }
         #endregion
     }
