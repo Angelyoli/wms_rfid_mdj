@@ -2,9 +2,23 @@
     function printClick() {
         var row = $('#warehouseTree').tree('getSelected');
         if (row) {
+            var rowAttr = null;
+            var rowId = null;
+            if (row.attributes == null) {
+                rowAttr = "";
+            }
+            else {
+                rowid = row.attributes
+            }
+            if (row.id == null) {
+                rowId = "";
+            }
+            else {
+                rowId = row.id;
+            }
             window.location.href = "/CellHistorical/CreateExcelToClient/"
-                                    + "?type=" + row.attributes
-                                    + "&id=" + row.id;
+                                    + "?type=" + rowAttr
+                                    + "&id=" + rowId;
         }
         else {
             $.messager.alert("系统提示", "未选中树形菜单", "info");
