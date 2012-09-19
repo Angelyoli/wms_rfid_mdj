@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using THOK.Wms.DbModel;
+using System.Data;
 
 namespace THOK.Wms.Bll.Interfaces
 {
@@ -26,6 +27,7 @@ namespace THOK.Wms.Bll.Interfaces
         object GetWarningPrompt();
         object GetCellInfo();
 
+        object GetCell();
         System.Data.DataTable GetProductWarning(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, decimal assemblyTime);
 
         System.Data.DataTable GetQuantityLimitsDetail(int page, int rows, string productCode, decimal minLimited, decimal maxLimited, string unitCode);
