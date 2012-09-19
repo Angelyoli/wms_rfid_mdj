@@ -24,7 +24,7 @@ namespace THOK.Common
         /// <param name="dt2">DataTable2 如果没有给null值</param>
         /// <param name="headText1">第一张表标题</param>
         /// <param name="headText2">第二张表标题 如果没有给null值</param>
-        /// <param name="headFont">标题字体 </param>
+        /// <param name="headFont">标题字体</param>
         /// <param name="headSize">标题大小</param>
         /// <param name="colHeadFont">列头字体</param>
         /// <param name="colHeadSize">列头大小</param>
@@ -36,15 +36,7 @@ namespace THOK.Common
         {
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
 
-            #region 浏览器下载
-            string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
-            HttpResponse response = System.Web.HttpContext.Current.Response;
-            response.Clear();
-            response.BufferOutput = false;
-            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
-            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            response.ContentType = "application/ms-excel";
-            #endregion
+            BowerLoad(headText1);
 
             workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(headText1) as HSSFSheet;
@@ -203,7 +195,7 @@ namespace THOK.Common
 
                         #region 填充内容
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
-                        
+
                         foreach (DataColumn column in dt2.Columns)
                         {
                             FillContent(dataRow, column, row);
@@ -227,8 +219,7 @@ namespace THOK.Common
             ms.Position = 0;
             return ms;
         }
-        #region 样式
-        /// <summary>填充内容</summary>
+        #region 填充内容
         static void FillContent(HSSFRow dataRow, DataColumn column, DataRow row)
         {
             HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
@@ -276,8 +267,10 @@ namespace THOK.Common
                     newCell.SetCellValue("");
                     break;
             }
-        }
-        /// <summary>标题样式</summary>
+        } 
+        #endregion
+
+        #region 标题样式
         static HSSFCellStyle GetTitleStyle(string headFont, short headSize)
         {
             HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
@@ -288,8 +281,10 @@ namespace THOK.Common
             font.Boldweight = 700;
             cellStyle.SetFont(font);
             return cellStyle;
-        }
-        /// <summary>列头样式</summary>
+        } 
+        #endregion
+
+        #region 列头样式
         static HSSFCellStyle GetColumnStyle(string colHeadFont, short colHeadSize)
         {
             HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
@@ -307,8 +302,10 @@ namespace THOK.Common
 
             cellStyle.SetFont(font);
             return cellStyle;
-        }
-        /// <summary>内容样式</summary>
+        } 
+        #endregion
+
+        #region 内容样式
         static HSSFCellStyle GetContentStyle()
         {
             HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
@@ -318,21 +315,38 @@ namespace THOK.Common
             cellStyle.BorderRight = BorderStyle.THIN;
             cellStyle.BorderTop = BorderStyle.THIN;
             return cellStyle;
-        }
-        /// <summary>导出时间单元格样式</summary>
+        } 
+        #endregion
+
+        #region 导出时间样式
         static HSSFCellStyle GetExportDate()
         {
             HSSFCellStyle dateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
             dateStyle.Alignment = HorizontalAlignment.CENTER;
             return dateStyle;
-        }
-        /// <summary>内容日期样式</summary>
+        } 
+        #endregion
+
+        #region 内容日期样式
         static HSSFCellStyle contentDateStyle()
         {
             HSSFCellStyle dateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
             HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
             dateStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
             return dateStyle;
+        } 
+        #endregion
+
+        #region 浏览器下载
+        static void BowerLoad(string headText1)
+        {
+            string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            HttpResponse response = System.Web.HttpContext.Current.Response;
+            response.Clear();
+            response.BufferOutput = false;
+            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            response.ContentType = "application/ms-excel";
         } 
         #endregion
 
