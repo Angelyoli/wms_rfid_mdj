@@ -49,10 +49,12 @@ namespace THOK.Wms.SignalR.Common
             IQueryable<Cell> cellQuery = CellRepository.GetQueryableIncludeStorages();
 
             var storages = storageQuery.Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
+                                                   && s.Cell.IsActive=="1"
                                                    && s.Quantity - s.OutFrozenQuantity > 0
                                                    && s.OutFrozenQuantity > 0);
 
-            var cells = cellQuery.Where(c => c.WarehouseCode == moveBillMaster.WarehouseCode);
+            var cells = cellQuery.Where(c => c.WarehouseCode == moveBillMaster.WarehouseCode
+                                              && c.IsActive == "1");
 
             //1：主库区 1；2：件烟区 2；
             //3；条烟区 3；4：暂存区 4；
@@ -240,6 +242,7 @@ namespace THOK.Wms.SignalR.Common
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             var storages = storageQuery.Where(s => s.Cell.WarehouseCode == warehouseCode
+                                                   && s.Cell.IsActive == "1"
                                                    && s.Quantity - s.OutFrozenQuantity > 0
                                                    && s.OutFrozenQuantity > 0);
 

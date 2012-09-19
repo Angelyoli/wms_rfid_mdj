@@ -1,5 +1,47 @@
-﻿@{
-    ViewBag.Title = "Index";
-}
-
-<h2>Index</h2>
+﻿<script src="/Content/Scripts/highstock/highstock.js" type="text/javascript"></script>
+<script src="/Content/Scripts/highstock/modules/exporting.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function () { $.getJSON("/CellAnalysis/Details", function(data) { 
+    var chart;
+	$(document).ready(function () {
+		chart = new Highcharts.Chart({
+		    chart: {
+		        renderTo: 'container',
+		        plotBackgroundColor: null,
+		        plotBorderWidth: null,
+		        plotShadow: false,
+		    },
+		    title: {
+		        text: '货位利用分析'
+		    },
+		    tooltip: {
+		        pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+		        percentageDecimals: 1
+		    },
+		    plotOptions: {
+		        pie: {
+		            allowPointSelect: true,
+		            cursor: 'pointer',
+		            dataLabels: {
+		                enabled: true,
+		                color: '#000000',
+		                connectorColor: '#000000',
+		                formatter: function () {
+		                    return '<b>' + this.point.name + '</b>: ' + this.percentage + ' %';
+		                }
+		            }
+		        }
+		    },
+		    series: [{
+                name: '货位利用率',
+		        data:data
+            }]
+		}) 
+                // window.setInterval(getForm,2000);
+	})
+    });
+    });
+</script>
+<div region="center" split="true"  border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">  
+<div id="container" style="height: 500px; min-width: 500px"></div>
+</div>

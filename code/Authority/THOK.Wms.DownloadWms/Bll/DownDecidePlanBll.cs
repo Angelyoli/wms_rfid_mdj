@@ -28,34 +28,41 @@ namespace THOK.Wms.DownloadWms.Bll
             errorInfo = string.Empty;
             using (PersistentManager pm = new PersistentManager())
             {
-                DownDecidePlanDao dao = new DownDecidePlanDao();
-                DataTable emply = dao.FindEmployee(EmployeeCode);
-                DataTable inMasterBillNo = this.GetMiddleBillNo();
-                string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
-                billnolist = string.Format("BB_INPUT_DATE >='{0}' AND BB_INPUT_DATE <='{1}' AND BB_UUID NOT IN({2})", startDate, endDate, billnolist);
-                DataTable masterdt = this.GetMiddleInBillMaster(billnolist);
-
-                string inDetailList = UtinString.MakeString(masterdt, "BILL_NO");
-                inDetailList = "BD_BB_UUID IN(" + inDetailList + ")";
-                DataTable detaildt = this.GetMiddleInBillDetail(inDetailList);
-
-                if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                try
                 {
-                    try
+                    DownDecidePlanDao dao = new DownDecidePlanDao();
+                    DataTable emply = dao.FindEmployee(EmployeeCode);
+                    DataTable inMasterBillNo = this.GetMiddleBillNo();
+                    string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
+                    billnolist = string.Format("BB_INPUT_DATE >='{0}' AND BB_INPUT_DATE <='{1}' AND BB_UUID NOT IN({2})", startDate, endDate, billnolist);
+                    DataTable masterdt = this.GetMiddleInBillMaster(billnolist);
+
+                    string inDetailList = UtinString.MakeString(masterdt, "BILL_NO");
+                    inDetailList = "BD_BB_UUID IN(" + inDetailList + ")";
+                    DataTable detaildt = this.GetMiddleInBillDetail(inDetailList);
+
+                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
                     {
-                        DataSet middleds = this.MiddleTable(masterdt);
-                        DataSet masterds = this.MiddleInBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
-                        DataSet detailds = this.MiddleInBillDetail(detaildt);
-                        this.Insert(masterds, detailds, middleds);
-                        tag = true;
+                        try
+                        {
+                            DataSet middleds = this.MiddleTable(masterdt);
+                            DataSet masterds = this.MiddleInBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
+                            DataSet detailds = this.MiddleInBillDetail(detaildt);
+                            this.Insert(masterds, detailds, middleds);
+                            tag = true;
+                        }
+                        catch (Exception e)
+                        {
+                            errorInfo = "保存错误：" + e.Message;
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        errorInfo = e.Message;
-                    }
+                    else
+                        errorInfo = "没有新的入库单下载！";
                 }
-                else
-                    errorInfo = "没有新的入库单下载！";
+                catch (Exception ex)
+                {
+                    errorInfo ="查询错误："+ ex.Message;
+                }
             }
             return tag;
         }
@@ -201,22 +208,30 @@ namespace THOK.Wms.DownloadWms.Bll
         /// <param name="detailds"></param>
         public void Insert(DataSet masterds, DataSet detailds, DataSet middleds)
         {
-            using (PersistentManager pm = new PersistentManager())
+            try
             {
-                DownDecidePlanDao dao = new DownDecidePlanDao();
-                if (masterds.Tables["WMS_IN_BILLMASTER"].Rows.Count > 0)
+                using (PersistentManager pm = new PersistentManager())
                 {
-                    dao.InsertInBillMaster(masterds);
-                }
-                if (detailds.Tables["WMS_IN_BILLDETAIL"].Rows.Count > 0)
-                {
-                    dao.InsertInBillDetail(detailds);
-                }
-                if (middleds.Tables["WMS_MIDDLE_IN_BILLDETAIL"].Rows.Count > 0)
-                {
-                    dao.InsertMiddle(middleds);
+                    DownDecidePlanDao dao = new DownDecidePlanDao();
+                    if (masterds.Tables["WMS_IN_BILLMASTER"].Rows.Count > 0)
+                    {
+                        dao.InsertInBillMaster(masterds);
+                    }
+                    if (detailds.Tables["WMS_IN_BILLDETAIL"].Rows.Count > 0)
+                    {
+                        dao.InsertInBillDetail(detailds);
+                    }
+                    if (middleds.Tables["WMS_MIDDLE_IN_BILLDETAIL"].Rows.Count > 0)
+                    {
+                        dao.InsertMiddle(middleds);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            
         }
 
         /// <summary>
