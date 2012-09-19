@@ -18,14 +18,14 @@ namespace THOK.Common
     public class ExportExcel
     {
         /// <summary>导出EXCEL单表双表</summary>
-        /// <param name="dt1">DataTable</param>
-        /// <param name="dt2">DataTable</param>
-        /// <param name="headText1">标题</param>
-        /// <param name="headText2">标题</param>
-        /// <param name="headFont">字体</param>
-        /// <param name="headSize">大小</param>
-        /// <param name="colHeadFont">字体</param>
-        /// <param name="colHeadSize">大小</param>
+        /// <param name="dt1">DataTable1</param>
+        /// <param name="dt2">DataTable2 如果没有给null值</param>
+        /// <param name="headText1">第一张表标题</param>
+        /// <param name="headText2">第二张表标题 如果没有给null值</param>
+        /// <param name="headFont">标题字体 </param>
+        /// <param name="headSize">标题大小</param>
+        /// <param name="colHeadFont">列头字体</param>
+        /// <param name="colHeadSize">列头大小</param>
         /// <returns></returns>
         public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
                 , string headText1, string headText2
@@ -169,10 +169,7 @@ namespace THOK.Common
                     HSSFRow dataRow = sheet.CreateRow(rowIndex) as HSSFRow;
                     dataRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
                     HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
-                    HSSFFont contentFont = workbook.CreateFont() as HSSFFont;
-                    contentFont.FontName = colHeadFont;
-                    contentFont.FontHeightInPoints = colHeadSize;
-
+                    
                     foreach (DataColumn column in dt1.Columns)
                     {
                         HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
@@ -183,7 +180,6 @@ namespace THOK.Common
                         headStyle2.BorderRight = BorderStyle.THIN;
                         headStyle2.BorderTop = BorderStyle.THIN;
                         #endregion
-                        headStyle2.SetFont(contentFont);
                         dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
 
                         string drValue = row[column].ToString();
@@ -307,9 +303,7 @@ namespace THOK.Common
                         #region 填充内容
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
                         HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
-                        HSSFFont contentFont = workbook.CreateFont() as HSSFFont;
-                        contentFont.FontName = colHeadFont;
-                        contentFont.FontHeightInPoints = colHeadSize;
+                        
                         foreach (DataColumn column in dt2.Columns)
                         {
                             HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
@@ -320,7 +314,6 @@ namespace THOK.Common
                             headStyle2.BorderRight = BorderStyle.THIN;
                             headStyle2.BorderTop = BorderStyle.THIN;
                             #endregion
-                            headStyle2.SetFont(contentFont);
                             dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
 
                             string drValue = row[column].ToString();

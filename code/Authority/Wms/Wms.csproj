@@ -1553,6 +1553,7 @@
     <Content Include="Views\ProductWarning\_PrintPartial.cshtml" />
     <Content Include="Views\QuantityLimits\_PrintPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_MoveInCellPartial.cshtml" />
+    <Content Include="Views\ProductTimeOut\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

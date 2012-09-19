@@ -38,5 +38,24 @@ namespace Wms.Controllers.Wms.ProductQuality
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 
+        #region /ProductTimeOut/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string productCode = Request.QueryString["productCode"]??"";
+            decimal assemblyTime = 360;
+            if (Request.QueryString["assemblyTime"] != null && Request.QueryString["assemblyTime"] != "")
+            {
+                assemblyTime = decimal.Parse(Request.QueryString["assemblyTime"]);
+            }
+            System.Data.DataTable dt = ProductWarningService.GetProductTimeOut(page, rows, productCode, assemblyTime);
+            string headText = "产品预警信息设置";
+            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10;
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }
