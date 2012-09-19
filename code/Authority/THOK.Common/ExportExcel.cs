@@ -17,7 +17,7 @@ namespace THOK.Common
 {
     public class ExportExcel
     {
-        static HSSFWorkbook workbook = new HSSFWorkbook();
+        static HSSFWorkbook workbook;
 
         /// <summary>导出EXCEL单表双表</summary>
         /// <param name="dt1">DataTable1</param>
@@ -46,6 +46,7 @@ namespace THOK.Common
             response.ContentType = "application/ms-excel";
             #endregion
 
+            workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(headText1) as HSSFSheet;
             sheet.PrintSetup.FitHeight = 0;
 
