@@ -1,13 +1,30 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var unitListCode = null
+          , unitListName = null
+          , uniformCode = null
+          , unitCode1 = null
+          , unitCode2 = null
+          , unitCode3 = null
+          , unitCode4 = null
+          , isActive = null;
+        if ($('#unitListCode').val() == null) { unitListCode = ""; } else { unitListCode = $('#unitListCode').val(); }
+        if ($('#unitListName').val() == null) { unitListName = ""; } else { unitListName = $('#unitListName').val(); }
+        if ($('#uniformCode').val() == null) { uniformCode = ""; } else { uniformCode = $('#uniformCode').val(); }
+        if ($('#unitCode1').val() == null) { unitCode1 = ""; } else { unitCode1 = $('#unitCode1').val(); }
+        if ($('#unitCode2').val() == null) { unitCode2 = ""; } else { unitCode2 = $('#unitCode2').val(); }
+        if ($('#unitCode3').val() == null) { unitCode3 = ""; } else { unitCode3 = $('#unitCode3').val(); }
+        if ($('#unitCode4').val() == null) { unitCode4 = ""; } else { unitCode4 = $('#unitCode4').val(); }
+        if ($('#isActive').val() == null) { isActive = ""; } else { isActive = $('#isActive').val(); }
+
         window.location.href = "/UnitList/CreateExcelToClient/"
-                                + "?unitListCode=" + $('#unitListCode').val()
-                                + "&unitListName=" + $('#unitListName').val()
-                                + "&uniformCode=" + $('#uniformCode').val()
-                                + "&unitCode1=" + $('#unitCode1').val()
-                                + "&unitCode2=" + $('#unitCode2').val()
-                                + "&unitCode3=" + $('#unitCode3').val()
-                                + "&unitCode4=" + $('#unitCode4').val()
-                                + "&isActive=" + $('#isActive').val();
+                                + "?unitListCode=" + unitListCode
+                                + "&unitListName=" + unitListName
+                                + "&uniformCode=" + uniformCode
+                                + "&unitCode1=" + unitCode1
+                                + "&unitCode2=" + unitCode2
+                                + "&unitCode3=" + unitCode3
+                                + "&unitCode4=" + unitCode4
+                                + "&isActive=" + isActive;
     }
 </script>

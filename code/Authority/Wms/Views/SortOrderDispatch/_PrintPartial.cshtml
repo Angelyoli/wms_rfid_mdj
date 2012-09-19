@@ -1,7 +1,24 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        window.location.href = "/SortOrderDispatch/CreateExcelToClient/";
-                                + "?orderDate=" + $('#searchOrderDate').datebox('getValue')
-                                + "&sortingLineCode=" + $('#SortingLineCode').combogrid('getValue');
+        var orderDate = null
+          , sortingLineCode = null;
+
+        if (document.getElementById('searchOrderDate') == null) {
+            orderDate = "";
+        }
+        else {
+            orderDate = $('#searchOrderDate').datebox('getValue');
+        }
+
+        if (document.getElementById('SortingLineCode') != null) {
+            sortingLineCode = "";
+        }
+        else {
+            sortingLineCode = $('#SortingLineCode').combogrid('getValue');
+        }
+        
+        window.location.href = "/SortOrderDispatch/CreateExcelToClient/"
+                                + "?orderDate=" + orderDate
+                                + "&sortingLineCode=" + sortingLineCode;
     }
 </script>

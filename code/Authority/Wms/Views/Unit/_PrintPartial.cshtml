@@ -1,8 +1,15 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var unitCode = null
+          , unitName = null
+          , isActive = null;
+        if ($('#UnitCode').val() == null) { unitCode = ""; } else { unitCode = $('#UnitCode').val(); }
+        if ($('#UnitName').val() == null) { unitName = ""; } else { unitName = $('#UnitName').val(); }
+        if (document.getElementById('isActive') == null) { isActive = ""; } else { isActive = $('#isActive').combo('getValue'); }
+
         window.location.href = "/Unit/CreateExcelToClient/"
-                                + "?unitCode=" + $('#UnitCode').val()
-                                + "&unitName=" + $('#UnitName').val()
-                                + "&isActive=" + $('#isActive').combo('getValue');
+                                + "?unitCode=" + unitCode
+                                + "&unitName=" + unitName
+                                + "&isActive=" + isActive;
     }
 </script>

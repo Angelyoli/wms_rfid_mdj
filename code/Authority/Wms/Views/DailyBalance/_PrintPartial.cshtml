@@ -2,10 +2,17 @@
     function printClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
+            var warehouseCode = null
+              , settleDate = null
+              , unitType = null;
+            if (row.WarehouseCode == null) { warehouseCode = ""; } else { warehouseCode = row.WarehouseCode; }
+            if (row.SettleDate == null) { warehouseCode = ""; } else { settleDate = row.SettleDate; }
+            if (document.getElementById('unitType') == null) { unitType = ""; } else { unitType = $('#unitType').combo('getValue'); }
+
             window.location.href = "/DailyBalance/CreateExcelToClient/"
-                                + "?warehouseCode=" + row.WarehouseCode
-                                + "&SettleDate=" + row.SettleDate
-                                + "&unitType=" + $('#unitType').combo('getValue')
+                                + "?warehouseCode=" + warehouseCode
+                                + "&SettleDate=" + settleDate
+                                + "&unitType=" + unitType;
         } else {
             $.messager.alert("系统提示", "未选中行", "info");
         }

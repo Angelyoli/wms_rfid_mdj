@@ -3,7 +3,9 @@
 
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            window.location.href = '/ProfitLossBillDetail/CreateExcelToClient/?billNo=' + row.BillNo;
+            var rowBillNo = null;
+            if (row.BillNo == null) { rowBillNo = ""; } else { rowBillNo = row.BillNo; }
+            window.location.href = '/ProfitLossBillDetail/CreateExcelToClient/?billNo=' + rowBillNo;
         } else {
             $.messager.alert('系统提示', '未选中行', "info");
         }

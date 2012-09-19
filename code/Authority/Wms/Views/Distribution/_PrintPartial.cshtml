@@ -2,14 +2,16 @@
     function printClick() {
         var row = $('#Tree').tree('getSelected');
         if (row) {
-            var AttributeId = row.attributes.AttributeId;
-            var AttributeProduct = row.attributes.AttributeProduct;
-            var AttributeUnit = row.attributes.AttributeUnit;
+            var rowType=row.attributes.AttributeId;
+            var rowId = row.id
+            var rowUnitType = row.attributes.AttributeUnit
+            var rowProductCode = row.attributes.AttributeProduct;
+            
             window.location.href = "/Distribution/CreateExcelToClient/"
-                                    + "?type=" + row.attributes.AttributeId
-                                    + "&id=" + row.id
-                                    + "&unitType=" + row.attributes.AttributeUnit
-                                    + "&productCode=" + row.attributes.AttributeProduct;
+                                    + "?type=" + rowType
+                                    + "&id=" + rowId
+                                    + "&unitType=" + rowUnitType
+                                    + "&productCode=" + rowProductCode;
         }
         else {
             $.messager.alert("系统提示","未选中树形菜单","info");
