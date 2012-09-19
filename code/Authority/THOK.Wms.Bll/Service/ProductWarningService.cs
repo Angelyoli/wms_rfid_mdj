@@ -232,8 +232,6 @@ namespace THOK.Wms.Bll.Service
                  QuantityLimitsWarnings = QuantityLimitsWarnings.Where(q => q.quantityTotal <= q.maxlimits).ToArray();
              }
              int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarning.Count();
-             //var timeOutWarning = TimeOutWarning.Select(s => new { AssemblyTime = total });
-             //return timeOutWarning.ToArray();
              return total;
          }
          #endregion
@@ -242,19 +240,19 @@ namespace THOK.Wms.Bll.Service
          public object GetStorageByTime()
          {
              IQueryable<DailyBalance> EndQuantity = DailyBalanceRepository.GetQueryable();
-             var storageQuantity = EndQuantity.OrderBy(e=>e.SettleDate).GroupBy(e=>e.SettleDate).Select(e => new 
+             var storageQuantity = EndQuantity.OrderBy(e=>e.SettleDate).GroupBy(e=>e.SettleDate).ToArray().Select(e => new 
              {
-                TimeInter=e.Max(m=>m.SettleDate),
-                TotalQuantity=e.Sum(s=>s.Ending/s.Unit.Count)
-             }).ToArray();
-             int j = storageQuantity.Count();
-             decimal[,] array = new decimal[j, 2];
-             for (int i = 0; i < j; i++)
-             {
-                 array[i, 0] =decimal.Parse(storageQuantity[i].TimeInter.Date.ToFileTimeUtc().ToString());
-                 array[i, 1] = storageQuantity[i].TotalQuantity;
-             }
-             return array;
+                 TimeInter = decimal.Parse((((e.Max(m => m.SettleDate)).ToUniversalTime().Ticks - 621355968000000000) / 10000).ToString()),
+                 TotalQuantity=e.Sum(s=>s.Ending/s.Unit.Count)
+             });
+             //int j = storageQuantity.Count();
+             //object[,] array = new object[j, 2];
+             //for (int i = 0; i < j; i++)
+             //{
+             //    array[i, 0] =decimal.Parse(storageQuantity[i].TimeInter.Date.ToFileTimeUtc().ToString());
+             //    array[i, 1] = storageQuantity[i].TotalQuantity;
+             //}
+             return storageQuantity;
          }
         #endregion
 
@@ -264,21 +262,22 @@ namespace THOK.Wms.Bll.Service
              IQueryable<Area> AreaQuery = AreaRepository.GetQueryable();
              IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
              var storageQuantity = StorageQuery.Join(AreaQuery, s => s.Cell.AreaCode, a => a.AreaCode, (s, a) => new { storage = s, area = a });
+             var total = StorageQuery.Where(s => s.Quantity > 0).Sum(s => s.Quantity);
              var storage = storageQuantity.GroupBy(s => s.area.AreaCode).Where(s => s.Sum(t => t.storage.Quantity) > 0)
                                 .Select(s =>new
                                 {
                                     areaName=s.Max(t=>t.area.AreaName),
-                                    totalQuantity=s.Sum(t=>t.storage.Quantity)
+                                    totalQuantity=Decimal.Round(s.Sum(t=>t.storage.Quantity)/total,5)*100
                                 }).ToArray();
-             var total = StorageQuery.Where(s=>s.Quantity>0).Sum(s=>s.Quantity);
-             int j = storage.Count();
-             object[,] array = new object[j,2];
-             for (int i = 0; i < j; i++)
-             {
-                 array[i, 0] = storage[i].areaName;
-                 array[i, 1] = Decimal.Round((storage[i].totalQuantity/total),4)*100;
-             }
-             return array;
+            // var total = StorageQuery.Where(s=>s.Quantity>0).Sum(s=>s.Quantity);
+             //int j = storage.Count();
+             //object[,] array = new object[j,2];
+             //for (int i = 0; i < j; i++)
+             //{
+             //    array[i, 0] =storage[i].areaName;
+             //    array[i, 1] = Decimal.Round((storage[i].totalQuantity/total),4)*100;
+             //}
+             return storage;
          }
         #endregion
 
