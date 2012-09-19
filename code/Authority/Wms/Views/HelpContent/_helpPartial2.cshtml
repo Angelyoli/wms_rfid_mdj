@@ -9,7 +9,8 @@
         var helpRow = $('#helpDetail2').datagrid('getSelected');
         if (helpRow) {
             $('#moduleID').val(helpRow.ModuleID);
-            $('#S_module_ID').val(helpRow.ModuleName);
+            $('#module').val(helpRow.ModuleName);
+            S_moduleID = helpRow.ModuleID;
             $('#helpData2').dialog('close');
         }
     }

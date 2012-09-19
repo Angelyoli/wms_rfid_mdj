@@ -8,8 +8,9 @@
     function helpSave1() {
         var helpRow = $('#helpDetail1').datagrid('getSelected');
         if (helpRow) {
-            $('#S_ContentName').val(helpRow.ContentName);
+            $('#father_Content').val(helpRow.ContentCode + "" + helpRow.ContentName);
             $('#inputFatherNodeID').val(helpRow.ContentCode);
+            fatherContentID = helpRow.ID;
             $('#helpData1').dialog('close');
         }
     }
@@ -39,20 +40,14 @@
                     <th field="ContentCode" width="80">
                         目录编码
                     </th>
-                     <th field="ContentName" width="80">
+                     <th field="ContentName" width="100">
                         目录名称
-                    </th>
-                     <th field="ContentPath" width="80">
-                        目录路径
                     </th>
                     <th field="NodeType" width="80">
                         节点类型
                     </th>
-                    <th field="FatherNodeID" width="80">
-                        父节点ID
-                    </th>
-                    <th field="NodeOrder" width="80">
-                        节点顺序
+                    <th field="FatherNode" width="120">
+                        父节点
                     </th>
                     <th field="IsActive" width="80">
                         是否可用
