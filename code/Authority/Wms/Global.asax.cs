@@ -47,7 +47,7 @@ namespace Wms
             GlobalHost.DependencyResolver = new UnityConnectionDependencyResolver();
         }
 
-        protected void Application_Start()
+        void Application_Start()
         {
             RegisterIocUnityControllerFactory();
             AreaRegistration.RegisterAllAreas();
@@ -55,13 +55,7 @@ namespace Wms
             RegisterRoutes(RouteTable.Routes);
         }
 
-        public void Session_OnEnd()
-        {
-            int i = 0;
-            i++;
-        }
-
-        protected void Application_Error1(object sender, EventArgs e)
+        void Application_Error()
         {
             Exception exception = Server.GetLastError();
             if (exception != null)
@@ -91,7 +85,7 @@ namespace Wms
                 {
                     switch (httpException.GetHttpCode())
                     {
-                        case 404:                            
+                        case 404:
                             if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
                             {
                                 routeData.Values.Add("action", "PageNotFound");
@@ -101,7 +95,7 @@ namespace Wms
                                 routeData.Values.Add("action", "AjaxPageNotFound");
                             }
                             break;
-                        case 500:                            
+                        case 500:
                             if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
                             {
                                 routeData.Values.Add("action", "ServerError");
@@ -132,7 +126,17 @@ namespace Wms
             }
         }
 
-        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        void Session_Start()
+        {
+
+        }
+
+        void Session_End()
+        {
+
+        }        
+
+        void Application_AuthenticateRequest1(object sender, EventArgs e)
         {
             bool enableGzip = this.Request.Headers["Content-Encoding"] == "gzip";
             if (enableGzip)
