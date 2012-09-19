@@ -17,6 +17,8 @@ namespace THOK.Common
 {
     public class ExportExcel
     {
+        static HSSFWorkbook workbook = new HSSFWorkbook();
+
         /// <summary>导出EXCEL单表双表</summary>
         /// <param name="dt1">DataTable1</param>
         /// <param name="dt2">DataTable2 如果没有给null值</param>
@@ -41,14 +43,10 @@ namespace THOK.Common
             response.BufferOutput = false;
             response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
             response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            response.ContentType = "application/ms-excel"; 
+            response.ContentType = "application/ms-excel";
             #endregion
 
-            HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(headText1) as HSSFSheet;
-            HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
-            cellStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
             sheet.PrintSetup.FitHeight = 0;
 
             int MaxSheetCount = dt1.Rows.Count;
@@ -103,25 +101,15 @@ namespace THOK.Common
                     #region 新建表，填充表头，填充列头，样式
                     if (rowIndex == 0)
                     {
-                        if (rowIndex != 0)
-                        {
-                            sheet = workbook.CreateSheet() as HSSFSheet;
-                        }
+                        if (rowIndex != 0) { sheet = workbook.CreateSheet() as HSSFSheet; }
                         //表头及样式
                         {
                             HSSFRow headerRow = sheet.CreateRow(0) as HSSFRow;
                             headerRow.HeightInPoints = Convert.ToInt16(headSize * 1.4);
                             headerRow.CreateCell(0).SetCellValue(headText1);
-                            HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                            headStyle.Alignment = HorizontalAlignment.CENTER;
-                            HSSFFont font = workbook.CreateFont() as HSSFFont;
-                            font.FontName = headFont;
-                            font.FontHeightInPoints = headSize;
-                            font.Boldweight = 700;
-                            headStyle.SetFont(font);
+                            HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize);
                             headerRow.GetCell(0).CellStyle = headStyle;
-                            //sheet.AddMergedRegion(new  Region(0, 0, 0, dt1.Columns.Count - 1));//过期方法，但还能用
-                            CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt1.Columns.Count - 1);//同上
+                            CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt1.Columns.Count - 1);
                             sheet.AddMergedRegion(region);
                             sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);//给合并的画线
                         }
@@ -129,9 +117,8 @@ namespace THOK.Common
                         {
                             HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
                             headerRow.CreateCell(0).SetCellValue(exportDate);
-                            HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                            headStyle.Alignment = HorizontalAlignment.CENTER;
-                            headerRow.GetCell(0).CellStyle = headStyle;
+                            HSSFCellStyle dateStyle = GetExportDate();
+                            headerRow.GetCell(0).CellStyle = dateStyle;
                             CellRangeAddress region = new CellRangeAddress(1, 1, 0, dt1.Columns.Count - 1);
                             sheet.AddMergedRegion(region);
                             sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
@@ -140,24 +127,11 @@ namespace THOK.Common
                         {
                             HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
                             headerRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
-                            HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                            headStyle.Alignment = HorizontalAlignment.CENTER; //居中
-                            //边框
-                            headStyle.BorderBottom = BorderStyle.THIN;
-                            headStyle.BorderLeft = BorderStyle.THIN;
-                            headStyle.BorderRight = BorderStyle.THIN;
-                            headStyle.BorderTop = BorderStyle.THIN;
-                            //font
-                            HSSFFont font = workbook.CreateFont() as HSSFFont;
-                            font.FontName = colHeadFont;
-                            font.FontHeightInPoints = colHeadSize;
-                            font.Boldweight = 700;
-
-                            headStyle.SetFont(font);
+                            HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize);
                             foreach (DataColumn column in dt1.Columns)
                             {
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-                                headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
+                                headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
                                 sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth[column.Ordinal] + 0.5) * 256));//设置列宽
                             }
                         }
@@ -168,60 +142,10 @@ namespace THOK.Common
                     #region 填充内容
                     HSSFRow dataRow = sheet.CreateRow(rowIndex) as HSSFRow;
                     dataRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
-                    HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
-                    
+
                     foreach (DataColumn column in dt1.Columns)
                     {
-                        HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
-
-                        #region 画边框
-                        headStyle2.BorderBottom = BorderStyle.THIN;
-                        headStyle2.BorderLeft = BorderStyle.THIN;
-                        headStyle2.BorderRight = BorderStyle.THIN;
-                        headStyle2.BorderTop = BorderStyle.THIN;
-                        #endregion
-                        dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
-
-                        string drValue = row[column].ToString();
-
-                        switch (column.DataType.ToString())
-                        {
-                            case "System.String": //字符串类型
-                                string result = drValue;
-                                newCell.SetCellValue(result);
-                                break;
-                            case "System.DateTime": //日期类型
-                                DateTime dateV;
-                                DateTime.TryParse(drValue, out dateV);
-                                newCell.SetCellValue(dateV);
-                                newCell.CellStyle = cellStyle; //格式化显示
-                                break;
-                            case "System.Boolean": //布尔型
-                                bool boolV = false;
-                                bool.TryParse(drValue, out boolV);
-                                newCell.SetCellValue(boolV);
-                                break;
-                            case "System.Int16": //整型
-                            case "System.Int32":
-                            case "System.Int64":
-                            case "System.Byte":
-                                int intV = 0;
-                                int.TryParse(drValue, out intV);
-                                newCell.SetCellValue(intV);
-                                break;
-                            case "System.Decimal": //浮点型
-                            case "System.Double":
-                                double doubV = 0;
-                                double.TryParse(drValue, out doubV);
-                                newCell.SetCellValue(doubV);
-                                break;
-                            case "System.DBNull": //空值处理
-                                newCell.SetCellValue("");
-                                break;
-                            default:
-                                newCell.SetCellValue("");
-                                break;
-                        }
+                        FillContent(dataRow, column, row);
                     }
                     #endregion
 
@@ -238,23 +162,13 @@ namespace THOK.Common
                         #region 新建表，填充表头，填充列头，样式
                         if (rowIndex2 == 0)
                         {
-                            if (rowIndex2 != 1)
-                            {
-                                sheet = workbook.CreateSheet(headText2) as HSSFSheet;
-                            }
+                            if (rowIndex2 != 1) { sheet = workbook.CreateSheet(headText2) as HSSFSheet; }
                             // 表头及样式
                             {
                                 HSSFRow headerRow = sheet.CreateRow(0) as HSSFRow;
                                 headerRow.HeightInPoints = Convert.ToInt16(headSize * 1.4);
                                 headerRow.CreateCell(0).SetCellValue(headText2);
-
-                                HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                                headStyle.Alignment = HorizontalAlignment.CENTER;
-                                HSSFFont font = workbook.CreateFont() as HSSFFont;
-                                font.FontName = headFont;
-                                font.FontHeightInPoints = headSize;
-                                font.Boldweight = 700;
-                                headStyle.SetFont(font);
+                                HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize);
                                 headerRow.GetCell(0).CellStyle = headStyle;
                                 CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt2.Columns.Count - 1);//同上
                                 sheet.AddMergedRegion(region);
@@ -264,34 +178,20 @@ namespace THOK.Common
                             {
                                 HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
                                 headerRow.CreateCell(0).SetCellValue(exportDate);
-                                HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                                headStyle.Alignment = HorizontalAlignment.CENTER;
-                                headerRow.GetCell(0).CellStyle = headStyle;
+                                HSSFCellStyle dateStyle = GetExportDate();
+                                headerRow.GetCell(0).CellStyle = dateStyle;
                                 CellRangeAddress region = new CellRangeAddress(1, 1, 0, dt2.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
                                 sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
                             }
-
                             // 列头及样式
                             {
                                 HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
-                                HSSFCellStyle headStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                                headStyle.Alignment = HorizontalAlignment.CENTER;
-                                #region 画边框
-                                headStyle.BorderBottom = BorderStyle.THIN;
-                                headStyle.BorderLeft = BorderStyle.THIN;
-                                headStyle.BorderRight = BorderStyle.THIN;
-                                headStyle.BorderTop = BorderStyle.THIN;
-                                #endregion
-                                HSSFFont font = workbook.CreateFont() as HSSFFont;
-                                font.FontName = colHeadFont;
-                                font.FontHeightInPoints = colHeadSize;
-                                font.Boldweight = 700;
-                                headStyle.SetFont(font);
+                                HSSFCellStyle colStyle = GetColumnStyle(colHeadFont, colHeadSize);
                                 foreach (DataColumn column in dt2.Columns)
                                 {
                                     headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-                                    headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
+                                    headerRow.GetCell(column.Ordinal).CellStyle = colStyle;
                                     //设置列宽
                                     sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth2[column.Ordinal] + 0.5) * 256));
                                 }
@@ -302,59 +202,10 @@ namespace THOK.Common
 
                         #region 填充内容
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
-                        HSSFCellStyle headStyle2 = workbook.CreateCellStyle() as HSSFCellStyle;
                         
                         foreach (DataColumn column in dt2.Columns)
                         {
-                            HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
-
-                            #region 画边框
-                            headStyle2.BorderBottom = BorderStyle.THIN;
-                            headStyle2.BorderLeft = BorderStyle.THIN;
-                            headStyle2.BorderRight = BorderStyle.THIN;
-                            headStyle2.BorderTop = BorderStyle.THIN;
-                            #endregion
-                            dataRow.GetCell(column.Ordinal).CellStyle = headStyle2;
-
-                            string drValue = row[column].ToString();
-                            switch (column.DataType.ToString())
-                            {
-                                case "System.String": //字符串类型
-                                    string result = drValue;
-                                    newCell.SetCellValue(result);
-                                    break;
-                                case "System.DateTime": //日期类型
-                                    DateTime dateV;
-                                    DateTime.TryParse(drValue, out dateV);
-                                    newCell.SetCellValue(dateV);
-                                    newCell.CellStyle = cellStyle; //格式化显示
-                                    break;
-                                case "System.Boolean": //布尔型
-                                    bool boolV = false;
-                                    bool.TryParse(drValue, out boolV);
-                                    newCell.SetCellValue(boolV);
-                                    break;
-                                case "System.Int16": //整型
-                                case "System.Int32":
-                                case "System.Int64":
-                                case "System.Byte":
-                                    int intV = 0;
-                                    int.TryParse(drValue, out intV);
-                                    newCell.SetCellValue(intV);
-                                    break;
-                                case "System.Decimal": //浮点型
-                                case "System.Double":
-                                    double doubV = 0;
-                                    double.TryParse(drValue, out doubV);
-                                    newCell.SetCellValue(doubV);
-                                    break;
-                                case "System.DBNull": //空值处理
-                                    newCell.SetCellValue("");
-                                    break;
-                                default:
-                                    newCell.SetCellValue("");
-                                    break;
-                            }
+                            FillContent(dataRow, column, row);
                         }
                         #endregion
 
@@ -375,6 +226,114 @@ namespace THOK.Common
             ms.Position = 0;
             return ms;
         }
+        #region 样式
+        /// <summary>填充内容</summary>
+        static void FillContent(HSSFRow dataRow, DataColumn column, DataRow row)
+        {
+            HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
+            HSSFCellStyle cellDateStyle = contentDateStyle();
+            HSSFCellStyle contentStyle = GetContentStyle();
+
+            dataRow.GetCell(column.Ordinal).CellStyle = contentStyle;
+
+            string drValue = row[column].ToString();
+            switch (column.DataType.ToString())
+            {
+                case "System.String": //字符串类型
+                    string result = drValue;
+                    newCell.SetCellValue(result);
+                    break;
+                case "System.DateTime": //日期类型
+                    DateTime dateV;
+                    DateTime.TryParse(drValue, out dateV);
+                    newCell.SetCellValue(dateV);
+                    newCell.CellStyle = cellDateStyle; //格式化显示
+                    break;
+                case "System.Boolean": //布尔型
+                    bool boolV = false;
+                    bool.TryParse(drValue, out boolV);
+                    newCell.SetCellValue(boolV);
+                    break;
+                case "System.Int16": //整型
+                case "System.Int32":
+                case "System.Int64":
+                case "System.Byte":
+                    int intV = 0;
+                    int.TryParse(drValue, out intV);
+                    newCell.SetCellValue(intV);
+                    break;
+                case "System.Decimal": //浮点型
+                case "System.Double":
+                    double doubV = 0;
+                    double.TryParse(drValue, out doubV);
+                    newCell.SetCellValue(doubV);
+                    break;
+                case "System.DBNull": //空值处理
+                    newCell.SetCellValue("");
+                    break;
+                default:
+                    newCell.SetCellValue("");
+                    break;
+            }
+        }
+        /// <summary>标题样式</summary>
+        static HSSFCellStyle GetTitleStyle(string headFont, short headSize)
+        {
+            HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle.Alignment = HorizontalAlignment.CENTER;
+            HSSFFont font = workbook.CreateFont() as HSSFFont;
+            font.FontName = headFont;
+            font.FontHeightInPoints = headSize;
+            font.Boldweight = 700;
+            cellStyle.SetFont(font);
+            return cellStyle;
+        }
+        /// <summary>列头样式</summary>
+        static HSSFCellStyle GetColumnStyle(string colHeadFont, short colHeadSize)
+        {
+            HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle.Alignment = HorizontalAlignment.CENTER; //居中
+            //边框
+            cellStyle.BorderBottom = BorderStyle.THIN;
+            cellStyle.BorderLeft = BorderStyle.THIN;
+            cellStyle.BorderRight = BorderStyle.THIN;
+            cellStyle.BorderTop = BorderStyle.THIN;
+            //font
+            HSSFFont font = workbook.CreateFont() as HSSFFont;
+            font.FontName = colHeadFont;
+            font.FontHeightInPoints = colHeadSize;
+            font.Boldweight = 700;
+
+            cellStyle.SetFont(font);
+            return cellStyle;
+        }
+        /// <summary>内容样式</summary>
+        static HSSFCellStyle GetContentStyle()
+        {
+            HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            //画边框
+            cellStyle.BorderBottom = BorderStyle.THIN;
+            cellStyle.BorderLeft = BorderStyle.THIN;
+            cellStyle.BorderRight = BorderStyle.THIN;
+            cellStyle.BorderTop = BorderStyle.THIN;
+            return cellStyle;
+        }
+        /// <summary>导出时间单元格样式</summary>
+        static HSSFCellStyle GetExportDate()
+        {
+            HSSFCellStyle dateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            dateStyle.Alignment = HorizontalAlignment.CENTER;
+            return dateStyle;
+        }
+        /// <summary>内容日期样式</summary>
+        static HSSFCellStyle contentDateStyle()
+        {
+            HSSFCellStyle dateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
+            dateStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
+            return dateStyle;
+        } 
+        #endregion
 
         #region 单元格数据生成通用类
         public static int CreateDataMethod
