@@ -1,0 +1,22 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var productCode = null;
+        var assemblyTime = null;
+        if ($('#productCode').val() == null) {
+            productCode = "";
+        }
+        else {
+            productCode = $('#productCode').val();
+        }
+        if ($('#assemblyTime').val() == null) {
+            assemblyTime = "";
+        }
+        else {
+            assemblyTime = $('#assemblyTime').val();
+        }
+        window.location.href = "/ProductTimeOut/CreateExcelToClient/"
+                                + "?productCode=" + productCode
+                                + "&assemblyTime=" + assemblyTime;
+
+    }
+</script>

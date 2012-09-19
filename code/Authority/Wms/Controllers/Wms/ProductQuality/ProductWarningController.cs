@@ -32,9 +32,9 @@ namespace Wms.Controllers.Wms.ProductQuality
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string productCode = collection["ProductCode"] ?? "";
-            decimal minLimited=100000;
-            decimal maxLimited=100000;
-            decimal assemblyTime=3600;
+            decimal minLimited = 100000;
+            decimal maxLimited = 100000;
+            decimal assemblyTime = 3600;
             if (collection["MinLimited"] != null && collection["MinLimited"] != "")
             {
                 minLimited = decimal.Parse(collection["MinLimited"]);
@@ -79,16 +79,27 @@ namespace Wms.Controllers.Wms.ProductQuality
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string productCode = Request.QueryString["productCode"];
-            decimal minLimited = Convert.ToDecimal( Request.QueryString["minLimited"]);
-            decimal maxLimited = Convert.ToDecimal(Request.QueryString["maxLimited"]);
-            decimal assemblyTime = Convert.ToDecimal(Request.QueryString["assemblyTime"]);
-
-            System.Data.DataTable dt = ProductWarningService.GetProductWarning(page, rows, productCode,minLimited,maxLimited,assemblyTime);
+            string productCode = Request.QueryString["productCode"] ?? "";
+            decimal minLimited = 100000;
+            decimal maxLimited = 100000;
+            decimal assemblyTime = 3600;
+            if (Request.QueryString["minLimited"] != null && Request.QueryString["minLimited"] != "")
+            {
+                minLimited = decimal.Parse(Request.QueryString["minLimited"]);
+            }
+            if (Request.QueryString["maxLimited"] != null && Request.QueryString["maxLimited"] != "")
+            {
+                maxLimited = decimal.Parse(Request.QueryString["maxLimited"]);
+            }
+            if (Request.QueryString["assemblyTime"] != null && Request.QueryString["assemblyTime"] != "")
+            {
+                assemblyTime = decimal.Parse(Request.QueryString["assemblyTime"]);
+            }
+            System.Data.DataTable dt = ProductWarningService.GetProductWarning(page, rows, productCode, minLimited, maxLimited, assemblyTime);
             string headText = "产品预警信息设置";
             string headFontName = "微软雅黑"; Int16 headFontSize = 20;
             string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10;
-           
+
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize);
             return new FileStreamResult(ms, "application/ms-excel");
         }

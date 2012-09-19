@@ -1,39 +1,41 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var productCode = null;
-          , minLimited = null;
-          , maxLimited = null;
+        var productCode = null
+          , minLimited = null
+          , maxLimited = null
           , assemblyTime = null;
-        /*--------------------------防眼花------------------------------*/
+
+        /*--------------------------------------------------------*/
         if ($('#productCode').val() == null) {
             productCode = "";
         }
         else {
             productCode = $('#productCode').val();
         }
-        /*--------------------------防眼花------------------------------*/
+        /*--------------------------------------------------------*/
         if ($('#minLimited').val() == null) {
             minLimited = "";
         }
         else {
             minLimited = $('#minLimited').val();
         }
-        /*--------------------------防眼花------------------------------*/
+        /*--------------------------------------------------------*/
         if ($('#maxLimited').val() == null) {
             maxLimited = "";
         }
         else {
             maxLimited = $('#maxLimited').val();
         }
-        /*--------------------------防眼花------------------------------*/
+        /*--------------------------------------------------------*/
         if ($('#assemblyTime').val() == null) {
             assemblyTime = "";
         }
         else {
             assemblyTime = $('#assemblyTime').val();
         }
-        /*--------------------------防眼花------------------------------*/
-        window.locatin.href = "/ProductWarning/CreateExcelToClient/"
+        /*--------------------------------------------------------*/
+        
+        window.location.href = "/ProductWarning/CreateExcelToClient/"
                                 + "?productCode=" + productCode
                                 + "&minLimited=" + minLimited
                                 + "&maxLimited=" + maxLimited
