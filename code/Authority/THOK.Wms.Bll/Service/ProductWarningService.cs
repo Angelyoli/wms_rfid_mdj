@@ -284,6 +284,7 @@ namespace THOK.Wms.Bll.Service
          #region
          public object GetCell()
          {
+             DataTable dt =new DataTable();
              IQueryable<Area> AreaQuery = AreaRepository.GetQueryable();
              IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
              IQueryable<Cell> CellQuery = CellRepository.GetQueryable();
@@ -297,6 +298,20 @@ namespace THOK.Wms.Bll.Service
                                     totalQty=s.Count(t=>t.cell.IsActive=="0"),
                                     totalQtys = s.Count(t => t.cell.IsActive == "1")
                                 });
+             //dt.Columns.Add("库区名称", typeof(string));
+             //dt.Columns.Add("有库存货位数量", typeof(int));
+             //dt.Columns.Add("禁用货位数", typeof(int));
+             //dt.Columns.Add("可用货位数", typeof(int));
+             //foreach (var p in CellInfos)
+             //{
+             //    dt.Rows.Add
+             //        (
+             //           p.areaName,
+             //           p.enableQty,
+             //           p.totalQty,
+             //           p.totalQtys
+             //        );
+             //}
              return CellInfos;
          }
         #endregion
