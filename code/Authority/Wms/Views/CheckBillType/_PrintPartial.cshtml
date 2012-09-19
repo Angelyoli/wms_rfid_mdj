@@ -1,8 +1,15 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var billTypeCode = null
+          , billTypeName = null
+          , isActive = null;
+        if ($('#BillTypeCode').val() == null) { billTypeCode = ""; } else { billTypeCode = $('#BillTypeCode').val(); }
+        if ($('#BillTypeName').val() == null) { billTypeName = ""; } else { billTypeName = $('#BillTypeName').val(); }
+        if (document.getElementById('IsActive') == null) { isActive = ""; } else { isActive = $('#IsActive').combo('getValue'); }
+
         window.location.href = "/CheckBillType/CreateExcelToClient/"
-                                + "?billTypeCode=" + $('#BillTypeCode').val()
-                                + "&billTypeName=" + $('#BillTypeName').val()
-                                + "&isActive=" + $('#IsActive').combo('getValue');
+                                + "?billTypeCode=" + billTypeCode
+                                + "&billTypeName=" + billTypeName
+                                + "&isActive=" + isActive;
     }
 </script>

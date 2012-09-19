@@ -17,10 +17,15 @@
                 }
             }
         }
+        var productCode = null
+          , unitType = null;
+        if ($('#productCode').val() == null) { productCode = ""; } else { productCode = $('#productCode').val(); }
+        if (document.getElementById('unit_Type') == null) { unitType = ""; } else { unitType = $('#unit_Type').combo('getValue'); }
+
         window.location.href = "/CurrentStock/CreateExcelToClient/"
-                                + "?productCode=" + $('#productCode').val()
+                                + "?productCode=" + productCode
                                 + "&ware=" + ware
-                                + "&area=" + area 
-                                + "&unitType=" + $('#unit_Type').combo('getValue');
+                                + "&area=" + area
+                                + "&unitType=" + unitType;
     }
 </script>

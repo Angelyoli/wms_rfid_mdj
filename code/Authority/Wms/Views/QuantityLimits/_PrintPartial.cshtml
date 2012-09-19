@@ -1,9 +1,18 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var productCode = null
+          , unitCode = null
+          , minLimited = null
+          , maxLimited = null;
+        if ($('#productCode').val() == null) { productCode = ""; } else { productCode = $('#productCode').val(); }
+        if ($('#unitCode').val() == null) { unitCode = ""; } else { unitCode = $('#unitCode').val(); }
+        if ($('#minLimited').val() == null) { minLimited = ""; } else { minLimited = $('#minLimited').val(); }
+        if ($('#maxLimited').val() == null) { maxLimited = ""; } else { maxLimited = $('#maxLimited').val(); }
+
         window.location.href = "/QuantityLimits/CreateExcelToClient/"
-                                + "?productCode=" + $('#productCode').val()
-                                + "&unitCode=" + $('#unitCode').val()
-                                + "&minLimited=" + $('#minLimited').val()
-                                + "&maxLimited=" + $('#maxLimited').val();
+                                + "?productCode=" + productCode
+                                + "&unitCode=" + unitCode
+                                + "&minLimited=" + minLimited
+                                + "&maxLimited=" + maxLimited;
     }
 </script>

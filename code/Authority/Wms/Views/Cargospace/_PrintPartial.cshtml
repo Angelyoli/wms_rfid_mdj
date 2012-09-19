@@ -2,9 +2,15 @@
     function printClick() {
         var row = $('#warehouseTree').tree("getSelected");
         if (row) {
+            var rowAttribute = null
+              , rowId = null;
+
+            if (row.attributes == null) { rowAttribute = ""; } else { rowAttribute = row.attributes; }
+            if (row.id == null) { rowId = ""; } else { rowId = row.id; }
+
             window.location.href = "/Cargospace/CreateExcelToClient/"
-                                    + "?type=" + row.attributes
-                                    + "&id=" + row.id;
+                                    + "?type=" + rowAttribute
+                                    + "&id=" + rowId;
         }
         else {
             $.messager.alert("系统提示","未选中树形菜单","info");

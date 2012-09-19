@@ -1,9 +1,38 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var sortingLineCode = null
+          , sortingLineName = null
+          , sortingLineType = null
+          , isActive = null;
+
+        if ($('#SortingLineCode').val() == null) {
+            sortingLineCode = "";
+        }
+        else {
+            sortingLineCode = $('#SortingLineCode').val();
+        }
+        if ($('#SortingLineName').val() == null) {
+            sortingLineName = "";
+        }
+        else {
+            sortingLineName = $('#SortingLineName').val();
+        }
+        if (document.getElementById('SortingLineType') == null) {
+            sortingLineType = "";
+        }
+        else {
+            sortingLineType = $('#SortingLineType').combo('getValue');
+        }
+        if (document.getElementById('IsActive') == null) {
+            isActive = "";
+        }
+        else {
+            isActive = $('#IsActive').combo('getValue');
+        }
         window.location.href = "/SortingLine/CreateExcelToClient/"
-                                + "?sortingLineCode=" + $('#SortingLineCode').val()
-                                + "&sortingLineName=" + $('#SortingLineName').val()
-                                + "&sortingLineType=" + $('#SortingLineType').combo('getValue')
-                                + "&isActive=" + $('#IsActive').combo('getValue');
+                                + "?sortingLineCode=" + sortingLineCode
+                                + "&sortingLineName=" + sortingLineName
+                                + "&sortingLineType=" + sortingLineType
+                                + "&isActive=" + isActive;
     }
 </script>

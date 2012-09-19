@@ -1,9 +1,15 @@
 ﻿<script type="text/javascript">
     function printClick() {
-
         var row = $('#details').datagrid('getSelected');
+
         if (row) {
-            window.location.href = '/CheckBill/CreateExcelToClient/?billNo=' + row.BillNo;
+            
+            var rowBillNo = null;
+
+            if (row.BillNo == null) { rowBillNo = ""; } else { rowBillNo = row.BillNo; }
+
+            window.location.href = '/CheckBill/CreateExcelToClient/?billNo=' + rowBillNo;
+
         } else {
             $.messager.alert('系统提示', '未选中行', "info");
         }
