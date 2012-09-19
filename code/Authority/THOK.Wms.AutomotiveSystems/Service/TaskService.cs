@@ -255,6 +255,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
                                     Status = i.Status,
+                                    PalletTag = i.PalletTag??0
                                 })
                                 .ToArray();
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();

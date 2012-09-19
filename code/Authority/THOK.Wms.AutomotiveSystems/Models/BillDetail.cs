@@ -26,5 +26,6 @@ namespace THOK.Wms.AutomotiveSystems.Models
         public string OperatorCode = string.Empty;
         public string Operator = string.Empty;
         public string Status = string.Empty;
+        public int PalletTag = 0;
     }
 }
