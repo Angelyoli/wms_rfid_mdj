@@ -110,10 +110,18 @@ namespace Authority.Controllers.Wms.SortingInfo
 
             System.Data.DataTable dt = SortOrderDetailService.GetSortOrderDetail(page, rows, orderId);
             string headText = "分拣订单管理";
-            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
-            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 10; 
-            
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize, colHeadFontName, colHeadFontSize);
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

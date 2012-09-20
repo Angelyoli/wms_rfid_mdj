@@ -122,9 +122,17 @@ namespace Authority.Controllers.Organization
             System.Data.DataTable dt = EmployeeService.GetEmployee(page, rows, employeeCode, employeeName, departmentId, jobId, status, isActive);
             string headText = "员工信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10; 
-           
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize, colHeadFont, colHeadSize);
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion
