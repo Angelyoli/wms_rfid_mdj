@@ -58,6 +58,12 @@ namespace THOK.Common
             sheet.PrintSetup.FitHeight = 0;
             #endregion
 
+            #region 全局样式
+            HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor);
+            HSSFCellStyle dateStyle = GetExportDate();
+            HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
+            #endregion
+
             #region 建表工程
             int MaxSheetCount = dt1.Rows.Count;
             if (MaxSheetCount < 65536)  // excel中的一个sheet最大容量65536行
@@ -104,11 +110,7 @@ namespace THOK.Common
                 }
                 #endregion
 
-                #region 样式 全局
-                HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor);
-                HSSFCellStyle dateStyle = GetExportDate();
-                HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
-                #endregion
+                HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;
 
                 #region 建表 表一
                 int rowIndex1 = 0;
@@ -157,10 +159,9 @@ namespace THOK.Common
                     }
                     /*---------------------- 填充内容 ------------------------*/
                     HSSFRow dataRow = sheet.CreateRow(rowIndex1) as HSSFRow;
-                    HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
                     foreach (DataColumn column in dt1.Columns)
                     {
-                        FillContent(dataRow, column, row, cellStyle, contentDateStyle,
+                        FillContent(dataRow, column, row, contentStyle, contentDateStyle,
                             colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
                     }
                     rowIndex1++;
@@ -213,10 +214,9 @@ namespace THOK.Common
                         }
                         /*------------------- 填充内容 -------------------*/
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
-                        HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
                         foreach (DataColumn column in dt2.Columns)
                         {
-                            FillContent(dataRow, column, row, cellStyle, contentDateStyle
+                            FillContent(dataRow, column, row, contentStyle, contentDateStyle
                                 , colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
                         }
                         rowIndex2++;
@@ -242,18 +242,18 @@ namespace THOK.Common
             ms.Position = 0;
             return ms;
             #endregion
-        } 
+        }
         #endregion
 
         #region 填充内容
         /// <summary>填充内容</summary>
-        static void FillContent(HSSFRow dataRow, DataColumn column, DataRow row, HSSFCellStyle cellStyle, HSSFCellStyle dateStyle, string colHeadFont, short colHeadSize, short colHeadColor, bool contentBorder)
+        static void FillContent(HSSFRow dataRow, DataColumn column, DataRow row, HSSFCellStyle contentStyle, HSSFCellStyle contentDateStyle, string colHeadFont, short colHeadSize, short colHeadColor, bool contentBorder)
         {
             HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
-            HSSFCellStyle contentDateStyle = GetContentDateStyle(dateStyle);
-            HSSFCellStyle contentStyle = GetContentStyle(cellStyle, contentBorder);
+            HSSFCellStyle fillContentDateStyle = GetContentDateStyle(contentDateStyle);
+            HSSFCellStyle fillContentStyle = GetContentStyle(contentStyle, contentBorder);
 
-            dataRow.GetCell(column.Ordinal).CellStyle = contentStyle;
+            dataRow.GetCell(column.Ordinal).CellStyle = fillContentStyle;
 
             string drValue = row[column].ToString();
             switch (column.DataType.ToString())
@@ -266,7 +266,7 @@ namespace THOK.Common
                     DateTime dateV;
                     DateTime.TryParse(drValue, out dateV);
                     newCell.SetCellValue(dateV);
-                    newCell.CellStyle = contentDateStyle; //格式化显示
+                    newCell.CellStyle = fillContentDateStyle; //格式化显示
                     break;
                 case "System.Boolean": //布尔型
                     bool boolV = false;
