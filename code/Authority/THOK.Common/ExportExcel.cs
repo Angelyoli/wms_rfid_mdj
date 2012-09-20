@@ -19,6 +19,7 @@ namespace THOK.Common
     {
         static HSSFWorkbook workbook;
 
+        #region 导出EXCEL单表双表
         /// <summary>导出EXCEL单表双表</summary>
         /// <param name="dt1">DataTable1</param>
         /// <param name="dt2">DataTable2 如果没有给null值</param>
@@ -41,23 +42,27 @@ namespace THOK.Common
                 , short contentColor//暂无引用
                 , string[] HeaderFooter)
         {
+            #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
             double columnWidth = colHeadSize - 9.5;
+            #endregion
 
+            #region 浏览器下载
             BrowserLoad(headText1);
+            #endregion
 
+            #region 创建工作表
             workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(headText1) as HSSFSheet;
-
             HSSFCellStyle contentDateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-
             sheet.PrintSetup.FitHeight = 0;
+            #endregion
 
+            #region 建表工程
             int MaxSheetCount = dt1.Rows.Count;
-
             if (MaxSheetCount < 65536)  // excel中的一个sheet最大容量65536行
             {
-                #region 取得列宽 dt1
+                #region 取得列宽 表一
                 int[] arrColWidth = new int[dt1.Columns.Count];
                 foreach (DataColumn item in dt1.Columns)
                 {
@@ -76,7 +81,7 @@ namespace THOK.Common
                 }
                 #endregion
 
-                #region 取得列宽 dt2
+                #region 取得列宽 表二
                 int[] arrColWidth2 = new int[0];
                 if (dt2 != null && headText2 != null)
                 {
@@ -99,19 +104,24 @@ namespace THOK.Common
                 }
                 #endregion
 
-                #region 建表 dt1
+                #region 样式 全局
+                HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor);
+                HSSFCellStyle dateStyle = GetExportDate();
+                HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
+                #endregion
+
+                #region 建表 表一
                 int rowIndex1 = 0;
                 foreach (DataRow row in dt1.Rows)
                 {
-                    #region 新建表，填充表头，填充列头，样式
                     if (rowIndex1 == 0)
                     {
                         if (rowIndex1 != 0) { sheet = workbook.CreateSheet() as HSSFSheet; }
-                        {   // 表头及样式
+                        /*--------------------- 填充表头、样式 ---------------------*/
+                        {
                             HSSFRow headerRow = sheet.CreateRow(0) as HSSFRow;
                             headerRow.HeightInPoints = Convert.ToInt16(headSize * 1.4);
                             headerRow.CreateCell(0).SetCellValue(headText1);
-                            HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor);
                             headerRow.GetCell(0).CellStyle = headStyle;
                             CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt1.Columns.Count - 1);
                             sheet.AddMergedRegion(region);
@@ -120,10 +130,10 @@ namespace THOK.Common
                                 sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);//给合并的画线
                             }
                         }
-                        {   // 导出时间
+                        /*--------------------- 导出时间、样式 ---------------------*/
+                        {
                             HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
                             headerRow.CreateCell(0).SetCellValue(exportDate);
-                            HSSFCellStyle dateStyle = GetExportDate();
                             headerRow.GetCell(0).CellStyle = dateStyle;
                             CellRangeAddress region = new CellRangeAddress(1, 1, 0, dt1.Columns.Count - 1);
                             sheet.AddMergedRegion(region);
@@ -132,10 +142,10 @@ namespace THOK.Common
                                 sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
                             }
                         }
-                        {   // 列头及样式
+                        /*--------------------- 填充列头、样式 ---------------------*/
+                        {
                             HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
                             headerRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
-                            HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
                             foreach (DataColumn column in dt1.Columns)
                             {
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
@@ -145,47 +155,42 @@ namespace THOK.Common
                         }
                         rowIndex1 = 3;
                     }
-                    #endregion
-
-                    #region 填充内容
+                    /*---------------------- 填充内容 ------------------------*/
                     HSSFRow dataRow = sheet.CreateRow(rowIndex1) as HSSFRow;
                     HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                    
                     foreach (DataColumn column in dt1.Columns)
                     {
                         FillContent(dataRow, column, row, cellStyle, contentDateStyle,
-                            colHeadFont, colHeadSize, colHeadColor,colHeadBorder);
+                            colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
                     }
-                    #endregion
-
                     rowIndex1++;
                 }
                 #endregion
 
-                #region 建表 dt2
+                #region 建表 表二
                 if (dt2 != null && headText2 != null)
                 {
                     int rowIndex2 = 0;
                     foreach (DataRow row in dt2.Rows)
                     {
-                        #region 新建表，填充表头，填充列头，样式
                         if (rowIndex2 == 0)
                         {
+                            HSSFRow headerRow;
                             if (rowIndex2 != 1) { sheet = workbook.CreateSheet(headText2) as HSSFSheet; }
+                            /*--------------------- 填充表头、样式 ---------------------*/
                             {
-                                HSSFRow headerRow = sheet.CreateRow(0) as HSSFRow;
+                                headerRow = sheet.CreateRow(0) as HSSFRow;
                                 headerRow.HeightInPoints = Convert.ToInt16(headSize * 1.4);
                                 headerRow.CreateCell(0).SetCellValue(headText2);
-                                HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor);
                                 headerRow.GetCell(0).CellStyle = headStyle;
                                 CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt2.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
                                 sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
                             }
+                            /*--------------------- 导出时间、样式 ---------------------*/
                             {
-                                HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
+                                headerRow = sheet.CreateRow(1) as HSSFRow;
                                 headerRow.CreateCell(0).SetCellValue(exportDate);
-                                HSSFCellStyle dateStyle = GetExportDate();
                                 headerRow.GetCell(0).CellStyle = dateStyle;
                                 CellRangeAddress region = new CellRangeAddress(1, 1, 0, dt2.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
@@ -194,61 +199,59 @@ namespace THOK.Common
                                     sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
                                 }
                             }
+                            /*--------------------- 填充列头、样式 ---------------------*/
                             {
-                                HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
-                                HSSFCellStyle colStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
+                                headerRow = sheet.CreateRow(2) as HSSFRow;
                                 foreach (DataColumn column in dt2.Columns)
                                 {
                                     headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-                                    headerRow.GetCell(column.Ordinal).CellStyle = colStyle;
-                                    //设置列宽
-                                    sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth2[column.Ordinal] + 0.5) * 256));
+                                    headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
+                                    sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth2[column.Ordinal] + columnWidth) * 256));
                                 }
                             }
                             rowIndex2 = 3;
                         }
-                        #endregion
-
-                        #region 填充内容
+                        /*------------------- 填充内容 -------------------*/
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
                         HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-                       
                         foreach (DataColumn column in dt2.Columns)
                         {
                             FillContent(dataRow, column, row, cellStyle, contentDateStyle
                                 , colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
                         }
-                        #endregion
-
                         rowIndex2++;
                     }
                 }
                 #endregion
 
-                #region 页眉页脚
+                #region 页眉 页脚
                 sheet.Header.Left = HeaderFooter[0].ToString();
                 sheet.Header.Center = HeaderFooter[1].ToString();
                 sheet.Header.Right = HeaderFooter[2].ToString();
-
                 sheet.Footer.Left = HeaderFooter[3].ToString();
                 sheet.Footer.Center = HeaderFooter[4].ToString();
                 sheet.Footer.Right = HeaderFooter[5].ToString();
                 #endregion
             }
+            #endregion
 
+            #region 返回内存流
             MemoryStream ms = new MemoryStream();
             workbook.Write(ms);
             ms.Flush();
             ms.Position = 0;
             return ms;
-        }
+            #endregion
+        } 
+        #endregion
+
         #region 填充内容
         /// <summary>填充内容</summary>
-        static void FillContent(HSSFRow dataRow, DataColumn column, DataRow row, HSSFCellStyle cellStyle, HSSFCellStyle dateStyle, string colHeadFont, short colHeadSize, short colHeadColor,bool contentBorder)
+        static void FillContent(HSSFRow dataRow, DataColumn column, DataRow row, HSSFCellStyle cellStyle, HSSFCellStyle dateStyle, string colHeadFont, short colHeadSize, short colHeadColor, bool contentBorder)
         {
             HSSFCell newCell = dataRow.CreateCell(column.Ordinal) as HSSFCell;
             HSSFCellStyle contentDateStyle = GetContentDateStyle(dateStyle);
-            HSSFCellStyle contentStyle = GetContentStyle(cellStyle,contentBorder);
+            HSSFCellStyle contentStyle = GetContentStyle(cellStyle, contentBorder);
 
             dataRow.GetCell(column.Ordinal).CellStyle = contentStyle;
 
@@ -338,7 +341,7 @@ namespace THOK.Common
 
         #region 内容样式
         /// <summary>内容样式</summary>
-        static HSSFCellStyle GetContentStyle(HSSFCellStyle cellStyle,bool contentBoder)
+        static HSSFCellStyle GetContentStyle(HSSFCellStyle cellStyle, bool contentBoder)
         {
             //画边框
             if (contentBoder == true)
