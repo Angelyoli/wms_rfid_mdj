@@ -18,7 +18,7 @@ namespace THOK.Common
     public class ExportExcel
     {
         static HSSFWorkbook workbook;
-
+        static Int16 contentSize;
         /// <summary>导出EXCEL单表双表</summary>
         /// <param name="dt1">DataTable1</param>
         /// <param name="dt2">DataTable2 如果没有给null值</param>
@@ -35,7 +35,7 @@ namespace THOK.Common
                 , string colHeadFont, Int16 colHeadSize)
         {
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
-
+            contentSize = colHeadSize;
             BrowserLoad(headText1);
 
             workbook = new HSSFWorkbook();
@@ -323,6 +323,10 @@ namespace THOK.Common
         /// <summary>内容样式</summary>
         static HSSFCellStyle GetContentStyle(HSSFCellStyle cellStyle)
         {
+            HSSFFont font = workbook.CreateFont() as HSSFFont;
+            font.FontName = "宋体";
+            font.FontHeightInPoints = contentSize;
+            cellStyle.SetFont(font);
             //画边框
             cellStyle.BorderBottom = BorderStyle.THIN;
             cellStyle.BorderLeft = BorderStyle.THIN;
