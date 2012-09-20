@@ -189,5 +189,13 @@ namespace THOK.WES.Interface.Model
                 status = value;
             }
         }
+
+        private int palletTag = 0;
+
+        public int PalletTag
+        {
+            get { return palletTag; }
+            set { palletTag = value; }
+        }
     }
 }

@@ -1,14 +1,14 @@
 ﻿<script type="text/javascript">
-    function editClick() {
+    function deleteClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            $('#dlg').dialog('open').dialog('setTitle', '编辑目录信息');
+            $('#dlg').dialog('open').dialog('setTitle', '删除目录信息');
             $('#helpfm.easyui-validatebox').validatebox({
-                required:  true
+                required: false
             });
-            $('form input').removeAttr("disabled");
+            $('form input').attr("disabled", "disabled");
             $('#IsActive').combo({
-                hasDownArrow: true
+                hasDownArrow: false
             });
             $('#helpfm').form('load', row);
             if (row.Status == '启用') {
@@ -16,9 +16,9 @@
             } else {
                 $('#IsActive').combo('setValue', false).combo('setText', row.IsActive);
             }
-            url = '/HelpContent/Edit/';
+            url = '/HelpContent/Delete/?ContentCode=' + row.ContentCode;
         } else {
             $.messager.confirm('错误', '没有选择行！');
         }
-    }
+    };
 </script>

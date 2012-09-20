@@ -6,6 +6,7 @@ using THOK.Wms.DbModel;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
+using System.Data;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -229,7 +230,7 @@ namespace THOK.Wms.Bll.Service
              }
              if (QuantityLimitsWarnings.Count() >= 0)
              {
-                 QuantityLimitsWarnings = QuantityLimitsWarnings.Where(q => q.quantityTotal <= q.maxlimits).ToArray();
+                 QuantityLimitsWarnings = QuantityLimitsWarnings.Where(q => q.quantityTotal >= q.maxlimits).ToArray();
              }
              int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarning.Count();
              return total;
@@ -278,6 +279,40 @@ namespace THOK.Wms.Bll.Service
              //    array[i, 1] = Decimal.Round((storage[i].totalQuantity/total),4)*100;
              //}
              return storage;
+         }
+        #endregion
+         #region
+         public object GetCell()
+         {
+             DataTable dt =new DataTable();
+             IQueryable<Area> AreaQuery = AreaRepository.GetQueryable();
+             IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+             IQueryable<Cell> CellQuery = CellRepository.GetQueryable();
+             var storageQuantity = StorageQuery.Join(AreaQuery, s => s.Cell.AreaCode, a => a.AreaCode, (s, a) => new { storage = s, area = a });
+             var CellInfo = AreaQuery.Join(CellQuery, s => s.AreaCode, c => c.AreaCode, (s, c) => new { Storage = s, cell = c });
+             var CellInfos =CellInfo.GroupBy(s=>s.cell.AreaCode)
+                                .Select(s => new
+                                {
+                                    areaName =s.Max(t=>t.cell.Area.AreaName),
+                                    enableQty=storageQuantity.AsEnumerable().Where(t=>t.area.AreaCode==s.Max(m=>m.cell.Area.AreaCode)).Count(t=>t.storage.Quantity>0),
+                                    totalQty=s.Count(t=>t.cell.IsActive=="0"),
+                                    totalQtys = s.Count(t => t.cell.IsActive == "1")
+                                });
+             //dt.Columns.Add("库区名称", typeof(string));
+             //dt.Columns.Add("有库存货位数量", typeof(int));
+             //dt.Columns.Add("禁用货位数", typeof(int));
+             //dt.Columns.Add("可用货位数", typeof(int));
+             //foreach (var p in CellInfos)
+             //{
+             //    dt.Rows.Add
+             //        (
+             //           p.areaName,
+             //           p.enableQty,
+             //           p.totalQty,
+             //           p.totalQtys
+             //        );
+             //}
+             return CellInfos;
          }
         #endregion
 

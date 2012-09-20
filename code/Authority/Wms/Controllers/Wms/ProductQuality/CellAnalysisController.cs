@@ -29,5 +29,10 @@ namespace Wms.Controllers.Wms.ProductQuality
             var productWarn = ProductWarningService.GetCellInfo();
             return Json(productWarn, "text", JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Detail()
+        {
+            var productWarn = ProductWarningService.GetCell();
+            return Json(productWarn, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

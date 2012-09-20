@@ -6,12 +6,12 @@ namespace THOK.Authority.Bll.Interfaces
     {
         bool Add(HelpContent helpContent, out string strResult);
 
-        bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive, out string strResult);
+        bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive, out string strResult);       
 
-        object GetDetails2(int page, int rows, string ContentCode, string ContentName, string ModuleName, string NodeType, string FatherNodeID, string NodeOrder, string ModuleID, string IsActive, string UpdateTime);
+        bool Delete(string ContentCode);
 
         object GetDetails(int page, int rows, string QueryString, string Value);
 
-        bool Delete(string ContentCode);
+        object GetDetails2(int page, int rows, string ContentCode, string ContentName, string NodeType, string FatherNodeID, string ModuleID, string IsActive);
     }
 }

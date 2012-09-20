@@ -1,8 +1,15 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var brandCode = null
+          , brandName = null
+          , isActive = null;
+        if ($('#BrandCode').val() == null) { brandCode = ""; } else { brandCode = $('#BrandCode').val(); }
+        if ($('#BrandName').val() == null) { brandName = ""; } else { brandName = $('#BrandName').val(); }
+        if (document.getElementById('isActive') == null) { isActive = ""; } else { isActive = $('#isActive').combo('getValue'); }
+
         window.location.href = "/Brand/CreateExcelToClient/"
-                                + "?brandCode=" + $('#BrandCode').val()
-                                + "&brandName=" + $('#BrandName').val()
-                                + "&isActive=" + $('#isActive').combo('getValue');
+                                + "?brandCode=" + brandCode
+                                + "&brandName=" + brandName
+                                + "&isActive=" + isActive;
     }
 </script>

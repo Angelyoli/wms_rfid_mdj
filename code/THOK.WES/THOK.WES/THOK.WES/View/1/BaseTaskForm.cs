@@ -448,6 +448,56 @@ namespace THOK.WES.View
                 connection.Start();
             }
         }
+
+        private bool isBcCompose = false;
+        private void btnBcCompose_Click(object sender, EventArgs e)
+        {
+            btnBcCompose.Enabled = false;
+            if (!isBcCompose && BillTypes == "3" && BillMaster != null)
+            {
+                Task task = new Task(Application.OpenForms[0], url.Replace("Task", "StockMoveBill/GeneratePalletTag"));
+                task.BcComposeCompleted += new Task.BcComposeEventHandler(delegate(bool isSuccess, string msg)
+                {
+                    dgvMain.Columns["PalletTag"].Visible = true;
+                    RefreshData();
+                    btnBcCompose.Enabled = true;
+                    isBcCompose = true;
+                });
+                task.BcCompose(BillMaster.BillNo);
+            }
+            else
+            {
+                dgvMain.Columns["PalletTag"].Visible = false;
+                RefreshData();
+                btnBcCompose.Enabled = true;
+                isBcCompose = false;
+            }
+        }
+
+        //private bool isBcCompose = false;
+        //private void btnBC_Click(object sender, EventArgs e)
+        //{
+        //    btnBC.Enabled = false;
+        //    if (!isBcCompose && BillTypes == "3" && BillMaster != null)
+        //    {                
+        //        Task task = new Task(Application.OpenForms[0], url.Replace("Task", "StockMoveBill/GeneratePalletTag"));
+        //        task.BcComposeCompleted += new Task.BcComposeEventHandler(delegate(bool isSuccess, string msg)
+        //        {
+        //            dgvMain.Columns["PalletTag"].Visible = true;
+        //            RefreshData();
+        //            btnBC.Enabled = true;
+        //            isBcCompose = true;
+        //        });
+        //        task.BcCompose(BillMaster.BillNo);
+        //    }
+        //    else
+        //    {
+        //        dgvMain.Columns["PalletTag"].Visible = false;
+        //        RefreshData();
+        //        btnBC.Enabled = true;
+        //        isBcCompose = false;
+        //    }
+        //}
     }
 }
 

@@ -62,14 +62,11 @@ namespace Authority.Controllers.Authority
         {
             string ContentCode = collection["ContentCode"] ?? "";
             string ContentName = collection["ContentName"] ?? "";
-            string ModuleName = collection["ModuleName"] ?? "";
             string NodeType = collection["NodeType"] ?? "";
-            string FatherNodeID = collection["FatherNodeID"] ?? "";
+            string FatherNodeID = collection["FatherContentID"] ?? "";
             string ModuleID = collection["ModuleID"] ?? "";
-            string NodeOrder = collection["NodeOrder"] ?? "";
-            string IsActive = collection["IsActive"] ?? "";
-            string UpdateTime = collection["UpdateTime"] ?? "";
-            var users = HelpContentService.GetDetails2(page, rows, ContentCode, ContentName, ModuleName, NodeType, FatherNodeID, NodeOrder, ModuleID, IsActive, UpdateTime);
+            string IsActive = collection["IsActive"] ?? "";;
+            var users = HelpContentService.GetDetails2(page, rows, ContentCode, ContentName, NodeType, FatherNodeID, ModuleID, IsActive);
             return Json(users, "text", JsonRequestBehavior.AllowGet);
         }
         // POST: /HelpContent/Edit/
