@@ -132,6 +132,8 @@ namespace THOK.WES.View
                             }
                         }
                     }
+                    if (!isSuccess)
+                        MessageBox.Show(msg);
                     RefreshData();
                 });
                 task.SearchBillMaster(BillTypes);
@@ -204,6 +206,8 @@ namespace THOK.WES.View
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
                         billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
+                        //billDetail.OperatePieceQuantity = Convert.ToDecimal(row.Cells["OperatePieceQuantity"].Value);
+                        //billDetail.OperateBarQuantity = Convert.ToDecimal(row.Cells["OperateBarQuantity"].Value);
                         billDetail.Operator = Environment.MachineName;
                         billDetails.Add(billDetail);
                     }
@@ -213,6 +217,8 @@ namespace THOK.WES.View
                     Task task = new Task(Application.OpenForms[0], url);
                     task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
+                        if (!isSuccess)
+                            MessageBox.Show(msg);
                         RefreshData();
                     });
                     task.Apply(tmp, UseTag);
@@ -251,6 +257,8 @@ namespace THOK.WES.View
                     Task task = new Task(Application.OpenForms[0], url);
                     task.CancelCompleted += new Task.CancelCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
+                        if (!isSuccess)
+                            MessageBox.Show(msg);
                         RefreshData();
                     });
                     task.Cancel(tmp, UseTag);
@@ -289,15 +297,15 @@ namespace THOK.WES.View
                             billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                             billDetail.Operator = Environment.MachineName;
 
-                            billDetail.OperatePieceQuantity = Convert.ToInt32(row.Cells["OperatePieceQuantity"].Value);
-                            billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["OperateBarQuantity"].Value);
+                            billDetail.OperatePieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                            billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
 
                             operateStorageName = row.Cells["Storage"].Value.ToString();
                             targetStorageName = row.Cells["TargetStorage"].Value.ToString();
                             operateName = row.Cells["BillTypeName"].Value.ToString();
                             operateProductName = row.Cells["ProductName"].Value.ToString();
-                            operatePieceQuantity = Convert.ToInt32(row.Cells["OperatePieceQuantity"].Value);
-                            operateBarQuantity = Convert.ToInt32(row.Cells["OperateBarQuantity"].Value);
+                            operatePieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                            operateBarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
                         }
                     }
 
@@ -324,6 +332,8 @@ namespace THOK.WES.View
                         Task task = new Task(Application.OpenForms[0], url);
                         task.ExecuteCompleted += new Task.ExecuteCompletedEventHandler(delegate(bool isSuccess, string msg)
                         {
+                            if (!isSuccess)
+                                MessageBox.Show(msg);
                             RefreshData();
                         });
                         task.Execute(tmp, UseTag);
@@ -358,8 +368,8 @@ namespace THOK.WES.View
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.Operator = Environment.MachineName;
 
-                        billDetail.OperatePieceQuantity = Convert.ToInt32(row.Cells["OperatePieceQuantity"].Value);
-                        billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["OperateBarQuantity"].Value);
+                        billDetail.OperatePieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                        billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
 
                         billDetails.Add(billDetail);
                     }
@@ -369,6 +379,8 @@ namespace THOK.WES.View
                     Task task = new Task(Application.OpenForms[0], url);
                     task.ExecuteCompleted += new Task.ExecuteCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
+                        if (!isSuccess)
+                            MessageBox.Show(msg);
                         RefreshData();
                     });
                     task.Execute(tmp, UseTag);
@@ -459,6 +471,8 @@ namespace THOK.WES.View
                 task.BcComposeCompleted += new Task.BcComposeEventHandler(delegate(bool isSuccess, string msg)
                 {
                     dgvMain.Columns["PalletTag"].Visible = true;
+                    if (!isSuccess)
+                        MessageBox.Show(msg);
                     RefreshData();
                     btnBcCompose.Enabled = true;
                     isBcCompose = true;

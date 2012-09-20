@@ -86,22 +86,22 @@ namespace THOK.WES.View
             this.pnlTool.Controls.Add(this.btnCancel);
             this.pnlTool.Controls.Add(this.btnApply);
             this.pnlTool.Controls.Add(this.btnSearch);
-            this.pnlTool.Margin = new System.Windows.Forms.Padding(5);
-            this.pnlTool.Size = new System.Drawing.Size(1072, 57);
+            this.pnlTool.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlTool.Size = new System.Drawing.Size(804, 46);
             // 
             // pnlContent
             // 
             this.pnlContent.Controls.Add(this.plWailt);
             this.pnlContent.Controls.Add(this.dgvMain);
             this.pnlContent.Controls.Add(this.ssMain);
-            this.pnlContent.Location = new System.Drawing.Point(0, 57);
-            this.pnlContent.Margin = new System.Windows.Forms.Padding(5);
-            this.pnlContent.Size = new System.Drawing.Size(1072, 203);
+            this.pnlContent.Location = new System.Drawing.Point(0, 46);
+            this.pnlContent.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlContent.Size = new System.Drawing.Size(804, 162);
             // 
             // pnlMain
             // 
-            this.pnlMain.Margin = new System.Windows.Forms.Padding(5);
-            this.pnlMain.Size = new System.Drawing.Size(1072, 260);
+            this.pnlMain.Margin = new System.Windows.Forms.Padding(4);
+            this.pnlMain.Size = new System.Drawing.Size(804, 208);
             // 
             // btnConfirm
             // 
@@ -109,10 +109,9 @@ namespace THOK.WES.View
             this.btnConfirm.Enabled = false;
             this.btnConfirm.Image = global::THOK.WES.Properties.Resources.accept;
             this.btnConfirm.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnConfirm.Location = new System.Drawing.Point(192, 0);
-            this.btnConfirm.Margin = new System.Windows.Forms.Padding(4);
+            this.btnConfirm.Location = new System.Drawing.Point(144, 0);
             this.btnConfirm.Name = "btnConfirm";
-            this.btnConfirm.Size = new System.Drawing.Size(64, 55);
+            this.btnConfirm.Size = new System.Drawing.Size(48, 44);
             this.btnConfirm.TabIndex = 5;
             this.btnConfirm.Text = "完成";
             this.btnConfirm.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -125,10 +124,9 @@ namespace THOK.WES.View
             this.btnCancel.Enabled = false;
             this.btnCancel.Image = global::THOK.WES.Properties.Resources.onebit_24;
             this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnCancel.Location = new System.Drawing.Point(128, 0);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Location = new System.Drawing.Point(96, 0);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(64, 55);
+            this.btnCancel.Size = new System.Drawing.Size(48, 44);
             this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "取消";
             this.btnCancel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -141,10 +139,9 @@ namespace THOK.WES.View
             this.btnApply.Enabled = false;
             this.btnApply.Image = global::THOK.WES.Properties.Resources.onebit_23;
             this.btnApply.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnApply.Location = new System.Drawing.Point(64, 0);
-            this.btnApply.Margin = new System.Windows.Forms.Padding(4);
+            this.btnApply.Location = new System.Drawing.Point(48, 0);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(64, 55);
+            this.btnApply.Size = new System.Drawing.Size(48, 44);
             this.btnApply.TabIndex = 5;
             this.btnApply.Text = "申请";
             this.btnApply.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -157,9 +154,8 @@ namespace THOK.WES.View
             this.btnSearch.Image = global::THOK.WES.Properties.Resources.onebit_02;
             this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSearch.Location = new System.Drawing.Point(0, 0);
-            this.btnSearch.Margin = new System.Windows.Forms.Padding(4);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(64, 55);
+            this.btnSearch.Size = new System.Drawing.Size(48, 44);
             this.btnSearch.TabIndex = 4;
             this.btnSearch.Text = "查询";
             this.btnSearch.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -171,23 +167,22 @@ namespace THOK.WES.View
             this.ssMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sslBillID,
             this.sslOperator});
-            this.ssMain.Location = new System.Drawing.Point(0, 181);
+            this.ssMain.Location = new System.Drawing.Point(0, 140);
             this.ssMain.Name = "ssMain";
-            this.ssMain.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.ssMain.Size = new System.Drawing.Size(1072, 22);
+            this.ssMain.Size = new System.Drawing.Size(804, 22);
             this.ssMain.TabIndex = 0;
             this.ssMain.Text = "statusStrip1";
             // 
             // sslBillID
             // 
             this.sslBillID.Name = "sslBillID";
-            this.sslBillID.Size = new System.Drawing.Size(67, 17);
+            this.sslBillID.Size = new System.Drawing.Size(56, 17);
             this.sslBillID.Text = "单据号：";
             // 
             // sslOperator
             // 
             this.sslOperator.Name = "sslOperator";
-            this.sslOperator.Size = new System.Drawing.Size(67, 17);
+            this.sslOperator.Size = new System.Drawing.Size(56, 17);
             this.sslOperator.Text = "操作员：";
             // 
             // timer1
@@ -238,14 +233,13 @@ namespace THOK.WES.View
             this.dgvMain.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvMain.Location = new System.Drawing.Point(0, 0);
-            this.dgvMain.Margin = new System.Windows.Forms.Padding(4);
             this.dgvMain.Name = "dgvMain";
             this.dgvMain.ReadOnly = true;
             this.dgvMain.RowHeadersVisible = false;
             this.dgvMain.RowTemplate.Height = 23;
             this.dgvMain.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvMain.Size = new System.Drawing.Size(1072, 181);
+            this.dgvMain.Size = new System.Drawing.Size(804, 140);
             this.dgvMain.TabIndex = 1;
             // 
             // btnBatConfirm
@@ -254,10 +248,9 @@ namespace THOK.WES.View
             this.btnBatConfirm.Enabled = false;
             this.btnBatConfirm.Image = global::THOK.WES.Properties.Resources.accept;
             this.btnBatConfirm.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnBatConfirm.Location = new System.Drawing.Point(256, 0);
-            this.btnBatConfirm.Margin = new System.Windows.Forms.Padding(4);
+            this.btnBatConfirm.Location = new System.Drawing.Point(192, 0);
             this.btnBatConfirm.Name = "btnBatConfirm";
-            this.btnBatConfirm.Size = new System.Drawing.Size(64, 55);
+            this.btnBatConfirm.Size = new System.Drawing.Size(48, 44);
             this.btnBatConfirm.TabIndex = 10;
             this.btnBatConfirm.Text = "批量";
             this.btnBatConfirm.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -269,10 +262,9 @@ namespace THOK.WES.View
             this.btnOpType.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnOpType.Image = global::THOK.WES.Properties.Resources.onebit_10;
             this.btnOpType.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnOpType.Location = new System.Drawing.Point(320, 0);
-            this.btnOpType.Margin = new System.Windows.Forms.Padding(4);
+            this.btnOpType.Location = new System.Drawing.Point(240, 0);
             this.btnOpType.Name = "btnOpType";
-            this.btnOpType.Size = new System.Drawing.Size(64, 55);
+            this.btnOpType.Size = new System.Drawing.Size(48, 44);
             this.btnOpType.TabIndex = 12;
             this.btnOpType.Text = "正常";
             this.btnOpType.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -284,20 +276,18 @@ namespace THOK.WES.View
             // 
             this.plWailt.Controls.Add(this.label1);
             this.plWailt.Controls.Add(this.pictureBox1);
-            this.plWailt.Location = new System.Drawing.Point(364, 49);
-            this.plWailt.Margin = new System.Windows.Forms.Padding(4);
+            this.plWailt.Location = new System.Drawing.Point(273, 39);
             this.plWailt.Name = "plWailt";
-            this.plWailt.Size = new System.Drawing.Size(344, 106);
+            this.plWailt.Size = new System.Drawing.Size(258, 85);
             this.plWailt.TabIndex = 2;
             this.plWailt.Visible = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 48);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(3, 38);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(157, 15);
+            this.label1.Size = new System.Drawing.Size(125, 12);
             this.label1.TabIndex = 1;
             this.label1.Text = "正在处理数据，请稍等";
             // 
@@ -305,10 +295,9 @@ namespace THOK.WES.View
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.Image = global::THOK.WES.Properties.Resources.loading;
-            this.pictureBox1.Location = new System.Drawing.Point(211, 31);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox1.Location = new System.Drawing.Point(158, 25);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(57, 48);
+            this.pictureBox1.Size = new System.Drawing.Size(43, 38);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
@@ -317,10 +306,9 @@ namespace THOK.WES.View
             this.btnBcCompose.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnBcCompose.Image = global::THOK.WES.Properties.Resources.process;
             this.btnBcCompose.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnBcCompose.Location = new System.Drawing.Point(384, 0);
-            this.btnBcCompose.Margin = new System.Windows.Forms.Padding(4);
+            this.btnBcCompose.Location = new System.Drawing.Point(288, 0);
             this.btnBcCompose.Name = "btnBcCompose";
-            this.btnBcCompose.Size = new System.Drawing.Size(64, 55);
+            this.btnBcCompose.Size = new System.Drawing.Size(48, 44);
             this.btnBcCompose.TabIndex = 14;
             this.btnBcCompose.Text = "组盘";
             this.btnBcCompose.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -333,10 +321,9 @@ namespace THOK.WES.View
             this.btnExit.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnExit.Image = global::THOK.WES.Properties.Resources.shut_down;
             this.btnExit.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnExit.Location = new System.Drawing.Point(448, 0);
-            this.btnExit.Margin = new System.Windows.Forms.Padding(4);
+            this.btnExit.Location = new System.Drawing.Point(336, 0);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(64, 55);
+            this.btnExit.Size = new System.Drawing.Size(48, 44);
             this.btnExit.TabIndex = 15;
             this.btnExit.Text = "退出";
             this.btnExit.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -490,9 +477,9 @@ namespace THOK.WES.View
             // 
             // BaseTaskForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
-            this.ClientSize = new System.Drawing.Size(1072, 260);
-            this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.ClientSize = new System.Drawing.Size(804, 208);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "BaseTaskForm";
             this.Text = "盘点作业";
             this.pnlTool.ResumeLayout(false);
