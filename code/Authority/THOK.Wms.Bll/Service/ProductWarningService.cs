@@ -241,23 +241,17 @@ namespace THOK.Wms.Bll.Service
          public object GetStorageByTime()
          {
              IQueryable<DailyBalance> EndQuantity = DailyBalanceRepository.GetQueryable();
+             //标准时间戳：621355968000000000
              var storageQuantity = EndQuantity.OrderBy(e=>e.SettleDate).GroupBy(e=>e.SettleDate).ToArray().Select(e => new 
              {
-                 TimeInter = decimal.Parse((((e.Max(m => m.SettleDate)).ToUniversalTime().Ticks - 621355968000000000) / 10000).ToString()),
+                 TimeInter = decimal.Parse(((e.Max(m => m.SettleDate).ToUniversalTime().Ticks - 621355625000000000) / 10000).ToString()),
                  TotalQuantity=e.Sum(s=>s.Ending/s.Unit.Count)
              });
-             //int j = storageQuantity.Count();
-             //object[,] array = new object[j, 2];
-             //for (int i = 0; i < j; i++)
-             //{
-             //    array[i, 0] =decimal.Parse(storageQuantity[i].TimeInter.Date.ToFileTimeUtc().ToString());
-             //    array[i, 1] = storageQuantity[i].TotalQuantity;
-             //}
              return storageQuantity;
          }
         #endregion
 
-        #region  货位分析数据
+        #region  库区占有率分析数据
          public object GetCellInfo()
          {
              IQueryable<Area> AreaQuery = AreaRepository.GetQueryable();
@@ -270,18 +264,11 @@ namespace THOK.Wms.Bll.Service
                                     areaName=s.Max(t=>t.area.AreaName),
                                     totalQuantity=Decimal.Round(s.Sum(t=>t.storage.Quantity)/total,5)*100
                                 }).ToArray();
-            // var total = StorageQuery.Where(s=>s.Quantity>0).Sum(s=>s.Quantity);
-             //int j = storage.Count();
-             //object[,] array = new object[j,2];
-             //for (int i = 0; i < j; i++)
-             //{
-             //    array[i, 0] =storage[i].areaName;
-             //    array[i, 1] = Decimal.Round((storage[i].totalQuantity/total),4)*100;
-             //}
              return storage;
          }
         #endregion
-         #region
+
+        #region 货位分析数据
          public object GetCell()
          {
              DataTable dt =new DataTable();
@@ -294,24 +281,10 @@ namespace THOK.Wms.Bll.Service
                                 .Select(s => new
                                 {
                                     areaName =s.Max(t=>t.cell.Area.AreaName),
-                                    enableQty=storageQuantity.AsEnumerable().Where(t=>t.area.AreaCode==s.Max(m=>m.cell.Area.AreaCode)).Count(t=>t.storage.Quantity>0),
-                                    totalQty=s.Count(t=>t.cell.IsActive=="0"),
-                                    totalQtys = s.Count(t => t.cell.IsActive == "1")
+                                    enableQty=storageQuantity.AsEnumerable().Where(t=>t.area.AreaCode==s.Max(m=>m.cell.AreaCode)).Count(t=>t.storage.Quantity>0 ||t.storage.InFrozenQuantity>0 ||t.storage.OutFrozenQuantity>0),
+                                    totalQty =s.Where(t => t.cell.IsActive == "0" && t.cell.MaxPalletQuantity >0).Sum(t=>t.cell.MaxPalletQuantity)>0?s.Where(t => t.cell.IsActive == "0" && t.cell.MaxPalletQuantity >0).Sum(t=>t.cell.MaxPalletQuantity):0+s.Where(t => t.cell.IsActive == "0" && t.cell.MaxPalletQuantity == 0).Count(t => t.cell.IsActive == "0") ,
+                                    totalQtys = s.Where(t => t.cell.IsActive == "1" && t.cell.MaxPalletQuantity > 0).Sum(t => t.cell.MaxPalletQuantity) > 0 ? s.Where(t => t.cell.IsActive == "1" && t.cell.MaxPalletQuantity > 0).Sum(t => t.cell.MaxPalletQuantity) : 0 + s.Where(t => t.cell.IsActive == "1" && t.cell.MaxPalletQuantity == 0).Count(t => t.cell.IsActive == "1")
                                 });
-             //dt.Columns.Add("库区名称", typeof(string));
-             //dt.Columns.Add("有库存货位数量", typeof(int));
-             //dt.Columns.Add("禁用货位数", typeof(int));
-             //dt.Columns.Add("可用货位数", typeof(int));
-             //foreach (var p in CellInfos)
-             //{
-             //    dt.Rows.Add
-             //        (
-             //           p.areaName,
-             //           p.enableQty,
-             //           p.totalQty,
-             //           p.totalQtys
-             //        );
-             //}
              return CellInfos;
          }
         #endregion

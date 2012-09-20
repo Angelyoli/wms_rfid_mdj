@@ -129,6 +129,7 @@
     <Compile Include="Controllers\Wms\Inventory\HistoricalDetailController.cs" />
     <Compile Include="Controllers\Wms\Inventory\StockledgerController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\CellAnalysisController.cs" />
+    <Compile Include="Controllers\Wms\ProductQuality\CellInfoController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductTimeOutController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\ProductWarningController.cs" />
     <Compile Include="Controllers\Wms\ProductQuality\QuantityLimitsController.cs" />
@@ -1280,6 +1281,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\CellAnalysis\Index.cshtml" />
+    <Content Include="Views\CellInfo\Index.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
