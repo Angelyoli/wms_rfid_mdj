@@ -474,17 +474,17 @@ namespace THOK.Wms.Bll.Service
                     decimal i = 0;
                     int j = 1;
 
-                    var details = mbm.MoveBillDetails.Where(
-                            d => d.Product.AbcTypeCode == "2" 
-                                || d.Product.AbcTypeCode == "3")
-                        .OrderBy(d=>d.OutCellCode)
+                    var details = mbm.MoveBillDetails.Where(d => (d.Product.AbcTypeCode == "2" || d.Product.AbcTypeCode == "3")
+                                                            && d.RealQuantity != (d.InCell.MaxQuantity * d.Unit.Count) 
+                                                            && d.InCell.Area.AreaType != "3")
+                        .OrderBy(d => d.OutCellCode)
                         .ToArray();
                     
                     foreach (var detail in details)
                     {
                         if (detail.PalletTag == null)
                         {
-                            if (detail.RealQuantity + i < 150000)
+                            if (detail.RealQuantity + i < 300000)
                             {
                                 detail.PalletTag = j;
                                 i += detail.RealQuantity;

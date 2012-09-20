@@ -7,6 +7,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.Wms.AutomotiveSystems.Models;
 
 namespace Authority.Controllers.Wms.StockMove
 {
@@ -161,9 +162,10 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult GeneratePalletTag(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = MoveBillMasterService.GeneratePalletTag(billNo, ref strResult);
-            string msg = bResult ? "BC类烟自动组盘成功" : "BC类烟自动组盘失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+            Result result = new Result();
+            result.IsSuccess = MoveBillMasterService.GeneratePalletTag(billNo, ref strResult);
+            result.Message = result.IsSuccess ? "BC类烟自动组盘成功" : "BC类烟自动组盘失败";
+            return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
 
         //
