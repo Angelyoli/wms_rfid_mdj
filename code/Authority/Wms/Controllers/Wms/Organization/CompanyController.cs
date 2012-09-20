@@ -135,7 +135,7 @@ namespace Authority.Controllers.Organization
                                         ,"&P"    //脚右 页码
                                     };
             MemoryStream ms = ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                ,headColor,false, colHeadFont, colHeadSize, colHeadColor, false, contentColor, HeaderFooder);
+                ,headColor,false, colHeadFont, colHeadSize, colHeadColor, true, contentColor, HeaderFooder);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

@@ -32,7 +32,7 @@ namespace THOK.Common
         /// <param name="colHeadSize">列头大小</param>
         /// <param name="colHeadColor">列头颜色</param>
         /// <param name="colHeadBorder">是否显示边框(除了标题外)</param>
-        /// <param name="HeaderFooter">页眉页脚</param>
+        /// <param name="HeaderFooter">页眉页脚:[0]左上角[1]上中间[2]右上角[3]左下角[4]下中间[5]右下角</param>
         /// <returns></returns>
         public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
                 , string headText1, string headText2
@@ -42,6 +42,7 @@ namespace THOK.Common
                 , string[] HeaderFooter)
         {
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
+            double columnWidth = colHeadSize - 9.5;
 
             BrowserLoad(headText1);
 
@@ -139,7 +140,7 @@ namespace THOK.Common
                             {
                                 headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                 headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
-                                sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth[column.Ordinal] + 0.5) * 256));//设置列宽
+                                sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth[column.Ordinal] + columnWidth) * 256));//设置列宽
                             }
                         }
                         rowIndex1 = 3;
