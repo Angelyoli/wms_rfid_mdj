@@ -117,7 +117,7 @@ namespace THOK.Authority.Bll.Service
                 help.FatherNodeID = new Guid(FatherNodeID);
                 help.ModuleID = new Guid(ModuleID);
                 help.NodeOrder = NodeOrder;
-                IsActive = help.IsActive == "1" ? "可用" : "不可用";
+                help.IsActive = IsActive;
                 HelpContentRepository.SaveChanges();
                
             }
