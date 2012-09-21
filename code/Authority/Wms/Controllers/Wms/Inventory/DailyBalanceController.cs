@@ -46,7 +46,7 @@ namespace Wms.Controllers.Wms.Inventory
 
         //
         // GET: /DailyBalance/InfoDetails/
-        public ActionResult InfoDetails(int page, int rows, string warehouseCode, string settleDate,string unitType)
+        public ActionResult InfoDetails(int page, int rows, string warehouseCode, string settleDate, string unitType)
         {
             var DailyBalanceInfo = DailyBalanceService.GetInfoDetails(page, rows, warehouseCode, settleDate, unitType);
             return Json(DailyBalanceInfo, "text", JsonRequestBehavior.AllowGet);
@@ -67,7 +67,7 @@ namespace Wms.Controllers.Wms.Inventory
             DownBusinessSystemsDailyBalanceBll dbll = new DownBusinessSystemsDailyBalanceBll();
             dbll.DownDayEndInfo(settleDate);
             string errorInfo = string.Empty;
-            bool bResult = DailyBalanceService.DoDailyBalance(warehouseCode, settleDate,ref errorInfo);
+            bool bResult = DailyBalanceService.DoDailyBalance(warehouseCode, settleDate, ref errorInfo);
             string msg = bResult ? "日结成功！" : "日结失败！";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
@@ -81,8 +81,8 @@ namespace Wms.Controllers.Wms.Inventory
             string settleDate = Request.QueryString["settleDate"];
             string unitType = Request.QueryString["unitType"];
 
-            System.Data.DataTable dt1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode,settleDate,unitType);
-            System.Data.DataTable dt2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode,settleDate,unitType);
+            System.Data.DataTable dt1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode, settleDate, unitType);
+            System.Data.DataTable dt2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode, settleDate, unitType);
             string headText1 = "仓库库存日结明细";
             string headText2 = "仓库库存日结核对";
             string headFont = "微软雅黑"; Int16 headSize = 20;
@@ -99,8 +99,8 @@ namespace Wms.Controllers.Wms.Inventory
                 , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
             return new FileStreamResult(ms, "application/ms-excel");
         }
-        #endregion
 
+        // GET: /DailyBalance/ExportFromTemplate/
         public FileStreamResult ExportFromTemplate()
         {
             int page = 0, rows = 0;
@@ -111,12 +111,13 @@ namespace Wms.Controllers.Wms.Inventory
             System.Data.DataTable dt1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode, settleDate, unitType);
             System.Data.DataTable dt2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode, settleDate, unitType);
             string excelTemplate = Server.MapPath("~/ExcelTemplate/DailyBalance.xls");
-            string sheetName1 = "仓库库存日结明细";
-            string sheetName2 = "仓库库存日结核对";
+            string title1 = "仓库库存日结明细";
+            string title2 = "仓库库存日结核对";
 
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportFromTemplate(dt1,dt2,excelTemplate,sheetName1,sheetName2);
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportFromTemplate(dt1, dt2, excelTemplate, title1, title2);
             return new FileStreamResult(ms, "application/ms-excel");
         }
+        #endregion
 
         //
         // GET: /DailyBalance/DailyBalanceInfos/
