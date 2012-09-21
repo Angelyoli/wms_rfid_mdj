@@ -19,8 +19,7 @@ namespace THOK.WMS.DownloadWms.Bll
         {
             bool tag = true;
             DataTable codedt = this.GetProductCode();
-            string codeList = UtinString.StringMake(codedt, "custom_code");
-            codeList = UtinString.StringMake(codeList);
+            string codeList = UtinString.MakeString(codedt, "custom_code");
             codeList = "BRAND_CODE NOT IN (" + codeList + ")";
             DataTable bradCodeTable = this.GetProductInfo(codeList);
             if (bradCodeTable.Rows.Count > 0)

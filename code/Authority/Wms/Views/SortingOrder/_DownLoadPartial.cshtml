@@ -9,7 +9,7 @@
         $('#SortingLineCode').combogrid({
             width: 130,
             panelWidth: 340,
-            url: '/SortingLine/Details/?page=1&rows=20',
+            url: '/SortingLine/Details/?page=1&rows=50',
             idField: 'SortingLineCode',
             textField: 'SortingLineName',
             mode: 'local',
@@ -28,17 +28,17 @@
     function generateCheckClick() {
         var bat = $("#batchID").val();
         var begin = $('#beginDate').datebox('getValue');
-        var end = $('#endDate').datebox('getValue');
+        //var end = $('#endDate').datebox('getValue');
         var sortCode = $('#SortingLineCode').combo('getValue');
         var isChecked = $("input[type='radio']:checked").val();
         var checked = true;
         if (isChecked == "false")
             checked = false;
-        if (begin != "" && end != "" ) {
+        if (begin != "") {
             var j_waitDialog = ShowWaitMessageDialog();
             $.ajax({
                 url: "/SortingOrder/DownSortOrder/", type: "GET", dataType: "text",
-                data: { 'beginDate': begin, "endDate": end, sortLineCode: sortCode, isSortDown: checked, batch: bat },
+                data: { 'beginDate': begin, "endDate": begin, sortLineCode: sortCode, isSortDown: checked, batch: bat },
                 complete: function () { HideWaitMessageDialog(j_waitDialog); },
                 success: function (responseText) {
                     var result = $.evalJSON(responseText);
@@ -65,18 +65,17 @@
             <table align="left" width="240">   
             <tr>
                 <td width="60" style="text-align:right">选择下载:</td>
-                <td style="text-align:center">
-                <input id="radioSort" type="radio" name="r1" value="true"/>分拣</td>
-                <td><input type="radio"  name="r1" value="false" checked="checked" />营销</td>
+                <td style="text-align:center"><input type="radio"  name="r1" value="false" checked="checked" />营销</td>
+                <td><input id="radioSort" type="radio" name="r1" value="true"/>分拣</td>
               </tr>         
               <tr>
-                <td width="60" style="text-align:right">开始日期:</td>
+                <td width="60" style="text-align:right">下载日期:</td>
                 <td colspan="2"><input id="beginDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
               </tr>
-               <tr>
+              @* <tr>
                 <td width="60" style="text-align:right">结束日期:</td>
                 <td colspan="2"><input id="endDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
-              </tr>
+              </tr>*@
               <tr>
                 <td width="80" style="text-align:right">下载批次：</td>
                 <td colspan="2"><input type="text" id="batchID" style="width: 140px"/></td>
