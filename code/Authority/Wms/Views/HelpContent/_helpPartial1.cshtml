@@ -9,7 +9,8 @@
         var helpRow = $('#helpDetail1').datagrid('getSelected');
         if (helpRow) {
             $('#father_Content').val(helpRow.ContentCode + "" + helpRow.ContentName);
-            $('#inputFatherNodeID').val(helpRow.ContentCode);
+            $('#fatherNodeID').val(helpRow.ID);
+            $('#FatherNodeID').val(helpRow.ID);
             fatherContentID = helpRow.ID;
             $('#helpData1').dialog('close');
         }

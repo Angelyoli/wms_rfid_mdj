@@ -336,6 +336,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             billDetail.BillType, inAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "申请入库失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             case "2":
@@ -355,6 +362,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             billDetail.BillType, outAllot.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "申请出库失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             case "3":
@@ -374,6 +388,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                              billDetail.BillType, moveDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                              (int)billDetail.BarQuantity, moveDetail.InCell.CellName);
                                     }
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "申请移库失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             case "4":
@@ -393,6 +414,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             billDetail.BillType, checkDetail.Product.ProductName, (int)billDetail.PieceQuantity,
                                             (int)billDetail.BarQuantity, "");
                                     }
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "申请盘点失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             default:
@@ -402,7 +430,6 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     InBillAllotRepository.SaveChanges();
                     scope.Complete();
                 }
-                result.IsSuccess = true;
             }
             catch (Exception e)
             {
@@ -435,6 +462,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     inAllot.StartTime = null;
                                     if (useTag == "1")                                    
                                         CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "取消入库申请失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             case "2":
@@ -451,6 +485,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     outAllot.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "取消出库申请失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             case "3":
@@ -467,6 +508,13 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     moveDetail.StartTime = null;
                                     if (useTag == "1")    
                                         CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "取消移库申请失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             case "4":
@@ -481,8 +529,15 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     checkDetail.Status = "0";
                                     checkDetail.Operator = string.Empty;
                                     checkDetail.StartTime = null;
-                                    if (useTag == "1")    
+                                    if (useTag == "1")
                                         CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "取消盘点申请失败，原因：没有查询到这条数据！";
                                 }
                                 break;
                             default:
@@ -492,7 +547,6 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     InBillAllotRepository.SaveChanges();
                     scope.Complete();
                 }
-                result.IsSuccess = true;
             }
             catch (Exception e)
             {
@@ -545,7 +599,19 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         }
                                         if (useTag == "1")    
                                             CancelOperateToLabelServer(inAllot.BillNo, inAllot.ID.ToString(), inAllot.Cell.CellName);
+
+                                        result.IsSuccess = true;
                                     }
+                                    else
+                                    {
+                                        result.IsSuccess = false;
+                                        result.Message = "需确认入库的数据别人在操作或完成的数量不对，完成出错！";
+                                    }
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "需确认入库的数据查询为空或者主单状态不对，完成出错！";
                                 }
                                 break;
                             #endregion
@@ -581,7 +647,19 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         }
                                         if (useTag == "1")    
                                             CancelOperateToLabelServer(outAllot.BillNo, outAllot.ID.ToString(), outAllot.Cell.CellName);
+
+                                        result.IsSuccess = true;
                                     }
+                                    else
+                                    {
+                                        result.IsSuccess = false;
+                                        result.Message = "需确认出库的数据别人在操作或完成的数量不对，完成出错！";
+                                    }
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "需确认出库的数据查询为空或者主单状态不对，完成出错！";
                                 }
                                 break;
                             #endregion
@@ -628,7 +706,19 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         }
                                         if (useTag == "1")
                                             CancelOperateToLabelServer(moveDetail.BillNo, moveDetail.ID.ToString(), moveDetail.OutCell.CellName);
+
+                                        result.IsSuccess = true;
                                     }
+                                    else
+                                    {
+                                        result.IsSuccess = false;
+                                        result.Message = "需确认移库的数据别人在操作或者完成的数量不对，完成出错！";
+                                    }
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "需确认移库的数据查询为空或者主单状态不对，完成出错！";
                                 }
                                 break;
                             #endregion
@@ -640,9 +730,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         && i.Status == "1"
                                         && i.Operator == billDetail.Operator)
                                     .FirstOrDefault();
-                                if (checkDetail != null 
-                                    && (checkDetail.CheckBillMaster.Status=="2" 
-                                    || checkDetail.CheckBillMaster.Status=="3"))
+                                if (checkDetail != null
+                                    && (checkDetail.CheckBillMaster.Status == "2"
+                                    || checkDetail.CheckBillMaster.Status == "3"))
                                 {
                                     decimal quantity = billDetail.OperatePieceQuantity * checkDetail.Product.UnitList.Unit01.Count
                                                        + billDetail.OperateBarQuantity * checkDetail.Product.UnitList.Unit02.Count;
@@ -656,8 +746,15 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     {
                                         checkDetail.CheckBillMaster.Status = "4";
                                     }
-                                    if (useTag == "1")    
+                                    if (useTag == "1")
                                         CancelOperateToLabelServer(checkDetail.BillNo, checkDetail.ID.ToString(), checkDetail.Cell.CellCode);
+
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = "需确认盘点的数据查询为空或者主单状态不对，完成出错！";
                                 }
                                 break;
                             default:
@@ -670,7 +767,6 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     UpdateStorageInfo();
                     scope.Complete();
                 }
-                result.IsSuccess = true;
             }
             catch (Exception e)
             {
