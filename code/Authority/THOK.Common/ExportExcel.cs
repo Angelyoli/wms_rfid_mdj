@@ -19,10 +19,7 @@ namespace THOK.Common
     {
         static HSSFWorkbook workbook;
 
-        static Int16 contentSize;
-
         #region 导出EXCEL单表双表
-
         /// <summary>导出EXCEL单表双表</summary>
         /// <param name="dt1">DataTable1</param>
         /// <param name="dt2">DataTable2 如果没有给null值</param>
@@ -36,25 +33,22 @@ namespace THOK.Common
         /// <param name="colHeadSize">列头大小</param>
         /// <param name="colHeadColor">列头颜色</param>
         /// <param name="colHeadBorder">是否显示边框(除了标题外)</param>
+        /// <param name="contentColor">内容字体颜色</param>
         /// <param name="HeaderFooter">页眉页脚:[0]左上角[1]上中间[2]右上角[3]左下角[4]下中间[5]右下角</param>
         /// <returns></returns>
         public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
                 , string headText1, string headText2
                 , string headFont, short headSize, short headColor, bool headBorder
                 , string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder
-                , short contentColor//暂无引用
+                , short contentColor
                 , string[] HeaderFooter)
         {
             #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
-
-            contentSize = colHeadSize;
-
             double columnWidth = colHeadSize - 9.5;
             #endregion
 
             #region 浏览器下载
-
             BrowserLoad(headText1);
             #endregion
 
@@ -118,6 +112,7 @@ namespace THOK.Common
                 #endregion
 
                 HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+                HSSFFont font = workbook.CreateFont() as HSSFFont;
 
                 #region 建表 表一
                 int rowIndex1 = 0;
@@ -166,10 +161,11 @@ namespace THOK.Common
                     }
                     /*---------------------- 填充内容 ------------------------*/
                     HSSFRow dataRow = sheet.CreateRow(rowIndex1) as HSSFRow;
+                   
                     foreach (DataColumn column in dt1.Columns)
-                    {
-                        FillContent(dataRow, column, row, contentStyle, contentDateStyle,
-                            colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
+                    {                        
+                        FillContent(dataRow, column, row, contentStyle, contentDateStyle,font
+                            ,colHeadFont, colHeadSize, colHeadColor,contentColor, colHeadBorder);
                     }
                     rowIndex1++;
                 }
@@ -221,10 +217,11 @@ namespace THOK.Common
                         }
                         /*------------------- 填充内容 -------------------*/
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
+                        
                         foreach (DataColumn column in dt2.Columns)
                         {
-                            FillContent(dataRow, column, row, contentStyle, contentDateStyle
-                                , colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
+                            FillContent(dataRow, column, row, contentStyle, contentDateStyle,font
+                                , colHeadFont, colHeadSize, colHeadColor, contentColor, colHeadBorder);
                         }
                         rowIndex2++;
                     }
@@ -257,14 +254,30 @@ namespace THOK.Common
         static void FillContent(HSSFRow hssfRow
             , DataColumn column, DataRow row
             , HSSFCellStyle contentStyle, HSSFCellStyle contentDateStyle
+            , HSSFFont font
             , string colHeadFont, short colHeadSize, short colHeadColor
+            , short contentColor
             , bool contentBorder)
         {
             HSSFCell newCell = hssfRow.CreateCell(column.Ordinal) as HSSFCell;
-            HSSFCellStyle fillContentDateStyle = GetContentDateStyle(contentDateStyle);
-            HSSFCellStyle fillContentStyle = GetContentStyle(contentStyle, contentBorder);
 
-            hssfRow.GetCell(column.Ordinal).CellStyle = fillContentStyle;
+            HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
+            contentDateStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
+
+            font.FontName = "宋体";
+            font.FontHeightInPoints = colHeadSize;
+            font.Color = contentColor;
+            contentStyle.SetFont(font);
+            //画边框
+            if (contentBorder == true)
+            {
+                contentStyle.BorderBottom = BorderStyle.THIN;
+                contentStyle.BorderLeft = BorderStyle.THIN;
+                contentStyle.BorderRight = BorderStyle.THIN;
+                contentStyle.BorderTop = BorderStyle.THIN;
+            }
+
+            hssfRow.GetCell(column.Ordinal).CellStyle = contentStyle;
 
             string drValue = row[column].ToString();
 
@@ -279,7 +292,7 @@ namespace THOK.Common
                     DateTime dateV;
                     DateTime.TryParse(drValue, out dateV);
                     newCell.SetCellValue(dateV);
-                    newCell.CellStyle = fillContentDateStyle; //格式化显示
+                    newCell.CellStyle = contentDateStyle; //格式化显示
                     break;
                 case "System.Boolean":  //布尔型
                     bool boolV = false;
@@ -353,26 +366,6 @@ namespace THOK.Common
         }
         #endregion
 
-        #region 内容样式
-        /// <summary>内容样式</summary>
-        static HSSFCellStyle GetContentStyle(HSSFCellStyle cellStyle, bool contentBoder)
-        {
-            HSSFFont font = workbook.CreateFont() as HSSFFont;
-            font.FontName = "宋体";
-            font.FontHeightInPoints = contentSize;
-            cellStyle.SetFont(font);
-            //画边框
-            if (contentBoder == true)
-            {
-                cellStyle.BorderBottom = BorderStyle.THIN;
-                cellStyle.BorderLeft = BorderStyle.THIN;
-                cellStyle.BorderRight = BorderStyle.THIN;
-                cellStyle.BorderTop = BorderStyle.THIN;
-            }
-            return cellStyle;
-        }
-        #endregion
-
         #region 导出时间样式
         /// <summary>导出时间样式</summary>
         static HSSFCellStyle GetExportDate()
@@ -380,16 +373,6 @@ namespace THOK.Common
             HSSFCellStyle dateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
             dateStyle.Alignment = HorizontalAlignment.CENTER;
             return dateStyle;
-        }
-        #endregion
-
-        #region 内容日期样式
-        /// <summary>内容日期样式</summary>
-        static HSSFCellStyle GetContentDateStyle(HSSFCellStyle cellDateStyle)
-        {
-            HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
-            cellDateStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
-            return cellDateStyle;
         }
         #endregion
 
