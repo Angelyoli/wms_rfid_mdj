@@ -11,12 +11,12 @@
                 hasDownArrow: false
             });
             $('#helpfm').form('load', row);
-            if (row.Status == '启用') {
+            if (row.Status == '可用') {
                 $('#IsActive').combo('setValue', true).combo('setText', row.IsActive);
             } else {
                 $('#IsActive').combo('setValue', false).combo('setText', row.IsActive);
             }
-            url = '/HelpContent/Delete/?ContentCode=' + row.ContentCode;
+            url = '/HelpContent/Delete/?ID=' + row.ID;
         } else {
             $.messager.confirm('错误', '没有选择行！');
         }
