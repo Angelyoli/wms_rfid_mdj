@@ -3385,9 +3385,21 @@ namespace THOK.Wms.Repository.Migrations
                     new Module()
                     {
                         ModuleID = new Guid("2EE9ADD1-A254-47DE-8FA5-2516AE4FF3D1"),
-                        ModuleName = "货位利用分析",
+                        ModuleName = "库区占有率分析",
                         ShowOrder = 6,
                         ModuleURL = "/CellAnalysis/",
+                        IndicateImage = "icon-son_DifferBill",
+                        DeskTopImage = "image-son_DifferBill",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")
+                    },
+                     new Module()
+                    {
+                        ModuleID = new Guid("B9168A39-D6F8-4ACA-875C-A8B5827CD9B8"),
+                        ModuleName = "货位利用分析",
+                        ShowOrder = 7,
+                        ModuleURL = "/CellInfo/",
                         IndicateImage = "icon-son_DifferBill",
                         DeskTopImage = "image-son_DifferBill",
                         System = system,
@@ -3541,6 +3553,22 @@ namespace THOK.Wms.Repository.Migrations
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("2EE9ADD1-A254-47DE-8FA5-2516AE4FF3D1")
+                },
+                 new Function()
+                {
+                    FunctionID = new Guid("451C7DE6-8FED-4AF4-A444-A7A96AF49FEB"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("B9168A39-D6F8-4ACA-875C-A8B5827CD9B8")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("D2565640-6D9C-4DC9-B7E3-895D32374C2E"),
+                    FunctionName = "帮助",
+                    ControlName = "help",
+                    IndicateImage = "icon-help",
+                    Module_ModuleID = new Guid("B9168A39-D6F8-4ACA-875C-A8B5827CD9B8")
                 }
                );
             context.SaveChanges();

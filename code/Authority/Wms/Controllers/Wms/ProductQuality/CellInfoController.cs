@@ -10,12 +10,13 @@ using THOK.WebUtil;
 
 namespace Wms.Controllers.Wms.ProductQuality
 {
-    public class CellAnalysisController : Controller
+    public class CellInfoController : Controller
     {
+        //
+        // GET: /CellInfo/
+
         [Dependency]
         public IProductWarningService ProductWarningService { get; set; }
-        //
-        // GET: /CellAnalysis/
 
         public ActionResult Index(string moduleID)
         {
@@ -24,10 +25,11 @@ namespace Wms.Controllers.Wms.ProductQuality
             ViewBag.ModuleID = moduleID;
             return View();
         }
-        public ActionResult Details()
+        public ActionResult Detail()
         {
-            var productWarn = ProductWarningService.GetCellInfo();
+            var productWarn = ProductWarningService.GetCell();
             return Json(productWarn, "text", JsonRequestBehavior.AllowGet);
         }
+
     }
 }
