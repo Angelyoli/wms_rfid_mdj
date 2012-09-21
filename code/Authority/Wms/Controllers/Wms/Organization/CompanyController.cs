@@ -138,53 +138,6 @@ namespace Authority.Controllers.Organization
                 ,headColor,false, colHeadFont, colHeadSize, colHeadColor, true, contentColor, HeaderFooder);
             return new FileStreamResult(ms, "application/ms-excel");
         }
-        #endregion
-
-        public FileStreamResult a()
-        {
-            int page = 0, rows = 0;
-            string companyCode = Request.QueryString["companyCode"] ?? "";
-            string companyName = Request.QueryString["companyName"] ?? "";
-            string companyType = Request.QueryString["companyType"] ?? "";
-            string isActive = Request.QueryString["isActive"] ?? "";
-
-            DataTable table = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
-            int rowIndex = 2;         //从第二行开始，因为前两行是模板里面的内容 
-            int colIndex = 0;
-
-            string filename = "name" + DateTime.Now.ToString("yyMMdd-HHmm-ss");
-            HttpResponse response = System.Web.HttpContext.Current.Response;
-            response.Clear();
-            response.BufferOutput = false;
-            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
-            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            response.ContentType = "application/ms-excel";
-
-            FileStream file = new FileStream(Server.MapPath("~/ExcelTemplate/test.xls"), FileMode.Open, FileAccess.Read);//读入excel模板
-            HSSFWorkbook hssfworkbook = new HSSFWorkbook(file);
-            HSSFSheet sheet1 = (HSSFSheet)hssfworkbook.GetSheet("公司信息");
-            //sheet1.GetRow(0).GetCell(0).SetCellValue("公司信息");      //设置表头
-            foreach (DataRow row in table.Rows)
-            {   //双循环写入table中的数据
-                rowIndex++;
-                colIndex = 0;
-                HSSFRow xlsrow = sheet1.CreateRow(rowIndex) as HSSFRow;
-                foreach (DataColumn col in table.Columns)
-                {
-                    xlsrow.CreateCell(colIndex).SetCellValue(row[col.ColumnName].ToString());
-                    colIndex++;
-                }
-            }
-            sheet1.ForceFormulaRecalculation = true;
-            //FileStream fileS = new FileStream(Server.MapPath("~/ExcelTemplate/" + "OutPut" + ".xls"), FileMode.Create);//保存
-            //hssfworkbook.Write(fileS);
-            //fileS.Close();
-            MemoryStream ms = new MemoryStream();
-            hssfworkbook.Write(ms);
-            ms.Flush();
-            ms.Position = 0;            
-            file.Close();
-            return new FileStreamResult(ms, "application/ms-excel");
-        }
+        #endregion 
     }
 }

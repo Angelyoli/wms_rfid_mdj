@@ -7,6 +7,9 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DownloadWms.Bll;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using System.Data;
 
 namespace Wms.Controllers.Wms.Inventory
 {
@@ -97,6 +100,23 @@ namespace Wms.Controllers.Wms.Inventory
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion
+
+        public FileStreamResult ExportFromTemplate()
+        {
+            int page = 0, rows = 0;
+            string warehouseCode = Request.QueryString["warehouseCode"];
+            string settleDate = Request.QueryString["settleDate"];
+            string unitType = Request.QueryString["unitType"];
+
+            System.Data.DataTable dt1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode, settleDate, unitType);
+            System.Data.DataTable dt2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode, settleDate, unitType);
+            string excelTemplate = Server.MapPath("~/ExcelTemplate/DailyBalance.xls");
+            string sheetName1 = "仓库库存日结明细";
+            string sheetName2 = "仓库库存日结核对";
+
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportFromTemplate(dt1,dt2,excelTemplate,sheetName1,sheetName2);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
 
         //
         // GET: /DailyBalance/DailyBalanceInfos/

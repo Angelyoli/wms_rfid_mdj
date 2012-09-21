@@ -470,75 +470,165 @@ namespace THOK.Common
         #endregion
 
 
-        /// <summary>
-        /// 文件下载
-        /// </summary>
-        /// <param name="_Request"></param>
-        /// <param name="_Response"></param>
-        /// <param name="_fileName"></param>
-        /// <param name="_fullPath"></param>
-        /// <param name="_speed"></param>
-        /// <returns></returns>
-        public static bool ResponseFile(HttpRequest _Request, HttpResponse _Response, string _fileName, string _fullPath, long _speed)
+        //string excelTemplate = Server.MapPath("~/ExcelTemplate/DailyBalance.xls");
+        //string sheetName = "仓库库存日结核对";
+
+        public static MemoryStream ExportFromTemplate(DataTable dt1,DataTable dt2
+            ,string excelTemplate
+            ,string sheetName1,string sheetName2)
         {
-            try
-            {
-                FileStream myFile = new FileStream(_fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                BinaryReader br = new BinaryReader(myFile);
-                try
+            string filename = "name" + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+            HttpResponse response = System.Web.HttpContext.Current.Response;
+            response.Clear();
+            response.BufferOutput = false;
+            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+            response.ContentType = "application/ms-excel";
+
+            FileStream file = new FileStream(excelTemplate, FileMode.Open, FileAccess.Read);//读入excel模板
+            HSSFWorkbook hssfworkbook = new HSSFWorkbook(file);
+            HSSFSheet sheet1 = (HSSFSheet)hssfworkbook.GetSheet(sheetName1);
+            HSSFSheet sheet2 = (HSSFSheet)hssfworkbook.GetSheet(sheetName2);
+
+            //sheet1.GetRow(0).GetCell(0).SetCellValue("公司信息");      //设置表头
+            #region dt1
+            int rowIndex = 2;         //从第二行开始，因为前两行是模板里面的内容 
+            int colIndex = 0;
+            foreach (DataRow row in dt1.Rows)
+            {   //双循环写入table中的数据
+                rowIndex++;
+                colIndex = 0;
+                HSSFRow xlsRow = sheet1.CreateRow(rowIndex) as HSSFRow;
+                HSSFCellStyle contentStyle = hssfworkbook.CreateCellStyle() as HSSFCellStyle;
+                
+                foreach (DataColumn column in dt1.Columns)
                 {
-                    _Response.AddHeader("Accept-Ranges", "bytes");
-                    _Response.Buffer = false;
-                    long fileLength = myFile.Length;
-                    long startBytes = 0;
-                    double pack = 10240;
-                    //10K bytes                
-                    //int sleep = 200;   //每秒5次   即5*10K bytes每秒     
-                    int sleep = (int)Math.Floor(1000 * pack / _speed) + 1;
-                    if (_Request.Headers["Range"] != null)
+                    HSSFCell newCell = xlsRow.CreateCell(column.Ordinal) as HSSFCell;
+                    contentStyle.BorderBottom = BorderStyle.THIN;
+                    contentStyle.BorderLeft = BorderStyle.THIN;
+                    contentStyle.BorderRight = BorderStyle.THIN;
+                    contentStyle.BorderTop = BorderStyle.THIN;
+                    HSSFFont font = workbook.CreateFont() as HSSFFont;
+                    font.Color = HSSFColor.BLUE.index;
+                    contentStyle.SetFont(font);
+                    xlsRow.GetCell(column.Ordinal).CellStyle = contentStyle;
+                    string drValue = row[column].ToString();
+                    #region 1
+                    switch (column.DataType.ToString())
                     {
-                        _Response.StatusCode = 206;
-                        string[] range = _Request.Headers["Range"].Split(new char[] { '=', '-' });
-                        startBytes = Convert.ToInt64(range[1]);
+                        case "System.String": //字符串类型
+                            string result = drValue;
+                            newCell.SetCellValue(result);
+                            break;
+                        case "System.DateTime": //日期类型
+                            DateTime dateV;
+                            DateTime.TryParse(drValue, out dateV);
+                            newCell.SetCellValue(dateV);
+                            break;
+                        case "System.Boolean": //布尔型
+                            bool boolV = false;
+                            bool.TryParse(drValue, out boolV);
+                            newCell.SetCellValue(boolV);
+                            break;
+                        case "System.Int16": //整型
+                        case "System.Int32":
+                        case "System.Int64":
+                        case "System.Byte":
+                            int intV = 0;
+                            int.TryParse(drValue, out intV);
+                            newCell.SetCellValue(intV);
+                            break;
+                        case "System.Decimal": //浮点型
+                        case "System.Double":
+                            double doubV = 0;
+                            double.TryParse(drValue, out doubV);
+                            newCell.SetCellValue(doubV);
+                            break;
+                        case "System.DBNull": //空值处理
+                            newCell.SetCellValue("");
+                            break;
+                        default:
+                            newCell.SetCellValue("");
+                            break;
                     }
-                    _Response.AddHeader("Content-Length", (fileLength - startBytes).ToString());
-                    if (startBytes != 0)
-                    {
-                        _Response.AddHeader("Content-Range", string.Format(" bytes {0}-{1}/{2}", startBytes, fileLength - 1, fileLength));
-                    }
-                    _Response.AddHeader("Connection", "Keep-Alive");
-                    _Response.ContentType = "application/octet-stream";
-                    _Response.AddHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(_fileName, System.Text.Encoding.UTF8));
-                    br.BaseStream.Seek(startBytes, SeekOrigin.Begin);
-                    int maxCount = (int)Math.Floor((fileLength - startBytes) / pack) + 1;
-                    for (int i = 0; i < maxCount; i++)
-                    {
-                        if (_Response.IsClientConnected)
-                        {
-                            _Response.BinaryWrite(br.ReadBytes(int.Parse(pack.ToString())));
-                            System.Threading.Thread.Sleep(sleep);
-                        }
-                        else
-                        {
-                            i = maxCount;
-                        }
-                    }
+                    #endregion
+                    colIndex++;
                 }
-                catch
+            } 
+            #endregion
+
+            #region dt2
+            int rowIndex2 = 2;
+            int colIndex2 = 0;
+            foreach (DataRow row in dt2.Rows)
+            {   //双循环写入table中的数据
+                rowIndex2++;
+                colIndex2 = 0;
+                HSSFRow xlsRow = sheet2.CreateRow(rowIndex2) as HSSFRow;
+                HSSFCellStyle contentStyle = hssfworkbook.CreateCellStyle() as HSSFCellStyle;
+                foreach (DataColumn column in dt2.Columns)
                 {
-                    return false;
-                }
-                finally
-                {
-                    br.Close();
-                    myFile.Close();
+                    HSSFCell newCell = xlsRow.CreateCell(column.Ordinal) as HSSFCell;
+                    contentStyle.BorderBottom = BorderStyle.THIN;
+                    contentStyle.BorderLeft = BorderStyle.THIN;
+                    contentStyle.BorderRight = BorderStyle.THIN;
+                    contentStyle.BorderTop = BorderStyle.THIN;
+                    xlsRow.GetCell(column.Ordinal).CellStyle = contentStyle;
+                    string drValue = row[column].ToString();
+                    #region 2
+                    switch (column.DataType.ToString())
+                    {
+                        case "System.String": //字符串类型
+                            string result = drValue;
+                            newCell.SetCellValue(result);
+                            break;
+                        case "System.DateTime": //日期类型
+                            DateTime dateV;
+                            DateTime.TryParse(drValue, out dateV);
+                            newCell.SetCellValue(dateV);
+                            break;
+                        case "System.Boolean": //布尔型
+                            bool boolV = false;
+                            bool.TryParse(drValue, out boolV);
+                            newCell.SetCellValue(boolV);
+                            break;
+                        case "System.Int16": //整型
+                        case "System.Int32":
+                        case "System.Int64":
+                        case "System.Byte":
+                            int intV = 0;
+                            int.TryParse(drValue, out intV);
+                            newCell.SetCellValue(intV);
+                            break;
+                        case "System.Decimal": //浮点型
+                        case "System.Double":
+                            double doubV = 0;
+                            double.TryParse(drValue, out doubV);
+                            newCell.SetCellValue(doubV);
+                            break;
+                        case "System.DBNull": //空值处理
+                            newCell.SetCellValue("");
+                            break;
+                        default:
+                            newCell.SetCellValue("");
+                            break;
+                    }
+                    #endregion 
+                    colIndex2++;
                 }
             }
-            catch
-            {
-                return false;
-            }
-            return true;
+            #endregion
+
+            //sheet1.ForceFormulaRecalculation = true;
+            //FileStream fileS = new FileStream(Server.MapPath("~/ExcelTemplate/" + "OutPut" + ".xls"), FileMode.Create);//保存
+            //hssfworkbook.Write(fileS);
+            //fileS.Close();
+            MemoryStream ms = new MemoryStream();
+            hssfworkbook.Write(ms);
+            ms.Flush();
+            ms.Position = 0;
+            file.Close();
+            return ms;
         }
     }
 }
