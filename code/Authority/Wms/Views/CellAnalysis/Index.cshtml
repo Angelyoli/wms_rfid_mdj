@@ -16,7 +16,7 @@ $(function () { $.getJSON("/CellAnalysis/Details", function(data) {
 		        plotShadow: false,
 		    },
 		    title: {
-		        text: '货位利用分析'
+		        text: '库区占有率分析'
 		    },
 		    tooltip: {
 		        pointFormat: '{series.name}: <b>{point.percentage}%</b>',
@@ -38,7 +38,7 @@ $(function () { $.getJSON("/CellAnalysis/Details", function(data) {
 		    },
 		    series: [{
                 type:'pie',
-                name: '货位利用率',
+                name: '库区占有率',
 		        data:arr
             }]
 		}) 
