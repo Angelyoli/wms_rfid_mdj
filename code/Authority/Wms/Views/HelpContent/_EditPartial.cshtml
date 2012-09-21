@@ -11,10 +11,10 @@
                 hasDownArrow: true
             });
             $('#helpfm').form('load', row);
-            if (row.Status == '启用') {
-                $('#IsActive').combo('setValue', true).combo('setText', row.IsActive);
+            if (row.IsActive == "可用") {
+                $('#H_isActive').combo('setValue', 1).combo('setText', row.IsActive);
             } else {
-                $('#IsActive').combo('setValue', false).combo('setText', row.IsActive);
+                $('#H_isActive').combo('setValue', 0).combo('setText', row.IsActive);
             }
             url = '/HelpContent/Edit/';
         } else {

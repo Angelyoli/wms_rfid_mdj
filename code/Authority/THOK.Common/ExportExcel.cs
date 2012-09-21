@@ -19,7 +19,10 @@ namespace THOK.Common
     {
         static HSSFWorkbook workbook;
 
+        static Int16 contentSize;
+
         #region 导出EXCEL单表双表
+
         /// <summary>导出EXCEL单表双表</summary>
         /// <param name="dt1">DataTable1</param>
         /// <param name="dt2">DataTable2 如果没有给null值</param>
@@ -44,10 +47,14 @@ namespace THOK.Common
         {
             #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
+
+            contentSize = colHeadSize;
+
             double columnWidth = colHeadSize - 9.5;
             #endregion
 
             #region 浏览器下载
+
             BrowserLoad(headText1);
             #endregion
 
@@ -343,6 +350,10 @@ namespace THOK.Common
         /// <summary>内容样式</summary>
         static HSSFCellStyle GetContentStyle(HSSFCellStyle cellStyle, bool contentBoder)
         {
+            HSSFFont font = workbook.CreateFont() as HSSFFont;
+            font.FontName = "宋体";
+            font.FontHeightInPoints = contentSize;
+            cellStyle.SetFont(font);
             //画边框
             if (contentBoder == true)
             {

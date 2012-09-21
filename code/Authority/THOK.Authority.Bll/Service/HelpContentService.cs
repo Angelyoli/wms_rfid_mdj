@@ -167,11 +167,12 @@ namespace THOK.Authority.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
-        public bool Delete(string ContentCode)
+        public bool Delete(string ID)
         {
+            Guid new_ID = new Guid(ID);
             var help = HelpContentRepository.GetQueryable()
-                .FirstOrDefault(b => b.ContentCode == ContentCode);
-            if (ContentCode != null)
+                .FirstOrDefault(i => i.ID == new_ID);
+            if (ID != null)
             {
                 HelpContentRepository.Delete(help);
                 HelpContentRepository.SaveChanges();

@@ -1,0 +1,119 @@
+﻿<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highcharts Example</title>
+
+		<script src="/Content/Scripts/highstock/highstock.js" type="text/javascript"></script>
+        <script src="/Content/Scripts/highstock/modules/exporting.js" type="text/javascript"></script>
+		<script type="text/javascript">
+		    function start() {
+		        //获取body标签
+		        var mybody = document.getElementsByTagName("body")[0];
+		        // 创建一个<table>元素和一个<tbody>元素
+		        table1 = document.getElementById("datatable");
+		        mytablebody = document.createElement("tbody");
+		        //创建所有的单元格
+		        $.getJSON("/CellInfo/Detail", function (data) {
+		            var arr = new Array();
+		            for (var i in data) {
+		                arr.push([data[i].areaName, data[i].enableQty, data[i].totalQty, data[i].totalQtys, data[i].totalQtys - data[i].enableQty]);
+		            }
+		            for (var j = 0; j < arr.length; j++) {
+		                // 创建一个<tr>元素
+		                mycurrent_row = document.createElement("tr");
+		                for (var i = 0; i < 5; i++) {
+		                    // 创建一个<td>元素--列
+		                    mycurrent_cellth = document.createElement("th");
+		                    mycurrent_cell = document.createElement("td");
+		                    //创建一个文本节点
+		                    if (i == 0) {
+		                        currenttexth = document.createTextNode(arr[j][i]);
+		                        mycurrent_cellth.appendChild(currenttexth);
+		                        mycurrent_row.appendChild(mycurrent_cellth);
+		                    }
+		                    else {
+		                        currenttext = document.createTextNode(arr[j][i]);
+		                        mycurrent_cell.appendChild(currenttext);
+		                        mycurrent_row.appendChild(mycurrent_cell);
+		                    }
+		                }
+		                // 将行<tr>添加到<tbody>
+		                mytablebody.appendChild(mycurrent_row);
+		            }
+		            // 将<tbody>添加到<table>
+		            table1.appendChild(mytablebody);
+		            //将<table>添加到<body>
+		            mybody.appendChild(table1);
+		            Highcharts.visualize = function (table, options) {
+		                options.xAxis.categories = [];
+		                $('tbody th', table).each(function (i) {
+		                    options.xAxis.categories.push(this.innerHTML);
+		                });
+		                options.series = [];
+		                $('tr', table).each(function (i) {
+		                    var tr = this;
+		                    $('th, td', tr).each(function (j) {
+		                        if (j > 0) { // skip first column
+		                            if (i == 0) { // get the name and init the series
+		                                options.series[j - 1] = {
+		                                    name: this.innerHTML,
+		                                    data: []
+		                                };
+		                            } else { // add values
+		                                options.series[j - 1].data.push(parseFloat(this.innerHTML));
+		                            }
+		                        }
+		                    });
+		                });
+
+		                var chart = new Highcharts.Chart(options);
+		            }
+
+		            var table = document.getElementById('datatable'),
+                    options = {
+                        chart: {
+                            renderTo: 'container',
+                            type: 'column'
+                        },
+                        title: {
+                            text: '货位利用分析'
+                        },
+                        xAxis: {
+                    },
+                    yAxis: {
+                        title: {
+                            text: '货位数量（个）'
+                        }
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                                    this.y + ' ' + this.x.toLowerCase();
+                        }
+                    }
+                };
+
+		            Highcharts.visualize(table, options);
+		        });
+		    };
+		</script>
+	</head>
+	<body onload="start()">
+
+<div id="container" style="min-width: 500px; height: 470px; margin: 0 auto"></div>
+
+<table id="datatable">
+	<thead>
+		<tr>
+			<th></th>
+			<th>已利用货位数</th>
+			<th>禁用货位数</th>
+            <th>可用货位总数</th>
+            <th>当前可用货位数</th>
+		</tr>
+	</thead>
+</table>
+	</body>
+</html>
+
+

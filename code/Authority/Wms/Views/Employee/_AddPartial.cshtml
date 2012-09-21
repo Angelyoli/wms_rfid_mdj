@@ -1,4 +1,4 @@
-<script type="text/javascript">
+﻿<script type="text/javascript">
     var url;
     var addDialog;
     function AddLoad() {
@@ -22,7 +22,7 @@
         });
     }
 
-    //�����������༭��ɾ����
+    //加载新增和编辑窗体
     function showDialog(title) {
         if (addDialog == null) {
             addDialog = $('<div></div>').dialog({
@@ -34,24 +34,24 @@
                 modal: true,
                 href: '/Employee/AddPage/',
                 buttons: [{
-                    text: 'ȷ��',
+                    text: '确定',
                     iconCls: 'icon-ok',
                     handler: function () {
                         save();
                     }
                 }, {
-                    text: 'ȡ��',
+                    text: '取消',
                     iconCls: 'icon-cancel',
                     handler: function () {
                         addDialog.dialog('close');
                     }
                 }],
                 onLoad: function () {
-                    if (title == '�༭') {
+                    if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', erow);
                     }
-                    else if (title == 'ɾ��') {
+                    else if (title == '删除') {
                         var drow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', drow);
                         $('form input').attr("disabled", "disabled");
@@ -67,7 +67,7 @@
 
     function addClick() {
         AddLoad();
-        showDialog('����');
+        showDialog('新增');
         addDialog.dialog('open');
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
@@ -86,7 +86,7 @@
 
     function save() {
         if ($("#desId").val().length > 100) {
-            $.messager.alert("��ʾ", "����ӦС��100����(�����ո�)", "info");
+            $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
             return false
         }
         $('form input').removeAttr("disabled");
@@ -110,17 +110,17 @@
         });
     }
     function departNameSearchClick() {
-        $('#departNameData').dialog('open').dialog('setTitle', 'ѡ������');
+        $('#departNameData').dialog('open').dialog('setTitle', '选择部门');
         $('#departNameDetail').datagrid({ url: '/Department/GetDepartment/' });
         $("#departNameDetail").datagrid('reload');
     }
     function jobSearchClick() {
-        $('#jobData').dialog('open').dialog('setTitle', 'ѡ���λ');
+        $('#jobData').dialog('open').dialog('setTitle', '选择岗位');
         $('#jobDetail').datagrid({ url: '/Job/GetJob/' });
         $("#jobDetail").datagrid('reload');
     }
     function userSearchClick() {
-        $('#userData').dialog('open').dialog('setTitle', 'ѡ���û�');
+        $('#userData').dialog('open').dialog('setTitle', '选择用户');
         $('#userDetail').datagrid({ url: '/User/GetUser/' });
         $("#userDetail").datagrid('reload');
     }
