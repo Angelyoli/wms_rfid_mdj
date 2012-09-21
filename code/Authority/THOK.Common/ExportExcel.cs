@@ -483,10 +483,9 @@ namespace THOK.Common
 
         //string excelTemplate = Server.MapPath("~/ExcelTemplate/DailyBalance.xls");
         //string sheetName = "仓库库存日结核对";
-
-        public static MemoryStream ExportFromTemplate(DataTable dt1,DataTable dt2
-            ,string excelTemplate
-            ,string sheetName1,string sheetName2)
+        public static MemoryStream ExportFromTemplate(DataTable dt1, DataTable dt2
+            , string excelTemplate
+            , string sheetName1, string sheetName2)
         {
             string filename = "name" + DateTime.Now.ToString("yyMMdd-HHmm-ss");
             HttpResponse response = System.Web.HttpContext.Current.Response;
@@ -503,15 +502,15 @@ namespace THOK.Common
 
             //sheet1.GetRow(0).GetCell(0).SetCellValue("公司信息");      //设置表头
             #region dt1
-            int rowIndex = 2;         //从第二行开始，因为前两行是模板里面的内容 
-            int colIndex = 0;
+            int rowIndex1 = 2;         //从第二行开始，因为前两行是模板里面的内容 
+            int colIndex1 = 0;
             foreach (DataRow row in dt1.Rows)
             {   //双循环写入table中的数据
-                rowIndex++;
-                colIndex = 0;
-                HSSFRow xlsRow = sheet1.CreateRow(rowIndex) as HSSFRow;
+                rowIndex1++;
+                colIndex1 = 0;
+                HSSFRow xlsRow = sheet1.CreateRow(rowIndex1) as HSSFRow;
                 HSSFCellStyle contentStyle = hssfworkbook.CreateCellStyle() as HSSFCellStyle;
-                
+
                 foreach (DataColumn column in dt1.Columns)
                 {
                     HSSFCell newCell = xlsRow.CreateCell(column.Ordinal) as HSSFCell;
@@ -519,10 +518,8 @@ namespace THOK.Common
                     contentStyle.BorderLeft = BorderStyle.THIN;
                     contentStyle.BorderRight = BorderStyle.THIN;
                     contentStyle.BorderTop = BorderStyle.THIN;
-                    HSSFFont font = workbook.CreateFont() as HSSFFont;
-                    font.Color = HSSFColor.BLUE.index;
-                    contentStyle.SetFont(font);
                     xlsRow.GetCell(column.Ordinal).CellStyle = contentStyle;
+
                     string drValue = row[column].ToString();
                     #region 1
                     switch (column.DataType.ToString())
@@ -563,9 +560,9 @@ namespace THOK.Common
                             break;
                     }
                     #endregion
-                    colIndex++;
+                    colIndex1++;
                 }
-            } 
+            }
             #endregion
 
             #region dt2
@@ -576,16 +573,35 @@ namespace THOK.Common
                 rowIndex2++;
                 colIndex2 = 0;
                 HSSFRow xlsRow = sheet2.CreateRow(rowIndex2) as HSSFRow;
-                HSSFCellStyle contentStyle = hssfworkbook.CreateCellStyle() as HSSFCellStyle;
+                HSSFCellStyle contentStyle1 = hssfworkbook.CreateCellStyle() as HSSFCellStyle;
+                HSSFCellStyle contentStyle2 = hssfworkbook.CreateCellStyle() as HSSFCellStyle;
+                HSSFFont font = hssfworkbook.CreateFont() as HSSFFont;
+
                 foreach (DataColumn column in dt2.Columns)
                 {
                     HSSFCell newCell = xlsRow.CreateCell(column.Ordinal) as HSSFCell;
-                    contentStyle.BorderBottom = BorderStyle.THIN;
-                    contentStyle.BorderLeft = BorderStyle.THIN;
-                    contentStyle.BorderRight = BorderStyle.THIN;
-                    contentStyle.BorderTop = BorderStyle.THIN;
-                    xlsRow.GetCell(column.Ordinal).CellStyle = contentStyle;
+
+                    if (column.Ordinal == 5 || column.Ordinal == 7 || column.Ordinal == 10)
+                    {
+                        contentStyle2.BorderBottom = BorderStyle.THIN;
+                        contentStyle2.BorderLeft = BorderStyle.THIN;
+                        contentStyle2.BorderRight = BorderStyle.THIN;
+                        contentStyle2.BorderTop = BorderStyle.THIN;
+                        font.Color = HSSFColor.RED.index;
+                        contentStyle2.SetFont(font);
+                        xlsRow.GetCell(column.Ordinal).CellStyle = contentStyle2;
+                    }
+                    else
+                    {
+                        contentStyle1.BorderBottom = BorderStyle.THIN;
+                        contentStyle1.BorderLeft = BorderStyle.THIN;
+                        contentStyle1.BorderRight = BorderStyle.THIN;
+                        contentStyle1.BorderTop = BorderStyle.THIN;
+                        xlsRow.GetCell(column.Ordinal).CellStyle = contentStyle1;
+                    }
+
                     string drValue = row[column].ToString();
+
                     #region 2
                     switch (column.DataType.ToString())
                     {
@@ -624,16 +640,17 @@ namespace THOK.Common
                             newCell.SetCellValue("");
                             break;
                     }
-                    #endregion 
+                    #endregion
                     colIndex2++;
                 }
             }
             #endregion
-
+            #region //
             //sheet1.ForceFormulaRecalculation = true;
             //FileStream fileS = new FileStream(Server.MapPath("~/ExcelTemplate/" + "OutPut" + ".xls"), FileMode.Create);//保存
             //hssfworkbook.Write(fileS);
-            //fileS.Close();
+            //fileS.Close(); 
+            #endregion
             MemoryStream ms = new MemoryStream();
             hssfworkbook.Write(ms);
             ms.Flush();
