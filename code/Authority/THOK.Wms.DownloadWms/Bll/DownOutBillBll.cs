@@ -20,7 +20,7 @@ namespace THOK.WMS.DownloadWms.Bll
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        public bool GetOutBill(string startDate, string endDate, string EmployeeCode, out string errorInfo)
+        public bool GetOutBill(string startDate, string endDate, string EmployeeCode, out string errorInfo, string wareCode, string billType)
         {
             bool tag = true;
             Employee = EmployeeCode;
@@ -29,22 +29,29 @@ namespace THOK.WMS.DownloadWms.Bll
             {
                 DownOutBillDao dao = new DownOutBillDao();
                 DataTable emply = dao.FindEmployee(EmployeeCode);   
-                DataTable outBillNoTable = this.GetOutBillNo();
-                string outBillList = UtinString.StringMake(outBillNoTable, "bill_no");
-                outBillList = UtinString.StringMake(outBillList);
-                outBillList = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, outBillList);
+                DataTable outBillNoTable = this.GetOutBillNo(startDate);
+                string outBillList = UtinString.MakeString(outBillNoTable, "bill_no");
+                outBillList = string.Format("ORDER_DATE ='{0}' AND ORDER_ID NOT IN({1}) AND ORDER_TYPE='70'", startDate, outBillList);
                 DataTable masterdt = this.GetOutBillMaster(outBillList);
 
-                string outDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
-                outDetailList = UtinString.StringMake(outDetailList);
+                string outDetailList = UtinString.MakeString(masterdt, "ORDER_ID");
                 outDetailList = "ORDER_ID IN(" + outDetailList + ")";
                 DataTable detaildt = this.GetOutBillDetail(outDetailList);
 
                 if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
                 {
-                    DataSet masterds = this.OutBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString());
-                    DataSet detailds = this.OutBillDetail(detaildt);
-                    this.Insert(masterds, detailds);
+                    try
+                    {
+                        DataSet middleds = this.MiddleTable(masterdt);
+                        //DataSet masterds = this.OutBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType);
+                        DataSet detailds = this.OutBillDetail(detaildt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType, startDate);
+                        this.Insert(detailds, middleds);
+                    }
+                    catch (Exception e)
+                    {
+                        errorInfo += e.Message;
+                        tag = false;
+                    }
                 }
                 else
                 {
@@ -57,15 +64,15 @@ namespace THOK.WMS.DownloadWms.Bll
 
 
         /// <summary>
-        /// 查询数字仓储7天之内的单据号
+        /// 根据时间查询仓库出库单据号
         /// </summary>
         /// <returns></returns>
-        public DataTable GetOutBillNo()
+        public DataTable GetOutBillNo(string orderDate)
         {
             using (PersistentManager pm = new PersistentManager())
             {
                 DownOutBillDao dao = new DownOutBillDao();
-                return dao.GetOutBillNo();
+                return dao.GetOutBillNo(orderDate);
             }
         }
 
@@ -102,7 +109,7 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public DataSet OutBillMaster(DataTable dt, string emplcode)
+        public DataSet OutBillMaster(DataTable dt, string emplcode, string wareCode, string billType)
         {
             DataSet ds = this.GenerateEmptyTables();
             Guid eid = new Guid(emplcode);
@@ -113,8 +120,8 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataRow masterrow = ds.Tables["WMS_OUT_BILLMASTER"].NewRow();
                 masterrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
                 masterrow["bill_date"] = Convert.ToDateTime(createdate);
-                masterrow["bill_type_code"] = "2001";
-                masterrow["warehouse_code"] = "0101";// row["DIST_CTR_CODE"].ToString().Trim();
+                masterrow["bill_type_code"] = billType;
+                masterrow["warehouse_code"] = wareCode;
                 masterrow["operate_person_id"] = eid;
                 masterrow["status"] = "1";
                 masterrow["is_active"] = "1";
@@ -127,18 +134,33 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         /// <summary>
-        /// 保存订单明细到虚拟表
+        /// 保存订单主表和细表
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public DataSet OutBillDetail(DataTable outDetailTable)
+        public DataSet OutBillDetail(DataTable outDetailTable,string emplcode, string wareCode, string billType,string orderDate)
         {
             DataSet ds = this.GenerateEmptyTables();
+            Guid eid = new Guid(emplcode);
+            string billno = this.GetNewBillNo();
+            orderDate = orderDate.Substring(0, 4) + "-" + orderDate.Substring(4, 2) + "-" + orderDate.Substring(6, 2);
+            DataRow masterrow = ds.Tables["WMS_OUT_BILLMASTER"].NewRow();
+            masterrow["bill_no"] = billno;
+            masterrow["bill_date"] = Convert.ToDateTime(orderDate);
+            masterrow["bill_type_code"] = billType;
+            masterrow["warehouse_code"] = wareCode;
+            masterrow["operate_person_id"] = eid;
+            masterrow["status"] = "1";
+            masterrow["is_active"] = "1";
+            masterrow["update_time"] = DateTime.Now;
+            masterrow["origin"] = "1";
+            ds.Tables["WMS_OUT_BILLMASTER"].Rows.Add(masterrow);
+
             foreach (DataRow row in outDetailTable.Rows)
             {
                 DataTable prodt = FindProductCodeInfo(" CUSTOM_CODE='" + row["BRAND_CODE"].ToString() + "'");
                 DataRow detailrow = ds.Tables["WMS_OUT_BILLDETAILA"].NewRow();
-                detailrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
+                detailrow["bill_no"] = billno;
                 detailrow["product_code"] = prodt.Rows[0]["product_code"];
                 detailrow["price"] = row["PRICE"] == "" ? 0 : row["PRICE"];
                 detailrow["bill_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
@@ -146,6 +168,27 @@ namespace THOK.WMS.DownloadWms.Bll
                 detailrow["unit_code"] = prodt.Rows[0]["unit_code"];
                 detailrow["real_quantity"] = 0;
                 ds.Tables["WMS_OUT_BILLDETAILA"].Rows.Add(detailrow);
+            }
+            return ds;
+        }
+
+
+        /// <summary>
+        /// 把数据添加到中间表。zxl   2012-09-14 
+        /// </summary>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        public DataSet MiddleTable(DataTable inBillMaster)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            foreach (DataRow row in inBillMaster.Rows)
+            {
+                string orderDate = row["ORDER_DATE"].ToString();
+                orderDate = orderDate.Substring(0, 4) + "-" + orderDate.Substring(4, 2) + "-" + orderDate.Substring(6, 2);
+                DataRow detailrow = ds.Tables["WMS_MIDDLE_OUT_BILLDETAIL"].NewRow();
+                detailrow["bill_no"] = row["ORDER_ID"];
+                detailrow["bill_date"] = Convert.ToDateTime(orderDate);
+                ds.Tables["WMS_MIDDLE_OUT_BILLDETAIL"].Rows.Add(detailrow);
             }
             return ds;
         }
@@ -169,16 +212,20 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="masterds"></param>
         /// <param name="detailds"></param>
-        public void Insert(DataSet masterds, DataSet detailds)
+        public void Insert(DataSet detailds,DataSet middleds)
         {
             using (PersistentManager pm = new PersistentManager())
             {
                 DownOutBillDao dao = new DownOutBillDao();
                 try
                 {
-                    if (masterds.Tables["WMS_OUT_BILLMASTER"].Rows.Count > 0)
+                    if (middleds.Tables["WMS_MIDDLE_OUT_BILLDETAIL"].Rows.Count > 0)
                     {
-                        dao.InsertOutBillMaster(masterds);
+                        dao.InsertMiddle(middleds);
+                    }
+                    if (detailds.Tables["WMS_OUT_BILLMASTER"].Rows.Count > 0)
+                    {
+                        dao.InsertOutBillMaster(detailds);
                     }
                     if (detailds.Tables["WMS_OUT_BILLDETAILA"].Rows.Count > 0)
                     {
@@ -188,6 +235,34 @@ namespace THOK.WMS.DownloadWms.Bll
                 catch (Exception exp)
                 {
                     throw new Exception(exp.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 生成出库单号
+        /// </summary>
+        /// <returns></returns>
+        public string GetNewBillNo()
+        {
+            using (PersistentManager persistentManager = new PersistentManager())
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                DataSet ds = dao.FindOutBillNo(System.DateTime.Now.ToString("yyMMdd"));
+                if (ds.Tables[0].Rows.Count == 0)
+                {
+                    return System.DateTime.Now.ToString("yyMMdd") + "0001" + "OU";
+                }
+                else
+                {
+                    int i = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString().Substring(6, 4));
+                    i++;
+                    string newcode = i.ToString();
+                    for (int j = 0; j < 4 - i.ToString().Length; j++)
+                    {
+                        newcode = "0" + newcode;
+                    }
+                    return System.DateTime.Now.ToString("yyMMdd") + newcode + "OU";
                 }
             }
         }
@@ -228,6 +303,11 @@ namespace THOK.WMS.DownloadWms.Bll
             detailtable.Columns.Add("allot_quantity");
             detailtable.Columns.Add("real_quantity");
             detailtable.Columns.Add("description");
+
+
+            DataTable middletable = ds.Tables.Add("WMS_MIDDLE_OUT_BILLDETAIL");
+            middletable.Columns.Add("bill_no");
+            middletable.Columns.Add("bill_date");
 
             return ds;
         }
