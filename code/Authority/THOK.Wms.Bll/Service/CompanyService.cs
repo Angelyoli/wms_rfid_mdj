@@ -228,16 +228,6 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = company.ToArray() };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="CompanyCode"></param>
-        /// <param name="CompanyName"></param>
-        /// <param name="CompanyType"></param>
-        /// <param name="IsActive"></param>
-        /// <returns></returns>
         public System.Data.DataTable GetCompany(int page, int rows, string companyCode, string companyName, string companyType, string isActive)
         {
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
@@ -290,10 +280,10 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("公司名称", typeof(string));
             dt.Columns.Add("公司类型", typeof(string));
             dt.Columns.Add("上级名称", typeof(string));
-            dt.Columns.Add("仓库面积", typeof(int));
-            dt.Columns.Add("仓库个数", typeof(int));
-            dt.Columns.Add("仓库容量", typeof(int));
-            dt.Columns.Add("分拣线数", typeof(int));
+            dt.Columns.Add("仓库面积", typeof(decimal));
+            dt.Columns.Add("仓库个数", typeof(decimal));
+            dt.Columns.Add("仓库容量", typeof(decimal));
+            dt.Columns.Add("分拣线数", typeof(decimal));
             dt.Columns.Add("状态", typeof(string));
             dt.Columns.Add("更新时间", typeof(string));
             foreach (var item in company)

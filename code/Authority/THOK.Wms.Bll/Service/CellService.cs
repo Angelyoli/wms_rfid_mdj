@@ -919,7 +919,7 @@ namespace THOK.Wms.Bll.Service
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("卷烟编码", typeof(string));
             dt.Columns.Add("卷烟名称", typeof(string));
-            dt.Columns.Add("货位数量", typeof(int));
+            dt.Columns.Add("货位数量", typeof(decimal));
 
             foreach (var item in cellInfo)
             {
@@ -963,14 +963,6 @@ namespace THOK.Wms.Bll.Service
             return cellCodeStr;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="type"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public System.Data.DataTable GetCell(int page, int rows, string type, string id)
         {
             var warehouses = WarehouseRepository.GetQueryable();

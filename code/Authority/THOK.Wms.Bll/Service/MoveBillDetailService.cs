@@ -422,7 +422,7 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("产品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("数量", typeof(int));
+                dt.Columns.Add("数量", typeof(decimal));
                 dt.Columns.Add("作业人员", typeof(string));
                 dt.Columns.Add("作业状态", typeof(string));
 

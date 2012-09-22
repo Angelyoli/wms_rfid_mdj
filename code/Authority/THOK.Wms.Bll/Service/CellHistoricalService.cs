@@ -225,7 +225,7 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("所属订单", typeof(string));
                 dt.Columns.Add("商品编码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
-                dt.Columns.Add("数量", typeof(string));
+                dt.Columns.Add("数量", typeof(decimal));
                 dt.Columns.Add("单位名称", typeof(string));
                 foreach (var item in CellHistoryAll)
                 {

@@ -497,7 +497,7 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("订单日期", typeof(string));
             dt.Columns.Add("分拣线编码", typeof(string));
             dt.Columns.Add("分拣线名称", typeof(string));
-            dt.Columns.Add("作业调度批次", typeof(string));
+            dt.Columns.Add("作业调度批次", typeof(decimal));
             dt.Columns.Add("出库单编号", typeof(string));
             dt.Columns.Add("移库单编号", typeof(string));
             dt.Columns.Add("作业状态", typeof(string));

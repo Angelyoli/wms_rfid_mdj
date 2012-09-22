@@ -207,16 +207,6 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = department.ToArray() };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="DepartmentCode"></param>
-        /// <param name="DepartmentName"></param>
-        /// <param name="DepartmentLeaderID"></param>
-        /// <param name="CompanyID"></param>
-        /// <returns></returns>
         public System.Data.DataTable GetDepartment(int page, int rows, string departmentCode, string departmentName, string departmentLeaderID, string companyID)
         {
             IQueryable<Department> departQuery = DepartmentRepository.GetQueryable();

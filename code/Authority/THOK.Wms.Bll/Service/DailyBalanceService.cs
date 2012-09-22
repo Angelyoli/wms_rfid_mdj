@@ -891,12 +891,12 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品代码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位", typeof(string));
-                dt.Columns.Add("期初量(本/销)", typeof(string));
-                dt.Columns.Add("入库量(本/销)", typeof(string));
-                dt.Columns.Add("出库量(本/销)", typeof(string));
-                dt.Columns.Add("报损量(本/销)", typeof(string));
-                dt.Columns.Add("报益量(本/销)", typeof(string));
-                dt.Columns.Add("结余量(本/销)", typeof(string));
+                dt.Columns.Add("期初量(本/销)", typeof(decimal));
+                dt.Columns.Add("入库量(本/销)", typeof(decimal));
+                dt.Columns.Add("出库量(本/销)", typeof(decimal));
+                dt.Columns.Add("报损量(本/销)", typeof(decimal));
+                dt.Columns.Add("报益量(本/销)", typeof(decimal));
+                dt.Columns.Add("结余量(本/销)", typeof(decimal));
                 foreach (var item in dailyBalance)
                 {
                     dt.Rows.Add
@@ -959,12 +959,12 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品代码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位", typeof(string));
-                dt.Columns.Add("期初量(本/销)", typeof(string));
-                dt.Columns.Add("入库量(本/销)", typeof(string));
-                dt.Columns.Add("出库量(本/销)", typeof(string));
-                dt.Columns.Add("报损量(本/销)", typeof(string));
-                dt.Columns.Add("报益量(本/销)", typeof(string));
-                dt.Columns.Add("结余量(本/销)", typeof(string));
+                dt.Columns.Add("期初量(本/销)", typeof(decimal));
+                dt.Columns.Add("入库量(本/销)", typeof(decimal));
+                dt.Columns.Add("出库量(本/销)", typeof(decimal));
+                dt.Columns.Add("报损量(本/销)", typeof(decimal));
+                dt.Columns.Add("报益量(本/销)", typeof(decimal));
+                dt.Columns.Add("结余量(本/销)", typeof(decimal));
                 foreach (var item in dailyBalance)
                 {
                     dt.Rows.Add

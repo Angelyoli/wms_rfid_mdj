@@ -287,8 +287,10 @@ namespace THOK.Common
         {
             HSSFCell newCell = hssfRow.CreateCell(column.Ordinal) as HSSFCell;
 
+            #region 当数据访问转换DataTime时生效
             HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
-            contentDateStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
+            contentDateStyle.DataFormat = format.GetFormat("yyyy-MM-dd"); 
+            #endregion
 
             //判断如果是仓库库存日结核对
             if (contentChangeColColorFrom == "DailyBalance" && sheet == workbook.GetSheet(headText2)

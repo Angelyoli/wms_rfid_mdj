@@ -74,9 +74,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("数量", typeof(string));
-                dt.Columns.Add("单价", typeof(string));
-                dt.Columns.Add("金额", typeof(string));
+                dt.Columns.Add("数量", typeof(decimal));
+                dt.Columns.Add("单价", typeof(decimal));
+                dt.Columns.Add("金额", typeof(decimal));
                 foreach (var item in outBillDetail)
                 {
                     dt.Rows.Add
