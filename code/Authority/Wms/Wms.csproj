@@ -1162,7 +1162,6 @@
     <Content Include="Views\Department\_DeletePartial.cshtml" />
     <Content Include="Views\Department\_EditPartial.cshtml" />
     <Content Include="Views\Department\_SearchPartial.cshtml" />
-    <Content Include="Views\Employee\_AddPartial.cshtml" />
     <Content Include="Views\Employee\_DeletePartial.cshtml" />
     <Content Include="Views\Employee\_EditPartial.cshtml" />
     <Content Include="Views\Employee\_SearchPartial.cshtml" />
@@ -1287,7 +1286,17 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\CellAnalysis\Index.cshtml" />
+    <Content Include="Views\Employee\AddPage.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Employee\SearchPage.cshtml" />
+    <Content Include="Views\Department\AddPage.cshtml" />
+    <Content Include="Views\Department\SearchPage.cshtml" />
     <Content Include="Views\CellInfo\Index.cshtml" />
+    <Content Include="Views\Employee\SearchPage.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Employee\_AddPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

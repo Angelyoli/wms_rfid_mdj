@@ -6,9 +6,9 @@ namespace THOK.Authority.Bll.Interfaces
     {
         bool Add(HelpContent helpContent, out string strResult);
 
-        bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive, out string strResult);       
+        bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive, out string strResult);
 
-        bool Delete(string ContentCode);
+        bool Delete(string ID);
 
         object GetDetails(int page, int rows, string QueryString, string Value);
 

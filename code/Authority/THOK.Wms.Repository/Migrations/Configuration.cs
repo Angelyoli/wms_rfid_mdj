@@ -55,8 +55,8 @@ namespace THOK.Wms.Repository.Migrations
                     new System()
                     {
                         SystemID = new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B666AA8"),
-                        SystemName = "烟草商业企业RFID综合管理系统",
-                        Description = "烟草商业企业RFID综合管理系统",
+                        SystemName = "烟草商业企业数字仓储管理系统",
+                        Description = "烟草商业企业数字仓储管理系统",
                         Status = true
                     }
                 );
