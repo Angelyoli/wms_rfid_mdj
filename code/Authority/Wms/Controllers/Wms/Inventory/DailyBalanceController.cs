@@ -72,7 +72,7 @@ namespace Wms.Controllers.Wms.Inventory
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 
-        #region
+        #region 打印
         // GET: /DailyBalance/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
@@ -87,6 +87,8 @@ namespace Wms.Controllers.Wms.Inventory
             string headText2 = "仓库库存日结核对";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string contentChangeColColorFrom = "DailyBalance";
+            short contentChangeColColor = NPOI.HSSF.Util.HSSFColor.RED.index;
             string[] HeaderFooder = {   
                                          "……"  //眉左
                                         ,"……"  //眉中
@@ -96,7 +98,8 @@ namespace Wms.Controllers.Wms.Inventory
                                         ,"&P"    //脚右 页码
                                     };
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, dt2, headText1, headText2, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder
+                , contentChangeColColorFrom, contentChangeColColor);
             return new FileStreamResult(ms, "application/ms-excel");
         }
 

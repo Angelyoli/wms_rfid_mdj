@@ -61,7 +61,7 @@ namespace Authority.Controllers.Wms.Inventory
                                         ,"&P"    //脚右 页码
                                     };
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize
-                , 0, true, colHeadFontName, colHeadFontSize, 0, true, 0, HeaderFooder);
+                , 0, true, colHeadFontName, colHeadFontSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
         }
     }

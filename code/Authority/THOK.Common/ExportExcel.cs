@@ -35,13 +35,16 @@ namespace THOK.Common
         /// <param name="colHeadBorder">是否显示边框(除了标题外)</param>
         /// <param name="contentColor">内容字体颜色</param>
         /// <param name="HeaderFooter">页眉页脚:[0]左上角[1]上中间[2]右上角[3]左下角[4]下中间[5]右下角</param>
+        /// <param name="contentChangeColColorFrom">内容标记名称（使得在这个标记内单独控制列的颜色）</param>
+        /// <param name="contentChageColColor">内容标记颜色（控制标记内容某列的颜色）</param>
         /// <returns></returns>
         public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
                 , string headText1, string headText2
                 , string headFont, short headSize, short headColor, bool headBorder
                 , string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder
                 , short contentColor
-                , string[] HeaderFooter)
+                , string[] HeaderFooter
+                , string contentChangeColColorFrom, short contentChageColColor)
         {
             #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
@@ -59,7 +62,7 @@ namespace THOK.Common
             sheet.PrintSetup.FitHeight = 0;
             #endregion
 
-            #region 全局样式
+            #region 全局样式方法
             HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor);
             HSSFCellStyle dateStyle = GetExportDate();
             HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
@@ -111,8 +114,12 @@ namespace THOK.Common
                 }
                 #endregion
 
+                #region 创建 内容样式
                 HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+                HSSFCellStyle contentStyleDailyBalance = workbook.CreateCellStyle() as HSSFCellStyle;
                 HSSFFont font = workbook.CreateFont() as HSSFFont;
+                HSSFFont fontDailyBalance = workbook.CreateFont() as HSSFFont; 
+                #endregion
 
                 #region 建表 表一
                 int rowIndex1 = 0;
@@ -120,7 +127,11 @@ namespace THOK.Common
                 {
                     if (rowIndex1 == 0)
                     {
-                        if (rowIndex1 != 0) { sheet = workbook.CreateSheet() as HSSFSheet; }
+                        if (rowIndex1 != 0)
+                        {
+                            sheet = workbook.CreateSheet() as HSSFSheet;
+                            sheet.PrintSetup.FitHeight = 0;
+                        }
                         /*--------------------- 填充表头、样式 ---------------------*/
                         {
                             HSSFRow headerRow = sheet.CreateRow(0) as HSSFRow;
@@ -161,11 +172,15 @@ namespace THOK.Common
                     }
                     /*---------------------- 填充内容 ------------------------*/
                     HSSFRow dataRow = sheet.CreateRow(rowIndex1) as HSSFRow;
-                   
+
                     foreach (DataColumn column in dt1.Columns)
-                    {                        
-                        FillContent(dataRow, column, row, contentStyle, contentDateStyle,font
-                            ,colHeadFont, colHeadSize, colHeadColor,contentColor, colHeadBorder);
+                    {
+                        FillContent(dataRow, column, row, contentStyle, contentDateStyle
+                            , contentStyleDailyBalance, fontDailyBalance
+                            , font
+                            , colHeadFont, colHeadSize, colHeadColor, contentColor, colHeadBorder
+                            , contentChangeColColorFrom, contentChageColColor
+                            , sheet, headText2);
                     }
                     rowIndex1++;
                 }
@@ -180,7 +195,11 @@ namespace THOK.Common
                         if (rowIndex2 == 0)
                         {
                             HSSFRow headerRow;
-                            if (rowIndex2 != 1) { sheet = workbook.CreateSheet(headText2) as HSSFSheet; }
+                            if (rowIndex2 != 1)
+                            {
+                                sheet = workbook.CreateSheet(headText2) as HSSFSheet;
+                                sheet.PrintSetup.FitHeight = 0;
+                            }
                             /*--------------------- 填充表头、样式 ---------------------*/
                             {
                                 headerRow = sheet.CreateRow(0) as HSSFRow;
@@ -217,11 +236,15 @@ namespace THOK.Common
                         }
                         /*------------------- 填充内容 -------------------*/
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
-                        
+
                         foreach (DataColumn column in dt2.Columns)
                         {
-                            FillContent(dataRow, column, row, contentStyle, contentDateStyle,font
-                                , colHeadFont, colHeadSize, colHeadColor, contentColor, colHeadBorder);
+                            FillContent(dataRow, column, row, contentStyle, contentDateStyle
+                                , contentStyleDailyBalance, fontDailyBalance
+                                , font
+                                , colHeadFont, colHeadSize, colHeadColor, contentColor, colHeadBorder
+                                , contentChangeColColorFrom, contentChageColColor
+                                , sheet, headText2);
                         }
                         rowIndex2++;
                     }
@@ -254,31 +277,52 @@ namespace THOK.Common
         static void FillContent(HSSFRow hssfRow
             , DataColumn column, DataRow row
             , HSSFCellStyle contentStyle, HSSFCellStyle contentDateStyle
+            , HSSFCellStyle contentStyleDailyBalance, HSSFFont fontDailyBalance
             , HSSFFont font
             , string colHeadFont, short colHeadSize, short colHeadColor
             , short contentColor
-            , bool contentBorder)
+            , bool contentBorder
+            , string contentChangeColColorFrom, short contentChageColColor
+            , HSSFSheet sheet, string headText2)
         {
             HSSFCell newCell = hssfRow.CreateCell(column.Ordinal) as HSSFCell;
 
             HSSFDataFormat format = workbook.CreateDataFormat() as HSSFDataFormat;
             contentDateStyle.DataFormat = format.GetFormat("yyyy-MM-dd");
 
-            font.FontName = "宋体";
-            font.FontHeightInPoints = colHeadSize;
-            font.Color = contentColor;
-            contentStyle.SetFont(font);
-            //画边框
-            if (contentBorder == true)
+            //判断如果是仓库库存日结核对
+            if (contentChangeColColorFrom == "DailyBalance" && sheet == workbook.GetSheet(headText2)
+                && (column.Ordinal == 5 || column.Ordinal == 7 || column.Ordinal == 10))
             {
-                contentStyle.BorderBottom = BorderStyle.THIN;
-                contentStyle.BorderLeft = BorderStyle.THIN;
-                contentStyle.BorderRight = BorderStyle.THIN;
-                contentStyle.BorderTop = BorderStyle.THIN;
+                fontDailyBalance.FontName = "宋体";
+                fontDailyBalance.FontHeightInPoints = colHeadSize;
+                fontDailyBalance.Color = contentChageColColor;
+                contentStyleDailyBalance.SetFont(fontDailyBalance);
+                if (contentBorder == true)
+                {
+                    contentStyleDailyBalance.BorderBottom = BorderStyle.THIN;
+                    contentStyleDailyBalance.BorderLeft = BorderStyle.THIN;
+                    contentStyleDailyBalance.BorderRight = BorderStyle.THIN;
+                    contentStyleDailyBalance.BorderTop = BorderStyle.THIN;
+                }
+                hssfRow.GetCell(column.Ordinal).CellStyle = contentStyleDailyBalance;
             }
-
-            hssfRow.GetCell(column.Ordinal).CellStyle = contentStyle;
-
+            else
+            {
+                font.FontName = colHeadFont;
+                font.FontHeightInPoints = colHeadSize;
+                font.Color = contentColor;
+                contentStyle.SetFont(font);
+                //画边框
+                if (contentBorder == true)
+                {
+                    contentStyle.BorderBottom = BorderStyle.THIN;
+                    contentStyle.BorderLeft = BorderStyle.THIN;
+                    contentStyle.BorderRight = BorderStyle.THIN;
+                    contentStyle.BorderTop = BorderStyle.THIN;
+                }
+                hssfRow.GetCell(column.Ordinal).CellStyle = contentStyle;
+            }
             string drValue = row[column].ToString();
 
             #region switch
@@ -319,7 +363,7 @@ namespace THOK.Common
                 default:
                     newCell.SetCellValue("");
                     break;
-            } 
+            }
             #endregion
         }
         #endregion
@@ -389,8 +433,8 @@ namespace THOK.Common
             response.ContentType = "application/ms-excel";
         }
         #endregion
-
-
+        
+        #region 使用模版导出EXCEL
         /// <summary>
         /// 使用模版导出EXCEL
         /// </summary>
@@ -519,14 +563,14 @@ namespace THOK.Common
                         contentStyle1.BorderTop = BorderStyle.THIN;
                         xlsRow.GetCell(column.Ordinal).CellStyle = contentStyle1;
                     }
-                    FillContent(row, column, xlsRow,newCell);
+                    FillContent(row, column, xlsRow, newCell);
                     sheet2.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth2[column.Ordinal] + 0.5) * 256));
-                    
+
                     colIndex2++;
                 }
             }
             #endregion
-            
+
             MemoryStream ms = new MemoryStream();
             hssfworkbook.Write(ms);
             ms.Flush();
@@ -535,7 +579,7 @@ namespace THOK.Common
             return ms;
         }
         static void FillContent(DataRow row, DataColumn column, HSSFRow xlsRow, HSSFCell newCell)
-        {            
+        {
             string drValue = row[column].ToString();
             switch (column.DataType.ToString())
             {
@@ -574,6 +618,7 @@ namespace THOK.Common
                     newCell.SetCellValue("");
                     break;
             }
-        }
+        } 
+        #endregion
     }
 }

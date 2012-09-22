@@ -9,7 +9,7 @@
             if (row.SettleDate == null) { warehouseCode = ""; } else { settleDate = row.SettleDate; }
             if (document.getElementById('unitType') == null) { unitType = ""; } else { unitType = $('#unitType').combo('getValue'); }
 
-            window.location.href = "/DailyBalance/ExportFromTemplate/"
+            window.location.href = "/DailyBalance/CreateExcelToClient/"
                                 + "?warehouseCode=" + warehouseCode
                                 + "&SettleDate=" + settleDate
                                 + "&unitType=" + unitType;
