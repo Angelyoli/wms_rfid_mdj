@@ -78,27 +78,52 @@ namespace Authority.Controllers.Wms.SortingInfo
                 beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
                 endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
             }
-            DownSortingInfoBll dsinfo = new DownSortingInfoBll();
-            DownRouteBll bll = new DownRouteBll();
-            DownSortingOrderBll sbll = new DownSortingOrderBll();
-            DownCustomerBll cbll = new DownCustomerBll();
-            bool custResult = cbll.DownCustomerInfo();
+            DownSortingInfoBll sortBll = new DownSortingInfoBll();
+            DownRouteBll routeBll = new DownRouteBll();
+            DownSortingOrderBll orderBll = new DownSortingOrderBll();
+            DownCustomerBll custBll = new DownCustomerBll();
+            routeBll.DeleteTable();
+            bool custResult = custBll.DownCustomerInfo();
             if (isSortDown)
             {
                 //从分拣下载分拣数据
-                lineResult = bll.DownSortRouteInfo();
-                bResult = dsinfo.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+                lineResult = routeBll.DownSortRouteInfo();
+                bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
             }
             else
             {
                 //从营销下载分拣数据
-                lineResult = bll.DownRouteInfo();                
-                bResult = sbll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                lineResult = routeBll.DownRouteInfo();                
+                bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
             }
 
             string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /SortingOrder/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string orderId = Request.QueryString["orderId"];
+
+            System.Data.DataTable dt = SortOrderDetailService.GetSortOrderDetail(page, rows, orderId);
+            string headText = "分拣订单管理";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

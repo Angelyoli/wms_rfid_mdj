@@ -56,6 +56,32 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+        
+        #region /CheckBillType/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string billTypeCode = Request.QueryString["billTypeCode"];
+            string billTypeName = Request.QueryString["billTypeName"];
+            string billClass = "0004";
+            string isActive = Request.QueryString["isActive"];
 
+            System.Data.DataTable dt = BillTypeService.GetBillType(page, rows, billTypeCode, billTypeName, billClass, isActive);
+            string headText = "盘点类型设置";
+            string headFont = "微软雅黑"; short headSize = 20;
+            string colHeadFont = "Arial"; short colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

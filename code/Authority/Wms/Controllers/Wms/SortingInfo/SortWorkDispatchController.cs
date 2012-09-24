@@ -90,5 +90,31 @@ namespace Authority.Controllers.Wms.SortingInfo
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /SortWorkDispatch/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string orderDate = Request.QueryString["orderDate"];
+            string sortingLineCode = Request.QueryString["sortingLineCode"];
+            string dispatchStatus = Request.QueryString["dispatchStatus"];
+
+            System.Data.DataTable dt = SortWorkDispatchService.GetSortWorkDispatch(page, rows, orderDate, sortingLineCode, dispatchStatus);
+            string headText = "分拣作业调度";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

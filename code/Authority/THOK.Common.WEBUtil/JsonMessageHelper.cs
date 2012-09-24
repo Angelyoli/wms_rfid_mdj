@@ -9,7 +9,7 @@ namespace THOK.WebUtil
     {
         public static object getJsonMessage(bool success, string msg, object data)
         {
-            return new { success = success, msg = msg, data = data };
+            return new { success = success, msg = msg, IsSuccess = success, Message = msg, data = data };
         }
 
         public static object getJsonMessage(bool success, string msg)

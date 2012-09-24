@@ -1,0 +1,39 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var warehouseCode = null
+          , productCode = null
+          , beginDate = null
+          , endDate = null;
+
+        if (document.getElementById("wareHouse") != null) {
+            warehouseCode = "";                     
+        }
+        else {
+            warehouseCode = $('#wareHouse').combo('getValue');  
+        }
+        if ($('#productCode').val() == null) {
+            productCode = "";
+        }
+        else {
+            productCode = $('#productCode').val();
+        }
+        if (document.getElementById('beginDate') != null) {
+            beginDate = "";
+        } 
+        else {
+            beginDate = $('#beginDate').datebox('getValue');
+        }
+        if (document.getElementById('endDate') != null) {
+            endDate = "";
+        } 
+        else {
+            endDate = $('#endDate').datebox('getValue');
+        }
+        window.location.href = "/HistoricalDetail/CreateExcelToClient/"
+                                + "?warehouseCode=" + warehouseCode
+                                + "&productCode=" + productCode
+                                + "&beginDate=" + beginDate
+                                + "&endDate=" + endDate;
+
+    }
+</script>

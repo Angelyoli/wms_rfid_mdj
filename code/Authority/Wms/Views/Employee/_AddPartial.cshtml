@@ -1,6 +1,6 @@
-<script type="text/javascript">
+Ôªø<script type="text/javascript">
     var url;
-
+    var addDialog;
     function AddLoad() {
         $('#Status').combo({
             required: true,
@@ -22,9 +22,55 @@
         });
     }
 
+    //Âä†ËΩΩÊñ∞Â¢ûÂíåÁºñËæëÁ™ó‰Ωì
+    function showDialog(title) {
+        if (addDialog == null) {
+            addDialog = $('<div></div>').dialog({
+                title: title,
+                width: 560,
+                height: 320,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Employee/AddPage/',
+                buttons: [{
+                    text: 'Á°ÆÂÆö',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        save();
+                    }
+                }, {
+                    text: 'ÂèñÊ∂à',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        addDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                    if (title == 'ÁºñËæë') {
+                        var erow = $('#details').datagrid('getSelected');
+                        $('#fm').form('load', erow);
+                    }
+                    else if (title == 'Âà†Èô§') {
+                        var drow = $('#details').datagrid('getSelected');
+                        $('#fm').form('load', drow);
+                        $('form input').attr("disabled", "disabled");
+                        $('form textarea').attr("disabled", "disabled");
+                    }
+                }
+            });
+        }
+        else {
+            addDialog.dialog({ title: title });
+        }
+    }
+
     function addClick() {
         AddLoad();
-        $('#dlg').dialog('open').dialog('setTitle', '–¬‘ˆ');
+        showDialog('Êñ∞Â¢û');
+        addDialog.dialog('open');
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
@@ -40,9 +86,11 @@
 
     function save() {
         if ($("#desId").val().length > 100) {
-            $.messager.alert("Ã· æ", "√Ë ˆ”¶–°”⁄100∏ˆ◊÷(∞¸¿®ø’∏Ò)", "info");
+            $.messager.alert("ÊèêÁ§∫", "ÊèèËø∞Â∫îÂ∞è‰∫é100‰∏™Â≠ó(ÂåÖÊã¨Á©∫Ê†º)", "info");
             return false
         }
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('submit', {
             url: url,
             onSubmit: function () {
@@ -52,7 +100,7 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
-                    $('#dlg').dialog('close');
+                    addDialog.dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
@@ -62,138 +110,18 @@
         });
     }
     function departNameSearchClick() {
-        $('#departNameData').dialog('open').dialog('setTitle', '—°‘Ò∏∫‘»À');
+        $('#departNameData').dialog('open').dialog('setTitle', 'ÈÄâÊã©ÈÉ®Èó®');
         $('#departNameDetail').datagrid({ url: '/Department/GetDepartment/' });
         $("#departNameDetail").datagrid('reload');
     }
     function jobSearchClick() {
-        $('#jobData').dialog('open').dialog('setTitle', '—°‘Ò∏⁄Œª');
+        $('#jobData').dialog('open').dialog('setTitle', 'ÈÄâÊã©Â≤ó‰Ωç');
         $('#jobDetail').datagrid({ url: '/Job/GetJob/' });
         $("#jobDetail").datagrid('reload');
     }
     function userSearchClick() {
-        $('#userData').dialog('open').dialog('setTitle', '—°‘Ò”√ªß');
+        $('#userData').dialog('open').dialog('setTitle', 'ÈÄâÊã©Áî®Êà∑');
         $('#userDetail').datagrid({ url: '/User/GetUser/' });
         $("#userDetail").datagrid('reload');
     }
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 560px; height: 320px;
-    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
-    <div class="easyui-layout" fit="true">
-        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
-            border: 1px solid #ccc;">
-            <form id="fm" method="post" novalidate>
-            <table width="520">
-                <tr>
-                    <td width="60" align="right">
-                        ‘±π§±‡¬Î£∫
-                    </td>
-                    <td width="168">
-                        <input name="EmployeeCode" id="inputEmployeeCode" class="easyui-validatebox" validtype="maxLength[8]"
-                            required="true" />
-                        <input name="ID" style="display: none" />
-                    </td>
-                    <td width="60" align="right">
-                        ‘±π§–’√˚£∫
-                    </td>
-                    <td width="168">
-                        <input name="EmployeeName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        –‘±£∫
-                    </td>
-                    <td>
-                        <select id="sex" name="Sex" class="easyui-combobox" style="width: 130px" class="easyui-validatebox"
-                            required="true">
-                            <option value="ƒ–">ƒ–</option>
-                            <option value="≈Æ">≈Æ</option>
-                            <option value="±£√‹">±£√‹</option>
-                        </select>
-                    </td>
-                    <td align="right">
-                        µÁª∞£∫
-                    </td>
-                    <td>
-                        <input name="Tel" class="easyui-numberbox" type="text" min="6" max="13" required="true"
-                            missingmessage="«Î ‰»ÎµÁª∞∫≈¬Î£®±ÿ–ÎŒ™ ˝◊÷£©" />
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        ◊¥Ã¨£∫
-                    </td>
-                    <td>
-                        <select id="Status" name="Status" class="easyui-combobox" style="width: 130px">
-                            <option value="3701">‘⁄÷∞</option>
-                            <option value="3702">¿Î÷∞</option>
-                            <option value="3703">ÕÀ–›</option>
-                            <option value="3704"> ‘”√</option>
-                            <option value="3705">Õ‚µ˜</option>
-                            <option value="3706">Õ£–Ω¡Ù÷∞</option>
-                            <option value="3707">ΩË”√</option>
-                            <option value="3708">∆‰À˚</option>
-                        </select>
-                    </td>
-                    <td align="right">
-                         «∑Òø…”√£∫
-                    </td>
-                    <td>
-                        <select id="isActive_emp" name="IsActive" class="easyui-combobox" style="width: 130px">
-                            <option value="1">ø…”√</option>
-                            <option value="0">≤ªø…”√</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        ≤ø√≈√˚≥∆£∫
-                    </td>
-                    <td width="168">
-                        <input name="DepartmentID" id="departId" style="display: none;" />
-                        <input name="DepartmentName" id="departName" readonly="readonly" class="easyui-validatebox" />
-                        <a href="#" id="departNameSearch" class="easyui-linkbutton" iconcls="icon-search"
-                            plain="true" onclick="departNameSearchClick()"></a>
-                    </td>
-                    <td width="60" align="right">
-                        ∏⁄Œª£∫
-                    </td>
-                    <td width="168">
-                        <input name="JobID" id="jobId" required="true" style="display: none;" />
-                        <input name="JobName" id="jobName" required="true" readonly="readonly" class="easyui-validatebox" />
-                        <a href="#" id="jobSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
-                            onclick="jobSearchClick()"></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        ”√ªß√˚≥∆£∫
-                    </td>
-                    <td width="168" colspan="3">
-                        <input name="UserName" id="user-add" readonly="readonly" class="easyui-validatebox" />
-                        <a href="#" id="userSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
-                            onclick="userSearchClick()"></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="60" align="right">
-                        √Ë ˆ£∫
-                    </td>
-                    <td width="168" colspan="3">
-                        <textarea name="Description" id="desId" style="width: 385px; height: 80px"></textarea>
-                    </td>
-                </tr>
-            </table>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="dlg-buttons">
-    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">»∑∂®</a>
-    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
-        »°œ˚</a>
-</div>
-@Html.Partial("_DepartmentNamePartial")
-@Html.Partial("_JobPartial")
-@Html.Partial("_UserNamePartial")

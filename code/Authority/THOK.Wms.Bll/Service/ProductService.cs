@@ -328,5 +328,93 @@ namespace THOK.Wms.Bll.Service
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="ProductName"></param>
+        /// <param name="ProductCode"></param>
+        /// <param name="CustomCode"></param>
+        /// <param name="BrandCode"></param>
+        /// <param name="UniformCode"></param>
+        /// <param name="AbcTypeCode"></param>
+        /// <param name="ShortCode"></param>
+        /// <param name="PriceLevelCode"></param>
+        /// <param name="SupplierCode"></param>
+        /// <returns></returns>
+        public System.Data.DataTable GetProduct(int page, int rows, string ProductName, string ProductCode, string CustomCode, string BrandCode, string UniformCode, string AbcTypeCode, string ShortCode, string PriceLevelCode, string SupplierCode)
+        {
+            IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
+            var product = ProductQuery.Where(c => c.ProductName.Contains(ProductName)
+                && c.ProductCode.Contains(ProductCode)
+                && c.BrandCode.Contains(BrandCode)
+                && c.UniformCode.Contains(UniformCode)
+                && c.SupplierCode.Contains(SupplierCode))
+                .OrderBy(c => c.ProductCode)
+                .Select(c => c);
+            if (!CustomCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.CustomCode == CustomCode);
+            }
+            if (!AbcTypeCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.AbcTypeCode == AbcTypeCode);
+            }
+            if (!UniformCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.UniformCode == UniformCode);
+            }
+            if (!PriceLevelCode.Equals(string.Empty))
+            {
+                product = product.Where(p => p.PriceLevelCode == PriceLevelCode);
+            }
+
+            var temp = product.ToArray().Select(c => new
+            {
+                c.BrandCode,
+                IsAbnormity = c.IsAbnormity == "1" ? "是" : "不是",
+                IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                c.ProductCode,
+                c.ProductName,
+                c.ProductTypeCode,
+                c.RetailPrice,
+                c.SupplierCode,
+                c.UniformCode,
+                c.UnitCode,
+                c.Unit.UnitName,
+                c.UnitListCode,
+                UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("商品编码", typeof(string));
+            dt.Columns.Add("商品名称", typeof(string));
+            dt.Columns.Add("统一编码", typeof(string));
+            dt.Columns.Add("计量单位系列", typeof(string));
+            dt.Columns.Add("缺省计量单位", typeof(string));
+            dt.Columns.Add("厂商", typeof(string));
+            dt.Columns.Add("商品品牌", typeof(string));
+            dt.Columns.Add("异形烟", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in temp)
+            {
+                dt.Rows.Add
+                    (
+                        item.ProductCode,
+                        item.ProductName,
+                        item.UniformCode,
+                        item.UnitListCode,
+                        item.UnitCode,
+                        item.SupplierCode,
+                        item.BrandCode,
+                        item.IsAbnormity,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+            }
+            return dt;
+        }
     }
 }

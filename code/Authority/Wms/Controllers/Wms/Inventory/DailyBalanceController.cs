@@ -69,7 +69,34 @@ namespace Wms.Controllers.Wms.Inventory
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 
+        #region
+        // GET: /DailyBalance/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string warehouseCode = Request.QueryString["warehouseCode"];
+            string settleDate = Request.QueryString["settleDate"];
+            string unitType = Request.QueryString["unitType"];
 
+            System.Data.DataTable dt1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode,settleDate,unitType);
+            System.Data.DataTable dt2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode,settleDate,unitType);
+            string headText1 = "仓库库存日结明细";
+            string headText2 = "仓库库存日结核对";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, dt2, headText1, headText2, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
 
         //
         // GET: /DailyBalance/DailyBalanceInfos/

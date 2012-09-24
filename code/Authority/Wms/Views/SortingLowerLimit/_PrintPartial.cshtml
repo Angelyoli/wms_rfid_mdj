@@ -1,0 +1,24 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var sortingLineCode = null
+          , sortingLineName = null
+          , productCode = null
+          , productName = null
+          , isActive = null;
+
+        if ($('#SortingLineCode').val() == null) { sortingLineCode = ""; } else { sortingLineCode = $('#SortingLineCode').val(); }
+        if ($('#SortingLineName').val() == null) { sortingLineName = ""; } else { sortingLineName = $('#SortingLineName').val(); }
+
+        if ($('#ProductCode').val() == null) { productCode = ""; } else { productCode = $('#ProductCode').val(); }
+        if ($('#ProductName').val() == null) { productName = ""; } else { productName = $('#ProductName').val(); }
+
+        if (document.getElementById('status') == null) { isActive = ""; } else { isActive = $('#status').combo('getValue'); }
+
+        window.location.href = "/SortingLowerLimit/CreateExcelToClient/"
+                                + "?sortingLineCode=" + sortingLineCode
+                                + "&sortingLineName=" + sortingLineName
+                                + "&productCode=" + productCode
+                                + "&productName=" + productName
+                                + "&isActive=" + isActive;
+    }
+</script>

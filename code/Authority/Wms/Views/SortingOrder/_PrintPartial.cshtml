@@ -1,0 +1,19 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            var rowOrderId = null;
+            if (row.OrderID == null) {
+                rowOrderId = "";
+            }
+            else {
+                rowOrderId = row.OrderID;
+            }
+            window.location.href = "/SortingOrder/CreateExcelToClient/"
+                                    + "?orderId=" + rowOrderId;
+        }
+        else {
+            $.messager.alert("系统提示", "未选中行", "info");
+        }
+    }
+</script>

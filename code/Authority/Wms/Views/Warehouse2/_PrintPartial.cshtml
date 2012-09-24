@@ -1,7 +1,18 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        window.location.href = "/Warehouse/CreateExcelToClient/"
-        + '?type=' + 'ware' 
-        + '&id=' + $('#ware-add').combogrid('getValue');
+        var row = $('#warehouseTree').tree('getSelected');
+        if (row) {
+            var rowAttr = null, rowId = null;
+
+            if (row.attributes == null) { rowAttr = ""; } else { rowAttr = row.attributes; }
+            if (row.id == null) { rowId = ""; } else { rowId = row.id; }
+
+            window.location.href = "/Warehouse2/CreateExcelToClient/"
+                                            + "?type=" + row.attributes
+                                            + "&id=" + row.id;
+        }
+        else {
+            $.messager.alert("系统提示", "未选中树形菜单", "info");
+        }
     }
 </script>

@@ -42,5 +42,31 @@ namespace Authority.Controllers.Wms.Inventory
             return Json(StockledgerDetails, "text", JsonRequestBehavior.AllowGet);
         }
 
+        #region
+        // GET: /Stockledger/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string warehouseCode = Request.QueryString["warehouseCode"];
+            string productCode = Request.QueryString["productCode"];
+            string settleDate = Request.QueryString["settleDate"];
+
+            System.Data.DataTable dt1 = StockledgerService.GetInfoDetail(page, rows, warehouseCode, productCode, settleDate);
+            string headText1 = "库存历史总账明细";
+            string headFont = "微软雅黑"; short headSize = 20;
+            string colHeadFont = "Arial"; short colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"    //眉左
+                                        ,"……"  //眉中
+                                        ,"……"    //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, null, headText1, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

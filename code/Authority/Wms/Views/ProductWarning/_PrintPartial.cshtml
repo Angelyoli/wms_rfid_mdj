@@ -1,0 +1,38 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var productCode = null
+          , minLimited = null
+          , maxLimited = null
+          , assemblyTime = null;
+
+        if ($('#productCode').val() == null) {
+            productCode = "";
+        }
+        else {
+            productCode = $('#productCode').val();
+        }
+        if ($('#minLimited').val() == null) {
+            minLimited = "";
+        }
+        else {
+            minLimited = $('#minLimited').val();
+        }
+        if ($('#maxLimited').val() == null) {
+            maxLimited = "";
+        }
+        else {
+            maxLimited = $('#maxLimited').val();
+        }
+        if ($('#assemblyTime').val() == null) {
+            assemblyTime = "";
+        }
+        else {
+            assemblyTime = $('#assemblyTime').val();
+        }
+        window.location.href = "/ProductWarning/CreateExcelToClient/"
+                                + "?productCode=" + productCode
+                                + "&minLimited=" + minLimited
+                                + "&maxLimited=" + maxLimited
+                                + "&assemblyTime=" + assemblyTime;
+    }
+</script>

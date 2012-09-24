@@ -210,5 +210,17 @@ namespace THOK.WMS.DownloadWms.Bll
                 return dao.GetSortRouteInfo(routeCodeList);
             }
         }
+
+        /// <summary>
+        /// 删除7天之前的线路表，分拣中间表和分拣表(包含细表)，作业调度表
+        /// </summary>
+        public void DeleteTable()
+        {
+            using (PersistentManager dbPm = new PersistentManager())
+            {
+                DownRouteDao dao = new DownRouteDao();
+                dao.DeleteTable();
+            }
+        }
     }
 }

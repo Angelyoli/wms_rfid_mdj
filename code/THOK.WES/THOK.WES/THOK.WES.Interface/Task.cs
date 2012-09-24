@@ -36,6 +36,10 @@ namespace THOK.WES.Interface
 
         public event ExecuteCompletedEventHandler ExecuteCompleted;
 
+        public delegate void BcComposeEventHandler(bool isSuccess, string msg);
+
+        public event BcComposeEventHandler BcComposeCompleted;
+
         public Task(Form targetForm, string url)
         {
             this.url = new Uri(url); ;
@@ -95,6 +99,15 @@ namespace THOK.WES.Interface
             client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";  
             string parameter = JsonMapper.ToJson(billDetails);
             client.UploadStringAsync(url, "post", @"Parameter={'Method':'execute','UseTag':'" + useTag + "','BillDetails':" + parameter + "}");
+            client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
+        }
+
+        public void BcCompose(string billNo)
+        {
+            taskType = "compose";
+            WebClient client = new WebClient();
+            client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
+            client.UploadStringAsync(url, "post", @"billNo=" + billNo);
             client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
         }
 
@@ -240,6 +253,34 @@ namespace THOK.WES.Interface
                         if (ExecuteCompleted != null)
                         {
                             targetForm.Invoke(ExecuteCompleted,false, e.Message);
+                        }
+                    }
+                    break;
+                case "compose":
+                    try
+                    {
+                        string result = ex.Result;
+                        Result r = JsonMapper.ToObject<Result>(result);
+                        if (r.IsSuccess)
+                        {
+                            if (BcComposeCompleted != null)
+                            {
+                                targetForm.Invoke(BcComposeCompleted, true, r.Message);
+                            }
+                        }
+                        else
+                        {
+                            if (BcComposeCompleted != null)
+                            {
+                                targetForm.Invoke(BcComposeCompleted, false, r.Message);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        if (BcComposeCompleted != null)
+                        {
+                            targetForm.Invoke(BcComposeCompleted, false, e.Message);
                         }
                     }
                     break;

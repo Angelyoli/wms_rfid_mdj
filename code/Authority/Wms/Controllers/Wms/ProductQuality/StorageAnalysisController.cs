@@ -17,8 +17,11 @@ namespace Wms.Controllers.Wms.ProductQuality
         //
         // GET: /StorageAnalysis/
 
-        public ActionResult Index()
+        public ActionResult Index(string moduleID)
         {
+            ViewBag.hasSearch = true;
+            ViewBag.hasHelp = true;
+            ViewBag.ModuleID = moduleID;
             return View();
         }
         public ActionResult Details()

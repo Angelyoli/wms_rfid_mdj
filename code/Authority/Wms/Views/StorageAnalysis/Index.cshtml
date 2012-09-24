@@ -1,45 +1,66 @@
-﻿<script type="text/javascript">
- ​ $(function() {
-           $.getJSON('/StirageAbakysis/Details/', function(data) {
+﻿<script src="/Content/Scripts/highstock/highstock.js" type="text/javascript"></script>
+<script src="/Content/Scripts/highstock/modules/exporting.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        $.getJSON('/StorageAnalysis/Details/', function (data) {
+            var arr = new Array();
+            for (var i in data) {
+                arr.push([data[i].TimeInter, data[i].TotalQuantity]);
+            }
             window.chart = new Highcharts.StockChart({
-                chart : {
-                    renderTo : 'container'
+                chart: {
+                    renderTo: 'container'
                 },
 
-                rangeSelector : {
-                    selected : 1
+                rangeSelector: {
+                    selected: 1
                 },
 
-                title : {
-                    text : 'USD to EUR exchange rate'
+                title: {
+                    text: '库存变化分析'
                 },
 
-                yAxis : {
-                    title : {
-                        text : 'Exchange rate'
+                yAxis: {
+                    title: {
+                        text: '库存总量（件）'
                     },
-                    plotBands : [{
-                        from : 0.6738,
-                        to : 0.7419,
-                        color : 'rgba(68, 170, 213, 0.2)',
-                        label : {
-                            text : 'Last quarter\'s value range'
+                    plotLines: [{
+                        value: 6000,
+                        color: 'yellow',
+                        dashStyle: 'shortdash',
+                        width: 2,
+                        label: {
+                            text: '黄色警报线'
+                        }
+                    }, {
+                        value: 7500,
+                        color: 'red',
+                        dashStyle: 'shortdash',
+                        width: 2,
+                        label: {
+                            text: '红色警报线'
                         }
                     }]
                 },
 
-                series : [{
-                    name : 'USD to EUR',
-                    data : data,
+                series: [{
+                    name: '库存总量',
+                    data: arr,
+                    marker: {
+                        enabled: true,
+                        radius: 3
+                    },
+                    shadow: true,
                     tooltip: {
-                        valueDecimals: 4
+                        valueDecimals: 2
                     }
                 }]
             });
         });
     });
-
 </script>
-<div id="container" style="height: 500px; min-width: 500px"></div>
-<div><label>dddddd</label></div>
+<div region="center" split="true"  border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">  
+<div id="container" style="height: 470px; min-width: 500px"></div>
+</div>
+
 

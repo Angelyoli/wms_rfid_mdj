@@ -1,0 +1,12 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var querystring = null
+          , value = null;
+        if (document.getElementById('productChoose')) { querystring = ""; } else { querystring = $('#productChoose').combogrid('getValue'); }
+        if ($('#cellInfo').val() == null) { value = ""; } else { value = $('#cellInfo').val(); }
+
+        window.location.href = "/DefaultProductSet/CreateExcelToClient/"
+                                    + "?queryString=" + querystring
+                                    + '&value=' + value;
+    }
+</script>

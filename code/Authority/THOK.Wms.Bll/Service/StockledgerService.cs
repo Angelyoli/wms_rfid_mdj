@@ -52,19 +52,19 @@ namespace THOK.Wms.Bll.Service
                                              i.ProfitAmount,
                                              i.LossAmount,
                                              i.Ending
-                                         }).OrderByDescending(i => i.SettleDate)
-                                           .OrderBy(i => i.WarehouseName)
-                                           .OrderBy(i => i.ProductName);
+                                         }).OrderBy(i => i.WarehouseName)
+                                           .ThenBy(i => i.ProductName)
+                                           .ThenByDescending(i => i.SettleDate);
             if (!beginDate.Equals(string.Empty))
             {
                 DateTime begin = Convert.ToDateTime(beginDate);
-                query = query.Where(i => i.SettleDate >= begin).OrderBy(i => i.ProductName);
+                query = query.Where(i => i.SettleDate >= begin).OrderBy(i => i.ProductName).ThenByDescending(i => i.SettleDate);
             }
 
             if (!endDate.Equals(string.Empty))
             {
                 DateTime end = Convert.ToDateTime(endDate);
-                query = query.Where(i => i.SettleDate <= end).OrderBy(i => i.ProductName);
+                query = query.Where(i => i.SettleDate <= end).OrderBy(i => i.ProductName).ThenByDescending(i => i.SettleDate);
             }
             int total = query.Count();
             var querys = query.Skip((page - 1) * rows).Take(rows);
@@ -134,6 +134,91 @@ namespace THOK.Wms.Bll.Service
             var inQuery = InBillDetailRepository.GetQueryable();
             var outQuery = OutBillDetailRepository.GetQueryable();
             var differQuery = ProfitLossBillDetailRepository.GetQueryable();
+            var Allquery = inQuery.Where(a => a.BillQuantity > 0 && a.RealQuantity > 0).Select(a => new
+            {
+                BillDate = a.InBillMaster.BillDate,
+                a.InBillMaster.Warehouse.WarehouseCode,
+                a.InBillMaster.Warehouse.WarehouseName,
+                a.BillNo,
+                a.InBillMaster.BillType.BillTypeCode,
+                a.InBillMaster.BillType.BillTypeName,
+                a.ProductCode,
+                a.Product.ProductName,
+                a.RealQuantity,
+                a.Unit.Count,
+                Count1 = a.Product.UnitList.Unit01.Count,//自然件单位
+                Count2 = a.Product.UnitList.Unit02.Count,//条单位
+                a.Unit.UnitName,
+                Status = a.BillQuantity == a.RealQuantity ? "1" : "0"
+            }).Union(outQuery.Where(a => a.BillQuantity > 0 && a.RealQuantity > 0).Select(a => new
+            {
+                BillDate = a.OutBillMaster.BillDate,
+                a.OutBillMaster.Warehouse.WarehouseCode,
+                a.OutBillMaster.Warehouse.WarehouseName,
+                a.BillNo,
+                a.OutBillMaster.BillType.BillTypeCode,
+                a.OutBillMaster.BillType.BillTypeName,
+                a.ProductCode,
+                a.Product.ProductName,
+                a.RealQuantity,
+                a.Unit.Count,
+                Count1 = a.Product.UnitList.Unit01.Count,//自然件单位
+                Count2 = a.Product.UnitList.Unit02.Count,//条单位
+                a.Unit.UnitName,
+                Status = a.BillQuantity == a.RealQuantity ? "1" : "0"
+            })).Union(differQuery.Where(a => a.Quantity > 0).Select(a => new
+            {
+                BillDate = a.ProfitLossBillMaster.BillDate,
+                a.ProfitLossBillMaster.Warehouse.WarehouseCode,
+                a.ProfitLossBillMaster.Warehouse.WarehouseName,
+                a.BillNo,
+                a.ProfitLossBillMaster.BillType.BillTypeCode,
+                a.ProfitLossBillMaster.BillType.BillTypeName,
+                a.ProductCode,
+                a.Product.ProductName,
+                RealQuantity = a.Quantity,
+                a.Unit.Count,
+                Count1 = a.Product.UnitList.Unit01.Count,//自然件单位
+                Count2 = a.Product.UnitList.Unit02.Count,//条单位
+                a.Unit.UnitName,
+                Status = a.ProfitLossBillMaster.Status == "2" ? "1" : "0"
+            }));
+            if (!settleDate.Equals(string.Empty))
+            {
+                DateTime date = Convert.ToDateTime(settleDate);
+                Allquery = Allquery.Where(i => i.BillDate.Year == date.Year && i.BillDate.Month == date.Month && i.BillDate.Day == date.Day);
+            }
+            Allquery = Allquery.Where(i => i.ProductCode.Contains(productCode) && i.WarehouseCode.Contains(warehouseCode)).OrderBy(a => a.BillDate).ThenBy(a => a.WarehouseName);
+            int total = Allquery.Count();
+            Allquery = Allquery.Skip((page - 1) * rows).Take(rows);
+            var query = Allquery.ToArray().Select(i => new
+            {
+                BillDate = i.BillDate.ToString("yyyy-MM-dd"),
+                i.WarehouseCode,
+                i.WarehouseName,
+                i.BillNo,
+                i.BillTypeCode,
+                i.BillTypeName,
+                i.ProductCode,
+                i.ProductName,
+                RealQuantity = Convert.ToDouble(i.RealQuantity / i.Count),
+                JQuantity = Convert.ToDouble(i.RealQuantity / i.Count1),
+                TQuantity = Convert.ToInt32(i.RealQuantity / i.Count2),
+                i.UnitName,
+                i.Status
+
+            });
+            return new { total, rows = query.ToArray() };
+        }
+
+        #endregion
+
+
+        public System.Data.DataTable GetInfoDetail(int page, int rows, string warehouseCode, string productCode, string settleDate)
+        {
+            var inQuery = InBillDetailRepository.GetQueryable();
+            var outQuery = OutBillDetailRepository.GetQueryable();
+            var differQuery = ProfitLossBillDetailRepository.GetQueryable();
             var Allquery = inQuery.Select(a => new
             {
                 BillDate = a.InBillMaster.BillDate,
@@ -176,9 +261,7 @@ namespace THOK.Wms.Bll.Service
                 DateTime date = Convert.ToDateTime(settleDate);
                 Allquery = Allquery.Where(i => i.BillDate.Year == date.Year && i.BillDate.Month == date.Month && i.BillDate.Day == date.Day);
             }
-            Allquery = Allquery.Where(i => i.ProductCode.Contains(productCode) && i.WarehouseCode.Contains(warehouseCode)).OrderBy(a => a.BillDate).OrderBy(a => a.WarehouseName);
-            int total = Allquery.Count();
-            Allquery = Allquery.Skip((page - 1) * rows).Take(rows);
+            Allquery = Allquery.Where(i => i.ProductCode.Contains(productCode) && i.WarehouseCode.Contains(warehouseCode)).OrderBy(a => a.BillDate).ThenBy(a => a.WarehouseName);
             var query = Allquery.ToArray().Select(i => new
             {
                 BillDate = i.BillDate.ToString("yyyy-MM-dd"),
@@ -195,10 +278,32 @@ namespace THOK.Wms.Bll.Service
                 i.UnitName
 
             });
-            return new { total, rows = query.ToArray() };
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("日期", typeof(string));
+            dt.Columns.Add("单据编号", typeof(string));
+            dt.Columns.Add("单据业务", typeof(string));
+            dt.Columns.Add("商品代码", typeof(string));
+            dt.Columns.Add("商品名称", typeof(string));
+            dt.Columns.Add("账面数量", typeof(string));
+            dt.Columns.Add("数量(自然件)", typeof(string));
+            dt.Columns.Add("数量(条)", typeof(string));
+            dt.Columns.Add("单据单位", typeof(string));
+            foreach (var item in query)
+            {
+                dt.Rows.Add
+                    (
+                        item.BillDate,
+                        item.BillNo,
+                        item.BillTypeName,
+                        item.ProductCode,
+                        item.ProductName,
+                        item.RealQuantity,
+                        item.JQuantity,
+                        item.TQuantity,
+                        item.UnitName
+                    );
+            }
+            return dt;
         }
-
-        #endregion
-
     }
 }

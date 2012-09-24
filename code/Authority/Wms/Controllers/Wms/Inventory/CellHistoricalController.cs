@@ -37,5 +37,33 @@ namespace Wms.Controllers.Wms.Inventory
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
 
+        #region
+        // GET: /CellHistorical/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string beginDate = "null01";
+            string endDate = "null02";
+            string type = Request.QueryString["type"];
+            string id = Request.QueryString["id"];
+
+            System.Data.DataTable dt1 = CellHistoricalService.GetCellHistory(page, rows, beginDate, endDate, type, id);
+
+            string headText1 = "货位历史明细";
+            string headFont = "微软雅黑"; short headSize = 20;
+            string colHeadFont = "Arial"; short colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"    //眉左
+                                        ,"……"  //眉中
+                                        ,"……"    //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, null, headText1, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

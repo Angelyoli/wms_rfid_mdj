@@ -1,0 +1,15 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var supplierCode = null
+          , supplierName = null
+          , isActive = null;
+        if ($('#SupplierCode').val() == null) { supplierCode = ""; } else { supplierCode = $('#SupplierCode').val(); }
+        if ($('#SupplierName').val() == null) { supplierCode = ""; } else { supplierName = $('#SupplierName').val(); }
+        if (document.getElementById('isActive') == null) { isActive = ""; } else { isActive = $('#isActive').combo('getValue'); }
+
+        window.location.href = "/Supplier/CreateExcelToClient/"
+                                + "?supplierCode=" + supplierCode
+                                + "&supplierName=" + supplierName
+                                + "&isActive=" + isActive;
+    }
+</script>

@@ -81,5 +81,44 @@ namespace Authority.Controllers.Wms.ProductInfo
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
+        #region /UnitList/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string unitListCode = Request.QueryString["unitListCode"];
+            string unitListName = Request.QueryString["unitListName"];
+            string uniformCode = Request.QueryString["uniformCode"];
+            string unitCode1 = Request.QueryString["unitCode1"];
+            string unitCode2 = Request.QueryString["unitCode2"];
+            string unitCode3 = Request.QueryString["unitCode3"];
+            string unitCode4 = Request.QueryString["unitCode4"];
+            string isActive = Request.QueryString["isActive"];
+            UnitList unitlist = new UnitList();
+            unitlist.UnitListCode = unitListCode;
+            unitlist.UnitListName = unitListName;
+            unitlist.UniformCode = uniformCode;
+            unitlist.UnitCode01 = unitCode1;
+            unitlist.UnitCode02 = unitCode2;
+            unitlist.UnitCode03 = unitCode3;
+            unitlist.UnitCode04 = unitCode4;
+            unitlist.IsActive = isActive;
+
+            System.Data.DataTable dt = UnitListService.GetUnitList(page, rows, unitlist);
+            string headText = "单位系列";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0,true, colHeadFont, colHeadSize, 0,true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

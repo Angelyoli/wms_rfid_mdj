@@ -1,0 +1,21 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            var rowWareCode = null
+              , rowProCode = null
+              , rowSetDate = null;
+            if (row.WarehouseCode == null) { rowWareCode = ""; } else {rowWareCode = row.WarehouseCode; }
+            if (row.ProductCode == null) { rowProCode = ""; } else { rowProCode = row.ProductCode; }
+            if (row.SettleDate == null) { rowSetDate = ""; } else { rowSetDate = row.SettleDate; }
+
+            window.location.href = '/Stockledger/CreateExcelToClient/'
+                                    + '?warehouseCode=' + rowWareCode
+                                    + '&productCode=' + rowProCode
+                                    + '&settleDate=' + rowSetDate;
+        }
+        else {
+            $.messager.alert("系统提示","未选中行","info");
+        }
+    }
+</script>

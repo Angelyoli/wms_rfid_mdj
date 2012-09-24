@@ -17,7 +17,6 @@ namespace THOK.Authority.Bll.Service
             get { return this.GetType(); }
         }
 
-        #region IHelpContentService 成员
 
         public bool Add(HelpContent helpContent, out string strResult)
         {
@@ -51,14 +50,23 @@ namespace THOK.Authority.Bll.Service
             return result;
         }
 
-        #endregion
-
-        #region IHelpContentService 成员
-
-        #endregion
-        #region IHelpContentService 成员
-
-
+        public string WhatType(string nodeType)
+        {
+            string typeStr = "";
+            switch (nodeType)
+            {
+                case "1":
+                    typeStr = "第一节点";
+                    break;
+                case "2":
+                    typeStr = "中间节点";
+                    break;
+                case "3":
+                    typeStr = "末端节点";
+                    break;
+            }
+            return typeStr;
+        }
         public object GetDetails(int page, int rows, string QueryString, string Value)
         {
             string ContentName = "";
@@ -84,21 +92,16 @@ namespace THOK.Authority.Bll.Service
 
             var temp = HelpContent.ToArray().Select(c => new
             {
+                ID = c.ID,
                 ContentCode = c.ContentCode,
                 ContentName = c.ContentName,
-                FatherNode = c.FatherNode.ContentName,
-                FatherNodeID = c.FatherNodeID,
-                NodeType = c.NodeType,
+                FatherNode = c.ID ==c.FatherNodeID? "":  c.FatherNode.ContentCode + " " + c.FatherNode.ContentName,
+                NodeType = WhatType(c.NodeType),
                 NodeOrder = c.NodeOrder,
                 IsActive = c.IsActive == "1" ? "可用" : "不可用"
             });
             return new { total, rows = temp.ToArray() };
         }
-
-        #endregion
-
-        #region IHelpContentService 成员
-
 
         public bool Save(string ID, string ContentCode, string ContentName, string ContentPath, string FatherNodeID, string ModuleID, int NodeOrder, string IsActive, out string strResult)
         {
@@ -114,7 +117,7 @@ namespace THOK.Authority.Bll.Service
                 help.FatherNodeID = new Guid(FatherNodeID);
                 help.ModuleID = new Guid(ModuleID);
                 help.NodeOrder = NodeOrder;
-                IsActive = help.IsActive == "1" ? "可用" : "不可用";
+                help.IsActive = IsActive;
                 HelpContentRepository.SaveChanges();
                
             }
@@ -125,27 +128,24 @@ namespace THOK.Authority.Bll.Service
             return true;
         }
 
-        #endregion
-
-        #region IHelpContentService 成员
-
-
-        public object GetDetails2(int page, int rows, string ContentCode, string ContentName, string ModuleName, string NodeType, string FatherNodeID, string NodeOrder, string ModuleID, string IsActive, string UpdateTime)
+        public object GetDetails2(int page, int rows, string ContentCode, string ContentName, string NodeType, string FatherNodeID, string ModuleID, string IsActive)
         {
             IQueryable<HelpContent> HelpContentQuery = HelpContentRepository.GetQueryable();
-            var HelpContent = HelpContentQuery.Where(c =>
-                c.ContentName.Contains(ContentName)
-                && c.Module.ModuleName.Contains(ModuleName))
-                .OrderBy(c => c.ContentCode)
-                .Select(c => c);
-            if (!ContentCode.Equals(string.Empty))
+            var HelpContent = HelpContentQuery.Where(c => c.ContentCode.Contains(ContentCode) &&
+                                                          c.ContentName.Contains(ContentName) &&
+                                                          c.IsActive.Contains(IsActive) &&
+                                                          c.NodeType.Contains(NodeType));
+            if (!FatherNodeID.Equals(string.Empty) && FatherNodeID != null)
             {
-                HelpContent = HelpContent.Where(p => p.ContentCode == ContentCode);
+                Guid Father_NodeID = new Guid(FatherNodeID);
+                HelpContent = HelpContent.Where(h => h.FatherNodeID == Father_NodeID);
             }
-            if (!ContentName.Equals(string.Empty))
+            if (!ModuleID.Equals(string.Empty) && ModuleID != null)
             {
-                HelpContent = HelpContent.Where(p => p.ContentName == ContentName);
+                Guid Module_ID = new Guid(ModuleID);
+                HelpContent = HelpContent.Where(h => h.ModuleID == Module_ID);
             }
+            HelpContent = HelpContent.OrderBy(h => h.ContentCode);
             int total = HelpContent.Count();
             HelpContent = HelpContent.Skip((page - 1) * rows).Take(rows);
 
@@ -155,11 +155,11 @@ namespace THOK.Authority.Bll.Service
                ContentCode= c.ContentCode,
                ContentName= c.ContentName,
                ContentPath= c.ContentPath,
-               FatherNode= c.FatherNode.ContentName,
+               FatherNodeName =c.ID ==c.FatherNodeID? "": c.FatherNode.ContentName,
                ModuleID= c.ModuleID,
                ModuleName = c.Module.ModuleName,
                FatherNodeID= c.FatherNodeID,
-               NodeType= c.NodeType,
+               NodeType= WhatType(c.NodeType),
                NodeOrder= c.NodeOrder,
                IsActive = c.IsActive == "1" ? "可用" : "不可用",
                UpdateTime=c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
@@ -167,18 +167,12 @@ namespace THOK.Authority.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
-        #endregion
-
-
-
-        #region IHelpContentService 成员
-
-
-        public bool Delete(string ContentCode)
+        public bool Delete(string ID)
         {
+            Guid new_ID = new Guid(ID);
             var help = HelpContentRepository.GetQueryable()
-                .FirstOrDefault(b => b.ContentCode == ContentCode);
-            if (ContentCode != null)
+                .FirstOrDefault(i => i.ID == new_ID);
+            if (ID != null)
             {
                 HelpContentRepository.Delete(help);
                 HelpContentRepository.SaveChanges();
@@ -187,7 +181,5 @@ namespace THOK.Authority.Bll.Service
                 return false;
             return true;
         }
-
-        #endregion
     }
 }

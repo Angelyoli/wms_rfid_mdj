@@ -55,8 +55,8 @@ namespace THOK.Wms.Repository.Migrations
                     new System()
                     {
                         SystemID = new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B666AA8"),
-                        SystemName = "烟草商业企业RFID综合管理系统",
-                        Description = "烟草商业企业RFID综合管理系统",
+                        SystemName = "烟草商业企业数字仓储管理系统",
+                        Description = "烟草商业企业数字仓储管理系统",
                         Status = true
                     }
                 );
@@ -3375,7 +3375,7 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleID = new Guid("05E82C3C-AC7D-49E3-AF8A-7DE741E412CF"),
                         ModuleName = "库存变化分析",
                         ShowOrder = 5,
-                        ModuleURL = "/StockCheckSearch/",
+                        ModuleURL = "/StorageAnalysis/",
                         IndicateImage = "icon-son_CheckBill",
                         DeskTopImage = "image-son_CheckBill",
                         System = system,
@@ -3385,9 +3385,21 @@ namespace THOK.Wms.Repository.Migrations
                     new Module()
                     {
                         ModuleID = new Guid("2EE9ADD1-A254-47DE-8FA5-2516AE4FF3D1"),
-                        ModuleName = "货位利用分析",
+                        ModuleName = "库区占有率分析",
                         ShowOrder = 6,
-                        ModuleURL = "/StockDifferSearch/",
+                        ModuleURL = "/CellAnalysis/",
+                        IndicateImage = "icon-son_DifferBill",
+                        DeskTopImage = "image-son_DifferBill",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")
+                    },
+                     new Module()
+                    {
+                        ModuleID = new Guid("B9168A39-D6F8-4ACA-875C-A8B5827CD9B8"),
+                        ModuleName = "货位利用分析",
+                        ShowOrder = 7,
+                        ModuleURL = "/CellInfo/",
                         IndicateImage = "icon-son_DifferBill",
                         DeskTopImage = "image-son_DifferBill",
                         System = system,
@@ -3410,7 +3422,7 @@ namespace THOK.Wms.Repository.Migrations
                  {
                      FunctionID = new Guid("F8BF2A92-5BFA-4E17-8764-2564A7625557"),
                      FunctionName = "增加",
-                     ControlName = "print",
+                     ControlName = "add",
                      IndicateImage = "icon-add",
                      Module_ModuleID = new Guid("AB1BE2ED-1522-4722-ADC6-82654656589F")
                  },
@@ -3418,7 +3430,7 @@ namespace THOK.Wms.Repository.Migrations
                   {
                       FunctionID = new Guid("BC59ACEB-7F00-4C69-B4E1-21D29525E6B9"),
                       FunctionName = "修改",
-                      ControlName = "print",
+                      ControlName = "edit",
                       IndicateImage = "icon-edit",
                       Module_ModuleID = new Guid("AB1BE2ED-1522-4722-ADC6-82654656589F")
                   },
@@ -3426,7 +3438,7 @@ namespace THOK.Wms.Repository.Migrations
                    {
                        FunctionID = new Guid("919AAF97-FB5B-42BB-8B6C-ED2612280809"),
                        FunctionName = "删除",
-                       ControlName = "print",
+                       ControlName = "delete",
                        IndicateImage = "icon-remove",
                        Module_ModuleID = new Guid("AB1BE2ED-1522-4722-ADC6-82654656589F")
                    },
@@ -3541,6 +3553,22 @@ namespace THOK.Wms.Repository.Migrations
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("2EE9ADD1-A254-47DE-8FA5-2516AE4FF3D1")
+                },
+                 new Function()
+                {
+                    FunctionID = new Guid("451C7DE6-8FED-4AF4-A444-A7A96AF49FEB"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("B9168A39-D6F8-4ACA-875C-A8B5827CD9B8")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("D2565640-6D9C-4DC9-B7E3-895D32374C2E"),
+                    FunctionName = "帮助",
+                    ControlName = "help",
+                    IndicateImage = "icon-help",
+                    Module_ModuleID = new Guid("B9168A39-D6F8-4ACA-875C-A8B5827CD9B8")
                 }
                );
             context.SaveChanges();

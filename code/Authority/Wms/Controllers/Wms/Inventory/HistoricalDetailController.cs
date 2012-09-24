@@ -29,6 +29,35 @@ namespace Authority.Controllers.Wms.Inventory
             var HistoricalDetail = HistoricalDetailService.GetDetails(page, rows, warehouseCode, productCode, beginDate, endDate);
             return Json(HistoricalDetail, "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region
+        // GET: /HistoricalDetail/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string warehouseCode = Request.QueryString["warehouseCode"] ?? "";
+            string productCode = Request.QueryString["productCode"] ?? "";
+            string beginDate = Request.QueryString["beginDate"] ?? "";
+            string endDate = Request.QueryString["endDate"] ?? "";
+
+            System.Data.DataTable dt1 = HistoricalDetailService.GetHistoryDetail(page, rows, warehouseCode, productCode, beginDate,endDate);
+
+            string headText1 = "库存历史明细";
+            string headFont = "微软雅黑"; short headSize = 20;
+            string colHeadFont = "Arial"; short colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, null, headText1, null, headFont, headSize, 0, true,
+                colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }
 

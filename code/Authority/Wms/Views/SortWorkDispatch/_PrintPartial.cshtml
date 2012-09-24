@@ -1,0 +1,29 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var sortingLineCode = null
+          , searchOrderDate = null
+          , dispatchStatus = null;
+        if (document.getElementById('SortingLineCode') != null) {
+            sortingLineCode = "";
+        }
+        else {
+            sortingLineCode = $('#SortingLineCode').combogrid('getValue');
+        }
+        if (document.getElementById('searchOrderDate') != null) {
+            searchOrderDate = "";
+        }
+        else {
+            searchOrderDate = $('#searchOrderDate').datebox('getValue');
+        }
+        if (document.getElementById('DispatchStatus') != null) {
+            dispatchStatus = "";
+        }
+        else {
+            dispatchStatus = $('#DispatchStatus').combo('getValue');
+        }
+        window.location.href = "/SortWorkDispatch/CreateExcelToClient/"
+                                + "?orderDate=" + sortingLineCode
+                                + "&sortingLineCode=" + searchOrderDate
+                                + "&dispatchStatus=" + dispatchStatus;
+    }
+</script>

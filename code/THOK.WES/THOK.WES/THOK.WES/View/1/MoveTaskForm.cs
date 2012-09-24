@@ -15,6 +15,7 @@ namespace THOK.WES.View
             InitializeComponent();
             BillTypes = "3";
             btnOpType.Visible = true;
+            btnBcCompose.Visible = true;
             dgvMain.Columns["TARGETSTORAGE"].Visible = true;
         }
     }

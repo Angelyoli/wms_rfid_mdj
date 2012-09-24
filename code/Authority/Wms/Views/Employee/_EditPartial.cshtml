@@ -3,7 +3,12 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             AddLoad();
+            showDialog('±‡º≠');
+            addDialog.dialog('open');
             url = '/Employee/Edit/';
+            $('form input').removeAttr("disabled");
+            $('form textarea').removeAttr("disabled");
+            $('#inputEmployeeCode').attr("readonly", true);
             $('#fm').form('load', row);
             $('#dlg').dialog('open').dialog('setTitle', '±‡º≠');
             $('#fm .easyui-validatebox').validatebox({
@@ -44,9 +49,6 @@
             $('#isActive_emp').combo({
                 hasDownArrow: true
             });
-            $('form input').removeAttr("disabled");
-            $('form textarea').removeAttr("disabled");
-            $('#inputEmployeeCode').attr("readonly", true);
         } else {
             $.messager.alert('¥ÌŒÛ', '√ª”–—°‘Ò––£°');
         }

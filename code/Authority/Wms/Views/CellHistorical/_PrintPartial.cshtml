@@ -1,0 +1,40 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var row = $('#warehouseTree').tree('getSelected');
+        if (row) {
+            var rowAttribute = null;
+            var rowId = null;
+            if (row.attributes == null) {
+                $.messager.alert("系统提示", "表中无数据", "info");
+            }
+            else if (row.attributes == "ware") {
+                $.messager.alert("系统提示", "表中无数据", "info");
+                return false;
+            }
+            else if (row.attributes == "area") {
+                $.messager.alert("系统提示", "表中无数据", "info");
+                return false;
+            }
+            else if (row.attributes == "shelf") {
+                $.messager.alert("系统提示", "表中无数据", "info");
+                return false;
+            }
+            else {
+                alert(row.attributes);
+                rowAttribute = "cell";
+            }
+            if (row.id == null) {
+                rowId = "";
+            }
+            else {
+                rowId = row.id;
+            }
+            window.location.href = "/CellHistorical/CreateExcelToClient/"
+                                    + "?type=" + rowAttribute
+                                    + "&id=" + rowId;
+        }
+        else {
+            $.messager.alert("系统提示", "未选中树形菜单", "info");
+        }
+    }
+</script>

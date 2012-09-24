@@ -15,6 +15,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Delete(string BrandCode);
 
         bool Save(Brand brand);
-        
+
+        System.Data.DataTable GetBrand(int page, int rows, string BrandCode, string BrandName, string IsActive);
     }
 }

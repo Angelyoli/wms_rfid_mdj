@@ -134,7 +134,7 @@
     <div class="easyui-layout" fit="true" >  
         <div region="center" split="true"  border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">   
             <table class="easyui-datagrid" border="false" singleSelect="true" id="inAllotBillDetails" url="" toolbar="#bar"
-                fit="true" fitColumns="true"  pagination="true" rownumbers="true" >
+                fit="true" fitColumns="true"  pagination="true" rownumbers="true" pageSize="50">
                 <thead>
                     <tr>
                         <th field="ID" width="50" align="left" hidden="true">ID</th>
@@ -151,7 +151,7 @@
             </table>
         </div>
         <div region="south" split="true" border="false" style=" height:250px; border-top-style: solid; border-top-width: 1px; border-top-color: #99BBE8;">
-            <table class="easyui-datagrid" border="false" singleSelect="true" id="allotBillDetails" url=""
+            <table class="easyui-datagrid" border="false" singleSelect="true" id="allotBillDetails" url="" pageSize="50"
                 fit="true" fitColumns="true"  pagination="true" rownumbers="true" >
                 <thead>
                     <tr>
@@ -220,8 +220,8 @@
                     <td >储位编码</td>
                     <td align="left">
                       <input type="text" name="CellCode" id="cellCode" class="easyui-validatebox" required="true" readonly="true" missingmessage="请选择储位！"/>
-                      <a href="#" onclick="javascript:inCellSelect($('input[name=CellCode]'),$('input[name=CellName]'))" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
-                      @*<a href="#" onclick="allotInSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true">*@
+                      @*<a href="#" onclick="javascript:inCellSelect($('input[name=CellCode]'),$('input[name=CellName]'))" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>*@
+                      <a href="#" onclick="allotInSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
                     </td>
                   </tr>
                   <tr>

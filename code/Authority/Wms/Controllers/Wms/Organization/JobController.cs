@@ -29,6 +29,16 @@ namespace Authority.Controllers.Wms.Organization
             return View();
         }
 
+        public ActionResult AddPage()
+        {
+            return View();
+        }
+
+        public ActionResult SearchPage()
+        {
+            return View();
+        }
+
         //
         // GET: /Job/Details/
 
@@ -103,18 +113,17 @@ namespace Authority.Controllers.Wms.Organization
             System.Data.DataTable dt = JobService.GetJob(page, rows, jobCode, jobName, isActive);
             string headText = "岗位信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10; Int16 colHeadWidth = 300;
-            string exportDate = "导出时间：" + System.DateTime.Now.ToString("yyyy-MM-dd");
-            string filename = headText + DateTime.Now.ToString("yyMMdd-HHmm-ss");
-
-            Response.Clear();
-            Response.BufferOutput = false;
-            Response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
-            Response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            Response.ContentType = "application/ms-excel";
-
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize,
-                colHeadFont, colHeadSize, colHeadWidth, exportDate);
+            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         "……"  //眉左
+                                        ,"……"  //眉中
+                                        ,"……"  //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
         #endregion

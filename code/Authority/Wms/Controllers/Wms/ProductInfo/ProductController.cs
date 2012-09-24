@@ -76,5 +76,37 @@ namespace Authority.Controllers.ProductInfo
             var product = ProductService.checkFindProduct();
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /Product/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string productName = Request.QueryString["productName"];
+            string productCode = Request.QueryString["productCode"];
+            string customCode = Request.QueryString["customCode"];
+            string brandCode = Request.QueryString["brandCode"];
+            string uniformCode = Request.QueryString["uniformCode"];
+            string abcTypeCode = Request.QueryString["abcTypeCode"];
+            string shortCode = Request.QueryString["shortCode"];
+            string priceLevelCode = Request.QueryString["priceLevelCode"];
+            string supplierCode = Request.QueryString["supplierCode"];
+
+            System.Data.DataTable dt = ProductService.GetProduct(page, rows, productName, productCode, customCode, brandCode, uniformCode, abcTypeCode, shortCode, priceLevelCode, supplierCode);
+            string headText = "卷烟信息";
+            string headFont = "微软雅黑"; Int16 headSize = 20;
+            string colHeadFont = "宋体"; Int16 colHeadSize = 10;
+            string[] HeaderFooder = {   
+                                         ""      //眉左
+                                        ,""      //眉中
+                                        ,""      //眉右
+                                        ,"&D"    //脚左 日期
+                                        ,"……"  //脚中
+                                        ,"&P"    //脚右 页码
+                                    };            
+            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+            return new FileStreamResult(ms, "application/ms-excel");
+        }
+        #endregion
     }
 }

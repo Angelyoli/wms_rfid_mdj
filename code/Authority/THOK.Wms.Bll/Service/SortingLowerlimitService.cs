@@ -125,5 +125,70 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+        public System.Data.DataTable GetSortingLowerlimit(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
+        {
+            IQueryable<SortingLowerlimit> lowerLimitQuery = SortingLowerlimitRepository.GetQueryable();
+            var lowerLimit = lowerLimitQuery.OrderBy(b => new { b.SortingLineCode, b.ProductCode }).Where(s => s.SortingLineCode == s.SortingLineCode);
+            if (sortingLineCode != string.Empty && sortingLineCode != null)
+            {
+                lowerLimit = lowerLimit.Where(l => l.SortingLineCode.Contains(sortingLineCode));
+            }
+            if (sortingLineName != string.Empty && sortingLineName != null)
+            {
+                lowerLimit = lowerLimit.Where(l => l.SortingLine.SortingLineName.Contains(sortingLineName));
+            }
+            if (productCode != string.Empty && productCode != null)
+            {
+                lowerLimit = lowerLimit.Where(l => l.ProductCode.Contains(productCode));
+            }
+            if (productName != string.Empty && productName != null)
+            {
+                lowerLimit = lowerLimit.Where(l => l.Product.ProductName.Contains(productName));
+            }
+            if (IsActive != string.Empty && IsActive != null)
+            {
+                lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
+            }
+            var temp = lowerLimit.ToArray().AsEnumerable().Select(b => new
+            {
+                b.ID,
+                b.SortingLineCode,
+                b.SortingLine.SortingLineName,
+                b.ProductCode,
+                b.Product.ProductName,
+                b.UnitCode,
+                b.Unit.UnitName,
+                Quantity = b.Quantity / b.Unit.Count,
+                IsActive = b.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("分拣线编码", typeof(string));
+            dt.Columns.Add("分拣线名称", typeof(string));
+            dt.Columns.Add("卷烟编码", typeof(string));
+            dt.Columns.Add("卷烟名称", typeof(string));
+            dt.Columns.Add("单位编码", typeof(string));
+            dt.Columns.Add("单位名称", typeof(string));
+            dt.Columns.Add("下限数量", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("修改时间", typeof(string));
+            foreach (var t in temp)
+            {
+                dt.Rows.Add
+                    (
+                        t.SortingLineCode,
+                        t.SortingLineName,
+                        t.ProductCode,
+                        t.ProductName,
+                        t.UnitCode,
+                        t.UnitName,
+                        t.Quantity,
+                        t.IsActive,
+                        t.UpdateTime
+                    );
+            }
+            return dt;
+        }
     }
 }

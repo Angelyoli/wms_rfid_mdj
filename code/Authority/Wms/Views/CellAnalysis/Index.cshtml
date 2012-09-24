@@ -1,0 +1,51 @@
+﻿<script src="/Content/Scripts/highstock/highstock.js" type="text/javascript"></script>
+<script src="/Content/Scripts/highstock/modules/exporting.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function () { $.getJSON("/CellAnalysis/Details", function(data) { 
+ var arr = new Array();
+            for (var i in data) {
+                arr.push([data[i].areaName,data[i].totalQuantity]);
+            }
+    var chart;
+	$(document).ready(function () {
+		chart = new Highcharts.Chart({
+		    chart: {
+		        renderTo: 'container',
+		        plotBackgroundColor: null,
+		        plotBorderWidth: null,
+		        plotShadow: false,
+		    },
+		    title: {
+		        text: '库区占有率分析'
+		    },
+		    tooltip: {
+		        pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+		        percentageDecimals: 1
+		    },
+		    plotOptions: {
+		        pie: {
+		            allowPointSelect: true,
+		            cursor: 'pointer',
+		            dataLabels: {
+		                enabled: true,
+		                color: '#000000',
+		                connectorColor: '#000000',
+		                formatter: function () {
+		                    return '<b>' + this.point.name + '</b>: ' + this.percentage + ' %';
+		                }
+		            }
+		        }
+		    },
+		    series: [{
+                type:'pie',
+                name: '库区占有率',
+		        data:arr
+            }]
+		}) 
+	})
+    });
+    });
+</script>
+<div region="center" split="true"  border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">  
+<div id="container" style="height: 470px; min-width: 500px"></div>
+</div>
