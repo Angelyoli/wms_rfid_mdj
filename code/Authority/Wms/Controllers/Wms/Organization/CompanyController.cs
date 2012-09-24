@@ -121,11 +121,11 @@ namespace Authority.Controllers.Organization
             string headText = "公司信息";
             string headFont = "微软雅黑"; 
             Int16 headSize = 20;
-            Int16 headColor = NPOI.HSSF.Util.HSSFColor.RED.index;
+            Int16 headColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
             string colHeadFont = "宋体"; 
             Int16 colHeadSize = 10;
-            Int16 colHeadColor = NPOI.HSSF.Util.HSSFColor.BLUE.index;
-            Int16 contentColor = NPOI.HSSF.Util.HSSFColor.GREEN.index;
+            Int16 colHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            Int16 contentColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
             string[] HeaderFooder = {   
                                          "……"  //眉左
                                         ,"……"  //眉中
@@ -135,56 +135,9 @@ namespace Authority.Controllers.Organization
                                         ,"&P"    //脚右 页码
                                     };
             MemoryStream ms = ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                ,headColor,false, colHeadFont, colHeadSize, colHeadColor, true, contentColor, HeaderFooder);
+                , headColor, false, colHeadFont, colHeadSize, colHeadColor, true, contentColor, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
         }
-        #endregion
-
-        public FileStreamResult a()
-        {
-            int page = 0, rows = 0;
-            string companyCode = Request.QueryString["companyCode"] ?? "";
-            string companyName = Request.QueryString["companyName"] ?? "";
-            string companyType = Request.QueryString["companyType"] ?? "";
-            string isActive = Request.QueryString["isActive"] ?? "";
-
-            DataTable table = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
-            int rowIndex = 2;         //从第二行开始，因为前两行是模板里面的内容 
-            int colIndex = 0;
-
-            string filename = "name" + DateTime.Now.ToString("yyMMdd-HHmm-ss");
-            HttpResponse response = System.Web.HttpContext.Current.Response;
-            response.Clear();
-            response.BufferOutput = false;
-            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
-            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            response.ContentType = "application/ms-excel";
-
-            FileStream file = new FileStream(Server.MapPath("~/ExcelTemplate/test.xls"), FileMode.Open, FileAccess.Read);//读入excel模板
-            HSSFWorkbook hssfworkbook = new HSSFWorkbook(file);
-            HSSFSheet sheet1 = (HSSFSheet)hssfworkbook.GetSheet("公司信息");
-            //sheet1.GetRow(0).GetCell(0).SetCellValue("公司信息");      //设置表头
-            foreach (DataRow row in table.Rows)
-            {   //双循环写入table中的数据
-                rowIndex++;
-                colIndex = 0;
-                HSSFRow xlsrow = sheet1.CreateRow(rowIndex) as HSSFRow;
-                foreach (DataColumn col in table.Columns)
-                {
-                    xlsrow.CreateCell(colIndex).SetCellValue(row[col.ColumnName].ToString());
-                    colIndex++;
-                }
-            }
-            sheet1.ForceFormulaRecalculation = true;
-            //FileStream fileS = new FileStream(Server.MapPath("~/ExcelTemplate/" + "OutPut" + ".xls"), FileMode.Create);//保存
-            //hssfworkbook.Write(fileS);
-            //fileS.Close();
-            MemoryStream ms = new MemoryStream();
-            hssfworkbook.Write(ms);
-            ms.Flush();
-            ms.Position = 0;            
-            file.Close();
-            return new FileStreamResult(ms, "application/ms-excel");
-        }
+        #endregion 
     }
 }
