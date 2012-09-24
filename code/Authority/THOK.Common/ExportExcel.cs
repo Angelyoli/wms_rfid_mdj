@@ -29,8 +29,8 @@ namespace THOK.Common
         /// <param name="headSize">标题大小</param>
         /// <param name="headColor">标题颜色</param>
         /// <param name="headBorder">标题是否显示边框</param>
-        /// <param name="colHeadFont">列头字体</param>
-        /// <param name="colHeadSize">列头大小</param>
+        /// <param name="colHeadFont">列头、内容字体</param>
+        /// <param name="colHeadSize">列头、内容大小</param>
         /// <param name="colHeadColor">列头颜色</param>
         /// <param name="colHeadBorder">是否显示边框(除了标题外)</param>
         /// <param name="contentColor">内容字体颜色</param>
@@ -49,6 +49,7 @@ namespace THOK.Common
             #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
             double columnWidth = colHeadSize - 9.5;
+            short printSetupFit = 0;
             #endregion
 
             #region 浏览器下载
@@ -59,7 +60,8 @@ namespace THOK.Common
             workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.CreateSheet(headText1) as HSSFSheet;
             HSSFCellStyle contentDateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            sheet.PrintSetup.FitHeight = 0;
+            sheet.PrintSetup.FitHeight = printSetupFit;
+            sheet.PrintSetup.FitWidth = printSetupFit;
             #endregion
 
             #region 全局样式方法
@@ -130,7 +132,8 @@ namespace THOK.Common
                         if (rowIndex1 != 0)
                         {
                             sheet = workbook.CreateSheet() as HSSFSheet;
-                            sheet.PrintSetup.FitHeight = 0;
+                            sheet.PrintSetup.FitHeight = printSetupFit;
+                            sheet.PrintSetup.FitWidth = printSetupFit;
                         }
                         /*--------------------- 填充表头、样式 ---------------------*/
                         {
@@ -198,7 +201,8 @@ namespace THOK.Common
                             if (rowIndex2 != 1)
                             {
                                 sheet = workbook.CreateSheet(headText2) as HSSFSheet;
-                                sheet.PrintSetup.FitHeight = 0;
+                                sheet.PrintSetup.FitHeight = printSetupFit;
+                                sheet.PrintSetup.FitWidth = printSetupFit;
                             }
                             /*--------------------- 填充表头、样式 ---------------------*/
                             {

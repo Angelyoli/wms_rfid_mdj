@@ -121,11 +121,11 @@ namespace Authority.Controllers.Organization
             string headText = "公司信息";
             string headFont = "微软雅黑"; 
             Int16 headSize = 20;
-            Int16 headColor = NPOI.HSSF.Util.HSSFColor.RED.index;
+            Int16 headColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
             string colHeadFont = "宋体"; 
             Int16 colHeadSize = 10;
-            Int16 colHeadColor = NPOI.HSSF.Util.HSSFColor.BLUE.index;
-            Int16 contentColor = NPOI.HSSF.Util.HSSFColor.GREEN.index;
+            Int16 colHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            Int16 contentColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
             string[] HeaderFooder = {   
                                          "……"  //眉左
                                         ,"……"  //眉中
