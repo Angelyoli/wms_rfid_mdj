@@ -170,7 +170,7 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("卷烟名称", typeof(string));
             dt.Columns.Add("单位编码", typeof(string));
             dt.Columns.Add("单位名称", typeof(string));
-            dt.Columns.Add("下限数量", typeof(decimal));
+            dt.Columns.Add("下限数量", typeof(string));
             dt.Columns.Add("是否可用", typeof(string));
             dt.Columns.Add("修改时间", typeof(string));
             foreach (var t in temp)

@@ -280,10 +280,10 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("公司名称", typeof(string));
             dt.Columns.Add("公司类型", typeof(string));
             dt.Columns.Add("上级名称", typeof(string));
-            dt.Columns.Add("仓库面积", typeof(decimal));
-            dt.Columns.Add("仓库个数", typeof(decimal));
-            dt.Columns.Add("仓库容量", typeof(decimal));
-            dt.Columns.Add("分拣线数", typeof(decimal));
+            dt.Columns.Add("仓库面积", typeof(string));
+            dt.Columns.Add("仓库个数", typeof(string));
+            dt.Columns.Add("仓库容量", typeof(string));
+            dt.Columns.Add("分拣线数", typeof(string));
             dt.Columns.Add("状态", typeof(string));
             dt.Columns.Add("更新时间", typeof(string));
             foreach (var item in company)

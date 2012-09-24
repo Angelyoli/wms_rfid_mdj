@@ -349,8 +349,8 @@ namespace THOK.Wms.Bll.Service
                 });
                 dt.Columns.Add("商品编码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
-                dt.Columns.Add("数量(件)", typeof(decimal));
-                dt.Columns.Add("数量(条)", typeof(decimal));
+                dt.Columns.Add("数量(件)", typeof(string));
+                dt.Columns.Add("数量(条)", typeof(string));
                 dt.Columns.Add("入库时间", typeof(string));
                 foreach (var item in currentstorage)
                 {
@@ -378,8 +378,8 @@ namespace THOK.Wms.Bll.Service
                 });
                 dt.Columns.Add("商品编码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
-                dt.Columns.Add("数量(件)", typeof(decimal));
-                dt.Columns.Add("数量(条)", typeof(decimal));
+                dt.Columns.Add("数量(件)", typeof(string));
+                dt.Columns.Add("数量(条)", typeof(string));
                 dt.Columns.Add("入库时间", typeof(string));
                 foreach (var item in currentstorage)
                 {

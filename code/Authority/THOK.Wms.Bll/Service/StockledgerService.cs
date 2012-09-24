@@ -284,9 +284,9 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("单据业务", typeof(string));
             dt.Columns.Add("商品代码", typeof(string));
             dt.Columns.Add("商品名称", typeof(string));
-            dt.Columns.Add("账面数量", typeof(decimal));
-            dt.Columns.Add("数量(自然件)", typeof(decimal));
-            dt.Columns.Add("数量(条)", typeof(decimal));
+            dt.Columns.Add("账面数量", typeof(string));
+            dt.Columns.Add("数量(自然件)", typeof(string));
+            dt.Columns.Add("数量(条)", typeof(string));
             dt.Columns.Add("单据单位", typeof(string));
             foreach (var item in query)
             {

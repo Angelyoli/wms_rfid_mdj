@@ -158,7 +158,7 @@ namespace THOK.Wms.Bll.Service
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("计量单位编码", typeof(string));
             dt.Columns.Add("计量单位名称", typeof(string));
-            dt.Columns.Add("支数", typeof(decimal));
+            dt.Columns.Add("支数", typeof(string));
             dt.Columns.Add("是否启用", typeof(string));
             dt.Columns.Add("更新时间", typeof(string));
             foreach (var item in temp)

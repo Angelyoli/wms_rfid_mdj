@@ -148,11 +148,11 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("计量单位系列编码", typeof(string));
             dt.Columns.Add("计量单位系列名称", typeof(string));
             dt.Columns.Add("件单位名称", typeof(string));
-            dt.Columns.Add("转换比例1", typeof(int));
+            dt.Columns.Add("转换比例1", typeof(string));
             dt.Columns.Add("条单位名称", typeof(string));
-            dt.Columns.Add("转换比例2", typeof(int));
+            dt.Columns.Add("转换比例2", typeof(string));
             dt.Columns.Add("包单位名称", typeof(string));
-            dt.Columns.Add("转换比例3", typeof(int));
+            dt.Columns.Add("转换比例3", typeof(string));
             dt.Columns.Add("支单位名称", typeof(string));
             dt.Columns.Add("是否启用", typeof(string));
             dt.Columns.Add("更新时间", typeof(string));

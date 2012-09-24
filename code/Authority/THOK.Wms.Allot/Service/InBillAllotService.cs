@@ -477,8 +477,8 @@ namespace THOK.Wms.Allot.Service
             dt.Columns.Add("商品名称", typeof(string));
             dt.Columns.Add("储位名称", typeof(string));
             dt.Columns.Add("单位名称", typeof(string));
-            dt.Columns.Add("分配数量", typeof(decimal));
-            dt.Columns.Add("实际数量", typeof(decimal));
+            dt.Columns.Add("分配数量", typeof(string));
+            dt.Columns.Add("实际数量", typeof(string));
             dt.Columns.Add("作业人员", typeof(string));
             dt.Columns.Add("开始时间", typeof(string));
             dt.Columns.Add("完成时间", typeof(string));

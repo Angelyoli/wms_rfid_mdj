@@ -326,8 +326,8 @@ namespace THOK.Wms.Bll.Service
              dt.Columns.Add("商品名称", typeof(string));
              dt.Columns.Add("单位编码", typeof(string));
              dt.Columns.Add("单位名称", typeof(string));
-             dt.Columns.Add("数量下限", typeof(decimal));
-             dt.Columns.Add("数量上限", typeof(decimal));
+             dt.Columns.Add("数量下限", typeof(string));
+             dt.Columns.Add("数量上限", typeof(string));
              dt.Columns.Add("积压时间", typeof(string));
              dt.Columns.Add("备注", typeof(string));
              foreach (var p in productWarn)

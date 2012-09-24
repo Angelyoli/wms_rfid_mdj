@@ -919,7 +919,7 @@ namespace THOK.Wms.Bll.Service
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("卷烟编码", typeof(string));
             dt.Columns.Add("卷烟名称", typeof(string));
-            dt.Columns.Add("货位数量", typeof(decimal));
+            dt.Columns.Add("货位数量", typeof(string));
 
             foreach (var item in cellInfo)
             {
@@ -1112,11 +1112,11 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("描述", typeof(string));
             dt.Columns.Add("是否可用", typeof(string));
             dt.Columns.Add("预设卷烟名称", typeof(string));
-            dt.Columns.Add("货位层号", typeof(int));
-            dt.Columns.Add("货位最大量", typeof(int));
+            dt.Columns.Add("货位层号", typeof(string));
+            dt.Columns.Add("货位最大量", typeof(string));
             dt.Columns.Add("时间", typeof(string));
-            dt.Columns.Add("入库顺序", typeof(int));
-            dt.Columns.Add("出库顺序", typeof(int));
+            dt.Columns.Add("入库顺序", typeof(string));
+            dt.Columns.Add("出库顺序", typeof(string));
             foreach (var item in set)
             {
                 dt.Rows.Add
