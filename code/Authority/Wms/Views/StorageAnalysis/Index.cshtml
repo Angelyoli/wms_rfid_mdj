@@ -46,8 +46,13 @@
                 series: [{
                     name: '库存总量',
                     data: arr,
+                    marker: {
+                        enabled: true,
+                        radius: 3
+                    },
+                    shadow: true,
                     tooltip: {
-                        valueDecimals: 4
+                        valueDecimals: 2
                     }
                 }]
             });
