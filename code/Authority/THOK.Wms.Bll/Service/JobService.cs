@@ -181,5 +181,62 @@ namespace THOK.Wms.Bll.Service
             job = job.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = job.ToArray() };
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <param name="JobCode"></param>
+        /// <param name="JobName"></param>
+        /// <param name="IsActive"></param>
+        /// <returns></returns>
+        public System.Data.DataTable GetJob(int page, int rows, string jobCode, string jobName, string isActive)
+        {
+            IQueryable<Job> jobQuery = JobRepository.GetQueryable();
+            var job = jobQuery.Where(j => j.JobCode.Contains(jobCode) && j.JobName.Contains(jobName))
+                .OrderByDescending(j => j.UpdateTime).AsEnumerable()
+                .Select(j => new
+                {
+                    j.ID,
+                    j.JobCode,
+                    j.JobName,
+                    j.Description,
+                    IsActive = j.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                });
+            if (!isActive.Equals(""))
+            {
+                job = jobQuery.Where(j => j.JobCode.Contains(jobCode) && j.JobName.Contains(jobName) && j.IsActive.Contains(isActive))
+                    .OrderByDescending(j => j.UpdateTime).AsEnumerable()
+                    .Select(j => new
+                    {
+                        j.ID,
+                        j.JobCode,
+                        j.JobName,
+                        j.Description,
+                        IsActive = j.IsActive == "1" ? "可用" : "不可用",
+                        UpdateTime = j.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                    });
+            }
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("岗位编码", typeof(string));
+            dt.Columns.Add("岗位名称", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("是否可用", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in job)
+            {
+                dt.Rows.Add
+                    (
+                        item.JobCode,
+                        item.JobName,
+                        item.Description,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+            }
+            return dt;
+        }
     }
 }

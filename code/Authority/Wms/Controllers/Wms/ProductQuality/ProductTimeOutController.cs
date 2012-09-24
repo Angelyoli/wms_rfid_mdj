@@ -29,7 +29,7 @@ namespace Wms.Controllers.Wms.ProductQuality
         public ActionResult GetProductDetails(int page, int rows, FormCollection collection)
         {
             string productCode = collection["ProductCode"] ?? "";
-            decimal assemblyTime=180;
+            decimal assemblyTime=360;
             if (collection["AssemblyTime"] != null && collection["AssemblyTime"] != "")
             {
                assemblyTime= decimal.Parse(collection["AssemblyTime"]);
