@@ -33,13 +33,13 @@
 
     function save() {
         if ($("#Node_type").combo("getValue") == "2" || $("#Node_type").combo("getValue") == "3") {
-            if ($("#inputFatherNodeID").val() == "") {
+            if ($("#fatherNodeID").val() == "") {
                 $.messager.alert("提示", "父结点不能为空!", "info");
                 return false
             }
         }
         if ($("#Node_type").combo("getValue") == "1") {
-            if ($("#inputFatherNodeID").val() != "") {
+            if ($("#fatherNodeID").val() != "") {
                 $.messager.alert("提示", "第一节点没有父节点!", "info");
                 return false
             }
@@ -133,7 +133,7 @@
                        父节点:
                     </td>
                      <td width="168">
-                        <input name="FatherNodeID" id="fatherNodeID" validtype="maxLength[50]" required="true" />     
+                        <input name="FatherNodeID" id="fatherNodeID"/>     
                         <a href="#" id="FatherNodeIDSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="helpSelect1()"></a>
                        </td>

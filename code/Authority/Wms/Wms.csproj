@@ -100,6 +100,7 @@
     <Compile Include="Controllers\Authority\AuthorizeController.cs" />
     <Compile Include="Controllers\Authority\FunctionController.cs" />
     <Compile Include="Controllers\Authority\HelpContentController.cs" />
+    <Compile Include="Controllers\Authority\HelpEditController.cs" />
     <Compile Include="Controllers\Authority\LoginLogController.cs" />
     <Compile Include="Controllers\Authority\ModuleController.cs" />
     <Compile Include="Controllers\Authority\RoleController.cs" />
