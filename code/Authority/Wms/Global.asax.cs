@@ -55,7 +55,7 @@ namespace Wms
             RegisterRoutes(RouteTable.Routes);
         }
 
-        void Application_Error()
+        void Application_Error1()
         {
             Exception exception = Server.GetLastError();
             if (exception != null)
