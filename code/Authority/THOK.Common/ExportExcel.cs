@@ -396,8 +396,13 @@ namespace THOK.Common
                 hssfRow.GetCell(column.Ordinal).CellStyle = contentStyle;
             }
             string drValue = row[column].ToString();
+            ChangeFormat(column,drValue,newCell,contentDateStyle);
+        }
+        #endregion
 
-            #region switch
+        #region 转换格式
+        static void ChangeFormat(DataColumn column, string drValue, HSSFCell newCell, HSSFCellStyle contentDateStyle)
+        {
             switch (column.DataType.ToString())
             {
                 case "System.String":   //字符串类型
@@ -436,8 +441,7 @@ namespace THOK.Common
                     newCell.SetCellValue("");
                     break;
             }
-            #endregion
-        }
+        } 
         #endregion
 
         #region 取得列宽
