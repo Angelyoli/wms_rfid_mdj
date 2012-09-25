@@ -78,21 +78,11 @@ namespace THOK.Common
             #endregion
 
             #region 取得列宽 表一
-            int[] arrColWidth = new int[dt1.Columns.Count];
-            foreach (DataColumn item in dt1.Columns)
+            int[] arrColWidth1 = new int[0];
+            if (dt1 != null && headText1 != null)
             {
-                arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;//936是指GB2312编码
-            }
-            for (int i = 0; i < dt1.Rows.Count; i++)
-            {
-                for (int j = 0; j < dt1.Columns.Count; j++)
-                {
-                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt1.Rows[i][j].ToString()).Length;
-                    if (intTemp > arrColWidth[j])
-                    {
-                        arrColWidth[j] = intTemp;
-                    }
-                }
+                arrColWidth1 = new int[dt1.Columns.Count];
+                GetColumnWidth(dt1, arrColWidth1);
             }
             #endregion
 
@@ -101,21 +91,7 @@ namespace THOK.Common
             if (dt2 != null && headText2 != null)
             {
                 arrColWidth2 = new int[dt2.Columns.Count];
-                foreach (DataColumn item in dt2.Columns)
-                {
-                    arrColWidth2[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;
-                }
-                for (int i = 0; i < dt2.Rows.Count; i++)
-                {
-                    for (int j = 0; j < dt2.Columns.Count; j++)
-                    {
-                        int intTemp = Encoding.GetEncoding(936).GetBytes(dt2.Rows[i][j].ToString()).Length;
-                        if (intTemp > arrColWidth2[j])
-                        {
-                            arrColWidth2[j] = intTemp;
-                        }
-                    }
-                }
+                GetColumnWidth(dt2, arrColWidth2);
             }
             #endregion
 
@@ -192,7 +168,7 @@ namespace THOK.Common
                                 {
                                     headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                     headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
-                                    sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth[column.Ordinal] + columnWidth) * 256));//设置列宽
+                                    sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth1[column.Ordinal] + columnWidth) * 256));//设置列宽
                                 }
                             }
                             rowIndex1 = 3; 
@@ -461,6 +437,27 @@ namespace THOK.Common
                     break;
             }
             #endregion
+        }
+        #endregion
+
+        #region 取得列宽
+        static void GetColumnWidth(DataTable dt,int[] arrColWidth)
+        {
+            foreach (DataColumn item in dt.Columns)
+            {
+                arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;//936是指GB2312编码
+            }
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt.Rows[i][j].ToString()).Length;
+                    if (intTemp > arrColWidth[j])
+                    {
+                        arrColWidth[j] = intTemp;
+                    }
+                }
+            }
         }
         #endregion
 
