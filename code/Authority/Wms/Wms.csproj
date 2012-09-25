@@ -100,6 +100,7 @@
     <Compile Include="Controllers\Authority\AuthorizeController.cs" />
     <Compile Include="Controllers\Authority\FunctionController.cs" />
     <Compile Include="Controllers\Authority\HelpContentController.cs" />
+    <Compile Include="Controllers\Authority\HelpEditController.cs" />
     <Compile Include="Controllers\Authority\LoginLogController.cs" />
     <Compile Include="Controllers\Authority\ModuleController.cs" />
     <Compile Include="Controllers\Authority\RoleController.cs" />
@@ -546,6 +547,7 @@
     <Content Include="Content\themes\base\icons\Menu_CheckBill.png" />
     <Content Include="Content\themes\base\icons\Menu_Organization.png" />
     <Content Include="Content\themes\base\icons\Menu_Cigarette.png" />
+    <Content Include="Content\themes\base\icons\Menu_ProductQuality.jpg" />
     <Content Include="Content\themes\base\icons\Menu_Research.png" />
     <Content Include="Content\themes\base\icons\Menu_Sort.png" />
     <Content Include="Content\themes\base\icons\Menu_StockDiffer.png" />
@@ -555,6 +557,7 @@
     <Content Include="Content\themes\base\icons\Menu_Warehouse.png" />
     <Content Include="Content\themes\base\icons\Menu_WarehouseM.png" />
     <Content Include="Content\themes\base\icons\son_Bill_Type.jpg" />
+    <Content Include="Content\themes\base\icons\Son_CellAnalysis.jpg" />
     <Content Include="Content\themes\base\icons\son_CheckBill.png" />
     <Content Include="Content\themes\base\icons\son_CheckBillAllot.png" />
     <Content Include="Content\themes\base\icons\son_CheckBillMake.png" />
@@ -572,6 +575,7 @@
     <Content Include="Content\themes\base\icons\son_MoveBill.png" />
     <Content Include="Content\themes\base\icons\son_MoveBillAllot.png" />
     <Content Include="Content\themes\base\icons\son_MoveBillWork.png" />
+    <Content Include="Content\themes\base\icons\Son_ProductWarning.jpg" />
     <Content Include="Content\themes\base\icons\son_SortInfo.png" />
     <Content Include="Content\themes\base\icons\son_SortOrder.png" />
     <Content Include="Content\themes\base\icons\son_SortOrderc.png" />
@@ -946,6 +950,7 @@
     <Content Include="Content\themes\base\images\Menu_CheckBill.png" />
     <Content Include="Content\themes\base\images\Menu_Cigarette.png" />
     <Content Include="Content\themes\base\images\Menu_Organization.png" />
+    <Content Include="Content\themes\base\images\Menu_ProductQuality.jpg" />
     <Content Include="Content\themes\base\images\Menu_Research.png" />
     <Content Include="Content\themes\base\images\Menu_Sort.png" />
     <Content Include="Content\themes\base\images\Menu_StockDiffer.png" />
@@ -985,6 +990,7 @@
     <Content Include="Content\themes\base\images\old_warehouse.jpg" />
     <Content Include="Content\themes\base\images\son_Bill_Check.png" />
     <Content Include="Content\themes\base\images\son_Bill_Type.jpg" />
+    <Content Include="Content\themes\base\images\Son_CellAnalysis.jpg" />
     <Content Include="Content\themes\base\images\son_CheckBill.png" />
     <Content Include="Content\themes\base\images\son_CheckBillAllot.png" />
     <Content Include="Content\themes\base\images\son_CheckBillMake.png" />
@@ -1002,6 +1008,7 @@
     <Content Include="Content\themes\base\images\son_MoveBill.png" />
     <Content Include="Content\themes\base\images\son_MoveBillAllot.png" />
     <Content Include="Content\themes\base\images\son_MoveBillWork.png" />
+    <Content Include="Content\themes\base\images\Son_ProductWarning.jpg" />
     <Content Include="Content\themes\base\images\son_SortInfo.png" />
     <Content Include="Content\themes\base\images\son_SortOrder.png" />
     <Content Include="Content\themes\base\images\son_SortOrderc.png" />

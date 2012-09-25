@@ -221,6 +221,15 @@
 .icon-son_CheckBillMake{
 	background:url('icons/son_CheckBillMake.png') no-repeat;
 }
+.icon-Menu_ProductQuality{
+	background:url('icons/Menu_ProductQuality.jpg') no-repeat;
+}
+.icon-Son_ProductWarning{
+	background:url('icons/Son_ProductWarning.jpg') no-repeat;
+}
+.icon-Son_CellAnalysis{
+	background:url('icons/Son_CellAnalysis.jpg') no-repeat;
+}
 
 /*新增icon.css -images*/
 .image-Menu_Organization{
@@ -367,7 +376,15 @@
 .image-son_CheckBillMake{
 	background:url('images/son_CheckBillMake.png') no-repeat;
 }
-
+.image-Menu_ProductQuality{
+	background:url('images/Menu_ProductQuality.jpg') no-repeat;
+}
+.image-Son_ProductWarning{
+	background:url('images/Son_ProductWarning.jpg') no-repeat;
+}
+.image-Son_CellAnalysis{
+	background:url('images/Son_CellAnalysis.jpg') no-repeat;
+}
 /*新增权限系统icon.css -icons*/
 .icon-Menu_Help{
 	background:url('icons/2Menu_Help.png') no-repeat;

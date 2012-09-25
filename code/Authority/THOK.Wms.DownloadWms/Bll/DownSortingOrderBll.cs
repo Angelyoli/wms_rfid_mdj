@@ -15,10 +15,10 @@ namespace THOK.WMS.DownloadWms.Bll
        /// <summary>
        /// 选择日期从营销系统下载分拣信息
        /// </summary>
-       /// <param name="startDate"></param>
+       /// <param name="orderDate"></param>
        /// <param name="endDate"></param>
        /// <returns></returns>
-       public bool GetSortingOrderDate(string startDate, string endDate, out string errorInfo)
+       public bool GetSortingOrderDate(string orderDate, string endDate, out string errorInfo)
        {
            bool tag = false;
            errorInfo=string.Empty;
@@ -28,14 +28,12 @@ namespace THOK.WMS.DownloadWms.Bll
                try
                {
                    //查询仓库7天内的订单号
-                   DataTable orderdt = this.GetOrderId();
+                   DataTable orderdt = this.GetOrderId(orderDate);
                    string orderlist = UtinString.MakeString(orderdt, "order_id");
-                   //orderlist = UtinString.StringMake(orderlist);
-                   string orderlistDate = "ORDER_DATE>='" + startDate + "' AND ORDER_DATE<='" + endDate + "' AND ORDER_ID NOT IN(" + orderlist + ")";
+                   string orderlistDate = "ORDER_DATE ='" + orderDate + "' AND ORDER_ID NOT IN(" + orderlist + ")";
                    DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询订单信息
 
                    string ordermasterlist = UtinString.MakeString(masterdt, "ORDER_ID");//取得根据时间查询的订单号
-                   //ordermasterlist = UtinString.StringMake(ordermasterlist);
                    ordermasterlist = "ORDER_ID IN (" + ordermasterlist + ")";
                    DataTable detaildt = this.GetSortingOrderDetail(ordermasterlist);//根据订单号查询明细
                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
@@ -60,12 +58,12 @@ namespace THOK.WMS.DownloadWms.Bll
        /// 查询4天之内的分拣订单
        /// </summary>
        /// <returns></returns>
-       public DataTable GetOrderId()
+       public DataTable GetOrderId(string orderDate)
        {
            using (PersistentManager dbpm = new PersistentManager())
            {
                DownSortingOrderDao dao = new DownSortingOrderDao();
-               return dao.GetOrderId();
+               return dao.GetOrderId(orderDate);
            }
        }
 

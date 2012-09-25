@@ -3328,8 +3328,8 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleName = "产品质量管理",
                         ShowOrder = 11,
                         ModuleURL = "",
-                        IndicateImage = "icon-Menu_Research",
-                        DeskTopImage = "image-Menu_Research",
+                        IndicateImage = "icon-Menu_ProductQuality",
+                        DeskTopImage = "image-Menu_ProductQuality",
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")
@@ -3340,8 +3340,8 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleName = "产品预警信息设置",
                         ShowOrder = 2,
                         ModuleURL = "/ProductWarning/",
-                        IndicateImage = "icon-son_StockIntoBill",
-                        DeskTopImage = "image-son_StockIntoBill",
+                        IndicateImage = "icon-Son_ProductWarning",
+                        DeskTopImage = "image-Son_ProductWarning",
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")
@@ -3388,8 +3388,8 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleName = "库区占有率分析",
                         ShowOrder = 6,
                         ModuleURL = "/CellAnalysis/",
-                        IndicateImage = "icon-son_DifferBill",
-                        DeskTopImage = "image-son_DifferBill",
+                        IndicateImage = "icon-Son_CellAnalysis",
+                        DeskTopImage = "image-Son_CellAnalysis",
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")

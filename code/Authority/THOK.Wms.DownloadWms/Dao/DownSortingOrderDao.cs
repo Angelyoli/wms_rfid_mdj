@@ -53,9 +53,9 @@ namespace THOK.WMS.DownloadWms.Dao
        /// 查询3天之内的数据
        /// </summary>
        /// <returns></returns>
-       public DataTable GetOrderId()
+       public DataTable GetOrderId(string orderDate)
        {
-           string sql = " SELECT ORDER_ID FROM WMS_SORT_ORDER WHERE order_date>DATEADD(DAY, -3, CONVERT(VARCHAR(14), GETDATE(), 112)) ";
+           string sql = " SELECT ORDER_ID FROM WMS_SORT_ORDER WHERE ORDER_DATE='" + orderDate + "'";
            return this.ExecuteQuery(sql).Tables[0];
        }
 

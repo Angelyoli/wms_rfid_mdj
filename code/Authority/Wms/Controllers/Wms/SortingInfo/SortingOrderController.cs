@@ -61,23 +61,17 @@ namespace Authority.Controllers.Wms.SortingInfo
 
         //
         // POST: /SortingOrder/DownSortOrder/
-        public ActionResult DownSortOrder(string beginDate, string endDate, string sortLineCode, bool isSortDown,string batch)
+        public ActionResult DownSortOrder(string beginDate, string endDate, string sortLineCode, bool isSortDown, string batch)
         {
             string errorInfo = string.Empty;
             string lineErrorInfo = string.Empty;
             string custErrorInfo = string.Empty;
             bool bResult = false;
             bool lineResult = false;
-            if (beginDate == string.Empty || endDate == string.Empty)
-            {
-                beginDate = DateTime.Now.ToString("yyyyMMdd");
-                endDate = DateTime.Now.ToString("yyyyMMdd");
-            }
-            else
-            {
-                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
-                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
-            }
+
+            beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+            endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+
             DownSortingInfoBll sortBll = new DownSortingInfoBll();
             DownRouteBll routeBll = new DownRouteBll();
             DownSortingOrderBll orderBll = new DownSortingOrderBll();
@@ -93,7 +87,7 @@ namespace Authority.Controllers.Wms.SortingInfo
             else
             {
                 //从营销下载分拣数据
-                lineResult = routeBll.DownRouteInfo();                
+                lineResult = routeBll.DownRouteInfo();
                 bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
             }
 

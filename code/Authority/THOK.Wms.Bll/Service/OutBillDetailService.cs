@@ -31,7 +31,7 @@ namespace THOK.Wms.Bll.Service
             {
                 IQueryable<OutBillDetail> outBillDetailQuery = OutBillDetailRepository.GetQueryable();
                 var outBillDetail = outBillDetailQuery.Where(i => i.BillNo.Contains(BillNo))
-                                                      .OrderBy(i => i.BillNo).Select(i => i);
+                                                      .OrderBy(i => new {i.ProductCode,i.BillNo }).Select(i => i);
                 int total = outBillDetail.Count();
                 outBillDetail = outBillDetail.Skip((page - 1) * rows).Take(rows);
 

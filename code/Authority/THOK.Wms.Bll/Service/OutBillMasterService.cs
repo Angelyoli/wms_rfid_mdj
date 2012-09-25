@@ -125,6 +125,7 @@ namespace THOK.Wms.Bll.Service
                         OperatePersonName = i.OperatePerson.EmployeeName,
                         VerifyPersonCode = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeCode,
                         VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
+                        SumQuantity = i.OutBillDetails.Sum(s => s.BillQuantity / s.Product.Unit.Count),
                         BillTypeCode = i.BillType.BillTypeCode,
                         BillTypeName = i.BillType.BillTypeName,
                         VerifyDate = i.VerifyDate == null ? string.Empty : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd HH:mm:ss"),
