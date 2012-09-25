@@ -158,7 +158,20 @@ namespace THOK.Authority.Bll.Service
 
         public bool ChangePassword(string userName, string password, string newPassword)
         {
-            throw new NotImplementedException();
+            bool reg = false;
+            IQueryable<THOK.Authority.DbModel.User> queryCity = UserRepository.GetQueryable();
+            if (String.IsNullOrEmpty(userName)) throw new ArgumentException("值不能为NULL或为空。", "userName");
+            if (String.IsNullOrEmpty(password)) throw new ArgumentException("值不能为NULL或为空。", "password");
+            if (String.IsNullOrEmpty(newPassword)) throw new ArgumentException("值不能为NULL或为空。", "newPassword");
+            var user = queryCity.ToArray().AsEnumerable().FirstOrDefault(c => c.UserName == userName && c.Pwd == EncryptPassword(password));
+            if (user != null)
+            {
+                user.Pwd = EncryptPassword(newPassword);
+                UserRepository.SaveChanges();
+                reg = true;
+            }
+
+            return reg;
         }
 
         public string FindUsersForFunction(string strFunctionID)
