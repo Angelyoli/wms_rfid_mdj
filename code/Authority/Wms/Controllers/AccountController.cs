@@ -73,7 +73,7 @@ namespace Authority.Controllers
         public ActionResult ChangePassword(string userName, string password,string newPassword)
         {
             bool bResult = UserService.ChangePassword(userName, password, newPassword); 
-            string msg = bResult ? "修改密码成功" : "修改密码失败";
+            string msg = bResult ? "修改密码成功" : "修改密码失败,请确认用户名与密码输入正确！";
             return Json(JsonMessageHelper.getJsonMessage(bResult,msg),"text");
         }
 

@@ -119,5 +119,10 @@ namespace Authority.Controllers.Authority
             var user = UserService.GetUser(page, rows, queryString, value);
             return Json(user, "text", JsonRequestBehavior.AllowGet);
         }
+        public ActionResult CheckUserName(string userName)
+        {
+            bool bResult = UserService.Check(userName);
+            return Json(bResult, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -47,19 +47,23 @@ namespace THOK.Authority.Bll.Service
 
         public bool Add(string userName, string pwd, string chineseName, bool isLock, bool isAdmin, string memo)
         {
-            var user = new User()
+            if (Check(userName))
             {
-                UserID = Guid.NewGuid(),
-                UserName = userName,
-                Pwd = EncryptPassword(pwd),
-                ChineseName = chineseName,
-                IsLock = isLock,
-                IsAdmin = isAdmin,
-                Memo = memo
-            };
-            UserRepository.Add(user);
-            UserRepository.SaveChanges();
-            return true;
+                var user = new User()
+                {
+                    UserID = Guid.NewGuid(),
+                    UserName = userName,
+                    Pwd = EncryptPassword(pwd),
+                    ChineseName = chineseName,
+                    IsLock = isLock,
+                    IsAdmin = isAdmin,
+                    Memo = memo
+                };
+                UserRepository.Add(user);
+                UserRepository.SaveChanges();
+                return true;
+            }
+            else { return false; }
         }
 
         public bool Delete(string userID)
@@ -158,9 +162,34 @@ namespace THOK.Authority.Bll.Service
 
         public bool ChangePassword(string userName, string password, string newPassword)
         {
-            throw new NotImplementedException();
+            var Passward = EncryptPassword(password);
+            var pwd=UserRepository.GetQueryable().FirstOrDefault(u=>u.UserName==userName);
+            if (Passward == pwd.Pwd)
+            {
+                pwd.Pwd = EncryptPassword(newPassword);
+                UserRepository.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-
+        /// <summary>
+        /// 验证，用户名不能重复
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public bool Check(string userName)
+        {
+            var userNames = UserRepository.GetQueryable().Select(u=>u.UserName).ToArray();
+            if(userNames.Contains(userName))
+            {
+                return false;
+            }
+            else{
+            return true;}
+        }
         public string FindUsersForFunction(string strFunctionID)
         {
             throw new NotImplementedException();

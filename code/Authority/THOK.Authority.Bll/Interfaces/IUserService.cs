@@ -32,5 +32,7 @@ namespace THOK.Authority.Bll.Interfaces
 
         object GetUser(int page, int rows, string queryString, string value);
 
+        bool Check(string userName);
+
     }
 }

@@ -84,6 +84,11 @@
                             text: '货位数量（个）'
                         }
                     },
+                    exporting: {
+                        url: '/HighchartsExport.axd/',
+                        filename: '货位利用分析图',
+                        width: 1200
+                    },
                     tooltip: {
                         formatter: function () {
                             return '<b>' + this.series.name + '</b><br/>' +
