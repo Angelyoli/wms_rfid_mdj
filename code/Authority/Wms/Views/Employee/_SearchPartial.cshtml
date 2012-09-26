@@ -30,16 +30,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.EmployeeCode = $('#EmployeeCode').val();
-                        queryParams.EmployeeName = $('#EmployeeName').val();
-                        queryParams.DepartmentID = $('#department-id').val();
-                        queryParams.JobID = $('#job-id').val();
-                        queryParams.Status = $('#Status_Search').combo('getValue');
-                        queryParams.IsActive = $('#isActive').combo('getValue');
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -74,4 +65,23 @@
         $('#isActive').combobox('clear'); 
     }
 
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.EmployeeCode = $('#EmployeeCode').val();
+        queryParams.EmployeeName = $('#EmployeeName').val();
+        queryParams.DepartmentID = $('#department-id').val();
+        queryParams.JobID = $('#job-id').val();
+        queryParams.Status = $('#Status_Search').combo('getValue');
+        queryParams.IsActive = $('#isActive').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+    $(document).keydown(function (e) {
+        e = e ? e : window.event;
+        var keyCode = e.which ? e.which : e.keyCode;
+        if (keyCode == 13) {
+            GetQueryParams();
+        }
+    });
 </script>

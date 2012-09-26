@@ -26,14 +26,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.DepartmentCode = $('#DepartmentCode').val();
-                        queryParams.DepartmentName = $('#DepartmentName').val();
-                        queryParams.DepartmentLeaderID = $('#employeename-id').val();
-                        queryParams.CompanyID = $('#companyname-id').val();
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -48,5 +41,21 @@
         }
         searchDialog.dialog('open');
     }
-
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.DepartmentCode = $('#DepartmentCode').val();
+        queryParams.DepartmentName = $('#DepartmentName').val();
+        queryParams.DepartmentLeaderID = $('#employeename-id').val();
+        queryParams.CompanyID = $('#companyname-id').val();
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+    $(document).keydown(function (e) {
+        e = e ? e : window.event;
+        var keyCode = e.which ? e.which : e.keyCode;
+        if (keyCode == 13) {
+            GetQueryParams();
+        }
+    });
 </script>

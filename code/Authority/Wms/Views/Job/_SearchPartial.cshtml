@@ -22,13 +22,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.JobCode = $('#JobCode').val();
-                        queryParams.JobName = $('#JobName').val();
-                        queryParams.IsActive = $('#isActive').combo('getValue');
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -43,4 +37,20 @@
         }
         searchDialog.dialog('open');
     };
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.JobCode = $('#JobCode').val();
+        queryParams.JobName = $('#JobName').val();
+        queryParams.IsActive = $('#isActive').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+    $(document).keydown(function (e) {
+        e = e ? e : window.event;
+        var keyCode = e.which ? e.which : e.keyCode;
+        if (keyCode == 13) {
+            GetQueryParams();
+        }
+    });
 </script>

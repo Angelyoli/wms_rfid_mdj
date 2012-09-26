@@ -17,27 +17,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.CompanyCode = $('#CompanyCode').val();
-                        queryParams.CompanyName = $('#CompanyName').val();
-                        queryParams.CompanyType = $('#companyType').combo('getValue');
-                        queryParams.IsActive = $('#isActive').combo('getValue');
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
-                        $(document).keydown(function (e) {
-                            e = e ? e : window.event;
-                            var keyCode = e.which ? e.which : e.keyCode;
-                            if (keyCode == 13) {
-                                queryParams.CompanyCode = $('#CompanyCode').val();
-                                queryParams.CompanyName = $('#CompanyName').val();
-                                queryParams.CompanyType = $('#companyType').combo('getValue');
-                                queryParams.IsActive = $('#isActive').combo('getValue');
-                                $('#details').datagrid('options').queryParams = queryParams;
-                                $("#details").datagrid('load');
-                                searchDialog.dialog('close');
-                            }
-                        });
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -52,22 +32,22 @@
         }
         searchDialog.dialog('open');
     };
-//    $(function () {
-//        $(document).keydown(function (event) {
-//            var e = e || window.event;
-//            var ecode = e.charCode || e.keyCode;
-//            if (ecode == 13) {
-//                $('#searchId').keypress(function (ecode) {
-//                   
-//                });
-//            }
-//        });
-//    });
-//    $(document).keydown(function (e) {
-//        e = e ? e : window.event;
-//        var keyCode = e.which ? e.which : e.keyCode;
-//        if (keyCode == 13) {
-//            
-//        }
-//    });
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.CompanyCode = $('#CompanyCode').val();
+        queryParams.CompanyName = $('#CompanyName').val();
+        queryParams.CompanyType = $('#companyType').combo('getValue');
+        queryParams.IsActive = $('#isActive').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+
+    }
+    $(document).keydown(function (e) {
+        e = e ? e : window.event;
+        var keyCode = e.which ? e.which : e.keyCode;
+        if (keyCode == 13) {
+            GetQueryParams();
+        }
+    });
 </script>
