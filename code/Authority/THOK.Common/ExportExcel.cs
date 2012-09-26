@@ -48,7 +48,7 @@ namespace THOK.Common
         {
             #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
-            double columnWidth = colHeadSize - 9.5;
+            double columnWidth = colHeadSize - 9;
             short printSetupFit = 0;
             int sheetCount = 65500; //一个sheet中最多存65536行数据
             int page = 0;
