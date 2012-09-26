@@ -140,7 +140,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                                         ,"&P"    //脚右 页码
                                     };
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText1, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion

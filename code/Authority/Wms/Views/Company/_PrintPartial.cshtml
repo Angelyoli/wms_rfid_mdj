@@ -1,17 +1,16 @@
 ﻿<script type="text/javascript">
     function printClick() {
-//        var companyCode = null, companyName = null, companyType = null, isActive = null;
+        var companyCode = null, companyName = null, companyType = null, isActive = null;
 
-//        if ($('#CompanyCode').val() == null) { companyCode = ""; } else { companyCode = $('#CompanyCode').val(); }
-//        if ($('#CompanyName').val() == null) { companyName = ""; } else { companyName = $('#CompanyName').val(); }
-//        if (document.getElementById("companyType") == null) { companyType = ""; } else { companyType = $('#companyType').combo('getValue'); }
-//        if (document.getElementById("isActive") == null) { isActive = ""; } else { isActive = $('#isActive').combo('getValue'); }
+        if ($('#CompanyCode').val() == null) { companyCode = ""; } else { companyCode = $('#CompanyCode').val(); }
+        if ($('#CompanyName').val() == null) { companyName = ""; } else { companyName = $('#CompanyName').val(); }
+        if (document.getElementById("companyType") == null) { companyType = ""; } else { companyType = $('#companyType').combo('getValue'); }
+        if (document.getElementById("isActive") == null) { isActive = ""; } else { isActive = $('#isActive').combo('getValue'); }
 
-//        window.location.href = "/Company/CreateExcelToClient/"
-//                                + "?companyCode=" + companyCode
-//                                + "&companyName=" + companyName
-//                                + "&companyType=" + companyType
-        //                                + "&isActive=" + isActive;
-        window.location.href = "/Company/a/";
+        window.location.href = "/Company/CreateExcelToClient/"
+                                + "?companyCode=" + companyCode
+                                + "&companyName=" + companyName
+                                + "&companyType=" + companyType
+                                + "&isActive=" + isActive;
     }
 </script>

@@ -209,18 +209,6 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = employee.ToArray() };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="EmployeeCode"></param>
-        /// <param name="EmployeeName"></param>
-        /// <param name="DepartmentID"></param>
-        /// <param name="JobID"></param>
-        /// <param name="Status"></param>
-        /// <param name="IsActive"></param>
-        /// <returns></returns>
         public System.Data.DataTable GetEmployee(int page, int rows, string employeeCode, string employeeName, string departmentID, string jobID, string status, string isActive)
         {
             IQueryable<Employee> employeeQuery = EmployeeRepository.GetQueryable();

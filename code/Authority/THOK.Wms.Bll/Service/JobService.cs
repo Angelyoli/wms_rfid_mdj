@@ -183,15 +183,6 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = job.ToArray() };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="JobCode"></param>
-        /// <param name="JobName"></param>
-        /// <param name="IsActive"></param>
-        /// <returns></returns>
         public System.Data.DataTable GetJob(int page, int rows, string jobCode, string jobName, string isActive)
         {
             IQueryable<Job> jobQuery = JobRepository.GetQueryable();
