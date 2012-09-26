@@ -38,7 +38,7 @@ namespace THOK.Common
         /// <param name="contentChangeColColorFrom">内容标记名称（使得在这个标记内单独控制列的颜色）</param>
         /// <param name="contentChageColColor">内容标记颜色（控制标记内容某列的颜色）</param>
         /// <returns></returns>
-        public static System.IO.MemoryStream ExportDT(DataTable dt1, DataTable dt2
+        public static MemoryStream ExportDT(DataTable dt1, DataTable dt2
                 , string headText1, string headText2
                 , string headFont, short headSize, short headColor, bool headBorder
                 , string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder
@@ -75,7 +75,7 @@ namespace THOK.Common
             HSSFFont fontColHead = workbook.CreateFont() as HSSFFont;
 
             HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            HSSFFont font = workbook.CreateFont() as HSSFFont;
+            HSSFFont fontContent = workbook.CreateFont() as HSSFFont;
 
             HSSFCellStyle contentStyleDailyBalance = workbook.CreateCellStyle() as HSSFCellStyle;
             HSSFFont fontDailyBalance = workbook.CreateFont() as HSSFFont; 
@@ -87,17 +87,14 @@ namespace THOK.Common
             HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder,styleColHead,fontColHead);
             #endregion
 
-            #region 取得列宽 表一
+            #region 取得列宽
             int[] arrColWidth1 = new int[0];
+            int[] arrColWidth2 = new int[0];
             if (dt1 != null && headText1 != null)
             {
                 arrColWidth1 = new int[dt1.Columns.Count];
                 GetColumnWidth(dt1, arrColWidth1);
-            }
-            #endregion
-
-            #region 取得列宽 表二
-            int[] arrColWidth2 = new int[0];
+            }            
             if (dt2 != null && headText2 != null)
             {
                 arrColWidth2 = new int[dt2.Columns.Count];
@@ -130,10 +127,10 @@ namespace THOK.Common
                     sheet.PrintSetup.FitWidth = printSetupFit;
 
                     int rowIndex1 = 0;
-                    DataTable dt1new = SetPage(dt1, a + 1, sheetCount);
+                    DataTable newdt1 = SetPage(dt1, a + 1, sheetCount);
 
                     #region 填充数据
-                    foreach (DataRow row in dt1new.Rows)
+                    foreach (DataRow row in newdt1.Rows)
                     {
                         if (rowIndex1 == 0)
                         {
@@ -149,7 +146,7 @@ namespace THOK.Common
                                 headerRow.HeightInPoints = Convert.ToInt16(headSize * 1.4);
                                 headerRow.CreateCell(0).SetCellValue(headText1);
                                 headerRow.GetCell(0).CellStyle = headStyle;
-                                CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt1new.Columns.Count - 1);
+                                CellRangeAddress region = new CellRangeAddress(0, 0, 0, newdt1.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
                                 if (headBorder == true)
                                 {
@@ -162,7 +159,7 @@ namespace THOK.Common
                                 HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
                                 headerRow.CreateCell(0).SetCellValue(exportDate);
                                 headerRow.GetCell(0).CellStyle = dateStyle;
-                                CellRangeAddress region = new CellRangeAddress(1, 1, 0, dt1new.Columns.Count - 1);
+                                CellRangeAddress region = new CellRangeAddress(1, 1, 0, newdt1.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
                                 if (colHeadBorder == true)
                                 {
@@ -174,7 +171,7 @@ namespace THOK.Common
                             {
                                 HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
                                 headerRow.HeightInPoints = Convert.ToInt16(colHeadSize * 1.4);
-                                foreach (DataColumn column in dt1new.Columns)
+                                foreach (DataColumn column in newdt1.Columns)
                                 {
                                     headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                     headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
@@ -186,11 +183,11 @@ namespace THOK.Common
                         }
                         #region 填充内容
                         HSSFRow dataRow = sheet.CreateRow(rowIndex1) as HSSFRow;
-                        foreach (DataColumn column in dt1new.Columns)
+                        foreach (DataColumn column in newdt1.Columns)
                         {
-                            FillContent(dataRow, column, row, contentStyle, contentDateStyle
-                                , contentStyleDailyBalance, fontDailyBalance
-                                , font
+                            FillContent(dataRow, column, row, contentStyle, fontContent
+                                , contentDateStyle
+                                , contentStyleDailyBalance, fontDailyBalance                                
                                 , colHeadFont, colHeadSize, colHeadColor, contentColor, colHeadBorder
                                 , contentChangeColorFrom, contentChangeColor
                                 , sheet, headText1strA);
@@ -218,7 +215,7 @@ namespace THOK.Common
                 for (int a = 0; a < page; a++)
                 {
                     int rowIndex2 = 0;
-                    DataTable dt2new = SetPage(dt2, a + 1, sheetCount);
+                    DataTable newdt2 = SetPage(dt2, a + 1, sheetCount);
                     string strA = a.ToString();
                     if (a == 0)
                     {
@@ -227,7 +224,7 @@ namespace THOK.Common
                     string headText2strA = headText2 + strA;
 
                     #region 填充数据
-                    foreach (DataRow row in dt2new.Rows)
+                    foreach (DataRow row in newdt2.Rows)
                     {
                         if (rowIndex2 == 0)
                         {
@@ -244,7 +241,7 @@ namespace THOK.Common
                                 headerRow.HeightInPoints = Convert.ToInt16(headSize * 1.4);
                                 headerRow.CreateCell(0).SetCellValue(headText2);
                                 headerRow.GetCell(0).CellStyle = headStyle;
-                                CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt2new.Columns.Count - 1);
+                                CellRangeAddress region = new CellRangeAddress(0, 0, 0, newdt2.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
                                 if (headBorder == true)
                                 {
@@ -257,7 +254,7 @@ namespace THOK.Common
                                 headerRow = sheet.CreateRow(1) as HSSFRow;
                                 headerRow.CreateCell(0).SetCellValue(exportDate);
                                 headerRow.GetCell(0).CellStyle = dateStyle;
-                                CellRangeAddress region = new CellRangeAddress(1, 1, 0, dt2new.Columns.Count - 1);
+                                CellRangeAddress region = new CellRangeAddress(1, 1, 0, newdt2.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
                                 if (colHeadBorder == true)
                                 {
@@ -268,7 +265,7 @@ namespace THOK.Common
                             #region 填充列头、样式
                             {
                                 headerRow = sheet.CreateRow(2) as HSSFRow;
-                                foreach (DataColumn column in dt2new.Columns)
+                                foreach (DataColumn column in newdt2.Columns)
                                 {
                                     headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                     headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
@@ -280,11 +277,11 @@ namespace THOK.Common
                         }
                         #region 填充内容
                         HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
-                        foreach (DataColumn column in dt2new.Columns)
+                        foreach (DataColumn column in newdt2.Columns)
                         {
-                            FillContent(dataRow, column, row, contentStyle, contentDateStyle
+                            FillContent(dataRow, column, row, contentStyle, fontContent
+                                , contentDateStyle
                                 , contentStyleDailyBalance, fontDailyBalance
-                                , font
                                 , colHeadFont, colHeadSize, colHeadColor, contentColor, colHeadBorder
                                 , contentChangeColorFrom, contentChangeColor
                                 , sheet, headText2strA);
@@ -348,12 +345,11 @@ namespace THOK.Common
         /// <summary>填充内容</summary>
         static void FillContent(HSSFRow hssfRow
             , DataColumn column, DataRow row
-            , HSSFCellStyle contentStyle, HSSFCellStyle contentDateStyle
-            , HSSFCellStyle contentStyleDailyBalance, HSSFFont fontDailyBalance
-            , HSSFFont font
+            , HSSFCellStyle contentStyle, HSSFFont contentFont
+            , HSSFCellStyle contentDateStyle
+            , HSSFCellStyle contentStyleDailyBalance, HSSFFont fontDailyBalance            
             , string colHeadFont, short colHeadSize, short colHeadColor
-            , short contentColor
-            , bool contentBorder
+            , short contentColor, bool contentBorder
             , string contentChangeColorFrom, short contentChangeColor
             , HSSFSheet sheet, string headTextStrA)
         {
@@ -394,10 +390,10 @@ namespace THOK.Common
             #endregion
             else
             {
-                font.FontName = colHeadFont;
-                font.FontHeightInPoints = colHeadSize;
-                font.Color = contentColor;
-                contentStyle.SetFont(font);
+                contentFont.FontName = colHeadFont;
+                contentFont.FontHeightInPoints = colHeadSize;
+                contentFont.Color = contentColor;
+                contentStyle.SetFont(contentFont);
                 //画边框
                 if (contentBorder == true)
                 {
