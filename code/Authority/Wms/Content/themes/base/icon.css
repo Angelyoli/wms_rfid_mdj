@@ -80,6 +80,9 @@
 .icon-Menu_Organization{
 	background:url('icons/Menu_Organization.png') no-repeat;
 }
+.icon-Menu_delivery{
+	background:url('icons/Menu_delivery.ico') no-repeat;
+}
 .icon-Menu_Cigarette{
 	background:url('icons/Menu_Cigarette.png') no-repeat;
 }
@@ -225,6 +228,9 @@
 /*ĞÂÔöicon.css -images*/
 .image-Menu_Organization{
 	background:url('images/Menu_Organization.png') no-repeat;
+}
+.image-Menu_delivery{
+	background:url('images/Menu_delivery.png') no-repeat;
 }
 .image-Menu_Cigarette{
 	background:url('images/Menu_Cigarette.png') no-repeat;
