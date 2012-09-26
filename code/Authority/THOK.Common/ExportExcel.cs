@@ -58,23 +58,33 @@ namespace THOK.Common
             BrowserLoad(headText1);
             #endregion
 
-            #region 创建工作表、样式
-            //创建工作表
+            #region 创建工作表
             workbook = new HSSFWorkbook();
             HSSFSheet sheet = null;
-            //创建时间样式
-            HSSFCellStyle contentDateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            //创建内容样式
-            HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            HSSFCellStyle contentStyleDailyBalance = workbook.CreateCellStyle() as HSSFCellStyle;
-            HSSFFont font = workbook.CreateFont() as HSSFFont;
-            HSSFFont fontDailyBalance = workbook.CreateFont() as HSSFFont;
             #endregion
 
+            #region 创建样式
+            HSSFCellStyle contentDateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+
+            HSSFCellStyle styleHead = workbook.CreateCellStyle() as HSSFCellStyle;
+            HSSFFont fontHead = workbook.CreateFont() as HSSFFont;
+
+            HSSFCellStyle styleDate = workbook.CreateCellStyle() as HSSFCellStyle;
+
+            HSSFCellStyle styleColHead = workbook.CreateCellStyle() as HSSFCellStyle;
+            HSSFFont fontColHead = workbook.CreateFont() as HSSFFont;
+
+            HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            HSSFFont font = workbook.CreateFont() as HSSFFont;
+
+            HSSFCellStyle contentStyleDailyBalance = workbook.CreateCellStyle() as HSSFCellStyle;
+            HSSFFont fontDailyBalance = workbook.CreateFont() as HSSFFont; 
+            #endregion            
+
             #region 全局样式 方法
-            HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor);
-            HSSFCellStyle dateStyle = GetExportDate();
-            HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder);
+            HSSFCellStyle headStyle = GetTitleStyle(headFont, headSize, headColor, styleHead, fontHead);
+            HSSFCellStyle dateStyle = GetExportDate(styleDate);
+            HSSFCellStyle colHeadStyle = GetColumnStyle(colHeadFont, colHeadSize, colHeadColor, colHeadBorder,styleColHead,fontColHead);
             #endregion
 
             #region 取得列宽 表一
@@ -95,7 +105,7 @@ namespace THOK.Common
             }
             #endregion
 
-            #region 创建表一
+            #region 创建 表一
             if (dt1 != null && headText1 != null)
             {
                 int dt1count = dt1.Rows.Count;
@@ -193,7 +203,7 @@ namespace THOK.Common
             }
             #endregion
 
-            #region 创建表二
+            #region 创建 表二
             if (dt2 != null && headText2 != null)
             {
                 int dt2count = dt2.Rows.Count;
@@ -236,7 +246,10 @@ namespace THOK.Common
                                 headerRow.GetCell(0).CellStyle = headStyle;
                                 CellRangeAddress region = new CellRangeAddress(0, 0, 0, dt2new.Columns.Count - 1);
                                 sheet.AddMergedRegion(region);
-                                sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
+                                if (headBorder == true)
+                                {
+                                    sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
+                                }
                             } 
                             #endregion
                             #region 导出时间、样式
@@ -467,11 +480,12 @@ namespace THOK.Common
 
         #region 标题样式
         /// <summary>标题样式</summary>
-        static HSSFCellStyle GetTitleStyle(string headFont, short headSize, short headColor)
+        static HSSFCellStyle GetTitleStyle(string headFont, short headSize, short headColor
+            ,HSSFCellStyle cellStyle,HSSFFont font)
         {
-            HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
             cellStyle.Alignment = HorizontalAlignment.CENTER;
-            HSSFFont font = workbook.CreateFont() as HSSFFont;
+            font = workbook.CreateFont() as HSSFFont;
             font.FontName = headFont;
             font.FontHeightInPoints = headSize;
             font.Color = headColor;
@@ -483,9 +497,10 @@ namespace THOK.Common
 
         #region 列头样式
         /// <summary>列头样式</summary>
-        static HSSFCellStyle GetColumnStyle(string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder)
+        static HSSFCellStyle GetColumnStyle(string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder
+            ,HSSFCellStyle cellStyle,HSSFFont font)
         {
-            HSSFCellStyle cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
             cellStyle.Alignment = HorizontalAlignment.CENTER; //居中
             if (colHeadBorder == true)
             {
@@ -496,7 +511,7 @@ namespace THOK.Common
                 cellStyle.BorderTop = BorderStyle.THIN;
             }
             //font
-            HSSFFont font = workbook.CreateFont() as HSSFFont;
+            font = workbook.CreateFont() as HSSFFont;
             font.FontName = colHeadFont;
             font.FontHeightInPoints = colHeadSize;
             font.Color = colHeadColor;
@@ -509,11 +524,11 @@ namespace THOK.Common
 
         #region 导出时间样式
         /// <summary>导出时间样式</summary>
-        static HSSFCellStyle GetExportDate()
+        static HSSFCellStyle GetExportDate(HSSFCellStyle cellStyle)
         {
-            HSSFCellStyle dateStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            dateStyle.Alignment = HorizontalAlignment.CENTER;
-            return dateStyle;
+            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle.Alignment = HorizontalAlignment.CENTER;
+            return cellStyle;
         }
         #endregion
 
