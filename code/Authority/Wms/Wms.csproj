@@ -189,6 +189,7 @@
     <Content Include="bin\Authority.pdb" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EntityFramework.xml" />
+    <Content Include="bin\itextsharp.dll" />
     <Content Include="bin\LitJson.dll" />
     <Content Include="bin\log4net.dll" />
     <Content Include="bin\Microsoft.Practices.ServiceLocation.dll" />
@@ -196,6 +197,9 @@
     <Content Include="bin\Microsoft.Practices.Unity.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.Configuration.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
+    <Content Include="bin\Svg.dll" />
+    <Content Include="bin\Tek4.Highcharts.Exporting.dll" />
+    <Content Include="bin\Tek4.Highcharts.Exporting.pdb" />
     <Content Include="bin\THOK.Authority.Bll.dll" />
     <Content Include="bin\THOK.Authority.Bll.pdb" />
     <Content Include="bin\THOK.Authority.Dal.dll" />
