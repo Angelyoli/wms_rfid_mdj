@@ -1086,6 +1086,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\App_Data\" />
+    <Folder Include="ExcelTemplate\" />
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
@@ -1207,7 +1208,6 @@
     <None Include="Content\Scripts\jquery-easyui-1.3\themes\gray\images\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\diy\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\Thumbs.db" />
-    <None Include="ExcelTemplate\test.xls" />
     <None Include="obj\Debug\build.force" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
