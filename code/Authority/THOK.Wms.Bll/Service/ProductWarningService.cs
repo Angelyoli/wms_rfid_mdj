@@ -232,7 +232,7 @@ namespace THOK.Wms.Bll.Service
              {
                  QuantityLimitsWarnings = QuantityLimitsWarnings.Where(q => q.quantityTotal >= q.maxlimits).ToArray();
              }
-             int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarning.Count();
+             int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarnings.Count();
              return total;
          }
          #endregion

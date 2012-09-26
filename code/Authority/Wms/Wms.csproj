@@ -41,6 +41,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\log4net.dll</HintPath>
@@ -71,6 +74,9 @@
     </Reference>
     <Reference Include="SignalR.Hosting.Common, Version=0.5.1.10625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SignalR.Hosting.Common.0.5.2\lib\net40\SignalR.Hosting.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Svg">
+      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\Svg.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -189,7 +195,6 @@
     <Content Include="bin\Authority.pdb" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EntityFramework.xml" />
-    <Content Include="bin\itextsharp.dll" />
     <Content Include="bin\LitJson.dll" />
     <Content Include="bin\log4net.dll" />
     <Content Include="bin\Microsoft.Practices.ServiceLocation.dll" />
@@ -197,9 +202,6 @@
     <Content Include="bin\Microsoft.Practices.Unity.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.Configuration.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
-    <Content Include="bin\Svg.dll" />
-    <Content Include="bin\Tek4.Highcharts.Exporting.dll" />
-    <Content Include="bin\Tek4.Highcharts.Exporting.pdb" />
     <Content Include="bin\THOK.Authority.Bll.dll" />
     <Content Include="bin\THOK.Authority.Bll.pdb" />
     <Content Include="bin\THOK.Authority.Dal.dll" />
@@ -1095,6 +1097,10 @@
     <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Tek4.Highcharts.Exporting\Tek4.Highcharts.Exporting.csproj">
+      <Project>{42BDE168-C741-4339-92B6-0656E798E989}</Project>
+      <Name>Tek4.Highcharts.Exporting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Authority.Bll\THOK.Authority.Bll.csproj">
       <Project>{8375EB8C-20CB-4E3E-BCF4-85E54F61D241}</Project>
       <Name>THOK.Authority.Bll</Name>
