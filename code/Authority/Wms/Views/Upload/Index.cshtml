@@ -1,0 +1,20 @@
+﻿<script type="text/javascript">
+    $(function () {
+
+    });
+</script>
+<div region="center" split="true"  border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">    
+    <table id="details" class="easyui-datagrid" url="/Upload/UploadDetails/" border="false" singleSelect="true"
+        fit="true" toolbar="#tool"  pagination="true" rownumbers="true" >
+        <thead>
+            <tr>
+                <th field="SYNC_TYPE_CODE" hidden="true" width="160" >表名</th>
+                <th field="SYNC_TYPE_NAME" width="100" >表中文名</th>
+                <th field="DESCRIPTION" width="180">说明</th>
+                <th field="UPDATE_DATE" width="200">更新时间</th>   
+                <th field="IS_IMPORT" width="125">是否导入</th>   
+                <th field="REMARK" width="150" >备注</th>
+            </tr>
+        </thead>
+    </table>
+</div>
