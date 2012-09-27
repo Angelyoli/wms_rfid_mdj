@@ -118,6 +118,7 @@
     <Compile Include="Controllers\Wms\ComplexSearch\StockIntoSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockMoveSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockOutSearchController.cs" />
+    <Compile Include="Controllers\Wms\DeliveryInfo\DeliverDistController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisDownloadController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisUploadController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\DeliverLineController.cs" />
@@ -533,6 +534,7 @@
     <Content Include="Content\themes\base\icons\2Menu_ServerDevice.png" />
     <Content Include="Content\themes\base\icons\2Menu_SysLog.png" />
     <Content Include="Content\themes\base\icons\2Son_Cities.png" />
+    <Content Include="Content\themes\base\icons\Son_deliveryDis.ico" />
     <Content Include="Content\themes\base\icons\2Son_HelpContents.png" />
     <Content Include="Content\themes\base\icons\2Son_HelpEdit.png" />
     <Content Include="Content\themes\base\icons\2Son_HelpIndex.png" />
@@ -933,6 +935,7 @@
     <Content Include="Content\themes\base\images\2Menu_ServerDevice.png" />
     <Content Include="Content\themes\base\images\2Menu_SysLog.png" />
     <Content Include="Content\themes\base\images\2Son_Cities.png" />
+    <Content Include="Content\themes\base\images\Son_deliveryDis.ico" />
     <Content Include="Content\themes\base\images\2Son_HelpContents.png" />
     <Content Include="Content\themes\base\images\2Son_HelpEdit.png" />
     <Content Include="Content\themes\base\images\2Son_HelpIndex.png" />
@@ -1294,6 +1297,12 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Employee\_AddPartial.cshtml" />
+    <Content Include="Views\DeliverDist\Index.cshtml" />
+    <Content Include="Views\DeliverDist\_AddPartial.cshtml" />
+    <Content Include="Views\DeliverDist\_SearchPartial.cshtml" />
+    <Content Include="Views\DeliverDist\_deliverPartial1.cshtml" />
+    <Content Include="Views\DeliverDist\_EditPartial.cshtml" />
+    <Content Include="Views\DeliverDist\_DeletePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

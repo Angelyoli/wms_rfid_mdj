@@ -1,0 +1,148 @@
+﻿<script type="text/javascript">
+    var url;
+    $(function () {
+        $.extend($.fn.validatebox.defaults.rules, {
+            maxLength: {
+                validator: function (value, param) {
+                    return value.length <= param[0];
+                },
+                message: '不能超过{0}个字符.'
+            }
+        });
+    })
+    function addClick() {
+        AddLoad();
+        $('#dlg').dialog('open').dialog('setTitle', '新增配送信息');
+        $('#deliverfm').form('clear');
+        $('#deliverfm .easyui-validatebox').validatebox({
+            required: true
+        });
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#contentCode').attr("readonly", false);
+        $('#Node_type').combo({
+            hasDownArrow: true
+        });
+        $('#isActive_com').combo({
+            hasDownArrow: true
+        });
+        url = '/DeliverDist/Create/';
+    };
+
+    function save() {
+        $('#deliverfm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {               
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#dlg').dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+
+    function AddLoad() {
+        $('#isActive_com').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 130
+        });
+
+        $('#Node_type').combo({
+            required: true,
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+    }
+</script>
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 580px; height: 230px;
+    padding: 2px 2px" closed="true" buttons="#deliver-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <form id="deliverfm" method="post">
+            <table width="530">
+                <tr>
+                    <td width="80">
+                       配送区域编码:
+                    </td>
+                    <td width="168">
+                        <input name="DistCode" id="distCode"  validtype="maxLength[8]" class="easyui-validatebox" 
+                            required="true" />
+                    </td>
+                    <td width="80">
+                        自定义编码:
+                    </td>
+                    <td width="168">
+                        <input name="CustomCode" id="customCode"  validtype="maxLength[8]"
+                            required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="80">
+                       配送区域名称:
+                    </td>
+                    <td width="168">
+                        <input name="DistName" id="distName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+
+                    <td width="80">
+                        配送中心编码:
+                    </td>
+                    <td width="168">
+                        <input name="DistCenterCode" id="distCenterCode" validtype="maxLength[50]" required="true" />
+                    </td>
+                     </tr>
+                <tr>
+                    <td width="80">
+                       所属单位编码:
+                    </td>
+                     <td width="168">
+                        <input name="CompanyCode" id="companyCode"  validtype="maxLength[50]" required="true" />
+                    </td>
+                 <td width="60">
+                       描述:
+                    </td>
+                     <td width="168">
+                        <input name="Description" id="description"  validtype="maxLength[50]" required="true" />     
+                       </td> 
+                     </tr>
+                     <tr>
+                     <td width="60">
+                        统一编码:
+                    </td>
+                    <td width="168">
+                        <input name="UniformCode" class="easyui-validatebox" id="uniformCode"  validtype="maxLength[8]"
+                            required="true" />
+                    </td>
+                    <td>
+                        状态:
+                    </td>
+                       <td>
+                        <select id="D_isActive"  name="IsActive" class="easyui-combobox"  class="easyui-validatebox"  required="true"
+                            style="width: 129px">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                      </td>
+                    </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="deliver-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
+        取消</a>
+</div>
