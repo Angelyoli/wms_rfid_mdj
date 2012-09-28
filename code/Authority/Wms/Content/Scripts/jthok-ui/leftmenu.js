@@ -3,16 +3,16 @@
 (function ($) {
     var menus_root = {};
     $(function () {
-        window.onbeforeunload = function () {
-            var n = window.event.screenX - window.screenLeft;
-            var b = n > document.documentElement.scrollWidth - 20;
-            if (b && window.event.clientY < 0 || window.event.altKey) {
-                alert("是关闭而非刷新");
-                window.event.returnValue = false; //这里可以放置你想做的操作代码    
-            }
-        };
+//        window.onbeforeunload = onunload_handler;
+//        window.onunload = onunload_handler;
+//        function onunload_handler() {
+//            return 'alert("是关闭而非刷新")';
+//        }
         LogOn();
     });
+
+
+
     function LogOn() {
         $.getJSON("/Home/GetUser/?t=" + new Date(), function (data) {
             if (data) {
@@ -209,7 +209,7 @@
                 tools: [{
                     iconCls: 'x-tabs-close',
                     handler: function () {
-                        $('#tabs').tabs('close',subtitle);
+                        $('#tabs').tabs('close', subtitle);
                     }
                 }]
             });
