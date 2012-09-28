@@ -1,4 +1,8 @@
 ﻿<script type="text/javascript">
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     function SearchLoad() {
         $('#isActive').combo({
             editable: false,
@@ -6,10 +10,9 @@
             panelWidth: 130
         });
     }
-
     var searchDialog;
     function searchClick() {
-    SearchLoad();
+        SearchLoad();
         $("input[type=text]").attr("value", "");
         $('#isActive').combo('setValue', "");
         $('#companyType').combo('setValue', "");
@@ -39,6 +42,7 @@
                 }
             });
         }
+        searchKey = true;
         searchDialog.dialog('open');
     }
     function GetQueryParams() {
@@ -51,14 +55,5 @@
         $("#details").datagrid('load');
         searchDialog.dialog('close');
     }
-    $(document).keydown(function (e) {
-        e = e ? e : window.event;
-        var keyCode = e.which ? e.which : e.keyCode;
-        if (keyCode == 13) {
-            GetQueryParams();
-        }
-        if (keyCode == 27) {
-            searchDialog.dialog('close');
-        }
-    });
 </script>
+<script type="text/javascript" src="../../Scripts/mycustemkey120928.js"></script>
