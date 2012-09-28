@@ -2,6 +2,7 @@
     var url;
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增');
+        addKey = true;
         $('#Productfm').form('clear');
         $('#p').attr("readonly", false);
         $('#Productfm .easyui-validatebox').validatebox({

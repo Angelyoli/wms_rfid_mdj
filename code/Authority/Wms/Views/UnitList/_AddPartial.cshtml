@@ -40,6 +40,7 @@
 
     function addClick() {
         $('#dlg-add').dialog('open').dialog('setTitle', '新增单位系列信息');
+        addKey = true;
         $('#unitListCode').attr("readonly", false);
         $('#fm-add').form('clear');
         $('#fm-add .easyui-validatebox').validatebox({
