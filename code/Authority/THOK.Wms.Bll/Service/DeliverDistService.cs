@@ -26,10 +26,16 @@ namespace THOK.Wms.Bll.Service
             IQueryable<DeliverDist> DeliverDistQuery = DeliverDistRepository.GetQueryable();
             var DeliverDist = DeliverDistQuery.Where(c => c.DistCode.Contains(DistCode) &&
                                                           c.DistName.Contains(DistName) &&
-                                                          c.CustomCode.Contains(CustomCode) &&
                                                           c.IsActive.Contains(IsActive) &&
-                                                          c.CompanyCode.Contains(CompanyCode)&& 
                                                           c.UniformCode.Contains(UniformCode));
+            if (!CustomCode.Equals(string.Empty))
+            {
+                DeliverDist = DeliverDist.Where(d => d.CustomCode == CustomCode);
+            }
+            if (!CompanyCode.Equals(string.Empty))
+            {
+                DeliverDist = DeliverDist.Where(d => d.DistCenterCode == CompanyCode);
+            }
             DeliverDist = DeliverDist.OrderBy(h => h.DistCode);
             int total = DeliverDist.Count();
             DeliverDist = DeliverDist.Skip((page - 1) * rows).Take(rows);

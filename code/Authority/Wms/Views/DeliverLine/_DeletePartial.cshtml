@@ -1,0 +1,24 @@
+﻿<script type="text/javascript">
+    function deleteClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg').dialog('open').dialog('setTitle', '删除客户信息');
+            $('#deliverlinefm.easyui-validatebox').validatebox({
+                required: false
+            });
+            $('form input').attr("disabled", "disabled");
+            $('#IsActive').combo({
+                hasDownArrow: false
+            });
+            $('#deliverlinefm').form('load', row);
+            if (row.Status == '可用') {
+                $('#L_IsActive').combo('setValue', true).combo('setText', row.IsActive);
+            } else {
+                $('#L_IsActive').combo('setValue', false).combo('setText', row.IsActive);
+            }
+            url = '/DeliverLine/Delete/?DeliverLineCode=' + row.DeliverLineCode;
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    };
+</script>
