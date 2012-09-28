@@ -2,6 +2,7 @@
     var url,delet;
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增');
+        addKey = true;
         $('#sortingOrderAllot').datagrid({ url: '/SortingOrder/GetOrderMaster/' }); //加载线路分配信息
         $('#lineCode').combobox({ url: '/SortingLine/GetSortLine/',width:120 }); //加载分拣线信息        
         $('#checkQuantitySum').text(0);

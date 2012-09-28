@@ -1,4 +1,6 @@
 ﻿<script type="text/javascript">
+    var module = "research";
+    var searchKey = false;
     $(function () {
         $('#sortOrderDate').datebox({
             required: false
@@ -7,6 +9,7 @@
 
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '分拣单查询');
+        searchKey = true;
         $("input[type=text]").attr("value", "");
         $('#OrderDate').datebox('setValue', "");
     };
@@ -28,15 +31,8 @@
         $("#infoDetails").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
-    $(document).keydown(function (e) {
-        e = e ? e : window.event;
-        var keyCode = e.which ? e.which : e.keyCode;
-        if (keyCode == 13) {
-            select();
-        }
-    });
 </script>
-
+<script src="../../Scripts/mycustomkey120928.js" type="text/javascript"></script>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width:260px;height:210px;padding:2px 2px"
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">

@@ -1,5 +1,10 @@
 ﻿<script type="text/javascript">
     var searchDialog;
+    var module = "stockIntoInBill";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     function searchClick() {
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
@@ -26,8 +31,9 @@
                 onLoad: function () {
                     SearchLoad();
                 }
-            });          
+            });
         }
+        searchKey = true;
         searchDialog.dialog('open');
     };
     function GetQueryParams() {
@@ -43,14 +49,6 @@
         $("#details").datagrid('load');
         searchDialog.dialog('close');
     }
-    $(document).keydown(function (e) {
-        e = e ? e : window.event;
-        var keyCode = e.which ? e.which : e.keyCode;
-        if (keyCode == 13) {
-            GetQueryParams();
-        }
-    });
-
     function SearchLoad() {
         $('#makeDate_before').datebox({
             required: false
@@ -129,4 +127,4 @@
         $('#operate_Status').combo('setValue', "");
     }
 </script>
-
+<script src="../../Scripts/mycustomkey120928.js" type="text/javascript"></script>

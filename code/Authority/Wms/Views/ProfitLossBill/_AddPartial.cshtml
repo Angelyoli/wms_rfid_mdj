@@ -67,6 +67,7 @@
             if (json) {
                 $('#profitLossBillDetail').datagrid('loadData', { total: 0, rows: [] }); //清空细单
                 $('#dlg').dialog('open').dialog('setTitle', '新增损益单');
+                addKey = true;
                 $('#fm').form('clear');
                 $('#billNo').val(json.BillNo);
                 $('#operatePersonID').val(json.employeeID);

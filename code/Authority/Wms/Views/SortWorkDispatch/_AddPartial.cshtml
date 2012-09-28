@@ -2,6 +2,7 @@
     var url, dispatchParameter;
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增');
+        addKey = true;
         $('#workDispatchTable').datagrid({ url: '/SortOrderDispatch/GetWorkStatus/' }); //加载线路分配信息
     }
 

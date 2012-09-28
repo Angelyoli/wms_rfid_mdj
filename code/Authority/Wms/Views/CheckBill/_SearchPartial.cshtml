@@ -1,4 +1,9 @@
 ﻿<script type="text/javascript">
+    var module = "checkBillCb";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     function searchLoad() {
         $('#OperatePersonCode').combogrid({
             disabled: false,
@@ -39,6 +44,7 @@
     function searchClick() {
         searchLoad();
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        searchKey = true;
         $("input[type=text]").attr("value", "");
         $('#billBeginDate').datebox({ editable: false });
         $('#billEndDate').datebox({ editable: false });
@@ -73,7 +79,7 @@
         }
     });
 </script>
-
+<script src="../../Scripts/mycustomkey120928.js" type="text/javascript"></script>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width:280px;height:300px;padding:2px 2px"
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">

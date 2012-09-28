@@ -1,5 +1,6 @@
 ﻿<script type="text/javascript">
-
+    var module = "research";
+    var searchKey = false;
     function SearchLoad() {
         $('#makeDate_before').datebox({
             required: false
@@ -70,6 +71,7 @@
     function searchClick() {
         SearchLoad();
         $('#dlg-search').dialog('open').dialog('setTitle', '入库单查询');
+        searchKey = true;
         $("input[type=text]").attr("value", "");
         $('#operatePerson').combogrid('clear');
         $('#checkPerson').combogrid('clear');
@@ -96,15 +98,8 @@
         $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
-    $(document).keydown(function (e) {
-        e = e ? e : window.event;
-        var keyCode = e.which ? e.which : e.keyCode;
-        if (keyCode == 13) {
-            select();
-        }
-    });
 </script>
-
+<script src="../../Scripts/mycustomkey120928.js" type="text/javascript"></script>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:300px;padding:10px 10px"
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">

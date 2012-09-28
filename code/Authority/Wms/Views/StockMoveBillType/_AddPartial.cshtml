@@ -18,6 +18,7 @@
 
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增入库单类型');
+        addKey = true;
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
