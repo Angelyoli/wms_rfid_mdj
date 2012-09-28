@@ -28,7 +28,13 @@
         $("#details").datagrid('reload');
         $('#searchdlg').dialog('close'); 
     }
-
+    $(document).keydown(function (e) {
+        e = e ? e : window.event;
+        var keyCode = e.which ? e.which : e.keyCode;
+        if (keyCode == 13) {
+            select();
+        }
+    });
 </script>
     <div id="searchdlg" class="easyui-dialog" modal="true"  style="width:300px;height:220px;"
         closed="true" buttons="#dlg-buttons">

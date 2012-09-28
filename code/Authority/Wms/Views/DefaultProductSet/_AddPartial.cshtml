@@ -12,6 +12,7 @@
         $('#productCode').attr("readonly", true);
         $('#productName').attr("readonly", true);
         $('#dlg').dialog('open').dialog('setTitle', '新增');
+        addKey = true;
         $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
                         {
                             'productId': ''

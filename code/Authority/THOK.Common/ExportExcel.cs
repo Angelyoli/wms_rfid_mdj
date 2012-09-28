@@ -47,7 +47,7 @@ namespace THOK.Common
                 , string contentChangeColorFrom, short contentChangeColor)
         {
             #region 变量
-            string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd");
+            string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             double columnWidth = colHeadSize - 9;
             short printSetupFit = 0;
             int sheetCount = 65500; //一个sheet中最多存65536行数据

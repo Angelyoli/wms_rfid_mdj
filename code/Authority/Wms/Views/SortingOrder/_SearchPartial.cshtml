@@ -18,7 +18,13 @@
         $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
-
+    $(document).keydown(function (e) {
+        e = e ? e : window.event;
+        var keyCode = e.which ? e.which : e.keyCode;
+        if (keyCode == 13) {
+            select();
+        }
+    });
     function sasd() {
         var j_waitDialog = ShowWaitMessageDialog();
         $.ajax({

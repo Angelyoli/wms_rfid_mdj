@@ -4,6 +4,7 @@
         if (row) {
             url = '/Company/Delete/?companyID=' + row.ID;
             showDialog('删除');
+            deleteKey = true;
             addDialog.dialog('open');
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
