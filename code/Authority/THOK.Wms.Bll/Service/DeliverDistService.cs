@@ -135,15 +135,15 @@ namespace THOK.Wms.Bll.Service
             strResult = string.Empty;
             try
             {
-                var help = DeliverDistRepository.GetQueryable()
+                var deliver = DeliverDistRepository.GetQueryable()
                     .FirstOrDefault(i => i.DistCode == DistCode);
-                help.CustomCode = CustomCode;
-                help.DistName = DistName;
-                help.DistCenterCode = DistCenterCode;
-                help.CompanyCode = CompanyCode;
-                help.UniformCode = UniformCode;
-                help.Description = Description;
-                help.IsActive = IsActive;
+                deliver.CustomCode = CustomCode;
+                deliver.DistName = DistName;
+                deliver.DistCenterCode = DistCenterCode;
+                deliver.CompanyCode = CompanyCode;
+                deliver.UniformCode = UniformCode;
+                deliver.Description = Description;
+                deliver.IsActive = IsActive;
                 DeliverDistRepository.SaveChanges();
 
             }

@@ -19,10 +19,7 @@
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
-        $('#contentCode').attr("readonly", false);
-        $('#Node_type').combo({
-            hasDownArrow: true
-        });
+        $('#DistCode').attr("readonly", false);
         $('#isActive_com').combo({
             hasDownArrow: true
         });
@@ -50,7 +47,7 @@
     }
 
     function AddLoad() {
-        $('#isActive_com').combo({
+        $('#D_isActive').combo({
             required: true,
             editable: false,
             panelHeight: 45,

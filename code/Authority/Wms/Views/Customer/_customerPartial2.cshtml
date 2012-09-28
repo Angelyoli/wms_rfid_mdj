@@ -1,0 +1,72 @@
+﻿<script type="text/javascript">
+
+    function customer_QueryClick2() {
+        $('#customer_Detail2').datagrid({ url: '/Customer/C_Details/?QueryString=' + $('#queryType2').combobox('getValue') + '&Value=' + $('#customerInfo2').val() });
+        $("#customer_Detail2").datagrid('reload');
+    };
+
+    function customer_Save2() {
+        var customerRow = $('#customer_Detail2').datagrid('getSelected');
+        if (customerRow) {
+            $('#companyCode').val(customerRow.CompanyCode);
+            $('#customer_Data2').dialog('close');
+        }
+    }
+
+    $(function () {
+        $('#queryType').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 100
+        });
+        $('#customer_Detail2').datagrid({
+            onDblClickRow: function () {
+                customer_Save2();
+            }
+        })
+    });
+</script>
+<div id="customer_Data2" class="easyui-dialog" modal="true" style="width: 500px; height: 500px;
+    padding: 0px 0px" closed="true" buttons="#dlg_customer2_buttons">
+    <div split="true" border="false" style="width: 486px; height: 430px">
+        <table id="customer_Detail2" class="easyui-datagrid" border="false" 
+        toolbar="#btn-query2" pageSize="50"
+            singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+            <thead>
+                <tr>
+                    <th field="CustomerCode" width="80">
+                        客户编码
+                    </th>
+                     <th field="CustomCode" width="100">
+                        自定义编码
+                    </th>
+                    <th field="CustomerName" width="80">
+                        所属单位编码
+                    </th>
+                    <th field="CompanyCode" width="120">
+                      所属单位编码
+                    </th>
+                    <th field="IsActive" width="80">
+                        是否可用
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<div id="dlg_customer2_buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="customer_Save2()">确定</a> 
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#customer_Data').dialog('close')">
+        取消</a>
+</div>
+<div id="btn-query2">
+<select id="queryType2" name="QueryString" class="easyui-combobox" style="width: 100px;" readonly="true">
+		                <option value="CustomerCode"> 客户编码</option>
+                        <option value="CustomerName">客户名称</option>
+	                </select>
+                    <input id="customerInfo2">
+ <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="customer_QueryClick2()" id="customerQuery2">查询</a>
+</div>
+
+
