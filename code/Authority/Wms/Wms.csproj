@@ -169,6 +169,7 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillAllotController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
+    <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
@@ -1144,6 +1145,10 @@
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>
       <Name>THOK.Wms.SignalR</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.Upload\THOK.Wms.Upload.csproj">
+      <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
+      <Name>THOK.Wms.Upload</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Scripts\jquery-easyui-1.2.6\themes\default\images\Thumbs.db" />
@@ -1602,6 +1607,9 @@
     <Content Include="Views\QuantityLimits\_PrintPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_MoveInCellPartial.cshtml" />
     <Content Include="Views\ProductTimeOut\_PrintPartial.cshtml" />
+    <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\Upload\_SearchPartial.cshtml" />
+    <Content Include="Views\Upload\_Upload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
