@@ -1,0 +1,85 @@
+﻿<script type="text/javascript">
+    function searchClick() {
+        $('#isActive').combo({
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+        $('#dlg-search').dialog('open').dialog('setTitle', '配送客户查询');
+        $("input[type=text]").attr("value", "");
+        $('#status').combo('setValue', "");
+    };
+
+    function deliver_select() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.CustomerCode = $('#customerCode').val();
+        queryParams.CustomerName = $('#customerName').val();
+        queryParams.CompanyCode = $('#companyCode').val();
+        queryParams.IsActive = $('#C_status').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $('#details').datagrid({
+            pageNumber: 1,
+            pageSize: 50
+        });
+        $("#masters").datagrid('reload');
+        $('#dlg-search').dialog('close');
+    }
+    function customerCode_Select() {
+        $('#customer_Data').dialog('open').dialog('setTitle', '选择客户编码');
+        $('#customer_Detail').datagrid({ url: '/Customer/C_Details/' });
+        $("#customer_Detail").datagrid('reload');
+    }
+    function companyCode_Select() {
+        $('#customer_Data2').dialog('open').dialog('setTitle', '选择单位编码');
+        $('#customer_Detail2').datagrid({ url: '/Customer/C_Details/' });
+        $("#customer_Detail2").datagrid('reload');
+    }
+</script>
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 320px; height: 220px;
+    padding: 2px 2px" closed="true" buttons="#dlg-buttons-research">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <table width="280">
+                <tr>
+                <td width="80"> 客户编码:</td>
+                <td><input name="CustomerCode" id="customerCode" type="text">
+                  <a href="#" id="customerCode_Search" class="easyui-linkbutton" iconcls="icon-search"
+                        plain="true" onclick="customerCode_Select()"></a>
+                </td>
+                </tr>
+                <tr>
+                <td width="80"> 客户名称:</td>
+                <td><input name="CustomerName" id="customerName" type="text">
+                </td>
+                </tr>
+                <tr>
+                <td width="80"> 所属单位编码:</td>
+                <td><input name="CompanyCode" id="companyCode" type="text">
+                 <a href="#" id="companyCode_Search" class="easyui-linkbutton" iconcls="icon-search"
+                        plain="true" onclick="companyCode_Select()"></a>
+                </td>
+                </tr>
+                <tr>
+                    <td>
+                        是否可用：
+                    </td>
+                    <td>
+                        <select id="C_status" name="IsActive" class="easyui-combobox">
+                            <option value="">请选择</option>
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-research">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="deliver_select()">查询</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">
+        取消</a>
+</div>
+@Html.Partial("_customerPartial1") 
+@Html.Partial("_customerPartial2") 
