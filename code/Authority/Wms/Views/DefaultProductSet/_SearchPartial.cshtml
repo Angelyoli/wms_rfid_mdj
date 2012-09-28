@@ -1,5 +1,9 @@
 ﻿<script type="text/javascript">
-
+    var module = "warehouseProductSet";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     $(function () {
         //属性初始化
         $('#productChoose').combo({
@@ -12,6 +16,7 @@
     //点击弹出查询框
     function searchClick() {
         $('#dlgSearch').dialog('open').dialog('setTitle', '查询');
+        searchKey = true;
         searchLoad();
     }
     //点击查询结果
@@ -32,6 +37,7 @@
         }
     });   
 </script>
+<script type="text/javascript" src="../../Scripts/mycustomkey120928.js"></script>
 <div id="dlgSearch" class="easyui-dialog" modal="true" style="width: 300px; height: 130px;
     padding: 2px 2px;" closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">

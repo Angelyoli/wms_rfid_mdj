@@ -32,6 +32,7 @@
             }
             fm = divid + "fm";
             $('#dlg').dialog('open').dialog('setTitle', '删除：' + deleteName);
+            deleteKey = true;
             AddShowDiv(divid); //显示页面
             $('#' + divid + ' .easyui-validatebox').validatebox({
                 required: false

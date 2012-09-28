@@ -11,7 +11,8 @@
             $('#productName').val(productRow.ProductName);
             $('#productData').dialog('close');
         };
-        $('#dlg').dialog('open').dialog('setTitle', '新增');
+        $('#dlg').dialog('open').dialog('setTitle', '编辑');
+        editKey = true;
         $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
                         {
                             'productId': productRow.ProductCode
