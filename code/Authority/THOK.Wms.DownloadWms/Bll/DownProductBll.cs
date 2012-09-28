@@ -12,7 +12,7 @@ namespace THOK.WMS.DownloadWms.Bll
         #region 从营系统据下产品信息
 
         /// <summary>
-        /// 下载产品信息
+        /// 下载产品信息 同时上报
         /// </summary>
         /// <returns></returns>
         public bool DownProductInfo()
@@ -26,6 +26,7 @@ namespace THOK.WMS.DownloadWms.Bll
             {
                 DataSet brandCodeDs = this.Insert(bradCodeTable);
                 this.Insert(brandCodeDs);
+                //this.InsertProduct(brandCodeDs);  上报数据
             }
             else
             {
@@ -183,9 +184,18 @@ namespace THOK.WMS.DownloadWms.Bll
                 dao.Insert(ds);
             }
         }
+        #endregion
 
-       
-       
-        #endregion      
+        #region 上报卷烟信息数据
+        public void InsertProduct(DataSet brandSet)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                DownProductDao dao = new DownProductDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertProduct(brandSet);
+            }
+        }
+        #endregion
     }
 }

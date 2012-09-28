@@ -927,5 +927,113 @@ namespace THOK.WMS.Upload.Dao
 
         #endregion
 
+        #region 上报数据
+        /// <summary>
+        /// 插入组织结构表【DWV_IORG_ORGANIZATION】，中烟数据库
+        /// </summary>
+        /// <param name="organTable"></param>
+        public void InsertCompany(DataSet organSet)
+        {
+            DataTable organTable = organSet.Tables["wms_company"];
+            DataTable custCode = this.ExecuteQuery("SELECT ORGANIZATION_CODE FROM DWV_IORG_ORGANIZATION ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            string date = Convert.ToDateTime(DateTime.Now).ToString("yyyyMMddHHmmss");
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["ORGANIZATION_CODE"] + "'";
+            }
+            foreach (DataRow row in organTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["company_code"].ToString()))
+                {
+                    sql = string.Format("update DWV_IORG_ORGANIZATION SET ORGANIZATION_CODE='{0}',ORGANIZATION_NAME='{1}',ORGANIZATION_TYPE='{2}',UP_CODE='{3}'" +
+                    " ,N_ORGANIZATION_CODE='{4}',STORE_ROOM_AREA={5},STORE_ROOM_NUM={6},STORE_ROOM_CAPACITY={7},SORTING_NUM={8},UPDATE_DATE='{9}',ISACTIVE='{10}',IS_IMPORT='{11}')" 
+                   , row["company_code"], row["company_name"], row["company_type"], row["parent_company_id"],
+                    row["uniform_code"], row["warehouse_space"], row["warehouse_count"], row["warehouse_capacity"], row["sorting_count"],
+                    date, row["is_active"],'0');
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IORG_ORGANIZATION(ORGANIZATION_CODE,ORGANIZATION_NAME,ORGANIZATION_TYPE,UP_CODE" +
+                   " ,N_ORGANIZATION_CODE,STORE_ROOM_AREA,STORE_ROOM_NUM,STORE_ROOM_CAPACITY,SORTING_NUM,UPDATE_DATE,ISACTIVE,IS_IMPORT)" +
+                   "VALUES('{0}','{1}','{2}','{3}','{4}',{5},{6},{7},{8},'{9}','{10}','{11}')", row["company_code"], row["company_name"], row["company_type"], row["parent_company_id"],
+                   row["uniform_code"] ?? "", row["warehouse_space"], row["warehouse_count"], row["warehouse_capacity"], row["sorting_count"],
+                   date, row["is_active"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+            }
+        /// <summary>
+        /// 员工信息上报
+        /// </summary>
+        /// <param name="employeeSet"></param>
+        public void InsertEmployee(DataSet employeeSet)
+        {
+            DataTable employeeTable = employeeSet.Tables["wms_employee"];
+            DataTable custCode = this.ExecuteQuery("SELECT PERSON_CODE FROM DWV_IORG_PERSON ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            string date = Convert.ToDateTime(DateTime.Now).ToString("yyyyMMddHHmmss");
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["PERSON_CODE"] + "'";
+            }
+            foreach (DataRow row in employeeTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["employee_code"].ToString()))
+                {
+                     sql = string.Format("UPDATE DWV_IORG_PERSON SET PERSON_CODE='{0}',PERSON_N='{1}',PERSON_NAME='{2}',SEX='{3}'," +
+                    " UPDATE_DATE='{4}',ISACTIVE='{5}',IS_IMPORT='{6}'", row["employee_code"],
+                    row["employee_no"], row["employee_name"], row["sex"], date, row["is_active"],'0');
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                     sql = string.Format("INSERT INTO DWV_IORG_PERSON(PERSON_CODE,PERSON_N,PERSON_NAME,SEX," +
+                    " UPDATE_DATE,ISACTIVE,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", row["employee_code"],
+                    row["employee_code"], row["employee_name"], row["sex"], date, row["is_active"],'0');
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 仓储信息上报
+        /// </summary>
+        /// <param name="employeeSet"></param>
+        public void InsertCell(DataSet cellSet)
+        {
+            DataTable cellTable = cellSet.Tables["wms_cell"];
+            DataTable custCode = this.ExecuteQuery("SELECT STORAGE_CODE FROM DWV_IBAS_STORAGE ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            string date = Convert.ToDateTime(DateTime.Now).ToString("yyyyMMddHHmmss");
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["STORAGE_CODE"] + "'";
+            }
+            foreach (DataRow row in cellTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["employee_code"].ToString()))
+                {
+                    sql = string.Format("UPDATE DWV_IBAS_STORAGE SET STORAGE_CODE='{0}',STORAGE_TYPE='{1}',ORDER_NUM='{2}',CONTAINER='{3}',STORAGE_NAME='{4}',UP_CODE='{5}',DIST_CTR_CODE='{6}',N_ORG_CODE='{7}',N_STORE_ROOM_CODE='{8}',CAPACITY='{9}'," +
+                 "HORIZONTAL_NUM='{10}',VERTICAL_NUM='{11}',AREA_TYPE='{12}',UPDATE_DATE='{13}',ISACTIVE='{14}',IS_IMPORT='{15}'",
+                 row["STORAGE_CODE"], row["STORAGE_TYPE"], row["ORDER_NUM"], row["CONTAINER"], row["STORAGE_NAME"], row["UP_CODE"], row["DIST_CTR_CODE"], row["N_ORG_CODE"], row["N_STORE_ROOM_CODE"], row["CAPACITY"], row["HORIZONTAL_NUM"], row["VERTICAL_NUM"], row["AREA_TYPE"],
+                 date, row["ISACTIVE"],'0');
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IBAS_STORAGE(STORAGE_CODE,STORAGE_TYPE,ORDER_NUM,CONTAINER,STORAGE_NAME,UP_CODE,DIST_CTR_CODE,N_ORG_CODE,N_STORE_ROOM_CODE,CAPACITY," +
+                 "HORIZONTAL_NUM,VERTICAL_NUM,AREA_TYPE,UPDATE_DATE,ISACTIVE,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',{9},{10},{11},'{12}','{13}','{14}','{15}')",
+                 row["STORAGE_CODE"], row["STORAGE_TYPE"], row["ORDER_NUM"], row["CONTAINER"], row["STORAGE_NAME"], row["UP_CODE"], row["DIST_CTR_CODE"], row["N_ORG_CODE"], row["N_STORE_ROOM_CODE"], row["CAPACITY"], row["HORIZONTAL_NUM"], row["VERTICAL_NUM"], row["AREA_TYPE"],
+                 date, row["ISACTIVE"],'0');
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
+        #endregion
     }
 }

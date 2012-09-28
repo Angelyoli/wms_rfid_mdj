@@ -1359,5 +1359,41 @@ namespace THOK.WMS.Upload.Bll
         }
         #endregion
 
+        #region 上报数据
+        /// <summary>
+        /// 组织机构表
+        /// </summary>
+        /// <param name="companySet"></param>
+        public void UploadOrganization(DataSet companySet)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertCompany(companySet);
+            }
+        }
+
+        public void UploadEmployee(DataSet employee)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertEmployee(employee);
+            }
+        }
+
+        public void UploadCell(DataSet cell)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertEmployee(cell);
+            }
+        }
+        #endregion
+
     }
 }

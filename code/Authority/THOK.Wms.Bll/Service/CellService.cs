@@ -7,6 +7,8 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.Bll.Models;
 using Entities.Extensions;
+using THOK.WMS.Upload.Bll;
+using System.Data;
 namespace THOK.Wms.Bll.Service
 {
     public class CellService : ServiceBase<Cell>, ICellService
@@ -1136,5 +1138,14 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
+        #region
+        public object uploadCell(DataSet ds)
+        {
+            UploadBll upload = new UploadBll();
+            upload.UploadCell(ds);
+            return false;
+        }
+        #endregion
     }
 }
