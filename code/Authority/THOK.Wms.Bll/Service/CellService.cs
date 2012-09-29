@@ -193,7 +193,7 @@ namespace THOK.Wms.Bll.Service
             var sets = set.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = sets.ToArray() };
         }
-        public new bool Add(Cell cell, out string errorInfo)
+        public bool Add(Cell cell, out string errorInfo)
         {
             errorInfo = string.Empty;
             var cellAdd = new Cell();
@@ -1147,7 +1147,7 @@ namespace THOK.Wms.Bll.Service
             return dt;
         }
 
-        #region
+        #region 上报仓储属性表
         public object uploadCell()
         {
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();

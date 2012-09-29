@@ -1034,6 +1034,41 @@ namespace THOK.WMS.Upload.Dao
                 }
             }
         }
+        /// <summary>
+        /// 仓库库存表
+        /// </summary>
+        /// <param name="stockTable"></param>
+        public void InsertStoreStock(DataSet stockSet)
+        {
+            DataTable stockTable = stockSet.Tables["wms_storage"];
+            string sql = "DELETE FROM DWV_IWMS_STORE_STOCK";
+            this.ExecuteNonQuery(sql);
+            foreach (DataRow row in stockTable.Rows)
+            {
+                sql = string.Format("INSERT INTO DWV_IWMS_STORE_STOCK(STORE_PLACE_CODE,BRAND_CODE,AREA_TYPE,BRAND_BATCH,DIST_CTR_CODE,QUANTITY,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}',{5},'{6}')",
+                 row["cell_code"], row["product_code"], row["area_type"], row["brand_batch"], row["dist_ctr_code"], row["quantity"],'0');
+                this.ExecuteNonQuery(sql);
+            }
+        }
+        /// <summary>
+        /// 业务库存表
+        /// </summary>
+        /// <param name="stockTable"></param>
+        public void InsertBustStock(DataSet stockSet)
+        {
+            DataTable stockTable = stockSet.Tables["wms_busistorage"];
+            string sql = "DELETE FROM DWV_IWMS_BUSI_STOCK";
+            this.ExecuteNonQuery(sql);
+            foreach (DataRow row in stockTable.Rows)
+            {
+
+                sql = string.Format("INSERT INTO DWV_IWMS_BUSI_STOCK(ORG_CODE,BRAND_CODE,DIST_CTR_CODE,QUANTITY,IS_IMPORT)VALUES('{0}','{1}','{2}',{3},'{4}')",
+                 row["ORG_CODE"], row["BRAND_CODE"],row["DIST_CTR_CODE"], row["QUANTITY"],'0');
+
+                this.ExecuteNonQuery(sql);
+            }
+        }
+
         #endregion
     }
 }

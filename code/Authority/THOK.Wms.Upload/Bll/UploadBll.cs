@@ -1373,7 +1373,7 @@ namespace THOK.WMS.Upload.Bll
                 dao.InsertCompany(companySet);
             }
         }
-
+        //人员信息表
         public void UploadEmployee(DataSet employee)
         {
             using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
@@ -1383,7 +1383,7 @@ namespace THOK.WMS.Upload.Bll
                 dao.InsertEmployee(employee);
             }
         }
-
+        //仓储属性表
         public void UploadCell(DataSet cell)
         {
             using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
@@ -1391,6 +1391,26 @@ namespace THOK.WMS.Upload.Bll
                 UploadDao dao = new UploadDao();
                 dao.SetPersistentManager(pm);
                 dao.InsertEmployee(cell);
+            }
+        }
+        //仓库库存表
+        public void QueryStoreStock(DataSet storeStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertStoreStock(storeStock);
+            }
+        }
+        //业务库存表
+        public void QueryBusiStock(DataSet busiStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertBustStock(busiStock);
             }
         }
         #endregion
