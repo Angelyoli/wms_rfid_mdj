@@ -67,12 +67,16 @@
                         msg: result.msg
                     });
                     $('#dlg-add').dialog('close');
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.show({
                         title: '错误',
                         msg: result.msg
                     });
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }

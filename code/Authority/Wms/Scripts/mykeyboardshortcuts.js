@@ -19,8 +19,8 @@ $(document).keydown(function (e) {
             }
         }
         if (addKey == true || editKey == true || deleteKey == true) {
-            addKey = false;
-            editKey = false;
+            //addKey = false;
+            //editKey = false;
             deleteKey = false;
             if (module == "organization" || module == "warehouse" || module == "cigarette" || module == "cigaretteUnitList"
              || module == "stockInto" || module == "stockIntoInBill" || module == "stockMove" || module == "checkBill"

@@ -46,10 +46,14 @@
                     if (result) {
                         if (result.success) {
                             $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                            addKey = false;
+                            editKey = false;
                             $('#dlg').dialog('close');
                             $('#details').datagrid('reload');
                         } else {
                             $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                            addKey = false;
+                            editKey = false;
                             $('#dlg').dialog('close');
                             $('#details').datagrid('reload');
                         }
@@ -57,9 +61,13 @@
                 });
             } else {
                 $.messager.alert('错误', '请选择需要分配的线路！');
+                addKey = false;
+                editKey = false;
             }
         } else {
             $.messager.alert('错误', '请选择分拣线！');
+            addKey = false;
+            editKey = false;
         }
     }
 

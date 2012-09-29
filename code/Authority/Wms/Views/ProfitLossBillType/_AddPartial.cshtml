@@ -45,6 +45,8 @@
                         title: '³É¹¦',
                         msg: result.msg
                     });
+                    addKey = false;
+                    editKey = false;
                     $('#dlg').dialog('close');
                     $('#details').datagrid('reload');
                 } else {
@@ -52,6 +54,8 @@
                         title: '´íÎó',
                         msg: result.msg
                     });
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }

@@ -9,6 +9,8 @@
     function save() {
         $.asyncProcessing.OnProgressComplete = function () {
             $('#dlg').dialog('close');
+            addKey = false;
+            editKey = false;
             $('#details').datagrid('reload');
         }
         dispatchParameter = "";
@@ -18,8 +20,12 @@
         }
         if (dispatchParameter != "" && dispatchParameter != null) {
             $.asyncProcessing.Start('/allotSortWork', $.toJSON({ ActionType: 'start', workDispatchId: dispatchParameter }));
+            addKey = false;
+            editKey = false;
         } else {
             $.messager.alert('错误', '请选择需要作业调度的线路！');
+            addKey = false;
+            editKey = false;
         }
     }
 

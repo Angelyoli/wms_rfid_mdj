@@ -76,9 +76,13 @@
                             $("#productCode").attr("value", "");
                             $("#productName").attr("value", "");
                         }, $('#dlg'));
+                        addKey = false;
+                        editKey = false;
         }
         else {
             $.messager.show({ title: '系统信息', msg: '保存失败！输入的信息不完整！' });
+            addKey = false;
+            editKey = false;
         }
     }    
 </script>
