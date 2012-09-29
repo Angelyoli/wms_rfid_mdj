@@ -57,7 +57,6 @@
     <Compile Include="DeliverDist.cs" />
     <Compile Include="DeliverLine.cs" />
     <Compile Include="Department.cs" />
-    <Compile Include="DwvIoutSynchroInfo.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="InBillAllot.cs" />
     <Compile Include="InBillDetail.cs" />
@@ -75,7 +74,6 @@
     <Compile Include="Mapping\DeliverDistMap.cs" />
     <Compile Include="Mapping\DeliverLineMap.cs" />
     <Compile Include="Mapping\DepartmentMap.cs" />
-    <Compile Include="Mapping\DwvIoutSynchroInfoMap.cs" />
     <Compile Include="Mapping\EmployeeMap.cs" />
     <Compile Include="Mapping\InBillAllotMap.cs" />
     <Compile Include="Mapping\InBillDetailMap.cs" />

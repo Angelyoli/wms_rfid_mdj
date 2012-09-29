@@ -7,6 +7,8 @@ using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.Download.Interfaces;
+using THOK.WMS.DownloadWms.Bll;
+using System.Data;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -17,6 +19,9 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public ICustomerDownService CustomerDownService { get; set; }
+
+        DownCustomerBll Customer = new DownCustomerBll();
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
@@ -181,6 +186,9 @@ namespace THOK.Wms.Bll.Service
 
                     CustomerRepository.Add(cust);
                     CustomerRepository.SaveChanges();
+                    //上报客户信息
+                    //DataSet ds = Insert(cust);
+                    //Customer.InsertCustom(ds);
                     result = true;
                 }
                 catch (Exception ex)
@@ -287,6 +295,9 @@ namespace THOK.Wms.Bll.Service
                 cust.IsActive = customer.IsActive;
                 cust.UpdateTime = DateTime.Now;
                 CustomerRepository.SaveChanges();
+                //上报客户信息
+                //DataSet ds = Insert(cust);
+                //Customer.InsertCustom(ds);
 
             }
             catch (Exception ex)
@@ -296,6 +307,77 @@ namespace THOK.Wms.Bll.Service
             return true;
         }
 
+        #endregion
+
+        #region 插入数据到虚拟表
+        public DataSet Insert(Customer customer)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            DataRow inbrddr = ds.Tables["DWV_IORG_CUSTOMER"].NewRow();
+            inbrddr["customer_code"] = customer.CustomCode;
+            inbrddr["custom_code"] = customer.CustomCode;
+            inbrddr["customer_name"] = customer.CustomerName;
+            inbrddr["company_code"] = customer.CompanyCode;
+            inbrddr["sale_region_code"] = customer.SaleRegionCode;
+            inbrddr["uniform_code"] = customer.UniformCode;
+            inbrddr["customer_type"] = customer.CustomerType ?? "";
+            inbrddr["sale_scope"] = customer.SaleScope;
+            inbrddr["industry_type"] = customer.IndustryType;
+            inbrddr["city_or_countryside"] = customer.CityOrCountryside;
+            inbrddr["deliver_line_code"] = customer.DeliverLineCode;
+            inbrddr["deliver_order"] = customer.DeliverOrder;
+            inbrddr["address"] = customer.Address;
+            inbrddr["phone"] = customer.Phone;
+            inbrddr["license_type"] = customer.LicenseType ?? "";
+            inbrddr["license_code"] = customer.LicenseCode ?? "";
+            inbrddr["principal_name"] = customer.PrincipalName ?? "";
+            inbrddr["principal_phone"] = customer.PrincipalPhone ?? "";
+            inbrddr["principal_address"] = customer.PrincipalAddress ?? "";
+            inbrddr["management_name"] = customer.ManagementName ?? "";
+            inbrddr["management_phone"] = customer.ManagementPhone ?? "";
+            inbrddr["bank"] = customer.Bank ?? "";
+            inbrddr["bank_accounts"] = customer.BankAccounts ?? "";
+            inbrddr["description"] = customer.Description ?? "";
+            inbrddr["is_active"] = customer.IsActive;
+            inbrddr["update_time"] = DateTime.Now;
+            ds.Tables["DWV_IORG_CUSTOMER"].Rows.Add(inbrddr);
+            return ds;
+        }
+        #endregion
+
+        #region 创建一个空的客户信息表
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable inbrtable = ds.Tables.Add("DWV_IORG_CUSTOMER");
+            inbrtable.Columns.Add("customer_code");
+            inbrtable.Columns.Add("custom_code");
+            inbrtable.Columns.Add("customer_name");
+            inbrtable.Columns.Add("company_code");
+            inbrtable.Columns.Add("sale_region_code");
+            inbrtable.Columns.Add("uniform_code");
+            inbrtable.Columns.Add("customer_type");
+            inbrtable.Columns.Add("sale_scope");
+            inbrtable.Columns.Add("industry_type");
+            inbrtable.Columns.Add("city_or_countryside");
+            inbrtable.Columns.Add("deliver_line_code");
+            inbrtable.Columns.Add("deliver_order");
+            inbrtable.Columns.Add("address");
+            inbrtable.Columns.Add("phone");
+            inbrtable.Columns.Add("license_type");
+            inbrtable.Columns.Add("license_code");
+            inbrtable.Columns.Add("principal_name");
+            inbrtable.Columns.Add("principal_phone");
+            inbrtable.Columns.Add("principal_address");
+            inbrtable.Columns.Add("management_name");
+            inbrtable.Columns.Add("management_phone");
+            inbrtable.Columns.Add("bank");//一号工程条形码
+            inbrtable.Columns.Add("bank_accounts");
+            inbrtable.Columns.Add("description");
+            inbrtable.Columns.Add("is_active");
+            inbrtable.Columns.Add("update_time");
+            return ds;
+        }
         #endregion
     }
 }

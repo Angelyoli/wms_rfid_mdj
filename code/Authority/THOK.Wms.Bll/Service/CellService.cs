@@ -32,6 +32,8 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
 
+        UploadBll upload = new UploadBll();
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
@@ -224,6 +226,9 @@ namespace THOK.Wms.Bll.Service
 
                 CellRepository.Add(cellAdd);
                 CellRepository.SaveChanges();
+                //仓储属性上报
+                //DataSet ds = Insert(cell);
+                //upload.UploadCell(ds);
                 return true;
             }
             else
@@ -274,6 +279,9 @@ namespace THOK.Wms.Bll.Service
             cellSave.UpdateTime = DateTime.Now;
 
             CellRepository.SaveChanges();
+            //仓储属性上报
+            //DataSet ds = Insert(cell);
+            //upload.UploadCell(ds);
             return true;
         }
 
@@ -1140,11 +1148,89 @@ namespace THOK.Wms.Bll.Service
         }
 
         #region
-        public object uploadCell(DataSet ds)
+        public object uploadCell()
         {
-            UploadBll upload = new UploadBll();
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+            var cells = cellQuery.OrderBy(b => b.CellCode).Select(b => b);
+            DataSet ds = Insert(cells);
             upload.UploadCell(ds);
-            return false;
+            return true;
+        }
+        #endregion
+
+        #region 插入数据到虚拟表
+        public DataSet Insert(IQueryable<Cell> cell)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            DataRow inbrddr = ds.Tables["wms_cell"].NewRow();
+            foreach (var p in cell)
+            {
+                inbrddr["STORAGE_CODE"] = p.CellCode;
+                inbrddr["STORAGE_TYPE"] = "4";
+                inbrddr["ORDER_NUM"] = "";
+                inbrddr["CONTAINER"] = "5003";
+                inbrddr["STORAGE_NAME"] = p.CellName;
+                inbrddr["UP_CODE"] = p.Area.Warehouse.WarehouseCode;
+                inbrddr["DIST_CTR_CODE"] = p.Area.Warehouse.WarehouseCode;
+                inbrddr["N_ORG_CODE"] = "";
+                inbrddr["N_STORE_ROOM_CODE"] = "";
+                inbrddr["CAPACITY"] = p.MaxQuantity * 50;
+                inbrddr["HORIZONTAL_NUM"] = 0;
+                inbrddr["VERTICAL_NUM"] = 0;
+                inbrddr["AREA_TYPE"] = p.Area.AreaType;
+                inbrddr["UPDATE_DATE"] = DateTime.Now;
+                inbrddr["ISACTIVE"] = p.IsActive;
+                ds.Tables["wms_cell"].Rows.Add(inbrddr);
+            }
+            return ds;
+        }
+
+        public DataSet Insert(Cell cell)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            DataRow inbrddr = ds.Tables["wms_cell"].NewRow();
+            inbrddr["STORAGE_CODE"] = cell.CellCode;
+            inbrddr["STORAGE_TYPE"] = "4";
+            inbrddr["ORDER_NUM"] = "";
+            inbrddr["CONTAINER"] = "5003";
+            inbrddr["STORAGE_NAME"] = cell.CellName;
+            inbrddr["UP_CODE"] = cell.Area.Warehouse.WarehouseCode;
+            inbrddr["DIST_CTR_CODE"] = cell.Area.Warehouse.WarehouseCode;
+            inbrddr["N_ORG_CODE"] = "";
+            inbrddr["N_STORE_ROOM_CODE"] = "";
+            inbrddr["CAPACITY"] = cell.MaxQuantity * 50;
+            inbrddr["HORIZONTAL_NUM"] = 0;
+            inbrddr["VERTICAL_NUM"] = 0;
+            inbrddr["AREA_TYPE"] = cell.Area.AreaType;
+            inbrddr["UPDATE_DATE"] = DateTime.Now;
+            inbrddr["ISACTIVE"] = cell.IsActive;
+            ds.Tables["wms_cell"].Rows.Add(inbrddr);
+
+            return ds;
+        }
+        #endregion
+
+        #region 创建一个空的仓储信息表
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable inbrtable = ds.Tables.Add("wms_cell");
+            inbrtable.Columns.Add("STORAGE_CODE");
+            inbrtable.Columns.Add("STORAGE_TYPE");
+            inbrtable.Columns.Add("ORDER_NUM");
+            inbrtable.Columns.Add("CONTAINER");
+            inbrtable.Columns.Add("STORAGE_NAME");
+            inbrtable.Columns.Add("UP_CODE");
+            inbrtable.Columns.Add("DIST_CTR_CODE");
+            inbrtable.Columns.Add("N_ORG_CODE");
+            inbrtable.Columns.Add("N_STORE_ROOM_CODE");
+            inbrtable.Columns.Add("CAPACITY");
+            inbrtable.Columns.Add("HORIZONTAL_NUM");
+            inbrtable.Columns.Add("VERTICAL_NUM");
+            inbrtable.Columns.Add("AREA_TYPE");
+            inbrtable.Columns.Add("UPDATE_DATE");
+            inbrtable.Columns.Add("ISACTIVE");
+            return ds;
         }
         #endregion
     }
