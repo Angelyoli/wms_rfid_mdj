@@ -123,6 +123,7 @@
     }
     function parentCompanyNameSearchClick() {
         $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
+        editKey = false;
         $('#parentCompanyNameDetail').datagrid({ url: '/Company/GetParentName/' });
         $("#parentCompanyNameDetail").datagrid('reload');
     }
