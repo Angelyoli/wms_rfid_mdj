@@ -58,6 +58,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.Wms.DownloadWms", "THO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tek4.Highcharts.Exporting", "Tek4.Highcharts.Exporting\Tek4.Highcharts.Exporting.csproj", "{42BDE168-C741-4339-92B6-0656E798E989}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.Wms.Upload", "THOK.Wms.Upload\THOK.Wms.Upload.csproj", "{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Authority.vsmdi
@@ -143,6 +145,10 @@ Global
 		{42BDE168-C741-4339-92B6-0656E798E989}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42BDE168-C741-4339-92B6-0656E798E989}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42BDE168-C741-4339-92B6-0656E798E989}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

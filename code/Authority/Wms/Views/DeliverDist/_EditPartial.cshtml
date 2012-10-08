@@ -1,0 +1,24 @@
+﻿<script type="text/javascript">
+    function editClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg').dialog('open').dialog('setTitle', '编辑配送区域信息');
+            $('#deliverfm.easyui-validatebox').validatebox({
+                required:  true
+            });
+            $('form input').removeAttr("disabled");
+            $('#IsActive').combo({
+                hasDownArrow: true
+            });
+            $('#deliverfm').form('load', row);
+            if (row.IsActive == "可用") {
+                $('#D_isActive').combo('setValue', 1).combo('setText', row.IsActive);
+            } else {
+                $('#D_isActive').combo('setValue', 0).combo('setText', row.IsActive);
+            }
+            url = '/DeliverDist/Edit/';
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    }
+</script>

@@ -3,6 +3,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#dlg').dialog('open').dialog('setTitle', '删除');
+            deleteKey = true;
             $('#fm .easyui-validatebox').validatebox({
                 required: false
             });

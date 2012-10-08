@@ -4,6 +4,7 @@ function editClick() {
     if (row) {
         addLoad();
         $('#dlg').dialog('open').dialog('setTitle', '±à¼­');
+        editKey = true;
         $('#sortingLinefm').form('load', row);
         $('#sortingLinefm .easyui-validatebox').validatebox({
             required: true

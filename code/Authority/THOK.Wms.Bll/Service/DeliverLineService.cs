@@ -61,5 +61,156 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
+
+        #region IDeliverLineService 成员
+
+
+        public object GetDetails(int page, int rows, string DeliverLineCode, string CustomCode, string DeliverLineName, string DistCode, string DeliverOrder, string IsActive)
+        {
+            IQueryable<DeliverLine> deliverLineQuery = DeliverLineRepository.GetQueryable();
+            var deliverLine = deliverLineQuery.Where(c => c.DeliverLineCode.Contains(DeliverLineCode) &&
+                                                          c.DeliverLineName.Contains(DeliverLineName) &&
+                                                          c.IsActive.Contains(IsActive) &&
+                                                          c.IsActive.Contains(IsActive));
+            if (!CustomCode.Equals(string.Empty))
+            {
+                deliverLine = deliverLine.Where(d => d.CustomCode == CustomCode);
+            }
+            if (!DistCode.Equals(string.Empty))
+            {
+                deliverLine = deliverLine.Where(d => d.DistCode == DistCode);
+            }
+            deliverLine = deliverLine.OrderBy(h => h.DeliverLineCode);
+            int total = deliverLine.Count();
+            deliverLine = deliverLine.Skip((page - 1) * rows).Take(rows);
+
+            var temp = deliverLine.ToArray().Select(c => new
+            {
+                DeliverLineCode = c.DeliverLineCode,
+                CustomCode = c.CustomCode,
+                DeliverLineName = c.DeliverLineName,
+                DistCode = c.DistCode,
+                DeliverOrder = c.DeliverOrder,
+                Description = c.Description,
+                IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+            });
+            return new { total, rows = temp.ToArray() };
+        }
+
+        #endregion
+
+        #region IDeliverLineService 成员
+
+
+        public bool Add(DeliverLine deliverLine, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var deliver_line = new DeliverLine();
+            if (deliverLine != null)
+            {
+                try
+                {
+                    deliver_line.DeliverLineCode = deliverLine.DeliverLineCode;
+                    deliver_line.CustomCode = deliverLine.CustomCode;
+                    deliver_line.DeliverLineName = deliverLine.DeliverLineName;
+                    deliver_line.DistCode = deliverLine.DistCode;
+                    deliver_line.DeliverOrder = deliverLine.DeliverOrder;
+                    deliver_line.Description = deliverLine.Description;
+                    deliver_line.IsActive = deliverLine.IsActive;
+                    deliver_line.UpdateTime = DateTime.Now;
+
+                    DeliverLineRepository.Add(deliver_line);
+                    DeliverLineRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.InnerException;
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region IDeliverLineService 成员
+
+
+        public object D_Details(int page, int rows, string QueryString, string Value)
+        {
+            string CustomCode = "";
+            if (QueryString == "CustomCode")
+            {
+                CustomCode = Value;
+            }
+            IQueryable<DeliverLine> deliverLineQuery = DeliverLineRepository.GetQueryable();
+            var deliver_line = deliverLineQuery.Where(c => c.CustomCode.Contains(CustomCode) )
+                .OrderBy(c => c.DeliverLineCode)
+                .Select(c => c);
+            int total = deliver_line.Count();
+            deliver_line = deliver_line.Skip((page - 1) * rows).Take(rows);
+
+            var temp = deliver_line.ToArray().Select(c => new
+            {
+                DeliverLineCode = c.DeliverLineCode,
+                CustomCode = c.CustomCode,
+                DistCode = c.DistCode,
+                IsActive = c.IsActive == "1" ? "可用" : "不可用"
+            });
+            return new { total, rows = temp.ToArray() };
+        }
+
+        #endregion
+
+        #region IDeliverLineService 成员
+
+
+        public bool Save(DeliverLine deliverLine, out string strResult)
+        {
+            strResult = string.Empty;
+            try
+            {
+                var deliver_line = DeliverLineRepository.GetQueryable()
+                    .FirstOrDefault(i => i.DeliverLineCode == deliverLine.DeliverLineCode);
+                deliver_line.DeliverLineCode = deliverLine.DeliverLineCode;
+                deliver_line.CustomCode = deliverLine.CustomCode;
+                deliver_line.DeliverLineName = deliverLine.DeliverLineName;
+                deliver_line.DistCode = deliverLine.DistCode;
+                deliver_line.DeliverOrder = deliverLine.DeliverOrder;
+                deliver_line.Description = deliverLine.Description;
+                deliver_line.IsActive = deliverLine.IsActive;
+                deliver_line.UpdateTime = DateTime.Now;
+                DeliverLineRepository.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                strResult = "原因：" + ex.InnerException;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region IDeliverLineService 成员
+
+
+        public bool Delete(string DeliverLineCode)
+        {
+            var deliver_Line = DeliverLineRepository.GetQueryable()
+               .FirstOrDefault(i => i.DeliverLineCode == DeliverLineCode);
+            if (DeliverLineCode != null)
+            {
+                DeliverLineRepository.Delete(deliver_Line);
+                DeliverLineRepository.SaveChanges();
+            }
+            else
+                return false;
+            return true;
+        }
+
+        #endregion
     }
 }

@@ -57,6 +57,7 @@
         }
         fm = divid + "fm";
         $('#dlg').dialog('open').dialog('setTitle', '新增: ' + addName);
+        addKey = true;
         AddShowDiv(divid); //显示div
         $('#' + divid).form('clear');
         $('#' + divid + 'ID').attr("readonly", false);
@@ -75,10 +76,14 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     $('#dlg').dialog('close');
                     $('#details').treegrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#details').treegrid('reload');
                 }
             }

@@ -1,0 +1,24 @@
+﻿<script type="text/javascript">
+    function deleteClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg').dialog('open').dialog('setTitle', '删除配送信息');
+            $('#deliverfm.easyui-validatebox').validatebox({
+                required: false
+            });
+            $('form input').attr("disabled", "disabled");
+            $('#IsActive').combo({
+                hasDownArrow: false
+            });
+            $('#deliverfm').form('load', row);
+            if (row.Status == '可用') {
+                $('#IsActive').combo('setValue', true).combo('setText', row.IsActive);
+            } else {
+                $('#IsActive').combo('setValue', false).combo('setText', row.IsActive);
+            }
+            url = '/DeliverDist/Delete/?DistCode=' + row.DistCode;
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    };
+</script>

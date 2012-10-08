@@ -4,7 +4,9 @@
         if (row) {
             AddLoad();
             showDialog('编辑');
+            editKey = true;
             addDialog.dialog('open');
+
             url = '/Company/Edit/';
             //            $('#dlg').dialog('open').dialog('setTitle', '编辑');
             $('form input').removeAttr("disabled");

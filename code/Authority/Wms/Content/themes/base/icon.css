@@ -76,9 +76,18 @@
     display: inline-block;
 }
 
-/*新增icon.css -icons*/
+/*锟斤拷锟斤拷icon.css -icons*/
 .icon-Menu_Organization{
 	background:url('icons/Menu_Organization.png') no-repeat;
+}
+.icon-Menu_Delivery{
+	background:url('icons/Menu_Delivery.ico') no-repeat;
+}
+.icon-Menu_DeliverCustomer{
+	background:url('icons/Menu_DeliverCustomer.ico') no-repeat;
+}
+.icon-Menu_DeliverLine{
+	background:url('icons/Menu_DeliverLine.ico') no-repeat;
 }
 .icon-Menu_Cigarette{
 	background:url('icons/Menu_Cigarette.png') no-repeat;
@@ -231,9 +240,21 @@
 	background:url('icons/Son_CellAnalysis.jpg') no-repeat;
 }
 
-/*新增icon.css -images*/
+.icon-Son_DeliveryDis{
+	background:url('icons/Son_DeliveryDis.ico') no-repeat;
+}
+/*锟斤拷锟斤拷icon.css -images*/
 .image-Menu_Organization{
 	background:url('images/Menu_Organization.png') no-repeat;
+}
+.image-Menu_Delivery{
+	background:url('images/Menu_Delivery.ico') no-repeat;
+}
+.image-Menu_DeliverCustomer{
+	background:url('images/Menu_DeliverCustomer.ico') no-repeat;
+}
+.image-Menu_DeliverLine{
+	background:url('images/Menu_DeliverLine.ico') no-repeat;
 }
 .image-Menu_Cigarette{
 	background:url('images/Menu_Cigarette.png') no-repeat;
@@ -385,7 +406,7 @@
 .image-Son_CellAnalysis{
 	background:url('images/Son_CellAnalysis.jpg') no-repeat;
 }
-/*新增权限系统icon.css -icons*/
+/*锟斤拷锟斤拷权锟斤拷系统icon.css -icons*/
 .icon-Menu_Help{
 	background:url('icons/2Menu_Help.png') no-repeat;
 }
@@ -436,8 +457,10 @@
 .icon-Son_WrongLog{
 	background:url('icons/2Son_WrongLog.png') no-repeat;
 }
-
-/*新增权限系统icon.css -images*/
+.image-Son_DeliveryDis{
+	background:url('images/Son_DeliveryDis.ico') no-repeat;
+}
+/*锟斤拷锟斤拷权锟斤拷系统icon.css -images*/
 .image-Menu_Help{
 	background:url('images/2Menu_Help.png') no-repeat;
 }

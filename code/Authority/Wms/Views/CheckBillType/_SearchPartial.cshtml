@@ -1,4 +1,9 @@
 ﻿<script type="text/javascript">
+    var module = "checkBill";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     $(function () {
         $('#IsActive').combo({
             editable: false,
@@ -8,6 +13,7 @@
 
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        searchKey = true;
     };
 
     function select() {
@@ -23,9 +29,15 @@
         $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
-
+    $(document).keydown(function (e) {
+        e = e ? e : window.event;
+        var keyCode = e.which ? e.which : e.keyCode;
+        if (keyCode == 13) {
+            select();
+        }
+    });
 </script>
-
+<script src="../../Scripts/mykeyboardshortcuts.js" type="text/javascript"></script>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:210px;padding:2px 2px"
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">

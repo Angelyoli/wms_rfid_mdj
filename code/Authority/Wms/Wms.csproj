@@ -124,9 +124,11 @@
     <Compile Include="Controllers\Wms\ComplexSearch\StockIntoSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockMoveSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockOutSearchController.cs" />
+    <Compile Include="Controllers\Wms\DeliveryInfo\CustomerController.cs" />
+    <Compile Include="Controllers\Wms\DeliveryInfo\DeliverDistController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisDownloadController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\BasisUploadController.cs" />
-    <Compile Include="Controllers\Wms\InterfaceInfo\DeliverLineController.cs" />
+    <Compile Include="Controllers\Wms\DeliveryInfo\DeliverLineController.cs" />
     <Compile Include="Controllers\Wms\InterfaceInfo\SortingRealTimeController.cs" />
     <Compile Include="Controllers\Wms\Inventory\CargospaceController.cs" />
     <Compile Include="Controllers\Wms\Inventory\CellHistoricalController.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillAllotController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
+    <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
@@ -539,6 +542,9 @@
     <Content Include="Content\themes\base\icons\2Menu_ServerDevice.png" />
     <Content Include="Content\themes\base\icons\2Menu_SysLog.png" />
     <Content Include="Content\themes\base\icons\2Son_Cities.png" />
+    <Content Include="Content\themes\base\icons\Menu_DeliverCustomer.ico" />
+    <Content Include="Content\themes\base\icons\Menu_DeliverLine.ico" />
+    <Content Include="Content\themes\base\icons\Son_DeliveryDis.ico" />
     <Content Include="Content\themes\base\icons\2Son_HelpContents.png" />
     <Content Include="Content\themes\base\icons\2Son_HelpEdit.png" />
     <Content Include="Content\themes\base\icons\2Son_HelpIndex.png" />
@@ -550,6 +556,7 @@
     <Content Include="Content\themes\base\icons\2Son_UserJurisdiction.png" />
     <Content Include="Content\themes\base\icons\2Son_WorkLog.png" />
     <Content Include="Content\themes\base\icons\2Son_WrongLog.png" />
+    <Content Include="Content\themes\base\icons\Menu_Delivery.ico" />
     <Content Include="Content\themes\base\icons\Menu_CheckBill.png" />
     <Content Include="Content\themes\base\icons\Menu_Organization.png" />
     <Content Include="Content\themes\base\icons\Menu_Cigarette.png" />
@@ -941,6 +948,9 @@
     <Content Include="Content\themes\base\images\2Menu_ServerDevice.png" />
     <Content Include="Content\themes\base\images\2Menu_SysLog.png" />
     <Content Include="Content\themes\base\images\2Son_Cities.png" />
+    <Content Include="Content\themes\base\images\Menu_DeliverCustomer.ico" />
+    <Content Include="Content\themes\base\images\Menu_DeliverLine.ico" />
+    <Content Include="Content\themes\base\images\Son_DeliveryDis.ico" />
     <Content Include="Content\themes\base\images\2Son_HelpContents.png" />
     <Content Include="Content\themes\base\images\2Son_HelpEdit.png" />
     <Content Include="Content\themes\base\images\2Son_HelpIndex.png" />
@@ -953,6 +963,7 @@
     <Content Include="Content\themes\base\images\2Son_WorkLog.png" />
     <Content Include="Content\themes\base\images\2Son_WrongLog.png" />
     <Content Include="Content\themes\base\images\bg.gif" />
+    <Content Include="Content\themes\base\images\Menu_Delivery.png" />
     <Content Include="Content\themes\base\images\Menu_CheckBill.png" />
     <Content Include="Content\themes\base\images\Menu_Cigarette.png" />
     <Content Include="Content\themes\base\images\Menu_Organization.png" />
@@ -1054,6 +1065,7 @@
     <Content Include="Scripts\jquery.ztree.exedit-3.3.min.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
+    <Content Include="Scripts\mykeyboardshortcuts.js" />
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1143,6 +1155,10 @@
     <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>
       <Name>THOK.Wms.SignalR</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.Upload\THOK.Wms.Upload.csproj">
+      <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
+      <Name>THOK.Wms.Upload</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -1308,6 +1324,25 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Employee\_AddPartial.cshtml" />
+    <Content Include="Views\DeliverDist\Index.cshtml" />
+    <Content Include="Views\DeliverDist\_AddPartial.cshtml" />
+    <Content Include="Views\DeliverDist\_SearchPartial.cshtml" />
+    <Content Include="Views\DeliverDist\_deliverPartial1.cshtml" />
+    <Content Include="Views\DeliverDist\_EditPartial.cshtml" />
+    <Content Include="Views\DeliverDist\_DeletePartial.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Customer\_AddPartial.cshtml" />
+    <Content Include="Views\Customer\_EditPartial.cshtml" />
+    <Content Include="Views\Customer\_DeletePartial.cshtml" />
+    <Content Include="Views\Customer\_SearchPartial.cshtml" />
+    <Content Include="Views\Customer\_customerPartial1.cshtml" />
+    <Content Include="Views\Customer\_customerPartial2.cshtml" />
+    <Content Include="Views\DeliverLine\Index.cshtml" />
+    <Content Include="Views\DeliverLine\_AddPartial.cshtml" />
+    <Content Include="Views\DeliverLine\_SearchPartial.cshtml" />
+    <Content Include="Views\DeliverLine\_deliverLinePartial1.cshtml" />
+    <Content Include="Views\DeliverLine\_EditPartial.cshtml" />
+    <Content Include="Views\DeliverLine\_DeletePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -1602,6 +1637,9 @@
     <Content Include="Views\QuantityLimits\_PrintPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_MoveInCellPartial.cshtml" />
     <Content Include="Views\ProductTimeOut\_PrintPartial.cshtml" />
+    <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\Upload\_SearchPartial.cshtml" />
+    <Content Include="Views\Upload\_Upload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
