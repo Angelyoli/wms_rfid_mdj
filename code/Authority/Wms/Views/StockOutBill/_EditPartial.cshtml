@@ -11,6 +11,7 @@
                 isShowOutBillDetail = true;
                 $('#centerShowDiv').css({ display: "block" });
                 $('#dlg').dialog('open').dialog('setTitle', '编辑出库主单信息');
+                editKey = true;
                 $('#outBillDeatil').datagrid({ url: '/StockOutBill/OutBillDetails/?BillNo=' + row.BillNo }); //加载明细
                 $('#fm').form('load', row);
                 $('#fm .easyui-validatebox').validatebox({

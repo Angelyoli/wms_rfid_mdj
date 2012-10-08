@@ -3,6 +3,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#dlg').dialog('open').dialog('setTitle', '删除品牌信息');
+            deleteKey = true;
             $('#Productfm .easyui-validatebox').validatebox({
                 required: false
             });

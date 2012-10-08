@@ -66,6 +66,7 @@
             if (json) {
                 $('#outBillDeatil').datagrid('loadData', { total: 0, rows: [] }); //清空细单
                 $('#dlg').dialog('open').dialog('setTitle', '新增出库订单');
+                addKey = true;
                 $('#fm').form('clear');
                 $('#centerShowDiv').css({ display: "block" });
                 $('#billNo').val(json.BillNo);
@@ -76,7 +77,7 @@
                 $('#fm .easyui-validatebox').validatebox({
                     required: true
                 });
-                $('form input').removeAttr("disabled");                
+                $('form input').removeAttr("disabled");
                 $('form textarea').removeAttr("disabled");
                 $('#cc').combo({
                     hasDownArrow: true
@@ -133,11 +134,15 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     $('#dlg').dialog('close');
                     $('#details').datagrid('reload');
                     $('#outBillDeatil').datagrid('load');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }
