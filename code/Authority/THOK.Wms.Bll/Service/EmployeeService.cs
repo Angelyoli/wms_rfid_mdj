@@ -6,6 +6,8 @@ using THOK.Wms.DbModel;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
+using System.Data;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -19,6 +21,9 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IDepartmentRepository DepartmentRepository { get; set; }
+
+
+        UploadBll Upload = new UploadBll();
 
         protected override Type LogPrefix
         {
@@ -96,6 +101,9 @@ namespace THOK.Wms.Bll.Service
                         emp.UpdateTime = DateTime.Now;
                         EmployeeRepository.Add(emp);
                         EmployeeRepository.SaveChanges();
+                        //人员信息上报
+                        //DataSet ds = this.Insert(emp);
+                        //Upload.UploadEmployee(ds);
                         result = true;
                     }
                     catch (Exception ex)
@@ -166,6 +174,9 @@ namespace THOK.Wms.Bll.Service
                     emp.UserName = employee.UserName;
                     emp.UpdateTime = DateTime.Now;
                     EmployeeRepository.SaveChanges();
+                    //人员信息上报
+                    //DataSet ds = this.Insert(emp);
+                    //Upload.UploadEmployee (ds);
                     result = true; ;
                 }
                 catch (Exception ex)
@@ -180,6 +191,37 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
+        #endregion
+
+        #region 插入数据到虚拟表
+        public DataSet Insert(Employee employee)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            DataRow inbrddr = ds.Tables["wms_employee"].NewRow();
+            inbrddr["employee_code"] = employee.EmployeeCode;
+            inbrddr["employee_no"] = employee.EmployeeCode;
+            inbrddr["employee_name"] = employee.EmployeeName;
+            inbrddr["sex"] = employee.Sex;
+            inbrddr["is_active"] = employee.IsActive;
+            inbrddr["update_time"] = DateTime.Now;
+            ds.Tables["wms_employee"].Rows.Add(inbrddr);
+            return ds;
+        }
+        #endregion
+
+        #region 创建一个空的产品表
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable inbrtable = ds.Tables.Add("wms_employee");
+            inbrtable.Columns.Add("employee_code");
+            inbrtable.Columns.Add("employee_no");
+            inbrtable.Columns.Add("employee_name");
+            inbrtable.Columns.Add("sex");
+            inbrtable.Columns.Add("is_active");
+            inbrtable.Columns.Add("update_time");
+            return ds;
+        }
         #endregion
 
         public object GetEmployee(int page, int rows, string queryString, string value)

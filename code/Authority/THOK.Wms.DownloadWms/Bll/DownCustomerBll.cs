@@ -27,6 +27,8 @@ namespace THOK.WMS.DownloadWms.Bll
             {
                 DataSet custDs = this.Insert(customerDt);
                 this.Insert(custDs);
+                //上报客户信息数据
+                //this.InsertCustom(custDs);
             }            
             return tag;
         }
@@ -115,6 +117,18 @@ namespace THOK.WMS.DownloadWms.Bll
                 dao.Insert(customerDs);
             }
         }
+
+        #region 上报客户信息数据
+        public void InsertCustom(DataSet costomerSet)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                DownCustomerDao dao = new DownCustomerDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertCustom(costomerSet);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// 构建一个客户虚拟表

@@ -6,6 +6,8 @@ using THOK.Wms.DbModel;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
+using System.Data;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -25,6 +27,8 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
+
+        UploadBll upload = new UploadBll();
 
         protected override Type LogPrefix
         {
@@ -212,6 +216,114 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = storage.ToArray() };
         }
 
+        #endregion
+
+        #region 上报仓库库存表
+        public bool uploadStorage()
+        {
+            try
+            {
+                IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+                var storage = storageQuery.Select(s => new
+                {
+                    cellCode = s.CellCode,
+                    productCode = s.ProductCode,
+                    areaType = s.Cell.Area.AreaType,
+                    warehouseCode = s.Cell.WarehouseCode,
+                    storageTime = s.StorageTime,
+                    quantity = s.Quantity / (s.Product.UnitList.Quantity02 * s.Product.UnitList.Quantity03)
+                });
+                DataSet ds = this.GenerateEmptyTables();
+                DataRow inbrddr = ds.Tables["wms_storage"].NewRow();
+                foreach (var p in storage)
+                {
+                    if (p.areaType == "6")
+                    {
+                        inbrddr["area_type"] = "0902";
+                    }
+                    else if (p.areaType == "7")
+                    {
+                        inbrddr["area_type"] = "0903";
+                    }
+                    else
+                    {
+                        inbrddr["area_type"] = "0901";
+                    }
+                    inbrddr["cell_code"] = p.cellCode;
+                    inbrddr["product_code"] = p.productCode;
+                    inbrddr["brand_batch"] = p.storageTime;
+                    inbrddr["dist_ctr_code"] = p.warehouseCode;
+                    inbrddr["quantity"] = p.quantity;
+                    ds.Tables["wms_storage"].Rows.Add(inbrddr);
+                }
+                upload.QueryStoreStock(ds);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region 上报业务库存表
+        public bool uploadBusiStorage()
+        {
+            try
+            {
+                IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+                var storage = storageQuery.GroupBy(s=>s.ProductCode).Select(s => new
+                {
+                    productCode = s.Max(t=>t.ProductCode),
+                    warehouseCode =s.Max(t=>t.Cell.WarehouseCode),
+                    quantity = s.Sum(t=>t.Quantity) /(s.Max(t=>t.Product.UnitList.Quantity02) * s.Max(t=>t.Product.UnitList.Quantity03))
+                });
+                DataSet ds = this.GenerateEmptyTable();
+                DataRow inbrddr = ds.Tables["wms_busistorage"].NewRow();
+                foreach (var p in storage)
+                {
+                    inbrddr["ORG_CODE"] = p.warehouseCode;
+                    inbrddr["BRAND_CODE"] = p.productCode;
+                    inbrddr["DIST_CTR_CODE"] = p.warehouseCode;
+                    inbrddr["QUANTITY"] = p.quantity;
+                    ds.Tables["wms_busistorage"].Rows.Add(inbrddr);
+                }
+                upload.QueryBusiStock(ds);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region 创建一个空的仓库库存表
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable inbrtable = ds.Tables.Add("wms_storage");
+            inbrtable.Columns.Add("cell_code");
+            inbrtable.Columns.Add("product_code");
+            inbrtable.Columns.Add("area_type");
+            inbrtable.Columns.Add("brand_batch");
+            inbrtable.Columns.Add("dist_ctr_code");
+            inbrtable.Columns.Add("quantity");
+            return ds;
+        }
+        #endregion
+
+        #region 创建一个空的业务库存表
+        private DataSet GenerateEmptyTable()
+        {
+            DataSet ds = new DataSet();
+            DataTable inbrtable = ds.Tables.Add("wms_busistorage");
+            inbrtable.Columns.Add("ORG_CODE");
+            inbrtable.Columns.Add("BRAND_CODE");
+            inbrtable.Columns.Add("DIST_CTR_CODE");
+            inbrtable.Columns.Add("QUANTITY");
+            return ds;
+        }
         #endregion
     }
 }
