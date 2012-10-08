@@ -12,7 +12,6 @@ namespace THOK.WES.Interface
     public class Task
     {
         private Uri url = null;
-        private Form targetForm = null;
 
         private string taskType = string.Empty;
 
