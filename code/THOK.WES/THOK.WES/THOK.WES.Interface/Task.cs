@@ -1,18 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using THOK.WES.Interface.Model;
 using System.Net;
 using LitJson;
-using System.Windows.Forms;
-using THOK.AF.View;
 
 namespace THOK.WES.Interface
 {
     public class Task
     {
         private Uri url = null;
-        private Form targetForm = null;
 
         private string taskType = string.Empty;
 
