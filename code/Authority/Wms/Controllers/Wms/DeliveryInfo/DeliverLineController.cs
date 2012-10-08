@@ -68,21 +68,21 @@ namespace Wms.Controllers.Wms.InterfaceInfo
         {
             if (QueryString == null)
             {
-                QueryString = "CustomCode";
+                QueryString = "DistCode";
             }
             if (Value == null)
             {
                 Value = "";
             }
-            var product = DeliverLineService.D_Details(page, rows, QueryString, Value);
-            return Json(product, "text", JsonRequestBehavior.AllowGet);
+            var msg = DeliverLineService.D_Details(page, rows, QueryString, Value);
+            return Json(msg, "text", JsonRequestBehavior.AllowGet);
         }
         // POST: /DeliverLine/Edit/
         [HttpPost]
         public ActionResult Edit(DeliverLine deliverLine)
         {
             string strResult = string.Empty;
-            bool bResult = DeliverLineService.Save(deliverLine, out strResult);
+            bool bResult = DeliverLineService.Edit(deliverLine, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }

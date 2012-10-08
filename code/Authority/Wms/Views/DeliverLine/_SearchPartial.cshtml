@@ -13,6 +13,9 @@
     function deliverLine_select() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.DeliverLineCode = $('#deliverLineCode').val();
+        queryParams.CustomCode = $('#customCode').val();
+        queryParams.DeliverLineName = $('#deliverLineName').val();
+        queryParams.DistCode = $('#distCode').val();
         queryParams.IsActive = $('#d_status').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
@@ -23,24 +26,38 @@
         $('#dlg-search').dialog('close');
     }
     function deliverLine_Select() {
-        $('#deliverLine_Data').dialog('open').dialog('setTitle', '送货线路编码');
+        $('#deliverLine_Data').dialog('open').dialog('setTitle', '配送区域编码');
         $('#deliverLine_Detail').datagrid({ url: '/DeliverLine/D_Details/' });
         $("#deliverLine_Detail").datagrid('reload');
     }
 </script>
-<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 320px; height: 160px;
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 320px; height: 240px;
     padding: 2px 2px" closed="true" buttons="#dlg-buttons-research">
     <div class="easyui-layout" fit="true">
         <div region="center" border="false" style="padding: 10px 10px; background: #fff;
             border: 1px solid #ccc;">
             <table width="280">
                 <tr>
-                <td width="80"> 客户编码:</td>
+                <td width="80"> 送货线路编码:</td>
                 <td><input name="DeliverLineCode" id="deliverLineCode" type="text">
+                </td>
+                </tr>
+                <tr>
+                <td width="80"> 自定义编码:</td>
+                <td><input name="CustomCode" id="customCode" type="text">
+                </td>
+                </tr>
+                <tr>
+                <td width="80"> 送货线路名称:</td>
+                <td><input name="DeliverLineName" id="deliverLineName" type="text">
+                </td>
+                </tr>
+                <tr>
+                <td width="80"> 配送区域编码:</td>
+                <td><input name="DistCode" id="distCode" type="text">
                   <a href="#" id="deliverLine_Search" class="easyui-linkbutton" iconcls="icon-search"
                         plain="true" onclick="deliverLine_Select()"></a>
                 </td>
-                </tr>
                 <tr>
                     <td>
                         是否可用：
@@ -62,4 +79,4 @@
     <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">
         取消</a>
 </div>
-@Html.Partial("_deliverLinePartial1") 
+@Html.Partial("_DistCode") 

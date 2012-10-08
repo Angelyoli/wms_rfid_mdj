@@ -1340,9 +1340,9 @@
     <Content Include="Views\DeliverLine\Index.cshtml" />
     <Content Include="Views\DeliverLine\_AddPartial.cshtml" />
     <Content Include="Views\DeliverLine\_SearchPartial.cshtml" />
-    <Content Include="Views\DeliverLine\_deliverLinePartial1.cshtml" />
     <Content Include="Views\DeliverLine\_EditPartial.cshtml" />
     <Content Include="Views\DeliverLine\_DeletePartial.cshtml" />
+    <Content Include="Views\DeliverLine\_DistCode.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
