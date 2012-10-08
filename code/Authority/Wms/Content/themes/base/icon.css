@@ -86,6 +86,9 @@
 .icon-Menu_DeliverCustomer{
 	background:url('icons/Menu_DeliverCustomer.ico') no-repeat;
 }
+.icon-Menu_DeliverLine{
+	background:url('icons/Menu_DeliverLine.ico') no-repeat;
+}
 .icon-Menu_Cigarette{
 	background:url('icons/Menu_Cigarette.png') no-repeat;
 }
@@ -249,6 +252,9 @@
 }
 .image-Menu_DeliverCustomer{
 	background:url('images/Menu_DeliverCustomer.ico') no-repeat;
+}
+.image-Menu_DeliverLine{
+	background:url('images/Menu_DeliverLine.ico') no-repeat;
 }
 .image-Menu_Cigarette{
 	background:url('images/Menu_Cigarette.png') no-repeat;

@@ -12,22 +12,22 @@
     })
     function addClick() {
         AddLoad();
-        $('#dlg').dialog('open').dialog('setTitle', '新增配送信息');
-        $('#deliverfm').form('clear');
-        $('#deliverfm .easyui-validatebox').validatebox({
+        $('#dlg').dialog('open').dialog('setTitle', '新增送货线路信息');
+        $('#deliverlinefm').form('clear');
+        $('#deliverlinefm.easyui-validatebox').validatebox({
             required: true
         });
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
-        $('#DistCode').attr("readonly", false);
+        $('#DeliverLineCode').attr("readonly", false);
         $('#isActive_com').combo({
             hasDownArrow: true
         });
-        url = '/DeliverDist/Create/';
+        url = '/DeliverLine/Create/';
     };
 
     function save() {
-        $('#deliverfm').form('submit', {
+        $('#deliverlinefm').form('submit', {
             url: url,
             onSubmit: function () {
                 return $(this).form('validate');
@@ -47,17 +47,10 @@
     }
 
     function AddLoad() {
-        $('#D_isActive').combo({
+        $('#L_isActive').combo({
             required: true,
             editable: false,
             panelHeight: 45,
-            panelWidth: 130
-        });
-
-        $('#Node_type').combo({
-            required: true,
-            editable: false,
-            panelHeight: 65,
             panelWidth: 130
         });
     }
@@ -67,14 +60,14 @@
     <div class="easyui-layout" fit="true">
         <div region="center" border="false" style="padding: 10px 10px; background: #fff;
             border: 1px solid #ccc;">
-            <form id="deliverfm" method="post">
+            <form id="deliverlinefm" method="post">
             <table width="530">
                 <tr>
                     <td width="80">
-                       配送区域编码:
+                       送货线路编码:
                     </td>
                     <td width="168">
-                        <input name="DistCode" id="distCode"  validtype="maxLength[50]" class="easyui-validatebox" 
+                        <input name="DeliverLineCode" id="deliverLineCode"  validtype="maxLength[50]" class="easyui-validatebox" 
                             required="true" />
                     </td>
                     <td width="80">
@@ -87,46 +80,38 @@
                 </tr>
                 <tr>
                     <td width="80">
-                       配送区域名称:
+                       送货线路名称:
                     </td>
                     <td width="168">
-                        <input name="DistName" id="distName" class="easyui-validatebox" validtype="maxLength[100]" required="true" />
+                        <input name="DeliverLineName" id="deliverLineName" class="easyui-validatebox" validtype="maxLength[100]" required="true" />
                     </td>
-
                     <td width="80">
-                        配送中心编码:
-                    </td>
-                    <td width="168">
-                        <input name="DistCenterCode" id="distCenterCode" validtype="maxLength[20]" required="true" />
-                    </td>
-                     </tr>
-                <tr>
-                    <td width="80">
-                       所属单位编码:
+                       配送区域编码:
                     </td>
                      <td width="168">
-                        <input name="CompanyCode" id="companyCode"  validtype="maxLength[20]" required="true" />
+                        <input name="DistCode" id="distCode"  validtype="maxLength[50]" required="true" />
                     </td>
-                    <td width="60">
-                        统一编码:
+                    </tr>
+                    <tr>
+                    <td width="80">
+                       送货线路顺序:
                     </td>
-                    <td width="168">
-                        <input name="UniformCode" class="easyui-validatebox" id="uniformCode"  validtype="maxLength[50]"
-                            required="true" />
+                     <td width="168">
+                        <input name="DeliverOrder" id="DeliverOrder" class="easyui-validatebox" required="true" />
                     </td>
-                     </tr>
-                     <tr>
-                     <td width="60">
+                 <td width="60">
                        描述:
-                      </td>
+                    </td>
                      <td width="168">
                         <input name="Description" id="description"  validtype="maxLength[100]" required="true" />     
                        </td> 
+                       </tr>
+                    <tr>
                     <td>
                         状态:
                     </td>
                        <td>
-                        <select id="D_isActive"  name="IsActive" class="easyui-combobox"  class="easyui-validatebox"  required="true"
+                        <select id="L_isActive"  name="IsActive" class="easyui-combobox"  class="easyui-validatebox"  required="true"
                             style="width: 129px">
                             <option value="1">可用</option>
                             <option value="0">不可用</option>
