@@ -301,7 +301,7 @@ namespace THOK.WMS.Upload.Dao
         /// <returns></returns>
         public DataTable QueryInMasterBill()
         {
-            string sql = "SELECT * FROM V_DWV_IWMS_IN_STORE_BILL WHERE IS_IMPORT ='0'";
+            string sql = "SELECT * FROM WMS_IN_BILL_MASTER WHERE STATUS ='6'";
             return this.ExecuteQuery(sql).Tables[0];
         }
 
@@ -1069,6 +1069,240 @@ namespace THOK.WMS.Upload.Dao
             }
         }
 
+        /// <summary>
+        /// 入库单据主表
+        /// </summary>
+        /// <param name="inMasterTable"></param>
+        public void InsertInMasterBill(DataSet inMasterSet)
+        {
+            DataTable inMasterTable = inMasterSet.Tables["WMS_IN_BILLMASTER"];
+            DataTable custCode = this.ExecuteQuery("SELECT STORE_BILL_ID FROM DWV_IWMS_IN_STORE_BILL ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["STORE_BILL_ID"] + "'";
+            }
+            foreach (DataRow row in inMasterTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["STORE_BILL_ID"].ToString()))
+                {
+                    sql = string.Format("UPDATE DWV_IWMS_IN_STORE_BILL SET STORE_BILL_ID='{0}',RELATE_STORE_BILL_ID='{1}',RELATE_BUSI_BILL_NUM='{2}',DIST_CTR_CODE='{3}',AREA_TYPE='{4}',QUANTITY_SUM={5}," +
+                       "AMOUNT_SUM={6},DETAIL_NUM={7},CREATOR_CODE='{8}',CREATE_DATE='{9}',AUDITOR_CODE='{10}',AUDIT_DATE='{11}',ASSIGNER_CODE='{12}',ASSIGN_DATE='{13}',AFFIRM_CODE='{14}',AFFIRM_DATE='{15}'," +
+                       "IN_OUT_TYPE='{16}',BILL_TYPE='{17}',BILL_STATUS='{18}',DISUSE_STATUS='{19}',IS_IMPORT='{20}'",
+                       row["STORE_BILL_ID"], row["RELATE_STORE_BILL_ID"], row["RELATE_BUSI_BILL_NUM"], row["DIST_CTR_CODE"], row["AREA_TYPE"], row["QUANTITY_SUM"], row["AMOUNT_SUM"], row["DETAIL_NUM"],
+                       row["CREATOR_CODE"], row["CREATE_DATE"], row["AUDITOR_CODE"], row["AUDIT_DATE"], row["ASSIGNER_CODE"], row["ASSIGN_DATE"], row["AFFIRM_CODE"],
+                       row["AFFIRM_DATE"], row["IN_OUT_TYPE"], row["BILL_TYPE"], row["BILL_STATUS"], row["DISUSE_STATUS"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IWMS_IN_STORE_BILL(STORE_BILL_ID,RELATE_STORE_BILL_ID,RELATE_BUSI_BILL_NUM,DIST_CTR_CODE,AREA_TYPE,QUANTITY_SUM," +
+                         "AMOUNT_SUM,DETAIL_NUM,CREATOR_CODE,CREATE_DATE,AUDITOR_CODE,AUDIT_DATE,ASSIGNER_CODE,ASSIGN_DATE,AFFIRM_CODE,AFFIRM_DATE," +
+                         "IN_OUT_TYPE,BILL_TYPE,BILL_STATUS,DISUSE_STATUS,IS_IMPORT)VALUES('{0}','{1}',{2},'{3}','{4}',{5},{6},{7},'{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}')",
+                         row["STORE_BILL_ID"], row["RELATE_STORE_BILL_ID"], row["RELATE_BUSI_BILL_NUM"], row["DIST_CTR_CODE"], row["AREA_TYPE"], row["QUANTITY_SUM"], row["AMOUNT_SUM"], row["DETAIL_NUM"],
+                         row["CREATOR_CODE"], row["CREATE_DATE"], row["AUDITOR_CODE"], row["AUDIT_DATE"], row["ASSIGNER_CODE"], row["ASSIGN_DATE"], row["AFFIRM_CODE"],
+                         row["AFFIRM_DATE"], row["IN_OUT_TYPE"], row["BILL_TYPE"], row["BILL_STATUS"], row["DISUSE_STATUS"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 入库单据细表
+        /// </summary>
+        /// <param name="inDetailTable"></param>
+        public void InsertInDetailBill(DataSet inDetailSet)
+        {
+            DataTable inDetailTable = inDetailSet.Tables["WMS_IN_BILLDETAIL"];
+            DataTable custCode = this.ExecuteQuery("SELECT STORE_BILL_DETAIL_ID FROM DWV_IWMS_IN_STORE_BILL_DETAIL ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["STORE_BILL_DETAIL_ID"] + "'";
+            }
+            foreach (DataRow row in inDetailTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["STORE_BILL_DETAIL_ID"].ToString()))
+                {
+                    sql = string.Format("UPDATE DWV_IWMS_IN_STORE_BILL_DETAIL SET STORE_BILL_DETAIL_ID='{0}',STORE_BILL_ID='{1}',BRAND_CODE='{2}',BRAND_NAME='{3}',QUANTITY='{4}',IS_IMPORT='{5}')",
+                       row["STORE_BILL_DETAIL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IWMS_IN_STORE_BILL_DETAIL(STORE_BILL_DETAIL_ID,STORE_BILL_ID,BRAND_CODE,BRAND_NAME,QUANTITY,IS_IMPORT)" +
+                        "VALUES('{0}','{1}','{2}','{3}',{4},'{5}')",
+                        row["STORE_BILL_DETAIL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 入库业务单据表
+        /// </summary>
+        /// <param name="busiTable"></param>
+        public void InsertInBusiBill(DataSet inBusiSet)
+        {
+            DataTable inBusiTable = inBusiSet.Tables["WMS_IN_BILLALLOT"];
+            DataTable custCode = this.ExecuteQuery("SELECT BUSI_ACT_ID FROM DWV_IWMS_IN_BUSI_BILL ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["BUSI_ACT_ID"] + "'";
+            }
+            foreach (DataRow row in inBusiTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["BUSI_ACT_ID"].ToString()))
+                {
+                    sql = string.Format("UPDATE DWV_IWMS_IN_BUSI_BILL SET BUSI_ACT_ID='{0}',BUSI_BILL_DETAIL_ID='{1}',BUSI_BILL_ID='{2}',RELATE_BUSI_BILL_ID='{3}',STORE_BILL_ID='{4}',BRAND_CODE='{5}'," +
+                    "BRAND_NAME='{6}',QUANTITY='{7}',DIST_CTR_CODE='{8}',ORG_CODE='{9}',STORE_ROOM_CODE='{10}',STORE_PLACE_CODE='{11}',TARGET_NAME='{12}',IN_OUT_TYPE='{13}',BILL_TYPE='{14}',BEGIN_STOCK_QUANTITY={15}," +
+                    "END_STOCK_QUANTITY={16},DISUSE_STATUS='{17}',RECKON_STATUS='{18}',RECKON_DATE='{19}',UPDATE_CODE='{20}',UPDATE_DATE='{21}',IS_IMPORT='{22}'",
+                    row["BUSI_ACT_ID"], row["BUSI_BILL_DETAIL_ID"], row["BUSI_BILL_ID"], row["RELATE_BUSI_BILL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"],
+                    row["DIST_CTR_CODE"], row["ORG_CODE"], row["STORE_ROOM_CODE"], row["STORE_PLACE_CODE"], row["TARGET_NAME"], row["IN_OUT_TYPE"], row["BILL_TYPE"],
+                    row["BEGIN_STOCK_QUANTITY"], row["END_STOCK_QUANTITY"], row["DISUSE_STATUS"], row["RECKON_STATUS"], row["RECKON_DATE"], row["UPDATE_CODE"], row["UPDATE_DATE"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IWMS_IN_BUSI_BILL(BUSI_ACT_ID,BUSI_BILL_DETAIL_ID,BUSI_BILL_ID,RELATE_BUSI_BILL_ID,STORE_BILL_ID,BRAND_CODE," +
+                     "BRAND_NAME,QUANTITY,DIST_CTR_CODE,ORG_CODE,STORE_ROOM_CODE,STORE_PLACE_CODE,TARGET_NAME,IN_OUT_TYPE,BILL_TYPE,BEGIN_STOCK_QUANTITY," +
+                     "END_STOCK_QUANTITY,DISUSE_STATUS,RECKON_STATUS,RECKON_DATE,UPDATE_CODE,UPDATE_DATE,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}','{14}',{15},{16},'{17}','{18}','{19}','{20}','{21}','{22}')",
+                     row["BUSI_ACT_ID"], row["BUSI_BILL_DETAIL_ID"], row["BUSI_BILL_ID"], row["RELATE_BUSI_BILL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"],
+                     row["DIST_CTR_CODE"], row["ORG_CODE"], row["STORE_ROOM_CODE"], row["STORE_PLACE_CODE"], row["TARGET_NAME"], row["IN_OUT_TYPE"], row["BILL_TYPE"],
+                     row["BEGIN_STOCK_QUANTITY"], row["END_STOCK_QUANTITY"], row["DISUSE_STATUS"], row["RECKON_STATUS"], row["RECKON_DATE"], row["UPDATE_CODE"], row["UPDATE_DATE"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+            sql = "update  DWV_IWMS_IN_BUSI_BILL set STORE_ROOM_CODE='1002',STORE_PLACE_CODE='10002' ";
+            this.ExecuteNonQuery(sql);
+        }
+
+        /// <summary>
+        /// 出库单据主表
+        /// </summary>
+        /// <param name="inMasterTable"></param>
+        public void InsertOutMasterBill(DataSet outMasterSet)
+        {
+            DataTable outMasterTable = outMasterSet.Tables["WMS_OUT_BILLMASTER"];
+            DataTable custCode = this.ExecuteQuery("SELECT STORE_BILL_ID FROM DWV_IWMS_OUT_STORE_BILL ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["STORE_BILL_ID"] + "'";
+            }
+            foreach (DataRow row in outMasterTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["STORE_BILL_ID"].ToString()))
+                {
+                    sql = string.Format("UPDATE DWV_IWMS_OUT_STORE_BILL SET STORE_BILL_ID='{0}',RELATE_STORE_BILL_ID='{1}',RELATE_BUSI_BILL_NUM='{2}',DIST_CTR_CODE='{3}',AREA_TYPE='{4}',QUANTITY_SUM={5}," +
+                       "AMOUNT_SUM={6},DETAIL_NUM={7},CREATOR_CODE='{8}',CREATE_DATE='{9}',AUDITOR_CODE='{10}',AUDIT_DATE='{11}',ASSIGNER_CODE='{12}',ASSIGN_DATE='{13}',AFFIRM_CODE='{14}',AFFIRM_DATE='{15}'," +
+                       "IN_OUT_TYPE='{16}',BILL_TYPE='{17}',BILL_STATUS='{18}',DISUSE_STATUS='{19}',IS_IMPORT='{20}'",
+                       row["STORE_BILL_ID"], row["RELATE_STORE_BILL_ID"], row["RELATE_BUSI_BILL_NUM"], row["DIST_CTR_CODE"], row["AREA_TYPE"], row["QUANTITY_SUM"], row["AMOUNT_SUM"], row["DETAIL_NUM"],
+                       row["CREATOR_CODE"], row["CREATE_DATE"], row["AUDITOR_CODE"], row["AUDIT_DATE"], row["ASSIGNER_CODE"], row["ASSIGN_DATE"], row["AFFIRM_CODE"],
+                       row["AFFIRM_DATE"], row["IN_OUT_TYPE"], row["BILL_TYPE"], row["BILL_STATUS"], row["DISUSE_STATUS"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IWMS_OUT_STORE_BILL(STORE_BILL_ID,RELATE_STORE_BILL_ID,RELATE_BUSI_BILL_NUM,DIST_CTR_CODE,AREA_TYPE,QUANTITY_SUM," +
+                         "AMOUNT_SUM,DETAIL_NUM,CREATOR_CODE,CREATE_DATE,AUDITOR_CODE,AUDIT_DATE,ASSIGNER_CODE,ASSIGN_DATE,AFFIRM_CODE,AFFIRM_DATE," +
+                         "IN_OUT_TYPE,BILL_TYPE,BILL_STATUS,DISUSE_STATUS,IS_IMPORT)VALUES('{0}','{1}',{2},'{3}','{4}',{5},{6},{7},'{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}')",
+                         row["STORE_BILL_ID"], row["RELATE_STORE_BILL_ID"], row["RELATE_BUSI_BILL_NUM"], row["DIST_CTR_CODE"], row["AREA_TYPE"], row["QUANTITY_SUM"], row["AMOUNT_SUM"], row["DETAIL_NUM"],
+                         row["CREATOR_CODE"], row["CREATE_DATE"], row["AUDITOR_CODE"], row["AUDIT_DATE"], row["ASSIGNER_CODE"], row["ASSIGN_DATE"], row["AFFIRM_CODE"],
+                         row["AFFIRM_DATE"], row["IN_OUT_TYPE"], row["BILL_TYPE"], row["BILL_STATUS"], row["DISUSE_STATUS"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 出库单据细表
+        /// </summary>
+        /// <param name="inDetailTable"></param>
+        public void InsertOutDetailBill(DataSet outDetailSet)
+        {
+            DataTable outDetailTable = outDetailSet.Tables["WMS_OUT_BILLDETAIL"];
+            DataTable custCode = this.ExecuteQuery("SELECT STORE_BILL_DETAIL_ID FROM DWV_IWMS_OUT_STORE_BILL_DETAIL ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["STORE_BILL_DETAIL_ID"] + "'";
+            }
+            foreach (DataRow row in outDetailTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["STORE_BILL_DETAIL_ID"].ToString()))
+                {
+                    sql = string.Format("UPDATE DWV_IWMS_OUT_STORE_BILL_DETAIL SET STORE_BILL_DETAIL_ID='{0}',STORE_BILL_ID='{1}',BRAND_CODE='{2}',BRAND_NAME='{3}',QUANTITY='{4}',IS_IMPORT='{5}')",
+                       row["STORE_BILL_DETAIL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IWMS_OUT_STORE_BILL_DETAIL(STORE_BILL_DETAIL_ID,STORE_BILL_ID,BRAND_CODE,BRAND_NAME,QUANTITY,IS_IMPORT)" +
+                        "VALUES('{0}','{1}','{2}','{3}',{4},'{5}')",
+                        row["STORE_BILL_DETAIL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 出库业务单据表
+        /// </summary>
+        /// <param name="busiTable"></param>
+        public void InsertOutBusiBill(DataSet outBusiSet)
+        {
+            DataTable outBusiTable = outBusiSet.Tables["WMS_OUT_BILLALLOT"];
+            DataTable custCode = this.ExecuteQuery("SELECT BUSI_ACT_ID FROM DWV_IWMS_OUT_BUSI_BILL ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["BUSI_ACT_ID"] + "'";
+            }
+            foreach (DataRow row in outBusiTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["BUSI_ACT_ID"].ToString()))
+                {
+                    sql = string.Format("UPDATE DWV_IWMS_OUT_BUSI_BILL SET BUSI_ACT_ID='{0}',BUSI_BILL_DETAIL_ID='{1}',BUSI_BILL_ID='{2}',RELATE_BUSI_BILL_ID='{3}',STORE_BILL_ID='{4}',BRAND_CODE='{5}'," +
+                    "BRAND_NAME='{6}',QUANTITY='{7}',DIST_CTR_CODE='{8}',ORG_CODE='{9}',STORE_ROOM_CODE='{10}',STORE_PLACE_CODE='{11}',TARGET_NAME='{12}',IN_OUT_TYPE='{13}',BILL_TYPE='{14}',BEGIN_STOCK_QUANTITY={15}," +
+                    "END_STOCK_QUANTITY={16},DISUSE_STATUS='{17}',RECKON_STATUS='{18}',RECKON_DATE='{19}',UPDATE_CODE='{20}',UPDATE_DATE='{21}',IS_IMPORT='{22}'",
+                    row["BUSI_ACT_ID"], row["BUSI_BILL_DETAIL_ID"], row["BUSI_BILL_ID"], row["RELATE_BUSI_BILL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"],
+                    row["DIST_CTR_CODE"], row["ORG_CODE"], row["STORE_ROOM_CODE"], row["STORE_PLACE_CODE"], row["TARGET_NAME"], row["IN_OUT_TYPE"], row["BILL_TYPE"],
+                    row["BEGIN_STOCK_QUANTITY"], row["END_STOCK_QUANTITY"], row["DISUSE_STATUS"], row["RECKON_STATUS"], row["RECKON_DATE"], row["UPDATE_CODE"], row["UPDATE_DATE"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IWMS_OUT_BUSI_BILL(BUSI_ACT_ID,BUSI_BILL_DETAIL_ID,BUSI_BILL_ID,RELATE_BUSI_BILL_ID,STORE_BILL_ID,BRAND_CODE," +
+                     "BRAND_NAME,QUANTITY,DIST_CTR_CODE,ORG_CODE,STORE_ROOM_CODE,STORE_PLACE_CODE,TARGET_NAME,IN_OUT_TYPE,BILL_TYPE,BEGIN_STOCK_QUANTITY," +
+                     "END_STOCK_QUANTITY,DISUSE_STATUS,RECKON_STATUS,RECKON_DATE,UPDATE_CODE,UPDATE_DATE,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}',{7},'{8}','{9}','{10}','{11}','{12}','{13}','{14}',{15},{16},'{17}','{18}','{19}','{20}','{21}','{22}')",
+                     row["BUSI_ACT_ID"], row["BUSI_BILL_DETAIL_ID"], row["BUSI_BILL_ID"], row["RELATE_BUSI_BILL_ID"], row["STORE_BILL_ID"], row["BRAND_N"], row["BRAND_NAME"], row["QUANTITY"],
+                     row["DIST_CTR_CODE"], row["ORG_CODE"], row["STORE_ROOM_CODE"], row["STORE_PLACE_CODE"], row["TARGET_NAME"], row["IN_OUT_TYPE"], row["BILL_TYPE"],
+                     row["BEGIN_STOCK_QUANTITY"], row["END_STOCK_QUANTITY"], row["DISUSE_STATUS"], row["RECKON_STATUS"], row["RECKON_DATE"], row["UPDATE_CODE"], row["UPDATE_DATE"], row["IS_IMPORT"]);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+            sql = "update  DWV_IWMS_OUT_BUSI_BILL set STORE_ROOM_CODE='1002',STORE_PLACE_CODE='10002' ";
+            this.ExecuteNonQuery(sql);
+        }
+
+        /// <summary>
+        /// 插入同步状态表【DWV_IOUT_SYNCHRO_INFO】
+        /// </summary>
+        /// <param name="synchroTable"></param>
+        public void InsertSynchro()
+        {
+            string date = Convert.ToDateTime(DateTime.Now).ToString("yyyyMMddHHmmss");
+            string sql = string.Format("UPDATE DWV_IOUT_SYNCHRO_INFO SET UPDATE_DATE='" + date + "'");
+            this.ExecuteNonQuery(sql);
+        }
         #endregion
     }
 }
