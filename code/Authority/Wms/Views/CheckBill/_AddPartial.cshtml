@@ -7,6 +7,7 @@
         addLoad();
         productLoad();
         $('#addCheck').dialog('open').dialog('setTitle', '新增盘点数据');
+        addKey = true;
         $.getJSON("/Product/CheckFindProduct/", function (json) {//加载要盘点的产品信息
             if (json) {
                 for (var i = 0; i < json.length; i++) {

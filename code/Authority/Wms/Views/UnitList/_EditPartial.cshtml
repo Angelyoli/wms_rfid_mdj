@@ -4,6 +4,7 @@
         if (row) {
             url = '/UnitList/Edit/';
             $('#dlg-add').dialog('open').dialog('setTitle', '编辑单位系列信息');
+            editKey = true;
             $('#fm-add').form('load', row);
             $('#fm-add.easyui-validatebox').validatebox({
                 required: true

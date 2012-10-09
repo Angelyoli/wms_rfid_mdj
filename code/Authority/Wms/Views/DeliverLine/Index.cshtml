@@ -1,0 +1,22 @@
+﻿<script type="text/javascript">
+    $(function () {
+
+    });
+</script>
+<div region="center" split="true"  border="false">    
+    <table id="details" class="easyui-datagrid" url="/DeliverLine/Details/" border="false" singleSelect="true" pageSize="50"
+        fit="true" toolbar="#tool"  pagination="true" rownumbers="true" >
+        <thead>
+			<tr>
+                <th field="DeliverLineCode"  width="100" >送货线路编码</th>
+                <th field="CustomCode" width="100">自定义编码</th>
+                <th field="DeliverLineName" width="120">送货线路名称</th>
+                <th field="DistCode" width="130">配送区域编码</th>
+                <th field="DeliverOrder" width="100">送货线路顺序</th>
+                <th field="Description"  width="120" hidden="true" >描述</th>
+                <th field="IsActive" width="100" >是否可用</th>
+                <th field="UpdateTime" width="120" >更新时间</th>
+            </tr>
+		</thead>
+	</table>
+</div>

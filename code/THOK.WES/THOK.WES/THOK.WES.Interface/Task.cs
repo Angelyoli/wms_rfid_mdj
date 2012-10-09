@@ -1,18 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using THOK.WES.Interface.Model;
 using System.Net;
 using LitJson;
-using System.Windows.Forms;
-using THOK.AF.View;
 
 namespace THOK.WES.Interface
 {
     public class Task
     {
         private Uri url = null;
-        private Form targetForm = null;
 
         private string taskType = string.Empty;
 
@@ -40,10 +35,9 @@ namespace THOK.WES.Interface
 
         public event BcComposeEventHandler BcComposeCompleted;
 
-        public Task(Form targetForm, string url)
+        public Task(string url)
         {
-            this.url = new Uri(url); ;
-            this.targetForm = targetForm;
+            this.url = new Uri(url);
         }
 
         //查询所有可以执行的主单；
@@ -124,14 +118,14 @@ namespace THOK.WES.Interface
                         {
                             if (GetBillMasterCompleted != null)
                             {
-                                targetForm.Invoke(GetBillMasterCompleted,true, r.Message, r.BillMasters);
+                                GetBillMasterCompleted(true, r.Message, r.BillMasters);
                             }
                         }
                         else
                         {
                             if (GetBillMasterCompleted != null)
                             {
-                                targetForm.Invoke(GetBillMasterCompleted, false, r.Message, null);
+                                GetBillMasterCompleted(false, r.Message, null);
                             }
                         }
                     }
@@ -139,7 +133,7 @@ namespace THOK.WES.Interface
                     {
                         if (GetBillMasterCompleted != null)
                         {
-                            targetForm.Invoke(GetBillMasterCompleted, false, e.Message, null);
+                            GetBillMasterCompleted(false, e.Message, null);
                         }
                     }
 
@@ -153,14 +147,14 @@ namespace THOK.WES.Interface
                         {
                             if (GetBillDetailCompleted != null)
                             {
-                                targetForm.Invoke(GetBillDetailCompleted,true, r.Message, r.BillDetails);
+                                GetBillDetailCompleted(true, r.Message, r.BillDetails);
                             }
                         }
                         else
                         {
                             if (GetBillDetailCompleted != null)
                             {
-                                targetForm.Invoke(GetBillDetailCompleted,false, r.Message, null);
+                                GetBillDetailCompleted(false, r.Message, null);
                             }
                         }
                     }
@@ -168,7 +162,7 @@ namespace THOK.WES.Interface
                     {
                         if (GetBillDetailCompleted != null)
                         {
-                            targetForm.Invoke(GetBillDetailCompleted,false, e.Message, null);
+                            GetBillDetailCompleted(false, e.Message, null);
                         }
                     }
                     break;
@@ -181,14 +175,14 @@ namespace THOK.WES.Interface
                         {
                             if (ApplyCompleted != null)
                             {
-                                targetForm.Invoke(ApplyCompleted,true, r.Message);
+                                ApplyCompleted(true, r.Message);
                             }
                         }
                         else
                         {
                             if (ApplyCompleted != null)
                             {
-                                targetForm.Invoke(ApplyCompleted,false, r.Message);
+                                ApplyCompleted(false, r.Message);
                             }
                         }
                     }
@@ -196,7 +190,7 @@ namespace THOK.WES.Interface
                     {
                         if (ApplyCompleted != null)
                         {
-                            targetForm.Invoke(ApplyCompleted,false, e.Message);
+                            ApplyCompleted(false, e.Message);
                         }
                     }
                     break;
@@ -209,14 +203,14 @@ namespace THOK.WES.Interface
                         {
                             if (CancelCompleted != null)
                             {
-                                targetForm.Invoke(CancelCompleted,true, r.Message);
+                                CancelCompleted(true, r.Message);
                             }
                         }
                         else
                         {
                             if (CancelCompleted != null)
                             {
-                                targetForm.Invoke(CancelCompleted,false, r.Message);
+                                CancelCompleted(false, r.Message);
                             }
                         }
                     }
@@ -224,7 +218,7 @@ namespace THOK.WES.Interface
                     {
                         if (CancelCompleted != null)
                         {
-                            targetForm.Invoke(CancelCompleted,false, e.Message);
+                            CancelCompleted(false, e.Message);
                         }
                     }
                     break;
@@ -237,14 +231,14 @@ namespace THOK.WES.Interface
                         {
                             if (ExecuteCompleted != null)
                             {
-                                targetForm.Invoke(ExecuteCompleted,true, r.Message);
+                                ExecuteCompleted(true, r.Message);
                             }
                         }
                         else
                         {
                             if (ExecuteCompleted != null)
                             {
-                                targetForm.Invoke(ExecuteCompleted,false, r.Message);
+                                ExecuteCompleted(false, r.Message);
                             }
                         }
                     }
@@ -252,7 +246,7 @@ namespace THOK.WES.Interface
                     {
                         if (ExecuteCompleted != null)
                         {
-                            targetForm.Invoke(ExecuteCompleted,false, e.Message);
+                            ExecuteCompleted(false, e.Message);
                         }
                     }
                     break;
@@ -265,14 +259,14 @@ namespace THOK.WES.Interface
                         {
                             if (BcComposeCompleted != null)
                             {
-                                targetForm.Invoke(BcComposeCompleted, true, r.Message);
+                                BcComposeCompleted(true, r.Message);
                             }
                         }
                         else
                         {
                             if (BcComposeCompleted != null)
                             {
-                                targetForm.Invoke(BcComposeCompleted, false, r.Message);
+                                BcComposeCompleted(false, r.Message);
                             }
                         }
                     }
@@ -280,7 +274,7 @@ namespace THOK.WES.Interface
                     {
                         if (BcComposeCompleted != null)
                         {
-                            targetForm.Invoke(BcComposeCompleted, false, e.Message);
+                            BcComposeCompleted(false, e.Message);
                         }
                     }
                     break;

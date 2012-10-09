@@ -1,6 +1,7 @@
 ﻿<script type="text/javascript">
     function downloadClick() {
         $('#dlg_sorting_date').dialog('open').dialog('setTitle', '请选择时间');
+        downloadKey = true;
         $('#beginDate').datebox({ editable: false });
         $('#endDate').datebox({ editable: false });
         $('#beginDate').datebox('setValue', "");

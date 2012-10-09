@@ -2,6 +2,7 @@
     var url,delet;
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增');
+        addKey = true;
         $('#sortingOrderAllot').datagrid({ url: '/SortingOrder/GetOrderMaster/' }); //加载线路分配信息
         $('#lineCode').combobox({ url: '/SortingLine/GetSortLine/',width:120 }); //加载分拣线信息        
         $('#checkQuantitySum').text(0);
@@ -45,10 +46,14 @@
                     if (result) {
                         if (result.success) {
                             $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                            addKey = false;
+                            editKey = false;
                             $('#dlg').dialog('close');
                             $('#details').datagrid('reload');
                         } else {
                             $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                            addKey = false;
+                            editKey = false;
                             $('#dlg').dialog('close');
                             $('#details').datagrid('reload');
                         }
@@ -56,9 +61,13 @@
                 });
             } else {
                 $.messager.alert('错误', '请选择需要分配的线路！');
+                addKey = false;
+                editKey = false;
             }
         } else {
             $.messager.alert('错误', '请选择分拣线！');
+            addKey = false;
+            editKey = false;
         }
     }
 
