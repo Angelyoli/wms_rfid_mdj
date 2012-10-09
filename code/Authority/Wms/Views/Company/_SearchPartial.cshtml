@@ -1,10 +1,12 @@
 ﻿<script type="text/javascript">
     var searchDialog;
-    var module = "organization";
+    var module = "Company";
     var searchKey = false;
     var addKey = false;
     var editKey = false;
     var deleteKey = false;
+    var parentComNameKey = false;
+
     function searchClick() {
         $("input[type=text]").attr("value", "");
         $('#isActive').combo('setValue', "");

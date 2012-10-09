@@ -32,13 +32,6 @@
         })
     });
 
-    $(document).keydown(function (e) {
-        e = e ? e : window.event;
-        var keyCode = e.which ? e.which : e.keyCode;
-        if (keyCode == 13) {
-            ProductQueryClick();
-        }
-    });
 </script>
 <div id="productInfoShowDiv" class="easyui-dialog" modal="true" style="width: 500px; height: 440px;
     padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
