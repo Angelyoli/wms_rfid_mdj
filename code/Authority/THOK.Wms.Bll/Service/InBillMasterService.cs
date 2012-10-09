@@ -614,13 +614,20 @@ namespace THOK.Wms.Bll.Service
         }
 
         #region  入库单上报
-        public object uploadInBill()
+        public bool uploadInBill()
         {
-            DataSet ds = Insert();
-            upload.InsertInMasterBill(ds);
-            upload.InsertInDetailBill(ds);
-            upload.InsertInBusiBill(ds);
-            return true;
+            try
+            {
+                DataSet ds = Insert();
+                upload.InsertInMasterBill(ds);
+                upload.InsertInDetailBill(ds);
+                upload.InsertInBusiBill(ds);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         #endregion
 
@@ -700,7 +707,10 @@ namespace THOK.Wms.Bll.Service
                 QUANTITY=i.AllotQuantity/200,
                 DIST_CTR_CODE=i.InBillMaster.WarehouseCode,
                 STORE_PLACE_CODE=i.Storage.CellCode,
-                UPDATE_CODE =i.Operator
+                UPDATE_CODE =i.Operator,
+                BILL_TYPE = i.InBillMaster.BillTypeCode
+                //BEGIN_STOCK_QUANTITY = StorageRepository.GetQueryable().Where(s => s.ProductCode == i.ProductCode).Sum(s => s.Quantity / 200) + i.AllotQuantity,
+                //END_STOCK_QUANTITY = i.AllotQuantity,
             });
             foreach (var p in inBillAllotQuery)
             {
@@ -711,19 +721,19 @@ namespace THOK.Wms.Bll.Service
                 inbrddrAllot["BRAND_NAME"] = p.BRAND_NAME;
                 inbrddrAllot["QUANTITY"] = p.QUANTITY;
                 inbrddrAllot["DIST_CTR_CODE"] = p.DIST_CTR_CODE;
-                //inbrddrAllot["ORG_CODE"] = "1";
-                //inbrddrAllot["STORE_ROOM_CODE"] = "1";
-                //inbrddrAllot["STORE_PLACE_CODE"] = "1";
-                //inbrddrAllot["TARGET_NAME"] = "1";
+                inbrddrAllot["ORG_CODE"] = "01";
+                inbrddrAllot["STORE_ROOM_CODE"] = "001";
+                inbrddrAllot["STORE_PLACE_CODE"] =p.STORE_PLACE_CODE;
+                inbrddrAllot["TARGET_NAME"] = p.STORE_PLACE_CODE;
                 inbrddrAllot["IN_OUT_TYPE"] = "1202";
-                inbrddrAllot["BILL_TYPE"] = "1001";
-                //inbrddrAllot["BEGIN_STOCK_QUANTITY"] = "1";
-                //inbrddrAllot["END_STOCK_QUANTITY"] = "1";
+                inbrddrAllot["BILL_TYPE"] = p.BILL_TYPE;
+                inbrddrAllot["BEGIN_STOCK_QUANTITY"] = 0;
+                inbrddrAllot["END_STOCK_QUANTITY"] = 0;
                 inbrddrAllot["DISUSE_STATUS"] = "0";
                 inbrddrAllot["RECKON_STATUS"] = "1";
-                inbrddrAllot["RECKON_DATE"] = DateTime.Now;
-                inbrddrAllot["UPDATE_CODE"] = "1";
-                inbrddrAllot["UPDATE_DATE"] = DateTime.Now;
+                inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
+                inbrddrAllot["UPDATE_CODE"] = p.UPDATE_CODE;
+                inbrddrAllot["UPDATE_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
                 inbrddrAllot["IS_IMPORT"] = "1";
                 ds.Tables["WMS_IN_BILLALLOT"].Rows.Add(inbrddrAllot);
             }

@@ -25,5 +25,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Settle(string billNo,out string errorInfo);
 
         bool DownOutBillMaster(string beginDate, string endDate, out string errorInfo);
+
+        bool uploadOutBill();
     }
 }

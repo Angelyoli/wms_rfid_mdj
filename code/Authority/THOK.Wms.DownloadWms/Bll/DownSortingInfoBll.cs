@@ -6,11 +6,13 @@ using THOK.Util;
 using THOK.Wms.DownloadWms.Dao;
 using System.Data;
 using THOK.WMS.DownloadWms;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.Wms.DownloadWms.Bll
 {
     public class DownSortingInfoBll
     {
+        UploadBll upload = new UploadBll();
         //选择时间下载分拣数据
         public bool GetSortingOrderDate(string startDate, string endDate,string sortingLine,string batch, out string errorInfo)
         {
@@ -41,6 +43,8 @@ namespace THOK.Wms.DownloadWms.Bll
                         DataSet masterds = this.SaveSortingOrder(masterdr);
                         DataSet detailds = this.SaveSortingOrderDetail(detaildt);
                         this.Insert(masterds, detailds);
+                        //上报分拣订单
+                        //upload.uploadSort(masterds, detailds);
                         if (sort != string.Empty)
                         {
                             try

@@ -10,6 +10,7 @@ using THOK.Wms.DownloadWms.Bll;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.Data;
+using THOK.WMS.Upload.Bll;
 
 namespace Wms.Controllers.Wms.Inventory
 {
@@ -20,6 +21,16 @@ namespace Wms.Controllers.Wms.Inventory
 
         [Dependency]
         public IDailyBalanceService DailyBalanceService { get; set; }
+        [Dependency]
+        public ICellService CellService { get; set; }
+        [Dependency]
+        public IStorageService StorageService { get; set; }
+        [Dependency]
+        public IInBillMasterService InBillMasterService { get; set; }
+        [Dependency]
+        public IOutBillMasterService OutBillMasterService { get; set; }
+
+        UploadBll upload = new UploadBll();
 
         //
         public ActionResult Index(string moduleID)
@@ -69,6 +80,30 @@ namespace Wms.Controllers.Wms.Inventory
             string errorInfo = string.Empty;
             bool bResult = DailyBalanceService.DoDailyBalance(warehouseCode, settleDate, ref errorInfo);
             string msg = bResult ? "日结成功！" : "日结失败！";
+            //if (bResult)
+            //{
+            //    if (!CellService.uploadCell())
+            //    {
+            //        msg = msg + "上报仓储属性表失败！";
+            //    }
+            //    if (!StorageService.uploadStorage())
+            //    {
+            //        msg = msg + "上报库存表失败！";
+            //    }
+            //    if (!StorageService.uploadBusiStorage())
+            //    {
+            //        msg = msg + "上报业务库存表失败！";
+            //    }
+            //    if (!InBillMasterService.uploadInBill())
+            //    {
+            //        msg = msg + "上报入库信息失败！";
+            //    }
+            //    if (!OutBillMasterService.uploadOutBill())
+            //    {
+            //        msg = msg + "上报出库信息失败！";
+            //    }
+            //    upload.InsertSynchro();
+            //}
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 

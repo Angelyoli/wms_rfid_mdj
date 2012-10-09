@@ -68,7 +68,5 @@ namespace THOK.WMS.DownloadWms.Dao
            string sql = "SELECT * FROM WMS_UNIT_LIST";
            return this.ExecuteQuery(sql).Tables[0];
        }
-
-    
    }
 }
