@@ -46,8 +46,10 @@
         });
     }
     function productSelect() {
+        searchKey = false;
         addKey = false;
         editKey = false;
+        deleteKey = false;
         $('#productInfoShowDiv').dialog('open').dialog('setTitle', '选择产品信息');
         productKey = true;
         $('#ProductInfo').attr('value', "");
