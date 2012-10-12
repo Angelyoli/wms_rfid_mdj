@@ -1148,13 +1148,20 @@ namespace THOK.Wms.Bll.Service
         }
 
         #region 上报仓储属性表
-        public object uploadCell()
+        public bool uploadCell()
         {
-            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
-            var cells = cellQuery.OrderBy(b => b.CellCode).Select(b => b);
-            DataSet ds = Insert(cells);
-            upload.UploadCell(ds);
-            return true;
+            try
+            {
+                IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+                var cells = cellQuery.OrderBy(b => b.CellCode).Select(b => b);
+                DataSet ds = Insert(cells);
+                upload.UploadCell(ds);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         #endregion
 
