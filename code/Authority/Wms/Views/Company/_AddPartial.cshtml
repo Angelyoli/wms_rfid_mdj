@@ -122,8 +122,10 @@
         });
     }
     function parentCompanyNameSearchClick() {
-        $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
+        addKey = false;
         editKey = false;
+        $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
+        parentComNameKey = true;
         $('#parentCompanyNameDetail').datagrid({ url: '/Company/GetParentName/' });
         $("#parentCompanyNameDetail").datagrid('reload');
     }
