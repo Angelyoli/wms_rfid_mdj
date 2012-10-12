@@ -1360,6 +1360,7 @@ namespace THOK.WMS.Upload.Bll
         #endregion
 
         #region 上报数据
+        //客户信息、卷烟信息在下载页面
         /// <summary>
         /// 组织机构表
         /// </summary>
@@ -1411,6 +1412,76 @@ namespace THOK.WMS.Upload.Bll
                 UploadDao dao = new UploadDao();
                 dao.SetPersistentManager(pm);
                 dao.InsertBustStock(busiStock);
+            }
+        }
+        //入库主表
+        public void InsertInMasterBill(DataSet busiStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertInMasterBill(busiStock);
+            }
+        }
+        //入库细表
+        public void InsertInDetailBill(DataSet busiStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertInDetailBill(busiStock);
+            }
+        }
+        //入库业务表
+        public void InsertInBusiBill(DataSet busiStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertInBusiBill(busiStock);
+            }
+        }
+        //出库主表
+        public void InsertOutMasterBill(DataSet busiStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertOutMasterBill(busiStock);
+            }
+        }
+        //出库单据细表
+        public void InsertOutDetailBill(DataSet busiStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertOutDetailBill(busiStock);
+            }
+        }
+        //出库业务单据表
+        public void InsertOutBusiBill(DataSet busiStock)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertOutBusiBill(busiStock);
+            }
+        }
+        //业务库存表
+        public void InsertSynchro()
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertSynchro();
             }
         }
         #endregion
