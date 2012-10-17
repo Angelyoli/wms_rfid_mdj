@@ -43,13 +43,13 @@ namespace THOK.Wms.DownloadWms.Bll
            DataSet ds = this.GenerateEmptyTables();
            foreach (DataRow row in routeCodeTable.Rows)
            {
-               DataRow routeDr = ds.Tables["DWV_ORD_DIST_BILL"].NewRow();
+               DataRow routeDr = ds.Tables["WMS_ORD_DIST_BILL"].NewRow();
                routeDr["DIST_BILL_ID"] = row["DIST_BILL_ID"].ToString().Trim();
                routeDr["DELIVER_LINE_CODE"] = row["DELIVER_LINE_CODE"].ToString().Trim();
                routeDr["DELIVER_LINE_NAME"] = row["DELIVER_LINE_NAME"].ToString().Trim();
                routeDr["DELIVERYMAN_CODE"] = row["DELIVERYMAN_CODE"];
                routeDr["DELIVERYMAN_NAME"] = row["DELIVERYMAN_NAME"];
-               ds.Tables["DWV_ORD_DIST_BILL"].Rows.Add(routeDr);
+               ds.Tables["WMS_ORD_DIST_BILL"].Rows.Add(routeDr);
            }
            return ds;
        }
@@ -107,7 +107,7 @@ namespace THOK.Wms.DownloadWms.Bll
        public DataSet GenerateEmptyTables()
        {
            DataSet ds = new DataSet();
-           DataTable routeDt = ds.Tables.Add("DWV_ORD_DIST_BILL");
+           DataTable routeDt = ds.Tables.Add("WMS_ORD_DIST_BILL");
            routeDt.Columns.Add("DIST_BILL_ID");
            routeDt.Columns.Add("DELIVER_LINE_CODE");
            routeDt.Columns.Add("DELIVER_LINE_NAME");

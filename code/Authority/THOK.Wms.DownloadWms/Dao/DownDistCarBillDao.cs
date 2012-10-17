@@ -23,19 +23,19 @@ namespace THOK.Wms.DownloadWms.Dao
 
         public DataTable GetDistStationCode()
         {
-            string sql = " SELECT DIST_BILL_ID FROM DWV_ORD_DIST_BILL";
+            string sql = " SELECT DIST_BILL_ID FROM WMS_ORD_DIST_BILL";
             return this.ExecuteQuery(sql).Tables[0];
         }
 
         public void Delete()
         {
-            string sql = "DELETE DWV_ORD_DIST_BILL";
+            string sql = "DELETE WMS_ORD_DIST_BILL";
             this.ExecuteNonQuery(sql);
         }
 
         public void Insert(DataSet ds)
         {
-            BatchInsert(ds.Tables["DWV_ORD_DIST_BILL"], "DWV_ORD_DIST_BILL");
+            BatchInsert(ds.Tables["WMS_ORD_DIST_BILL"], "WMS_ORD_DIST_BILL");
         }
     }
 }
