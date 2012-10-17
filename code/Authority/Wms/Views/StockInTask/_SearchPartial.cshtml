@@ -8,8 +8,13 @@
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
     }
-    function select() { 
-        
+    function select() {
+        var billNo = $('#comboBillNo').combo('getValue');        
+        $("#details").datagrid({
+            url: '/StockInTask/Search/?billNo=' + billNo
+        });
+        $("#details").datagrid('reload');
+        $('#dlg-search').dialog('close');
     }
 </script>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width: 340px; height: 150px;
@@ -23,9 +28,9 @@
                         请选择要进行作业的单据：
                     </td>
                     <td width="150">
-                        <select id="taskNo" class="easyui-combobox" style="width: 120px;">
-                            <option value="1">0d5424-46-e3</option>
-                            <option value="2">1209210001IN</option>
+                        <select id="comboBillNo" class="easyui-combobox" style="width: 120px;">
+                            <option value="0d5424-46-e3">0d5424-46-e3</option>
+                            <option value="1209210001IN">1209210001IN</option>
                         </select>
                     </td>
                 </tr>

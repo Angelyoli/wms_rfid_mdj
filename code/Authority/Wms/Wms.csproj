@@ -1650,6 +1650,10 @@
     <Content Include="Views\Upload\_Upload.cshtml" />
     <Content Include="Views\StockInTask\Index.cshtml" />
     <Content Include="Views\StockInTask\_SearchPartial.cshtml" />
+    <Content Include="Views\StockInTask\_ApplyPartial.cshtml" />
+    <Content Include="Views\StockInTask\_FinishPartial.cshtml" />
+    <Content Include="Views\StockInTask\_CancelPartial.cshtml" />
+    <Content Include="Views\StockInTask\_BatchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

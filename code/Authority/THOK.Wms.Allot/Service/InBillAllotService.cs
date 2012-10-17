@@ -450,7 +450,7 @@ namespace THOK.Wms.Allot.Service
                 strResult = "当前订单状态不是已分配，或当前订单不存在！";
             }
             return result;
-        } 
+        }
         #endregion
 
         #region IInBillAllotService 成员
@@ -500,7 +500,77 @@ namespace THOK.Wms.Allot.Service
                     );
             }
             return dt;
-        } 
+        }
+        #endregion
+
+        #region 车载
+        public string SwitchCellType(string cellType)
+        {
+            string cellTypeStr = "";
+            switch (cellType)
+            {
+                case "1":
+                    cellTypeStr = "入库";
+                    break;
+                case "2":
+                    cellTypeStr = "出库";
+                    break;
+                case "3":
+                    cellTypeStr = "移库";
+                    break;
+                case "4":
+                    cellTypeStr = "盘点";
+                    break;
+            }
+            return cellTypeStr;
+        }
+        /// <summary>
+        /// 仓库作业管理-入库作业
+        /// </summary>
+        /// <param name="billNo"></param>
+        /// <param name="status"></param>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+        public object SearchInBillAllot(string billNo, string status0, string status1, int page, int rows)
+        {
+            var allotQuery = InBillAllotRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status == status0 || a.Status == status1)
+                .OrderByDescending(a => a.StartTime).Select(i => i);
+            int total = query.Count();
+            query = query.Skip((page - 1) * rows).Take(rows);
+
+            var temp = query.ToArray().Select(a => new
+            {
+                a.ID,
+                a.BillNo,
+                a.ProductCode,
+                a.Product.ProductName,
+                a.CellCode,
+                a.Cell.CellName,
+                CellType = SwitchCellType(a.Cell.CellType),
+                a.StorageCode,
+                a.UnitCode,
+                a.Unit.UnitName,
+                AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                RealQuantity = a.RealQuantity / a.Unit.Count,
+                Status = WhatStatus(a.Status),
+                a.Operator
+            });
+            return new { total, rows = temp.ToArray() };
+        }
+        public bool EditAllot(int id, string status,string operator1, out string strResult)
+        {
+            strResult = string.Empty;
+            var allot = InBillAllotRepository.GetQueryable().FirstOrDefault(a => a.ID == id);
+            if (allot != null)
+            {
+                allot.Status = status;
+                allot.Operator = operator1;
+                InBillAllotRepository.SaveChanges();
+            }
+            return true;
+        }
         #endregion
     }
 }

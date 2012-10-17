@@ -1,0 +1,17 @@
+﻿<script type="text/javascript">
+    function applyClick() {
+        var rows = $('#details').datagrid('getSelected');
+        if (rows != "") {
+            $.ajaxSender.send('/StockInTask/Apply/',
+                        {
+                            'id': rows.ID,
+                            'status': '1'
+                        },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                        });
+        } else {
+            $.messager.alert('系统提示', '未选中行', 'info');
+        }
+    }
+</script>
