@@ -647,13 +647,17 @@ namespace THOK.Wms.Bll.Service
 
 
         #region  出库单上报
-        public object uploadInBill()
+        public bool uploadOutBill()
         {
-            DataSet ds = Insert();
-            upload.InsertOutMasterBill(ds);
-            upload.InsertOutDetailBill(ds);
-            upload.InsertOutBusiBill(ds);
-            return true;
+            try
+            {
+                DataSet ds = Insert();
+                upload.InsertOutMasterBill(ds);
+                upload.InsertOutDetailBill(ds);
+                upload.InsertOutBusiBill(ds);
+                return true;
+            }
+            catch { return false; }
         }
         #endregion
 
@@ -685,7 +689,7 @@ namespace THOK.Wms.Bll.Service
                 inbrddr["RELATE_BUSI_BILL_NUM"] = p.RELATE_BUSI_BILL_NUM;
                 inbrddr["DIST_CTR_CODE"] = p.DIST_CTR_CODE;
                 inbrddr["AREA_TYPE"] = "0901";
-                inbrddr["QUANTITY_SUM"] = p.QUANTITY_SUM;
+                inbrddr["QUANTITY_SUM"] =-p.QUANTITY_SUM;
                 inbrddr["AMOUNT_SUM"] = p.AMOUNT_SUM;
                 inbrddr["DETAIL_NUM"] = p.DETAIL_NUM;
                 inbrddr["CREATOR_CODE"] = p.operater.ToString() ?? "";
@@ -696,7 +700,7 @@ namespace THOK.Wms.Bll.Service
                 inbrddr["ASSIGN_DATE"] = p.operateDate;
                 inbrddr["AFFIRM_CODE"] = p.operater;
                 inbrddr["AFFIRM_DATE"] = p.operateDate;
-                inbrddr["IN_OUT_TYPE"] = "1202";
+                inbrddr["IN_OUT_TYPE"] = "1203";
                 inbrddr["BILL_TYPE"] = p.BILL_TYPE;
                 inbrddr["BILL_STATUS"] = "99";
                 inbrddr["DISUSE_STATUS"] = "0";
@@ -718,7 +722,7 @@ namespace THOK.Wms.Bll.Service
                 inbrddrDetail["STORE_BILL_ID"] = p.STORE_BILL_ID;
                 inbrddrDetail["BRAND_CODE"] = p.BRAND_CODE;
                 inbrddrDetail["BRAND_NAME"] = p.BRAND_NAME;
-                inbrddrDetail["QUANTITY"] = p.QUANTITY;
+                inbrddrDetail["QUANTITY"] =- p.QUANTITY;
                 inbrddrDetail["IS_IMPORT"] = "1";
                 ds.Tables["WMS_OUT_BILLDETAIL"].Rows.Add(inbrddrDetail);
             }
@@ -734,8 +738,9 @@ namespace THOK.Wms.Bll.Service
                 DIST_CTR_CODE = i.OutBillMaster.WarehouseCode,
                 STORE_PLACE_CODE = i.Storage.CellCode,
                 UPDATE_CODE = i.Operator,
-                BEGIN_STOCK_QUANTITY = StorageRepository.GetQueryable().Where(s=>s.ProductCode==i.ProductCode).Sum(s=>s.Quantity/200)-i.AllotQuantity,
-                END_STOCK_QUANTITY = i.AllotQuantity
+                //BEGIN_STOCK_QUANTITY =StorageRepository.GetQueryable().Where(s=>s.ProductCode==i.ProductCode).Sum(s=>s.Quantity/200)-i.AllotQuantity,
+                //END_STOCK_QUANTITY = i.AllotQuantity,
+                BILL_TYPE=i.OutBillMaster.BillTypeCode
             });
             foreach (var p in outBillAllotQuery)
             {
@@ -744,16 +749,16 @@ namespace THOK.Wms.Bll.Service
                 inbrddrAllot["BUSI_BILL_ID"] = p.BUSI_BILL_ID;
                 inbrddrAllot["BRAND_CODE"] = p.BRAND_CODE;
                 inbrddrAllot["BRAND_NAME"] = p.BRAND_NAME;
-                inbrddrAllot["QUANTITY"] = p.QUANTITY;
+                inbrddrAllot["QUANTITY"] = -p.QUANTITY;
                 inbrddrAllot["DIST_CTR_CODE"] = p.DIST_CTR_CODE;
                 inbrddrAllot["ORG_CODE"] = "01";
                 inbrddrAllot["STORE_ROOM_CODE"] = "001";
                 inbrddrAllot["STORE_PLACE_CODE"] = p.STORE_PLACE_CODE;
                 inbrddrAllot["TARGET_NAME"] = p.STORE_PLACE_CODE;
-                inbrddrAllot["IN_OUT_TYPE"] = "1202";
-                inbrddrAllot["BILL_TYPE"] = "1001";
-                inbrddrAllot["BEGIN_STOCK_QUANTITY"] = p.BEGIN_STOCK_QUANTITY;
-                inbrddrAllot["END_STOCK_QUANTITY"] = p.END_STOCK_QUANTITY;
+                inbrddrAllot["IN_OUT_TYPE"] = "1203";
+                inbrddrAllot["BILL_TYPE"] = p.BILL_TYPE;
+                inbrddrAllot["BEGIN_STOCK_QUANTITY"] = 0;
+                inbrddrAllot["END_STOCK_QUANTITY"] = 0;
                 inbrddrAllot["DISUSE_STATUS"] = "0";
                 inbrddrAllot["RECKON_STATUS"] = "1";
                 inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");

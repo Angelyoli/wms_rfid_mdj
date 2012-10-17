@@ -49,7 +49,8 @@ namespace THOK.Common
             #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             double columnWidth = colHeadSize - 9;
-            short printSetupFit = 0;
+            short printHeight = 0;
+            short printWidth = 10;
             int sheetCount = 65500; //一个sheet中最多存65536行数据
             int page = 0;
             #endregion
@@ -123,8 +124,8 @@ namespace THOK.Common
                     }
                     string headText1strA = headText1 + strA;
                     sheet = workbook.CreateSheet(headText1strA) as HSSFSheet;
-                    sheet.PrintSetup.FitHeight = printSetupFit;
-                    sheet.PrintSetup.FitWidth = printSetupFit;
+                    sheet.PrintSetup.FitHeight = printHeight;
+                    sheet.PrintSetup.FitWidth = printWidth;
 
                     int rowIndex1 = 0;
                     DataTable newdt1 = SetPage(dt1, a + 1, sheetCount);
@@ -137,8 +138,8 @@ namespace THOK.Common
                             if (rowIndex1 != 0)
                             {
                                 sheet = workbook.CreateSheet() as HSSFSheet;
-                                sheet.PrintSetup.FitHeight = printSetupFit;
-                                sheet.PrintSetup.FitWidth = printSetupFit;
+                                sheet.PrintSetup.FitHeight = printHeight;
+                                sheet.PrintSetup.FitWidth = printWidth;
                             }
                             #region 填充表头、样式
                             {
@@ -232,8 +233,8 @@ namespace THOK.Common
                             if (rowIndex2 != 1)
                             {
                                 sheet = workbook.CreateSheet(headText2strA) as HSSFSheet;
-                                sheet.PrintSetup.FitHeight = printSetupFit;
-                                sheet.PrintSetup.FitWidth = printSetupFit;
+                                sheet.PrintSetup.FitHeight = printHeight;
+                                sheet.PrintSetup.FitWidth = printWidth;
                             }
                             #region 填充表头、样式
                             {

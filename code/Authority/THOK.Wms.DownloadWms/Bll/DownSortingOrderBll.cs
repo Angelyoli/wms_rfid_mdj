@@ -5,11 +5,13 @@ using THOK.Util;
 using System.Data;
 using THOK.WMS.DownloadWms.Dao;
 using System.Threading;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.WMS.DownloadWms.Bll
 {
     public class DownSortingOrderBll
    {
+        UploadBll upload = new UploadBll();
        #region 选择日期从营销系统下载分拣信息
 
        /// <summary>
@@ -41,6 +43,8 @@ namespace THOK.WMS.DownloadWms.Bll
                        DataSet masterds = this.SaveSortingOrder(masterdt);
                        DataSet detailds = this.SaveSortingOrderDetail(detaildt);
                        this.Insert(masterds, detailds);
+                       //上报分拣订单
+                       //upload.uploadSort(masterds, detailds);
                        tag = true;
                    }
                    else
