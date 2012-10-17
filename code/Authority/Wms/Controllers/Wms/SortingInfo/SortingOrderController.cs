@@ -76,8 +76,13 @@ namespace Authority.Controllers.Wms.SortingInfo
             DownRouteBll routeBll = new DownRouteBll();
             DownSortingOrderBll orderBll = new DownSortingOrderBll();
             DownCustomerBll custBll = new DownCustomerBll();
+            DownDistStationBll stationBll = new DownDistStationBll();
+            DownDistCarBillBll carBll = new DownDistCarBillBll();
+
             routeBll.DeleteTable();
             bool custResult = custBll.DownCustomerInfo();
+            stationBll.DownDistStationInfo();
+            carBll.DownDistCarBillInfo(beginDate);
             if (isSortDown)
             {
                 //从分拣下载分拣数据

@@ -200,7 +200,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 //获取移库量（按整件计）
                                 decimal quantity = 0;
 
-                                quantity = Math.Ceiling((product.SumQuantity - storQuantity) / product.Product.Unit.Count)
+                                quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
                                                * product.Product.Unit.Count;
 
 

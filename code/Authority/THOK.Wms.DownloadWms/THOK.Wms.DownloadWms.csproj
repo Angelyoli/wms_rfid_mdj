@@ -52,6 +52,8 @@
     <Compile Include="Bll\DownDecidePlanBll.cs" />
     <Compile Include="Bll\DownDeptBll.cs" />
     <Compile Include="Bll\DownDistBll.cs" />
+    <Compile Include="Bll\DownDistCarBillBll.cs" />
+    <Compile Include="Bll\DownDistStationBll.cs" />
     <Compile Include="Bll\DownInBillBll.cs" />
     <Compile Include="Bll\DownOrdDistBll.cs" />
     <Compile Include="Bll\DownOrgBll.cs" />
@@ -68,7 +70,9 @@
     <Compile Include="Dao\DownBusinessSystemsDailyBalanceDao.cs" />
     <Compile Include="Dao\DownDecidePlanDao.cs" />
     <Compile Include="Dao\DownDeptDao.cs" />
+    <Compile Include="Dao\DownDistCarBillDao.cs" />
     <Compile Include="Dao\DownDistDao.cs" />
+    <Compile Include="Dao\DownDistStationBao.cs" />
     <Compile Include="Dao\DownInBillDao.cs" />
     <Compile Include="Dao\DownOrdDistDao.cs" />
     <Compile Include="Dao\DownOrgDao.cs" />
