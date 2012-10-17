@@ -69,6 +69,9 @@
     <Reference Include="SignalR, Version=0.5.1.10625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SignalR.Server.0.5.2\lib\net40\SignalR.dll</HintPath>
     </Reference>
+    <Reference Include="SignalR.Client">
+      <HintPath>..\packages\SignalR.Client\SignalR.Client.dll</HintPath>
+    </Reference>
     <Reference Include="SignalR.Hosting.AspNet, Version=0.5.2.10625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SignalR.Hosting.AspNet.0.5.2\lib\net40\SignalR.Hosting.AspNet.dll</HintPath>
     </Reference>
@@ -172,6 +175,7 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
     <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
+    <Compile Include="Controllers\Wms\VehicleMounted\StockInTaskController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
@@ -1160,6 +1164,10 @@
       <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
       <Name>THOK.Wms.Upload</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.VehicleMounted\THOK.Wms.VehicleMounted.csproj">
+      <Project>{239DAA94-0B0F-4FB8-ABAF-0638A33704F2}</Project>
+      <Name>THOK.Wms.VehicleMounted</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Scripts\jquery-easyui-1.2.6\themes\default\images\Thumbs.db" />
@@ -1640,6 +1648,8 @@
     <Content Include="Views\Upload\Index.cshtml" />
     <Content Include="Views\Upload\_SearchPartial.cshtml" />
     <Content Include="Views\Upload\_Upload.cshtml" />
+    <Content Include="Views\StockInTask\Index.cshtml" />
+    <Content Include="Views\StockInTask\_SearchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
