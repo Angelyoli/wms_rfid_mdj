@@ -102,7 +102,7 @@ namespace THOK.WES.View
             try
             {
                 string billNo = string.Empty;
-                Task task = new Task(Application.OpenForms[0], url);
+                Task task = new Task(url);
                 task.GetBillMasterCompleted += new Task.GetBillMasterCompletedEventHandler(delegate(bool isSuccess, string msg, BillMaster[] billMasters)
                 {
                     ClosePlWailt();
@@ -156,7 +156,7 @@ namespace THOK.WES.View
             sslBillID.Text = "单据号：" + BillMaster.BillNo + "                              ";
             sslOperator.Text = "操作员：" + Environment.MachineName;
 
-            Task task = new Task(Application.OpenForms[0], url);
+            Task task = new Task(url);
             task.GetBillDetailCompleted += new Task.GetBillDetailCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
             {
                 InTask = false;
@@ -214,7 +214,7 @@ namespace THOK.WES.View
                     BillDetail[] tmp = new BillDetail[billDetails.Count];
                     billDetails.CopyTo(tmp, 0);
 
-                    Task task = new Task(Application.OpenForms[0], url);
+                    Task task = new Task(url);
                     task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
                         if (!isSuccess)
@@ -254,7 +254,7 @@ namespace THOK.WES.View
                     BillDetail[] tmp = new BillDetail[billDetails.Count];
                     billDetails.CopyTo(tmp, 0);
 
-                    Task task = new Task(Application.OpenForms[0], url);
+                    Task task = new Task(url);
                     task.CancelCompleted += new Task.CancelCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
                         if (!isSuccess)
@@ -329,7 +329,7 @@ namespace THOK.WES.View
                         BillDetail[] tmp = new BillDetail[billDetails.Count];
                         billDetails.CopyTo(tmp, 0);
 
-                        Task task = new Task(Application.OpenForms[0], url);
+                        Task task = new Task(url);
                         task.ExecuteCompleted += new Task.ExecuteCompletedEventHandler(delegate(bool isSuccess, string msg)
                         {
                             if (!isSuccess)
@@ -376,7 +376,7 @@ namespace THOK.WES.View
                     BillDetail[] tmp = new BillDetail[billDetails.Count];
                     billDetails.CopyTo(tmp, 0);
 
-                    Task task = new Task(Application.OpenForms[0], url);
+                    Task task = new Task(url);
                     task.ExecuteCompleted += new Task.ExecuteCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
                         if (!isSuccess)
@@ -467,7 +467,7 @@ namespace THOK.WES.View
             btnBcCompose.Enabled = false;
             if (!isBcCompose && BillTypes == "3" && BillMaster != null)
             {
-                Task task = new Task(Application.OpenForms[0], url.Replace("Task", "StockMoveBill/GeneratePalletTag"));
+                Task task = new Task(url.Replace("Task", "StockMoveBill/GeneratePalletTag"));
                 task.BcComposeCompleted += new Task.BcComposeEventHandler(delegate(bool isSuccess, string msg)
                 {
                     dgvMain.Columns["PalletTag"].Visible = true;
