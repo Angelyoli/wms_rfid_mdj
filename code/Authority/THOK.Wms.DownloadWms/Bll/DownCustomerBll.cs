@@ -4,11 +4,13 @@ using System.Text;
 using System.Data;
 using THOK.Util;
 using THOK.WMS.DownloadWms.Dao;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.WMS.DownloadWms.Bll
 {
     public class DownCustomerBll
     {
+        UploadBll upload = new UploadBll();
         #region 从营销系统下载客户信息
 
         /// <summary>
@@ -28,7 +30,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataSet custDs = this.Insert(customerDt);
                 this.Insert(custDs);
                 //上报客户信息数据
-                //this.InsertCustom(custDs);
+                //upload.InsertCustom(custDs);
             }            
             return tag;
         }
@@ -117,19 +119,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 dao.Insert(customerDs);
             }
         }
-
-        #region 上报客户信息数据
-        public void InsertCustom(DataSet costomerSet)
-        {
-            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
-            {
-                DownCustomerDao dao = new DownCustomerDao();
-                dao.SetPersistentManager(pm);
-                dao.InsertCustom(costomerSet);
-            }
-        }
-        #endregion
-
         /// <summary>
         /// 构建一个客户虚拟表
         /// </summary>

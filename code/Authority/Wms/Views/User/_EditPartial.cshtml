@@ -1,5 +1,6 @@
 <script type="text/javascript">
-function editClick() {
+    function editClick() {
+        document.getElementById("userNameError").innerText = "";
     var row = $('#details').datagrid('getSelected');
     if (row) {
         $('#dlg').dialog('open').dialog('setTitle', '±à¼­');
