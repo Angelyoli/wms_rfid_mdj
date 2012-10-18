@@ -68,6 +68,7 @@
     function addClick() {
         AddLoad();
         showDialog('新增');
+        addKey = true;
         addDialog.dialog('open');
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
@@ -100,10 +101,14 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     addDialog.dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }

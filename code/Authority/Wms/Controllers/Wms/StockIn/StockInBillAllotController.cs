@@ -91,7 +91,7 @@ namespace Authority.Controllers.Wms.StockIn
                                         ,"&P"    //脚右 页码
                                     };
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, dt2, headText1, headText2, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

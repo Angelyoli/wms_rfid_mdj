@@ -1,0 +1,65 @@
+﻿<script type="text/javascript">
+    function searchClick() {
+        $('#isActive').combo({
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+        $('#dlg-search').dialog('open').dialog('setTitle', '配送线路查询');
+        $("input[type=text]").attr("value", "");
+        $('#d_status').combo('setValue', "");
+    };
+
+    function deliverLine_select() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.DeliverLineCode = $('#deliverLineCode').val();
+        queryParams.IsActive = $('#d_status').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $('#details').datagrid({
+            pageNumber: 1,
+            pageSize: 50
+        });
+        $("#masters").datagrid('reload');
+        $('#dlg-search').dialog('close');
+    }
+    function deliverLine_Select() {
+        $('#deliverLine_Data').dialog('open').dialog('setTitle', '送货线路编码');
+        $('#deliverLine_Detail').datagrid({ url: '/DeliverLine/D_Details/' });
+        $("#deliverLine_Detail").datagrid('reload');
+    }
+</script>
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 320px; height: 160px;
+    padding: 2px 2px" closed="true" buttons="#dlg-buttons-research">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <table width="280">
+                <tr>
+                <td width="80"> 客户编码:</td>
+                <td><input name="DeliverLineCode" id="deliverLineCode" type="text">
+                  <a href="#" id="deliverLine_Search" class="easyui-linkbutton" iconcls="icon-search"
+                        plain="true" onclick="deliverLine_Select()"></a>
+                </td>
+                </tr>
+                <tr>
+                    <td>
+                        是否可用：
+                    </td>
+                    <td>
+                        <select id="d_status" name="isActive" class="easyui-combobox">
+                            <option value="">请选择</option>
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-research">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="deliverLine_select()">查询</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">
+        取消</a>
+</div>
+@Html.Partial("_deliverLinePartial1") 

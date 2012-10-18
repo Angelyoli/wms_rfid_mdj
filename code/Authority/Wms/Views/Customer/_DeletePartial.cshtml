@@ -1,0 +1,37 @@
+﻿<script type="text/javascript">
+    function deleteClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg').dialog('open').dialog('setTitle', '删除客户信息');
+            $('#customerfm.easyui-validatebox').validatebox({
+                required: false
+            });
+            $('form input').attr("disabled", "disabled");
+            $('#IsActive').combo({
+                hasDownArrow: false
+            });
+            $('#customerfm').form('load', row);
+            if(!row.CustomerType!="") {
+                    $('#CustomerType').combo('setText', row.CustomerType);
+                }
+            if (!row.SaleScope != "") {
+                    $('#SaleScope').combo('setText', row.SaleScope);
+                }
+            if (!row.IndustryType != "") {
+                $('#IndustryType').combo('setText', row.IndustryType);
+            }
+            if (!row.CityOrCountryside != "") {
+                $('#CityOrCountryside').combo('setText', row.CityOrCountryside);
+            }
+            
+            if (row.Status == '可用') {
+                $('#C_IsActive').combo('setValue', true).combo('setText', row.IsActive);
+            } else {
+                $('#C_IsActive').combo('setValue', false).combo('setText', row.IsActive);
+            }
+            url = '/Customer/Delete/?CustomerCode=' + row.CustomerCode;
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    };
+</script>

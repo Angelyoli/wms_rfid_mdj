@@ -1,4 +1,9 @@
 ﻿<script type="text/javascript">
+    var module = "Department";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     function SearchLoad() {
         $('#isActive').combo({
             editable: false,
@@ -6,10 +11,9 @@
             panelWidth: 130
         });
     }
-
     var searchDialog;
     function searchClick() {
-    SearchLoad();
+        SearchLoad();
         $("input[type=text]").attr("value", "");
         $('#isActive').combo('setValue', "");
         $('#companyType').combo('setValue', "");
@@ -26,14 +30,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.DepartmentCode = $('#DepartmentCode').val();
-                        queryParams.DepartmentName = $('#DepartmentName').val();
-                        queryParams.DepartmentLeaderID = $('#employeename-id').val();
-                        queryParams.CompanyID = $('#companyname-id').val();
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -46,7 +43,18 @@
                 }
             });
         }
+        searchKey = true;
         searchDialog.dialog('open');
     }
-
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.DepartmentCode = $('#DepartmentCode').val();
+        queryParams.DepartmentName = $('#DepartmentName').val();
+        queryParams.DepartmentLeaderID = $('#employeename-id').val();
+        queryParams.CompanyID = $('#companyname-id').val();
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
 </script>
+<script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>

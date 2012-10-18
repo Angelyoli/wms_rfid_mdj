@@ -34,6 +34,7 @@
             addLoad(row); //加载数据
             $('form input').removeAttr("disabled");
             $('#dlg').dialog('open').dialog('setTitle', '编辑：' + editName);
+            editKey = true;
         } else {
             $.messager.confirm('错误', '没有选择行！');
         }

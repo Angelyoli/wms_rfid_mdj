@@ -64,6 +64,7 @@
             if (json) {
                 $('#inBillDetail').datagrid('loadData', { total: 0, rows: [] }); //清空细单
                 $('#dlg').dialog('open').dialog('setTitle', '新增入库订单');
+                addKey = true;
                 $('#fm').form('clear');
                 $('#billNo').val(json.BillNo);
                 $('#operatePersonID').val(json.employeeID);
@@ -149,11 +150,15 @@
                     var result = eval('(' + result + ')');
                     if (result.success) {
                         $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                        addKey = false;
+                        editKey = false;
                         $('#dlg').dialog('close');
                         $('#details').datagrid('reload');
                         $('#inBillDetails').datagrid('load');
                     } else {
                         $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                        addKey = false;
+                        editKey = false;
                         $('#details').datagrid('reload');
                     }
                 }
@@ -180,10 +185,14 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     $('#dlg-AddBillDetail').dialog('close');
                     $('#inBillDetail').datagrid({ url: '/StockInBill/InBillDetails/?BillNo=' + billno });
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#inBillDetail').datagrid('reload');
                 }
             }

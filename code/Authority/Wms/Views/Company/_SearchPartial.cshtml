@@ -1,5 +1,12 @@
 ﻿<script type="text/javascript">
     var searchDialog;
+    var module = "Company";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
+    var parentComNameKey = false;
+
     function searchClick() {
         $("input[type=text]").attr("value", "");
         $('#isActive').combo('setValue', "");
@@ -17,14 +24,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.CompanyCode = $('#CompanyCode').val();
-                        queryParams.CompanyName = $('#CompanyName').val();
-                        queryParams.CompanyType = $('#companyType').combo('getValue');
-                        queryParams.IsActive = $('#isActive').combo('getValue');
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -37,6 +37,18 @@
                 }
             });
         }
+        searchKey = true;
         searchDialog.dialog('open');
     };
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.CompanyCode = $('#CompanyCode').val();
+        queryParams.CompanyName = $('#CompanyName').val();
+        queryParams.CompanyType = $('#companyType').combo('getValue');
+        queryParams.IsActive = $('#isActive').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
 </script>
+<script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>

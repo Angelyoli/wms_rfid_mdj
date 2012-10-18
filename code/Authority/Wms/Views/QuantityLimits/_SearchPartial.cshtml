@@ -1,5 +1,9 @@
 ﻿<script type="text/javascript">
-
+    var module = "QuantityLimits";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     //选择商品信息
     function productSelect() 
     {
@@ -20,6 +24,7 @@
     }
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        searchKey = true;
     };
     function select()
      {
@@ -37,6 +42,7 @@
         $('#dlg-search').dialog('close');
     }
 </script>
+<script src="../../Scripts/mykeyboardshortcuts.js" type="text/javascript"></script>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:320px;padding:2px 2px"closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">
         <div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " overflow: scroll; padding: 1px; margin: 1px">

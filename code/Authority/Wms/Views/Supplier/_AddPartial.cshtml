@@ -11,6 +11,7 @@
 
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增厂商信息');
+        addKey = true;
         $('#supplierCode').attr("readonly", false);
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
@@ -34,10 +35,14 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     $('#dlg').dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }

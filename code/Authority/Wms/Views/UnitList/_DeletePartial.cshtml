@@ -4,6 +4,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#dlg-add').dialog('open').dialog('setTitle', '删除单位信息');
+            deleteKey = true;
             $('#fm-add .easyui-validatebox').validatebox({
                 required: false
             });

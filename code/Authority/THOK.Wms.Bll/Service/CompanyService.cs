@@ -4,6 +4,8 @@ using THOK.Wms.DbModel;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
+using System.Data;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -11,6 +13,8 @@ namespace THOK.Wms.Bll.Service
     {
         [Dependency]
         public ICompanyRepository CompanyRepository { get; set; }
+
+        UploadBll Upload = new UploadBll();
 
         protected override Type LogPrefix
         {
@@ -103,6 +107,9 @@ namespace THOK.Wms.Bll.Service
 
                         CompanyRepository.Add(comp);
                         CompanyRepository.SaveChanges();
+                        //组织机构上报
+                        //DataSet ds = this.Insert(comp);
+                        //Upload.UploadOrganization (ds);
                         result = true;
                     }
                     catch (Exception ex)
@@ -173,6 +180,9 @@ namespace THOK.Wms.Bll.Service
                     comp.WarehouseSpace = company.WarehouseSpace;
                     comp.IsActive = company.IsActive;
                     CompanyRepository.SaveChanges();
+                    //组织机构上报
+                    //DataSet ds = this.Insert(comp);
+                    //Upload.UploadOrganization (ds);
                     result = true;
                 }
                 catch (Exception ex)
@@ -187,6 +197,49 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+
+        #region 插入数据到虚拟表
+        public DataSet Insert(Company company)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            DataRow inbrddr = ds.Tables["wms_company"].NewRow();
+            inbrddr["company_code"] = company.CompanyCode;
+            inbrddr["company_name"] = company.CompanyName;
+            inbrddr["company_type"] = company.CompanyType;
+            inbrddr["description"] = company.Description;
+            inbrddr["parent_company_id"] = company.ParentCompany.CompanyCode;
+            inbrddr["uniform_code"] = company.UniformCode;
+            inbrddr["warehouse_space"] = company.WarehouseSpace;
+            inbrddr["warehouse_count"] = company.WarehouseCount;
+            inbrddr["warehouse_capacity"] = company.WarehouseCapacity;
+            inbrddr["sorting_count"] = company.SortingCount;
+            inbrddr["is_active"] = company.IsActive;
+            inbrddr["update_time"] = DateTime.Now;
+            ds.Tables["wms_company"].Rows.Add(inbrddr);
+            return ds;
+        }
+        #endregion
+
+        #region 创建一个空的产品表
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable inbrtable = ds.Tables.Add("wms_company");
+            inbrtable.Columns.Add("company_code");
+            inbrtable.Columns.Add("company_name");
+            inbrtable.Columns.Add("company_type");
+            inbrtable.Columns.Add("description");
+            inbrtable.Columns.Add("parent_company_id");
+            inbrtable.Columns.Add("uniform_code");
+            inbrtable.Columns.Add("warehouse_space");
+            inbrtable.Columns.Add("warehouse_count");
+            inbrtable.Columns.Add("warehouse_capacity");
+            inbrtable.Columns.Add("sorting_count");
+            inbrtable.Columns.Add("is_active");
+            inbrtable.Columns.Add("update_time");
+            return ds;
+        }
+        #endregion
 
         #endregion
 
@@ -228,16 +281,6 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = company.ToArray() };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <param name="CompanyCode"></param>
-        /// <param name="CompanyName"></param>
-        /// <param name="CompanyType"></param>
-        /// <param name="IsActive"></param>
-        /// <returns></returns>
         public System.Data.DataTable GetCompany(int page, int rows, string companyCode, string companyName, string companyType, string isActive)
         {
             IQueryable<Company> companyQuery = CompanyRepository.GetQueryable();
@@ -290,10 +333,10 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("公司名称", typeof(string));
             dt.Columns.Add("公司类型", typeof(string));
             dt.Columns.Add("上级名称", typeof(string));
-            dt.Columns.Add("仓库面积", typeof(int));
-            dt.Columns.Add("仓库个数", typeof(int));
-            dt.Columns.Add("仓库容量", typeof(int));
-            dt.Columns.Add("分拣线数", typeof(int));
+            dt.Columns.Add("仓库面积", typeof(string));
+            dt.Columns.Add("仓库个数", typeof(string));
+            dt.Columns.Add("仓库容量", typeof(string));
+            dt.Columns.Add("分拣线数", typeof(string));
             dt.Columns.Add("状态", typeof(string));
             dt.Columns.Add("更新时间", typeof(string));
             foreach (var item in company)

@@ -4,6 +4,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#dlg').dialog('open').dialog('setTitle', '删除厂商信息');
+            deleteKey = true;
             $('#fm .easyui-validatebox').validatebox({
                 required: false
             });

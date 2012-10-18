@@ -3,6 +3,7 @@
     function addClick() {
         addLoad();
         $('#dlg').dialog('open').dialog('setTitle', 'ÐÂÔö');
+        addKey = true;
         $('#sortingLinefm').form('clear');
         $('#sortingLinefm .easyui-validatebox').validatebox({
             required: true
@@ -78,10 +79,14 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     $('#dlg').dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }

@@ -22,6 +22,7 @@
             $('#companyId').val(parentCompanyNameRow.ID);
             $('#companyName').val(parentCompanyNameRow.CompanyName);
             $('#parentCompanyNameData').dialog('close');
+            editKey = true;
         }
         else {
             $.messager.alert('提示', '没有选择行!', 'info');
@@ -33,6 +34,7 @@
             url: '/Company/GetParentName/?queryString=' + $('#queryType').combogrid('getValue') + '&value=' + $('#parentCompanyNameInfo').val()
         });
         $("#parentCompanyNameDetail").datagrid('reload');
+        editKey = true;
     }
     
 </script>

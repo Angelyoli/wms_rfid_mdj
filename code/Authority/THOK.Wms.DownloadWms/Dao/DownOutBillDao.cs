@@ -22,9 +22,20 @@ namespace THOK.WMS.DownloadWms.Dao
         /// 从营销系统下载出库单明细表数据
         /// </summary>
         /// <returns></returns>
-        public DataTable GetOutBillDetail(string outBillNo)
+        public DataTable OutBillDetail(string outBillNo)
         {
             string sql = string.Format("SELECT * FROM V_WMS_OUT_ORDER_DETAIL WHERE {0}", outBillNo);
+            return this.ExecuteQuery(sql).Tables[0];
+        }
+
+        /// <summary>
+        /// 从营销系统下载出库单明细表数据,合单数据
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetOutBillDetail(string outBillNo)
+        {
+            string sql = string.Format(@"SELECT BRAND_CODE,SUM(QUANTITY) AS QUANTITY,PRICE FROM V_WMS_OUT_ORDER_DETAIL 
+                                        WHERE {0} GROUP BY BRAND_CODE,PRICE ORDER BY BRAND_CODE", outBillNo);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
@@ -34,7 +45,13 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <param name="ds"></param>
         public void InsertOutBillMaster(DataSet ds)
         {
-            BatchInsert(ds.Tables["WMS_OUT_BILLMASTER"], "wms_out_bill_master");
+            foreach (DataRow row in ds.Tables["WMS_OUT_BILLMASTER"].Rows)
+            {
+                string sql = "INSERT INTO WMS_OUT_BILL_MASTER(bill_no,bill_date,bill_type_code,warehouse_code,status,is_active,update_time,operate_person_id,origin" +
+                   ") VALUES('" + row["bill_no"] + "','" + row["bill_date"] + "','" + row["bill_type_code"] + "'," +
+                   "'" + row["warehouse_code"] + "','" + row["status"] + "','" + row["is_active"] + "','" + row["update_time"] + "','" + row["operate_person_id"] + "','" + row["origin"] + "')";
+                this.ExecuteNonQuery(sql);
+            }
         }
 
         /// <summary>
@@ -60,12 +77,32 @@ namespace THOK.WMS.DownloadWms.Dao
         }
 
         /// <summary>
-        /// 查询数字仓储出库7天之内的单据
+        /// 插入数据到中间表
+        /// </summary>
+        /// <param name="ds"></param>
+        public void InsertMiddle(DataSet ds)
+        {
+            BatchInsert(ds.Tables["WMS_MIDDLE_OUT_BILLDETAIL"], "WMS_MIDDLE_OUT_BILL");
+        }
+
+        /// <summary>
+        /// 获取单号
         /// </summary>
         /// <returns></returns>
-        public DataTable GetOutBillNo()
+        public DataSet FindOutBillNo(string orderDate)
         {
-            string sql = "SELECT bill_no FROM wms_out_bill_master WHERE bill_date>=DATEADD(DAY, -4, CONVERT(VARCHAR(14), GETDATE(), 112)) ORDER BY bill_date";
+            string sql = string.Format("SELECT TOP 1 BILL_NO FROM WMS_OUT_BILL_MASTER WHERE BILL_NO LIKE '{0}%' ORDER BY BILL_NO DESC", orderDate);
+            return this.ExecuteQuery(sql);
+        }
+
+
+        /// <summary>
+        /// 根据时间查询仓库的出库单据号
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetOutBillNo(string orderDate)
+        {
+            string sql = "SELECT BILL_NO FROM WMS_MIDDLE_OUT_BILL WHERE BILL_DATE='" + orderDate + "'";
             return this.ExecuteQuery(sql).Tables[0];
         }
 

@@ -4,6 +4,7 @@ function deleteClick() {
     if (row) {
         url = '/Department/Delete/?departId=' + row.ID;
         showDialog('É¾³ý');
+        deleteKey = true;
         addDialog.dialog('open');
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");

@@ -1,0 +1,287 @@
+﻿<script type="text/javascript">
+    var url;
+    $(function () {
+        $.extend($.fn.validatebox.defaults.rules, {
+            maxLength: {
+                validator: function (value, param) {
+                    return value.length <= param[0];
+                },
+                message: '不能超过{0}个字符.'
+            }
+        });
+    })
+    function addClick() {
+        AddLoad();
+        $('#dlg').dialog('open').dialog('setTitle', '新增客户信息');
+        $('#customerfm').form('clear');
+        $('#customerfm .easyui-validatebox').validatebox({
+            required: true
+        });
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#customerCode').attr("readonly", false);
+        $('#saleScope').combo({
+            hasDownArrow: true
+        });
+        $('#C_isActive').combo({
+            hasDownArrow: true
+        });
+        url = '/Customer/Create/';
+    };
+
+    function save() {
+        $('#customerfm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {               
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#dlg').dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+
+    function AddLoad() {
+        $('#C_isActive').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 130
+        });
+
+        $('#saleScope').combo({
+            required: true,
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+    }
+</script>
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 620px; height: 450px;
+    padding: 2px 2px" closed="true" buttons="#deliver-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <form id="customerfm" method="post">
+            <table width="590">
+                <tr>
+                    <td width="80">
+                      客户编码:
+                    </td>
+                    <td width="168">
+                        <input name="CustomerCode" id="customerCode"  validtype="maxLength[50]" class="easyui-validatebox" 
+                            required="true" />
+                    </td>
+                    <td width="90">
+                        自定义编码:
+                    </td>
+                    <td width="168">
+                        <input name="CustomCode" id="customCode"  validtype="maxLength[50]"
+                            required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="80">
+                      客户名称:
+                    </td>
+                    <td width="168">
+                        <input name="CustomerName" id="customerName" class="easyui-validatebox" validtype="maxLength[100]" required="true" />
+                    </td>
+
+                    <td width="90">
+                        所属单位编码:
+                    </td>
+                    <td width="168">
+                        <input name="CompanyCode" id="companyCode" validtype="maxLength[20]" required="true" />
+                    </td>
+                     </tr>
+                <tr>
+                    <td width="90">
+                         营销部编码:
+                    </td>
+                     <td width="168">
+                        <input name="SaleRegionCode" id="saleRegionCode" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+                 <td width="60">
+                       统一编码:
+                    </td>
+                     <td width="168">
+                        <input name="UniformCode" id="uniformCode" class="easyui-validatebox" validtype="maxLength[50]" required="true" />     
+                       </td> 
+                     </tr>
+                     <tr>
+                     <td width="60">
+                        客户类型:
+                    </td>
+                          <td>
+                             <select  style="width: 129px" id="customerType"  class="easyui-combobox" class="easyui-validatebox" name="CustomerType" editable="false"  panelHeight="70"  required="true">
+		                       <option value="2401">普通客户</option>
+		                        <option value="2402">大商场客户</option>
+                                <option value="2403">公司客户</option>
+		                        <option value="2409">其他客户</option>
+	                        </select>
+                        </td>
+                         <td width="60">
+                           客户规模:
+                        </td>
+                          <td>
+                             <select  style="width: 129px" id="saleScope"  class="easyui-combobox" class="easyui-validatebox" name="SaleScope" editable="false"  panelHeight="70"  required="true">
+		                       <option value="1">大</option>
+		                        <option value="2">中</option>
+                                <option value="3">小</option>
+	                        </select>
+                        </td>
+                        </tr>
+                <tr>
+                        <td width="60">
+                       经营业态:
+                    </td>
+                          <td>
+                             <select  style="width: 129px" id="industryType"  class="easyui-combobox" class="easyui-validatebox" name="IndustryType" editable="false"  panelHeight="70"  required="true">
+		                       <option value="Z">食杂店</option>
+		                        <option value="B">便利店</option>
+                                <option value="S">超市</option>
+                                 <option value="N">商场</option>
+		                        <option value="Y">烟酒店</option>
+                                <option value="F">娱乐服务</option>
+                                 <option value="Q">其他</option>
+	                        </select>
+                        </td>
+                         <td width="60">
+                           城乡分类:
+                        </td>
+                          <td>
+                             <select  style="width: 129px" id="cityOrCountryside"  class="easyui-combobox" class="easyui-validatebox" name="CityOrCountryside" editable="false"  panelHeight="70"  required="true">
+		                       <option value="C">城市</option>
+		                        <option value="X">农村</option>
+	                        </select>
+                        </td>
+                        </tr>
+                <tr>
+                         <td width="80">
+                         送货线路编码:
+                    </td>
+                     <td width="168">
+                        <input name="DeliverLineCode" id="deliverLineCode" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+                     <td width="80">
+                         送货顺序:
+                    </td>
+                     <td width="168">
+                        <input name="DeliverOrder" id="deliverOrder" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+                    </tr>
+                <tr>
+                     <td width="80">
+                         送货地址:
+                    </td>
+                     <td width="168">
+                        <input name="Address" id="address" class="easyui-validatebox" validtype="maxLength[100]" required="true" />
+                    </td>
+                     <td width="80">
+                        联系电话:
+                    </td>
+                     <td width="168">
+                        <input name="Phone" id="phone" class="easyui-validatebox" validtype="maxLength[20]" required="true" />
+                    </td>
+                    </tr>
+                <tr>
+                     <td width="80">
+                        许可证种类:
+                    </td>
+                     <td width="168">
+                        <input name="LicenseType" id="licenseType" validtype="maxLength[10]" required="true" />
+                    </td>
+                     <td width="80">
+                        许可证号:
+                    </td>
+                     <td width="168">
+                        <input name="LicenseCode" id="licenseCode"  validtype="maxLength[20]" required="true" />
+                    </td>
+                    </tr>
+                <tr>
+                    <td width="80">
+                       负责人姓名:
+                    </td>
+                     <td width="168">
+                        <input name="PrincipalName" id="principalName"  validtype="maxLength[20]" required="true" />
+                    </td>
+                    <td width="80">
+                        负责人联系电话:
+                    </td>
+                     <td width="168">
+                        <input name="PrincipalPhone" id="principalPhone"  validtype="maxLength[60]" required="true" />
+                    </td>
+                    </tr>
+                <tr>
+                    <td width="80">
+                        负责人当前住址:
+                    </td>
+                     <td width="168">
+                        <input name="PrincipalAddress" id="principalAddress"  validtype="maxLength[100]" required="true" />
+                    </td>
+                     <td width="80">
+                        经营者姓名:
+                    </td>
+                     <td width="168">
+                        <input name="ManagementName" id="managementName"  validtype="maxLength[20]" required="true" />
+                    </td>
+                    </tr>
+                <tr>
+                     <td width="80">
+                        经营者联系电话:
+                    </td>
+                     <td width="168">
+                        <input name="ManagementPhone" id="managementPhone"  validtype="maxLength[60]" required="true" />
+                    </td>
+                     <td width="80">
+                        代扣银行:
+                    </td>
+                     <td width="168">
+                        <input name="Bank" id="bank"  validtype="maxLength[50]" required="true" />
+                    </td>
+                    </tr>
+                <tr>
+                    <td width="80">
+                        代扣银行帐号:
+                    </td>
+                     <td width="168">
+                        <input name="BankAccounts" id="bankAccounts"  validtype="maxLength[50]" required="true" />
+                    </td>
+                    <td width="80">
+                        描述:
+                    </td>
+                     <td width="168">
+                        <input name="Description" id="description"  validtype="maxLength[100]" required="true" />
+                    </td>
+                    </tr>
+                <tr>
+                    <td>
+                        状态:
+                    </td>
+                       <td>
+                        <select id="C_isActive"  name="IsActive" class="easyui-combobox"  class="easyui-validatebox"  required="true"
+                            style="width: 129px">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                      </td>
+                    </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="deliver-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
+        取消</a>
+</div>

@@ -1,5 +1,10 @@
 ﻿<script type="text/javascript">
     var searchDialog;
+    var module = "Job";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     function searchClick() {
         $('#isActive').combo({
             editable: false,
@@ -22,13 +27,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.JobCode = $('#JobCode').val();
-                        queryParams.JobName = $('#JobName').val();
-                        queryParams.IsActive = $('#isActive').combo('getValue');
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -41,6 +40,17 @@
                 }
             });
         }
+        searchKey = true;
         searchDialog.dialog('open');
     };
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.JobCode = $('#JobCode').val();
+        queryParams.JobName = $('#JobName').val();
+        queryParams.IsActive = $('#isActive').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
 </script>
+<script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>

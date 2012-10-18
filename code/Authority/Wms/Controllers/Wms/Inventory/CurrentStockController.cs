@@ -50,7 +50,7 @@ namespace Authority.Controllers.Wms.Inventory
             string areaName;
             System.Data.DataTable dt = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType, out areaName);
             string headText = "当前库存" + areaName;
-            string headFontName = "微软雅黑"; Int16 headFontSize = 20;
+            string headFontName = "微软雅黑"; Int16 headFontSize = 14;
             string colHeadFontName = "Arial"; Int16 colHeadFontSize = 12;
             string[] HeaderFooder = {   
                                          "……"    //眉左
@@ -61,7 +61,7 @@ namespace Authority.Controllers.Wms.Inventory
                                         ,"&P"    //脚右 页码
                                     };
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize
-                , 0, true, colHeadFontName, colHeadFontSize, 0, true, 0, HeaderFooder);
+                , 0, true, colHeadFontName, colHeadFontSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
         }
     }

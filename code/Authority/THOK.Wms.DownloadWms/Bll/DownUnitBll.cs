@@ -19,20 +19,18 @@ namespace THOK.WMS.DownloadWms.Bll
         {
             bool tag = true;
             DataTable unitProductDt = this.GetUnitProduct();//取得中间表数据
-            string productcodeList = UtinString.StringMake(unitProductDt, "UNIT_LIST_CODE");
-            string productcode = UtinString.StringMake(productcodeList);
-            productcode = "BRAND_N NOT IN(" + productcode + ")";
+            string productcodeList = UtinString.MakeString(unitProductDt, "UNIT_LIST_CODE");
+            productcodeList = "BRAND_N NOT IN(" + productcodeList + ")";
 
-            DataTable Unitdt = this.GetUnitInfo(productcode);//下载数据
+            DataTable Unitdt = this.GetUnitInfo(productcodeList);//下载数据
             if (Unitdt.Rows.Count > 0)
             {
                 DataTable codedt = this.GetUnitCode();//取得单位
                 DataSet ds = this.InsertTable(Unitdt);//把数据转化放到单位表和中间表
                 DataTable unitTable = ds.Tables["WMS_UNIT_INSERT"];//取得单位表
                 DataTable unitListTable = ds.Tables["WMS_UNIT_PRODUCT"];//取得单位系列表
-                string codeList = UtinString.StringMake(codedt, "unit_code");
-                string code = UtinString.StringMake(codeList);
-                DataRow[] unitdr = unitTable.Select("UNIT_CODE NOT IN (" + code + ")");//把没有下载过的取出来
+                string codeList = UtinString.MakeString(codedt, "unit_code");
+                DataRow[] unitdr = unitTable.Select("UNIT_CODE NOT IN (" + codeList + ")");//把没有下载过的取出来
                 DataSet unitDs = this.InsertUnit(unitdr);
                 DataSet unitlistds = this.InsertProduct(unitListTable);
                 if (unitDs.Tables["WMS_UNIT_INSERT"].Rows.Count > 0)

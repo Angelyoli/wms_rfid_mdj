@@ -1,6 +1,7 @@
 ﻿<script type="text/javascript">
     var url;
     var addDialog;
+
     $(function () {
         $.extend($.fn.validatebox.defaults.rules, {
             maxLength: {
@@ -53,11 +54,12 @@
         else {
             addDialog.dialog({ title: title });
         }
-     }
+    }
 
     function addClick() {
         AddLoad();
         showDialog('新增');
+        addKey = true;
         addDialog.dialog('open');
 
         $('#companyfm .easyui-validatebox').validatebox({
@@ -75,7 +77,6 @@
         });
         url = '/Company/Create/';
     };
-
     function save() {
         if ($("#desId").val().length > 100) {
             $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
@@ -92,16 +93,19 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     addDialog.dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }
         });
     }
-
     function AddLoad() {
         $('#isActive_com').combo({
             required: true,
@@ -117,9 +121,11 @@
             panelWidth: 130
         });
     }
-
     function parentCompanyNameSearchClick() {
+        addKey = false;
+        editKey = false;
         $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
+        parentComNameKey = true;
         $('#parentCompanyNameDetail').datagrid({ url: '/Company/GetParentName/' });
         $("#parentCompanyNameDetail").datagrid('reload');
     }
