@@ -15,6 +15,8 @@ namespace Authority.Controllers.Authority
     {
         //
         // GET: /HelpEdit/
+        [Dependency]
+        public IHelpContentService HelpContentService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -23,6 +25,12 @@ namespace Authority.Controllers.Authority
             ViewBag.ModuleID = moduleID;
             return View();
         }
-
+        //帮助tree结构
+        // GET: /HelpEdit/GetHelpContent/
+        public ActionResult GetHelpContent(string sysId)
+        {
+            var wareCell = HelpContentService.GetHelpContentTree(sysId);
+            return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }
