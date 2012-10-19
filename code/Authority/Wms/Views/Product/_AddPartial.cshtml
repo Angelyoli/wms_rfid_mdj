@@ -2,6 +2,7 @@
     var url;
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增');
+        addKey = true;
         $('#Productfm').form('clear');
         $('#p').attr("readonly", false);
         $('#Productfm .easyui-validatebox').validatebox({
@@ -23,10 +24,14 @@
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
                     $('#dlg').dialog('close');
                     $('#details').datagrid('reload');
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }

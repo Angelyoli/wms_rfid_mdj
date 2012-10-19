@@ -3,6 +3,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#dlg').dialog('open').dialog('setTitle', '编辑产品预警信息');
+            editKey = true;
             $('#Productfm').form('load', row);
             $('#Productfm .easyui-validatebox').validatebox({
                 required: true

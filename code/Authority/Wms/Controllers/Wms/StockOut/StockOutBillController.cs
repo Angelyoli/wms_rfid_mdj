@@ -161,25 +161,18 @@ namespace Authority.Controllers.Wms.StockOut
 
         //主单结单
         // POST: /StockOutBill/DownOutBillMaster/
-        public ActionResult DownOutBillMaster(string beginDate, string endDate)
+        public ActionResult DownOutBillMaster(string beginDate, string endDate, string wareCode, string billType)
         {
             string errorInfo = string.Empty;
-            if (beginDate == string.Empty || endDate == string.Empty)
-            {
-                beginDate = DateTime.Now.ToString("yyyyMMdd");
-                endDate = DateTime.Now.ToString("yyyyMMdd");
-            }
-            else
-            {
-                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
-                endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
-            }
+            beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+            endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
+
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownOutBillBll ibll = new DownOutBillBll();
             ubll.DownUnitCodeInfo();
-            pbll.DownProductInfo();            
-            bool bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo);
+            pbll.DownProductInfo();
+            bool bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
 
             //bool bResult = OutBillMasterService.DownOutBillMaster(beginDate, endDate, out errorInfo);
             string msg = bResult ? "下载成功" : "下载失败";

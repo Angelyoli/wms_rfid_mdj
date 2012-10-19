@@ -182,6 +182,10 @@
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
       <Name>THOK.Wms.DbModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.DownloadWms\THOK.Wms.DownloadWms.csproj">
+      <Project>{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}</Project>
+      <Name>THOK.Wms.DownloadWms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Download\THOK.Wms.Download.csproj">
       <Project>{9495DAFA-C32B-445C-B760-341CBE9288C6}</Project>
       <Name>THOK.Wms.Download</Name>
@@ -189,6 +193,10 @@
     <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>
       <Name>THOK.Wms.SignalR</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.Upload\THOK.Wms.Upload.csproj">
+      <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
+      <Name>THOK.Wms.Upload</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,6 +10,7 @@
                 isProfitLossBillMasterAdd = false;
                 isShowProfitLossBillDetail = true;
                 $('#dlg').dialog('open').dialog('setTitle', '编辑损益主单信息');
+                editKey = true;
                 $('#fm').form('load', row);
                 $('#profitLossBillDetail').datagrid({ url: '/ProfitLossBill/ProfitLossBillDetails/?BillNo=' + row.BillNo });
                 $('#fm .easyui-validatebox').validatebox({

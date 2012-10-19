@@ -232,7 +232,7 @@ namespace THOK.Wms.Bll.Service
              {
                  QuantityLimitsWarnings = QuantityLimitsWarnings.Where(q => q.quantityTotal >= q.maxlimits).ToArray();
              }
-             int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarning.Count();
+             int total=TimeOutWarning.Count() + QuantityLimitsWarning.Count() + QuantityLimitsWarnings.Count();
              return total;
          }
          #endregion
@@ -244,8 +244,8 @@ namespace THOK.Wms.Bll.Service
              //标准时间戳：621355968000000000
              var storageQuantity = EndQuantity.OrderBy(e=>e.SettleDate).GroupBy(e=>e.SettleDate).ToArray().Select(e => new 
              {
-                 TimeInter = decimal.Parse(((e.Max(m => m.SettleDate).ToUniversalTime().Ticks - 621355625000000000) / 10000).ToString()),
-                 TotalQuantity=e.Sum(s=>s.Ending/s.Unit.Count)
+                 TimeInter = decimal.Parse(((e.Max(m => m.SettleDate).ToUniversalTime().Ticks - 621355680000000000) / 10000).ToString()),
+                 TotalQuantity=e.Sum(s=>s.Ending/10000)
              });
              return storageQuantity;
          }

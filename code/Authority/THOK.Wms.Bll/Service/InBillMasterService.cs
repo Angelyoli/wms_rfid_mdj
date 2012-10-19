@@ -11,6 +11,8 @@ using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Common;
 using System.Transactions;
 using THOK.Wms.Download.Interfaces;
+using System.Data;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -36,6 +38,8 @@ namespace THOK.Wms.Bll.Service
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
         public ICellRepository CellRepository { get; set; }
+
+        UploadBll upload = new UploadBll();
 
         protected override Type LogPrefix
         {
@@ -609,65 +613,195 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        /// <summary>入库单查询</summary>
-        public System.Data.DataTable GetStockInBill(int page, int rows, string BillNo)
+        #region  入库单上报
+        public bool uploadInBill()
         {
-            IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();
-            var inBillMaster = inBillMasterQuery.Where(i => i.BillNo.Contains(BillNo) && i.Status != "6")
-                    .Select(i =>  new
+            try
             {
-                i.BillNo,
-                i.WarehouseCode,
-                i.Warehouse.WarehouseName,
-                i.BillTypeCode,
-                i.BillType.BillTypeName,
-                OperatePersonName = i.OperatePerson.EmployeeName,
-                VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
-                Status = i.Status,
-                //i.VerifyDate,                
-                //BillDate = i.BillDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                //UpdateTime = i.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                i.Description,
-                i.TargetCellCode
-            });
-            System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("入库单号", typeof(string));     //01
-            dt.Columns.Add("仓库编码", typeof(string));     //02
-            dt.Columns.Add("仓库名称", typeof(string));     //03
-            dt.Columns.Add("订单类型编码", typeof(string)); //04
-            dt.Columns.Add("订单类型", typeof(string));     //05
-            //dt.Columns.Add("操作员ID", typeof(Guid));       //06
-            dt.Columns.Add("操作员", typeof(string));       //07
-            //dt.Columns.Add("审核人ID", typeof(Guid));       //08
-            dt.Columns.Add("审核人", typeof(string));       //09
-            dt.Columns.Add("处理状态", typeof(string));     //10
-            //dt.Columns.Add("制单时间", typeof(string));   //11
-            //dt.Columns.Add("审核时间", typeof(DateTime));   //12
-            //dt.Columns.Add("更新时间", typeof(DateTime));   //13
-            dt.Columns.Add("备注", typeof(string));         //14
-            dt.Columns.Add("目标货位编码", typeof(string)); //15
-            foreach (var t in inBillMaster)
-            {
-                dt.Rows.Add
-                (
-                        t.BillNo,           //01 入库单号
-                        t.WarehouseCode,    //02 仓库编码
-                        t.WarehouseName,    //03 仓库名称
-                        t.BillTypeCode,     //04 订单类型编码
-                        t.BillTypeName,     //05 订单类型
-                        //i.OperatePersonID,  //06 操作员
-                        t.OperatePersonName, //07 操作员
-                        //i.VerifyPersonID,   //08 审核人ID
-                        t.VerifyPersonName, //09 审核人
-                        t.Status           //10 处理状态
-                        //t.BillDate         //11 制单时间
-                       // t.VerifyDate,       //12 审核时间
-                        //t.UpdateTime,       //13 更新时间
-                        //t.Description      //14 备注
-                        //t.TargetCellCode    //15 目标货位编码
-                );
+                DataSet ds = Insert();
+                upload.InsertInMasterBill(ds);
+                upload.InsertInDetailBill(ds);
+                upload.InsertInBusiBill(ds);
+                return true;
             }
-            return dt;
+            catch
+            {
+                return false;
+            }
         }
+        #endregion
+
+        #region 插入数据到虚拟表
+        public DataSet Insert()
+        {
+            IQueryable<InBillMaster> inBillMaster=InBillMasterRepository.GetQueryable();
+            IQueryable<InBillAllot> inBillAllot=InBillAllotRepository.GetQueryable();
+            IQueryable<InBillDetail> inBillDetail=InBillDetailRepository.GetQueryable();
+            var inBillMasterQuery = inBillMaster.Where(i => i.Status == "6").Select(i => new
+            {
+                STORE_BILL_ID = i.BillNo,
+                RELATE_BUSI_BILL_NUM = inBillAllot.Count(a => a.BillNo == i.BillNo),
+                DIST_CTR_CODE = i.WarehouseCode,
+                QUANTITY_SUM = inBillAllot.Where(a => a.BillNo == i.BillNo).Sum(a => a.AllotQuantity / 200),
+                AMOUNT_SUM = inBillDetail.Where(d => d.BillNo == i.BillNo).Sum(d => d.Price * d.AllotQuantity / 200),
+                DETAIL_NUM = inBillDetail.Count(d => d.BillNo == i.BillNo),
+                personCode = i.VerifyPerson,
+                personDate = i.VerifyDate,
+                operater = i.OperatePerson,
+                operateDate = i.BillDate,
+                BILL_TYPE = i.BillTypeCode
+            });
+            DataSet ds = this.GenerateEmptyTables();
+            DataRow inbrddr = ds.Tables["WMS_IN_BILLMASTER"].NewRow();
+            foreach (var p in inBillMasterQuery)
+            {
+                inbrddr["STORE_BILL_ID"] =p.STORE_BILL_ID;
+                inbrddr["RELATE_BUSI_BILL_NUM"] =p.RELATE_BUSI_BILL_NUM;
+                inbrddr["DIST_CTR_CODE"] =p.DIST_CTR_CODE;
+                inbrddr["AREA_TYPE"] = "0901";
+                inbrddr["QUANTITY_SUM"] = p.QUANTITY_SUM;
+                inbrddr["AMOUNT_SUM"] = p.AMOUNT_SUM;
+                inbrddr["DETAIL_NUM"] = p.DETAIL_NUM;
+                inbrddr["CREATOR_CODE"] = p.operater.ToString()??"";
+                inbrddr["CREATE_DATE"] = p.operateDate;
+                inbrddr["AUDITOR_CODE"] = p.personCode.ToString() ?? "";
+                inbrddr["AUDIT_DATE"] = p.personDate;
+                inbrddr["ASSIGNER_CODE"] = p.operater;
+                inbrddr["ASSIGN_DATE"] = p.operateDate;
+                inbrddr["AFFIRM_CODE"] =p.operater;
+                inbrddr["AFFIRM_DATE"] = p.operateDate;
+                inbrddr["IN_OUT_TYPE"] = "1202";
+                inbrddr["BILL_TYPE"] = p.BILL_TYPE;
+                inbrddr["BILL_STATUS"] = "99";
+                inbrddr["DISUSE_STATUS"] ="0";
+                inbrddr["IS_IMPORT"] = "1";
+                ds.Tables["WMS_IN_BILLMASTER"].Rows.Add(inbrddr);
+            }
+            DataRow inbrddrDetail = ds.Tables["WMS_IN_BILLDETAIL"].NewRow();
+            var inBillDetailQuery = inBillDetail.Where(i =>i.InBillMaster.Status == "6").Select(i => new
+            {
+                STORE_BILL_DETAIL_ID=i.ID,
+                STORE_BILL_ID=i.BillNo,
+                BRAND_CODE=i.ProductCode,
+                BRAND_NAME=i.Product.ProductName,
+                QUANTITY=i.BillQuantity/200
+            });
+            foreach (var p in inBillDetailQuery)
+            {
+                inbrddrDetail["STORE_BILL_DETAIL_ID"] = p.STORE_BILL_DETAIL_ID;
+                inbrddrDetail["STORE_BILL_ID"] = p.STORE_BILL_ID;
+                inbrddrDetail["BRAND_CODE"] = p.BRAND_CODE;
+                inbrddrDetail["BRAND_NAME"] =p.BRAND_NAME;
+                inbrddrDetail["QUANTITY"] = p.QUANTITY;
+                inbrddrDetail["IS_IMPORT"] = "1";
+                ds.Tables["WMS_IN_BILLDETAIL"].Rows.Add(inbrddrDetail);
+            }
+            DataRow inbrddrAllot = ds.Tables["WMS_IN_BILLALLOT"].NewRow();
+            var inBillAllotQuery = inBillAllot.Where(i => i.InBillMaster.Status == "6").Select(i => new
+            {
+                BUSI_ACT_ID=i.ID,
+                BUSI_BILL_DETAIL_ID=i.InBillDetailId,
+                BUSI_BILL_ID=i.BillNo,
+                BRAND_CODE=i.ProductCode,
+                BRAND_NAME=i.Product.ProductName,
+                QUANTITY=i.AllotQuantity/200,
+                DIST_CTR_CODE=i.InBillMaster.WarehouseCode,
+                STORE_PLACE_CODE=i.Storage.CellCode,
+                UPDATE_CODE =i.Operator,
+                BILL_TYPE = i.InBillMaster.BillTypeCode
+                //BEGIN_STOCK_QUANTITY = StorageRepository.GetQueryable().Where(s => s.ProductCode == i.ProductCode).Sum(s => s.Quantity / 200) + i.AllotQuantity,
+                //END_STOCK_QUANTITY = i.AllotQuantity,
+            });
+            foreach (var p in inBillAllotQuery)
+            {
+                inbrddrAllot["BUSI_ACT_ID"] = p.BUSI_ACT_ID;
+                inbrddrAllot["BUSI_BILL_DETAIL_ID"] = p.BUSI_BILL_DETAIL_ID;
+                inbrddrAllot["BUSI_BILL_ID"] = p.BUSI_BILL_ID;
+                inbrddrAllot["BRAND_CODE"] = p.BRAND_CODE;
+                inbrddrAllot["BRAND_NAME"] = p.BRAND_NAME;
+                inbrddrAllot["QUANTITY"] = p.QUANTITY;
+                inbrddrAllot["DIST_CTR_CODE"] = p.DIST_CTR_CODE;
+                inbrddrAllot["ORG_CODE"] = "01";
+                inbrddrAllot["STORE_ROOM_CODE"] = "001";
+                inbrddrAllot["STORE_PLACE_CODE"] =p.STORE_PLACE_CODE;
+                inbrddrAllot["TARGET_NAME"] = p.STORE_PLACE_CODE;
+                inbrddrAllot["IN_OUT_TYPE"] = "1202";
+                inbrddrAllot["BILL_TYPE"] = p.BILL_TYPE;
+                inbrddrAllot["BEGIN_STOCK_QUANTITY"] = 0;
+                inbrddrAllot["END_STOCK_QUANTITY"] = 0;
+                inbrddrAllot["DISUSE_STATUS"] = "0";
+                inbrddrAllot["RECKON_STATUS"] = "1";
+                inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
+                inbrddrAllot["UPDATE_CODE"] = p.UPDATE_CODE;
+                inbrddrAllot["UPDATE_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
+                inbrddrAllot["IS_IMPORT"] = "1";
+                ds.Tables["WMS_IN_BILLALLOT"].Rows.Add(inbrddrAllot);
+            }
+            return ds;
+        }
+        #endregion
+
+        #region 构建入库单据表虚拟表
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable mastertable = ds.Tables.Add("WMS_IN_BILLMASTER");
+            mastertable.Columns.Add("STORE_BILL_ID");
+            mastertable.Columns.Add("RELATE_BUSI_BILL_NUM");
+            mastertable.Columns.Add("BRAND_CODE");
+            mastertable.Columns.Add("AREA_TYPE");
+            mastertable.Columns.Add("QUANTITY_SUM");
+            mastertable.Columns.Add("AMOUNT_SUM");
+            mastertable.Columns.Add("DETAIL_NUM");
+            mastertable.Columns.Add("CREATOR_CODE");
+            mastertable.Columns.Add("CREATE_DATE");
+            mastertable.Columns.Add("AUDITOR_CODE");
+            mastertable.Columns.Add("AUDIT_DATE");
+            mastertable.Columns.Add("ASSIGNER_CODE");
+            mastertable.Columns.Add("ASSIGN_DATE");
+            mastertable.Columns.Add("AFFIRM_CODE");
+            mastertable.Columns.Add("AFFIRM_DATE");
+            mastertable.Columns.Add("IN_OUT_TYPE");
+            mastertable.Columns.Add("BILL_TYPE");
+            mastertable.Columns.Add("BILL_STATUS");
+            mastertable.Columns.Add("DISUSE_STATUS");
+            mastertable.Columns.Add("IS_IMPORT");
+
+            DataTable detailtable = ds.Tables.Add("WMS_IN_BILLDETAIL");
+            detailtable.Columns.Add("STORE_BILL_DETAIL_ID");
+            detailtable.Columns.Add("STORE_BILL_ID");
+            detailtable.Columns.Add("BRAND_CODE");
+            detailtable.Columns.Add("BRAND_NAME");
+            detailtable.Columns.Add("QUANTITY");
+            detailtable.Columns.Add("IS_IMPORT");
+
+
+            DataTable allottable = ds.Tables.Add("WMS_IN_BILLALLOT");
+            allottable.Columns.Add("BUSI_ACT_ID");
+            allottable.Columns.Add("BUSI_BILL_DETAIL_ID");
+            allottable.Columns.Add("BUSI_BILL_ID");
+            allottable.Columns.Add("BRAND_CODE");
+            allottable.Columns.Add("BRAND_NAME");
+            allottable.Columns.Add("QUANTITY");
+            allottable.Columns.Add("DIST_CTR_CODE");
+            allottable.Columns.Add("ORG_CODE");
+            allottable.Columns.Add("STORE_ROOM_CODE");
+            allottable.Columns.Add("STORE_PLACE_CODE");
+            allottable.Columns.Add("TARGET_NAME");
+            allottable.Columns.Add("IN_OUT_TYPE");
+            allottable.Columns.Add("BILL_TYPE");
+            allottable.Columns.Add("BEGIN_STOCK_QUANTITY");
+            allottable.Columns.Add("END_STOCK_QUANTITY");
+            allottable.Columns.Add("DISUSE_STATUS");
+            allottable.Columns.Add("RECKON_STATUS");
+            allottable.Columns.Add("RECKON_DATE");
+            allottable.Columns.Add("UPDATE_CODE");
+            allottable.Columns.Add("UPDATE_DATE");
+            allottable.Columns.Add("IS_IMPORT");
+
+            return ds;
+        }
+        #endregion
+
     }
 }

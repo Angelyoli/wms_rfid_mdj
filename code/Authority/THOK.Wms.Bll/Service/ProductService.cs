@@ -6,7 +6,8 @@ using THOK.Wms.DbModel;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
-
+using THOK.WMS.DownloadWms.Bll;
+using System.Data;
 namespace THOK.Wms.Bll.Service
 {
     public class ProductService:ServiceBase<Product>,IProductService
@@ -16,6 +17,8 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
+
+        DownProductBll Product = new DownProductBll();
 
         protected override Type LogPrefix
         {
@@ -132,6 +135,9 @@ namespace THOK.Wms.Bll.Service
 
             ProductRepository.Add(prod);
             ProductRepository.SaveChanges();
+            //产品信息上报
+            //DataSet ds = this.Insert(prod);
+            //Product.InsertProduct(ds);
             return true;
         }
         public bool Delete(string ProductCode)
@@ -185,7 +191,96 @@ namespace THOK.Wms.Bll.Service
             prod.UpdateTime = DateTime.Now;
 
             ProductRepository.SaveChanges();
+            //产品信息上报
+            //DataSet ds = this.Insert(prod);
+            //Product.InsertProduct(ds);
             return true;
+        }
+        #endregion
+
+        #region 插入数据到虚拟表
+        public DataSet Insert(Product product)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            DataRow inbrddr = ds.Tables["WMS_PRODUCT"].NewRow();
+            inbrddr["product_code"] = product.ProductCode;
+            inbrddr["product_name"] = product.ProductName;
+            inbrddr["uniform_code"] = product.UniformCode;
+            inbrddr["custom_code"] = product.CustomCode ?? "";
+            inbrddr["short_code"] = product.ShortCode ?? "";
+            inbrddr["unit_list_code"] = product.UnitListCode;
+            inbrddr["unit_code"] = product.UnitCode;
+            inbrddr["supplier_code"] = product.SupplierCode;
+            inbrddr["brand_code"] = product.BrandCode;
+            inbrddr["abc_type_code"] = product.AbcTypeCode ?? "";
+            inbrddr["product_type_code"] = product.ProductTypeCode ?? "";
+            inbrddr["pack_type_code"] = product.PackTypeCode ?? "";
+            inbrddr["price_level_code"] = product.PriceLevelCode ?? "";
+            inbrddr["statistic_type"] = product.StatisticType ?? "";
+            inbrddr["piece_barcode"] = product.PieceBarcode ?? "";
+            inbrddr["bar_barcode"] = product.BarBarcode ?? "";
+            inbrddr["package_barcode"] = product.PackageBarcode ?? "";
+            inbrddr["one_project_barcode"] = product.OneProjectBarcode ?? "";
+            inbrddr["buy_price"] = string.IsNullOrEmpty(product.BuyPrice.ToString()) ? 0 : product.BuyPrice;
+            inbrddr["trade_price"] = string.IsNullOrEmpty(product.TradePrice.ToString()) ? 0 : product.TradePrice;
+            inbrddr["retail_price"] = string.IsNullOrEmpty(product.RetailPrice.ToString()) ? 0 : product.RetailPrice;
+            inbrddr["cost_price"] = string.IsNullOrEmpty(product.CostPrice.ToString()) ? 0 : product.CostPrice;
+            inbrddr["is_filter_tip"] = product.IsFilterTip;
+            inbrddr["is_new"] = product.IsNew;
+            inbrddr["is_famous"] = product.IsFamous;
+            inbrddr["is_main_product"] = product.IsMainProduct;
+            inbrddr["is_province_main_product"] = product.IsProvinceMainProduct;
+            inbrddr["belong_region"] = product.BelongRegion;
+            inbrddr["is_confiscate"] = product.IsConfiscate;
+            inbrddr["is_abnormity"] = product.IsAbnormity;
+            inbrddr["description"] = product.Description;
+            inbrddr["is_active"] = product.IsActive;
+            inbrddr["update_time"] = DateTime.Now;
+            ds.Tables["WMS_PRODUCT"].Rows.Add(inbrddr);
+            return ds;
+        }
+        #endregion
+
+        #region 创建一个空的产品表
+        private DataSet GenerateEmptyTables()
+        {
+            DataSet ds = new DataSet();
+            DataTable inbrtable = ds.Tables.Add("WMS_PRODUCT");
+            inbrtable.Columns.Add("product_code");
+            inbrtable.Columns.Add("product_name");
+            inbrtable.Columns.Add("uniform_code");
+            inbrtable.Columns.Add("custom_code");
+            inbrtable.Columns.Add("short_code");
+            inbrtable.Columns.Add("unit_list_code");
+            inbrtable.Columns.Add("unit_code");
+            inbrtable.Columns.Add("supplier_code");
+            inbrtable.Columns.Add("brand_code");
+            inbrtable.Columns.Add("abc_type_code");
+            inbrtable.Columns.Add("product_type_code");
+            inbrtable.Columns.Add("pack_type_code");
+            inbrtable.Columns.Add("price_level_code");
+            inbrtable.Columns.Add("statistic_type");
+            inbrtable.Columns.Add("piece_barcode");
+            inbrtable.Columns.Add("bar_barcode");
+            inbrtable.Columns.Add("package_barcode");
+            inbrtable.Columns.Add("one_project_barcode");
+            inbrtable.Columns.Add("buy_price");
+            inbrtable.Columns.Add("trade_price");
+            inbrtable.Columns.Add("retail_price");
+            inbrtable.Columns.Add("cost_price");
+            inbrtable.Columns.Add("is_filter_tip");
+            inbrtable.Columns.Add("is_new");
+            inbrtable.Columns.Add("is_famous");
+            inbrtable.Columns.Add("is_main_product");
+            inbrtable.Columns.Add("is_province_main_product");
+            inbrtable.Columns.Add("belong_region");
+            inbrtable.Columns.Add("is_confiscate");
+            inbrtable.Columns.Add("is_abnormity");
+            inbrtable.Columns.Add("description");
+            inbrtable.Columns.Add("is_active");
+            inbrtable.Columns.Add("update_time");
+
+            return ds;
         }
         #endregion
 

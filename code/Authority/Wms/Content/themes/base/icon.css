@@ -76,7 +76,7 @@
     display: inline-block;
 }
 
-/*新增icon.css -icons*/
+/*锟斤拷锟斤拷icon.css -icons*/
 .icon-Menu_Organization{
 	background:url('icons/Menu_Organization.png') no-repeat;
 }
@@ -230,10 +230,20 @@
 .icon-son_CheckBillMake{
 	background:url('icons/son_CheckBillMake.png') no-repeat;
 }
+.icon-Menu_ProductQuality{
+	background:url('icons/Menu_ProductQuality.jpg') no-repeat;
+}
+.icon-Son_ProductWarning{
+	background:url('icons/Son_ProductWarning.jpg') no-repeat;
+}
+.icon-Son_CellAnalysis{
+	background:url('icons/Son_CellAnalysis.jpg') no-repeat;
+}
+
 .icon-Son_DeliveryDis{
 	background:url('icons/Son_DeliveryDis.ico') no-repeat;
 }
-/*新增icon.css -images*/
+/*锟斤拷锟斤拷icon.css -images*/
 .image-Menu_Organization{
 	background:url('images/Menu_Organization.png') no-repeat;
 }
@@ -387,8 +397,16 @@
 .image-son_CheckBillMake{
 	background:url('images/son_CheckBillMake.png') no-repeat;
 }
-
-/*新增权限系统icon.css -icons*/
+.image-Menu_ProductQuality{
+	background:url('images/Menu_ProductQuality.jpg') no-repeat;
+}
+.image-Son_ProductWarning{
+	background:url('images/Son_ProductWarning.jpg') no-repeat;
+}
+.image-Son_CellAnalysis{
+	background:url('images/Son_CellAnalysis.jpg') no-repeat;
+}
+/*锟斤拷锟斤拷权锟斤拷系统icon.css -icons*/
 .icon-Menu_Help{
 	background:url('icons/2Menu_Help.png') no-repeat;
 }
@@ -442,7 +460,7 @@
 .image-Son_DeliveryDis{
 	background:url('images/Son_DeliveryDis.ico') no-repeat;
 }
-/*新增权限系统icon.css -images*/
+/*锟斤拷锟斤拷权锟斤拷系统icon.css -images*/
 .image-Menu_Help{
 	background:url('images/2Menu_Help.png') no-repeat;
 }

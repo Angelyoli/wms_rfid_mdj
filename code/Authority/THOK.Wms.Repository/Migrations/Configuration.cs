@@ -79,6 +79,7 @@ namespace THOK.Wms.Repository.Migrations
             CreateSorting(context);
             CreateSearch(context);
             CreateProductQuality(context);
+            CreateUpload(context);
         }
 
         private void CreateServer(AuthorizeContext context)
@@ -3328,8 +3329,8 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleName = "产品质量管理",
                         ShowOrder = 11,
                         ModuleURL = "",
-                        IndicateImage = "icon-Menu_Research",
-                        DeskTopImage = "image-Menu_Research",
+                        IndicateImage = "icon-Menu_ProductQuality",
+                        DeskTopImage = "image-Menu_ProductQuality",
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")
@@ -3340,8 +3341,8 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleName = "产品预警信息设置",
                         ShowOrder = 2,
                         ModuleURL = "/ProductWarning/",
-                        IndicateImage = "icon-son_StockIntoBill",
-                        DeskTopImage = "image-son_StockIntoBill",
+                        IndicateImage = "icon-Son_ProductWarning",
+                        DeskTopImage = "image-Son_ProductWarning",
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")
@@ -3388,8 +3389,8 @@ namespace THOK.Wms.Repository.Migrations
                         ModuleName = "库区占有率分析",
                         ShowOrder = 6,
                         ModuleURL = "/CellAnalysis/",
-                        IndicateImage = "icon-son_DifferBill",
-                        DeskTopImage = "image-son_DifferBill",
+                        IndicateImage = "icon-Son_CellAnalysis",
+                        DeskTopImage = "image-Son_CellAnalysis",
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("D7E448C6-7CBE-4F5A-B8E8-98193619D52B")
@@ -3571,6 +3572,79 @@ namespace THOK.Wms.Repository.Migrations
                     Module_ModuleID = new Guid("B9168A39-D6F8-4ACA-875C-A8B5827CD9B8")
                 }
                );
+            context.SaveChanges();
+        }
+
+        private void CreateUpload(AuthorizeContext context)
+        {
+            System system = context.Set<System>().SingleOrDefault(s => s.SystemID == new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B666AA8"));
+            context.Set<Module>().AddOrUpdate(
+                    new Module()
+                    {
+                        ModuleID = new Guid("04B5411E-155E-41C3-98BF-BCB925B9F57D"),
+                        ModuleName = "综合数据上报",
+                        ShowOrder = 13,
+                        ModuleURL = "",
+                        IndicateImage = "icon-Menu_Research",
+                        DeskTopImage = "image-Menu_Research",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("04B5411E-155E-41C3-98BF-BCB925B9F57D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("BCE5132F-16C1-4027-8B14-FD94B5A80F0E"),
+                        ModuleName = "数据上报",
+                        ShowOrder = 2,
+                        ModuleURL = "/Upload/",
+                        IndicateImage = "icon-son_StockIntoBill",
+                        DeskTopImage = "image-son_StockIntoBill",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("04B5411E-155E-41C3-98BF-BCB925B9F57D")
+                    });
+            context.SaveChanges();
+            context.Set<Function>().AddOrUpdate(
+               new Function()
+               {
+                   FunctionID = new Guid("1546490D-CF88-460C-9BA4-D19F83B7517D"),
+                   FunctionName = "查询",
+                   ControlName = "search",
+                   IndicateImage = "icon-search",
+                   Module_ModuleID = new Guid("BCE5132F-16C1-4027-8B14-FD94B5A80F0E")
+               },
+                new Function()
+                {
+                    FunctionID = new Guid("E219299A-D21E-4389-AC3E-ECB42772F1EF"),
+                    FunctionName = "上报中烟",
+                    ControlName = "upload",
+                    IndicateImage = "icon-add",
+                    Module_ModuleID = new Guid("BCE5132F-16C1-4027-8B14-FD94B5A80F0E")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("72EAE53F-3E3C-4AD7-8C5B-BB44C5E58A99"),
+                    FunctionName = "删除",
+                    ControlName = "delete",
+                    IndicateImage = "icon-remove",
+                    Module_ModuleID = new Guid("BCE5132F-16C1-4027-8B14-FD94B5A80F0E")
+                },
+               new Function()
+               {
+                   FunctionID = new Guid("7974D531-3726-4A17-A55A-994F4F897854"),
+                   FunctionName = "打印",
+                   ControlName = "print",
+                   IndicateImage = "icon-print",
+                   Module_ModuleID = new Guid("BCE5132F-16C1-4027-8B14-FD94B5A80F0E")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("D8E98B16-F54F-4D49-A4CC-AE341CD6852A"),
+                   FunctionName = "帮助",
+                   ControlName = "help",
+                   IndicateImage = "icon-help",
+                   Module_ModuleID = new Guid("BCE5132F-16C1-4027-8B14-FD94B5A80F0E")
+               });
             context.SaveChanges();
         }
     }

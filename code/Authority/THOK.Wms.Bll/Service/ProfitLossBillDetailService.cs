@@ -302,8 +302,8 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("产品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("单价", typeof(double));
-                dt.Columns.Add("数量", typeof(int));
+                dt.Columns.Add("单价", typeof(string));
+                dt.Columns.Add("数量", typeof(string));
                 dt.Columns.Add("备注", typeof(string));
                 foreach (var p in profitLossBillDetail)
                 {

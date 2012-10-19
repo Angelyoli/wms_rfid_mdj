@@ -3,6 +3,7 @@
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#dlg').dialog('open').dialog('setTitle', '编辑单位信息');
+            editKey = true;
             $('#fm').form('load', row);
             $('#fm .easyui-validatebox').validatebox({
                 required: true

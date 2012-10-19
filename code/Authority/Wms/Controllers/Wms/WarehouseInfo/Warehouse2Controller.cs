@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Service;
-using THOK.Wms.SignalR.Connection;
 namespace Wms.Controllers.Wms.WarehouseInfo
 {
     public class Warehouse2Controller : Controller
@@ -24,7 +20,6 @@ namespace Wms.Controllers.Wms.WarehouseInfo
 
         public ActionResult Index(string moduleID)
         {
-            AutomotiveSystemsNotify.Notify();
             ViewBag.hasSearch = true;
             ViewBag.hasAdd = true;
             ViewBag.hasEdit = true;
@@ -109,7 +104,7 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                                         ,"&P"    //脚右 页码
                                     };
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder);
+                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

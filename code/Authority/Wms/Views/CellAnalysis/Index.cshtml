@@ -36,6 +36,11 @@ $(function () { $.getJSON("/CellAnalysis/Details", function(data) {
 		            }
 		        }
 		    },
+             exporting: {
+                    url: '/HighchartsExport.axd/',
+                    filename: '库区占有率分析图',
+                    width: 1200
+                },
 		    series: [{
                 type:'pie',
                 name: '库区占有率',

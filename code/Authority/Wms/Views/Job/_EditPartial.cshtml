@@ -4,6 +4,7 @@ function editClick() {
     if (row) {
         AddLoad();
         showDialog('±à¼­');
+        editKey = true;
         addDialog.dialog('open');
         url = '/Job/Edit/';
         $('form input').removeAttr("disabled");

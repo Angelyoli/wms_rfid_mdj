@@ -18,6 +18,7 @@
 
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增入库单类型');
+        addKey = true;
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
@@ -44,6 +45,8 @@
                         title: '成功',
                         msg: result.msg
                     });
+                    addKey = false;
+                    editKey = false;
                     $('#dlg').dialog('close');
                     $('#details').datagrid('reload');
                 } else {
@@ -51,6 +54,8 @@
                         title: '错误',
                         msg: result.msg
                     });
+                    addKey = false;
+                    editKey = false;
                     $('#details').datagrid('reload');
                 }
             }

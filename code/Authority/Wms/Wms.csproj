@@ -41,6 +41,9 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\log4net.dll</HintPath>
@@ -71,6 +74,9 @@
     </Reference>
     <Reference Include="SignalR.Hosting.Common, Version=0.5.1.10625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SignalR.Hosting.Common.0.5.2\lib\net40\SignalR.Hosting.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Svg">
+      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\Svg.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -165,6 +171,7 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillAllotController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
+    <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
@@ -553,6 +560,7 @@
     <Content Include="Content\themes\base\icons\Menu_CheckBill.png" />
     <Content Include="Content\themes\base\icons\Menu_Organization.png" />
     <Content Include="Content\themes\base\icons\Menu_Cigarette.png" />
+    <Content Include="Content\themes\base\icons\Menu_ProductQuality.jpg" />
     <Content Include="Content\themes\base\icons\Menu_Research.png" />
     <Content Include="Content\themes\base\icons\Menu_Sort.png" />
     <Content Include="Content\themes\base\icons\Menu_StockDiffer.png" />
@@ -562,6 +570,7 @@
     <Content Include="Content\themes\base\icons\Menu_Warehouse.png" />
     <Content Include="Content\themes\base\icons\Menu_WarehouseM.png" />
     <Content Include="Content\themes\base\icons\son_Bill_Type.jpg" />
+    <Content Include="Content\themes\base\icons\Son_CellAnalysis.jpg" />
     <Content Include="Content\themes\base\icons\son_CheckBill.png" />
     <Content Include="Content\themes\base\icons\son_CheckBillAllot.png" />
     <Content Include="Content\themes\base\icons\son_CheckBillMake.png" />
@@ -579,6 +588,7 @@
     <Content Include="Content\themes\base\icons\son_MoveBill.png" />
     <Content Include="Content\themes\base\icons\son_MoveBillAllot.png" />
     <Content Include="Content\themes\base\icons\son_MoveBillWork.png" />
+    <Content Include="Content\themes\base\icons\Son_ProductWarning.jpg" />
     <Content Include="Content\themes\base\icons\son_SortInfo.png" />
     <Content Include="Content\themes\base\icons\son_SortOrder.png" />
     <Content Include="Content\themes\base\icons\son_SortOrderc.png" />
@@ -957,6 +967,7 @@
     <Content Include="Content\themes\base\images\Menu_CheckBill.png" />
     <Content Include="Content\themes\base\images\Menu_Cigarette.png" />
     <Content Include="Content\themes\base\images\Menu_Organization.png" />
+    <Content Include="Content\themes\base\images\Menu_ProductQuality.jpg" />
     <Content Include="Content\themes\base\images\Menu_Research.png" />
     <Content Include="Content\themes\base\images\Menu_Sort.png" />
     <Content Include="Content\themes\base\images\Menu_StockDiffer.png" />
@@ -996,6 +1007,7 @@
     <Content Include="Content\themes\base\images\old_warehouse.jpg" />
     <Content Include="Content\themes\base\images\son_Bill_Check.png" />
     <Content Include="Content\themes\base\images\son_Bill_Type.jpg" />
+    <Content Include="Content\themes\base\images\Son_CellAnalysis.jpg" />
     <Content Include="Content\themes\base\images\son_CheckBill.png" />
     <Content Include="Content\themes\base\images\son_CheckBillAllot.png" />
     <Content Include="Content\themes\base\images\son_CheckBillMake.png" />
@@ -1013,6 +1025,7 @@
     <Content Include="Content\themes\base\images\son_MoveBill.png" />
     <Content Include="Content\themes\base\images\son_MoveBillAllot.png" />
     <Content Include="Content\themes\base\images\son_MoveBillWork.png" />
+    <Content Include="Content\themes\base\images\Son_ProductWarning.jpg" />
     <Content Include="Content\themes\base\images\son_SortInfo.png" />
     <Content Include="Content\themes\base\images\son_SortOrder.png" />
     <Content Include="Content\themes\base\images\son_SortOrderc.png" />
@@ -1052,6 +1065,7 @@
     <Content Include="Scripts\jquery.ztree.exedit-3.3.min.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
+    <Content Include="Scripts\mykeyboardshortcuts.js" />
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1094,6 +1108,10 @@
     <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Tek4.Highcharts.Exporting\Tek4.Highcharts.Exporting.csproj">
+      <Project>{42BDE168-C741-4339-92B6-0656E798E989}</Project>
+      <Name>Tek4.Highcharts.Exporting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Authority.Bll\THOK.Authority.Bll.csproj">
       <Project>{8375EB8C-20CB-4E3E-BCF4-85E54F61D241}</Project>
       <Name>THOK.Authority.Bll</Name>
@@ -1137,6 +1155,10 @@
     <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>
       <Name>THOK.Wms.SignalR</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.Upload\THOK.Wms.Upload.csproj">
+      <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
+      <Name>THOK.Wms.Upload</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -1211,7 +1233,7 @@
     <None Include="Content\Scripts\jquery-easyui-1.3\themes\gray\images\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\diy\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\Thumbs.db" />
-    <None Include="ExcelTemplate\test.xls" />
+    <None Include="ExcelTemplate\DailyBalance.xls" />
     <None Include="obj\Debug\build.force" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
@@ -1615,6 +1637,9 @@
     <Content Include="Views\QuantityLimits\_PrintPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_MoveInCellPartial.cshtml" />
     <Content Include="Views\ProductTimeOut\_PrintPartial.cshtml" />
+    <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\Upload\_SearchPartial.cshtml" />
+    <Content Include="Views\Upload\_Upload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
@@ -1636,7 +1661,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>4079</DevelopmentServerPort>
+          <DevelopmentServerPort>6895</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

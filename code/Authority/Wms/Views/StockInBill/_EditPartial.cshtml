@@ -10,6 +10,7 @@
             isInBillMasterAdd = false;
             isShowInBillDetail = true;
             $('#dlg').dialog('open').dialog('setTitle', '编辑入库主单信息');
+            editKey = true;
             $('#fm').form('load', row);
             $('#inBillDetail').datagrid({ url: '/StockInBill/InBillDetails/?BillNo=' + row.BillNo });
             $('#fm .easyui-validatebox').validatebox({

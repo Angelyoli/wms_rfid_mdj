@@ -1,5 +1,10 @@
 ﻿<script type="text/javascript">
     var searchDialog;
+    var module = "StockInBill";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
     function searchClick() {
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
@@ -14,17 +19,7 @@
                     text: '查询',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        var queryParams = $('#details').datagrid('options').queryParams;
-                        queryParams.BillNo = $('#searchBillNo').val();
-                        queryParams.WareHouseCode = $('#warehouse_In').combo('getValue');
-                        queryParams.BeginDate = $('#beginDate').datebox('getValue');
-                        queryParams.EndDate = $('#endDate').datebox('getValue');
-                        queryParams.OperatePersonCode = $('#operatePerson').combo('getValue');
-                        queryParams.CheckPersonCode = $('#checkPerson').combo('getValue');
-                        queryParams.Status = $('#operate_Status').combo('getValue');
-                        $('#details').datagrid('options').queryParams = queryParams;
-                        $("#details").datagrid('load');
-                        searchDialog.dialog('close');
+                        GetQueryParams();
                     }
                 }, {
                     text: '取消',
@@ -36,11 +31,24 @@
                 onLoad: function () {
                     SearchLoad();
                 }
-            });          
+            });
         }
+        searchKey = true;
         searchDialog.dialog('open');
     };
-
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.BillNo = $('#searchBillNo').val();
+        queryParams.WareHouseCode = $('#warehouse_In').combo('getValue');
+        queryParams.BeginDate = $('#beginDate').datebox('getValue');
+        queryParams.EndDate = $('#endDate').datebox('getValue');
+        queryParams.OperatePersonCode = $('#operatePerson').combo('getValue');
+        queryParams.CheckPersonCode = $('#checkPerson').combo('getValue');
+        queryParams.Status = $('#operate_Status').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
     function SearchLoad() {
         $('#makeDate_before').datebox({
             required: false
@@ -119,4 +127,4 @@
         $('#operate_Status').combo('setValue', "");
     }
 </script>
-
+<script src="../../Scripts/mykeyboardshortcuts.js" type="text/javascript"></script>

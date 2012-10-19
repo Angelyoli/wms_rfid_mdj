@@ -31,7 +31,7 @@ namespace THOK.Wms.Bll.Service
             {
                 IQueryable<OutBillDetail> outBillDetailQuery = OutBillDetailRepository.GetQueryable();
                 var outBillDetail = outBillDetailQuery.Where(i => i.BillNo.Contains(BillNo))
-                                                      .OrderBy(i => i.BillNo).Select(i => i);
+                                                      .OrderBy(i => new {i.ProductCode,i.BillNo }).Select(i => i);
                 int total = outBillDetail.Count();
                 outBillDetail = outBillDetail.Skip((page - 1) * rows).Take(rows);
 
@@ -197,9 +197,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("订单数量", typeof(int));
-                dt.Columns.Add("已分配数量", typeof(int));
-                dt.Columns.Add("实际出库量", typeof(int));
+                dt.Columns.Add("订单数量", typeof(string));
+                dt.Columns.Add("已分配数量", typeof(string));
+                dt.Columns.Add("实际出库量", typeof(string));
                 dt.Columns.Add("备注", typeof(string));
                 foreach (var o in outBillDetail)
                 {

@@ -3,6 +3,7 @@ function editClick() {
     var row = $('#details').datagrid('getSelected');
     if (row) {
         $('#dlg').dialog('open').dialog('setTitle', '±à¼­');
+        editKey = true;
         $('#LowerLimitfm').form('load', row);   
         $('#LowerLimitfm .easyui-validatebox').validatebox({
             required: true
