@@ -17,6 +17,8 @@ namespace Wms.Controllers.Wms.VehicleMounted
 
         [Dependency]
         public IInBillAllotService InBillAllotService { get; set; }
+        [Dependency]
+        public IInBillMasterService InBillMasterService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -28,28 +30,30 @@ namespace Wms.Controllers.Wms.VehicleMounted
             ViewBag.ModuleID = moduleID;
             return View();
         }
-
+        //GO: /StockInTask/Search/
         public ActionResult Search(string billNo, int page, int rows)
         {
-            string status0 = "0";
-            string status1 = "1";
-            var result = InBillAllotService.SearchInBillAllot(billNo, status0, status1, page, rows);
+            var result = InBillAllotService.SearchInBillAllot(billNo, page, rows);
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Apply(int id, string status)
+        //GO: /StockInTask/GetBillNo/
+        public ActionResult GetBillNo()
         {
-            string operator1 = "admin";
-            string strResult = string.Empty;
-            bool bResult = InBillAllotService.EditAllot(id, status, operator1, out strResult);
-            string msg = bResult ? "申请成功" : "申请失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+            var result = InBillMasterService.GetInBillMaster();
+            return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Cancel(int id, string status)
+        //GO: /StockInTask/Operate/
+        public ActionResult Operate(int id, string status)
         {
-            string operator1 = null;
             string strResult = string.Empty;
+            string operator1 = string.Empty;
+            string msg = string.Empty;
+            if (status != "0") operator1 = "admin";
+            if (status == "0") operator1 = "";
             bool bResult = InBillAllotService.EditAllot(id, status, operator1, out strResult);
-            string msg = bResult ? "取消成功" : "取消失败";
+            if (status == "0") msg = bResult ? "取消成功" : "取消失败";
+            if (status == "1") msg = bResult ? "申请成功" : "申请失败";
+            if (status == "2") msg = bResult ? "操作成功" : "操作失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }

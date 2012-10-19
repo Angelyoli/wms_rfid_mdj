@@ -1,41 +1,53 @@
 ﻿<script type="text/javascript">
     $(function () {
-        $('#taskNo').combo({
-            editable: false,
-            panelHeight: 50
-        });
+        $('#tbBillInMaster').datagrid({
+            //双击赋值
+            onDblClickRow: function () {
+                select();
+            }
+        })
     })
     function searchClick() {
-        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        $('#dlg-search').dialog('open').dialog('setTitle', '请选择要进行作业的单据');
+        $('#tbBillInMaster').datagrid({ url: '/StockInTask/GetBillNo/' });
+        $("#tbBillInMaster").datagrid('reload');
     }
     function select() {
-        var billNo = $('#comboBillNo').combo('getValue');        
-        $("#details").datagrid({
-            url: '/StockInTask/Search/?billNo=' + billNo
-        });
-        $("#details").datagrid('reload');
-        $('#dlg-search').dialog('close');
+        var row = $('#tbBillInMaster').datagrid('getSelected');
+        if (row) {
+            $("#details").datagrid({
+                url: '/StockInTask/Search/?billNo=' + row.BillNo
+            });
+            $('#dlg-search').dialog('close');
+        }
+        else {
+            $.messager.alert('系统提示','未选中行','info');
+        }
     }
 </script>
-<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 340px; height: 150px;
-    padding: 2px 2px" closed="true" buttons="#dlg-buttons-search">
-    <div class="easyui-layout" fit="true">
-        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
-            border: 1px solid #ccc;">
-            <table width="300">
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 350px; height: 400px;
+    padding: 0px 0px" closed="true" buttons="#dlg-buttons-search">
+    @*<div id="btnQuery">
+        <select id="queryType" class="easyui-combobox" style="width: 100px;" readonly="true">
+            <option value="ProductCode">单据编号</option>
+            <option value="ProductName">单据名称</option>
+        </select>
+        <input id="stockInInfo">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick=""
+            id="stockInQuery">查询</a>
+    </div>*@
+    <div split="true" border="false" style="width: 335px; height: 330px;">
+        <table id="tbBillInMaster" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            pagesize="50" singleselect="true" fit="true" fitcolumns="true" pagination="true"
+            rownumbers="true">
+            <thead>
                 <tr>
-                    <td width="200">
-                        请选择要进行作业的单据：
-                    </td>
-                    <td width="150">
-                        <select id="comboBillNo" class="easyui-combobox" style="width: 120px;">
-                            <option value="0d5424-46-e3">0d5424-46-e3</option>
-                            <option value="1209210001IN">1209210001IN</option>
-                        </select>
-                    </td>
+                    <th field="BillNo" width="80">
+                        单据编号
+                    </th>
                 </tr>
-            </table>
-        </div>
+            </thead>
+        </table>
     </div>
 </div>
 <div id="dlg-buttons-search">

@@ -1,10 +1,10 @@
 ﻿<script type="text/javascript">
     function applyClick() {
-        var rows = $('#details').datagrid('getSelected');
-        if (rows != "") {
-            $.ajaxSender.send('/StockInTask/Apply/',
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $.ajaxSender.send('/StockInTask/Operate/',
                         {
-                            'id': rows.ID,
+                            'id': row.ID,
                             'status': '1'
                         },
                         function (data) {

@@ -24,7 +24,7 @@ namespace THOK.Wms.Allot.Interfaces
 
         System.Data.DataTable AllotSearch(int page, int rows, string billNo);
 
-        object SearchInBillAllot(string billNo, string status0,string status1, int page, int rows);
+        object SearchInBillAllot(string billNo, int page, int rows);
 
         bool EditAllot(int id, string status, string operator1, out string strResult);
     }

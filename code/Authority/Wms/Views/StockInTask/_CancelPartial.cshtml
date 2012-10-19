@@ -1,5 +1,17 @@
-﻿@{
-    ViewBag.Title = "_CancelPartial";
-}
-
-<h2>_CancelPartial</h2>
+﻿<script type="text/javascript">
+    function cancelClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $.ajaxSender.send('/StockInTask/Operate/',
+                        {
+                            'id': row.ID,
+                            'status': '0'
+                        },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                        });
+        } else {
+            $.messager.alert('系统提示', '未选中行', 'info');
+        }
+    }
+</script>

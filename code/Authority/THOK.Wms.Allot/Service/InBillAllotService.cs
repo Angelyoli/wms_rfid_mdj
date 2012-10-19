@@ -532,11 +532,11 @@ namespace THOK.Wms.Allot.Service
         /// <param name="page"></param>
         /// <param name="rows"></param>
         /// <returns></returns>
-        public object SearchInBillAllot(string billNo, string status0, string status1, int page, int rows)
+        public object SearchInBillAllot(string billNo, int page, int rows)
         {
             var allotQuery = InBillAllotRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status == status0 || a.Status == status1)
-                .OrderByDescending(a => a.StartTime).Select(i => i);
+            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
+                .OrderByDescending(a => a.Status != "2").Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -559,17 +559,42 @@ namespace THOK.Wms.Allot.Service
             });
             return new { total, rows = temp.ToArray() };
         }
-        public bool EditAllot(int id, string status,string operator1, out string strResult)
+        public bool EditAllot(int id, string status, string operator1, out string strResult)
         {
             strResult = string.Empty;
+            bool result = false;
+
             var allot = InBillAllotRepository.GetQueryable().FirstOrDefault(a => a.ID == id);
-            if (allot != null)
+            var allotExist = InBillAllotRepository.GetQueryable().FirstOrDefault(a => a.ID == id && a.Status == status);
+            if (allotExist == null)
             {
-                allot.Status = status;
-                allot.Operator = operator1;
-                InBillAllotRepository.SaveChanges();
+                if (allot != null)
+                {
+                    try
+                    {
+                        if (allot.Status == "0" && status == "1" || allot.Status == "1" && status == "2" || allot.Status == "1" && status == "0")
+                        {
+                            allot.Status = status;
+                            allot.Operator = operator1;
+                            InBillAllotRepository.SaveChanges();
+                            result = true;
+                        }
+                        else
+                        {
+                            strResult = "原因：操作错误！";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
+                }
             }
-            return true;
+            else
+            {
+                strResult = "原因：该储位已存在！";
+            }
+            return result;
         }
         #endregion
     }

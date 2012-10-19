@@ -546,8 +546,12 @@
     <Content Include="Content\themes\base\icons\2Menu_ServerDevice.png" />
     <Content Include="Content\themes\base\icons\2Menu_SysLog.png" />
     <Content Include="Content\themes\base\icons\2Son_Cities.png" />
+    <Content Include="Content\themes\base\icons\accept.png" />
     <Content Include="Content\themes\base\icons\Menu_DeliverCustomer.ico" />
     <Content Include="Content\themes\base\icons\Menu_DeliverLine.ico" />
+    <Content Include="Content\themes\base\icons\onebit_23.png" />
+    <Content Include="Content\themes\base\icons\onebit_24.png" />
+    <Content Include="Content\themes\base\icons\shut_down.png" />
     <Content Include="Content\themes\base\icons\Son_DeliveryDis.ico" />
     <Content Include="Content\themes\base\icons\2Son_HelpContents.png" />
     <Content Include="Content\themes\base\icons\2Son_HelpEdit.png" />
