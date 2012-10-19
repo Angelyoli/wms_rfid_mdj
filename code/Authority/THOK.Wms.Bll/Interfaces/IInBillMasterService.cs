@@ -31,7 +31,5 @@ namespace THOK.Wms.Bll.Interfaces
         bool DownInBillMaster(string BeginDate, string EndDate, out string errorInfo);
 
         bool uploadInBill();
-
-        object GetInBillMaster();
     }
 }

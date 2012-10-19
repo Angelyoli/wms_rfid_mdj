@@ -17,8 +17,6 @@ namespace Wms.Controllers.Wms.VehicleMounted
 
         [Dependency]
         public IInBillAllotService InBillAllotService { get; set; }
-        [Dependency]
-        public IInBillMasterService InBillMasterService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -39,21 +37,22 @@ namespace Wms.Controllers.Wms.VehicleMounted
         //GO: /StockInTask/GetBillNo/
         public ActionResult GetBillNo()
         {
-            var result = InBillMasterService.GetInBillMaster();
+            var result = InBillAllotService.GetInBillMaster();
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
         //GO: /StockInTask/Operate/
-        public ActionResult Operate(int id, string status)
+        public ActionResult Operate(string id, string status)
         {
             string strResult = string.Empty;
             string operator1 = string.Empty;
             string msg = string.Empty;
-            if (status != "0") operator1 = "admin";
+            if (status == "1") operator1 = "admin";
             if (status == "0") operator1 = "";
             bool bResult = InBillAllotService.EditAllot(id, status, operator1, out strResult);
             if (status == "0") msg = bResult ? "取消成功" : "取消失败";
             if (status == "1") msg = bResult ? "申请成功" : "申请失败";
             if (status == "2") msg = bResult ? "操作成功" : "操作失败";
+
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }

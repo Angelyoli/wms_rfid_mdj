@@ -524,6 +524,23 @@ namespace THOK.Wms.Allot.Service
             }
             return cellTypeStr;
         }
+        public object GetInBillMaster()
+        {
+            string str = "";
+            var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.Status != "2").Select(b => b.BillNo).ToArray();
+            for (int i = 0; i < inBillAllot.Length; i++)
+            {
+                str += inBillAllot[i];
+            }
+            var inBillMaster = InBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "6")
+                    .Distinct()
+                    .OrderByDescending(t => t.BillDate)
+                    .Select(i => new
+                    {
+                        BillNo = i.BillNo
+                    });
+            return inBillMaster;
+        }
         /// <summary>
         /// 仓库作业管理-入库作业
         /// </summary>
@@ -559,34 +576,49 @@ namespace THOK.Wms.Allot.Service
             });
             return new { total, rows = temp.ToArray() };
         }
-        public bool EditAllot(int id, string status, string operator1, out string strResult)
+        public bool EditAllot(string id, string status, string operator1, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
+            string[] ids = id.Split(',');
+            string strId = "";
+            InBillAllot allot = null;
 
-            var allot = InBillAllotRepository.GetQueryable().FirstOrDefault(a => a.ID == id);
-            var allotExist = InBillAllotRepository.GetQueryable().FirstOrDefault(a => a.ID == id && a.Status == status);
+            var allotExist = InBillAllotRepository.GetQueryable()
+                .AsEnumerable()
+                .FirstOrDefault(a => id.Contains(a.ID.ToString()) && a.Status == status);
             if (allotExist == null)
             {
-                if (allot != null)
+                for (int i = 0; i < ids.Length - 1; i++)
                 {
-                    try
+                    strId = ids[i].ToString();
+                    allot = InBillAllotRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId.Contains(a.ID.ToString()));
+                    if (allot != null)
                     {
-                        if (allot.Status == "0" && status == "1" || allot.Status == "1" && status == "2" || allot.Status == "1" && status == "0")
+                        if (   allot.Status == "0" && status == "1"
+                            || allot.Status == "1" && status == "0"
+                            || allot.Status == "1" && status == "2")
                         {
-                            allot.Status = status;
-                            allot.Operator = operator1;
-                            InBillAllotRepository.SaveChanges();
-                            result = true;
+                            try
+                            {
+                                allot.Status = status;
+                                allot.Operator = operator1;
+                                InBillAllotRepository.SaveChanges();
+                                result = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                strResult = "原因：" + ex.Message;
+                            }
                         }
                         else
                         {
                             strResult = "原因：操作错误！";
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        strResult = "原因：" + ex.Message;
+                        strResult = "原因：未找到该记录！";
                     }
                 }
             }
