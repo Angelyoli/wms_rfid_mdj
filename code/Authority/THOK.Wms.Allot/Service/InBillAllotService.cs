@@ -536,7 +536,7 @@ namespace THOK.Wms.Allot.Service
         {
             var allotQuery = InBillAllotRepository.GetQueryable();
             var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
-                .OrderByDescending(a => a.Status != "2").Select(i => i);
+                .OrderByDescending(a => a.Status == "1").Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 

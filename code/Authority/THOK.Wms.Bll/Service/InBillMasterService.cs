@@ -806,7 +806,8 @@ namespace THOK.Wms.Bll.Service
         #region 车载
         public object GetInBillMaster()
         {
-            var inBillMaster = InBillMasterRepository.GetQueryable().Where(i => i.Status != "6").Distinct()
+            var inBillMaster = InBillMasterRepository.GetQueryable().Where(i => i.Status != "6" && i.LockTag != null)
+                    .Distinct()
                     .OrderByDescending(t => t.BillDate)
                     .Select(i => new
                     {
