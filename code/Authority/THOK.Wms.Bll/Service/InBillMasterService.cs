@@ -803,23 +803,5 @@ namespace THOK.Wms.Bll.Service
         }
         #endregion
 
-        //public object GetInBillMaster()
-        //{
-        //    //var aStatus = "";
-        //    IQueryable<InBillMaster> inBillMaster = InBillMasterRepository.GetQueryable();
-        //    IQueryable<InBillAllot> inBillAllotQuery = InBillAllotRepository.GetQueryable();
-        //    //var inBillAllot = InBillAllotRepository.GetQueryable().Select(s => new { aStatus = s.Status });
-
-        //    var masterToAllot = inBillMaster.Join(inBillAllotQuery, m => m.BillNo, a => a.BillNo, (m, a) => new { master = m, allot = a });
-
-        //    var inBillMasters = masterToAllot.Where(m => m.master.Status != "6" && m.allot.Status == "2")
-        //            .Distinct()
-        //            .OrderByDescending(t => t.master.BillDate)
-        //            .Select(i => new
-        //            {
-        //                BillNo = i.master.BillNo
-        //            });
-        //    return inBillMasters;
-        //}
     }
 }

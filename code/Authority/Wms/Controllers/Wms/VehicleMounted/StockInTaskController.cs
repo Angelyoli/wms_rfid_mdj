@@ -52,7 +52,6 @@ namespace Wms.Controllers.Wms.VehicleMounted
             if (status == "0") msg = bResult ? "取消成功" : "取消失败";
             if (status == "1") msg = bResult ? "申请成功" : "申请失败";
             if (status == "2") msg = bResult ? "操作成功" : "操作失败";
-
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }

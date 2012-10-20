@@ -503,27 +503,7 @@ namespace THOK.Wms.Allot.Service
         }
         #endregion
 
-        #region 车载
-        public string SwitchCellType(string cellType)
-        {
-            string cellTypeStr = "";
-            switch (cellType)
-            {
-                case "1":
-                    cellTypeStr = "入库";
-                    break;
-                case "2":
-                    cellTypeStr = "出库";
-                    break;
-                case "3":
-                    cellTypeStr = "移库";
-                    break;
-                case "4":
-                    cellTypeStr = "盘点";
-                    break;
-            }
-            return cellTypeStr;
-        }
+        #region 车载        
         public object GetInBillMaster()
         {
             string str = "";
@@ -541,14 +521,6 @@ namespace THOK.Wms.Allot.Service
                     });
             return inBillMaster;
         }
-        /// <summary>
-        /// 仓库作业管理-入库作业
-        /// </summary>
-        /// <param name="billNo"></param>
-        /// <param name="status"></param>
-        /// <param name="page"></param>
-        /// <param name="rows"></param>
-        /// <returns></returns>
         public object SearchInBillAllot(string billNo, int page, int rows)
         {
             var allotQuery = InBillAllotRepository.GetQueryable();
@@ -565,7 +537,7 @@ namespace THOK.Wms.Allot.Service
                 a.Product.ProductName,
                 a.CellCode,
                 a.Cell.CellName,
-                CellType = SwitchCellType(a.Cell.CellType),
+                CellType = "入库",
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
@@ -584,48 +556,48 @@ namespace THOK.Wms.Allot.Service
             string strId = "";
             InBillAllot allot = null;
 
-            var allotExist = InBillAllotRepository.GetQueryable()
-                .AsEnumerable()
-                .FirstOrDefault(a => id.Contains(a.ID.ToString()) && a.Status == status);
-            if (allotExist == null)
+            //var allotExist = InBillAllotRepository.GetQueryable()
+            //    .AsEnumerable()
+            //    .FirstOrDefault(a => id.Contains(a.ID.ToString()) && a.Status == status);
+            //if (allotExist == null)
+            //{
+            for (int i = 0; i < ids.Length; i++)
             {
-                for (int i = 0; i < ids.Length - 1; i++)
+                strId = ids[i].ToString();
+                allot = InBillAllotRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId.Contains(a.ID.ToString()));
+                if (allot != null)
                 {
-                    strId = ids[i].ToString();
-                    allot = InBillAllotRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId.Contains(a.ID.ToString()));
-                    if (allot != null)
+                    if (allot.Status == "0" && status == "1"
+                        || allot.Status == "1" && status == "0"
+                        || allot.Status == "1" && status == "2")
                     {
-                        if (   allot.Status == "0" && status == "1"
-                            || allot.Status == "1" && status == "0"
-                            || allot.Status == "1" && status == "2")
+                        try
                         {
-                            try
-                            {
-                                allot.Status = status;
-                                allot.Operator = operator1;
-                                InBillAllotRepository.SaveChanges();
-                                result = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                strResult = "原因：" + ex.Message;
-                            }
+                            allot.Status = status;
+                            allot.Operator = operator1;
+                            InBillAllotRepository.SaveChanges();
+                            result = true;
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            strResult = "原因：操作错误！";
+                            strResult = "原因：" + ex.Message;
                         }
                     }
                     else
                     {
-                        strResult = "原因：未找到该记录！";
+                        strResult = "原因：操作错误！";
                     }
                 }
+                else
+                {
+                    strResult = "原因：未找到该记录！";
+                }
             }
-            else
-            {
-                strResult = "原因：该储位已存在！";
-            }
+            //}
+            //else
+            //{
+            //    strResult = "原因：该储位已存在！";
+            //}
             return result;
         }
         #endregion

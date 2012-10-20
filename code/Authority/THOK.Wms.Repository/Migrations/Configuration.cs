@@ -3756,6 +3756,127 @@ namespace THOK.Wms.Repository.Migrations
                    ControlName = "batch",
                    IndicateImage = "icon-batch",
                    Module_ModuleID = new Guid("3E4F99B6-9705-4C7F-896D-E9F9070E8F6B")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("F5DB1D72-9E42-4C8A-84B2-540D2199A2F7"),
+                   FunctionName = "查找",
+                   ControlName = "search",
+                   IndicateImage = "icon-search",
+                   Module_ModuleID = new Guid("A91EF32E-EE48-400B-B149-B5EF9DF7727C")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("7C266332-5931-4582-B4E7-435F3FD2265F"),
+                   FunctionName = "申请",
+                   ControlName = "apply",
+                   IndicateImage = "icon-apply",
+                   Module_ModuleID = new Guid("A91EF32E-EE48-400B-B149-B5EF9DF7727C")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("A1623B50-8436-4150-906E-15B1C9533BC8"),
+                   FunctionName = "取消",
+                   ControlName = "cancel",
+                   IndicateImage = "icon-cancel2",
+                   Module_ModuleID = new Guid("A91EF32E-EE48-400B-B149-B5EF9DF7727C")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("8EF6C43A-7AB6-4F01-9787-87B04B6B882A"),
+                   FunctionName = "完成",
+                   ControlName = "finish",
+                   IndicateImage = "icon-finish",
+                   Module_ModuleID = new Guid("A91EF32E-EE48-400B-B149-B5EF9DF7727C")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("4F1DE8BD-6C8A-4AF1-B873-A64088FB932D"),
+                   FunctionName = "批量",
+                   ControlName = "batch",
+                   IndicateImage = "icon-batch",
+                   Module_ModuleID = new Guid("A91EF32E-EE48-400B-B149-B5EF9DF7727C")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("F5DB1D72-9E42-4C8A-84B2-540D2199A2F7"),
+                   FunctionName = "查找",
+                   ControlName = "search",
+                   IndicateImage = "icon-search",
+                   Module_ModuleID = new Guid("9C177134-A96C-4343-A54A-413C83CCA9BF")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("69029E64-3AD0-429C-9B8B-8F7619EEFBB1"),
+                   FunctionName = "申请",
+                   ControlName = "apply",
+                   IndicateImage = "icon-apply",
+                   Module_ModuleID = new Guid("9C177134-A96C-4343-A54A-413C83CCA9BF")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("5975B8CC-61AE-407D-A7F7-C3A9553E7843"),
+                   FunctionName = "取消",
+                   ControlName = "cancel",
+                   IndicateImage = "icon-cancel2",
+                   Module_ModuleID = new Guid("9C177134-A96C-4343-A54A-413C83CCA9BF")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("CDC6D96A-C056-4EBD-9096-88F30C1AF5DB"),
+                   FunctionName = "完成",
+                   ControlName = "finish",
+                   IndicateImage = "icon-finish",
+                   Module_ModuleID = new Guid("9C177134-A96C-4343-A54A-413C83CCA9BF")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("E35FF192-C17C-4A87-A3EB-FF48D00CEA9B"),
+                   FunctionName = "批量",
+                   ControlName = "batch",
+                   IndicateImage = "icon-batch",
+                   Module_ModuleID = new Guid("9C177134-A96C-4343-A54A-413C83CCA9BF")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("52983D56-B8CD-48C2-838B-FF6E9395E3E3"),
+                   FunctionName = "查询",
+                   ControlName = "search",
+                   IndicateImage = "icon-search",
+                   Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("9725DAAC-7FE5-445D-B1F6-25B6CDF230E1"),
+                   FunctionName = "申请",
+                   ControlName = "apply",
+                   IndicateImage = "icon-apply",
+                   Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("C34D2149-F702-4914-B868-7315DD7D1D52"),
+                   FunctionName = "取消",
+                   ControlName = "cancel",
+                   IndicateImage = "icon-cancel2",
+                   Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
+               }
+               ,
+               new Function()
+               {
+                   FunctionID = new Guid("2D0C3147-B77C-4B55-898F-5DBD5C4F786C"),
+                   FunctionName = "完成",
+                   ControlName = "finish",
+                   IndicateImage = "icon-finish",
+                   Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
+               },
+               new Function()
+               {
+                   FunctionID = new Guid("312F0CC6-B1A3-4E52-9235-DD9B3466E43B"),
+                   FunctionName = "批量",
+                   ControlName = "batch",
+                   IndicateImage = "icon-batch",
+                   Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
                }
             );
             context.SaveChanges();
