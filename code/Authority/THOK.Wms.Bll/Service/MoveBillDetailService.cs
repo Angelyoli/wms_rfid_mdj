@@ -508,8 +508,10 @@ namespace THOK.Wms.Bll.Service
                 a.InStorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                PieceQuantity = Convert.ToInt32((a.RealQuantity / a.Unit.Count) / 10) / 50,
-                RopeQuantity = Convert.ToInt32(a.RealQuantity / a.Unit.Count) / 10,
+                a.RealQuantity,
+                PieceQuantity = Convert.ToInt32(a.RealQuantity / a.Product.UnitList.Unit01.Count),
+                aaa = a.RealQuantity / a.Product.UnitList.Unit01.Count,
+                RopeQuantity = Convert.ToInt32(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = SwitchStatus(a.Status),
                 a.Operator
             });
@@ -526,7 +528,7 @@ namespace THOK.Wms.Bll.Service
             for (int i = 0; i < ids.Length; i++)
             {
                 strId = ids[i].ToString();
-                detail = MoveBillDetailRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId.Contains(a.ID.ToString()));
+                detail = MoveBillDetailRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId == a.ID.ToString());
                 if (detail != null)
                 {
                     if (detail.Status == "0" && status == "1"

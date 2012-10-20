@@ -541,8 +541,8 @@ namespace THOK.Wms.Allot.Service
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                AllotQuantity = a.AllotQuantity / a.Unit.Count,
-                RealQuantity = a.RealQuantity / a.Unit.Count,
+                AllotQuantity = Convert.ToInt32(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
+                RealQuantity = Convert.ToInt32(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
@@ -564,7 +564,7 @@ namespace THOK.Wms.Allot.Service
             for (int i = 0; i < ids.Length; i++)
             {
                 strId = ids[i].ToString();
-                allot = InBillAllotRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId.Contains(a.ID.ToString()));
+                allot = InBillAllotRepository.GetQueryable().ToArray().FirstOrDefault(a => strId == a.ID.ToString());
                 if (allot != null)
                 {
                     if (allot.Status == "0" && status == "1"

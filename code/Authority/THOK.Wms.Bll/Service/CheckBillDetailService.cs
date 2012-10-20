@@ -208,7 +208,7 @@ namespace THOK.Wms.Bll.Service
             {
                 str += checkBillDetail[i];
             }
-            var checkBillMaster = CheckBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "6")
+            var checkBillMaster = CheckBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "5")
                     .Distinct()
                     .OrderByDescending(t => t.BillDate)
                     .Select(i => new
@@ -237,8 +237,8 @@ namespace THOK.Wms.Bll.Service
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                PieceQuantity = (a.RealQuantity / a.Unit.Count) / 50,
-                RealQuantity = a.RealQuantity / a.Unit.Count,
+                PieceQuantity = a.RealQuantity / a.Product.UnitList.Unit01.Count,
+                RealQuantity = Convert.ToInt32(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
@@ -255,7 +255,7 @@ namespace THOK.Wms.Bll.Service
             for (int i = 0; i < ids.Length; i++)
             {
                 strId = ids[i].ToString();
-                detail = CheckBillDetailRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId.Contains(a.ID.ToString()));
+                detail = CheckBillDetailRepository.GetQueryable().ToArray().FirstOrDefault(a => strId == a.ID.ToString());
                 if (detail != null)
                 {
                     if (detail.Status == "0" && status == "1"
