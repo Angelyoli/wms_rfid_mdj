@@ -39,7 +39,8 @@ namespace Authority.Controllers.Wms.SortingInfo
         {
             string OrderID = collection["OrderID"] ?? "";
             string orderDate = collection["orderDate"] ?? "";
-            var sortOrder = SortOrderService.GetDetails(page, rows, OrderID, orderDate);
+            string productCode = collection["productCode"] ?? "";
+            var sortOrder = SortOrderService.GetDetails(page, rows, OrderID, orderDate,productCode);
             return Json(sortOrder, "text", JsonRequestBehavior.AllowGet);
         }
 

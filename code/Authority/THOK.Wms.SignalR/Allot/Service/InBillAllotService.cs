@@ -60,8 +60,8 @@ namespace THOK.Wms.SignalR.Allot.Service
                                             && c.Area.IsActive == "1"
                                             && c.IsActive == "1"
                                             && (areaCodes.Any(a => a == c.AreaCode)
-                                                || (!areaCodes.Any() && c.Area.AllotInOrder >0)))
-                                 .ToArray();   
+                                                || (!areaCodes.Any() && c.Area.AllotInOrder > 0)))
+                                 .ToArray();  
 
             //1：主库区；2：件烟区；
             //3；条烟区；4：暂存区；
@@ -145,9 +145,9 @@ namespace THOK.Wms.SignalR.Allot.Service
                 cs = cellQueryFromList1.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                 AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
                 //分配预设其他卷烟的货位；
-                cs = cellQueryFromList1.Where(c => c.DefaultProductCode != billDetail.ProductCode
-                                                    && !string.IsNullOrEmpty(c.DefaultProductCode));
-                AllotPallet(billMaster, billDetail, cs, cancellationToken,ps);
+                //cs = cellQueryFromList1.Where(c => c.DefaultProductCode != billDetail.ProductCode
+                //                                    && !string.IsNullOrEmpty(c.DefaultProductCode));
+                //AllotPallet(billMaster, billDetail, cs, cancellationToken,ps);
 
                 //分配条烟到条烟区；
                 cs = cellQueryFromList2.Where(c => c.DefaultProductCode == billDetail.ProductCode
@@ -165,21 +165,21 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配未满一托盘的卷烟到件烟区；                
                 if (cellQueryFromList2.Any())
                 {
-                    cs = cellQueryFromList3;
+                    cs = cellQueryFromList3.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
-                    cs = cellQueryFromList4;
+                    cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
                 }
                 else
                 {
-                    cs = cellQueryFromList3;
+                    cs = cellQueryFromList3.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
-                    cs = cellQueryFromList4;
+                    cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
                 }    
 
                 //分配未满一托盘的卷烟到下层货架；
-                cs = cellQueryFromList1.Where(c => c.Layer == 1);
+                cs = cellQueryFromList1.Where(c => c.Layer == 1 && string.IsNullOrEmpty(c.DefaultProductCode));
                 if (cellQueryFromList2.Count() > 0)
                 {
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
@@ -190,7 +190,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 }
 
                 //分配未分配卷烟到其他库区；
-                cs = cellQueryFromList1;
+                cs = cellQueryFromList1.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                 AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
 
                 //分配未分配卷烟到其他非货位管理货位；
