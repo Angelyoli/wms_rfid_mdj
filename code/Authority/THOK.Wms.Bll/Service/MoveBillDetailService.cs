@@ -14,7 +14,11 @@ namespace THOK.Wms.Bll.Service
     public class MoveBillDetailService : ServiceBase<MoveBillDetail>, IMoveBillDetailService
     {
         [Dependency]
+        public IMoveBillMasterRepository MoveBillMasterRepository { get; set; }
+        [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
+        [Dependency]
+        public IEmployeeRepository EmployeeRepository { get; set; }
         [Dependency]
         public ICellRepository CellRepository { get; set; }
         [Dependency]
@@ -432,9 +436,9 @@ namespace THOK.Wms.Bll.Service
                     dt.Rows.Add
                         (
                               m.OutCellName
-                            //, m.OutStorageCode
+                        //, m.OutStorageCode
                             , m.InCellName
-                            //, m.InStorageCode
+                        //, m.InStorageCode
                             , m.ProductCode
                             , m.ProductName
                             , m.UnitCode
@@ -446,7 +450,125 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        } 
+        }
+        #endregion
+
+        #region 车载
+        public string SwitchStatus(string status)
+        {
+            string statusStr = "";
+            switch (status)
+            {
+                case "0":
+                    statusStr = "未开始";
+                    break;
+                case "1":
+                    statusStr = "已申请";
+                    break;
+                case "2":
+                    statusStr = "已完成";
+                    break;
+            }
+            return statusStr;
+        }
+        public object GetMoveBillMaster()
+        {
+            string str = "";
+            var moveBillDetail = MoveBillDetailRepository.GetQueryable().Where(i => i.Status != "2").Select(b => b.BillNo).ToArray();
+            for (int i = 0; i < moveBillDetail.Length; i++)
+            {
+                str += moveBillDetail[i];
+            }
+            var moveBillMaster = MoveBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "6")
+                    .Distinct()
+                    .OrderByDescending(t => t.BillDate)
+                    .Select(i => new
+                    {
+                        BillNo = i.BillNo
+                    });
+            return moveBillMaster;
+        }
+        public object SearchMoveBillDetail(string billNo, int page, int rows)
+        {
+            var allotQuery = MoveBillDetailRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
+                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            int total = query.Count();
+            query = query.Skip((page - 1) * rows).Take(rows);
+
+            var temp = query.ToArray().Select(a => new
+            {
+                a.ID,
+                a.BillNo,
+                a.ProductCode,
+                a.Product.ProductName,
+                a.InCellCode,
+                InCellName = a.InCell.CellName,
+                a.OutCellCode,
+                OutCellName = a.OutCell.CellName,
+                CellType = "移库",
+                a.InStorageCode,
+                a.UnitCode,
+                a.Unit.UnitName,
+                a.RealQuantity,
+                PieceQuantity = Math.Floor(a.RealQuantity / a.Product.UnitList.Unit01.Count),
+                RopeQuantity = Math.Floor(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                Status = SwitchStatus(a.Status),
+                a.Operator
+            });
+            return new { total, rows = temp.ToArray() };
+        }
+        public bool EditAllot(string id, string status, string operater, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            string[] ids = id.Split(',');
+            string strId = "";
+            MoveBillDetail detail = null;
+
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                strId = ids[i].ToString();
+                detail = MoveBillDetailRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId == a.ID.ToString());
+                if (detail != null)
+                {
+                    if (detail.Status == "0" && status == "1"
+                        || detail.Status == "1" && status == "0"
+                        || detail.Status == "1" && status == "2")
+                    {
+                        try
+                        {
+                            detail.Status = status;
+                            if (operater != "")
+                            {
+                                detail.Operator = employee.EmployeeName;
+                            }
+                            else
+                            {
+                                detail.Operator = "";
+                            }
+                            MoveBillDetailRepository.SaveChanges();
+                            result = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            strResult = "原因：" + ex.Message;
+                        }
+                    }
+                    else
+                    {
+                        strResult = "原因：操作错误！";
+                    }
+                }
+                else
+                {
+                    strResult = "原因：未找到该记录！";
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }

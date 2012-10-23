@@ -197,16 +197,23 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
                                 if (cancellationToken.IsCancellationRequested) return;
 
-                                //获取移库量（按整件计）
+                                //获取移库量（按整件计）出库量加上下限量减去备货区库存量取整
                                 decimal quantity = 0;
 
-                                quantity = Math.Ceiling((product.SumQuantity - storQuantity) / product.Product.Unit.Count)
+                                quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
+                                               * product.Product.Unit.Count;
+                                
+                                if (areaQuantiy < quantity)//判断当前这个卷烟库存是否小于移库量
+                                {
+                                    //出库量减去备货区库存量取整
+                                    quantity = Math.Ceiling((product.SumQuantity - storQuantity) / product.Product.Unit.Count)
                                                * product.Product.Unit.Count;
 
-
-                                if (areaQuantiy < quantity)
-                                {
-                                    quantity = product.SumQuantity - storQuantity;
+                                    if (areaQuantiy < quantity)
+                                    {
+                                        //出库量减去备货区库存量
+                                        quantity = product.SumQuantity - storQuantity;
+                                    }
                                 }
 
                                 if (quantity > 0)

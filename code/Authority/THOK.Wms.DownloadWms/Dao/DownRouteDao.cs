@@ -15,6 +15,7 @@ namespace THOK.WMS.DownloadWms.Dao
         {
             string sql = string.Format(@"SELECT * FROM V_DWV_ORD_DIST_BILL A
                                          LEFT JOIN V_WMS_DELIVER_LINE B ON A.DELIVER_LINE_CODE=B.DELIVER_LINE_CODE");
+            sql = "SELECT * FROM V_WMS_DELIVER_LINE";
             return this.ExecuteQuery(sql).Tables[0];
         }
 
@@ -54,10 +55,10 @@ namespace THOK.WMS.DownloadWms.Dao
         {
             string sql = @" DELETE SORTORDERDETAIL WHERE ORDERID IN(
                             SELECT ORDERID FROM  SORTORDER WHERE ORDERDATE<
-                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112)) )
+                            CONVERT(VARCHAR(14),DATEADD(DAY, -7, CONVERT(VARCHAR(100), GETDATE(), 112)),112))
 
                             DELETE SORTORDER WHERE ORDERDATE<
-                            DATEADD(DAY, -7, CONVERT(VARCHAR(14), GETDATE(), 112))
+                            CONVERT(VARCHAR(14),DATEADD(DAY, -7, CONVERT(VARCHAR(100), GETDATE(), 112)),112)
 
                             DELETE WMS_SORT_ORDER_DETAIL WHERE ORDER_ID IN(
                             SELECT ORDER_ID FROM  WMS_SORT_ORDER WHERE ORDER_DATE<
