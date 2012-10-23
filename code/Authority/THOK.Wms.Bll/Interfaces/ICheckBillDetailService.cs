@@ -17,5 +17,11 @@ namespace THOK.Wms.Bll.Interfaces
         bool Save(CheckBillDetail inBillDetail);
 
         System.Data.DataTable GetCheckBillDetail(int page, int rows, string BillNo);
+
+        object GetCheckBillMaster();
+
+        object SearchCheckBillDetail(string billNo, int page, int rows);
+
+        bool EditDetail(string id, string status, string operator1, out string strResult);
     }
 }

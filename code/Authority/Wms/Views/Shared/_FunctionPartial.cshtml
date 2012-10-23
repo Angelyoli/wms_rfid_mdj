@@ -44,3 +44,11 @@
 {    @Html.Partial("_HelpPartial")}
 @if (ViewBag.hasUpload != null && ViewBag.hasUpload)
 {    @Html.Partial("_UploadPartial")}
+@if (ViewBag.hasApply != null && ViewBag.hasApply)
+{    @Html.Partial("_ApplyPartial")}                                   
+@if (ViewBag.hasCancel != null && ViewBag.hasCancel)
+{    @Html.Partial("_CancelPartial")}
+@if (ViewBag.hasFinish != null && ViewBag.hasFinish)
+{    @Html.Partial("_FinishPartial")}
+@if (ViewBag.hasBatch != null && ViewBag.hasBatch)
+{    @Html.Partial("_BatchPartial")}

@@ -475,7 +475,7 @@ namespace THOK.Wms.Allot.Service
                 strResult = "当前订单状态不是已确认，或当前订单不存在！";
             }
             return result;
-        } 
+        }
         #endregion
 
         #region IOutBillAllotService 成员
@@ -523,7 +523,96 @@ namespace THOK.Wms.Allot.Service
                     );
             }
             return dt;
-        } 
+        }
+        #endregion
+
+        #region 车载
+        public object GetOutBillMaster()
+        {
+            string str = "";
+            var outBillAllot = OutBillAllotRepository.GetQueryable().Where(a => a.Status != "2").Select(a => a.BillNo).ToArray();
+            for (int i = 0; i < outBillAllot.Length; i++)
+            {
+                str += outBillAllot[i];
+            }
+            var outBillMaster = OutBillMasterRepository.GetQueryable().ToArray().Where(b => str.Contains(b.BillNo) && b.Status != "6")
+                    .Distinct()
+                    .OrderByDescending(b => b.BillDate)
+                    .Select(b => new
+                    {
+                        BillNo = b.BillNo
+                    });
+            return outBillMaster;
+        }
+        public object SearchOutBillAllot(string billNo, int page, int rows)
+        {
+            var allotQuery = OutBillAllotRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
+                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            int total = query.Count();
+            query = query.Skip((page - 1) * rows).Take(rows);
+
+            var temp = query.ToArray().Select(a => new
+            {
+                a.ID,
+                a.BillNo,
+                a.ProductCode,
+                a.Product.ProductName,
+                a.CellCode,
+                a.Cell.CellName,
+                CellType = "出库",
+                a.StorageCode,
+                a.UnitCode,
+                a.Unit.UnitName,
+                AllotQuantity = Convert.ToInt32(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
+                RealQuantity = Convert.ToInt32(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                Status = WhatStatus(a.Status),
+                a.Operator
+            });
+            return new { total, rows = temp.ToArray() };
+        }
+        public bool EditAllot(string id, string status, string operator1, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            string[] ids = id.Split(',');
+            string strId = "";
+            OutBillAllot allot = null;
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                strId = ids[i].ToString();
+                allot = OutBillAllotRepository.GetQueryable().ToArray().FirstOrDefault(a => strId == a.ID.ToString());
+                if (allot != null)
+                {
+                    if (allot.Status == "0" && status == "1"
+                        || allot.Status == "1" && status == "0"
+                        || allot.Status == "1" && status == "2")
+                    {
+                        try
+                        {
+                            allot.Status = status;
+                            allot.Operator = operator1;
+                            OutBillAllotRepository.SaveChanges();
+                            result = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            strResult = "原因：" + ex.Message;
+                        }
+                    }
+                    else
+                    {
+                        strResult = "原因：操作错误！";
+                    }
+                }
+                else
+                {
+                    strResult = "原因：未找到该记录！";
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }

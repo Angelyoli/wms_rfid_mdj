@@ -1,0 +1,22 @@
+﻿<script type="text/javascript">
+    function batchClick() {
+        var row = $('#details').datagrid('getSelections');
+        var rowId = "";
+        if (row) {
+            for (var i = 0; i < row.length; i++) {
+                rowId += row[i].ID + ",";
+            }
+            $.ajaxSender.send('/StockInTask/Operate/',
+                        {
+                            'id': rowId,
+                            'status': '2'
+                        },
+                        function (data) {
+                            $('#dlg-confirm').dialog('close');
+                            $('#details').datagrid('reload');
+                        });
+        } else {
+            $.messager.alert('系统提示', '未选中行', 'info');
+        }
+    }
+</script>

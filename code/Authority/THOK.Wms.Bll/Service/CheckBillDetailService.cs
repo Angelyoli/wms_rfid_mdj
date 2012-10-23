@@ -12,6 +12,8 @@ namespace THOK.Wms.Bll.Service
     public class CheckBillDetailService : ServiceBase<CheckBillDetail>, ICheckBillDetailService
     {
         [Dependency]
+        public ICheckBillMasterRepository CheckBillMasterRepository { get; set; }
+        [Dependency]
         public ICheckBillDetailRepository CheckBillDetailRepository { get; set; }
 
         [Dependency]
@@ -178,9 +180,9 @@ namespace THOK.Wms.Bll.Service
                     dt.Rows.Add
                         (
                               c.BillNo
-                            //, c.CellCode
+                        //, c.CellCode
                             , c.CellName
-                            //, c.StorageCode
+                        //, c.StorageCode
                             , c.ProductCode
                             , c.ProductName
                             , c.UnitCode
@@ -194,7 +196,96 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             return dt;
-        } 
+        }
+        #endregion
+
+        #region
+        public object GetCheckBillMaster()
+        {
+            string str = "";
+            var checkBillDetail = CheckBillDetailRepository.GetQueryable().Where(i => i.Status != "2").Select(b => b.BillNo).ToArray();
+            for (int i = 0; i < checkBillDetail.Length; i++)
+            {
+                str += checkBillDetail[i];
+            }
+            var checkBillMaster = CheckBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "5")
+                    .Distinct()
+                    .OrderByDescending(t => t.BillDate)
+                    .Select(i => new
+                    {
+                        BillNo = i.BillNo
+                    });
+            return checkBillMaster;
+        }
+        public object SearchCheckBillDetail(string billNo, int page, int rows)
+        {
+            var allotQuery = CheckBillDetailRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
+                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            int total = query.Count();
+            query = query.Skip((page - 1) * rows).Take(rows);
+
+            var temp = query.ToArray().Select(a => new
+            {
+                a.ID,
+                a.BillNo,
+                a.ProductCode,
+                a.Product.ProductName,
+                a.CellCode,
+                a.Cell.CellName,
+                CellType = "盘点",
+                a.StorageCode,
+                a.UnitCode,
+                a.Unit.UnitName,
+                PieceQuantity = a.RealQuantity / a.Product.UnitList.Unit01.Count,
+                RealQuantity = Convert.ToInt32(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                Status = WhatStatus(a.Status),
+                a.Operator
+            });
+            return new { total, rows = temp.ToArray() };
+        }
+        public bool EditDetail(string id, string status, string operator1, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            string[] ids = id.Split(',');
+            string strId = "";
+            CheckBillDetail detail = null;
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                strId = ids[i].ToString();
+                detail = CheckBillDetailRepository.GetQueryable().ToArray().FirstOrDefault(a => strId == a.ID.ToString());
+                if (detail != null)
+                {
+                    if (detail.Status == "0" && status == "1"
+                        || detail.Status == "1" && status == "0"
+                        || detail.Status == "1" && status == "2")
+                    {
+                        try
+                        {
+                            detail.Status = status;
+                            detail.Operator = operator1;
+                            CheckBillDetailRepository.SaveChanges();
+                            result = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            strResult = "原因：" + ex.Message;
+                        }
+                    }
+                    else
+                    {
+                        strResult = "原因：操作错误！";
+                    }
+                }
+                else
+                {
+                    strResult = "原因：未找到该记录！";
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }
