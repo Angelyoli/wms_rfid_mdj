@@ -79,7 +79,7 @@ namespace THOK.Wms.Repository.Migrations
             CreateSorting(context);
             CreateSearch(context);
             CreateProductQuality(context);
-            CreateUpload(context);
+           // CreateUpload(context);
         }
 
         private void CreateServer(AuthorizeContext context)
