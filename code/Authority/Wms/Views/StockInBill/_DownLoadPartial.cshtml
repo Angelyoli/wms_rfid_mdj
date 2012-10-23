@@ -3,15 +3,14 @@
         downLoad();
         $('#dlg_in_date').dialog('open').dialog('setTitle', '请选择时间');
         $('#inbeginDate').datebox({ editable: false });
-        $('#inendDate').datebox({ editable: false });
+        //$('#inendDate').datebox({ editable: false });
         $('#inbeginDate').datebox('setValue', "");
-        $('#inendDate').datebox('setValue', "");
+        //$('#inendDate').datebox('setValue', "");
         $('#downWare').combogrid('clear');
         $('#downBiiType').combogrid('clear');
     }
 
     function downLoad() {
-
         $('#downWare').combogrid({
             required: true,
             disabled: false,
@@ -51,19 +50,23 @@
     }
 
 
-    function inDateClick() {        
+    function inDateClick() {
         var begin = "";
         var end = "";
         begin = $('#inbeginDate').datebox('getValue');
-        end = $('#inendDate').datebox('getValue');
+        //end = $('#inendDate').datebox('getValue');
         var downware = $('#downWare').combo('getValue');
         var downbilltype = $('#downBiiType').combo('getValue');
-        if (begin != "" && end != "") {
+        var isChecked = $("input[type='radio']:checked").val();
+        var checked = true;
+        if (isChecked == "false")
+            checked = false;
+        if (begin != "") {
             if (downware != "" && downbilltype != "") {
                 var j_waitDialog = ShowWaitMessageDialog();
                 $.ajax({
                     url: "/StockInBill/DownInBillMaster/", type: "GET", dataType: "text",
-                    data: { 'beginDate': begin, "endDate": end, wareCode: downware, billType: downbilltype },
+                    data: { 'beginDate': begin, "endDate": begin, wareCode: downware, billType: downbilltype, isInDown: checked },
                     complete: function () { HideWaitMessageDialog(j_waitDialog); },
                     success: function (responseText) {
                         var result = $.evalJSON(responseText);
@@ -79,10 +82,10 @@
                     }
                 });
             } else {
-                $.messager.alert('错误', '请选择仓库名称和单据类型！');
+                $.messager.confirm('错误', '请选择仓库名称和单据类型！');
             }
         } else {
-            $.messager.alert('错误', '没选时间！请选择时间！');
+            $.messager.confirm('错误', '没选时间！请选择时间！');
         }
     }
 </script>
@@ -90,22 +93,27 @@
         style="width:290px;height:200px;padding:4px 4px"
         closed="true" buttons="#dlg_allot_modify_buttons" align="center">
         <form id="fm_in_date" method="post" novalidate>           
-            <table align="left" width="240">            
+            <table align="left" width="240">
               <tr>
-                <td width="60" style="text-align:right">开始日期:</td>
-                <td><input id="inbeginDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
+                <td width="60" style="text-align:right">选择下载:</td>
+                <td style="text-align:center"><input type="radio"  name="r1" value="false" checked="checked" />决策</td>
+                <td><input id="radioSort" type="radio" name="r1" value="true"/>营销</td>
+              </tr>         
+              <tr>
+                <td width="60" style="text-align:right">下载日期:</td>
+                <td colspan="2"><input id="inbeginDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
               </tr>
-               <tr>
+               @* <tr>
                 <td width="60" style="text-align:right">结束日期:</td>
-                <td><input id="inendDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
-              </tr>
+                <td colspan="2"><input id="endDate" class="easyui-datebox" type="text" style="width: 140px"/></td>
+              </tr>*@           
               <tr>
                 <td width="80" style="text-align:right">仓库名称：</td>
-                <td><input type="text" id="downWare" style="width: 140px"/></td>
+                <td colspan="2"><input type="text" id="downWare" style="width: 140px"/></td>
               </tr>
               <tr>
                 <td width="80" style="text-align:right">单据类型：</td>
-                <td><input type="text" id="downBiiType" style="width: 140px"/></td>
+                <td colspan="2"><input type="text" id="downBiiType" style="width: 140px"/></td>
               </tr>
             </table>
         </form>

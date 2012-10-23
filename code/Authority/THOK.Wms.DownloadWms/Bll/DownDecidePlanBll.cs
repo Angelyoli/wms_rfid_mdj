@@ -34,7 +34,7 @@ namespace THOK.Wms.DownloadWms.Bll
                     DataTable emply = dao.FindEmployee(EmployeeCode);
                     DataTable inMasterBillNo = this.GetMiddleBillNo();
                     string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
-                    billnolist = string.Format("BB_INPUT_DATE >='{0}' AND BB_INPUT_DATE <='{1}' AND BB_UUID NOT IN({2})", startDate, endDate, billnolist);
+                    billnolist = string.Format("BB_INPUT_DATE >='{0}' AND BB_UUID NOT IN({1})", startDate, billnolist);
                     DataTable masterdt = this.GetMiddleInBillMaster(billnolist);
 
                     string inDetailList = UtinString.MakeString(masterdt, "BILL_NO");
@@ -172,6 +172,8 @@ namespace THOK.Wms.DownloadWms.Bll
             }
             return ds;
         }
+
+       
 
         /// <summary>
         /// 根据卷烟编码查询单位信息

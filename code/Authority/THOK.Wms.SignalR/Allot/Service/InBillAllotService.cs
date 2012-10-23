@@ -165,14 +165,14 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配未满一托盘的卷烟到件烟区；                
                 if (cellQueryFromList2.Any())
                 {
-                    cs = cellQueryFromList3.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
+                    cs = cellQueryFromList3;
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
                     cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
                 }
                 else
                 {
-                    cs = cellQueryFromList3.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
+                    cs = cellQueryFromList3;
                     AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
                     cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
