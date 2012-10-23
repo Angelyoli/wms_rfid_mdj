@@ -102,7 +102,7 @@ namespace THOK.Wms.Bll.Service
         #endregion
 
 
-        public System.Data.DataTable GetCurrentStock(int page, int rows, string productCode, string ware, string area, string unitType, out string areaName)
+        public System.Data.DataTable GetCurrentStock(int page, int rows, string productCode, string ware, string area, string unitType, out string areaName, bool isAbnormity)
         {
             areaName = string.Empty;
             if (unitType == null || unitType == "")
@@ -135,6 +135,10 @@ namespace THOK.Wms.Bll.Service
             {
                 storages = storages.Where(s => s.ProductCode == productCode);
             }
+
+            if (isAbnormity == false)
+                storages = storages.Where(s => s.Product.IsAbnormity != "1");
+
             var storage = storages.GroupBy(s => s.Product.ProductCode)
                  .Select(s => new
                  {
