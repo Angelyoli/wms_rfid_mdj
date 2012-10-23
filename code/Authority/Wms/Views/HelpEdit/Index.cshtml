@@ -1,0 +1,33 @@
+﻿<script type="text/javascript" src="/Content/Scripts/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="/Content/Scripts/ckfinder/ckfinder.js"></script>
+
+<script type="text/javascript">
+    window.onload = function () {
+        //var inputs = document.getElementsByTagName("editor01")
+        CKEDITOR.replace('editor01');
+    };
+
+    $('#helpTree').tree({
+        onClick: function (node) {
+            if (node) {
+                CKEDITOR.instances["editor01"].destroy();
+                var AttributeId = node.id;
+                $('#editor01').val(AttributeId);
+                CKEDITOR.replace('editor01');
+            }
+        }
+    });
+</script>
+<div id="sidebar" region="west" split="true"  style="width: 220px; overflow: scroll; padding: 1px; margin: 1px">
+    <ul id="helpTree" class="easyui-tree" url='/HelpEdit/GetHelpContent/'></ul>
+</div>
+<div region="center" split="true" border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8"> @*buttons="#buttons-save"> *@
+   <form id ="editorForm" action="/Cell/GetCheckDetails/" method="post">
+        <textarea rows="20" cols="40" id ="editor01" name="editor01"></textarea>
+    <div id="#buttons-save">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="S_select()">提交</a>
+    </div>
+    </form>
+ 
+
+</div>
