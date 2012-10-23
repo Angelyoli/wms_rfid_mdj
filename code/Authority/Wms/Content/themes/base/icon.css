@@ -53,6 +53,22 @@
 	background:url('icons/tip.png') no-repeat;
 }
 
+.icon-apply{
+	background:url('icons/onebit_23.png') no-repeat;
+}
+.icon-cancel2{
+	background:url('icons/onebit_24.png') no-repeat;
+}
+.icon-finish{
+	background:url('icons/accept.png') no-repeat;
+}
+.icon-batch{
+	background:url('icons/son_StockDayBill.png') no-repeat;
+}
+.icon-exit{
+	background:url('icons/shut_down.png') no-repeat;
+}
+
 .icon-mini-add{
 	background:url('icons/mini_add.png') no-repeat 2px 2px;
 }

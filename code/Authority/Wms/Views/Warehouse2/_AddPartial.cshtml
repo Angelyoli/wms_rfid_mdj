@@ -73,6 +73,7 @@
                 return $(this).form('validate');
             },
             success: function (result) {
+                $('#warehouseTree').tree('reload');
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");

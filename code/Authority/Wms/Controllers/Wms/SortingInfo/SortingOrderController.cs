@@ -39,7 +39,8 @@ namespace Authority.Controllers.Wms.SortingInfo
         {
             string OrderID = collection["OrderID"] ?? "";
             string orderDate = collection["orderDate"] ?? "";
-            var sortOrder = SortOrderService.GetDetails(page, rows, OrderID, orderDate);
+            string productCode = collection["productCode"] ?? "";
+            var sortOrder = SortOrderService.GetDetails(page, rows, OrderID, orderDate,productCode);
             return Json(sortOrder, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -76,8 +77,13 @@ namespace Authority.Controllers.Wms.SortingInfo
             DownRouteBll routeBll = new DownRouteBll();
             DownSortingOrderBll orderBll = new DownSortingOrderBll();
             DownCustomerBll custBll = new DownCustomerBll();
+            DownDistStationBll stationBll = new DownDistStationBll();
+            DownDistCarBillBll carBll = new DownDistCarBillBll();
+
             routeBll.DeleteTable();
             bool custResult = custBll.DownCustomerInfo();
+            stationBll.DownDistStationInfo();
+            carBll.DownDistCarBillInfo(beginDate);
             if (isSortDown)
             {
                 //从分拣下载分拣数据
