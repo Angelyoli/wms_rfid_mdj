@@ -195,14 +195,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     areaQuantiy = areaSumQuantitys.Sum(s => s.Quantity - s.OutFrozenQuantity);
                                 }
 
-                                if (cancellationToken.IsCancellationRequested) return;
+                                if (cancellationToken.IsCancellationRequested) return;                             
 
                                 //获取移库量（按整件计）出库量加上下限量减去备货区库存量取整
                                 decimal quantity = 0;
 
                                 quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
                                                * product.Product.Unit.Count;
-                                
+
                                 if (areaQuantiy < quantity)//判断当前这个卷烟库存是否小于移库量
                                 {
                                     //出库量减去备货区库存量取整
@@ -214,6 +214,12 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         //出库量减去备货区库存量
                                         quantity = product.SumQuantity - storQuantity;
                                     }
+                                }                                
+
+                                //下限为0直接出库。
+                                if (lowerlimitQuantity == 0)
+                                {
+                                    quantity = product.SumQuantity - storQuantity;
                                 }
 
                                 if (quantity > 0)
@@ -247,7 +253,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     if (cancellationToken.IsCancellationRequested) return;
                                     OutBillCreater.AddToOutBillDetail(outBillMaster, product.Product, product.Price, product.SumQuantity);
                                 }
-                                
+
                                 if (cancellationToken.IsCancellationRequested) return;
                                 //添加出库、移库主单和作业调度表
                                 SortWorkDispatch sortWorkDisp = AddSortWorkDispMaster(moveBillMaster, outBillMaster, item.SortingLine.SortingLineCode, item.OrderDate);

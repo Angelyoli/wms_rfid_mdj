@@ -16,6 +16,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool Save(MoveBillDetail moveBillDetail, out string strResult);
 
-        System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo);
+        System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo, bool isAbnormity);
     }
 }
