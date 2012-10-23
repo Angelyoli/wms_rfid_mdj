@@ -66,5 +66,13 @@ CKEDITOR.editorConfig = function (config) {
         config.filebrowserFlashBrowseUrl = ckfinderPath + '/ckfinder/ckfinder.html?type=Flash';
         config.filebrowserUploadUrl = ckfinderPath + '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files';
         config.filebrowserImageUploadUrl = ckfinderPath + '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images';
-        config.filebrowserFlashUploadUrl = ckfinderPath + '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash'; 
+        config.filebrowserFlashUploadUrl = ckfinderPath + '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash';
+        //在 CKEditor提交时验证不通过问题
+        config.protectedSource.push( /<\s*iframe[\s\S]*?>/gi ) ; // <iframe> tags. 
+        config.protectedSource.push( /<\s*frameset[\s\S]*?>/gi ) ; // <frameset> tags. 
+        config.protectedSource.push( /<\s*frame[\s\S]*?>/gi ) ; // <frame> tags. 
+        config.protectedSource.push( /<\s*script[\s\S]*?\/script\s*>/gi ) ; // <SCRIPT> tags. 
+        config.protectedSource.push( /<%[\s\S]*?%>/g ) ; // ASP style server side code 
+        config.protectedSource.push( /<\?[\s\S]*?\?>/g ) ; // PHP style server side code 
+        config.protectedSource.push( /(<asp:[^\>]+>[\s|\S]*?<\/asp:[^\>]+>)|(<asp:[^\>]+\/>)/gi ) ; 
 };
