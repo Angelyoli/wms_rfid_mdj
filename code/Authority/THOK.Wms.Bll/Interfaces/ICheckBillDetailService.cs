@@ -22,6 +22,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         object SearchCheckBillDetail(string billNo, int page, int rows);
 
-        bool EditDetail(string id, string status, string operator1, out string strResult);
+        bool EditDetail(string id, string status, string operater, out string strResult);
     }
 }

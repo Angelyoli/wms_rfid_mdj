@@ -18,6 +18,8 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
         [Dependency]
+        public IEmployeeRepository EmployeeRepository { get; set; }
+        [Dependency]
         public ICellRepository CellRepository { get; set; }
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
@@ -509,21 +511,22 @@ namespace THOK.Wms.Bll.Service
                 a.UnitCode,
                 a.Unit.UnitName,
                 a.RealQuantity,
-                PieceQuantity = Convert.ToInt32(a.RealQuantity / a.Product.UnitList.Unit01.Count),
-                aaa = a.RealQuantity / a.Product.UnitList.Unit01.Count,
-                RopeQuantity = Convert.ToInt32(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                PieceQuantity = Math.Floor(a.RealQuantity / a.Product.UnitList.Unit01.Count),
+                RopeQuantity = Math.Floor(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = SwitchStatus(a.Status),
                 a.Operator
             });
             return new { total, rows = temp.ToArray() };
         }
-        public bool EditAllot(string id, string status, string operator1, out string strResult)
+        public bool EditAllot(string id, string status, string operater, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
             string[] ids = id.Split(',');
             string strId = "";
             MoveBillDetail detail = null;
+
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
 
             for (int i = 0; i < ids.Length; i++)
             {
@@ -538,7 +541,14 @@ namespace THOK.Wms.Bll.Service
                         try
                         {
                             detail.Status = status;
-                            detail.Operator = operator1;
+                            if (operater != "")
+                            {
+                                detail.Operator = employee.EmployeeName;
+                            }
+                            else
+                            {
+                                detail.Operator = "";
+                            }
                             MoveBillDetailRepository.SaveChanges();
                             result = true;
                         }

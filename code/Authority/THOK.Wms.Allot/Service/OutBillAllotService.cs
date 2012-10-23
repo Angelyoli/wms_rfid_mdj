@@ -19,7 +19,7 @@ namespace THOK.Wms.Allot.Service
         public IOutBillMasterRepository OutBillMasterRepository { get; set; }
         [Dependency]
         public IOutBillDetailRepository OutBillDetailRepository { get; set; }
-
+        
         [Dependency]
         public IWarehouseRepository WarehouseRepository { get; set; }
         [Dependency]
@@ -564,20 +564,22 @@ namespace THOK.Wms.Allot.Service
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                AllotQuantity = Convert.ToInt32(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
-                RealQuantity = Convert.ToInt32(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                AllotQuantity = Math.Floor(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
+                RealQuantity = Math.Floor(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
             return new { total, rows = temp.ToArray() };
         }
-        public bool EditAllot(string id, string status, string operator1, out string strResult)
+        public bool EditAllot(string id, string status, string operater, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
             string[] ids = id.Split(',');
             string strId = "";
             OutBillAllot allot = null;
+
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
 
             for (int i = 0; i < ids.Length; i++)
             {
@@ -592,7 +594,14 @@ namespace THOK.Wms.Allot.Service
                         try
                         {
                             allot.Status = status;
-                            allot.Operator = operator1;
+                            if (operater != "")
+                            {
+                                allot.Operator = employee.EmployeeName;
+                            }
+                            else
+                            {
+                                allot.Operator = "";
+                            }
                             OutBillAllotRepository.SaveChanges();
                             result = true;
                         }
