@@ -1640,6 +1640,7 @@
     <Content Include="Views\Upload\Index.cshtml" />
     <Content Include="Views\Upload\_SearchPartial.cshtml" />
     <Content Include="Views\Upload\_Upload.cshtml" />
+    <Content Include="Views\SortingOrder\_ProductPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

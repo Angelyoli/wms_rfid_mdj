@@ -88,9 +88,9 @@ namespace THOK.WMS.DownloadWms.Bll
            foreach (DataRow row in routeCodeTable.Rows)
            {
                DataRow routeDr = ds.Tables["DWV_OUT_DELIVER_LINE"].NewRow();
-               routeDr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString() + "_" + row["DIST_BILL_ID"].ToString();
+               routeDr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString();// +"_" + row["DIST_BILL_ID"].ToString();
                routeDr["custom_code"] = row["LINE_TYPE"];
-               routeDr["deliver_line_name"] = row["DELIVERYMAN_NAME"].ToString().Trim() + "----(" + row["DELIVER_LINE_NAME"].ToString() + ")";
+               routeDr["deliver_line_name"] = row["DELIVER_LINE_NAME"].ToString();// row["DELIVERYMAN_NAME"].ToString().Trim() + "----(" + row["DELIVER_LINE_NAME"].ToString() + ")";
                routeDr["dist_code"] = row["DIST_STA_CODE"];
                routeDr["deliver_order"] = row["DELIVER_LINE_ORDER"];
                routeDr["description"] = "";
@@ -184,9 +184,9 @@ namespace THOK.WMS.DownloadWms.Bll
             foreach (DataRow row in routeCodeTable.Rows)
             {
                 DataRow routeDr = ds.Tables["DWV_OUT_DELIVER_LINE"].NewRow();
-                routeDr["deliver_line_code"] = row["DELIVERLINECODE"].ToString().Trim() + "_" + row["DIST_BILL_ID"].ToString().Trim();
+                routeDr["deliver_line_code"] = row["DELIVERLINECODE"].ToString().Trim();// +"_" + row["DIST_BILL_ID"].ToString().Trim();
                 routeDr["custom_code"] = row["DELIVERLINECODE"].ToString().Trim();
-                routeDr["deliver_line_name"] = row["DELIVERYMAN_NAME"].ToString().Trim() + "----(" + row["DELIVERLINENAME"].ToString() + ")";
+                routeDr["deliver_line_name"] = row["DELIVERLINENAME"].ToString();// row["DELIVERYMAN_NAME"].ToString().Trim() + "----(" + row["DELIVERLINENAME"].ToString() + ")";
                 routeDr["dist_code"] = row["DELIVERLINECODE"];
                 routeDr["deliver_order"] = 0;
                 routeDr["description"] = "";
