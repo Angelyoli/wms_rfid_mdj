@@ -206,16 +206,27 @@ namespace THOK.Authority.Bll.Service
                 Tree systemTree = new Tree();
                 systemTree.id = system.SystemID.ToString();
                 systemTree.text = system.SystemName;
-
                 var helpContent = queryHelpContent.Where(m => m.Module.System.SystemID == system.SystemID && m.ID == m.FatherNodeID)
                                          .OrderBy(m => m.NodeOrder)
                                          .Select(m => m);
+                var systemAttribute = new
+                {
+                    AttributeId =system.SystemID,
+                    AttributeTxt =system.SystemName
+                };
+                systemTree.attributes = systemAttribute;
                 HashSet<Tree> contentTreeSet = new HashSet<Tree>();
                 foreach (var item in helpContent)
                 {
                     Tree helpContentTree = new Tree();
                     helpContentTree.id = item.ContentCode;
                     helpContentTree.text = item.ContentCode + item.ContentName;
+                    var helpAttribute = new
+                    {
+                        AttributeId = item.ID,
+                        AttributeTxt = item.ContentText
+                    };
+                    helpContentTree.attributes = helpAttribute;
                     contentTreeSet.Add(helpContentTree);
                     GetChildTree(helpContentTree, item);
                     contentTreeSet.Add(helpContentTree);
@@ -236,17 +247,36 @@ namespace THOK.Authority.Bll.Service
             {
                 if (item.ID != helpContent.ID)
                 {
-                    Tree childContent = new Tree();
-                    childContent.id = item.ContentCode;
-                    childContent.text = item.ContentCode + item.ContentName;
-                    childContentSet.Add(childContent);
-                    //if (item.HelpContents.Count > 0)
-                    //{
-                    //    GetChildTree(childContent, item);
-                    //}
+                    Tree childContentTree = new Tree();
+                    childContentTree.id = item.ContentCode;
+                    childContentTree.text = item.ContentCode + item.ContentName;
+                    var childAttribute = new
+                    {
+                        AttributeId = item.ID,
+                        AttributeTxt = item.ContentText
+                    };
+                    childContentTree.attributes = childAttribute;
+                    childContentSet.Add(childContentTree);
                 }
             }
             helpContentTree.children = childContentSet.ToArray();
+        }
+        public bool EditSave(string helpId, string contentText, out string strResult)
+        {
+            strResult = string.Empty;
+            try
+            {
+                Guid new_ID = new Guid(helpId);
+                var help = HelpContentRepository.GetQueryable()
+                    .FirstOrDefault(i => i.ID == new_ID);
+                help.ContentText = contentText;
+                HelpContentRepository.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                strResult = "原因：" + ex.Message;
+            }
+            return true;
         }
     }
 }
