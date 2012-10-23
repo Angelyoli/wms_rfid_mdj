@@ -9,16 +9,10 @@
         //var inputs = document.getElementsByTagName("editor01");
         CKEDITOR.replace('editor01');
     };
-//    function saveHelpEdit() {
-//        helptxt = $('#editor01').val();
-//        alert(helpID);
-//        alert(helptxt);
-//        $.getJSON("/HelpEdit/SaveHelpEdit/", { id: helpID, contentTxt: helptxt.toString() }, function (json) {
-//            if (json) {
-//                alert(2);
-//            }
-//        });
-//    }
+    function saveHelpEdit() {
+        $.ajaxSender.send('/HelpEdit/SaveHelpEdit/',
+                $('#editorForm').serializeArray());
+    }
     $('#helpTree').tree({
         onClick: function (node) {
             if (node) {
@@ -36,7 +30,7 @@
     <ul id="helpTree" class="easyui-tree" url='/HelpEdit/GetHelpContent/'></ul>
 </div>
 <div region="center" split="true" border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8"> @*buttons="#buttons-save"> *@
-   <form id ="editorForm" action="/HelpEdit/SaveHelpEdit/" method="post">
+   <form id ="editorForm" action="javascript:saveHelpEdit()" method="post">
         <input id ="helpId" name = "helpId01" type="hidden"/>
         <textarea rows="20" cols="40" id ="editor01" name="editor01"></textarea>
     <div id="#buttons-save">
