@@ -1171,10 +1171,6 @@
       <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
       <Name>THOK.Wms.Upload</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.VehicleMounted\THOK.Wms.VehicleMounted.csproj">
-      <Project>{239DAA94-0B0F-4FB8-ABAF-0638A33704F2}</Project>
-      <Name>THOK.Wms.VehicleMounted</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Scripts\jquery-easyui-1.2.6\themes\default\images\Thumbs.db" />
