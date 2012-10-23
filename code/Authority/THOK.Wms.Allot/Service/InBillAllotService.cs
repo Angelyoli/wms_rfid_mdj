@@ -17,6 +17,8 @@ namespace THOK.Wms.Allot.Service
         public IInBillMasterRepository InBillMasterRepository { get; set; }
         [Dependency]
         public IInBillDetailRepository InBillDetailRepository { get; set; }
+        [Dependency]
+        public IEmployeeRepository EmployeeRepository { get; set; }
 
         [Dependency]
         public IWarehouseRepository WarehouseRepository { get; set; }
@@ -503,7 +505,7 @@ namespace THOK.Wms.Allot.Service
         }
         #endregion
 
-        #region 车载        
+        #region 车载
         public object GetInBillMaster()
         {
             string str = "";
@@ -541,14 +543,14 @@ namespace THOK.Wms.Allot.Service
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                AllotQuantity = Convert.ToInt32(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
-                RealQuantity = Convert.ToInt32(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                AllotQuantity = Math.Floor(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
+                RealQuantity = Math.Floor(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
             return new { total, rows = temp.ToArray() };
         }
-        public bool EditAllot(string id, string status, string operator1, out string strResult)
+        public bool EditAllot(string id, string status, string operater, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
@@ -556,11 +558,8 @@ namespace THOK.Wms.Allot.Service
             string strId = "";
             InBillAllot allot = null;
 
-            //var allotExist = InBillAllotRepository.GetQueryable()
-            //    .AsEnumerable()
-            //    .FirstOrDefault(a => id.Contains(a.ID.ToString()) && a.Status == status);
-            //if (allotExist == null)
-            //{
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
+
             for (int i = 0; i < ids.Length; i++)
             {
                 strId = ids[i].ToString();
@@ -574,7 +573,14 @@ namespace THOK.Wms.Allot.Service
                         try
                         {
                             allot.Status = status;
-                            allot.Operator = operator1;
+                            if (operater != "")
+                            {
+                                allot.Operator = employee.EmployeeName;
+                            }
+                            else
+                            {
+                                allot.Operator = "";
+                            }
                             InBillAllotRepository.SaveChanges();
                             result = true;
                         }
@@ -593,11 +599,6 @@ namespace THOK.Wms.Allot.Service
                     strResult = "原因：未找到该记录！";
                 }
             }
-            //}
-            //else
-            //{
-            //    strResult = "原因：该储位已存在！";
-            //}
             return result;
         }
         #endregion

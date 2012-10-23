@@ -27,7 +27,7 @@ namespace THOK.Wms.Allot.Interfaces
 
         object SearchOutBillAllot(string billNo, int page, int rows);
 
-        bool EditAllot(string id, string status, string operator1, out string strResult);
+        bool EditAllot(string id, string status, string operater, out string strResult);
 
         object GetOutBillMaster();
     }

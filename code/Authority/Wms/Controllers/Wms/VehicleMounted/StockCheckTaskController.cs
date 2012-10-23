@@ -44,11 +44,12 @@ namespace Wms.Controllers.Wms.VehicleMounted
         public ActionResult Operate(string id, string status)
         {
             string strResult = string.Empty;
-            string operator1 = string.Empty;
+            string operater = string.Empty;
             string msg = string.Empty;
-            if (status == "1") operator1 = "admin";
-            if (status == "0") operator1 = "";
-            bool bResult = CheckBillDetailService.EditDetail(id, status, operator1, out strResult);
+
+            if (status == "1") operater = this.User.Identity.Name.ToString();
+            if (status == "0") operater = "";
+            bool bResult = CheckBillDetailService.EditDetail(id, status, operater, out strResult);
             if (status == "0") msg = bResult ? "取消成功" : "取消失败";
             if (status == "1") msg = bResult ? "申请成功" : "申请失败";
             if (status == "2") msg = bResult ? "操作成功" : "操作失败";

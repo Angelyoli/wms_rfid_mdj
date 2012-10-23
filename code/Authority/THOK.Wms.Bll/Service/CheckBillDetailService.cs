@@ -15,6 +15,9 @@ namespace THOK.Wms.Bll.Service
         public ICheckBillMasterRepository CheckBillMasterRepository { get; set; }
         [Dependency]
         public ICheckBillDetailRepository CheckBillDetailRepository { get; set; }
+        
+        [Dependency]
+        public IEmployeeRepository EmployeeRepository { get; set; }
 
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
@@ -199,7 +202,7 @@ namespace THOK.Wms.Bll.Service
         }
         #endregion
 
-        #region
+        #region 车载
         public object GetCheckBillMaster()
         {
             string str = "";
@@ -237,20 +240,22 @@ namespace THOK.Wms.Bll.Service
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                PieceQuantity = a.RealQuantity / a.Product.UnitList.Unit01.Count,
-                RealQuantity = Convert.ToInt32(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                PieceQuantity = Math.Floor(a.RealQuantity / a.Product.UnitList.Unit01.Count),
+                RealQuantity = Math.Floor(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
             return new { total, rows = temp.ToArray() };
         }
-        public bool EditDetail(string id, string status, string operator1, out string strResult)
+        public bool EditDetail(string id, string status, string operater, out string strResult)
         {
             strResult = string.Empty;
             bool result = false;
             string[] ids = id.Split(',');
             string strId = "";
             CheckBillDetail detail = null;
+
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
 
             for (int i = 0; i < ids.Length; i++)
             {
@@ -265,7 +270,14 @@ namespace THOK.Wms.Bll.Service
                         try
                         {
                             detail.Status = status;
-                            detail.Operator = operator1;
+                            if (operater != "")
+                            {
+                                detail.Operator = employee.EmployeeName;
+                            }
+                            else
+                            {
+                                detail.Operator = "";
+                            }
                             CheckBillDetailRepository.SaveChanges();
                             result = true;
                         }
