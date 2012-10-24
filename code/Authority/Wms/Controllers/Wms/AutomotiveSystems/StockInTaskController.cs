@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using THOK.Wms.Allot.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.WebUtil;
-using THOK.Wms.Bll.Interfaces;
+using THOK.Wms.Allot.Interfaces;
 
-namespace Wms.Controllers.Wms.VehicleMounted
+namespace Wms.Controllers.Wms.AutomotiveSystems
 {
-    public class StockOutTaskController : Controller
+    public class StockInTaskController : Controller
     {
-        [Dependency]
-        public IOutBillAllotService OutBillAllotService { get; set; }
-
         //
-        // GET: /StockOutTask/
+        // GET: /StockInTask/
+
+        [Dependency]
+        public IInBillAllotService InBillAllotService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -28,19 +27,19 @@ namespace Wms.Controllers.Wms.VehicleMounted
             ViewBag.ModuleID = moduleID;
             return View();
         }
-        //GO: /StockOutTask/Search/
-        public ActionResult Search(string billNo, int page, int rows)
-        {
-            var result = OutBillAllotService.SearchOutBillAllot(billNo, page, rows);
-            return Json(result, "text", JsonRequestBehavior.AllowGet);
-        }
-        //GO: /StockOutTask/GetBillNo/
+        //GO: /StockInTask/GetBillNo/
         public ActionResult GetBillNo()
         {
-            var result = OutBillAllotService.GetOutBillMaster();
+            var result = InBillAllotService.GetInBillMaster();
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
-        //GO: /StockOutTask/Operate/
+        //GO: /StockInTask/Search/
+        public ActionResult Search(string billNo, int page, int rows)
+        {
+            var result = InBillAllotService.SearchInBillAllot(billNo, page, rows);
+            return Json(result, "text", JsonRequestBehavior.AllowGet);
+        }        
+        //GO: /StockInTask/Operate/
         public ActionResult Operate(string id, string status)
         {
             string strResult = string.Empty;
@@ -49,7 +48,7 @@ namespace Wms.Controllers.Wms.VehicleMounted
 
             if (status == "1") operater = this.User.Identity.Name.ToString();
             if (status == "0") operater = "";
-            bool bResult = OutBillAllotService.EditAllot(id, status, operater, out strResult);
+            bool bResult = InBillAllotService.EditAllot(id, status, operater, out strResult);
             if (status == "0") msg = bResult ? "取消成功" : "取消失败";
             if (status == "1") msg = bResult ? "申请成功" : "申请失败";
             if (status == "2") msg = bResult ? "操作成功" : "操作失败";
@@ -57,3 +56,5 @@ namespace Wms.Controllers.Wms.VehicleMounted
         }
     }
 }
+
+
