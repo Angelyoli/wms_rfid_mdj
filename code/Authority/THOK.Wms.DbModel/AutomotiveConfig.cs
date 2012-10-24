@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace THOK.Wms.AutomotiveSystems.Models
+namespace THOK.Wms.DbModel
 {
     public class AutomotiveConfig
     {
+        public AutomotiveConfig() 
+        {
+        }
         public int Id { get; set; }
         public string ParameterName { get; set; }
         public string ParameterValue { get; set; }

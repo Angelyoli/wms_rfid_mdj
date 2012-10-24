@@ -1,13 +1,10 @@
-﻿
-<div region="center" split="true" border="false">
-    <table id="details" class="easyui-datagrid" url="" border="false" singleselect="false"
+﻿<div region="center" split="true" border="false">
+    <table id="details" class="easyui-datagrid" url="/AutomotiveConfig/GetAutomotiveConfig/" border="false" singleselect="false"
         pagesize="50" fit="true" fitcolumns="true" toolbar="#tool" pagination="true"
         rownumbers="true">
         <thead>
             <tr>
-                <th field="chk" id="chkid" checkbox="true">
-                </th>
-                <th field="ID" width="80" hidden="true">
+                <th field="ID" width="80">
                     ID
                 </th>
                 <th field="ParameterName" width="80">
@@ -19,7 +16,7 @@
                 <th field="Remark" width="80">
                     备注
                 </th>
-                 <th field="Username" width="80">
+                <th field="Username" width="80">
                     用户名
                 </th>
             </tr>

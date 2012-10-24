@@ -505,29 +505,22 @@ namespace THOK.Wms.Allot.Service
         }
         #endregion
 
-        #region 车载
+        #region 车载系统
         public object GetInBillMaster()
         {
-            string str = "";
-            var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.Status != "2").Select(b => b.BillNo).ToArray();
-            for (int i = 0; i < inBillAllot.Length; i++)
-            {
-                str += inBillAllot[i];
-            }
-            var inBillMaster = InBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "6")
-                    .Distinct()
-                    .OrderByDescending(t => t.BillDate)
-                    .Select(i => new
-                    {
-                        BillNo = i.BillNo
-                    });
+            var inBillMaster = InBillMasterRepository.GetQueryable()
+                                .Where(i => i.Status == "4" || i.Status == "5")
+                                .Select(i => new { BillNo = i.BillNo, BillType = "1" })
+                                .ToArray();
             return inBillMaster;
         }
         public object SearchInBillAllot(string billNo, int page, int rows)
         {
-            var allotQuery = InBillAllotRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
-                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            var query = InBillAllotRepository.GetQueryable()
+                                .Where(a => a.BillNo == billNo && a.Status != "2")
+                                .OrderByDescending(a => a.Status == "1")
+                                .Select(i => i);
+
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -539,12 +532,12 @@ namespace THOK.Wms.Allot.Service
                 a.Product.ProductName,
                 a.CellCode,
                 a.Cell.CellName,
-                CellType = "入库",
+                BillType = "入库",
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                AllotQuantity = Math.Floor(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
-                RealQuantity = Math.Floor(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                PieceQuantity = Math.Floor(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
+                BarQuantity = Math.Floor(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
@@ -567,8 +560,8 @@ namespace THOK.Wms.Allot.Service
                 if (allot != null)
                 {
                     if (allot.Status == "0" && status == "1"
-                        || allot.Status == "1" && status == "0"
-                        || allot.Status == "1" && status == "2")
+                     || allot.Status == "1" && status == "0"
+                     || allot.Status == "1" && status == "2")
                     {
                         try
                         {

@@ -3719,7 +3719,7 @@ namespace THOK.Wms.Repository.Migrations
                      ModuleID = new Guid("211D4776-DCA6-4DFA-9C75-257179BB071D"),
                      ModuleName = "≤Œ ˝…Ë÷√",
                      ShowOrder = 5,
-                     ModuleURL = "/ParameterConfig/",
+                     ModuleURL = "/AutomotiveConfig/",
                      IndicateImage = "icon-son_SortWork",
                      DeskTopImage = "image-son_SortWork",
                      System = system,

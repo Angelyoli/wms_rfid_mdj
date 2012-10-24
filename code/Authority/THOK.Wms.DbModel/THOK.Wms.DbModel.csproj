@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Area.cs" />
+    <Compile Include="AutomotiveConfig.cs" />
     <Compile Include="BillType.cs" />
     <Compile Include="Brand.cs" />
     <Compile Include="Cell.cs" />

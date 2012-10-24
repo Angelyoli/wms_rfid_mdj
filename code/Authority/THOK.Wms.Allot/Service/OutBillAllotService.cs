@@ -19,7 +19,7 @@ namespace THOK.Wms.Allot.Service
         public IOutBillMasterRepository OutBillMasterRepository { get; set; }
         [Dependency]
         public IOutBillDetailRepository OutBillDetailRepository { get; set; }
-        
+
         [Dependency]
         public IWarehouseRepository WarehouseRepository { get; set; }
         [Dependency]
@@ -526,29 +526,21 @@ namespace THOK.Wms.Allot.Service
         }
         #endregion
 
-        #region 车载
+        #region 车载系统
         public object GetOutBillMaster()
         {
-            string str = "";
-            var outBillAllot = OutBillAllotRepository.GetQueryable().Where(a => a.Status != "2").Select(a => a.BillNo).ToArray();
-            for (int i = 0; i < outBillAllot.Length; i++)
-            {
-                str += outBillAllot[i];
-            }
-            var outBillMaster = OutBillMasterRepository.GetQueryable().ToArray().Where(b => str.Contains(b.BillNo) && b.Status != "6")
-                    .Distinct()
-                    .OrderByDescending(b => b.BillDate)
-                    .Select(b => new
-                    {
-                        BillNo = b.BillNo
-                    });
+            var outBillMaster = OutBillMasterRepository.GetQueryable()
+                                .Where(i => i.Status == "4" || i.Status == "5")
+                                .Select(i => new { BillNo = i.BillNo, BillType = "2" })
+                                .ToArray();
             return outBillMaster;
         }
         public object SearchOutBillAllot(string billNo, int page, int rows)
         {
-            var allotQuery = OutBillAllotRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
-                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            var query = OutBillAllotRepository.GetQueryable()
+                                .Where(a => a.BillNo == billNo && a.Status != "2")
+                                .OrderByDescending(a => a.Status == "1")
+                                .Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -560,12 +552,12 @@ namespace THOK.Wms.Allot.Service
                 a.Product.ProductName,
                 a.CellCode,
                 a.Cell.CellName,
-                CellType = "出库",
+                BillType = "出库",
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
-                AllotQuantity = Math.Floor(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
-                RealQuantity = Math.Floor(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                PieceQuantity = Math.Floor(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
+                BarQuantity = Math.Floor(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
@@ -588,8 +580,8 @@ namespace THOK.Wms.Allot.Service
                 if (allot != null)
                 {
                     if (allot.Status == "0" && status == "1"
-                        || allot.Status == "1" && status == "0"
-                        || allot.Status == "1" && status == "2")
+                     || allot.Status == "1" && status == "0"
+                     || allot.Status == "1" && status == "2")
                     {
                         try
                         {
