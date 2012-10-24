@@ -52,7 +52,6 @@
     <Compile Include="Dao\UpdateUploadDao.cs" />
     <Compile Include="Dao\UploadDao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UploadDate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\THOK.Wms.Dal\THOK.Wms.Dal.csproj">

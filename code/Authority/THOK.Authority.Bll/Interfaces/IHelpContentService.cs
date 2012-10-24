@@ -13,5 +13,9 @@ namespace THOK.Authority.Bll.Interfaces
         object GetDetails(int page, int rows, string QueryString, string Value);
 
         object GetDetails2(int page, int rows, string ContentCode, string ContentName, string NodeType, string FatherNodeID, string ModuleID, string IsActive);
+
+        object GetHelpContentTree(string sysId);
+
+        bool EditSave(string helpId, string contentText, out string strResult);
     }
 }
