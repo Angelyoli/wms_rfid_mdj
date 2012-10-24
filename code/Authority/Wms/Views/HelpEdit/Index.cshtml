@@ -2,8 +2,6 @@
 <script type="text/javascript" src="/Content/Scripts/ckfinder/ckfinder.js"></script>
 
 <script type="text/javascript">
-    var helpID;
-    var helptxt;
     this.ValidateRequest = false;
     window.onload = function () {
         //var inputs = document.getElementsByTagName("editor01");
@@ -16,11 +14,30 @@
     $('#helpTree').tree({
         onClick: function (node) {
             if (node) {
-                var AttributeTxt = node.attributes.AttributeTxt;
-                helpID = node.attributes.AttributeId;
+                var helpId = node.attributes.AttributeId;
+                //var HelpTxt = $.ajaxSender.send('/HelpEdit/GetContentTxt/', { 'helpId': helpId }).toString();
+                //alert(HelpTxt);
+                //var AttributeTxt = node.attributes.AttributeTxt;
+
+                //window.location.href = "/HelpEdit/GetContentTxt/?helpId=" + helpId;
+                //var HelpTxt = window.location.href;
+
+//                $.getJSON("/HelpEdit/GetContentTxt/", { 'helpId': helpId }, function (helpContent)
+                //                { alert(helpContent[0].ContentText); });
+
+//                $.ajax({
+//                    url: "/HelpEdit/GetContentTxt/?helpId=" + helpId,
+//                    type: "POST",
+//                    dataType: "json",
+//                    //timeout: 60000, //超时时间，现在设置为60s。
+//                    success: function (helpContent) {
+//                        alert(helpContent);
+//                    }
+//                });
+
                 $('#helpId').val(helpID);
                 CKEDITOR.instances["editor01"].destroy();
-                $('#editor01').val(AttributeTxt);
+                $('#editor01').val(HelpTxt);
                 CKEDITOR.replace('editor01');
             }
         }
@@ -33,8 +50,8 @@
    <form id ="editorForm" action="javascript:saveHelpEdit()" method="post">
         <input id ="helpId" name = "helpId01" type="hidden"/>
         <textarea rows="20" cols="40" id ="editor01" name="editor01"></textarea>
-    <div id="#buttons-save">
+    @*<div id="#buttons-save">
     <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="S_select()">提交</a>
-    </div>
+    </div>*@
     </form>
 </div>

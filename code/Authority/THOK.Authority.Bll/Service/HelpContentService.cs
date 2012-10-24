@@ -278,5 +278,13 @@ namespace THOK.Authority.Bll.Service
             }
             return true;
         }
+        public object GetContentTxt(string helpId)
+        {
+            string contentTxt = string.Empty;
+            Guid new_ID = new Guid(helpId);
+            var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ID == new_ID);
+            contentTxt = help.ContentText;
+            return help;
+        }
     }
 }
