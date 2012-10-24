@@ -105,8 +105,11 @@ namespace Authority.Controllers.Wms.StockIn
         // POST: /InBillMaster/Delete/
         public ActionResult Delete(string BillNo)
         {
+            DownDecidePlanBll planBll = new DownDecidePlanBll();
             string strResult = string.Empty;
             bool bResult = InBillMasterService.Delete(BillNo, out strResult);
+            if (bResult)
+                planBll.DeleteMiddleBill(BillNo);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -130,7 +133,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult InBillDetailDelete(string ID)
         {
             string strResult = string.Empty;
-            bool bResult = InBillDetailService.Delete(ID, out strResult);
+            bool bResult = InBillDetailService.Delete(ID, out strResult);           
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

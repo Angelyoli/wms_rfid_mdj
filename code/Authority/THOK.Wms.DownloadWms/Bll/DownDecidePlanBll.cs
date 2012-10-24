@@ -165,9 +165,12 @@ namespace THOK.Wms.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in inBillMaster.Rows)
             {
+                string bill = row["BILL_NO"].ToString().Trim();
+                bill = bill.Substring(2, 4) + bill.Substring(11, 4) + bill.Substring(22, 4);
                 DataRow detailrow = ds.Tables["WMS_MIDDLE_IN_BILLDETAIL"].NewRow();
                 detailrow["bill_no"] = row["bill_no"];
                 detailrow["bill_date"] = row["bill_date"];
+                detailrow["in_bill_no"] = bill;
                 ds.Tables["WMS_MIDDLE_IN_BILLDETAIL"].Rows.Add(detailrow);
             }
             return ds;
@@ -251,6 +254,19 @@ namespace THOK.Wms.DownloadWms.Bll
         }
 
         /// <summary>
+        /// 删除中间表数据
+        /// </summary>
+        /// <param name="billno">单号</param>
+        public void DeleteMiddleBill(string billno)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownDecidePlanDao dao = new DownDecidePlanDao();
+                dao.DeleteMiddleBill(billno);
+            }
+        }
+
+        /// <summary>
         /// 查询数字仓储中间表4天内入库单 zxl   2012-09-14 
         /// </summary>
         /// <returns></returns>
@@ -301,6 +317,7 @@ namespace THOK.Wms.DownloadWms.Bll
             DataTable middletable = ds.Tables.Add("WMS_MIDDLE_IN_BILLDETAIL");
             middletable.Columns.Add("bill_no");
             middletable.Columns.Add("bill_date");
+            middletable.Columns.Add("in_bill_no");
             return ds;
         }
         #endregion

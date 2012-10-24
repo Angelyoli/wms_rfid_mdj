@@ -195,7 +195,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     areaQuantiy = areaSumQuantitys.Sum(s => s.Quantity - s.OutFrozenQuantity);
                                 }
 
-                                if (cancellationToken.IsCancellationRequested) return;                             
+                                if (cancellationToken.IsCancellationRequested) return;
 
                                 //获取移库量（按整件计）出库量加上下限量减去备货区库存量取整
                                 decimal quantity = 0;
@@ -214,10 +214,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         //出库量减去备货区库存量
                                         quantity = product.SumQuantity - storQuantity;
                                     }
-                                }                                
+                                }
 
-                                //下限为0直接出库。
-                                if (lowerlimitQuantity == 0)
+                                //异性烟直接出库。
+                                if (product.Product.IsAbnormity == "1")
                                 {
                                     quantity = product.SumQuantity - storQuantity;
                                 }
@@ -283,12 +283,6 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             }
                         }
                     }
-                    if (cancellationToken.IsCancellationRequested) return;
-                    if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
-                    {
-                        MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
-                    }
-                    MoveBillMasterRepository.SaveChanges();
                 }
                 catch (Exception e)
                 {
@@ -298,6 +292,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     return;
                 }
             }
+
+            if (cancellationToken.IsCancellationRequested) return;
+
+            if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
+            {
+                MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
+            }
+            MoveBillMasterRepository.SaveChanges();
 
             ps.State = StateType.Info;
             ps.Messages.Add("调度完成!");

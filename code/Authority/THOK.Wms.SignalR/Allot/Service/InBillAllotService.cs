@@ -123,8 +123,8 @@ namespace THOK.Wms.SignalR.Allot.Service
             var cellQueryFromList2 = cell2.OrderBy(c => c.Area.AllotInOrder);
 
             //件烟区
-            var cellQueryFromList3 = cell3.Where(c => c.Storages.Any(s=>c.MaxQuantity * s.Product.Unit.Count > s.Quantity - s.InFrozenQuantity))
-                                              .OrderBy(c => c.Area.AllotInOrder);
+            //var cellQueryFromList3 = cell3.Where(c => c.Storages.Any(s=>c.MaxQuantity * s.Product.Unit.Count > s.Quantity - s.InFrozenQuantity))
+                                             // .OrderBy(c => c.Area.AllotInOrder);
 
             //件烟区
             var cellQueryFromList4 = cell4.Where(c => c.Storages.Count == 0
@@ -165,15 +165,15 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配未满一托盘的卷烟到件烟区；                
                 if (cellQueryFromList2.Any())
                 {
-                    cs = cellQueryFromList3;
-                    AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
+                    //cs = cellQueryFromList3;
+                    //AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
                     cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
                 }
                 else
                 {
-                    cs = cellQueryFromList3;
-                    AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
+                    //cs = cellQueryFromList3;
+                    //AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
                     cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                     AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
                 }    
