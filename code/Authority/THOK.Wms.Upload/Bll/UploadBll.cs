@@ -10,7 +10,19 @@ namespace THOK.WMS.Upload.Bll
     public class UploadBll
     {
         #region 上报数据
-        //客户信息、卷烟信息在下载页面
+        /// <summary>
+        /// 上报卷烟信息数据
+        /// </summary>
+        /// <param name="brandSet"></param>
+        public void InsertProduct(DataSet brandSet)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertProduct(brandSet);
+            }
+        }
         /// <summary>
         /// 组织机构表
         /// </summary>
@@ -32,6 +44,19 @@ namespace THOK.WMS.Upload.Bll
                 UploadDao dao = new UploadDao();
                 dao.SetPersistentManager(pm);
                 dao.InsertEmployee(employee);
+            }
+        }
+        /// <summary>
+        /// 上报客户信息数据
+        /// </summary>
+        /// <param name="costomerSet"></param>
+        public void InsertCustom(DataSet costomerSet)
+        {
+            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
+            {
+                UploadDao dao = new UploadDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertCustom(costomerSet);
             }
         }
         //仓储属性表

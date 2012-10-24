@@ -1,5 +1,6 @@
 <script type="text/javascript">
     function deleteClick() {
+        document.getElementById("userNameError").innerText = "";
         var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#dlg').dialog('open').dialog('setTitle', 'É¾³ý');
