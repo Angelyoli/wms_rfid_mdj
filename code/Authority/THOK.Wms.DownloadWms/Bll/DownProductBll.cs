@@ -4,11 +4,13 @@ using System.Text;
 using THOK.Util;
 using System.Data;
 using THOK.WMS.DownloadWms.Dao;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.WMS.DownloadWms.Bll
 {
     public class DownProductBll
     {
+        UploadBll upload = new UploadBll();
         #region 从营系统据下产品信息
 
         /// <summary>
@@ -26,7 +28,8 @@ namespace THOK.WMS.DownloadWms.Bll
             {
                 DataSet brandCodeDs = this.Insert(bradCodeTable);
                 this.Insert(brandCodeDs);
-                //this.InsertProduct(brandCodeDs);  上报数据
+                //上报数据
+                //upload.InsertProduct(brandCodeDs);
             }
             else
             {
@@ -107,7 +110,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["bar_barcode"] = row["BARCODE_BAR"];
                 inbrddr["package_barcode"] = row["BARCODE_PACKAGE"];
                 inbrddr["one_project_barcode"] = row["BARCODE_ONE_PROJECT"];
-                inbrddr["buy_price"] = row["BUY_PRICE"];
+                inbrddr["buy_price"] = row["BU_PRICE"];
                 inbrddr["trade_price"] = row["TRADE_PRICE"];
                 inbrddr["retail_price"] = row["RETAIL_PRICE"];
                 inbrddr["cost_price"] = row["COST_PRICE"];
@@ -182,18 +185,6 @@ namespace THOK.WMS.DownloadWms.Bll
             {
                 DownProductDao dao = new DownProductDao();
                 dao.Insert(ds);
-            }
-        }
-        #endregion
-
-        #region 上报卷烟信息数据
-        public void InsertProduct(DataSet brandSet)
-        {
-            using (PersistentManager pm = new PersistentManager("ZYDB2Connection"))
-            {
-                DownProductDao dao = new DownProductDao();
-                dao.SetPersistentManager(pm);
-                dao.InsertProduct(brandSet);
             }
         }
         #endregion

@@ -32,6 +32,7 @@
         });
     };
     function addClick() {
+        document.getElementById("userNameError").innerText = "";
         $('#dlg').dialog('open').dialog('setTitle', '新增');
         $('#fm .easyui-validatebox').validatebox({
             required: true
@@ -69,6 +70,7 @@
                         msg: result.msg
                     });
                     $('#details').datagrid('reload');
+                    check();
                 }
             }
         });
@@ -82,7 +84,7 @@
                     <table  border="0" align="center" style="margin:auto; width:100%; height:100%">
 				            <tr>
 					            <td >用户名</td>
-					            <td align="left"><input name="UserName" id="UserName" type="text" class="easyui-validatebox" required="true" missingmessage="请输入用户名" onblur="check()"/></td>
+					            <td align="left"><input name="UserName" id="UserName" type="text" class="easyui-validatebox" required="true" missingmessage="请输入用户名" onchange=check();"  /></td>
                                 <td align="left"><div id="userNameError" class="infoError"></div></td>
                                 </tr>
 				            <tr>

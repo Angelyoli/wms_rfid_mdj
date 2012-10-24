@@ -123,10 +123,11 @@ namespace THOK.WMS.DownloadWms.Bll
                masterrow["detail_num"] = Convert.ToInt32(row["DETAIL_NUM"].ToString());//明细数
                masterrow["deliver_order"] = row["DELIVER_ORDER"].ToString().Trim();//配车单号
                masterrow["DeliverDate"] = row["ORDER_TYPE"].ToString().Trim();//送货区域编码
-               masterrow["description"] = "";//送货区域名称
+               masterrow["description"] = row["DIST_BILL_ID"].ToString().Trim();//送货区域名称
                masterrow["is_active"] = row["ISACTIVE"].ToString().Trim();//送货线路编码
-               masterrow["update_time"] = DateTime.Now;//送货线路名称
-               masterrow["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim() + "_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
+               masterrow["update_time"] = DateTime.Now;//送货线路名称               
+               masterrow["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();// +"_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
+               masterrow["dist_bill_id"] = row["DIST_BILL_ID"].ToString().Trim();//
                ds.Tables["DWV_OUT_ORDER"].Rows.Add(masterrow);
            }
            return ds;
@@ -217,7 +218,8 @@ namespace THOK.WMS.DownloadWms.Bll
            mastertable.Columns.Add("is_active");
            mastertable.Columns.Add("update_time");
            mastertable.Columns.Add("deliver_line_code");
-
+           mastertable.Columns.Add("dist_bill_id");
+           
            DataTable detailtable = ds.Tables.Add("DWV_OUT_ORDER_DETAIL");
            detailtable.Columns.Add("order_detail_id");
            detailtable.Columns.Add("order_id");

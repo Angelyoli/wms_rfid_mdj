@@ -22,8 +22,8 @@ namespace THOK.Wms.Repository.Migrations
                 new City()
                 {
                     CityID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471105"),
-                    CityName = "梧州市",
-                    Description = "梧州市",
+                    CityName = "柳州市",
+                    Description = "柳州市",
                     IsActive = true
                 }
             );
@@ -34,8 +34,8 @@ namespace THOK.Wms.Repository.Migrations
                 new Server()
                 {
                     ServerID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471106"),
-                    ServerName = "梧州市主服务器",
-                    Description = "梧州市主服务器",
+                    ServerName = "柳州市主服务器",
+                    Description = "柳州市主服务器",
                     Url = "",
                     IsActive = true,
                     City = city,

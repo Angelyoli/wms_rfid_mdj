@@ -693,7 +693,7 @@ namespace THOK.Wms.Bll.Service
                 inbrddrDetail["BRAND_CODE"] = p.BRAND_CODE;
                 inbrddrDetail["BRAND_NAME"] = p.BRAND_NAME;
                 inbrddrDetail["QUANTITY"] = p.QUANTITY;
-                inbrddrDetail["IS_IMPORT"] = "1";
+                inbrddrDetail["IS_IMPORT"] = "0";
                 ds.Tables["WMS_IN_BILLDETAIL"].Rows.Add(inbrddrDetail);
             }
             DataRow inbrddrAllot = ds.Tables["WMS_IN_BILLALLOT"].NewRow();
@@ -734,7 +734,7 @@ namespace THOK.Wms.Bll.Service
                 inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
                 inbrddrAllot["UPDATE_CODE"] = p.UPDATE_CODE;
                 inbrddrAllot["UPDATE_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
-                inbrddrAllot["IS_IMPORT"] = "1";
+                inbrddrAllot["IS_IMPORT"] = "0";
                 ds.Tables["WMS_IN_BILLALLOT"].Rows.Add(inbrddrAllot);
             }
             return ds;

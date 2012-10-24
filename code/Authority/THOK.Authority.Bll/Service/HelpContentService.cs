@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.Unity;
 using THOK.Authority.Bll.Interfaces;
+using THOK.Authority.Bll.Models;
 using THOK.Authority.Dal.Interfaces;
 using THOK.Authority.DbModel;
 
@@ -9,6 +11,10 @@ namespace THOK.Authority.Bll.Service
 {
     public class HelpContentService : ServiceBase<HelpContent>, IHelpContentService
     {
+        [Dependency]
+        public ISystemRepository SystemRepository { get; set; }
+        [Dependency]
+        public IModuleRepository ModuleRepository { get; set; }
         [Dependency]
         public IHelpContentRepository HelpContentRepository { get; set; }
 
@@ -179,6 +185,97 @@ namespace THOK.Authority.Bll.Service
             }
             else
                 return false;
+            return true;
+        }
+        public object GetHelpContentTree(string sysId)
+        {
+            IQueryable<THOK.Authority.DbModel.System> querySystem = SystemRepository.GetQueryable();
+            IQueryable<THOK.Authority.DbModel.Module> queryModule = ModuleRepository.GetQueryable();
+            IQueryable<THOK.Authority.DbModel.HelpContent> queryHelpContent = HelpContentRepository.GetQueryable();
+            var systems = querySystem.AsEnumerable();
+            if (sysId != null && sysId != string.Empty)
+            {
+                Guid gsystemid = new Guid(sysId);
+                systems = querySystem.Where(i => i.SystemID == gsystemid)
+                                     .Select(i => i);
+            }
+
+            HashSet<Tree> systemTreeSet = new HashSet<Tree>();
+            foreach (var system in systems)
+            {
+                Tree systemTree = new Tree();
+                systemTree.id = system.SystemID.ToString();
+                systemTree.text = system.SystemName;
+                var helpContent = queryHelpContent.Where(m => m.Module.System.SystemID == system.SystemID && m.ID == m.FatherNodeID)
+                                         .OrderBy(m => m.NodeOrder)
+                                         .Select(m => m);
+                var systemAttribute = new
+                {
+                    AttributeId =system.SystemID,
+                    AttributeTxt =system.SystemName
+                };
+                systemTree.attributes = systemAttribute;
+                HashSet<Tree> contentTreeSet = new HashSet<Tree>();
+                foreach (var item in helpContent)
+                {
+                    Tree helpContentTree = new Tree();
+                    helpContentTree.id = item.ContentCode;
+                    helpContentTree.text = item.ContentCode + item.ContentName;
+                    var helpAttribute = new
+                    {
+                        AttributeId = item.ID,
+                        AttributeTxt = item.ContentText
+                    };
+                    helpContentTree.attributes = helpAttribute;
+                    contentTreeSet.Add(helpContentTree);
+                    GetChildTree(helpContentTree, item);
+                    contentTreeSet.Add(helpContentTree);
+                }
+                systemTree.children = contentTreeSet.ToArray();
+                systemTreeSet.Add(systemTree);
+            }
+            return systemTreeSet.ToArray();
+        }
+        private void GetChildTree(Tree helpContentTree, HelpContent helpContent)
+        {
+            HashSet<Tree> childContentSet = new HashSet<Tree>();
+            var helpContents = from m in helpContent.HelpContents
+                          orderby m.NodeOrder
+                               where m.FatherNodeID == helpContent.FatherNodeID
+                          select m;
+            foreach (var item in helpContents)
+            {
+                if (item.ID != helpContent.ID)
+                {
+                    Tree childContentTree = new Tree();
+                    childContentTree.id = item.ContentCode;
+                    childContentTree.text = item.ContentCode + item.ContentName;
+                    var childAttribute = new
+                    {
+                        AttributeId = item.ID,
+                        AttributeTxt = item.ContentText
+                    };
+                    childContentTree.attributes = childAttribute;
+                    childContentSet.Add(childContentTree);
+                }
+            }
+            helpContentTree.children = childContentSet.ToArray();
+        }
+        public bool EditSave(string helpId, string contentText, out string strResult)
+        {
+            strResult = string.Empty;
+            try
+            {
+                Guid new_ID = new Guid(helpId);
+                var help = HelpContentRepository.GetQueryable()
+                    .FirstOrDefault(i => i.ID == new_ID);
+                help.ContentText = contentText;
+                HelpContentRepository.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                strResult = "原因：" + ex.Message;
+            }
             return true;
         }
     }
