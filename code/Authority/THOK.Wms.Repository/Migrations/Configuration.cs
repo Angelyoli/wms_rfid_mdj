@@ -80,7 +80,7 @@ namespace THOK.Wms.Repository.Migrations
             CreateSearch(context);
             CreateProductQuality(context);
             CreateUpload(context);
-            CreateVehicleMounted(context);
+            CreateAutomotiveSystems(context);
 
         }
 
@@ -3650,7 +3650,7 @@ namespace THOK.Wms.Repository.Migrations
             context.SaveChanges();
         }
 
-        private void CreateVehicleMounted(AuthorizeContext context)
+        private void CreateAutomotiveSystems(AuthorizeContext context)
         {
             System system = context.Set<System>().SingleOrDefault(s => s.SystemID == new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B666AA8"));
             context.Set<Module>().AddOrUpdate(
@@ -3660,8 +3660,8 @@ namespace THOK.Wms.Repository.Migrations
                     ModuleName = "仓库作业管理",
                     ShowOrder = 14,
                     ModuleURL = "",
-                    IndicateImage = "icon-Menu_Research",
-                    DeskTopImage = "image-Menu_Research",
+                    IndicateImage = "icon-son_Bill_Type",
+                    DeskTopImage = "image-son_Bill_Type",
                     System = system,
                     System_SystemID = system.SystemID,
                     ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
@@ -3672,8 +3672,8 @@ namespace THOK.Wms.Repository.Migrations
                      ModuleName = "入库作业",
                      ShowOrder = 1,
                      ModuleURL = "/StockInTask/",
-                     IndicateImage = "icon-Menu_Research",
-                     DeskTopImage = "image-Menu_Research",
+                     IndicateImage = "icon-son_StockIntoBill",
+                     DeskTopImage = "image-son_StockIntoBill",
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
@@ -3684,8 +3684,8 @@ namespace THOK.Wms.Repository.Migrations
                      ModuleName = "出库作业",
                      ShowOrder = 2,
                      ModuleURL = "/StockOutTask/",
-                     IndicateImage = "icon-Menu_Research",
-                     DeskTopImage = "image-Menu_Research",
+                     IndicateImage = "icon-son_StockOutBill",
+                     DeskTopImage = "image-son_StockOutBill",
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
@@ -3696,8 +3696,8 @@ namespace THOK.Wms.Repository.Migrations
                      ModuleName = "移库作业",
                      ShowOrder = 3,
                      ModuleURL = "/StockMoveTask/",
-                     IndicateImage = "icon-Menu_Research",
-                     DeskTopImage = "image-Menu_Research",
+                     IndicateImage = "icon-son_MoveBill",
+                     DeskTopImage = "image-son_MoveBill",
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
@@ -3708,8 +3708,20 @@ namespace THOK.Wms.Repository.Migrations
                      ModuleName = "盘点作业",
                      ShowOrder = 4,
                      ModuleURL = "/StockCheckTask/",
-                     IndicateImage = "icon-Menu_Research",
-                     DeskTopImage = "image-Menu_Research",
+                     IndicateImage = "icon-son_CheckBill",
+                     DeskTopImage = "image-son_CheckBill",
+                     System = system,
+                     System_SystemID = system.SystemID,
+                     ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
+                 },
+                 new Module()
+                 {
+                     ModuleID = new Guid("211D4776-DCA6-4DFA-9C75-257179BB071D"),
+                     ModuleName = "参数设置",
+                     ShowOrder = 5,
+                     ModuleURL = "/AutomotiveConfig/",
+                     IndicateImage = "icon-son_SortWork",
+                     DeskTopImage = "image-son_SortWork",
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
