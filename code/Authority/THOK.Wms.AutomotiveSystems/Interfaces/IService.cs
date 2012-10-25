@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace THOK.Wms.VehicleMounted.Interface
+namespace THOK.Wms.AutomotiveSystems.Interfaces
 {
     public interface IService<T>
     {

@@ -18,9 +18,9 @@
                             'status': '2'
                         },
                         function (data) {
-                            $('#dlg-confirm').dialog('close');
                             $('#details').datagrid('reload');
                         });
+        $('#dlg-confirm').dialog('close');
     }
 </script>
 <div id="dlg-confirm" class="easyui-dialog" modal="true" style="width: 300px; height: 250px;
@@ -62,7 +62,7 @@
                         件数：
                     </td>
                     <td width="168" align="left">
-                        <input name="AllotQuantity">
+                        <input name="PieceQuantity">
                     </td>
                 </tr>
                 <tr>

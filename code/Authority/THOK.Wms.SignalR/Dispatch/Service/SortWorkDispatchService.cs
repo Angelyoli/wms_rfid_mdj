@@ -11,6 +11,7 @@ using THOK.Wms.SignalR.Common;
 using System.Transactions;
 using THOK.Wms.SignalR.Model;
 using System.Threading;
+using Entities.Extensions;
 
 namespace THOK.Wms.SignalR.Dispatch.Service
 {
@@ -81,7 +82,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
 
             //调度表未作业的数据
-            var temp = sortOrderDispatchQuery.Where(s => work.Any(w => w == s.ID) && s.WorkStatus == "1")
+            var temp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
+                                           .Where(s => s.WorkStatus == "1")
                                            .Join(sortOrderQuery,
                                                 dp => new { dp.OrderDate, dp.DeliverLineCode },
                                                 om => new { om.OrderDate, om.DeliverLineCode },

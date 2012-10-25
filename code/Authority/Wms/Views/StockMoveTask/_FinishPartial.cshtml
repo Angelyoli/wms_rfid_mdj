@@ -18,9 +18,9 @@
                             'status': '2'
                         },
                         function (data) {
-                            $('#dlg-confirm').dialog('close');
                             $('#details').datagrid('reload');
                         });
+        $('#dlg-confirm').dialog('close');
     }
 </script>
 <div id="dlg-confirm" class="easyui-dialog" modal="true" style="width: 300px; height: 250px;
@@ -46,7 +46,9 @@
                         操作类型：
                     </td>
                     <td width="168" align="left">
-                        <input name="CellType" style="width:30px;"> -> <input name="InCellName" style="width:71px;">
+                        <input name="CellType" style="width: 30px;">
+                        ->
+                        <input name="InCellName" style="width: 71px;">
                     </td>
                 </tr>
                 <tr>
@@ -62,7 +64,7 @@
                         件数：
                     </td>
                     <td width="168" align="left">
-                        <input name="AllotQuantity">
+                        <input name="PieceQuantity">
                     </td>
                 </tr>
                 <tr>
@@ -70,7 +72,7 @@
                         条数：
                     </td>
                     <td width="168" align="left">
-                        <input name="RealQuantity">
+                        <input name="RopeQuantity">
                     </td>
                 </tr>
             </table>

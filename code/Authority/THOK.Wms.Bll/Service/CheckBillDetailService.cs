@@ -202,29 +202,21 @@ namespace THOK.Wms.Bll.Service
         }
         #endregion
 
-        #region 车载
+        #region 车载系统
         public object GetCheckBillMaster()
         {
-            string str = "";
-            var checkBillDetail = CheckBillDetailRepository.GetQueryable().Where(i => i.Status != "2").Select(b => b.BillNo).ToArray();
-            for (int i = 0; i < checkBillDetail.Length; i++)
-            {
-                str += checkBillDetail[i];
-            }
-            var checkBillMaster = CheckBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "5")
-                    .Distinct()
-                    .OrderByDescending(t => t.BillDate)
-                    .Select(i => new
-                    {
-                        BillNo = i.BillNo
-                    });
+            var checkBillMaster = CheckBillMasterRepository.GetQueryable()
+                                    .Where(i => i.Status == "2" || i.Status == "3")
+                                    .Select(i => new { BillNo = i.BillNo, BillType = "4" })
+                                    .ToArray();
             return checkBillMaster;
         }
         public object SearchCheckBillDetail(string billNo, int page, int rows)
         {
-            var allotQuery = CheckBillDetailRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
-                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            var query = CheckBillDetailRepository.GetQueryable()
+                                    .Where(a => a.BillNo == billNo && a.Status != "2")
+                                    .OrderByDescending(a => a.Status == "1")
+                                    .Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -236,12 +228,12 @@ namespace THOK.Wms.Bll.Service
                 a.Product.ProductName,
                 a.CellCode,
                 a.Cell.CellName,
-                CellType = "盘点",
+                BillType = "盘点",
                 a.StorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
                 PieceQuantity = Math.Floor(a.RealQuantity / a.Product.UnitList.Unit01.Count),
-                RealQuantity = Math.Floor(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                BarQuantity = Math.Floor(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = WhatStatus(a.Status),
                 a.Operator
             });
@@ -264,8 +256,8 @@ namespace THOK.Wms.Bll.Service
                 if (detail != null)
                 {
                     if (detail.Status == "0" && status == "1"
-                        || detail.Status == "1" && status == "0"
-                        || detail.Status == "1" && status == "2")
+                     || detail.Status == "1" && status == "0"
+                     || detail.Status == "1" && status == "2")
                     {
                         try
                         {
