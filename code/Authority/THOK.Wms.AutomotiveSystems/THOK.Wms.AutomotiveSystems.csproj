@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\ISystemConfig.cs" />
+    <Compile Include="Interfaces\ISystemParameter.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Interfaces\ITaskService.cs" />
     <Compile Include="Models\BillDetail.cs" />
@@ -54,7 +54,7 @@
     <Compile Include="Models\Result.cs" />
     <Compile Include="Models\TaskParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\SystemConfigService.cs" />
+    <Compile Include="Service\SystemParameterService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
     <Compile Include="Service\TaskService.cs" />
   </ItemGroup>

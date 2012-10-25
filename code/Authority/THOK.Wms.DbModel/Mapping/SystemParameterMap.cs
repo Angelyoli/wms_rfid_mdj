@@ -6,9 +6,9 @@ using THOK.Common.Ef.MappingStrategy;
 
 namespace THOK.Wms.DbModel.Mapping
 {
-    public class SystemConfigMap : EntityMappingBase<SystemConfig>
+    public class SystemParameterMap : EntityMappingBase<SystemParameter>
     {
-        public SystemConfigMap()
+        public SystemParameterMap()
             : base("Wms")
         {
             // Primary Key
@@ -35,8 +35,7 @@ namespace THOK.Wms.DbModel.Mapping
                 .HasMaxLength(20);
 
             this.Property(t => t.System)
-                .IsRequired()
-                .HasMaxLength(20);
+                .IsRequired();
 
             // Table & Column Mappings
             this.Property(t => t.Id).HasColumnName(ColumnMap.Value.To("Id"));
