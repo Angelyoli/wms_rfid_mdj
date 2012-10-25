@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace THOK.Wms.AutomotiveSystems.Interfaces
+namespace THOK.Wms.Bll.Interfaces
 {
     public interface ISystemParameter
     {

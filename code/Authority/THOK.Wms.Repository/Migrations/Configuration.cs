@@ -81,7 +81,7 @@ namespace THOK.Wms.Repository.Migrations
             CreateProductQuality(context);
             CreateUpload(context);
             CreateAutomotiveSystems(context);
-
+            CreateSystemParameter(context);
         }
 
         private void CreateServer(AuthorizeContext context)
@@ -3713,18 +3713,6 @@ namespace THOK.Wms.Repository.Migrations
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
-                 },
-                 new Module()
-                 {
-                     ModuleID = new Guid("211D4776-DCA6-4DFA-9C75-257179BB071D"),
-                     ModuleName = "参数设置",
-                     ShowOrder = 5,
-                     ModuleURL = "/SystemConfig/",
-                     IndicateImage = "icon-son_SortWork",
-                     DeskTopImage = "image-son_SortWork",
-                     System = system,
-                     System_SystemID = system.SystemID,
-                     ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
                  }
              );
             context.SaveChanges();
@@ -3892,6 +3880,37 @@ namespace THOK.Wms.Repository.Migrations
                }
             );
             context.SaveChanges();
+        }
+
+        private void CreateSystemParameter(AuthorizeContext context)
+        {
+            System system = context.Set<System>().SingleOrDefault(s => s.SystemID == new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B666AA8"));
+            context.Set<Module>().AddOrUpdate(
+                    new Module()
+                    {
+                        ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D"),
+                        ModuleName = "系统参数",
+                        ShowOrder = 15,
+                        ModuleURL = "",
+                        IndicateImage = "icon-Menu_Jurisdiction",
+                        DeskTopImage = "image-Menu_Jurisdiction",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC"),
+                        ModuleName = "参数设置",
+                        ShowOrder = 1,
+                        ModuleURL = "/ParameterSet/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D")
+                    }
+            );
         }
     }
 }

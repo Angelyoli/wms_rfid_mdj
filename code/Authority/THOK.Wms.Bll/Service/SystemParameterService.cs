@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Practices.Unity;
-using THOK.Wms.AutomotiveSystems.Interfaces;
-using THOK.Wms.AutomotiveSystems.Models;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.DbModel;
+using THOK.Wms.Bll.Interfaces;
 
-namespace THOK.Wms.AutomotiveSystems.Service
+namespace THOK.Wms.Bll.Service
 {
     public class SystemParameterService : ServiceBase<SystemParameter>, ISystemParameter
     {

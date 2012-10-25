@@ -119,7 +119,6 @@
     <Compile Include="Controllers\Authority\UserController.cs" />
     <Compile Include="Controllers\Authority\UserPermissionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Wms\AutomotiveSystems\SystemParameterController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockCheckTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockInTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
@@ -179,6 +178,7 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillAllotController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
+    <Compile Include="Controllers\Wms\SystemParameter\ParameterSetController.cs" />
     <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
@@ -2211,6 +2211,7 @@
     <Content Include="Views\StockCheckTask\_FinishPartial.cshtml" />
     <Content Include="Views\StockCheckTask\_BatchPartial.cshtml" />
     <Content Include="Views\StockCheckTask\_SearchPartial.cshtml" />
+    <Content Include="Views\ParameterSet\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

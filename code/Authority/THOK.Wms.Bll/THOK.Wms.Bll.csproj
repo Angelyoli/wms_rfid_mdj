@@ -97,6 +97,7 @@
     <Compile Include="Interfaces\IStockOutSearchService.cs" />
     <Compile Include="Interfaces\IStorageService.cs" />
     <Compile Include="Interfaces\ISupplierService.cs" />
+    <Compile Include="Interfaces\ISystemParameter.cs" />
     <Compile Include="Interfaces\IUnitListService.cs" />
     <Compile Include="Interfaces\IUnitService.cs" />
     <Compile Include="Interfaces\IWarehouseService.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Service\StockOutSearchService.cs" />
     <Compile Include="Service\StorageService.cs" />
     <Compile Include="Service\SupplierService.cs" />
+    <Compile Include="Service\SystemParameterService.cs" />
     <Compile Include="Service\UnitListService.cs" />
     <Compile Include="Service\UnitService.cs" />
     <Compile Include="Service\WarehouseService.cs" />
