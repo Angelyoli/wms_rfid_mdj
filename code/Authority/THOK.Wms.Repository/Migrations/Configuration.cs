@@ -80,7 +80,7 @@ namespace THOK.Wms.Repository.Migrations
             CreateSearch(context);
             CreateProductQuality(context);
             CreateUpload(context);
-            CreateVehicleMounted(context);
+            //CreateVehicleMounted(context);
 
         }
 
@@ -3715,7 +3715,7 @@ namespace THOK.Wms.Repository.Migrations
                      ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
                  }
              );
-            context.SaveChanges();
+            //context.SaveChanges();
             context.Set<Function>().AddOrUpdate(
                new Function()
                {
@@ -3879,7 +3879,7 @@ namespace THOK.Wms.Repository.Migrations
                    Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
                }
             );
-            context.SaveChanges();
+            // context.SaveChanges();
         }
     }
 }
