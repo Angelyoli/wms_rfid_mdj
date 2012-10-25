@@ -90,6 +90,46 @@ namespace THOK.WMS.Upload.Dao
         #endregion
 
         #region 上报数据
+
+        /// <summary>
+        /// 上报卷烟信息
+        /// </summary>
+        /// <param name="brandSet"></param>
+        public void InsertProduct(DataSet brandSet)
+        {
+            DataTable brandTable = brandSet.Tables["WMS_PRODUCT"];
+            DataTable brandCode = this.ExecuteQuery("SELECT BRAND_CODE FROM ms.DWV_IINF_BRAND ").Tables[0];
+            string brand_code = "''";
+            string sql;
+            for (int i = 0; i < brandCode.Rows.Count; i++)
+            {
+                brand_code += ",'" + brandCode.Rows[i]["BRAND_CODE"] + "'";
+            }
+            foreach (DataRow row in brandTable.Rows)
+            {
+                string Sql = "select unit_code01 from wms_unit_list where unit_list_code='" + row["unit_list_code"] + "'";
+                string qtyUnit = this.ExecuteQuery(Sql).Tables[0].ToString();
+                if (brand_code != "''" && brand_code.Contains(row["product_code"].ToString()))
+                {
+                    sql = string.Format("UPDATE  ms.DWV_IINF_BRAND SET BRAND_CODE='{0}',BRAND_TYPE='{1}',BRAND_NAME='{2}',UP_CODE='{3}',BARCODE_BAR='{4}',PRICE_LEVEL_CODE='{5}',IS_FILTERTIP='{6}',IS_NEW='{7}',IS_FAMOUS='{8}'" +
+                      " ,IS_MAINPRODUCT='{9}',IS_MAINPROVINCE='{10}',BELONG_REGION='{11}',IS_ABNORMITY_BRAND='{12}',BUY_PRICE={13},TRADE_PRICE={14},RETAIL_PRICE={15},COST_PRICE={16},QTY_UNIT={17}" +
+                      ",BARCODE_ONE_PROJECT='{18}' ,UPDATE_DATE='{19}',ISACTIVE='{20}',N_UNIFY_CODE='{21}',IS_CONFISCATE='{22}',IS_IMPORT='{23}')", row["product_code"], row["product_type_code"], row["product_name"], row["product_code"], row["bar_barcode"], row["price_level_code"],
+                      row["is_filter_tip"], row["is_new"], row["is_famous"], row["is_main_product"], row["is_province_main_product"], row["belong_region"],
+                      row["is_abnormity"], row["buy_price"], row["trade_price"], row["retail_price"], row["cost_price"], qtyUnit, row["one_project_barcode"], row["update_time"], row["is_active"], row["uniform_code"], row["is_confiscate"], "0");
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO ms.DWV_IINF_BRAND(BRAND_CODE,BRAND_TYPE,BRAND_NAME,UP_CODE,BARCODE_BAR,PRICE_LEVEL_CODE,IS_FILTERTIP,IS_NEW,IS_FAMOUS" +
+                       " ,IS_MAINPRODUCT,IS_MAINPROVINCE,BELONG_REGION,IS_ABNORMITY_BRAND,BUY_PRICE,TRADE_PRICE,RETAIL_PRICE,COST_PRICE,QTY_UNIT" +
+                       ",BARCODE_ONE_PROJECT ,UPDATE_DATE,ISACTIVE,N_UNIFY_CODE,IS_CONFISCATE,IS_IMPORT)" +
+                       " VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}',{13},{14},{15},{16},{17},'{18}','{19}','{20}','{21}','{22}','{23}')", row["product_code"], row["product_type_code"], row["product_name"], row["product_code"], row["bar_barcode"], row["price_level_code"],
+                       row["is_filter_tip"], row["is_new"], row["is_famous"], row["is_main_product"], row["is_province_main_product"], row["belong_region"],
+                       row["is_abnormity"], row["buy_price"], row["trade_price"], row["retail_price"], row["cost_price"], qtyUnit, row["one_project_barcode"], row["update_time"], row["is_active"], row["uniform_code"], row["is_confiscate"], "0");
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
         /// <summary>
         /// 插入组织结构表【DWV_IORG_ORGANIZATION】，中烟数据库
         /// </summary>
@@ -122,7 +162,7 @@ namespace THOK.WMS.Upload.Dao
                    " ,N_ORGANIZATION_CODE,STORE_ROOM_AREA,STORE_ROOM_NUM,STORE_ROOM_CAPACITY,SORTING_NUM,UPDATE_DATE,ISACTIVE,IS_IMPORT)" +
                    "VALUES('{0}','{1}','{2}','{3}','{4}',{5},{6},{7},{8},'{9}','{10}','{11}')", row["company_code"], row["company_name"], row["company_type"], row["parent_company_id"],
                    row["uniform_code"] ?? "", row["warehouse_space"], row["warehouse_count"], row["warehouse_capacity"], row["sorting_count"],
-                   date, row["is_active"], row["IS_IMPORT"]);
+                   date, row["is_active"],"0");
                     this.ExecuteNonQuery(sql);
                 }
             }
@@ -148,19 +188,53 @@ namespace THOK.WMS.Upload.Dao
                 {
                      sql = string.Format("UPDATE DWV_IORG_PERSON SET PERSON_CODE='{0}',PERSON_N='{1}',PERSON_NAME='{2}',SEX='{3}'," +
                     " UPDATE_DATE='{4}',ISACTIVE='{5}',IS_IMPORT='{6}'", row["employee_code"],
-                    row["employee_no"], row["employee_name"], row["sex"], date, row["is_active"],'0');
+                    row["employee_no"], row["employee_name"], row["sex"], date, row["is_active"],"0");
                     this.ExecuteNonQuery(sql);
                 }
                 else
                 {
                      sql = string.Format("INSERT INTO DWV_IORG_PERSON(PERSON_CODE,PERSON_N,PERSON_NAME,SEX," +
                     " UPDATE_DATE,ISACTIVE,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", row["employee_code"],
-                    row["employee_code"], row["employee_name"], row["sex"], date, row["is_active"],'0');
+                    row["employee_code"], row["employee_name"], row["sex"], date, row["is_active"],"0");
                     this.ExecuteNonQuery(sql);
                 }
             }
         }
-
+        /// <summary>
+        ///  上报客户信息
+        /// </summary>
+        /// <param name="customSet"></param>
+        public void InsertCustom(DataSet customSet)
+        {
+            DataTable customTable = customSet.Tables["DWV_IORG_CUSTOMER"];
+            DataTable custCode = this.ExecuteQuery("SELECT CUST_CODE FROM ms.DWV_IORG_CUSTOMER ").Tables[0];
+            string cust_code = "''";
+            string sql;
+            for (int i = 0; i < custCode.Rows.Count; i++)
+            {
+                cust_code += ",'" + custCode.Rows[i]["CUST_CODE"] + "'";
+            }
+            foreach (DataRow row in customTable.Rows)
+            {
+                if (cust_code != "''" && cust_code.Contains(row["customer_code"].ToString()))
+                {
+                    sql = string.Format("update DWV_IORG_CUSTOMER SET CUST_CODE='{0}',CUST_N='{1}',CUST_NAME='{2}',ORG_CODE='{3}',SALE_REG_CODE='{4}',CUST_TYPE='{5}',RTL_CUST_TYPE_CODE='{6}'," +
+                       "CUST_GEO_TYPE_CODE='{7}',DIST_ADDRESS='{8}',DIST_PHONE='{9}',LICENSE_CODE='{10}',PRINCIPAL_NAME='{11}',UPDATE_DATE='{12}',ISACTIVE='{13}',IS_IMPORT='{14}',N_CUST_CODE='{15}',SEFL_CUST_FLG='{16}',FUNC_CUST_FLG='{17}',BUSI_CIRC_TYPE='{18}',CHAI_FLG='{19}',ALL_DAY_FLG='{20}',BUSI_HOUR='{21}',INFO_TERM='{22}',HEAD_LOGO='{23}',DELI_TIME='{24}',DELIVER_WAY='{25}',PAY_TYPE='{26}' WHERE CUST_CODE='{0}'"
+                       , row["customer_code"], row["custom_code"],
+                       row["customer_name"], row["company_code"], row["sale_region_code"], row["sale_scope"], row["industry_type"], row["city_or_countryside"], row["address"], row["phone"],
+                       row["license_code"], row["principal_name"], row["update_time"], row["is_active"], "0", row["uniform_code"], 1, 0, 1, 2, 2, 1, 3, 3, 2, 1, 2);
+                    this.ExecuteNonQuery(sql);
+                }
+                else
+                {
+                    sql = string.Format("INSERT INTO DWV_IORG_CUSTOMER(CUST_CODE,CUST_N,CUST_NAME,ORG_CODE,SALE_REG_CODE,CUST_TYPE,RTL_CUST_TYPE_CODE," +
+                       "CUST_GEO_TYPE_CODE,DIST_ADDRESS,DIST_PHONE,LICENSE_CODE,PRINCIPAL_NAME,UPDATE_DATE,ISACTIVE,IS_IMPORT,N_CUST_CODE,SEFL_CUST_FLG,FUNC_CUST_FLG,BUSI_CIRC_TYPE,CHAI_FLG,ALL_DAY_FLG,BUSI_HOUR,INFO_TERM,HEAD_LOGO,DELI_TIME,DELIVER_WAY,PAY_TYPE)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}' ,'{21}','{22}','{23}','{24}','{25}','{26}')", row["customer_code"], row["company_code"],
+                       row["customer_name"], row["company_code"], row["sale_region_code"], row["sale_scope"], row["industry_type"], row["city_or_countryside"], row["address"], row["phone"],
+                       row["license_code"], row["principal_name"], row["update_time"], row["is_active"],"0", row["uniform_code"], 1, 0, 1, 2, 2, 1, 3, 3, 2, 1, 2);
+                    this.ExecuteNonQuery(sql);
+                }
+            }
+        }
         /// <summary>
         /// 仓储信息上报
         /// </summary>
@@ -183,7 +257,7 @@ namespace THOK.WMS.Upload.Dao
                     sql = string.Format("UPDATE DWV_IBAS_STORAGE SET STORAGE_CODE='{0}',STORAGE_TYPE='{1}',ORDER_NUM='{2}',CONTAINER='{3}',STORAGE_NAME='{4}',UP_CODE='{5}',DIST_CTR_CODE='{6}',N_ORG_CODE='{7}',N_STORE_ROOM_CODE='{8}',CAPACITY='{9}'," +
                  "HORIZONTAL_NUM='{10}',VERTICAL_NUM='{11}',AREA_TYPE='{12}',UPDATE_DATE='{13}',ISACTIVE='{14}',IS_IMPORT='{15}'",
                  row["STORAGE_CODE"], row["STORAGE_TYPE"], row["ORDER_NUM"], row["CONTAINER"], row["STORAGE_NAME"], row["UP_CODE"], row["DIST_CTR_CODE"], row["N_ORG_CODE"], row["N_STORE_ROOM_CODE"], row["CAPACITY"], row["HORIZONTAL_NUM"], row["VERTICAL_NUM"], row["AREA_TYPE"],
-                 date, row["ISACTIVE"],'0');
+                 date, row["ISACTIVE"],"0");
                     this.ExecuteNonQuery(sql);
                 }
                 else
@@ -191,7 +265,7 @@ namespace THOK.WMS.Upload.Dao
                     sql = string.Format("INSERT INTO DWV_IBAS_STORAGE(STORAGE_CODE,STORAGE_TYPE,ORDER_NUM,CONTAINER,STORAGE_NAME,UP_CODE,DIST_CTR_CODE,N_ORG_CODE,N_STORE_ROOM_CODE,CAPACITY," +
                  "HORIZONTAL_NUM,VERTICAL_NUM,AREA_TYPE,UPDATE_DATE,ISACTIVE,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',{9},{10},{11},'{12}','{13}','{14}','{15}')",
                  row["STORAGE_CODE"], row["STORAGE_TYPE"], row["ORDER_NUM"], row["CONTAINER"], row["STORAGE_NAME"], row["UP_CODE"], row["DIST_CTR_CODE"], row["N_ORG_CODE"], row["N_STORE_ROOM_CODE"], row["CAPACITY"], row["HORIZONTAL_NUM"], row["VERTICAL_NUM"], row["AREA_TYPE"],
-                 date, row["ISACTIVE"],'0');
+                 date, row["ISACTIVE"],"0");
                     this.ExecuteNonQuery(sql);
                 }
             }
@@ -208,7 +282,7 @@ namespace THOK.WMS.Upload.Dao
             foreach (DataRow row in stockTable.Rows)
             {
                 sql = string.Format("INSERT INTO DWV_IWMS_STORE_STOCK(STORE_PLACE_CODE,BRAND_CODE,AREA_TYPE,BRAND_BATCH,DIST_CTR_CODE,QUANTITY,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}',{5},'{6}')",
-                 row["cell_code"], row["product_code"], row["area_type"], row["brand_batch"], row["dist_ctr_code"], row["quantity"],'0');
+                 row["cell_code"], row["product_code"], row["area_type"], row["brand_batch"], row["dist_ctr_code"], row["quantity"],"0");
                 this.ExecuteNonQuery(sql);
             }
         }
@@ -225,7 +299,7 @@ namespace THOK.WMS.Upload.Dao
             {
 
                 sql = string.Format("INSERT INTO DWV_IWMS_BUSI_STOCK(ORG_CODE,BRAND_CODE,DIST_CTR_CODE,QUANTITY,IS_IMPORT)VALUES('{0}','{1}','{2}',{3},'{4}')",
-                 row["ORG_CODE"], row["BRAND_CODE"],row["DIST_CTR_CODE"], row["QUANTITY"],'0');
+                 row["ORG_CODE"], row["BRAND_CODE"],row["DIST_CTR_CODE"], row["QUANTITY"],"0");
 
                 this.ExecuteNonQuery(sql);
             }
@@ -339,8 +413,8 @@ namespace THOK.WMS.Upload.Dao
                     this.ExecuteNonQuery(sql);
                 }
             }
-            sql = "update  DWV_IWMS_IN_BUSI_BILL set STORE_ROOM_CODE='1002',STORE_PLACE_CODE='10002' ";
-            this.ExecuteNonQuery(sql);
+            //sql = "update  DWV_IWMS_IN_BUSI_BILL set STORE_ROOM_CODE='1002',STORE_PLACE_CODE='10002' ";
+            //this.ExecuteNonQuery(sql);
         }
 
         /// <summary>
@@ -451,8 +525,8 @@ namespace THOK.WMS.Upload.Dao
                     this.ExecuteNonQuery(sql);
                 }
             }
-            sql = "update  DWV_IWMS_OUT_BUSI_BILL set STORE_ROOM_CODE='1002',STORE_PLACE_CODE='10002' ";
-            this.ExecuteNonQuery(sql);
+            //sql = "update  DWV_IWMS_OUT_BUSI_BILL set STORE_ROOM_CODE='1002',STORE_PLACE_CODE='10002' ";
+            //this.ExecuteNonQuery(sql);
         }
 
         /// <summary>
@@ -467,7 +541,7 @@ namespace THOK.WMS.Upload.Dao
                 string sql = string.Format("INSERT INTO DWV_IORD_ORDER(ORDER_ID,ORG_CODE,SALE_REG_CODE,ORDER_DATE,ORDER_TYPE," +
                     "CUST_CODE,CUST_NAME,QUANTITY_SUM,AMOUNT_SUM,DETAIL_NUM,DELIVER_ORDER,ISACTIVE,UPDATE_DATE,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}',{7},{8},{9},{10},'{11}','{12}','{13}')",
                     row["ORDER_ID"], row["COMPANY_CODE"], row["SALE_REGION_CODE"], row["ORDER_DATE"], row["ORDER_TYPE"], row["CUSTOMER_CODE"], row["CUSTOMER_NAME"],
-                    row["QUANTITY_SUM"], row["AMOUNT_SUM"], row["DETAIL_NUM"], row["DELIVER_ORDER"], row["ISACTIVE"], row["UPDATE_DATE"], "1");
+                    row["QUANTITY_SUM"], row["AMOUNT_SUM"], row["DETAIL_NUM"], row["DELIVER_ORDER"], row["ISACTIVE"], row["UPDATE_DATE"], "0");
                 this.ExecuteNonQuery(sql);
             }
         }
@@ -483,7 +557,7 @@ namespace THOK.WMS.Upload.Dao
                 string sql = string.Format("INSERT INTO DWV_IORD_ORDER_DETAIL(ORDER_DETAIL_ID,ORDER_ID,BRAND_CODE,BRAND_NAME,BRAND_UNIT_NAME," +
                     "QTY_DEMAND,QUANTITY,PRICE,AMOUNT,IS_IMPORT)VALUES('{0}','{1}','{2}','{3}','{4}',{5},{6},{7},{8},'{9}')",
                     row["ORDER_DETAIL_ID"], row["ORDER_ID"], row["PRODUCT_CODE"], row["PRODUCT_NAME"], row["UNIT_NAME"], row["DEMAND_QUANTITY"], row["REAL_QUANTITY"],
-                    row["PRICE"], row["AMOUNT"], "1");
+                    row["PRICE"], row["AMOUNT"], "0");
                 this.ExecuteNonQuery(sql);
             }
         }

@@ -17,6 +17,8 @@ namespace THOK.Wms.Allot.Service
         public IInBillMasterRepository InBillMasterRepository { get; set; }
         [Dependency]
         public IInBillDetailRepository InBillDetailRepository { get; set; }
+        [Dependency]
+        public IEmployeeRepository EmployeeRepository { get; set; }
 
         [Dependency]
         public IWarehouseRepository WarehouseRepository { get; set; }
@@ -450,7 +452,7 @@ namespace THOK.Wms.Allot.Service
                 strResult = "当前订单状态不是已分配，或当前订单不存在！";
             }
             return result;
-        } 
+        }
         #endregion
 
         #region IInBillAllotService 成员
@@ -500,7 +502,105 @@ namespace THOK.Wms.Allot.Service
                     );
             }
             return dt;
-        } 
+        }
+        #endregion
+
+        #region 车载
+        public object GetInBillMaster()
+        {
+            string str = "";
+            var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.Status != "2").Select(b => b.BillNo).ToArray();
+            for (int i = 0; i < inBillAllot.Length; i++)
+            {
+                str += inBillAllot[i];
+            }
+            var inBillMaster = InBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "6")
+                    .Distinct()
+                    .OrderByDescending(t => t.BillDate)
+                    .Select(i => new
+                    {
+                        BillNo = i.BillNo
+                    });
+            return inBillMaster;
+        }
+        public object SearchInBillAllot(string billNo, int page, int rows)
+        {
+            var allotQuery = InBillAllotRepository.GetQueryable();
+            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
+                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            int total = query.Count();
+            query = query.Skip((page - 1) * rows).Take(rows);
+
+            var temp = query.ToArray().Select(a => new
+            {
+                a.ID,
+                a.BillNo,
+                a.ProductCode,
+                a.Product.ProductName,
+                a.CellCode,
+                a.Cell.CellName,
+                CellType = "入库",
+                a.StorageCode,
+                a.UnitCode,
+                a.Unit.UnitName,
+                AllotQuantity = Math.Floor(a.AllotQuantity / a.Product.UnitList.Unit01.Count),
+                RealQuantity = Math.Floor(a.AllotQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                Status = WhatStatus(a.Status),
+                a.Operator
+            });
+            return new { total, rows = temp.ToArray() };
+        }
+        public bool EditAllot(string id, string status, string operater, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            string[] ids = id.Split(',');
+            string strId = "";
+            InBillAllot allot = null;
+
+            var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                strId = ids[i].ToString();
+                allot = InBillAllotRepository.GetQueryable().ToArray().FirstOrDefault(a => strId == a.ID.ToString());
+                if (allot != null)
+                {
+                    if (allot.Status == "0" && status == "1"
+                        || allot.Status == "1" && status == "0"
+                        || allot.Status == "1" && status == "2")
+                    {
+                        try
+                        {
+                            allot.Status = status;
+                            if (operater != "")
+                            {
+                                allot.Operator = employee.EmployeeName;
+                            }
+                            else
+                            {
+                                allot.Operator = "";
+                            }
+                            InBillAllotRepository.SaveChanges();
+                            result = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            strResult = "原因：" + ex.Message;
+                        }
+                    }
+                    else
+                    {
+                        strResult = "原因：操作错误！";
+                    }
+                }
+                else
+                {
+                    strResult = "原因：未找到该记录！";
+                }
+            }
+            return result;
+        }
         #endregion
     }
 }

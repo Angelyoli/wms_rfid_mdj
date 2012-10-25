@@ -34,7 +34,7 @@ namespace THOK.Wms.Bll.Service
 
         #region ISortOrderService 成员
 
-        public object GetDetails(int page, int rows, string OrderID, string orderDate)
+        public object GetDetails(int page, int rows, string OrderID, string orderDate, string productCode)
         {
             if (orderDate == string.Empty || orderDate == null)
             {
@@ -45,30 +45,44 @@ namespace THOK.Wms.Bll.Service
                 orderDate = Convert.ToDateTime(orderDate).ToString("yyyyMMdd");
             }
             IQueryable<SortOrder> sortOrderQuery = SortOrderRepository.GetQueryable();
-            var sortOrder = sortOrderQuery.Where(s => s.OrderDate.Contains(orderDate));
-            if (OrderID != string.Empty && OrderID != null)
+            IQueryable<SortOrderDetail> sortOrderDetailQuery = SortOrderDetailRepository.GetQueryable();
+
+            var sortOrder = sortOrderQuery.Join(sortOrderDetailQuery,
+                                            m => m.OrderID,
+                                            d => d.OrderID,
+                                            (m, d) => new { m, d });
+
+            if (productCode != string.Empty && productCode != null)
             {
-                sortOrder = sortOrder.Where(s => s.OrderID.Contains(OrderID));
+                sortOrder = sortOrder.Where(s => s.d.ProductCode == productCode && s.d.RealQuantity>0);
             }
 
-            var temp = sortOrder.AsEnumerable().OrderBy(t => t.OrderID).Select(s => new
+            sortOrder = sortOrder.Where(s => s.m.OrderDate == orderDate);
+
+            
+            if (OrderID != string.Empty && OrderID != null)
             {
-                s.OrderID,
-                s.CompanyCode,
-                s.SaleRegionCode,
-                s.OrderDate,
-                s.OrderType,
-                s.CustomerCode,
-                s.CustomerName,
-                s.QuantitySum,
-                s.DeliverLineCode,
-                s.AmountSum,
-                s.DetailNum,
-                s.DeliverOrder,
-                s.DeliverDate,
-                IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                s.Description
+                sortOrder = sortOrder.Where(s => s.m.OrderID.Contains(OrderID));
+            }
+
+            var temp = sortOrder.AsEnumerable().OrderBy(t => t.m.OrderID).Select(s => new
+            {
+                s.m.OrderID,
+                s.m.CompanyCode,
+                s.m.SaleRegionCode,
+                s.m.OrderDate,
+                s.m.OrderType,
+                s.m.CustomerCode,
+                s.m.CustomerName,
+                s.m.QuantitySum,
+                s.m.DeliverLineCode,
+                s.m.AmountSum,
+                s.m.DetailNum,
+                s.m.DeliverOrder,
+                s.m.DeliverDate,
+                IsActive = s.m.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = s.m.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                s.m.Description
             });
 
             int total = temp.Count();

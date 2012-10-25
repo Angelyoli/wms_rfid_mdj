@@ -15,6 +15,8 @@ namespace Authority.Controllers.Authority
     {
         //
         // GET: /HelpEdit/
+        [Dependency]
+        public IHelpContentService HelpContentService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -23,6 +25,22 @@ namespace Authority.Controllers.Authority
             ViewBag.ModuleID = moduleID;
             return View();
         }
-
+        
+        //帮助tree结构
+        // GET: /HelpEdit/GetHelpContent/
+        public ActionResult GetHelpContent(string sysId)
+        {
+            var wareCell = HelpContentService.GetHelpContentTree(sysId);
+            return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+        }
+        // GET: /HelpEdit/SaveHelpEdit/
+        [ValidateInput(false)]
+        public ActionResult SaveHelpEdit(string helpId01, string editor01)
+        {
+            string strResult = string.Empty;
+            bool bResult = HelpContentService.EditSave(helpId01, editor01, out strResult);
+            string msg = bResult ? "更新成功" : "更新失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }
