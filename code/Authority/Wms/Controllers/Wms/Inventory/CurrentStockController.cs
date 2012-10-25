@@ -47,8 +47,9 @@ namespace Authority.Controllers.Wms.Inventory
             string ware = Request.QueryString["ware"];
             string area = Request.QueryString["area"];
             string unitType = Request.QueryString["unitType"];
+            bool isAbnormity =Convert.ToBoolean(Request.QueryString["isAbnormity"]);
             string areaName;
-            System.Data.DataTable dt = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType, out areaName);
+            System.Data.DataTable dt = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType, out areaName, isAbnormity);
             string headText = "当前库存" + areaName;
             string headFontName = "微软雅黑"; Int16 headFontSize = 14;
             string colHeadFontName = "Arial"; Int16 colHeadFontSize = 12;

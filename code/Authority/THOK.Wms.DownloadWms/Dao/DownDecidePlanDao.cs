@@ -99,5 +99,11 @@ namespace THOK.Wms.DownloadWms.Dao
                                          WHERE A.UNIT_LIST_CODE='{0}'", unitListCode);
             return this.ExecuteQuery(sql).Tables[0];
         }
+
+        public void DeleteMiddleBill(string billno)
+        {
+            string sql = string.Format(@"DELETE WMS_MIDDLE_IN_BILL WHERE IN_BILL_NO='{0}'", billno);
+            this.ExecuteNonQuery(sql);
+        }
     }
 }

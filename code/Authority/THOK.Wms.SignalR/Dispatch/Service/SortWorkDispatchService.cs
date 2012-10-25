@@ -11,6 +11,7 @@ using THOK.Wms.SignalR.Common;
 using System.Transactions;
 using THOK.Wms.SignalR.Model;
 using System.Threading;
+using Entities.Extensions;
 
 namespace THOK.Wms.SignalR.Dispatch.Service
 {
@@ -81,7 +82,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
 
             //调度表未作业的数据
-            var temp = sortOrderDispatchQuery.Where(s => work.Any(w => w == s.ID) && s.WorkStatus == "1")
+            var temp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
+                                           .Where(s => s.WorkStatus == "1")
                                            .Join(sortOrderQuery,
                                                 dp => new { dp.OrderDate, dp.DeliverLineCode },
                                                 om => new { om.OrderDate, om.DeliverLineCode },
@@ -202,7 +204,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
                                 quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
                                                * product.Product.Unit.Count;
-                                
+
                                 if (areaQuantiy < quantity)//判断当前这个卷烟库存是否小于移库量
                                 {
                                     //出库量减去备货区库存量取整
@@ -214,6 +216,12 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         //出库量减去备货区库存量
                                         quantity = product.SumQuantity - storQuantity;
                                     }
+                                }
+
+                                //异性烟直接出库。
+                                if (product.Product.IsAbnormity == "1")
+                                {
+                                    quantity = product.SumQuantity - storQuantity;
                                 }
 
                                 if (quantity > 0)
@@ -247,15 +255,15 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     if (cancellationToken.IsCancellationRequested) return;
                                     OutBillCreater.AddToOutBillDetail(outBillMaster, product.Product, product.Price, product.SumQuantity);
                                 }
-                                
+
                                 if (cancellationToken.IsCancellationRequested) return;
                                 //添加出库、移库主单和作业调度表
                                 SortWorkDispatch sortWorkDisp = AddSortWorkDispMaster(moveBillMaster, outBillMaster, item.SortingLine.SortingLineCode, item.OrderDate);
 
                                 //修改线路调度作业状态和作业ID
-                                var sortDispTemp = sortOrderDispatchQuery.Where(s => work.Any(w => w == s.ID)
-                                                                             && s.OrderDate == item.OrderDate
-                                                                             && s.SortingLineCode == item.SortingLine.SortingLineCode);
+                                var sortDispTemp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
+                                                                         .Where(s=>s.OrderDate == item.OrderDate
+                                                                         && s.SortingLineCode == item.SortingLine.SortingLineCode);
 
                                 foreach (var sortDisp in sortDispTemp.ToArray())
                                 {
@@ -277,12 +285,6 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             }
                         }
                     }
-                    if (cancellationToken.IsCancellationRequested) return;
-                    if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
-                    {
-                        MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
-                    }
-                    MoveBillMasterRepository.SaveChanges();
                 }
                 catch (Exception e)
                 {
@@ -292,6 +294,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     return;
                 }
             }
+
+            if (cancellationToken.IsCancellationRequested) return;
+
+            if (MoveBillCreater.CheckIsNeedSyncMoveBill(lastMoveBillMaster.WarehouseCode))
+            {
+                MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
+            }
+            MoveBillMasterRepository.SaveChanges();
 
             ps.State = StateType.Info;
             ps.Messages.Add("调度完成!");

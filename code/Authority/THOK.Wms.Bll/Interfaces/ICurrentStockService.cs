@@ -10,6 +10,6 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetCellDetails(int page, int rows, string productCode, string ware, string area, string unitType);
 
-        System.Data.DataTable GetCurrentStock(int page, int rows, string productCode, string ware, string area, string unitType, out string areaName);
+        System.Data.DataTable GetCurrentStock(int page, int rows, string productCode, string ware, string area, string unitType, out string areaName, bool isAbnormity);
     }
 }

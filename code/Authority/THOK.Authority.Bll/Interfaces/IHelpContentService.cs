@@ -17,5 +17,7 @@ namespace THOK.Authority.Bll.Interfaces
         object GetHelpContentTree(string sysId);
 
         bool EditSave(string helpId, string contentText, out string strResult);
+
+        object GetContentTxt(string helpId);
     }
 }

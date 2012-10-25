@@ -81,14 +81,14 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["company_code"] = row["ORG_CODE"].ToString().Trim();
                 inbrddr["sale_region_code"] = row["SALE_REG_CODE"].ToString().Trim();
                 inbrddr["uniform_code"] = row["N_CUST_CODE"].ToString().Trim();
-                inbrddr["customer_type"] = row["CUST_TYPE"];
+                inbrddr["customer_type"] = row["CUST_TYPE"].ToString().Trim() == "" ? "1" : row["CUST_TYPE"];
                 inbrddr["sale_scope"] = row["sale_scope"].ToString().Trim();
                 inbrddr["industry_type"] = row["RTL_CUST_TYPE_CODE"].ToString().Trim();
                 inbrddr["city_or_countryside"] = row["CUST_GEO_TYPE_CODE"].ToString().Trim();
                 inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();
                 inbrddr["deliver_order"] = row["DELIVER_ORDER"];
                 inbrddr["address"] = row["DIST_ADDRESS"].ToString().Trim();
-                inbrddr["phone"] = row["DIST_PHONE"].ToString().Trim();
+                inbrddr["phone"] = row["DIST_PHONE"].ToString().Trim() == "" ? "1" : row["DIST_PHONE"].ToString().Trim();
                 inbrddr["license_type"] = row["LICENSE_TYPE"].ToString().Trim();
                 inbrddr["license_code"] = row["LICENSE_CODE"].ToString().Trim();
                 inbrddr["principal_name"] = row["PRINCIPAL_NAME"].ToString().Trim();
