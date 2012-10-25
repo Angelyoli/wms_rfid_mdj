@@ -97,7 +97,7 @@
     <Compile Include="EntityRepository\UnitRepository.cs" />
     <Compile Include="EntityRepository\WarehouseRepository.cs" />
     <Compile Include="Interfaces\IAreaRepository.cs" />
-    <Compile Include="Interfaces\IAutomotiveConfigRepository.cs" />
+    <Compile Include="Interfaces\ISystemParameterRepository.cs" />
     <Compile Include="Interfaces\IBillTypeRepository.cs" />
     <Compile Include="Interfaces\IBrandRepository.cs" />
     <Compile Include="Interfaces\ICellRepository.cs" />

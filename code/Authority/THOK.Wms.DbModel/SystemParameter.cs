@@ -5,9 +5,9 @@ using System.Text;
 
 namespace THOK.Wms.DbModel
 {
-    public class SystemConfig
+    public class SystemParameter
     {
-        public SystemConfig() 
+        public SystemParameter() 
         {
         }
         public int Id { get; set; }
@@ -15,6 +15,6 @@ namespace THOK.Wms.DbModel
         public string ParameterValue { get; set; }
         public string Remark { get; set; }
         public string Username { get; set; }
-        public string System { get; set; }
+        public int System { get; set; }
     }
 }
