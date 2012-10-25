@@ -75,10 +75,10 @@
                     }
                 });
             } else {
-                $.messager.alert('错误', '请选择仓库名称和单据类型！');
+                $.messager.confirm('错误', '请选择仓库名称和单据类型！');
             }     
         } else {
-            $.messager.alert('错误', '没选时间！请选择时间！');
+            $.messager.confirm('错误', '没选时间！请选择时间！');
         }
     }
 </script>

@@ -184,10 +184,11 @@ namespace Authority.Controllers.Wms.StockMove
         {
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
-            System.Data.DataTable dt = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo);
+            bool isAbnormity = Convert.ToBoolean(Request.QueryString["isAbnormity"]);
+            System.Data.DataTable dt = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo,isAbnormity);
             string headText = "移库单明细";
             string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
+            string colHeadFont = "Arial"; Int16 colHeadSize = 11;
             string[] HeaderFooder = {   
                                          "……"  //眉左
                                         ,"……"  //眉中

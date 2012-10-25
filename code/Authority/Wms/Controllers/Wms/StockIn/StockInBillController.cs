@@ -105,8 +105,11 @@ namespace Authority.Controllers.Wms.StockIn
         // POST: /InBillMaster/Delete/
         public ActionResult Delete(string BillNo)
         {
+            DownDecidePlanBll planBll = new DownDecidePlanBll();
             string strResult = string.Empty;
             bool bResult = InBillMasterService.Delete(BillNo, out strResult);
+            if (bResult)
+                planBll.DeleteMiddleBill(BillNo);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -130,7 +133,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult InBillDetailDelete(string ID)
         {
             string strResult = string.Empty;
-            bool bResult = InBillDetailService.Delete(ID, out strResult);
+            bool bResult = InBillDetailService.Delete(ID, out strResult);           
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -217,32 +220,24 @@ namespace Authority.Controllers.Wms.StockIn
 
         //
         // POST: /StockInBill/DownInBillMaster/
-        public ActionResult DownInBillMaster(string beginDate, string endDate, string wareCode, string billType)
+        public ActionResult DownInBillMaster(string beginDate, string endDate, string wareCode, string billType, bool isInDown)
         {
+            bool bResult = false;
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownInBillBll ibll = new DownInBillBll();
             DownDecidePlanBll planBll = new DownDecidePlanBll();
             string errorInfo = string.Empty;
-            if (beginDate == string.Empty || endDate == string.Empty)
-            {
-                beginDate = DateTime.Now.ToString("yyyyMMdd");
-                endDate = DateTime.Now.AddDays(1).Date.ToString("yyyyMMdd");
-            }
-            else
-            {
-                beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
-                endDate = Convert.ToDateTime(endDate).AddDays(1).Date.ToString("yyyyMMdd");
-            }
+            beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
+            endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
 
             ubll.DownUnitCodeInfo();
             pbll.DownProductInfo();
-
-            bool bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
-            
-            //bool bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
-
-            //bool bResult = InBillMasterService.DownInBillMaster(beginDate, endDate, out errorInfo);
+            if (isInDown)
+                bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+            else
+                bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);                
+           
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

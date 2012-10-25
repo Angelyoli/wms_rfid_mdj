@@ -398,13 +398,17 @@ namespace THOK.Wms.Bll.Service
 
         #region IMoveBillDetail 成员
         /// <summary>获得移库细单信息</summary>
-        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo)
+        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo,bool isAbnormity)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
             if (BillNo != "" && BillNo != null)
             {
                 IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
-                var moveBillDetail = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+                var moves = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo));
+                if(isAbnormity==false)
+                    moves = moves.Where(i => i.Product.IsAbnormity != "1");
+                var moveBillDetail = moves.OrderByDescending(i => i.OutCellCode)
+                                                        .Select(i => new
                 {
                     OutCellName = i.OutCell.CellName,
                     OutStorageCode = i.OutStorageCode,
@@ -426,9 +430,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("产品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("数量", typeof(string));
-                dt.Columns.Add("作业人员", typeof(string));
-                dt.Columns.Add("作业状态", typeof(string));
+                dt.Columns.Add("数量", typeof(decimal));
+                //dt.Columns.Add("作业人员", typeof(string));
+                //dt.Columns.Add("作业状态", typeof(string));
 
                 //dt.Columns.Add("Description", typeof(string));
                 foreach (var m in moveBillDetail)
@@ -444,8 +448,8 @@ namespace THOK.Wms.Bll.Service
                             , m.UnitCode
                             , m.UnitName
                             , m.RealQuantity
-                            , m.OperatePersonName
-                            , m.Status
+                            //, m.OperatePersonName
+                            //, m.Status
                         );
                 }
             }
