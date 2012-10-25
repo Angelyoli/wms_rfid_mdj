@@ -8,15 +8,15 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 
-namespace Wms.Controllers.Wms.VehicleMounted
+namespace Wms.Controllers.Wms.AutomotiveSystems
 {
-    public class StockInTaskController : Controller
+    public class StockCheckTaskController : Controller
     {
         //
-        // GET: /StockInTask/
+        // GET: /StockCheckTask/
 
         [Dependency]
-        public IInBillAllotService InBillAllotService { get; set; }
+        public ICheckBillDetailService CheckBillDetailService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -28,19 +28,19 @@ namespace Wms.Controllers.Wms.VehicleMounted
             ViewBag.ModuleID = moduleID;
             return View();
         }
-        //GO: /StockInTask/Search/
-        public ActionResult Search(string billNo, int page, int rows)
-        {
-            var result = InBillAllotService.SearchInBillAllot(billNo, page, rows);
-            return Json(result, "text", JsonRequestBehavior.AllowGet);
-        }
-        //GO: /StockInTask/GetBillNo/
+        //GO: /StockCheckTask/GetBillNo/
         public ActionResult GetBillNo()
         {
-            var result = InBillAllotService.GetInBillMaster();
+            var result = CheckBillDetailService.GetCheckBillMaster();
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
-        //GO: /StockInTask/Operate/
+        //GO: /StockCheckTask/Search/
+        public ActionResult Search(string billNo, int page, int rows)
+        {
+            var result = CheckBillDetailService.SearchCheckBillDetail(billNo, page, rows);
+            return Json(result, "text", JsonRequestBehavior.AllowGet);
+        }
+        //GO: /StockCheckTask/Operate/
         public ActionResult Operate(string id, string status)
         {
             string strResult = string.Empty;
@@ -49,7 +49,7 @@ namespace Wms.Controllers.Wms.VehicleMounted
 
             if (status == "1") operater = this.User.Identity.Name.ToString();
             if (status == "0") operater = "";
-            bool bResult = InBillAllotService.EditAllot(id, status, operater, out strResult);
+            bool bResult = CheckBillDetailService.EditDetail(id, status, operater, out strResult);
             if (status == "0") msg = bResult ? "取消成功" : "取消失败";
             if (status == "1") msg = bResult ? "申请成功" : "申请失败";
             if (status == "2") msg = bResult ? "操作成功" : "操作失败";

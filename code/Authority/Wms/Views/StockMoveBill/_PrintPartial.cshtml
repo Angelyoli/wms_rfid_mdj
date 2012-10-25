@@ -1,11 +1,16 @@
 ﻿<script type="text/javascript">
     function printClick() {
-
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            var rowBill = null;
-            if (row.BillNo == null) { rowBill = ""; } else { rowBill = row.BillNo; }
-            window.location.href = '/StockMoveBill/CreateExcelToClient/?billNo=' + rowBill;
+            $.messager.confirm('打印', '是否打印包含异性烟', function (r) {
+                var isAbnormity = false;
+                if (r) {
+                    isAbnormity = true;
+                }
+                var rowBill = null;
+                if (row.BillNo == null) { rowBill = ""; } else { rowBill = row.BillNo; }
+                window.location.href = '/StockMoveBill/CreateExcelToClient/?billNo=' + rowBill + '&isAbnormity=' + isAbnormity;
+            });
         } else {
             $.messager.alert('系统提示', '未选中行', "info");
         }

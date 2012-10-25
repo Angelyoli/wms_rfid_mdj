@@ -398,13 +398,17 @@ namespace THOK.Wms.Bll.Service
 
         #region IMoveBillDetail 成员
         /// <summary>获得移库细单信息</summary>
-        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo)
+        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo,bool isAbnormity)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
             if (BillNo != "" && BillNo != null)
             {
                 IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
-                var moveBillDetail = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+                var moves = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo));
+                if(isAbnormity==false)
+                    moves = moves.Where(i => i.Product.IsAbnormity != "1");
+                var moveBillDetail = moves.OrderByDescending(i => i.OutCellCode)
+                                                        .Select(i => new
                 {
                     OutCellName = i.OutCell.CellName,
                     OutStorageCode = i.OutStorageCode,
@@ -426,9 +430,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("产品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("数量", typeof(string));
-                dt.Columns.Add("作业人员", typeof(string));
-                dt.Columns.Add("作业状态", typeof(string));
+                dt.Columns.Add("数量", typeof(decimal));
+                //dt.Columns.Add("作业人员", typeof(string));
+                //dt.Columns.Add("作业状态", typeof(string));
 
                 //dt.Columns.Add("Description", typeof(string));
                 foreach (var m in moveBillDetail)
@@ -444,8 +448,8 @@ namespace THOK.Wms.Bll.Service
                             , m.UnitCode
                             , m.UnitName
                             , m.RealQuantity
-                            , m.OperatePersonName
-                            , m.Status
+                            //, m.OperatePersonName
+                            //, m.Status
                         );
                 }
             }
@@ -453,7 +457,7 @@ namespace THOK.Wms.Bll.Service
         }
         #endregion
 
-        #region 车载
+        #region 车载系统
         public string SwitchStatus(string status)
         {
             string statusStr = "";
@@ -473,26 +477,18 @@ namespace THOK.Wms.Bll.Service
         }
         public object GetMoveBillMaster()
         {
-            string str = "";
-            var moveBillDetail = MoveBillDetailRepository.GetQueryable().Where(i => i.Status != "2").Select(b => b.BillNo).ToArray();
-            for (int i = 0; i < moveBillDetail.Length; i++)
-            {
-                str += moveBillDetail[i];
-            }
-            var moveBillMaster = MoveBillMasterRepository.GetQueryable().ToArray().Where(i => str.Contains(i.BillNo) && i.Status != "6")
-                    .Distinct()
-                    .OrderByDescending(t => t.BillDate)
-                    .Select(i => new
-                    {
-                        BillNo = i.BillNo
-                    });
+            var moveBillMaster = MoveBillMasterRepository.GetQueryable()
+                                 .Where(i => i.Status == "2" || i.Status == "3")
+                                 .Select(i => new { BillNo = i.BillNo, BillType = "3" })
+                                 .ToArray();
             return moveBillMaster;
         }
         public object SearchMoveBillDetail(string billNo, int page, int rows)
         {
-            var allotQuery = MoveBillDetailRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo && a.Status != "2")
-                .OrderByDescending(a => a.Status == "1").Select(i => i);
+            var query = MoveBillDetailRepository.GetQueryable()
+                                .Where(a => a.BillNo == billNo && a.Status != "2")
+                                .OrderByDescending(a => a.Status == "1")
+                                .Select(i => i);
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -506,13 +502,13 @@ namespace THOK.Wms.Bll.Service
                 InCellName = a.InCell.CellName,
                 a.OutCellCode,
                 OutCellName = a.OutCell.CellName,
-                CellType = "移库",
+                BillType = "移库",
                 a.InStorageCode,
                 a.UnitCode,
                 a.Unit.UnitName,
                 a.RealQuantity,
                 PieceQuantity = Math.Floor(a.RealQuantity / a.Product.UnitList.Unit01.Count),
-                RopeQuantity = Math.Floor(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
+                BarQuantity = Math.Floor(a.RealQuantity % a.Product.UnitList.Unit01.Count / a.Product.UnitList.Unit02.Count),
                 Status = SwitchStatus(a.Status),
                 a.Operator
             });
@@ -535,8 +531,8 @@ namespace THOK.Wms.Bll.Service
                 if (detail != null)
                 {
                     if (detail.Status == "0" && status == "1"
-                        || detail.Status == "1" && status == "0"
-                        || detail.Status == "1" && status == "2")
+                     || detail.Status == "1" && status == "0"
+                     || detail.Status == "1" && status == "2")
                     {
                         try
                         {
