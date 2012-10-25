@@ -14,7 +14,7 @@ namespace THOK.Wms.DbModel
         public string ParameterName { get; set; }
         public string ParameterValue { get; set; }
         public string Remark { get; set; }
-        public string Username { get; set; }
-        public int System { get; set; }
+        public string UserName { get; set; }
+        public Guid? SystemID { get; set; }
     }
 }

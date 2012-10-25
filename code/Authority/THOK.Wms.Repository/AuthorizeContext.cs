@@ -91,6 +91,8 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new ProductWarningMap());
 
             #endregion
+
+            modelBuilder.Configurations.Add(new SystemParameterMap());
         }
     }
 }
