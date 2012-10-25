@@ -7,7 +7,7 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Dal.Interfaces
 {
-    public interface IAutomotiveConfigRepository : IRepository<AutomotiveConfig>
+    public interface ISystemConfigRepository : IRepository<SystemConfig>
     {
 
     }

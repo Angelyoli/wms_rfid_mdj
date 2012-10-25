@@ -10,21 +10,21 @@ using THOK.Wms.DbModel;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
-    public class AutomotiveConfigService : ServiceBase<AutomotiveConfig>, IAutomotiveConfigService
+    public class SystemConfigService : ServiceBase<SystemConfig>, ISystemConfig
     {
         [Dependency]
-        public IAutomotiveConfigRepository AutomotiveConfigRepository { get; set; }
+        public ISystemConfigRepository systemConfigRepository { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        public object GetAutomotiveConfig()
+        public object GetSystemConfig()
         {
-            var automotiveConfig = AutomotiveConfigRepository.GetQueryable()
+            var systemConfig = systemConfigRepository.GetQueryable()
                                     .Select(s => s);
-            return automotiveConfig;
+            return systemConfig;
         }
     }
 }

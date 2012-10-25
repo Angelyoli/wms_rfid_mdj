@@ -5,8 +5,8 @@ using System.Text;
 
 namespace THOK.Wms.AutomotiveSystems.Interfaces
 {
-    public interface IAutomotiveConfigService
+    public interface ISystemConfig
     {
-        object GetAutomotiveConfig();
+        object GetSystemConfig();
     }
 }

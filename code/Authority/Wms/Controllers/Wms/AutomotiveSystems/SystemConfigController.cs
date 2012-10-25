@@ -8,23 +8,23 @@ using THOK.Wms.AutomotiveSystems.Interfaces;
 
 namespace Wms.Controllers.Wms.AutomotiveSystems
 {
-    public class AutomotiveConfigController : Controller
+    public class SystemConfigController : Controller
     {
         //
-        // GET: /ParameterConfig/
+        // GET: /SystemConfig/
 
         [Dependency]
-        public IAutomotiveConfigService AutomotiveConfigService { get; set; }
+        public ISystemConfig SystemConfig { get; set; }
 
         public ActionResult Index(string moduleID)
         {
             ViewBag.ModuleID = moduleID;
             return View();
         }
-        //GO: /AutomotiveConfig/GetAutomotiveConfig/
-        public ActionResult GetAutomotiveConfig()
+        //GO: /SystemConfig/GetSystemConfig/
+        public ActionResult GetSystemConfig()
         {
-            var result = AutomotiveConfigService.GetAutomotiveConfig();
+            var result = SystemConfig.GetSystemConfig();
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
     }
