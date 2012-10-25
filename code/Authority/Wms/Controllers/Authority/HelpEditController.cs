@@ -47,7 +47,6 @@ namespace Authority.Controllers.Authority
         public ActionResult GetContentTxt(string helpId)
         {
             var helpContent = HelpContentService.GetContentTxt(helpId);
-            //return helpContent;
             return Json(helpContent, "text", JsonRequestBehavior.AllowGet);
         }
     }

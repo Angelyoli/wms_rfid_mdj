@@ -280,11 +280,14 @@ namespace THOK.Authority.Bll.Service
         }
         public object GetContentTxt(string helpId)
         {
-            string contentTxt = string.Empty;
             Guid new_ID = new Guid(helpId);
+            var system = SystemRepository.GetQueryable().FirstOrDefault(i => i.SystemID == new_ID);
             var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ID == new_ID);
-            contentTxt = help.ContentText;
-            return help;
+            if (system != null)
+            {
+                help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.Module.System_SystemID == new_ID);
+            }
+            return new {help.ContentText};
         }
     }
 }
