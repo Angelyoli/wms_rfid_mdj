@@ -261,9 +261,9 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 SortWorkDispatch sortWorkDisp = AddSortWorkDispMaster(moveBillMaster, outBillMaster, item.SortingLine.SortingLineCode, item.OrderDate);
 
                                 //修改线路调度作业状态和作业ID
-                                var sortDispTemp = sortOrderDispatchQuery.Where(s => work.Any(w => w == s.ID)
-                                                                             && s.OrderDate == item.OrderDate
-                                                                             && s.SortingLineCode == item.SortingLine.SortingLineCode);
+                                var sortDispTemp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
+                                                                         .Where(s=>s.OrderDate == item.OrderDate
+                                                                         && s.SortingLineCode == item.SortingLine.SortingLineCode);
 
                                 foreach (var sortDisp in sortDispTemp.ToArray())
                                 {
