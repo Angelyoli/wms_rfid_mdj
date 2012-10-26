@@ -141,7 +141,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.UpdateTime)
                 .IsRequired();
 
-            this.Property(t => t.IsAbnormity)
+            this.Property(t => t.IsRounding)
                 .IsFixedLength()
                 .HasMaxLength(1);
 
