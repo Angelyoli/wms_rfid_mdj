@@ -1,14 +1,14 @@
 ﻿<div region="center" split="true" border="false">
-    <table id="details" class="easyui-datagrid" url=""
-        border="false" singleselect="false" pagesize="50" fit="true" fitcolumns="true"
-        toolbar="#tool" pagination="true" rownumbers="true">
+    <table id="details" class="easyui-datagrid" url="/ParameterSet/GetSystemParameter/"
+        border="false" singleselect="true" pagesize="50" pagination="true" fit="true"
+        fitcolumns="true" rownumbers="true" toolbar="#tool">
         <thead>
             <tr>
-                <th field="ID" width="80">
+                <th field="Id" width="80" hidden="true">
                     ID
                 </th>
                 <th field="ParameterName" width="80">
-                    参数名
+                    参数名称
                 </th>
                 <th field="ParameterValue" width="80">
                     参数值
@@ -16,8 +16,11 @@
                 <th field="Remark" width="80">
                     备注
                 </th>
-                <th field="Username" width="80">
+                <th field="UserName" width="80">
                     用户名
+                </th>
+                <th field="SystemID" width="80">
+                    系统ID
                 </th>
             </tr>
         </thead>

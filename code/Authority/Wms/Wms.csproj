@@ -178,7 +178,7 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillAllotController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
-    <Compile Include="Controllers\Wms\SystemParameter\ParameterSetController.cs" />
+    <Compile Include="Controllers\Wms\SystemParameterInfo\ParameterSetController.cs" />
     <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
@@ -2212,6 +2212,10 @@
     <Content Include="Views\StockCheckTask\_BatchPartial.cshtml" />
     <Content Include="Views\StockCheckTask\_SearchPartial.cshtml" />
     <Content Include="Views\ParameterSet\Index.cshtml" />
+    <Content Include="Views\ParameterSet\_SearchPartial.cshtml" />
+    <Content Include="Views\ParameterSet\_AddPartial.cshtml" />
+    <Content Include="Views\ParameterSet\_EditPartial.cshtml" />
+    <Content Include="Views\ParameterSet\_DeletePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
