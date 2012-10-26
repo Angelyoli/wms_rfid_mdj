@@ -8,15 +8,15 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 
-namespace Wms.Controllers.Wms.VehicleMounted
+namespace Wms.Controllers.Wms.AutomotiveSystems
 {
-    public class StockCheckTaskController : Controller
+    public class StockMoveTaskController : Controller
     {
         //
-        // GET: /StockCheckTask/
+        // GET: /StockMoveTask/
 
         [Dependency]
-        public ICheckBillDetailService CheckBillDetailService { get; set; }
+        public IMoveBillDetailService MoveBillDetailService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -28,19 +28,19 @@ namespace Wms.Controllers.Wms.VehicleMounted
             ViewBag.ModuleID = moduleID;
             return View();
         }
-        //GO: /StockCheckTask/GetBillNo/
+        //GO: /StockMoveTask/GetBillNo/
         public ActionResult GetBillNo()
         {
-            var result = CheckBillDetailService.GetCheckBillMaster();
+            var result = MoveBillDetailService.GetMoveBillMaster();
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
-        //GO: /StockCheckTask/Search/
+        //GO: /StockMoveTask/Search/
         public ActionResult Search(string billNo, int page, int rows)
         {
-            var result = CheckBillDetailService.SearchCheckBillDetail(billNo, page, rows);
+            var result = MoveBillDetailService.SearchMoveBillDetail(billNo, page, rows);
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
-        //GO: /StockCheckTask/Operate/
+        //GO: /StockMoveTask/Operate/
         public ActionResult Operate(string id, string status)
         {
             string strResult = string.Empty;
@@ -49,7 +49,7 @@ namespace Wms.Controllers.Wms.VehicleMounted
 
             if (status == "1") operater = this.User.Identity.Name.ToString();
             if (status == "0") operater = "";
-            bool bResult = CheckBillDetailService.EditDetail(id, status, operater, out strResult);
+            bool bResult = MoveBillDetailService.EditAllot(id, status, operater, out strResult);
             if (status == "0") msg = bResult ? "取消成功" : "取消失败";
             if (status == "1") msg = bResult ? "申请成功" : "申请失败";
             if (status == "2") msg = bResult ? "操作成功" : "操作失败";

@@ -197,9 +197,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("订单数量", typeof(string));
-                dt.Columns.Add("已分配数量", typeof(string));
-                dt.Columns.Add("实际出库量", typeof(string));
+                dt.Columns.Add("订单数量", typeof(decimal));
+                dt.Columns.Add("已分配数量", typeof(decimal));
+                dt.Columns.Add("实际出库量", typeof(decimal));
                 dt.Columns.Add("备注", typeof(string));
                 foreach (var o in outBillDetail)
                 {

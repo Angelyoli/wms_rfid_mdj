@@ -119,6 +119,11 @@
     <Compile Include="Controllers\Authority\UserController.cs" />
     <Compile Include="Controllers\Authority\UserPermissionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Wms\AutomotiveSystems\SystemParameterController.cs" />
+    <Compile Include="Controllers\Wms\AutomotiveSystems\StockCheckTaskController.cs" />
+    <Compile Include="Controllers\Wms\AutomotiveSystems\StockInTaskController.cs" />
+    <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
+    <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\SortOrderSearchController.cs" />
@@ -175,10 +180,6 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
     <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
-    <Compile Include="Controllers\Wms\VehicleMounted\StockCheckTaskController.cs" />
-    <Compile Include="Controllers\Wms\VehicleMounted\StockInTaskController.cs" />
-    <Compile Include="Controllers\Wms\VehicleMounted\StockMoveTaskController.cs" />
-    <Compile Include="Controllers\Wms\VehicleMounted\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
@@ -1694,10 +1695,6 @@
       <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
       <Name>THOK.Wms.Upload</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.VehicleMounted\THOK.Wms.VehicleMounted.csproj">
-      <Project>{239DAA94-0B0F-4FB8-ABAF-0638A33704F2}</Project>
-      <Name>THOK.Wms.VehicleMounted</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Scripts\ckeditor\images\Thumbs.db" />
@@ -1891,6 +1888,7 @@
     <Content Include="Views\DeliverLine\_deliverLinePartial1.cshtml" />
     <Content Include="Views\DeliverLine\_EditPartial.cshtml" />
     <Content Include="Views\DeliverLine\_DeletePartial.cshtml" />
+    <Content Include="Views\AutomotiveConfig\Index.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

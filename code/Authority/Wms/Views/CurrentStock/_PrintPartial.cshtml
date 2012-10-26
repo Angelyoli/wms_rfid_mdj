@@ -22,10 +22,18 @@
         if ($('#productCode').val() == null) { productCode = ""; } else { productCode = $('#productCode').val(); }
         if (document.getElementById('unit_Type') == null) { unitType = ""; } else { unitType = $('#unit_Type').combo('getValue'); }
 
-        window.location.href = "/CurrentStock/CreateExcelToClient/"
+        $.messager.confirm('打印', '是否打印包含异性烟', function (r) {
+            var isAbnormity = false;
+            if (r) {
+                isAbnormity = true;
+            }
+            window.location.href = "/CurrentStock/CreateExcelToClient/"
                                 + "?productCode=" + productCode
                                 + "&ware=" + ware
                                 + "&area=" + area
-                                + "&unitType=" + unitType;
+                                + "&unitType=" + unitType
+                                + "&isAbnormity=" + isAbnormity;
+
+        });
     }
 </script>

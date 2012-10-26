@@ -42,9 +42,10 @@ namespace THOK.WMS.DownloadWms.Bll
                 {
                     try
                     {
-                        DataSet middleds = this.MiddleTable(masterdt);
+                        string billno = this.GetNewBillNo();
+                        DataSet middleds = this.MiddleTable(masterdt,billno);
                         //DataSet masterds = this.OutBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType);
-                        DataSet detailds = this.OutBillDetail(detaildt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType, startDate);
+                        DataSet detailds = this.OutBillDetail(detaildt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType, startDate,billno);
                         this.Insert(detailds, middleds);
                     }
                     catch (Exception e)
@@ -138,11 +139,10 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public DataSet OutBillDetail(DataTable outDetailTable,string emplcode, string wareCode, string billType,string orderDate)
+        public DataSet OutBillDetail(DataTable outDetailTable,string emplcode, string wareCode, string billType,string orderDate,string billno)
         {
             DataSet ds = this.GenerateEmptyTables();
-            Guid eid = new Guid(emplcode);
-            string billno = this.GetNewBillNo();
+            Guid eid = new Guid(emplcode);            
             orderDate = orderDate.Substring(0, 4) + "-" + orderDate.Substring(4, 2) + "-" + orderDate.Substring(6, 2);
             DataRow masterrow = ds.Tables["WMS_OUT_BILLMASTER"].NewRow();
             masterrow["bill_no"] = billno;
@@ -178,7 +178,7 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public DataSet MiddleTable(DataTable inBillMaster)
+        public DataSet MiddleTable(DataTable inBillMaster,string billno)
         {
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in inBillMaster.Rows)
@@ -188,6 +188,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataRow detailrow = ds.Tables["WMS_MIDDLE_OUT_BILLDETAIL"].NewRow();
                 detailrow["bill_no"] = row["ORDER_ID"];
                 detailrow["bill_date"] = Convert.ToDateTime(orderDate);
+                detailrow["in_bill_no"] = billno;
                 ds.Tables["WMS_MIDDLE_OUT_BILLDETAIL"].Rows.Add(detailrow);
             }
             return ds;

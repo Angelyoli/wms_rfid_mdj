@@ -46,12 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ISystemParameter.cs" />
+    <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Interfaces\ITaskService.cs" />
     <Compile Include="Models\BillDetail.cs" />
     <Compile Include="Models\BillMaster.cs" />
     <Compile Include="Models\Result.cs" />
     <Compile Include="Models\TaskParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\SystemParameterService.cs" />
+    <Compile Include="Service\ServiceBase.cs" />
     <Compile Include="Service\TaskService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +66,10 @@
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Common\THOK.Common.csproj">
+      <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
+      <Name>THOK.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Dal\THOK.Wms.Dal.csproj">
       <Project>{DB6CC091-9BC6-415C-A0D2-E34289669102}</Project>
