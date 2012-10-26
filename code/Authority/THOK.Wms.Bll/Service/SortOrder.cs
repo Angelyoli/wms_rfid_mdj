@@ -46,43 +46,37 @@ namespace THOK.Wms.Bll.Service
             }
             IQueryable<SortOrder> sortOrderQuery = SortOrderRepository.GetQueryable();
             IQueryable<SortOrderDetail> sortOrderDetailQuery = SortOrderDetailRepository.GetQueryable();
-
-            var sortOrder = sortOrderQuery.Join(sortOrderDetailQuery,
-                                            m => m.OrderID,
-                                            d => d.OrderID,
-                                            (m, d) => new { m, d });
-
+            var sortOrderDetail = sortOrderDetailQuery.Where(s => s.OrderDetailID == s.OrderDetailID).Select(s => new {s.OrderID,s.Product,s.RealQuantity });
             if (productCode != string.Empty && productCode != null)
             {
-                sortOrder = sortOrder.Where(s => s.d.ProductCode == productCode && s.d.RealQuantity>0);
+                sortOrderDetail = sortOrderDetail.Where(s => s.Product.ProductCode == productCode && s.RealQuantity > 0);
             }
 
-            sortOrder = sortOrder.Where(s => s.m.OrderDate == orderDate);
-
+            var sortOrder = sortOrderQuery.Where(s => s.OrderDate == orderDate && sortOrderDetail.Any(d => d.OrderID == s.OrderID));           
             
             if (OrderID != string.Empty && OrderID != null)
             {
-                sortOrder = sortOrder.Where(s => s.m.OrderID.Contains(OrderID));
+                sortOrder = sortOrder.Where(s => s.OrderID == OrderID);
             }
 
-            var temp = sortOrder.AsEnumerable().OrderBy(t => t.m.OrderID).Select(s => new
+            var temp = sortOrder.AsEnumerable().OrderBy(t => t.OrderID).Select(s => new
             {
-                s.m.OrderID,
-                s.m.CompanyCode,
-                s.m.SaleRegionCode,
-                s.m.OrderDate,
-                s.m.OrderType,
-                s.m.CustomerCode,
-                s.m.CustomerName,
-                s.m.QuantitySum,
-                s.m.DeliverLineCode,
-                s.m.AmountSum,
-                s.m.DetailNum,
-                s.m.DeliverOrder,
-                s.m.DeliverDate,
-                IsActive = s.m.IsActive == "1" ? "可用" : "不可用",
-                UpdateTime = s.m.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                s.m.Description
+                s.OrderID,
+                s.CompanyCode,
+                s.SaleRegionCode,
+                s.OrderDate,
+                s.OrderType,
+                s.CustomerCode,
+                s.CustomerName,
+                s.QuantitySum,
+                s.DeliverLineCode,
+                s.AmountSum,
+                s.DetailNum,
+                s.DeliverOrder,
+                s.DeliverDate,
+                IsActive = s.IsActive == "1" ? "可用" : "不可用",
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                s.Description
             });
 
             int total = temp.Count();
