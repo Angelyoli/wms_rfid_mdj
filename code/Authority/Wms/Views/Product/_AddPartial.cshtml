@@ -63,7 +63,7 @@
 </script>
 
     <div id="dlg" class="easyui-dialog" modal="true" 
-        style="width:745px;height:440px;padding:2px 2px"
+        style="width:800px;height:440px;padding:2px 2px"
         closed="true" buttons="#dlg-buttons">
 		<div class="easyui-layout" fit="true">
 			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
@@ -241,11 +241,18 @@
                         <select  id="cc" class="easyui-combobox"  name="IsActive" editable="false"  panelHeight="70" style="width: 129px;" required="true">
 		                       <option value="1">可用</option>
 		                        <option value="0">不可用</option>
-	                        </select>
+	                        </select></td>
+                            <td>调度是否取整</td>
+                      <td>
+                        <select  class="easyui-combobox"  name="IsRounding" editable="false"  panelHeight="70" style="width: 129px;" required="true">
+		                       <option value="1">是</option>
+		                        <option value="2">否</option>
+	                        </select></td>
                       </tr>
+                      <tr>
                         <td>描述:</td>
                         <td colspan="5"><textarea name="Description" style="height: 50px;width:210px;"></textarea></td>
-                      </tr>
+                      </tr>                      
                     </table>
 	            </form>
             </div>
