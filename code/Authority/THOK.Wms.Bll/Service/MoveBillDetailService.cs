@@ -407,7 +407,7 @@ namespace THOK.Wms.Bll.Service
                 var moves = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo));
                 if(isAbnormity==false)
                     moves = moves.Where(i => i.Product.IsAbnormity != "1");
-                var moveBillDetail = moves.OrderByDescending(i => i.OutCellCode)
+                var moveBillDetail = moves.OrderBy(i => new {i.OutCell.CellName,i.ProductCode })
                                                         .Select(i => new
                 {
                     OutCellName = i.OutCell.CellName,

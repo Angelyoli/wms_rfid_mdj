@@ -91,7 +91,8 @@ namespace THOK.Wms.Bll.Service
                 c.UnitCode,
                 c.Unit.UnitName,
                 c.UnitListCode,
-                UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                IsRounding = c.IsRounding == "0" ? "是" : "否"
             });
             return new { total, rows = temp.ToArray() };
         }
@@ -132,6 +133,7 @@ namespace THOK.Wms.Bll.Service
             prod.UnitCode = product.UnitCode;
             prod.UnitListCode = product.UnitListCode;
             prod.UpdateTime = DateTime.Now;
+            prod.IsRounding = product.IsRounding;
 
             ProductRepository.Add(prod);
             ProductRepository.SaveChanges();
@@ -189,7 +191,7 @@ namespace THOK.Wms.Bll.Service
             prod.UnitCode = product.UnitCode;
             prod.UnitListCode = product.UnitListCode;
             prod.UpdateTime = DateTime.Now;
-
+            prod.IsRounding = product.IsRounding;
             ProductRepository.SaveChanges();
             //产品信息上报
             //DataSet ds = this.Insert(prod);
