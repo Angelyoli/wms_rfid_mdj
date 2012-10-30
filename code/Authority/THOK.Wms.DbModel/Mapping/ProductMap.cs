@@ -141,6 +141,10 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.UpdateTime)
                 .IsRequired();
 
+            this.Property(t => t.IsRounding)
+                .IsFixedLength()
+                .HasMaxLength(1);
+
             // Table & Column Mappings
             this.Property(t => t.ProductCode).HasColumnName(ColumnMap.Value.To("ProductCode"));
             this.Property(t => t.ProductName).HasColumnName(ColumnMap.Value.To("ProductName"));
@@ -175,6 +179,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.Description).HasColumnName(ColumnMap.Value.To("Description"));
             this.Property(t => t.IsActive).HasColumnName(ColumnMap.Value.To("IsActive"));
             this.Property(t => t.UpdateTime).HasColumnName(ColumnMap.Value.To("UpdateTime"));
+            this.Property(t => t.IsRounding).HasColumnName(ColumnMap.Value.To("IsRounding"));
 
             // Relationships
             this.HasRequired(t => t.Brand)

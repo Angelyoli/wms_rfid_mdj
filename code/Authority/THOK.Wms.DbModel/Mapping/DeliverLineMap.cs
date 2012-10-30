@@ -41,6 +41,9 @@ namespace THOK.Wms.DbModel.Mapping
 
                   this.Property(t => t.UpdateTime)
                       .IsRequired();
+
+                  this.Property(t => t.NewDeliverLineCode)
+                      .HasMaxLength(50);
                   // Table & Column Mappings
 
                   this.Property(t => t.DeliverLineCode).HasColumnName(ColumnMap.Value.To("DeliverLineCode"));
@@ -51,7 +54,7 @@ namespace THOK.Wms.DbModel.Mapping
                   this.Property(t => t.Description).HasColumnName(ColumnMap.Value.To("Description"));
                   this.Property(t => t.IsActive).HasColumnName(ColumnMap.Value.To("IsActive"));
                   this.Property(t => t.UpdateTime).HasColumnName(ColumnMap.Value.To("UpdateTime"));
-
+                  this.Property(t => t.NewDeliverLineCode).HasColumnName(ColumnMap.Value.To("NewDeliverLineCode"));
                   // Relationships
 
               }

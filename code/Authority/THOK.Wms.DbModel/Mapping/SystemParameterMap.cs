@@ -43,6 +43,12 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.Remark).HasColumnName(ColumnMap.Value.To("Remark"));
             this.Property(t => t.UserName).HasColumnName(ColumnMap.Value.To("UserName"));
             this.Property(t => t.SystemID).HasColumnName(ColumnMap.Value.To("SystemID"));
+
+            //// Relationships
+            //this.HasRequired(t => t.System)
+            //    .WithMany(t => t.SystemParameters)
+            //    .HasForeignKey(d => d.SystemID)
+            //    .WillCascadeOnDelete(false);
         }
     }
 }

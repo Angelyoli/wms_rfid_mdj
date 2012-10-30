@@ -1,0 +1,117 @@
+﻿<script type="text/javascript">
+    $(function () {
+        $.extend($.fn.validatebox.defaults.rules, {
+            maxLength: {
+                validator: function (value, param) {
+                    return value.length <= param[0];
+                },
+                message: '最多可输入 {0} 个字符'
+            }
+        });
+    })
+    function addClick() {
+        $('#dlg-add').dialog('open').dialog('setTitle', '新增');
+        $('#fm').form('clear');
+        $('#fm .easyui-validatebox').validatebox({
+            required: true
+        });
+        $('form input').removeAttr("disabled");
+        url = '/ParameterSet/AddSystemParameter/';
+    };
+    function save() {
+        $('#fm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.show({
+                        title: '成功',
+                        msg: result.msg
+                    });
+                    $('#dlg-add').dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.show({
+                        title: '错误',
+                        msg: result.msg
+                    });
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+</script>
+<style>
+    .layout
+    {
+        padding: 10px 10px;
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+    .tb
+    {
+        width: 280px;
+    }
+    .td1
+    {
+        width: 60px;
+    }
+    .td2
+    {
+        width: 168px;
+    }
+</style>
+<div id="dlg-add" class="easyui-dialog" closed="true" modal="true" style="width: 310px;
+    height: 220px; padding: 2px 2px" buttons="#dlg-add-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" class="layout">
+            <form id="fm" method="post" novalidate>
+            <table class="tb">
+                <input name="Id" style="display: none;" />
+                <tr>
+                    <td class="td1">
+                        参数名：
+                    </td>
+                    <td class="td2">
+                        <input name="ParameterName" class="easyui-validatebox" validtype="maxLength[20]"
+                            required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1">
+                        参数值：
+                    </td>
+                    <td class="td2">
+                        <input name="ParameterValue" class="easyui-validatebox" validtype="maxLength[20]"
+                            required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1">
+                        备注：
+                    </td>
+                    <td class="td2">
+                        <input name="Remark" class="easyui-validatebox" validtype="maxLength[20]" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1">
+                        系统ID：
+                    </td>
+                    <td class="td2">
+                        <input name="SystemID" class="easyui-validatebox" />
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="dlg-add-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-add').dialog('close')">
+        取消</a>
+</div>

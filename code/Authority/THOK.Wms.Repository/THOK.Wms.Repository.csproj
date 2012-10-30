@@ -273,6 +273,10 @@
     <Compile Include="Migrations\201210250452400_add_system_parameter.Designer.cs">
       <DependentUpon>201210250452400_add_system_parameter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201210260558337_add_product_line.cs" />
+    <Compile Include="Migrations\201210260558337_add_product_line.Designer.cs">
+      <DependentUpon>201210260558337_add_product_line.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

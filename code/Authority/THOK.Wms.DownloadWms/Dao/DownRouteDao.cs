@@ -15,7 +15,7 @@ namespace THOK.WMS.DownloadWms.Dao
         {
             string sql = string.Format(@"SELECT * FROM V_DWV_ORD_DIST_BILL A
                                          LEFT JOIN V_WMS_DELIVER_LINE B ON A.DELIVER_LINE_CODE=B.DELIVER_LINE_CODE");
-            sql = "SELECT * FROM V_WMS_DELIVER_LINE";
+            //sql = "SELECT * FROM V_WMS_DELIVER_LINE";
             return this.ExecuteQuery(sql).Tables[0];
         }
 

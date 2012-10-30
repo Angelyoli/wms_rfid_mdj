@@ -188,6 +188,7 @@ namespace THOK.Wms.SignalR.Common
                         decimal moveQuantity = Math.Floor((sourceStorage.Quantity - sourceStorage.OutFrozenQuantity) 
                                                     / sourceStorage.Product.Unit.Count)
                                                    * sourceStorage.Product.Unit.Count;
+                        moveQuantity = moveQuantity % (targetStorage.Cell.MaxQuantity * sourceStorage.Product.Unit.Count);
                         decimal targetAbleQuantity = Math.Floor((targetStorage.Cell.MaxQuantity 
                                                         * sourceStorage.Product.Unit.Count 
                                                         - targetStorage.Quantity 
@@ -221,6 +222,7 @@ namespace THOK.Wms.SignalR.Common
                         decimal moveQuantity = Math.Floor((sourceStorage.Quantity - sourceStorage.OutFrozenQuantity)
                                                     / sourceStorage.Product.Unit.Count)
                                                    * sourceStorage.Product.Unit.Count;
+                        moveQuantity = moveQuantity % (targetStorage.Cell.MaxQuantity * sourceStorage.Product.Unit.Count);
                         decimal targetAbleQuantity = Math.Floor((c.MaxQuantity
                                                         * sourceStorage.Product.Unit.Count
                                                         - targetStorage.Quantity

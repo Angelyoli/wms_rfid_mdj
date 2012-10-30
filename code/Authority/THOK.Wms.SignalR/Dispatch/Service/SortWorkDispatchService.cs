@@ -218,8 +218,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     }
                                 }
 
-                                //异性烟直接出库。
-                                if (product.Product.IsAbnormity == "1")
+                                //不取整的烟直接出库。
+                                if (product.Product.IsRounding == "1")
                                 {
                                     quantity = product.SumQuantity - storQuantity;
                                 }

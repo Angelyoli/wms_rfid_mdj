@@ -103,7 +103,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             catch (Exception e)
             {
                 result.IsSuccess = false;
-                result.Message = "调用服务器服务查询订单主表失败，详情：" + e.Message;
+                result.Message = "调用服务器服务查询订单主表失败，详情：" +e.InnerException.Message+"  其他错误：" +e.Message;
             }
         }
 
@@ -305,7 +305,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             catch (Exception e)
             {
                 result.IsSuccess = false;
-                result.Message = "调用服务器服务查询订单细表失败，详情：" + e.Message;
+                result.Message = "调用服务器服务查询订单细表失败，详情：" + e.InnerException.Message + "  其他错误" + e.Message;
             }
         }
 
@@ -434,7 +434,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             catch (Exception e)
             {
                 result.IsSuccess = false;
-                result.Message = "调用服务器服务申请作业任务失败，详情：" + e.Message;
+                result.Message = "调用服务器服务申请作业任务失败，详情：" +e.InnerException.Message+" 其他错误 "+ e.Message;
             }
         }
 
@@ -551,7 +551,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             catch (Exception e)
             {
                 result.IsSuccess = false;
-                result.Message = "调用服务器服务取消作业任务失败，详情：" + e.Message;
+                result.Message = "调用服务器服务取消作业任务失败，详情：" +e.InnerException.Message+"  其他错误："+ e.Message;
             }
         }
 
@@ -771,7 +771,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             catch (Exception e)
             {
                 result.IsSuccess = false;
-                result.Message = "调用服务器服务执行作业任务失败，详情：" + e.Message;
+                result.Message = "调用服务器服务执行作业任务失败，详情：" + e.InnerException.Message+"  其他错误："+e.Message;
             }
         }
 
@@ -830,7 +830,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                         if (o.BillQuantity - o.AllotQuantity > 0)
                         {
-                            throw new Exception(sortWork.SortingLine.SortingLineName + " " + o.ProductCode + " " + o.Product.ProductName + "分拣备货区库存不足，未能结单！");
+                            throw new Exception(sortWork.SortingLine.SortingLineName + " " + o.ProductCode + " " + o.Product.ProductName + "分拣备货区库存不足，缺少："+(Convert.ToInt32(o.BillQuantity-o.AllotQuantity))+" （支），未能结单！");
                         }
                     }
                 );
