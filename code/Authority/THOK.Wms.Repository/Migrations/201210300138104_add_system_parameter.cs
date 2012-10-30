@@ -8,7 +8,7 @@ namespace THOK.Wms.Repository.Migrations
         public override void Up()
         {
             CreateTable(
-                "dbo.wms_system_parameter",
+                "dbo.auth_system_parameter",
                 c => new
                     {
                         id = c.Int(nullable: false, identity: true),
@@ -16,15 +16,19 @@ namespace THOK.Wms.Repository.Migrations
                         parameter_value = c.String(nullable: false, maxLength: 20),
                         remark = c.String(nullable: false, maxLength: 20),
                         user_name = c.String(nullable: false, maxLength: 20),
-                        system_id = c.Guid(),
+                        system_id = c.Guid(nullable: false),
                     })
-                .PrimaryKey(t => t.id);
+                .PrimaryKey(t => t.id)
+                .ForeignKey("dbo.auth_system", t => t.system_id)
+                .Index(t => t.system_id);
             
         }
         
         public override void Down()
         {
-            DropTable("dbo.wms_system_parameter");
+            DropIndex("dbo.auth_system_parameter", new[] { "system_id" });
+            DropForeignKey("dbo.auth_system_parameter", "system_id", "dbo.auth_system");
+            DropTable("dbo.auth_system_parameter");
         }
     }
 }

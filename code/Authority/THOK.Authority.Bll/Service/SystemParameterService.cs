@@ -1,39 +1,68 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.Practices.Unity;
-using THOK.Wms.Dal.Interfaces;
-using THOK.Wms.DbModel;
-using THOK.Wms.Bll.Interfaces;
+using THOK.Authority.Dal.Interfaces;
+using THOK.Authority.Bll.Interfaces;
+using THOK.Authority.DbModel;
 
-namespace THOK.Wms.Bll.Service
+namespace THOK.Authority.Bll.Service
 {
     public class SystemParameterService : ServiceBase<SystemParameter>, ISystemParameterService
     {
         [Dependency]
         public ISystemParameterRepository SystemParameterRepository { get; set; }
+        [Dependency]
+        public ISystemRepository SystemRepository { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        public object GetSystemParameter(string parameterName)
+        public object GetSystemParameter(int page, int rows, SystemParameter systemParameter)
         {
             var query = SystemParameterRepository.GetQueryable()
-                            .Where(a => a.ParameterName.Contains(parameterName))
-                            .Select(a => new
-                            {
-                                a.Id,
-                                a.ParameterName,
-                                a.ParameterValue,
-                                a.Remark,
-                                a.UserName,
-                                a.SystemID
-                            });
-            return query;
+                            .Where(a => a.ParameterName.Contains(systemParameter.ParameterName)
+                                || a.ParameterValue.Contains(systemParameter.ParameterValue)
+                                || a.Remark.Contains(systemParameter.Remark)
+                                || a.UserName.Contains(systemParameter.UserName)
+                                || a.SystemID == systemParameter.SystemID);
+            if (!systemParameter.ParameterName.Equals(string.Empty))
+            {
+                query.Where(a => a.ParameterName == systemParameter.ParameterName);
+            }
+            if (!systemParameter.ParameterValue.Equals(string.Empty))
+            {
+                query.Where(a => a.ParameterValue == systemParameter.ParameterValue);
+            }
+            if (!systemParameter.Remark.Equals(string.Empty))
+            {
+                query.Where(a => a.Remark == systemParameter.Remark);
+            }
+            if (!systemParameter.UserName.Equals(string.Empty))
+            {
+                query.Where(a => a.UserName == systemParameter.UserName);
+            }
+            if (systemParameter.SystemID != null)
+            {
+                query.Where(a => a.SystemID == systemParameter.SystemID);
+            }
+            query = query.OrderBy(a => a.Id);
+            int total = query.Count();
+            query = query.Skip((page - 1) * rows).Take(rows);
+            var info = query.ToArray().Select(a => new
+            {
+                Id = a.Id,
+                a.ParameterName,
+                a.ParameterValue,
+                a.Remark,
+                a.UserName,
+                a.SystemID,
+                SystemName = a.SystemID == null ? "" : a.System.SystemName
+            });
+            return new { total, rows = info.ToArray() };
         }
+
         public bool SetSystemParameter(SystemParameter systemParameter, out string error)
         {
             error = string.Empty;
@@ -64,6 +93,7 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+
         public bool AddSystemParameter(SystemParameter systemParameter, out string error)
         {
             error = string.Empty;
@@ -100,6 +130,33 @@ namespace THOK.Wms.Bll.Service
             {
                 error = "原因：该编号已存在！";
             }
+            return result;
+        }
+
+        public bool DelSystemParameter(int id, out string error)
+        {
+            error = string.Empty;
+            bool result = false;
+
+            var query = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.Id == id);
+            if (query != null)
+            {
+                try
+                {
+                    SystemParameterRepository.Delete(query);
+                    SystemParameterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    error = "原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                error = "原因：未找到当前需要删除的数据！";
+            }
+
             return result;
         }
     }

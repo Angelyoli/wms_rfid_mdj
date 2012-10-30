@@ -4,12 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
-using THOK.Wms.AutomotiveSystems.Interfaces;
-using THOK.Wms.Bll.Interfaces;
 using THOK.WebUtil;
-using THOK.Wms.DbModel;
+using THOK.Authority.DbModel;
+using THOK.Authority.Bll.Interfaces;
 
-namespace Wms.Controllers.Wms.SystemParameterInfo
+namespace Wms.Controllers.Authority.SystemParameterInfo
 {
     public class ParameterSetController : Controller
     {
@@ -29,10 +28,18 @@ namespace Wms.Controllers.Wms.SystemParameterInfo
             return View();
         }
         // GET: /ParameterSet/GetSystemParameter/
-        public ActionResult GetSystemParameter(FormCollection collection)
+        public ActionResult GetSystemParameter(int page, int rows, FormCollection collection)
         {
             string parameterName = collection["ParameterName"] ?? "";
-            var result = SystemParameterService.GetSystemParameter(parameterName);
+            string parameterValue = collection["ParameterValue"] ?? "";
+            string remark = collection["Remark"] ?? "";
+            string userName = collection["UserName"] ?? "";
+            SystemParameter sp = new SystemParameter();
+            sp.ParameterName = parameterName;
+            sp.ParameterValue = parameterValue;
+            sp.Remark = remark;
+            sp.UserName = userName;
+            var result = SystemParameterService.GetSystemParameter(page, rows, sp);
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
         // GET: /ParameterSet/AddSystemParameter/
@@ -49,6 +56,14 @@ namespace Wms.Controllers.Wms.SystemParameterInfo
             string error = string.Empty;
             bool bResult = SystemParameterService.SetSystemParameter(systemParameter, out error);
             string msg = bResult ? "修改成功" : "修改失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
+        }
+        // GET: /ParameterSet/DelSystemParameter/
+        public ActionResult DelSystemParameter(int id)
+        {
+            string error = string.Empty;
+            bool bResult = SystemParameterService.DelSystemParameter(id, out error);
+            string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
         }
     }

@@ -1,5 +1,6 @@
 ﻿<script type="text/javascript">
     $(function () {
+        $("input[name=SystemName]").attr("readonly", true);
         $.extend($.fn.validatebox.defaults.rules, {
             maxLength: {
                 validator: function (value, param) {
@@ -17,7 +18,7 @@
         });
         $('form input').removeAttr("disabled");
         url = '/ParameterSet/AddSystemParameter/';
-    };
+    }
     function save() {
         $('#fm').form('submit', {
             url: url,
@@ -43,8 +44,13 @@
             }
         });
     }
+    function systemIdClick() {
+        $('#dlg-system').dialog('open').dialog('setTitle', '系统');
+        $('#tbSystem').datagrid({ url: '/System/Details/' });
+        $("#tbSystem").datagrid('reload');
+    }
 </script>
-<style>
+<style type="text/css">
     .layout
     {
         padding: 10px 10px;
@@ -99,10 +105,13 @@
                 </tr>
                 <tr>
                     <td class="td1">
-                        系统ID：
+                        系统名称：
                     </td>
                     <td class="td2">
-                        <input name="SystemID" class="easyui-validatebox" />
+                        <input name="SystemID" style="display: none;" />
+                        <input name="SystemName" />
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="systemIdClick()">
+                        </a>
                     </td>
                 </tr>
             </table>
@@ -115,3 +124,4 @@
     <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-add').dialog('close')">
         取消</a>
 </div>
+@Html.Partial("_SystemNamePartial")

@@ -116,6 +116,7 @@
     <Compile Include="Controllers\Authority\RolePermissionController.cs" />
     <Compile Include="Controllers\Authority\SystemController.cs" />
     <Compile Include="Controllers\Authority\SystemEventLogController.cs" />
+    <Compile Include="Controllers\Authority\SystemParameterInfo\ParameterSetController.cs" />
     <Compile Include="Controllers\Authority\UserController.cs" />
     <Compile Include="Controllers\Authority\UserPermissionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -178,7 +179,6 @@
     <Compile Include="Controllers\Wms\StockOut\StockOutBillAllotController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
     <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
-    <Compile Include="Controllers\Wms\SystemParameterInfo\ParameterSetController.cs" />
     <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
@@ -2216,6 +2216,7 @@
     <Content Include="Views\ParameterSet\_AddPartial.cshtml" />
     <Content Include="Views\ParameterSet\_EditPartial.cshtml" />
     <Content Include="Views\ParameterSet\_DeletePartial.cshtml" />
+    <Content Include="Views\ParameterSet\_SystemNamePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

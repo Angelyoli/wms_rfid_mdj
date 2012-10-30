@@ -269,9 +269,9 @@
     <Compile Include="Migrations\201209120811076_add_help.Designer.cs">
       <DependentUpon>201209120811076_add_help.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201210250452400_add_system_parameter.cs" />
-    <Compile Include="Migrations\201210250452400_add_system_parameter.Designer.cs">
-      <DependentUpon>201210250452400_add_system_parameter.cs</DependentUpon>
+    <Compile Include="Migrations\201210300138104_add_system_parameter.cs" />
+    <Compile Include="Migrations\201210300138104_add_system_parameter.Designer.cs">
+      <DependentUpon>201210300138104_add_system_parameter.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="EntityRepository\HelpContentRepository.cs" />
     <Compile Include="EntityRepository\SystemEventLogRepository.cs" />
+    <Compile Include="EntityRepository\SystemParameterRepository.cs" />
     <Compile Include="EntityRepository\SystemRepository.cs" />
     <Compile Include="EntityRepository\ModuleRepository.cs" />
     <Compile Include="EntityRepository\UserRepository.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Interfaces\IRoleSystemRepository.cs" />
     <Compile Include="Interfaces\IServerRepository.cs" />
     <Compile Include="Interfaces\ISystemEventLogRepository.cs" />
+    <Compile Include="Interfaces\ISystemParameterRepository.cs" />
     <Compile Include="Interfaces\ISystemRepository.cs" />
     <Compile Include="Interfaces\IUserFunctionRepository.cs" />
     <Compile Include="Interfaces\IUserModuleRepository.cs" />

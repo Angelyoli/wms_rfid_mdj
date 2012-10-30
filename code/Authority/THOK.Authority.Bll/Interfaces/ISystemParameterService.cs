@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using THOK.Wms.DbModel;
+﻿using THOK.Authority.DbModel;
 
-namespace THOK.Wms.Bll.Interfaces
+namespace THOK.Authority.Bll.Interfaces
 {
     public interface ISystemParameterService : IService<SystemParameter>
     {
-        object GetSystemParameter(string parameterName);
+        object GetSystemParameter(int page, int rows, SystemParameter systemParameter);
         bool SetSystemParameter(SystemParameter systemParameter, out string error);
         bool AddSystemParameter(SystemParameter systemParameter, out string error);
+        bool DelSystemParameter(int id, out string error);
     }
 }
