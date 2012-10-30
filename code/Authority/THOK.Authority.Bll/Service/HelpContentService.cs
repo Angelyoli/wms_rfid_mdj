@@ -313,7 +313,6 @@ namespace THOK.Authority.Bll.Service
                     return new { help.ContentText };
                 }
             }
-            return new { help.ContentText };
         }
 
         public object Help(string helpId)
