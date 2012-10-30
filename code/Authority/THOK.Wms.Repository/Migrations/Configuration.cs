@@ -826,38 +826,6 @@
                 },
                 new Function()
                 {
-                    FunctionID = new Guid("AB8A58CC-584E-4aee-9A36-96F99003C755"),
-                    FunctionName = "新增",
-                    ControlName = "add",
-                    IndicateImage = "icon-add",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("8F0B2F3A-2A72-41ec-80F6-05756A252846"),
-                    FunctionName = "编辑",
-                    ControlName = "edit",
-                    IndicateImage = "icon-edit",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("225BAE5D-9516-43b4-8353-82B961099991"),
-                    FunctionName = "删除",
-                    ControlName = "delete",
-                    IndicateImage = "icon-remove",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("2890F02A-FE5F-4459-82BD-1F7DD8A16D9B"),
-                    FunctionName = "打印",
-                    ControlName = "print",
-                    IndicateImage = "icon-print",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
                     FunctionID = new Guid("A187C965-7866-4945-9926-FA756925F584"),
                     FunctionName = "帮助",
                     ControlName = "help",
