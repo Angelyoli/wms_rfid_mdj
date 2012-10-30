@@ -281,12 +281,37 @@ namespace THOK.Authority.Bll.Service
 
         public object GetContentTxt(string helpId)
         {
+            string content_text = "";
             Guid new_ID = new Guid(helpId);
             var system = SystemRepository.GetQueryable().FirstOrDefault(i => i.SystemID == new_ID);
-            var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ID == new_ID);
             if (system != null)
             {
-                help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.Module.System_SystemID == new_ID);
+               var help = HelpContentRepository.GetQueryable().Where(i => i.Module.System_SystemID == new_ID).OrderBy(h=>h.ContentCode);
+               foreach (var text in help)
+               {
+                   content_text = content_text + text.ContentText;
+               }
+               var helper = HelpContentRepository.GetQueryable().FirstOrDefault(h => h.Module.System_SystemID == new_ID);
+               helper.ContentText = content_text;
+               return new { helper.ContentText };
+            }
+            else
+            {
+                var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ID == new_ID);
+                if (help.NodeType == "1")
+                {
+                    var helpChild = HelpContentRepository.GetQueryable().Where(i => i.FatherNodeID == help.FatherNodeID).OrderBy(h => h.ContentCode);
+                    foreach (var text in helpChild)
+                    {
+                        content_text = content_text + text.ContentText;
+                    }
+                    help.ContentText = content_text;
+                    return new { help.ContentText };
+                }
+                else
+                {
+                    return new { help.ContentText };
+                }
             }
             return new { help.ContentText };
         }
