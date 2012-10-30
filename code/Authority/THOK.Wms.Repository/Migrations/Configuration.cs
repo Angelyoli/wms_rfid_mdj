@@ -79,9 +79,10 @@
             CreateSorting(context);
             CreateSearch(context);
             CreateProductQuality(context);
-            //CreateUpload(context);
-            //CreateAutomotiveSystems(context);
 
+            CreateUpload(context);
+            CreateAutomotiveSystems(context);
+            CreateSystemParameter(context);
         }
 
         private void CreateServer(AuthorizeContext context)
@@ -3713,18 +3714,6 @@
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
-                 },
-                 new Module()
-                 {
-                     ModuleID = new Guid("211D4776-DCA6-4DFA-9C75-257179BB071D"),
-                     ModuleName = "参数设置",
-                     ShowOrder = 5,
-                     ModuleURL = "/SystemConfig/",
-                     IndicateImage = "icon-son_SortWork",
-                     DeskTopImage = "image-son_SortWork",
-                     System = system,
-                     System_SystemID = system.SystemID,
-                     ParentModule_ModuleID = new Guid("F0B8A807-3668-4210-A1F5-AF09CD633180")
                  }
              );
             context.SaveChanges();
@@ -3890,6 +3879,74 @@
                    IndicateImage = "icon-batch",
                    Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
                }
+            );
+            context.SaveChanges();
+        }
+
+        private void CreateSystemParameter(AuthorizeContext context)
+        {
+            System system = context.Set<System>().SingleOrDefault(s => s.SystemID == new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B666AA8"));
+            context.Set<Module>().AddOrUpdate(
+                    new Module()
+                    {
+                        ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D"),
+                        ModuleName = "系统参数",
+                        ShowOrder = 15,
+                        ModuleURL = "",
+                        IndicateImage = "icon-Menu_Jurisdiction",
+                        DeskTopImage = "image-Menu_Jurisdiction",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC"),
+                        ModuleName = "参数设置",
+                        ShowOrder = 1,
+                        ModuleURL = "/ParameterSet/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D")
+                    }
+            );
+            context.SaveChanges();
+
+            context.Set<Function>().AddOrUpdate(
+                new Function()
+                {
+                    FunctionID = new Guid("EAB101C1-8A93-4E4B-8929-C664C068919F"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("938034C4-5622-43A1-8402-38BF28ADEFB4"),
+                    FunctionName = "增加",
+                    ControlName = "add",
+                    IndicateImage = "icon-add",
+                    Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                },
+                new Function()
+                 {
+                     FunctionID = new Guid("A6EAC93E-9618-4B19-86DD-18643D1FC308"),
+                     FunctionName = "修改",
+                     ControlName = "edit",
+                     IndicateImage = "icon-edit",
+                     Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                 },
+                 new Function()
+                 {
+                     FunctionID = new Guid("C8A9E599-D227-4058-9E5E-D77C8D3794BB"),
+                     FunctionName = "删除",
+                     ControlName = "delete",
+                     IndicateImage = "icon-remove",
+                     Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                 }
             );
             context.SaveChanges();
         }
