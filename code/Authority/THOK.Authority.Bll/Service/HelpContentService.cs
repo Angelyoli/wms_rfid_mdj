@@ -278,6 +278,7 @@ namespace THOK.Authority.Bll.Service
             }
             return true;
         }
+
         public object GetContentTxt(string helpId)
         {
             Guid new_ID = new Guid(helpId);
@@ -287,7 +288,14 @@ namespace THOK.Authority.Bll.Service
             {
                 help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.Module.System_SystemID == new_ID);
             }
-            return new {help.ContentText};
+            return new {help.ContentText
+        };
+
+        public object Help(string helpId)
+        {
+            Guid new_ID = new Guid(helpId);
+            var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ModuleID == new_ID);
+            return new { help.ContentText };
         }
     }
 }
