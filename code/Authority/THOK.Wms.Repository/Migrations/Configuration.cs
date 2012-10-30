@@ -81,7 +81,7 @@
             CreateProductQuality(context);
 
             CreateUpload(context);
-            CreateAutomotiveSystems(context);
+            //CreateAutomotiveSystems(context);
             CreateSystemParameter(context);
         }
 
@@ -3880,7 +3880,7 @@
                    Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
                }
             );
-            context.SaveChanges();
+           // context.SaveChanges();
         }
 
         private void CreateSystemParameter(AuthorizeContext context)
