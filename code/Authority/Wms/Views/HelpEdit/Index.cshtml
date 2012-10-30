@@ -22,7 +22,7 @@
                         $('#editor01').val(aaa + HelpTxt);
                         CKEDITOR.replace('editor01');
                     });
-                    
+
                     //                var helpId = node.attributes.AttributeId;
                     //               // var HelpTxt;
                     //                //var HelpTxt = $.ajaxSender.send('/HelpEdit/GetContentTxt/', { 'helpId': helpId }).toString();
@@ -44,7 +44,7 @@
                 }
             }
         });
-        
+
     };
     function saveHelpEdit() {
         $.ajaxSender.send('/HelpEdit/SaveHelpEdit/',
