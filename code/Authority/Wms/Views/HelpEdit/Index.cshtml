@@ -16,10 +16,9 @@
                     $.getJSON("/HelpEdit/GetContentTxt/", { 'helpId': helpID }, function (helpContent) {
                         $('#helpId').val(helpID);
                         HelpTxt = helpContent.ContentText;
-                        aaa = node.text;
                         $('#helpId').val(helpID);
                         CKEDITOR.instances["editor01"].destroy();
-                        $('#editor01').val(aaa + HelpTxt);
+                        $('#editor01').val(HelpTxt);
                         CKEDITOR.replace('editor01');
                     });
 
