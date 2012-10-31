@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Area.cs" />
-    <Compile Include="SystemParameter.cs" />
     <Compile Include="BillType.cs" />
     <Compile Include="Brand.cs" />
     <Compile Include="Cell.cs" />
@@ -64,7 +63,6 @@
     <Compile Include="InBillMaster.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="Mapping\AreaMap.cs" />
-    <Compile Include="Mapping\SystemParameterMap.cs" />
     <Compile Include="Mapping\BillTypeMap.cs" />
     <Compile Include="Mapping\BrandMap.cs" />
     <Compile Include="Mapping\CellMap.cs" />

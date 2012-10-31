@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace THOK.Wms.DbModel
+namespace THOK.Authority.DbModel
 {
     public class SystemParameter
     {
-        public SystemParameter() 
+        public SystemParameter()
         {
-            //this.SystemParameters = new List<SystemParameter>();
+            
         }
         public int Id { get; set; }
         public string ParameterName { get; set; }
@@ -18,6 +18,6 @@ namespace THOK.Wms.DbModel
         public string UserName { get; set; }
         public Guid? SystemID { get; set; }
 
-        //public virtual ICollection<SystemParameter> SystemParameters { get; set; }
+        public virtual System System { get; set; }
     }
 }

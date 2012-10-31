@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using THOK.Common.Ef.MappingStrategy;
+﻿using THOK.Common.Ef.MappingStrategy;
 
-namespace THOK.Wms.DbModel.Mapping
+namespace THOK.Authority.DbModel.Mapping
 {
     public class SystemParameterMap : EntityMappingBase<SystemParameter>
     {
         public SystemParameterMap()
-            : base("Wms")
+            : base("Auth")
         {
             // Primary Key
             this.HasKey(t => t.Id);
@@ -44,11 +40,11 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.UserName).HasColumnName(ColumnMap.Value.To("UserName"));
             this.Property(t => t.SystemID).HasColumnName(ColumnMap.Value.To("SystemID"));
 
-            //// Relationships
-            //this.HasRequired(t => t.System)
-            //    .WithMany(t => t.SystemParameters)
-            //    .HasForeignKey(d => d.SystemID)
-            //    .WillCascadeOnDelete(false);
+            // Relationships
+            this.HasRequired(t => t.System)
+                .WithMany(t => t.SystemParameters)
+                .HasForeignKey(d => d.SystemID)
+                .WillCascadeOnDelete(false);
         }
     }
 }
