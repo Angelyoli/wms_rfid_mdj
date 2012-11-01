@@ -31,29 +31,36 @@ namespace THOK.WMS.DownloadWms.Bll
             errorInfo = string.Empty;
             using (PersistentManager pm = new PersistentManager())
             {
-                DownInBillDao dao = new DownInBillDao();               
-                DataTable emply = dao.FindEmployee(EmployeeCode);             
-                DataTable inMasterBillNo = this.GetInBillNo();
-                string billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
-                billnolist = UtinString.StringMake(billnolist);
-                billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
-                DataTable masterdt = this.InBillMaster(billnolist);
-
-                string inDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
-                inDetailList = UtinString.StringMake(inDetailList);
-                inDetailList = "ORDER_ID IN(" + inDetailList + ")";
-                DataTable detaildt = this.InBillDetail(inDetailList);
-
-                if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                try
                 {
-                    DataSet masterds = this.InBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
+                    DownInBillDao dao = new DownInBillDao();
+                    DataTable emply = dao.FindEmployee(EmployeeCode);
+                    DataTable inMasterBillNo = this.GetInBillNo();
+                    string billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
+                    billnolist = UtinString.StringMake(billnolist);
+                    billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
+                    DataTable masterdt = this.InBillMaster(billnolist);
 
-                    DataSet detailds = this.InBillDetail(detaildt);
-                    this.Insert(masterds, detailds);
-                    tag = true;
+                    string inDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
+                    inDetailList = UtinString.StringMake(inDetailList);
+                    inDetailList = "ORDER_ID IN(" + inDetailList + ")";
+                    DataTable detaildt = this.InBillDetail(inDetailList);
+
+                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                    {
+                        DataSet masterds = this.InBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
+
+                        DataSet detailds = this.InBillDetail(detaildt);
+                        this.Insert(masterds, detailds);
+                        tag = true;
+                    }
+                    else
+                        errorInfo = "没有新的入库单下载！";
                 }
-                else
-                    errorInfo = "没有新的入库单下载！";
+                catch (Exception e)
+                {
+                    errorInfo = "下载入库单失败！原因：" + e.Message;
+                }
             }
             return tag;
         }

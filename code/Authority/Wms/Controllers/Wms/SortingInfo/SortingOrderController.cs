@@ -80,24 +80,29 @@ namespace Authority.Controllers.Wms.SortingInfo
             DownDistStationBll stationBll = new DownDistStationBll();
             DownDistCarBillBll carBll = new DownDistCarBillBll();
 
-            routeBll.DeleteTable();
-            bool custResult = custBll.DownCustomerInfo();
-            stationBll.DownDistStationInfo();
-            carBll.DownDistCarBillInfo(beginDate);
-            if (isSortDown)
+            try
             {
-                //从分拣下载分拣数据
-                lineResult = routeBll.DownSortRouteInfo();
-                bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+                routeBll.DeleteTable();
+                custBll.DownCustomerInfo();
+                stationBll.DownDistStationInfo();
+                carBll.DownDistCarBillInfo(beginDate);
+                if (isSortDown)
+                {
+                    //从分拣下载分拣数据
+                    lineResult = routeBll.DownSortRouteInfo();
+                    bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+                }
+                else
+                {
+                    //从营销下载分拣数据
+                    lineResult = routeBll.DownRouteInfo();
+                    bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                }
             }
-            else
+            catch (Exception e)
             {
-                //从营销下载分拣数据
-                lineResult = routeBll.DownRouteInfo();
-                bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                errorInfo = errorInfo + "   "+e.Message;
             }
-
-            string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

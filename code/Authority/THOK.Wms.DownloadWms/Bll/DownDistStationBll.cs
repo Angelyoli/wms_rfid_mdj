@@ -18,16 +18,23 @@ namespace THOK.Wms.DownloadWms.Bll
        public bool DownDistStationInfo()
        {
            bool tag = true;
-           DataTable distStationTable = this.GetDistStationCode();
-           string distList = UtinString.MakeString(distStationTable, "dist_code");
-           DataTable distTable = this.GetDistInfo(distList);
-           if (distTable.Rows.Count > 0)
+           try
            {
-               DataSet distds = Insert(distTable);
-               this.Insert(distds);
+               DataTable distStationTable = this.GetDistStationCode();
+               string distList = UtinString.MakeString(distStationTable, "dist_code");
+               DataTable distTable = this.GetDistInfo(distList);
+               if (distTable.Rows.Count > 0)
+               {
+                   DataSet distds = Insert(distTable);
+                   this.Insert(distds);
+               }
+               else
+                   tag = false;
            }
-           else
-               tag = false;
+           catch (Exception e)
+           {
+               throw new Exception("下载区域表失败！原因：" + e.Message);
+           }
            return tag;
        }
 

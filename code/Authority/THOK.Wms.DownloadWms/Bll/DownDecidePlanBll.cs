@@ -61,7 +61,7 @@ namespace THOK.Wms.DownloadWms.Bll
                 }
                 catch (Exception ex)
                 {
-                    errorInfo ="查询错误："+ ex.Message;
+                    errorInfo ="下载入库数据失败！原因："+ ex.Message;
                 }
             }
             return tag;
