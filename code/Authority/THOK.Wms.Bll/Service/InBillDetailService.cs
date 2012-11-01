@@ -267,9 +267,18 @@ namespace THOK.Wms.Bll.Service
                             item.Description
                         );
                 }
+                if (temp.Count() > 0)
+                {
+                    dt.Rows.Add(
+                        null, null, null, "总数：",
+                        temp.Sum(m => m.BillQuantity), 
+                        temp.Sum(m => m.AllotQuantity),
+                        temp.Sum(m => m.RealQuantity),
+                        null);
+                }
             }
             return dt;
-        } 
+        }
         #endregion
     }
 }
