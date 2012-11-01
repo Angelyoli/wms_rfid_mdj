@@ -61,6 +61,7 @@
     <Compile Include="Mapping\ServerMap.cs" />
     <Compile Include="Mapping\SystemEventLogMap.cs" />
     <Compile Include="Mapping\SystemMap.cs" />
+    <Compile Include="Mapping\SystemParameterMap.cs" />
     <Compile Include="Mapping\UserFunctionMap.cs" />
     <Compile Include="Mapping\UserMap.cs" />
     <Compile Include="Mapping\UserModuleMap.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="System.cs" />
     <Compile Include="SystemEventLog.cs" />
+    <Compile Include="SystemParameter.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserFunction.cs" />
     <Compile Include="UserModule.cs" />

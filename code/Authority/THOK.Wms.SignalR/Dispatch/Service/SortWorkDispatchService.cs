@@ -144,7 +144,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                                                                                     item.SortingLine.MoveBillTypeCode,
                                                                                                     operatePersonID);
                             moveBillMaster.Origin = "2";
-                            moveBillMaster.Description = "分拣调度生成！";
+                            moveBillMaster.Description = item.SortingLine.SortingLineCode + " 分拣调度生成！";
                             lastMoveBillMaster = moveBillMaster;
                             foreach (var product in item.Products.ToArray())
                             {
@@ -218,8 +218,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     }
                                 }
 
-                                //异性烟直接出库。
-                                if (product.Product.IsAbnormity == "1")
+                                //不取整的烟直接出库。
+                                if (product.Product.IsRounding == "1")
                                 {
                                     quantity = product.SumQuantity - storQuantity;
                                 }
@@ -248,7 +248,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                                                                                     item.SortingLine.OutBillTypeCode,
                                                                                                     operatePersonID);
                                 outBillMaster.Origin = "2";
-                                outBillMaster.Description = "分拣调度生成!";
+                                outBillMaster.Description = item.SortingLine.SortingLineCode + " 分拣调度生成!";
                                 //添加出库单细单
                                 foreach (var product in item.Products.ToArray())
                                 {
