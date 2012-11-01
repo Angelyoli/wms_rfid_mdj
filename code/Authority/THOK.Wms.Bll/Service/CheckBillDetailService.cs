@@ -197,6 +197,13 @@ namespace THOK.Wms.Bll.Service
                             , c.Status
                         );
                 }
+                if (checkBillDetail.Count() > 0)
+                {
+                    dt.Rows.Add(
+                        null, null, null, null, null, "总数：",
+                        checkBillDetail.Sum(m => m.Quantity), 
+                        null, null, null, null);
+                }
             }
             return dt;
         }

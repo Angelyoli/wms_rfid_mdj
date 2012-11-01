@@ -452,6 +452,12 @@ namespace THOK.Wms.Bll.Service
                             //, m.Status
                         );
                 }
+                if (moveBillDetail.Count() > 0)
+                {
+                    dt.Rows.Add(
+                        null, null, null, null, null, "总数：",
+                        moveBillDetail.Sum(m => m.RealQuantity));
+                }
             }
             return dt;
         }
