@@ -78,12 +78,13 @@ namespace Authority.Controllers.Wms.SortingInfo
             DownSortingOrderBll orderBll = new DownSortingOrderBll();
             DownCustomerBll custBll = new DownCustomerBll();
             DownDistStationBll stationBll = new DownDistStationBll();
-            DownDistCarBillBll carBll = new DownDistCarBillBll();
+            //DownDistCarBillBll carBll = new DownDistCarBillBll();
 
             routeBll.DeleteTable();
-            bool custResult = custBll.DownCustomerInfo();
+            //bool custResult = custBll.DownCustomerInfo();
+            bool custResult = custBll.DownCustomerInfos();//创联
             stationBll.DownDistStationInfo();
-            carBll.DownDistCarBillInfo(beginDate);
+            //carBll.DownDistCarBillInfo(beginDate);
             if (isSortDown)
             {
                 //从分拣下载分拣数据
@@ -92,8 +93,10 @@ namespace Authority.Controllers.Wms.SortingInfo
             }
             else
             {
-                //从营销下载分拣数据
-                lineResult = routeBll.DownRouteInfo();
+                //从营销下载分拣数据 
+                //lineResult = routeBll.DownRouteInfo();
+                //从营销下载分拣数据 创联
+                lineResult = routeBll.DownRouteInfos();
                 bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
             }
 

@@ -80,7 +80,7 @@
             CreateSearch(context);
             CreateProductQuality(context);
 
-            CreateUpload(context);
+            //CreateUpload(context);
             //CreateAutomotiveSystems(context);
             CreateSystemParameter(context);
         }

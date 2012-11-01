@@ -19,7 +19,44 @@ namespace THOK.WMS.DownloadWms.Dao
                                         WHERE (B.BRAND_N <> 'NULL' OR B.BRAND_N !='') and {0}", unitCode);
             return this.ExecuteQuery(sql).Tables[0];
         }
+        /// <summary>
+        /// 下载单位信息 平顶山
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetUnitInfos(string unitCode)
+        {
+            string sql = string.Format("SELECT * FROM IC.V_WMS_BRAND_UNIT WHERE {0}", unitCode);
+            return this.ExecuteQuery(sql).Tables[0];
+        }
 
+        /// <summary>
+        /// 查询计量单位系列表
+        /// </summary>
+        /// <param name="ulistCode"></param>
+        /// <returns></returns>
+        public DataTable GetBrandUlistInfo(string ulistCode)
+        {
+            string sql = string.Format("SELECT * FROM IC.V_WMS_BRAND_ULIST WHERE {0}", ulistCode);
+            return this.ExecuteQuery(sql).Tables[0];
+        }
+        /// <summary>
+        /// 平顶山插入单位系列表
+        /// </summary>
+        /// <param name="ds"></param>
+        public void InsertUlist(DataTable ulistCodeTable)
+        {
+            BatchInsert(ulistCodeTable, "wms_unit_list");
+        }
+
+        /// <summary>
+        /// 查询仓储单位系列编号
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetUlistCode()
+        {
+            string sql = "SELECT unit_list_code FROM wms_unit_list";
+            return this.ExecuteQuery(sql).Tables[0];
+        }
         /// <summary>
         /// 单位表插入数据
         /// </summary>
