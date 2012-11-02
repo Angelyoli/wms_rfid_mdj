@@ -66,7 +66,7 @@ namespace THOK.Wms.Bll.Service
                 StockMoveSearch = StockMoveSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
 
-            StockMoveSearch = StockMoveSearch.OrderBy(i => i.BillNo);
+            StockMoveSearch = StockMoveSearch.OrderByDescending(i => new { i.BillDate, i.BillNo });
             int total = StockMoveSearch.Count();
             StockMoveSearch = StockMoveSearch.Skip((page - 1) * rows).Take(rows);
             var MoveSearch = StockMoveSearch.ToArray().Select(s => new
