@@ -46,7 +46,8 @@ namespace Wms.Controllers.Authority.SystemParameterInfo
         public ActionResult AddSystemParameter(SystemParameter systemParameter)
         {
             string error = string.Empty;
-            bool bResult = SystemParameterService.AddSystemParameter(systemParameter, out error);
+            string userName = this.User.Identity.Name.ToString();
+            bool bResult = SystemParameterService.AddSystemParameter(systemParameter, userName, out error);
             string msg = bResult ? "添加成功" : "添加失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
         }
@@ -54,7 +55,8 @@ namespace Wms.Controllers.Authority.SystemParameterInfo
         public ActionResult SetSystemParameter(SystemParameter systemParameter)
         {
             string error = string.Empty;
-            bool bResult = SystemParameterService.SetSystemParameter(systemParameter, out error);
+            string userName=this.User.Identity.Name.ToString();
+            bool bResult = SystemParameterService.SetSystemParameter(systemParameter,userName, out error);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, error), "text", JsonRequestBehavior.AllowGet);
         }

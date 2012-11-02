@@ -63,7 +63,7 @@ namespace THOK.Authority.Bll.Service
             return new { total, rows = info.ToArray() };
         }
 
-        public bool SetSystemParameter(SystemParameter systemParameter, out string error)
+        public bool SetSystemParameter(SystemParameter systemParameter, string userName, out string error)
         {
             error = string.Empty;
             bool result = false;
@@ -76,7 +76,7 @@ namespace THOK.Authority.Bll.Service
                     query.ParameterName = systemParameter.ParameterName;
                     query.ParameterValue = systemParameter.ParameterValue;
                     query.Remark = systemParameter.Remark;
-                    query.UserName = "admin";
+                    query.UserName = userName;
                     query.SystemID = systemParameter.SystemID;
 
                     SystemParameterRepository.SaveChanges();
@@ -94,7 +94,7 @@ namespace THOK.Authority.Bll.Service
             return result;
         }
 
-        public bool AddSystemParameter(SystemParameter systemParameter, out string error)
+        public bool AddSystemParameter(SystemParameter systemParameter, string userName, out string error)
         {
             error = string.Empty;
             bool result = false;
@@ -109,7 +109,7 @@ namespace THOK.Authority.Bll.Service
                         sp.ParameterName = systemParameter.ParameterName;
                         sp.ParameterValue = systemParameter.ParameterValue;
                         sp.Remark = systemParameter.Remark;
-                        sp.UserName = "admin";
+                        sp.UserName = userName;
                         sp.SystemID = systemParameter.SystemID;
 
                         SystemParameterRepository.Add(sp);
