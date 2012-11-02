@@ -235,7 +235,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     //生成移库不完整,可能是库存不足；
                                     hasError = true;
                                     ps.State = StateType.Error;
-                                    ps.Errors.Add(product.Product.ProductCode + " " + product.Product.ProductName + " 库存不足！");
+                                    ps.Errors.Add(item.SortingLine.SortingLineCode + "线," + product.Product.ProductCode + " " + product.Product.ProductName + ",库存不足！当前总量：" + Convert.ToDecimal(product.SumQuantity / product.Product.UnitList.Unit02.Count) + "(条),缺少：" + Convert.ToDecimal(quantity / product.Product.UnitList.Unit02.Count) + "(条)");
                                     NotifyConnection(ps.Clone());
                                 }
                             }

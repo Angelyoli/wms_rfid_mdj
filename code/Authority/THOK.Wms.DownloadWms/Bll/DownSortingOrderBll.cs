@@ -52,7 +52,7 @@ namespace THOK.WMS.DownloadWms.Bll
                }
                catch (Exception e)
                {
-                   errorInfo = "错误：" + e.Message;
+                   errorInfo = "下载分拣数据失败！原因：" + e.Message;
                }
            }
            return tag;
