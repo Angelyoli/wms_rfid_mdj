@@ -829,12 +829,12 @@ namespace THOK.Wms.Bll.Service
                 }
                 foreach (var cell in cells)//货位
                 {
-                    string quantityStr="";
+                    string quantityStr = "";
                     if (inOrOut == "in")
                     {
-                        if (cell.Storages.Count != 0 && cell.Product!=null)
+                        if (cell.Storages.Count != 0 && cell.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) != 0)
                         {
-                            var cellQuantity = cell.Storages.GroupBy(g => new { g.Cell }).Select(s => new { quan = ((s.Key.Cell.MaxQuantity * s.Key.Cell.Product.Unit.Count) - s.Sum(p => p.Quantity + p.InFrozenQuantity)) / s.Key.Cell.Product.Unit.Count });
+                            var cellQuantity = cell.Storages.GroupBy(g => new { g.Cell }).Select(s => new { quan = s.Key.Cell.Product == null ? s.Key.Cell.MaxQuantity : ((s.Key.Cell.MaxQuantity * s.Key.Cell.Product.Unit.Count) - s.Sum(p => p.Quantity + p.InFrozenQuantity)) / s.Key.Cell.Product.Unit.Count });
                             decimal quantity = Convert.ToDecimal(cellQuantity.Sum(s => s.quan));
                             quantity = Math.Round(quantity, 2);
                             quantityStr = "<可入：" + quantity + ">件";
