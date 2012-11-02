@@ -109,6 +109,7 @@
     <Compile Include="Controllers\Authority\AuthorizeController.cs" />
     <Compile Include="Controllers\Authority\FunctionController.cs" />
     <Compile Include="Controllers\Authority\HelpContentController.cs" />
+    <Compile Include="Controllers\Authority\HelpController.cs" />
     <Compile Include="Controllers\Authority\HelpEditController.cs" />
     <Compile Include="Controllers\Authority\LoginLogController.cs" />
     <Compile Include="Controllers\Authority\ModuleController.cs" />
@@ -1885,10 +1886,11 @@
     <Content Include="Views\DeliverLine\Index.cshtml" />
     <Content Include="Views\DeliverLine\_AddPartial.cshtml" />
     <Content Include="Views\DeliverLine\_SearchPartial.cshtml" />
-    <Content Include="Views\DeliverLine\_deliverLinePartial1.cshtml" />
     <Content Include="Views\DeliverLine\_EditPartial.cshtml" />
     <Content Include="Views\DeliverLine\_DeletePartial.cshtml" />
     <Content Include="Views\AutomotiveConfig\Index.cshtml" />
+    <Content Include="Views\DeliverLine\_DistCode.cshtml" />
+    <Content Include="Views\Help\Index.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

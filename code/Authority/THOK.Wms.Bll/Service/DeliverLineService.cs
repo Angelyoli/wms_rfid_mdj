@@ -19,6 +19,9 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IDeliverLineDownService DeliverLineDownService { get; set; }
 
+        [Dependency]
+        public IDeliverDistRepository DeliverDistRepository { get; set; }
+
 
         protected override Type LogPrefix
         {
@@ -140,23 +143,35 @@ namespace THOK.Wms.Bll.Service
 
         public object D_Details(int page, int rows, string QueryString, string Value)
         {
-            string CustomCode = "";
-            if (QueryString == "CustomCode")
+            string DistCode = "";
+            string DistName = "";
+            if (QueryString == "DistCode")
             {
-                CustomCode = Value;
+                DistCode = Value;
             }
-            IQueryable<DeliverLine> deliverLineQuery = DeliverLineRepository.GetQueryable();
-            var deliver_line = deliverLineQuery.Where(c => c.CustomCode.Contains(CustomCode) )
-                .OrderBy(c => c.DeliverLineCode)
-                .Select(c => c);
-            int total = deliver_line.Count();
-            deliver_line = deliver_line.Skip((page - 1) * rows).Take(rows);
-
-            var temp = deliver_line.ToArray().Select(c => new
+            else
             {
-                DeliverLineCode = c.DeliverLineCode,
-                CustomCode = c.CustomCode,
+                DistName = Value;
+            }
+            IQueryable<DeliverDist> deliverQuery = DeliverDistRepository.GetQueryable();
+            var deliver = deliverQuery.Where(c => c.DistName.Contains(DistCode) && c.CompanyCode.Contains(DistName))
+                .OrderBy(c => c.DistCode)
+                .Select(c => c);
+            if (!DistName.Equals(string.Empty))
+            {
+                deliver = deliver.Where(p => p.DistCode == DistCode);
+            }
+            int total = deliver.Count();
+            deliver = deliver.Skip((page - 1) * rows).Take(rows);
+
+            var temp = deliver.ToArray().Select(c => new
+            {
+
                 DistCode = c.DistCode,
+                CustomCode = c.CustomCode,
+                DistName = c.DistName,
+                DistCenterCode = c.DistCenterCode,
+                CompanyCode = c.CompanyCode,
                 IsActive = c.IsActive == "1" ? "可用" : "不可用"
             });
             return new { total, rows = temp.ToArray() };
@@ -166,14 +181,12 @@ namespace THOK.Wms.Bll.Service
 
         #region IDeliverLineService 成员
 
-
-        public bool Save(DeliverLine deliverLine, out string strResult)
+        public bool Edit(DeliverLine deliverLine, out string strResult)
         {
             strResult = string.Empty;
             try
             {
-                var deliver_line = DeliverLineRepository.GetQueryable()
-                    .FirstOrDefault(i => i.DeliverLineCode == deliverLine.DeliverLineCode);
+                var deliver_line = DeliverLineRepository.GetQueryable().FirstOrDefault(i => i.DeliverLineCode == deliverLine.DeliverLineCode);
                 deliver_line.DeliverLineCode = deliverLine.DeliverLineCode;
                 deliver_line.CustomCode = deliverLine.CustomCode;
                 deliver_line.DeliverLineName = deliverLine.DeliverLineName;
@@ -183,13 +196,14 @@ namespace THOK.Wms.Bll.Service
                 deliver_line.IsActive = deliverLine.IsActive;
                 deliver_line.UpdateTime = DateTime.Now;
                 DeliverLineRepository.SaveChanges();
-
+                return true;
             }
             catch (Exception ex)
             {
                 strResult = "原因：" + ex.InnerException;
+                return false;
+
             }
-            return true;
         }
 
         #endregion
@@ -212,5 +226,7 @@ namespace THOK.Wms.Bll.Service
         }
 
         #endregion
+
+
     }
 }
