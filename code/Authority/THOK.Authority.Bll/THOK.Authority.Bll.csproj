@@ -49,6 +49,7 @@
     <Compile Include="Interfaces\IFunctionService.cs" />
     <Compile Include="Interfaces\IHelpContentService.cs" />
     <Compile Include="Interfaces\ISystemEventLogService.cs" />
+    <Compile Include="Interfaces\ISystemParameterService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Interfaces\IRoleService.cs" />
     <Compile Include="Interfaces\ICityService.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Service\ServerService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
     <Compile Include="Service\SystemEventLogService.cs" />
+    <Compile Include="Service\SystemParameterService.cs" />
     <Compile Include="Service\SystemService.cs" />
     <Compile Include="Service\UserService.cs" />
   </ItemGroup>

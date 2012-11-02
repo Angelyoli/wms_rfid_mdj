@@ -20,20 +20,25 @@ namespace THOK.WMS.DownloadWms.Bll
         public bool DownProductInfo()
         {
             bool tag = true;
-            DataTable codedt = this.GetProductCode();
-            string codeList = UtinString.MakeString(codedt, "custom_code");
-            codeList = "BRAND_CODE NOT IN (" + codeList + ")";
-            DataTable bradCodeTable = this.GetProductInfo(codeList);
-            if (bradCodeTable.Rows.Count > 0)
+            try
             {
-                DataSet brandCodeDs = this.Insert(bradCodeTable);
-                this.Insert(brandCodeDs);
-                //上报数据
-                //upload.InsertProduct(brandCodeDs);
+                DataTable codedt = this.GetProductCode();
+                string codeList = UtinString.MakeString(codedt, "custom_code");
+                codeList = "BRAND_CODE NOT IN (" + codeList + ")";
+                DataTable bradCodeTable = this.GetProductInfo(codeList);
+                if (bradCodeTable.Rows.Count > 0)
+                {
+                    DataSet brandCodeDs = this.Insert(bradCodeTable);
+                    this.Insert(brandCodeDs);
+                    //上报数据
+                    //upload.InsertProduct(brandCodeDs);
+                }
+                else
+                    tag = false;
             }
-            else
+            catch (Exception e)
             {
-                tag = false;
+                throw new Exception("下载卷烟失败！原因：" + e.Message);
             }
             return tag;
         }

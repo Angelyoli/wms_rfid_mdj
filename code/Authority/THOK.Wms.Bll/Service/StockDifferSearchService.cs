@@ -68,7 +68,7 @@ namespace THOK.Wms.Bll.Service
                 StockDifferSearch = StockDifferSearch.Where(i => i.VerifyPerson.EmployeeCode == CheckPersonCode);
             }
 
-            StockDifferSearch = StockDifferSearch.OrderBy(i => i.BillNo);
+            StockDifferSearch = StockDifferSearch.OrderByDescending(i => new { i.BillDate, i.BillNo });
             int total = StockDifferSearch.Count();
             StockDifferSearch = StockDifferSearch.Skip((page - 1) * rows).Take(rows);
             var DifferSearch = StockDifferSearch.ToArray().Select(s => new

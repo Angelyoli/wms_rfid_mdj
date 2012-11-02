@@ -458,48 +458,59 @@ namespace THOK.Wms.Allot.Service
         #region IInBillAllotService 成员
         public System.Data.DataTable AllotSearch(int page, int rows, string billNo)
         {
+            System.Data.DataTable dt = null;
             var allotQuery = InBillAllotRepository.GetQueryable();
-            var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(a => new
+            if (allotQuery != null)
             {
-                a.ProductCode,
-                a.Product.ProductName,
-                a.Cell.CellName,
-                a.StorageCode,
-                a.UnitCode,
-                a.Unit.UnitName,
-                AllotQuantity = a.AllotQuantity / a.Unit.Count,
-                RealQuantity = a.RealQuantity / a.Unit.Count,
-                a.OperatePersonID,
-                StartTime = a.StartTime,
-                FinishTime = a.FinishTime,
-                Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "2" ? "已完成" : ""
-            });
-            System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("商品编码", typeof(string));
-            dt.Columns.Add("商品名称", typeof(string));
-            dt.Columns.Add("储位名称", typeof(string));
-            dt.Columns.Add("单位名称", typeof(string));
-            dt.Columns.Add("分配数量", typeof(decimal));
-            dt.Columns.Add("实际数量", typeof(decimal));
-            dt.Columns.Add("作业人员", typeof(string));
-            dt.Columns.Add("开始时间", typeof(string));
-            dt.Columns.Add("完成时间", typeof(string));
-            dt.Columns.Add("作业状态", typeof(string));
-            foreach (var q in query)
-            {
-                dt.Rows.Add
-                    (
-                        q.ProductCode,
-                        q.ProductName,
-                        q.CellName,
-                        q.UnitName,
-                        q.AllotQuantity,
-                        q.RealQuantity,
-                        q.OperatePersonID,
-                        q.StartTime,
-                        q.FinishTime,
-                        q.Status
-                    );
+                var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(a => new
+                {
+                    a.ProductCode,
+                    a.Product.ProductName,
+                    a.Cell.CellName,
+                    a.StorageCode,
+                    a.UnitCode,
+                    a.Unit.UnitName,
+                    AllotQuantity = a.AllotQuantity / a.Unit.Count,
+                    RealQuantity = a.RealQuantity / a.Unit.Count,
+                    a.OperatePersonID,
+                    StartTime = a.StartTime,
+                    FinishTime = a.FinishTime,
+                    Status = a.Status == "0" ? "未开始" : a.Status == "1" ? "已申请" : a.Status == "2" ? "已完成" : ""
+                });
+                dt = new System.Data.DataTable();
+                dt.Columns.Add("商品编码", typeof(string));
+                dt.Columns.Add("商品名称", typeof(string));
+                dt.Columns.Add("储位名称", typeof(string));
+                dt.Columns.Add("单位名称", typeof(string));
+                dt.Columns.Add("分配数量", typeof(decimal));
+                dt.Columns.Add("实际数量", typeof(decimal));
+                dt.Columns.Add("作业人员", typeof(string));
+                dt.Columns.Add("开始时间", typeof(string));
+                dt.Columns.Add("完成时间", typeof(string));
+                dt.Columns.Add("作业状态", typeof(string));
+                foreach (var q in query)
+                {
+                    dt.Rows.Add
+                        (
+                            q.ProductCode,
+                            q.ProductName,
+                            q.CellName,
+                            q.UnitName,
+                            q.AllotQuantity,
+                            q.RealQuantity,
+                            q.OperatePersonID,
+                            q.StartTime,
+                            q.FinishTime,
+                            q.Status
+                        );
+                }
+                if (query.Count() > 0)
+                {
+                    dt.Rows.Add(null, null, null, "总数：",
+                                query.Sum(m => m.AllotQuantity),
+                                query.Sum(m => m.RealQuantity),
+                                null, null, null, null);
+                }
             }
             return dt;
         }

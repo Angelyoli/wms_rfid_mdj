@@ -17,21 +17,28 @@ namespace THOK.Wms.DownloadWms.Bll
        public bool DownDayEndInfo(string SettleDate)
         {
             bool tag = true;
-            if (SettleDate == string.Empty || SettleDate == null)
+            try
             {
-                SettleDate = DateTime.Now.ToString("yyyyMMdd");
+                if (SettleDate == string.Empty || SettleDate == null)
+                {
+                    SettleDate = DateTime.Now.ToString("yyyyMMdd");
+                }
+                else
+                {
+                    SettleDate = Convert.ToDateTime(SettleDate).ToString("yyyyMMdd");
+                }
+                string parameter = " SettleDate='" + SettleDate + "'";
+                this.DeleteDayEnd(SettleDate);
+                DataTable dayEnd = this.GetDayEndInfo(parameter);
+                if (dayEnd.Rows.Count > 0)
+                {
+                    DataSet dayEndDs = this.SaveDayEnd(dayEnd);
+                    this.Insert(dayEndDs);
+                }
             }
-            else
+            catch (Exception e)
             {
-                SettleDate = Convert.ToDateTime(SettleDate).ToString("yyyyMMdd");
-            }
-            string parameter = " SettleDate='" + SettleDate + "'";
-            this.DeleteDayEnd(SettleDate);
-            DataTable dayEnd = this.GetDayEndInfo(parameter);
-            if (dayEnd.Rows.Count > 0)
-            {
-                DataSet dayEndDs = this.SaveDayEnd(dayEnd);
-                this.Insert(dayEndDs);
+                throw new Exception("下载日结失败！原因：" + e.Message);
             }
             return tag;
         }

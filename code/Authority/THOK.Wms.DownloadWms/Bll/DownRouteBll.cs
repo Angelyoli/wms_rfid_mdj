@@ -17,23 +17,32 @@ namespace THOK.WMS.DownloadWms.Bll
         /// <returns></returns>
         public bool DownRouteInfo()
         {
-            bool tag = true;           
-            DataTable RouteCodeDt = this.GetRouteCode();
-            string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
-            routeCodeList = UtinString.StringMake(routeCodeList);
-            DataTable RouteDt = this.GetRouteInfo("");
-
-            if (RouteDt.Rows.Count > 0)
+            bool tag = true;
+            try
             {
-                DataTable routeTable = this.InsertRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
-                DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
-                if (line.Length > 0)
+                DataTable RouteCodeDt = this.GetRouteCode();
+                string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
+                routeCodeList = UtinString.StringMake(routeCodeList);
+                DataTable RouteDt = this.GetRouteInfo("");
+
+                if (RouteDt.Rows.Count > 0)
                 {
-                    DataSet lineds = this.InsertRouteCode(line);
-                    this.Insert(lineds);
+                    DataTable routeTable = this.InsertRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
+                    DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
+                    if (line.Length > 0)
+                    {
+                        DataSet lineds = this.InsertRouteCode(line);
+                        this.Insert(lineds);
+                    }
                 }
-            }else
-                tag = false;
+                else
+                    tag = false;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("从营销下载线路失败！原因：" + e.Message);
+            }
+            
             return tag;
         }
         /// <summary>
@@ -217,23 +226,30 @@ namespace THOK.WMS.DownloadWms.Bll
         public bool DownSortRouteInfo()
         {
             bool tag = true;
-            DataTable RouteCodeDt = this.GetRouteCode();
-            string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
-            routeCodeList = UtinString.StringMake(routeCodeList);
-            DataTable RouteDt = this.GetSortRouteInfo("");
-
-            if (RouteDt.Rows.Count > 0)
+            try
             {
-                DataTable routeTable = this.InsertSortRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
-                DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
-                if (line.Length > 0)
+                DataTable RouteCodeDt = this.GetRouteCode();
+                string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
+                routeCodeList = UtinString.StringMake(routeCodeList);
+                DataTable RouteDt = this.GetSortRouteInfo("");
+
+                if (RouteDt.Rows.Count > 0)
                 {
-                    DataSet lineds = this.InsertRouteCode(line);
-                    this.Insert(lineds);
+                    DataTable routeTable = this.InsertSortRouteCode(RouteDt).Tables["DWV_OUT_DELIVER_LINE"];
+                    DataRow[] line = routeTable.Select("DELIVER_LINE_CODE NOT IN(" + routeCodeList + ")");
+                    if (line.Length > 0)
+                    {
+                        DataSet lineds = this.InsertRouteCode(line);
+                        this.Insert(lineds);
+                    }
                 }
+                else
+                    tag = false;
             }
-            else
-                tag = false;
+            catch (Exception e)
+            {
+                throw new Exception("从分拣下载线路信息失败！原因：" + e.Message);
+            }           
             return tag;
         }
 
@@ -281,10 +297,17 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         public void DeleteTable()
         {
-            using (PersistentManager dbPm = new PersistentManager())
+            try
             {
-                DownRouteDao dao = new DownRouteDao();
-                dao.DeleteTable();
+                using (PersistentManager dbPm = new PersistentManager())
+                {
+                    DownRouteDao dao = new DownRouteDao();
+                    dao.DeleteTable();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("删除数据失败！原因：" + e.Message);
             }
         }
     }

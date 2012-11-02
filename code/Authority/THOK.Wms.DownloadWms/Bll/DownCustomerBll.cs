@@ -20,18 +20,25 @@ namespace THOK.WMS.DownloadWms.Bll
         public bool DownCustomerInfo()
         {
             bool tag = true;
-            DataTable customerCodeDt = this.GetCustomerCode();
-            string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
-            //CusromerList = UtinString.StringMake(CusromerList);
-            CusromerList = " CUST_CODE NOT IN (" + CusromerList + ")";
-            DataTable customerDt = this.GetCustomerInfo(CusromerList);
-            if (customerDt.Rows.Count > 0)
+            try
             {
-                DataSet custDs = this.Insert(customerDt);
-                this.Insert(custDs);
-                //上报客户信息数据
-                //upload.InsertCustom(custDs);
-            }            
+                DataTable customerCodeDt = this.GetCustomerCode();
+                string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
+                //CusromerList = UtinString.StringMake(CusromerList);
+                CusromerList = " CUST_CODE NOT IN (" + CusromerList + ")";
+                DataTable customerDt = this.GetCustomerInfo(CusromerList);
+                if (customerDt.Rows.Count > 0)
+                {
+                    DataSet custDs = this.Insert(customerDt);
+                    this.Insert(custDs);
+                    //上报客户信息数据
+                    //upload.InsertCustom(custDs);
+                }    
+            }
+            catch (Exception e)
+            {
+                throw new Exception("下载客户失败！原因：" + e.Message);
+            }                    
             return tag;
         }
         /// <summary>

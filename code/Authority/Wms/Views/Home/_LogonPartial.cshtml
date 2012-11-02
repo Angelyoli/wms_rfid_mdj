@@ -73,7 +73,7 @@
                     $('#dlg-changepassword').dialog('close');
                     location.href = result.data;
                 } else {
-                    $.messager.confirm('系统提示', '用户登录失败！用户名或密码不正确！', function (r) {
+                    $.messager.confirm('系统提示', result.msg, function (r) {
                         if (r) {
                             location.href = '/Account/LogOff';
                         }

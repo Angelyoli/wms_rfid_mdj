@@ -1,10 +1,14 @@
-﻿<div region="center" split="true" border="false">
-    <table id="details" class="easyui-datagrid" url="/ParameterSet/GetSystemParameter/"
-        border="false" singleselect="true" pagesize="50" pagination="true" fit="true"
-        fitcolumns="true" rownumbers="true" toolbar="#tool">
+﻿<script type="text/javascript">
+    $(function () {
+        $('#details').datagrid({ url: '/ParameterSet/GetSystemParameter/' });
+    })
+</script>
+<div region="center" split="true" border="false">
+    <table id="details" class="easyui-datagrid" border="false" singleselect="true" fit="true"
+        fitcolumns="true" pagination="true" pagesize="50" rownumbers="true" toolbar="#tool">
         <thead>
             <tr>
-                <th field="Id" width="80" hidden="true">
+                <th field="Id" hidden="true">
                     ID
                 </th>
                 <th field="ParameterName" width="80">
@@ -19,8 +23,8 @@
                 <th field="UserName" width="80">
                     用户名
                 </th>
-                <th field="SystemID" width="80">
-                    系统ID
+                <th field="SystemName" width="80">
+                    系统名称
                 </th>
             </tr>
         </thead>
