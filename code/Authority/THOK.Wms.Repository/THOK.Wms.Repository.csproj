@@ -277,6 +277,10 @@
     <Compile Include="Migrations\201210311317170_add_system_pranmenter.Designer.cs">
       <DependentUpon>201210311317170_add_system_pranmenter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201211020311429_add_system_parameter.cs" />
+    <Compile Include="Migrations\201211020311429_add_system_parameter.Designer.cs">
+      <DependentUpon>201211020311429_add_system_parameter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

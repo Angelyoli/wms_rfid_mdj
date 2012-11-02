@@ -41,7 +41,7 @@ namespace THOK.Authority.DbModel.Mapping
             this.Property(t => t.SystemID).HasColumnName(ColumnMap.Value.To("SystemID"));
 
             // Relationships
-            this.HasRequired(t => t.System)
+            this.HasOptional(t => t.System)
                 .WithMany(t => t.SystemParameters)
                 .HasForeignKey(d => d.SystemID)
                 .WillCascadeOnDelete(false);
