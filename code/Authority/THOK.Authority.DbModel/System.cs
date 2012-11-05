@@ -11,6 +11,8 @@ namespace THOK.Authority.DbModel
             this.Modules = new List<Module>();
             this.RoleSystems = new List<RoleSystem>();
             this.UserSystems = new List<UserSystem>();
+
+            this.SystemParameters = new List<SystemParameter>();
         }
 
         public Guid SystemID { get; set; }
@@ -21,5 +23,7 @@ namespace THOK.Authority.DbModel
         public virtual ICollection<Module> Modules { get; set; }
         public virtual ICollection<RoleSystem> RoleSystems { get; set; }
         public virtual ICollection<UserSystem> UserSystems { get; set; }
+
+        public virtual ICollection<SystemParameter> SystemParameters { get; set; }
     }
 }

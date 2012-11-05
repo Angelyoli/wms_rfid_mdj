@@ -14,17 +14,24 @@ namespace THOK.Wms.DownloadWms.Bll
        public bool DownDistCarBillInfo(string orderDate)
        {
            bool tag = true;
-           this.Delete();
-           //DataTable distCarCodeTable = this.GetOrderInfo(orderDate);
-           //string distList = UtinString.MakeString(distCarCodeTable, "DIST_BILL_ID");
-           DataTable distCarTable = this.GetDistCarInfo("''");
-           if (distCarTable.Rows.Count > 0)
+           try
            {
-               DataSet distCarDs = this.Insert(distCarTable);
-               this.Insert(distCarDs);
+               this.Delete();
+               //DataTable distCarCodeTable = this.GetOrderInfo(orderDate);
+               //string distList = UtinString.MakeString(distCarCodeTable, "DIST_BILL_ID");
+               DataTable distCarTable = this.GetDistCarInfo("''");
+               if (distCarTable.Rows.Count > 0)
+               {
+                   DataSet distCarDs = this.Insert(distCarTable);
+                   this.Insert(distCarDs);
+               }
+               else
+                   tag = false;
            }
-           else
-               tag = false;
+           catch (Exception e)
+           {
+               throw new Exception("下载配车单表失败！原因：" + e.Message);
+           }
            return tag;
        }
 

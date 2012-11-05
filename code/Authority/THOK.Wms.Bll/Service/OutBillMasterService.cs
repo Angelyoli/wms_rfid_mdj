@@ -682,9 +682,9 @@ namespace THOK.Wms.Bll.Service
                 BILL_TYPE = i.BillTypeCode
             });
             DataSet ds = this.GenerateEmptyTables();
-            DataRow inbrddr = ds.Tables["WMS_OUT_BILLMASTER"].NewRow();
             foreach (var p in outBillMasterQuery)
             {
+                DataRow inbrddr = ds.Tables["WMS_OUT_BILLMASTER"].NewRow();
                 inbrddr["STORE_BILL_ID"] = p.STORE_BILL_ID;
                 inbrddr["RELATE_BUSI_BILL_NUM"] = p.RELATE_BUSI_BILL_NUM;
                 inbrddr["DIST_CTR_CODE"] = p.DIST_CTR_CODE;
@@ -707,7 +707,6 @@ namespace THOK.Wms.Bll.Service
                 inbrddr["IS_IMPORT"] = "0";
                 ds.Tables["WMS_OUT_BILLMASTER"].Rows.Add(inbrddr);
             }
-            DataRow inbrddrDetail = ds.Tables["WMS_OUT_BILLDETAIL"].NewRow();
             var outBillDetailQuery = outBillDetail.Where(i => i.OutBillMaster.Status == "6").Select(i => new
             {
                 STORE_BILL_DETAIL_ID = i.ID,
@@ -718,6 +717,7 @@ namespace THOK.Wms.Bll.Service
             });
             foreach (var p in outBillDetailQuery)
             {
+                DataRow inbrddrDetail = ds.Tables["WMS_OUT_BILLDETAIL"].NewRow();
                 inbrddrDetail["STORE_BILL_DETAIL_ID"] = p.STORE_BILL_DETAIL_ID;
                 inbrddrDetail["STORE_BILL_ID"] = p.STORE_BILL_ID;
                 inbrddrDetail["BRAND_CODE"] = p.BRAND_CODE;
@@ -726,7 +726,6 @@ namespace THOK.Wms.Bll.Service
                 inbrddrDetail["IS_IMPORT"] = "0";
                 ds.Tables["WMS_OUT_BILLDETAIL"].Rows.Add(inbrddrDetail);
             }
-            DataRow inbrddrAllot = ds.Tables["WMS_OUT_BILLALLOT"].NewRow();
             var outBillAllotQuery = outBillAllot.Where(i => i.OutBillMaster.Status == "6").Select(i => new
             {
                 BUSI_ACT_ID = i.ID,
@@ -744,6 +743,7 @@ namespace THOK.Wms.Bll.Service
             });
             foreach (var p in outBillAllotQuery)
             {
+                DataRow inbrddrAllot = ds.Tables["WMS_OUT_BILLALLOT"].NewRow();
                 inbrddrAllot["BUSI_ACT_ID"] = p.BUSI_ACT_ID;
                 inbrddrAllot["BUSI_BILL_DETAIL_ID"] = p.BUSI_BILL_DETAIL_ID;
                 inbrddrAllot["BUSI_BILL_ID"] = p.BUSI_BILL_ID;
@@ -778,7 +778,7 @@ namespace THOK.Wms.Bll.Service
             DataTable mastertable = ds.Tables.Add("WMS_OUT_BILLMASTER");
             mastertable.Columns.Add("STORE_BILL_ID");
             mastertable.Columns.Add("RELATE_BUSI_BILL_NUM");
-            mastertable.Columns.Add("BRAND_CODE");
+            mastertable.Columns.Add("DIST_CTR_CODE");
             mastertable.Columns.Add("AREA_TYPE");
             mastertable.Columns.Add("QUANTITY_SUM");
             mastertable.Columns.Add("AMOUNT_SUM");

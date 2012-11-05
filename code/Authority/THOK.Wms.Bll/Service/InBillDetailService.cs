@@ -249,9 +249,9 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位编码", typeof(string));
                 dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("订单数量", typeof(string));
-                dt.Columns.Add("已分配数量", typeof(string));
-                dt.Columns.Add("实际入库量", typeof(string));
+                dt.Columns.Add("订单数量", typeof(decimal));
+                dt.Columns.Add("已分配数量", typeof(decimal));
+                dt.Columns.Add("实际入库量", typeof(decimal));
                 dt.Columns.Add("备注", typeof(string));
                 foreach (var item in temp)
                 {
@@ -267,9 +267,18 @@ namespace THOK.Wms.Bll.Service
                             item.Description
                         );
                 }
+                if (temp.Count() > 0)
+                {
+                    dt.Rows.Add(
+                        null, null, null, "总数：",
+                        temp.Sum(m => m.BillQuantity), 
+                        temp.Sum(m => m.AllotQuantity),
+                        temp.Sum(m => m.RealQuantity),
+                        null);
+                }
             }
             return dt;
-        } 
+        }
         #endregion
     }
 }

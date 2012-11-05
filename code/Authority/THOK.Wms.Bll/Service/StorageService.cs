@@ -224,7 +224,7 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-                var storage = storageQuery.Select(s => new
+                var storage = storageQuery.Where(s=>s.Quantity>0 ||s.InFrozenQuantity>0||s.OutFrozenQuantity>0).Select(s => new
                 {
                     cellCode = s.CellCode,
                     productCode = s.ProductCode,
@@ -234,14 +234,15 @@ namespace THOK.Wms.Bll.Service
                     quantity = s.Quantity / (s.Product.UnitList.Quantity02 * s.Product.UnitList.Quantity03)
                 });
                 DataSet ds = this.GenerateEmptyTables();
-                DataRow inbrddr = ds.Tables["wms_storage"].NewRow();
-                foreach (var p in storage)
+                for (int i=0;i<storage.ToArray().Length;i++)
                 {
-                    if (p.areaType == "6")
+                    DataRow inbrddr = ds.Tables["wms_storage"].NewRow();
+                    var p = storage.ToArray();
+                    if (p[i].areaType == "6")
                     {
                         inbrddr["area_type"] = "0902";
                     }
-                    else if (p.areaType == "7")
+                    else if (p[i].areaType == "7")
                     {
                         inbrddr["area_type"] = "0903";
                     }
@@ -249,11 +250,11 @@ namespace THOK.Wms.Bll.Service
                     {
                         inbrddr["area_type"] = "0901";
                     }
-                    inbrddr["cell_code"] = p.cellCode;
-                    inbrddr["product_code"] = p.productCode;
-                    inbrddr["brand_batch"] = p.storageTime;
-                    inbrddr["dist_ctr_code"] = p.warehouseCode;
-                    inbrddr["quantity"] = p.quantity;
+                    inbrddr["cell_code"] = p[i].cellCode;
+                    inbrddr["product_code"] = p[i].productCode;
+                    inbrddr["brand_batch"] = p[i].storageTime;
+                    inbrddr["dist_ctr_code"] = p[i].warehouseCode;
+                    inbrddr["quantity"] = p[i].quantity;
                     ds.Tables["wms_storage"].Rows.Add(inbrddr);
                 }
                 upload.QueryStoreStock(ds);
@@ -279,9 +280,9 @@ namespace THOK.Wms.Bll.Service
                     quantity = s.Sum(t=>t.Quantity) /(s.Max(t=>t.Product.UnitList.Quantity02) * s.Max(t=>t.Product.UnitList.Quantity03))
                 });
                 DataSet ds = this.GenerateEmptyTable();
-                DataRow inbrddr = ds.Tables["wms_busistorage"].NewRow();
-                foreach (var p in storage)
+                foreach (var p in storage.Where(s=>s.quantity>0))
                 {
+                    DataRow inbrddr = ds.Tables["wms_busistorage"].NewRow();
                     inbrddr["ORG_CODE"] = p.warehouseCode;
                     inbrddr["BRAND_CODE"] = p.productCode;
                     inbrddr["DIST_CTR_CODE"] = p.warehouseCode;
