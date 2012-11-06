@@ -78,6 +78,19 @@ namespace THOK.WMS.DownloadWms.Bll
                 return dao.GetUnitInfo(unitCodeList);
             }
         }
+        /// <summary>
+        /// 下载单位数据 创联
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetUnitInfos(string unitCodeList)
+        {
+            using (PersistentManager dbPm = new PersistentManager("YXConnection"))
+            {
+                DownUnitDao dao = new DownUnitDao();
+                dao.SetPersistentManager(dbPm);
+                return dao.GetUnitInfos(unitCodeList);
+            }
+        }
 
 
         /// <summary>
@@ -143,6 +156,33 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
 
+        /// <summary>
+        /// 把转换后的数据添加到中间虚拟表 创联
+        /// </summary>
+        /// <param name="unitdr"></param>
+        /// <returns></returns>
+        public DataSet InsertProducts(DataTable productdr)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            foreach (DataRow row in productdr.Rows)
+            {
+                DataRow dr = ds.Tables["WMS_UNIT_PRODUCT"].NewRow();
+                dr["unit_list_code"] = row["BRAND_ULIST_CODE"];
+                dr["uniform_code"] = "1";
+                dr["unit_list_name"] = row["BRAND_ULIST_NAME"];
+                dr["unit_code01"] = row["BRAND_UNIT_CODE_01"];
+                dr["quantity01"] = Convert.ToDecimal(row["QTY_01"]);
+                dr["unit_code02"] = row["BRAND_UNIT_CODE_02"];
+                dr["quantity02"] = Convert.ToDecimal(row["QTY_02"]);
+                dr["unit_code03"] = row["BRAND_UNIT_CODE_03"];
+                dr["quantity03"] = Convert.ToDecimal(row["QTY_03"]);
+                dr["unit_code04"] = row["BRAND_UNIT_CODE_04"];
+                dr["is_active"] = 1;
+                dr["update_time"] = DateTime.Now;
+                ds.Tables["WMS_UNIT_PRODUCT"].Rows.Add(dr);
+            }
+            return ds;
+        }
         /// <summary>
         /// 单位表插入数据
         /// </summary>
@@ -303,5 +343,126 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         #endregion
+
+        #region 从营销系统下载单位数据 创联
+
+        /// <summary>
+        /// 下载单位数据 创联
+        /// </summary>
+        /// <returns></returns>
+        public bool DownUnitInfo()
+        {
+            bool tag = true;
+            //下载单位信息
+            DataTable unitCodeTable = this.GetUnitCode();
+            string unitCodeList = UtinString.StringMake(unitCodeTable, "unit_code");
+            unitCodeList = UtinString.StringMake(unitCodeList);
+            unitCodeList = "BRAND_UNIT_CODE NOT IN (" + unitCodeList + ")";
+            DataTable brandUnitCodeTable = this.GetUnitInfos(unitCodeList);
+            if (brandUnitCodeTable.Rows.Count > 0)
+            {
+                DataSet unitCodeDs = this.InsertUnit(brandUnitCodeTable);
+                this.Insert(unitCodeDs);
+            }
+            else
+                tag = false;
+
+            //下载计量单位系列数据
+            DataTable ulistCodeTable = this.GetUlistCode();
+            string ulistCodeList = UtinString.StringMake(ulistCodeTable, "unit_list_code");
+            ulistCodeList = UtinString.StringMake(ulistCodeList);
+            ulistCodeList = "BRAND_ULIST_CODE NOT IN (" + ulistCodeList + ")";
+            DataTable brandUlistCodeTable = this.GetBrandUlist(ulistCodeList);
+            if (brandUlistCodeTable.Rows.Count > 0)
+            {
+                DataSet unitListCodeDs = this.InsertProducts(brandUlistCodeTable);
+                this.InsertUlist(unitListCodeDs.Tables["WMS_UNIT_PRODUCT"]);
+            }
+            else
+                tag = false;
+            return tag;
+        }
+
+        /// <summary>
+        /// 下载计量单位系列编号
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetBrandUlist(string ulistCodeList)
+        {
+            using (PersistentManager pm = new PersistentManager("YXConnection"))
+            {
+                DownUnitDao dao = new DownUnitDao();
+                dao.SetPersistentManager(pm);
+                return dao.GetBrandUlistInfo(ulistCodeList);
+            }
+        }
+
+        /// <summary>
+        /// 查询计量单位系列编号
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetUlistCode()
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownUnitDao dao = new DownUnitDao();
+                dao.SetPersistentManager(pm);
+                return dao.GetUlistCode();
+            }
+        }
+
+        /// <summary>
+        /// 把单位数据添加到数据库
+        /// </summary>
+        /// <param name="ds"></param>
+        public void Insert(DataSet unitCodeDs)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownUnitDao dao = new DownUnitDao();
+                dao.SetPersistentManager(pm);
+                if (unitCodeDs.Tables["WMS_UNIT_INSERT"].Rows.Count > 0)
+                {
+                    dao.InsertUnit(unitCodeDs.Tables["WMS_UNIT_INSERT"]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 把单位数据添加到数据库
+        /// </summary>
+        /// <param name="ds"></param>
+        public void InsertUlist(DataTable ulistCodeTable)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownUnitDao dao = new DownUnitDao();
+                dao.SetPersistentManager(pm);
+                dao.InsertUlist(ulistCodeTable);
+            }
+        }
+
+        /// <summary>
+        /// 把转换后的数据添加到虚拟表
+        /// </summary>
+        /// <param name="unitdr"></param>
+        /// <returns></returns>
+        public DataSet InsertUnit(DataTable unitCodeTable)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            foreach (DataRow row in unitCodeTable.Rows)
+            {
+                DataRow dr = ds.Tables["WMS_UNIT_INSERT"].NewRow();
+                dr["unit_code"] = row["BRAND_UNIT_CODE"];
+                dr["unit_name"] = row["BRAND_UNIT_NAME"];
+                dr["count"] = row["count"];
+                dr["is_active"] = row["ISACTIVE"];
+                dr["update_time"] = DateTime.Now.ToString();
+                ds.Tables["WMS_UNIT_INSERT"].Rows.Add(dr);
+            }
+            return ds;
+        }
+        #endregion
+
     }
 }

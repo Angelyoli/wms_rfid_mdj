@@ -170,8 +170,13 @@ namespace Authority.Controllers.Wms.StockOut
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownOutBillBll ibll = new DownOutBillBll();
-            ubll.DownUnitCodeInfo();
-            pbll.DownProductInfo();
+            DownCustomerBll custBll = new DownCustomerBll();
+            //ubll.DownUnitCodeInfo();
+            //pbll.DownProductInfo();
+            //custBll.DownCustomerInfo();
+            ubll.DownUnitInfo();//创联
+            pbll.DownProductInfos();//创联
+            custBll.DownCustomerInfos();//创联
             bool bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
 
             //bool bResult = OutBillMasterService.DownOutBillMaster(beginDate, endDate, out errorInfo);

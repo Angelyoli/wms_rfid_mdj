@@ -230,19 +230,15 @@ namespace Authority.Controllers.Wms.StockIn
             string errorInfo = string.Empty;
             beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
             endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
-            try
-            {
-                ubll.DownUnitCodeInfo();
-                pbll.DownProductInfo();
-                if (isInDown)
-                    bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
-                else
-                    bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
-            }
-            catch (Exception e)
-            {
-                errorInfo = errorInfo + " " + e.Message;
-            }
+
+            //ubll.DownUnitCodeInfo();
+            ubll.DownUnitInfo();
+            pbll.DownProductInfo();
+            if (isInDown)
+                bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+            else
+                bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);                
+           
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

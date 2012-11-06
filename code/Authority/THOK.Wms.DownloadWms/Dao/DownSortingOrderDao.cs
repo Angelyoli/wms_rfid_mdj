@@ -30,7 +30,25 @@ namespace THOK.WMS.DownloadWms.Dao
                                         LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", orderid);
            return this.ExecuteQuery(sql).Tables[0];
        }
+       /// <summary>
+       /// 根据条件下载分拣订单主表信息 创联
+       /// </summary>
+       /// <returns></returns>
+       public DataTable GetSortingOrders(string orderid)
+       {
+           string sql = string.Format("SELECT * FROM IC.V_WMS_SORT_ORDER WHERE {0} AND QUANTITY_SUM>0", orderid);
+           return this.ExecuteQuery(sql).Tables[0];
+       }
 
+       /// <summary>
+       /// 根据条件下载分拣订单明细表信息 创联
+       /// </summary>
+       /// <returns></returns>
+       public DataTable GetSortingOrderDetails(string orderid)
+       {
+           string sql = string.Format("SELECT order_id as order_detail_id,order_id,brand_code,brand_name,brand_unit_code,brand_unit_name,qty_demand,quantity,price,amount,qty_unit FROM IC.V_WMS_SORT_ORDER_DETAIL WHERE {0} ", orderid);
+           return this.ExecuteQuery(sql).Tables[0];
+       }
        /// <summary>
        /// 添加主表数据到表 DWV_OUT_ORDER
        /// </summary>
