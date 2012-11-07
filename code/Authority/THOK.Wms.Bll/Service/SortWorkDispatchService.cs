@@ -153,7 +153,7 @@ namespace THOK.Wms.Bll.Service
                             }
                             else
                             {
-                                throw new Exception("储位的卷烟或移库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
+                                throw new Exception("储位的卷烟或移库冻结量与当前分配不符，信息可能被异常修改，不能删除！");
                             }
                         }
                     );
