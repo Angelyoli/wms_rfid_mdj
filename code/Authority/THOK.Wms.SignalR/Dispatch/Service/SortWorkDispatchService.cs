@@ -80,24 +80,26 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             workDispatchId = workDispatchId.Substring(0, workDispatchId.Length - 1);
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
-
-            //调度表未作业的数据
-            var temp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
-                                           .Where(s => s.WorkStatus == "1")
-                                           .Join(sortOrderQuery,
-                                                dp => new { dp.OrderDate, dp.DeliverLineCode },
-                                                om => new { om.OrderDate, om.DeliverLineCode },
-                                                (dp, om) => new { dp.OrderDate, dp.SortingLine, dp.DeliverLineCode, om.OrderID }
-                                           ).Join(sortOrderDetailQuery,
-                                                dm => new { dm.OrderID },
-                                                od => new { od.OrderID },
-                                                (dm, od) => new { dm.OrderDate, dm.SortingLine, od.Product, od.UnitCode, od.Price, od.RealQuantity }
-                                           ).GroupBy(r => new { r.OrderDate, r.SortingLine, r.Product, r.UnitCode, r.Price })
-                                            .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, r.Key.Product, r.Key.UnitCode, r.Key.Price, SumQuantity = r.Sum(p => p.RealQuantity * r.Key.Product.UnitList.Unit02.Count) })
-                                            .GroupBy(r => new { r.OrderDate, r.SortingLine })
-                                            .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
-                                            .ToArray();
-
+            
+                //调度表未作业的数据
+            var temp = sortOrderDispatchQuery.Join(sortOrderQuery,
+                                                 dp => new { dp.OrderDate, dp.DeliverLineCode },
+                                                 om => new { om.OrderDate, om.DeliverLineCode },
+                                                 (dp, om) => new { dp.ID, dp.WorkStatus, dp.OrderDate, dp.SortingLine, dp.DeliverLineCode, om.OrderID }
+                                            ).Join(sortOrderDetailQuery,
+                                                 dm => new { dm.OrderID },
+                                                 od => new { od.OrderID },
+                                                 (dm, od) => new { dm.ID, dm.WorkStatus, dm.OrderDate, dm.SortingLine, od.Product, od.UnitCode, od.Price, od.RealQuantity }
+                                            ).WhereIn(s => s.ID, work)
+                                             .Where(s => s.WorkStatus == "1")
+                                             .GroupBy(r => new { r.OrderDate, r.SortingLine, r.Product, r.UnitCode, r.Price })
+                                             .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, r.Key.Product, r.Key.UnitCode, r.Key.Price, SumQuantity = r.Sum(p => p.RealQuantity * r.Key.Product.UnitList.Unit02.Count) })
+                                             .AsParallel()
+                                             .GroupBy(r => new { r.OrderDate, r.SortingLine })
+                                             .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
+                                             .ToArray();
+           
+            
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
             if (employee == null)
