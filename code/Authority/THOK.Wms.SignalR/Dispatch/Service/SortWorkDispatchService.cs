@@ -12,6 +12,7 @@ using System.Transactions;
 using THOK.Wms.SignalR.Model;
 using System.Threading;
 using Entities.Extensions;
+using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.SignalR.Dispatch.Service
 {
@@ -42,7 +43,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
         public ISortingLineRepository SortingLineRepository { get; set; }
         [Dependency]
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
-        
+
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
+
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
@@ -78,6 +82,11 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             IQueryable<SortWorkDispatch> sortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
 
+            IQueryable<THOK.Authority.DbModel.SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+
+
+            var IsUselowerlimit = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsUselowerlimit");//查询调度是否使用下限 0 否 1是
+ 
             workDispatchId = workDispatchId.Substring(0, workDispatchId.Length - 1);
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
             
@@ -198,6 +207,9 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 {
                                     areaQuantiy = areaSumQuantitys.Sum(s => s.Quantity - s.OutFrozenQuantity);
                                 }
+
+                                if (IsUselowerlimit != null && IsUselowerlimit.ParameterValue == "0")
+                                    lowerlimitQuantity = 0;
 
                                 if (cancellationToken.IsCancellationRequested) return;
 
