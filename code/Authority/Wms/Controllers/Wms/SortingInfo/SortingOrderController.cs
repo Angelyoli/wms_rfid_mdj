@@ -97,7 +97,7 @@ namespace Authority.Controllers.Wms.SortingInfo
                 //lineResult = routeBll.DownRouteInfo();
                 //从营销下载分拣数据 创联
                 lineResult = routeBll.DownRouteInfos();
-                bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                bResult = orderBll.GetSortingOrderDates(beginDate, endDate, out errorInfo);
             }
 
             string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;

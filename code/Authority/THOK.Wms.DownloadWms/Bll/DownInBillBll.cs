@@ -39,7 +39,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     string billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
                     billnolist = UtinString.StringMake(billnolist);
                     billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
-                    DataTable masterdt = this.InBillMaster(billnolist);
+                    DataTable masterdt = this.InBillMasters(billnolist);
 
                     string inDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
                     inDetailList = UtinString.StringMake(inDetailList);
@@ -64,7 +64,56 @@ namespace THOK.WMS.DownloadWms.Bll
             }
             return tag;
         }
+        /// <summary>
+        /// 下载入库主表 创联
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="EmployeeCode"></param>
+        /// <param name="wareCode"></param>
+        /// <param name="billtype"></param>
+        /// <param name="errorInfo"></param>
+        /// <returns></returns>
+        public bool GetInBills(string startDate, string endDate, string EmployeeCode, string wareCode, string billtype, out string errorInfo)
+        {
+            bool tag = false;
+            Employee = EmployeeCode;
+            errorInfo = string.Empty;
+            using (PersistentManager pm = new PersistentManager())
+            {
+                try
+                {
+                    DownInBillDao dao = new DownInBillDao();
+                    DataTable emply = dao.FindEmployee(EmployeeCode);
+                    DataTable inMasterBillNo = this.GetInBillNo();
+                    string billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
+                    billnolist = UtinString.StringMake(billnolist);
+                    billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
+                    DataTable masterdt = this.InBillMasters(billnolist);
 
+                    string inDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
+                    inDetailList = UtinString.StringMake(inDetailList);
+                    inDetailList = "ORDER_ID IN(" + inDetailList + ")";
+                    DataTable detaildt = this.InBillDetail(inDetailList);
+
+                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                    {
+                        DataSet masterds = this.InBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
+
+                        DataSet detailds = this.InBillDetail(detaildt);
+                        this.Insert(masterds, detailds);
+                        tag = true;
+                    }
+                    else
+                        errorInfo = "没有新的入库单下载！";
+                }
+                catch (Exception e)
+                {
+                    errorInfo = "下载入库单失败！原因：" + e.Message;
+                }
+            }
+            return tag;
+        }
         /// <summary>
         /// 查询数字仓储4天内入库单
         /// </summary>
@@ -91,7 +140,19 @@ namespace THOK.WMS.DownloadWms.Bll
                 return dao.GetInBillMaster(inBillNoList);
             }
         }
-
+        /// <summary>
+        /// 下载入库单主表数据 创联
+        /// </summary>
+        /// <returns></returns>
+        public DataTable InBillMasters(string inBillNoList)
+        {
+            using (PersistentManager dbpm = new PersistentManager("YXConnection"))
+            {
+                DownInBillDao dao = new DownInBillDao();
+                dao.SetPersistentManager(dbpm);
+                return dao.GetInBillMasters(inBillNoList);
+            }
+        }
         /// <summary>
         /// 下载入库单明细表数据
         /// </summary>

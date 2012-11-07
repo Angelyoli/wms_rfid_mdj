@@ -235,7 +235,8 @@ namespace Authority.Controllers.Wms.StockIn
             ubll.DownUnitInfo();
             pbll.DownProductInfo();
             if (isInDown)
-                bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+               // bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+                bResult = ibll.GetInBills(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
             else
                 bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);                
            
