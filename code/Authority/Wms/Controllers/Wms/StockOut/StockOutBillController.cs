@@ -8,6 +8,7 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
+using THOK.Authority.Bll.Interfaces;
 
 namespace Authority.Controllers.Wms.StockOut
 {
@@ -18,6 +19,8 @@ namespace Authority.Controllers.Wms.StockOut
         public IOutBillMasterService OutBillMasterService { get; set; }
         [Dependency]
         public IOutBillDetailService OutBillDetailService { get; set; }
+        [Dependency]
+        public ISystemParameterService SystemParameterService { get; set; }
         //
         // GET: /StockOutBill/
 
@@ -171,12 +174,18 @@ namespace Authority.Controllers.Wms.StockOut
             DownProductBll pbll = new DownProductBll();
             DownOutBillBll ibll = new DownOutBillBll();
             DownCustomerBll custBll = new DownCustomerBll();
-            //ubll.DownUnitCodeInfo();
-            //pbll.DownProductInfo();
-            //custBll.DownCustomerInfo();
-            ubll.DownUnitInfo();//创联
-            pbll.DownProductInfos();//创联
-            custBll.DownCustomerInfos();//创联
+            if (!SystemParameterService.SetSystemParameter())
+            {
+                ubll.DownUnitCodeInfo();
+                pbll.DownProductInfo();
+                custBll.DownCustomerInfo();
+            }
+            else
+            {
+                ubll.DownUnitInfo();//创联
+                pbll.DownProductInfos();//创联
+                custBll.DownCustomerInfos();//创联
+            }
             bool bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
 
             //bool bResult = OutBillMasterService.DownOutBillMaster(beginDate, endDate, out errorInfo);
