@@ -539,8 +539,9 @@ namespace THOK.Wms.Bll.Service
 
                     DailyBalanceRepository.SaveChanges();
                     scope.Complete();
+
+                    return true;
                 }
-                return true;
             }
             catch (Exception e)
             {

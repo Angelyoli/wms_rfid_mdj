@@ -159,5 +159,18 @@ namespace THOK.Authority.Bll.Service
 
             return result;
         }
+
+        public bool SetSystemParameter()
+        {
+            var query = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "DownInterFace").ParameterValue;
+            if (query == "2")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

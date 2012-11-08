@@ -8,5 +8,6 @@ namespace THOK.Authority.Bll.Interfaces
         bool SetSystemParameter(SystemParameter systemParameter, string userName, out string error);
         bool AddSystemParameter(SystemParameter systemParameter, string userName, out string error);
         bool DelSystemParameter(int id, out string error);
+        bool SetSystemParameter();
     }
 }
