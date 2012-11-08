@@ -82,12 +82,11 @@ namespace Authority.Controllers.Wms.SortingInfo
             DownCustomerBll custBll = new DownCustomerBll();
             DownDistStationBll stationBll = new DownDistStationBll();
             DownDistCarBillBll carBll = new DownDistCarBillBll();
-
+            routeBll.DeleteTable();
+            stationBll.DownDistStationInfo();
             if (!SystemParameterService.SetSystemParameter())
-            {
-                routeBll.DeleteTable();
-                bool custResult = custBll.DownCustomerInfo();
-                stationBll.DownDistStationInfo();
+            {                
+                bool custResult = custBll.DownCustomerInfo();                
                 carBll.DownDistCarBillInfo(beginDate);
                 if (isSortDown)
                 {
@@ -104,9 +103,7 @@ namespace Authority.Controllers.Wms.SortingInfo
             }
             else
             {
-                routeBll.DeleteTable();
                 bool custResult = custBll.DownCustomerInfos();//创联
-                stationBll.DownDistStationInfo();
                 //carBll.DownDistCarBillInfo(beginDate);
                 if (isSortDown)
                 {
