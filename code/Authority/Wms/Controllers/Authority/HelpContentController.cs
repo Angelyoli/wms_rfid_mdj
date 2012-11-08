@@ -89,5 +89,13 @@ namespace Authority.Controllers.Authority
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
+        //
+        // GET: /HelpContent/Help/
+
+        public ActionResult Help(string helpId)
+        {
+            var help = HelpContentService.Help(helpId);
+            return Json(help, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

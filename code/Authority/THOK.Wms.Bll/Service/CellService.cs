@@ -810,7 +810,9 @@ namespace THOK.Wms.Bll.Service
                 }
                 else if (inOrOut == "in")//查询出可以移入卷烟的货位 ,
                 {
-                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && c.IsActive=="1" && (c.Storages.Count == 0 || c.Storages.Any(s => s.Product == null || (s.ProductCode == productCode && (c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity) > 0))))
+                    cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && c.IsActive == "1"
+                                            && (c.Storages.Count == 0 || c.Storages.Any(s => (s.ProductCode == productCode && (c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity) > 0))
+                                            || c.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) == 0))
                                              .OrderBy(c => c.CellCode).Select(c => c);
                 }
                 else if (inOrOut == "stockOut")//查询可以出库的数量 --出库使用
@@ -827,13 +829,13 @@ namespace THOK.Wms.Bll.Service
                 }
                 foreach (var cell in cells)//货位
                 {
-                    string quantityStr="";
+                    string quantityStr = "";
                     if (inOrOut == "in")
                     {
-                        if (cell.Storages.Count != 0)
+                        if (cell.Storages.Count != 0 && cell.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) != 0)
                         {
-                            var cellQuantity = cell.Storages.GroupBy(g => g.Cell).Select(s => new { quant = s.Sum(q => q.Product == null ? q.Cell.MaxQuantity : ((q.Cell.MaxQuantity * q.Product.Unit.Count) - (q.Quantity + q.InFrozenQuantity)) / q.Product.Unit.Count) });
-                            decimal quantity = Convert.ToDecimal(cellQuantity.Sum(p => p.quant));
+                            var cellQuantity = cell.Storages.GroupBy(g => new { g.Cell }).Select(s => new { quan = s.Key.Cell.Product == null ? s.Key.Cell.MaxQuantity : ((s.Key.Cell.MaxQuantity * s.Key.Cell.Product.Unit.Count) - s.Sum(p => p.Quantity + p.InFrozenQuantity)) / s.Key.Cell.Product.Unit.Count });
+                            decimal quantity = Convert.ToDecimal(cellQuantity.Sum(s => s.quan));
                             quantity = Math.Round(quantity, 2);
                             quantityStr = "<可入：" + quantity + ">件";
                         }

@@ -10,6 +10,8 @@ using System.Threading;
 using THOK.Wms.SignalR.Model;
 using THOK.Wms.SignalR.Common;
 using Entities.Extensions;
+using THOK.Authority;
+using THOK.Authority.Dal.Interfaces;
 namespace THOK.Wms.SignalR.Allot.Service
 {
     public class InBillAllotService : Notifier<AllotStockInConnection>, IInBillAllotService
@@ -23,6 +25,9 @@ namespace THOK.Wms.SignalR.Allot.Service
         [Dependency]
         public IInBillDetailRepository InBillDetailRepository { get; set; }
 
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }        
+         
         [Dependency]
         public IWarehouseRepository WarehouseRepository { get; set; }
         [Dependency]
@@ -41,12 +46,15 @@ namespace THOK.Wms.SignalR.Allot.Service
             ps.State = StateType.Start;
             ps.Messages.Add("开始分配!");
             NotifyConnection(ps.Clone());
-
+            IQueryable<THOK.Authority.DbModel.SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
             IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();            
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 
             InBillMaster billMaster = inBillMasterQuery.Single(b => b.BillNo == billNo);
             if (!CheckAndLock(billMaster, ps)){return;}
+
+            var isDefaultProduct = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");//查询预设的卷烟其他卷烟是否可入 0 否 1是
+            var InMantissaIsPiece = systemParQuery.FirstOrDefault(s => s.ParameterName == "InMantissaIsPiece");//查询入库的尾数是否放入件烟区  0 否 1是
 
             //选择未分配的细单数组；
             var billDetails = billMaster.InBillDetails
@@ -122,11 +130,14 @@ namespace THOK.Wms.SignalR.Allot.Service
             //条烟区
             var cellQueryFromList2 = cell2.OrderBy(c => c.Area.AllotInOrder);
 
-            //件烟区
-            //var cellQueryFromList3 = cell3.Where(c => c.Storages.Any(s=>c.MaxQuantity * s.Product.Unit.Count > s.Quantity - s.InFrozenQuantity))
-                                             // .OrderBy(c => c.Area.AllotInOrder);
-
-            //件烟区
+            //件烟区 --入库尾数可以放入件烟区
+            var cellQueryFromList3 = cell3.OrderBy(c => c.Area.AllotInOrder);
+            if (InMantissaIsPiece.ParameterValue != "0")
+            {
+                cellQueryFromList3 = cell3.Where(c => c.Storages.Any(s => c.MaxQuantity * s.Product.Unit.Count > s.Quantity - s.InFrozenQuantity))
+                                              .OrderBy(c => c.Area.AllotInOrder);
+            }
+            //件烟区 --入库尾数不放入件烟区
             var cellQueryFromList4 = cell4.Where(c => c.Storages.Count == 0
                                                 || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
                                                         && s.Quantity == 0
@@ -144,10 +155,14 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配没预设卷烟的货位；
                 cs = cellQueryFromList1.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                 AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
-                //分配预设其他卷烟的货位；
-                //cs = cellQueryFromList1.Where(c => c.DefaultProductCode != billDetail.ProductCode
-                //                                    && !string.IsNullOrEmpty(c.DefaultProductCode));
-                //AllotPallet(billMaster, billDetail, cs, cancellationToken,ps);
+                
+                if (isDefaultProduct.ParameterValue != "0")//判断预设卷烟后不能放入其他烟
+                {
+                    //分配预设其他卷烟的货位；
+                    cs = cellQueryFromList1.Where(c => c.DefaultProductCode != billDetail.ProductCode
+                                                        && !string.IsNullOrEmpty(c.DefaultProductCode));
+                    AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
+                }
 
                 //分配条烟到条烟区；
                 cs = cellQueryFromList2.Where(c => c.DefaultProductCode == billDetail.ProductCode
@@ -158,28 +173,29 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配条烟到条烟区；
                 if (!cs.Any())
                 {
-                    cs = cellQueryFromList2.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
+                    cs = cellQueryFromList2.Where(c => (isDefaultProduct.ParameterValue == "0" ? string.IsNullOrEmpty(c.DefaultProductCode) : c.WarehouseCode == c.WarehouseCode));
                     AllotBar(billMaster, billDetail, cs, cancellationToken, ps);
                 }
 
-                //分配未满一托盘的卷烟到件烟区；                
+                //分配未满一托盘的卷烟到件烟区；
+                cs = cellQueryFromList3.Where(c => (isDefaultProduct.ParameterValue == "0" ? string.IsNullOrEmpty(c.DefaultProductCode) : c.WarehouseCode == c.WarehouseCode) || c.DefaultProductCode == billDetail.ProductCode);
                 if (cellQueryFromList2.Any())
                 {
-                    //cs = cellQueryFromList3;
-                    //AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
-                    cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
+                    if (InMantissaIsPiece.ParameterValue != "0")
+                        AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
+                    cs = cellQueryFromList4.Where(c => (isDefaultProduct.ParameterValue == "0" ? string.IsNullOrEmpty(c.DefaultProductCode) : c.WarehouseCode == c.WarehouseCode));
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
                 }
                 else
                 {
-                    //cs = cellQueryFromList3;
-                    //AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
-                    cs = cellQueryFromList4.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
+                    if (InMantissaIsPiece.ParameterValue != "0")
+                        AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
+                    cs = cellQueryFromList4.Where(c => (isDefaultProduct.ParameterValue == "0" ? string.IsNullOrEmpty(c.DefaultProductCode) : c.WarehouseCode == c.WarehouseCode));
                     AllotPieceAndBar(billMaster, billDetail, cs, cancellationToken, ps);
                 }    
 
                 //分配未满一托盘的卷烟到下层货架；
-                cs = cellQueryFromList1.Where(c => c.Layer == 1 && string.IsNullOrEmpty(c.DefaultProductCode));
+                cs = cellQueryFromList1.Where(c => c.Layer == 1 &&(isDefaultProduct.ParameterValue == "0" ? string.IsNullOrEmpty(c.DefaultProductCode) : c.WarehouseCode == c.WarehouseCode));
                 if (cellQueryFromList2.Count() > 0)
                 {
                     AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
@@ -190,7 +206,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 }
 
                 //分配未分配卷烟到其他库区；
-                cs = cellQueryFromList1.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
+                cs = cellQueryFromList1.Where(c => (isDefaultProduct.ParameterValue == "0" ? string.IsNullOrEmpty(c.DefaultProductCode) : c.WarehouseCode == c.WarehouseCode));
                 AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
 
                 //分配未分配卷烟到其他非货位管理货位；

@@ -231,7 +231,8 @@ namespace Authority.Controllers.Wms.StockIn
             beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
             endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
 
-            ubll.DownUnitCodeInfo();
+            //ubll.DownUnitCodeInfo();
+            ubll.DownUnitInfo();
             pbll.DownProductInfo();
             if (isInDown)
                 bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);

@@ -16,8 +16,8 @@ namespace THOK.Wms.Bll.Interfaces
 
         object D_Details(int page, int rows, string QueryString, string Value);
 
-        bool Save(DeliverLine deliverLine, out string strResult);
-
         bool Delete(string DeliverLineCode);
+
+        bool Edit(DeliverLine deliverLine, out string strResult);
     }
 }

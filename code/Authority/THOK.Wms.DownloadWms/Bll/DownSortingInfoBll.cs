@@ -138,7 +138,7 @@ namespace THOK.Wms.DownloadWms.Bll
                 masterrow["description"] = "";
                 masterrow["is_active"] = "1";
                 masterrow["update_time"] = DateTime.Now;
-                masterrow["deliver_line_code"] = row["DELIVERLINECODE"].ToString();// +"_" + row["DIST_BILL_ID"].ToString();
+                masterrow["deliver_line_code"] = row["DIST_BILL_ID"].ToString();// row["DELIVERLINECODE"].ToString();// +"_" + row["DIST_BILL_ID"].ToString();
                 ds.Tables["WMS_SORT_ORDER"].Rows.Add(masterrow);
             }
             return ds;

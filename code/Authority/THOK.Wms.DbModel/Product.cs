@@ -55,6 +55,7 @@ namespace THOK.Wms.DbModel
         public string Description { get; set; }
         public string IsActive { get; set; }
         public DateTime UpdateTime { get; set; }
+        public string IsRounding { get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual Supplier Supplier { get; set; }

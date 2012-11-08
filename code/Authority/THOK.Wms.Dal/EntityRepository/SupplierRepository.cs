@@ -4,7 +4,7 @@ using THOK.Common.Ef.EntityRepository;
 
 namespace THOK.Wms.Dal.EntityRepository
 {
-    public class SupplierRepository:RepositoryBase<Supplier>,ISupplierRepository
+    public class SupplierRepository : RepositoryBase<Supplier>, ISupplierRepository
     {
     }
 }

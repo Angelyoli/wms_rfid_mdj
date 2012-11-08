@@ -31,7 +31,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataTable emply = dao.FindEmployee(EmployeeCode);   
                 DataTable outBillNoTable = this.GetOutBillNo(startDate);
                 string outBillList = UtinString.MakeString(outBillNoTable, "bill_no");
-                outBillList = string.Format("ORDER_DATE ='{0}' AND ORDER_ID NOT IN({1}) AND ORDER_TYPE='70'", startDate, outBillList);
+                outBillList = string.Format("ORDER_DATE ='{0}' AND ORDER_ID NOT IN({1}) ", startDate, outBillList);
                 DataTable masterdt = this.GetOutBillMaster(outBillList);
 
                 string outDetailList = UtinString.MakeString(masterdt, "ORDER_ID");
@@ -309,7 +309,7 @@ namespace THOK.WMS.DownloadWms.Bll
             DataTable middletable = ds.Tables.Add("WMS_MIDDLE_OUT_BILLDETAIL");
             middletable.Columns.Add("bill_no");
             middletable.Columns.Add("bill_date");
-
+            middletable.Columns.Add("in_bill_no");
             return ds;
         }
 
