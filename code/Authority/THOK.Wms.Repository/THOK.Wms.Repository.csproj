@@ -281,6 +281,10 @@
     <Compile Include="Migrations\201211020311429_add_system_parameter.Designer.cs">
       <DependentUpon>201211020311429_add_system_parameter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201211081248509_modify_product_cell_max_product_quantity.cs" />
+    <Compile Include="Migrations\201211081248509_modify_product_cell_max_product_quantity.Designer.cs">
+      <DependentUpon>201211081248509_modify_product_cell_max_product_quantity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
