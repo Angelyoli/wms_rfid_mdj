@@ -12,6 +12,7 @@ using System.Transactions;
 using THOK.Wms.SignalR.Model;
 using System.Threading;
 using Entities.Extensions;
+using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.SignalR.Dispatch.Service
 {
@@ -42,7 +43,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
         public ISortingLineRepository SortingLineRepository { get; set; }
         [Dependency]
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
-        
+
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
+
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
@@ -78,26 +82,33 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             IQueryable<SortWorkDispatch> sortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
 
+            IQueryable<THOK.Authority.DbModel.SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+
+
+            var IsUselowerlimit = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsUselowerlimit");//查询调度是否使用下限 0 否 1是
+ 
             workDispatchId = workDispatchId.Substring(0, workDispatchId.Length - 1);
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
-
-            //调度表未作业的数据
-            var temp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
-                                           .Where(s => s.WorkStatus == "1")
-                                           .Join(sortOrderQuery,
-                                                dp => new { dp.OrderDate, dp.DeliverLineCode },
-                                                om => new { om.OrderDate, om.DeliverLineCode },
-                                                (dp, om) => new { dp.OrderDate, dp.SortingLine, dp.DeliverLineCode, om.OrderID }
-                                           ).Join(sortOrderDetailQuery,
-                                                dm => new { dm.OrderID },
-                                                od => new { od.OrderID },
-                                                (dm, od) => new { dm.OrderDate, dm.SortingLine, od.Product, od.UnitCode, od.Price, od.RealQuantity }
-                                           ).GroupBy(r => new { r.OrderDate, r.SortingLine, r.Product, r.UnitCode, r.Price })
-                                            .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, r.Key.Product, r.Key.UnitCode, r.Key.Price, SumQuantity = r.Sum(p => p.RealQuantity * r.Key.Product.UnitList.Unit02.Count) })
-                                            .GroupBy(r => new { r.OrderDate, r.SortingLine })
-                                            .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
-                                            .ToArray();
-
+            
+                //调度表未作业的数据
+            var temp = sortOrderDispatchQuery.Join(sortOrderQuery,
+                                                 dp => new { dp.OrderDate, dp.DeliverLineCode },
+                                                 om => new { om.OrderDate, om.DeliverLineCode },
+                                                 (dp, om) => new { dp.ID, dp.WorkStatus, dp.OrderDate, dp.SortingLine, dp.DeliverLineCode, om.OrderID }
+                                            ).Join(sortOrderDetailQuery,
+                                                 dm => new { dm.OrderID },
+                                                 od => new { od.OrderID },
+                                                 (dm, od) => new { dm.ID, dm.WorkStatus, dm.OrderDate, dm.SortingLine, od.Product, od.UnitCode, od.Price, od.RealQuantity }
+                                            ).WhereIn(s => s.ID, work)
+                                             .Where(s => s.WorkStatus == "1")
+                                             .GroupBy(r => new { r.OrderDate, r.SortingLine, r.Product, r.UnitCode, r.Price })
+                                             .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, r.Key.Product, r.Key.UnitCode, r.Key.Price, SumQuantity = r.Sum(p => p.RealQuantity * r.Key.Product.UnitList.Unit02.Count) })
+                                             .AsParallel()
+                                             .GroupBy(r => new { r.OrderDate, r.SortingLine })
+                                             .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
+                                             .ToArray();
+           
+            
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
             if (employee == null)
@@ -197,6 +208,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     areaQuantiy = areaSumQuantitys.Sum(s => s.Quantity - s.OutFrozenQuantity);
                                 }
 
+                                //是否使用下限
+                                if (IsUselowerlimit != null && IsUselowerlimit.ParameterValue == "0")
+                                    lowerlimitQuantity = 0;
+
                                 if (cancellationToken.IsCancellationRequested) return;
 
                                 //获取移库量（按整件计）出库量加上下限量减去备货区库存量取整
@@ -216,6 +231,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         //出库量减去备货区库存量
                                         quantity = product.SumQuantity - storQuantity;
                                     }
+                                }
+
+                                //取整托盘
+                                decimal wholeTray = 0;
+                                if (product.Product.IsRounding == "2")
+                                {
+                                    wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                    quantity = Convert.ToDecimal(wholeTray * product.Product.Unit.Count);
                                 }
 
                                 //不取整的烟直接出库。
@@ -261,8 +284,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 SortWorkDispatch sortWorkDisp = AddSortWorkDispMaster(moveBillMaster, outBillMaster, item.SortingLine.SortingLineCode, item.OrderDate);
 
                                 //修改线路调度作业状态和作业ID
-                                var sortDispTemp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
-                                                                         .Where(s=>s.OrderDate == item.OrderDate
+                                var sortDispTemp = sortOrderDispatchQuery.WhereIn(s => s.ID, work)
+                                                                         .Where(s => s.OrderDate == item.OrderDate
                                                                          && s.SortingLineCode == item.SortingLine.SortingLineCode);
 
                                 foreach (var sortDisp in sortDispTemp.ToArray())

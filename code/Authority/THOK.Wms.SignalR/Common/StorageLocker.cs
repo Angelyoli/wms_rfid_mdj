@@ -30,6 +30,7 @@ namespace THOK.Wms.SignalR.Common
                         {
                             storage = new Storage()
                             {
+                                Cell = cell,
                                 StorageCode = Guid.NewGuid().ToString(),
                                 CellCode = cell.CellCode,
                                 IsLock = "0",
@@ -134,6 +135,7 @@ namespace THOK.Wms.SignalR.Common
                     {
                         storage = new Storage()
                         {
+                            Cell = cell,
                             StorageCode = Guid.NewGuid().ToString(),
                             CellCode = cell.CellCode,
                             IsLock = "0",
@@ -181,6 +183,7 @@ namespace THOK.Wms.SignalR.Common
                     {
                         storage = new Storage()
                         {
+                            Cell=cell,                            
                             StorageCode = Guid.NewGuid().ToString(),
                             CellCode = cell.CellCode,
                             IsLock = "0",
@@ -384,6 +387,7 @@ namespace THOK.Wms.SignalR.Common
                             {
                                 storage = new Storage()
                                 {
+                                    Cell = cell,
                                     StorageCode = Guid.NewGuid().ToString(),
                                     CellCode = cell.CellCode,
                                     IsLock = "0",
@@ -405,6 +409,7 @@ namespace THOK.Wms.SignalR.Common
                     {
                         storage = new Storage()
                         {
+                            Cell = cell,
                             StorageCode = Guid.NewGuid().ToString(),
                             CellCode = cell.CellCode,
                             IsLock = "0",

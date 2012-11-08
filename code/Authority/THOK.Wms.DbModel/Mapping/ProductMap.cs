@@ -145,6 +145,9 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsFixedLength()
                 .HasMaxLength(1);
 
+            this.Property(t => t.CellMaxProductQuantity)
+                .IsRequired();
+
             // Table & Column Mappings
             this.Property(t => t.ProductCode).HasColumnName(ColumnMap.Value.To("ProductCode"));
             this.Property(t => t.ProductName).HasColumnName(ColumnMap.Value.To("ProductName"));
@@ -180,6 +183,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.IsActive).HasColumnName(ColumnMap.Value.To("IsActive"));
             this.Property(t => t.UpdateTime).HasColumnName(ColumnMap.Value.To("UpdateTime"));
             this.Property(t => t.IsRounding).HasColumnName(ColumnMap.Value.To("IsRounding"));
+            this.Property(t => t.CellMaxProductQuantity).HasColumnName(ColumnMap.Value.To("CellMaxProductQuantity"));
 
             // Relationships
             this.HasRequired(t => t.Brand)
