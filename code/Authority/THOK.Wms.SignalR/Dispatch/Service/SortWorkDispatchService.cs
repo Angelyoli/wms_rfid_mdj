@@ -208,6 +208,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     areaQuantiy = areaSumQuantitys.Sum(s => s.Quantity - s.OutFrozenQuantity);
                                 }
 
+                                //是否使用下限
                                 if (IsUselowerlimit != null && IsUselowerlimit.ParameterValue == "0")
                                     lowerlimitQuantity = 0;
 
@@ -230,6 +231,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         //出库量减去备货区库存量
                                         quantity = product.SumQuantity - storQuantity;
                                     }
+                                }
+
+                                //取整托盘
+                                decimal wholeTray = 0;
+                                if (product.Product.IsRounding == "2")
+                                {
+                                    wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                    quantity = Convert.ToDecimal(wholeTray * product.Product.Unit.Count);
                                 }
 
                                 //不取整的烟直接出库。
