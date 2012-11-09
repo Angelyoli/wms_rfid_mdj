@@ -172,6 +172,7 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("卷烟名称", typeof(string));
                 dt.Columns.Add("数量(件)", typeof(string));
                 dt.Columns.Add("数量(条)", typeof(string));
+                dt.Columns.Add("尾数(条)", typeof(string));
                 foreach (var c in currentstorage)
                 {
                     dt.Rows.Add
@@ -179,6 +180,7 @@ namespace THOK.Wms.Bll.Service
                             c.ProductCode,
                             c.ProductName,
                             c.Quantity1,
+                            c.Quantity2,
                             c.Quantity3
                         );
                 }
@@ -201,6 +203,7 @@ namespace THOK.Wms.Bll.Service
                 dt.Columns.Add("卷烟名称", typeof(string));
                 dt.Columns.Add("数量(件)", typeof(string));
                 dt.Columns.Add("数量(条)", typeof(string));
+                dt.Columns.Add("尾数(条)", typeof(string));
                 foreach (var c in currentstorage)
                 {
                     dt.Rows.Add
@@ -208,6 +211,7 @@ namespace THOK.Wms.Bll.Service
                             c.ProductCode,
                             c.ProductName,
                             c.Quantity1,
+                            c.Quantity2,
                             c.Quantity3
                         );
                 }
