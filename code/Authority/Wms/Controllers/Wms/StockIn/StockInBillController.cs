@@ -9,6 +9,7 @@ using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
 using THOK.Wms.DownloadWms.Bll;
+using THOK.Authority.Bll.Interfaces;
 
 namespace Authority.Controllers.Wms.StockIn
 {
@@ -18,6 +19,8 @@ namespace Authority.Controllers.Wms.StockIn
         public IInBillMasterService InBillMasterService { get; set; }
         [Dependency]
         public IInBillDetailService InBillDetailService { get; set; }
+        [Dependency]
+        public ISystemParameterService SystemParameterService { get; set; }
         //
         // GET: /StockInBill/
 
@@ -230,14 +233,24 @@ namespace Authority.Controllers.Wms.StockIn
             string errorInfo = string.Empty;
             beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
             endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
-
-            ubll.DownUnitCodeInfo();
-            pbll.DownProductInfo();
-            if (isInDown)
-                bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+            if (!SystemParameterService.SetSystemParameter())
+            {
+                ubll.DownUnitCodeInfo();
+                pbll.DownProductInfo();
+                if (isInDown)
+                    bResult = ibll.GetInBill(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+                else
+                    bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+            }
             else
-                bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);                
-           
+            {
+                ubll.DownUnitInfo();
+                pbll.DownProductInfos();
+                if (isInDown)
+                    bResult = ibll.GetInBills(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+                else
+                    bResult = planBll.GetInBillMiddle(beginDate, endDate, this.User.Identity.Name.ToString(), wareCode, billType, out errorInfo);
+            }
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

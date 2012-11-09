@@ -184,6 +184,12 @@ namespace THOK.Wms.Bll.Service
                             c.Quantity3
                         );
                 }
+                if (currentstorage.Count() > 0)
+                {
+                    dt.Rows.Add(null, "总数：",
+                        currentstorage.Sum(m => m.Quantity1),
+                        currentstorage.Sum(m => m.Quantity3));
+                }
                 return dt;
             }
             if (unitType == "2")
@@ -214,6 +220,12 @@ namespace THOK.Wms.Bll.Service
                             c.Quantity2,
                             c.Quantity3
                         );
+                }
+                if (currentstorage.Count() > 0)
+                {
+                    dt.Rows.Add(null, "总数：",
+                        currentstorage.Sum(m => m.Quantity1),
+                        currentstorage.Sum(m => m.Quantity3));
                 }
                 return dt;
             }

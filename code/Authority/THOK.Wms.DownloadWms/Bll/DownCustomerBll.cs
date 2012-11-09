@@ -20,6 +20,34 @@ namespace THOK.WMS.DownloadWms.Bll
         public bool DownCustomerInfo()
         {
             bool tag = true;
+            try
+            {
+                DataTable customerCodeDt = this.GetCustomerCode();
+                string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
+                //CusromerList = UtinString.StringMake(CusromerList);
+                CusromerList = " CUST_CODE NOT IN (" + CusromerList + ")";
+                DataTable customerDt = this.GetCustomerInfo(CusromerList);
+                if (customerDt.Rows.Count > 0)
+                {
+                    DataSet custDs = this.Insert(customerDt);
+                    this.Insert(custDs);
+                    //上报客户信息数据
+                    //upload.InsertCustom(custDs);
+                }    
+            }
+            catch (Exception e)
+            {
+                throw new Exception("下载客户失败！原因：" + e.Message);
+            }                    
+            return tag;
+        }
+        /// <summary>
+        /// 下载客户信息 创联
+        /// </summary>
+        /// <returns></returns>
+        public bool DownCustomerInfos()
+        {
+            bool tag = true;
             DataTable customerCodeDt = this.GetCustomerCode();
             string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
             //CusromerList = UtinString.StringMake(CusromerList);
@@ -27,14 +55,13 @@ namespace THOK.WMS.DownloadWms.Bll
             DataTable customerDt = this.GetCustomerInfo(CusromerList);
             if (customerDt.Rows.Count > 0)
             {
-                DataSet custDs = this.Insert(customerDt);
+                DataSet custDs = this.Inserts(customerDt);
                 this.Insert(custDs);
                 //上报客户信息数据
                 //upload.InsertCustom(custDs);
-            }            
+            }
             return tag;
         }
-
         /// <summary>
         /// 查询已下载过的客户编码
         /// </summary>
@@ -83,6 +110,47 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["uniform_code"] = row["N_CUST_CODE"].ToString().Trim();
                 inbrddr["customer_type"] = row["CUST_TYPE"].ToString().Trim() == "" ? "1" : row["CUST_TYPE"];
                 inbrddr["sale_scope"] = row["sale_scope"].ToString().Trim();
+                inbrddr["industry_type"] = row["RTL_CUST_TYPE_CODE"].ToString().Trim();
+                inbrddr["city_or_countryside"] = row["CUST_GEO_TYPE_CODE"].ToString().Trim();
+                inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();
+                inbrddr["deliver_order"] = row["DELIVER_ORDER"];
+                inbrddr["address"] = row["DIST_ADDRESS"].ToString().Trim();
+                inbrddr["phone"] = row["DIST_PHONE"].ToString().Trim() == "" ? "1" : row["DIST_PHONE"].ToString().Trim();
+                inbrddr["license_type"] = row["LICENSE_TYPE"].ToString().Trim();
+                inbrddr["license_code"] = row["LICENSE_CODE"].ToString().Trim();
+                inbrddr["principal_name"] = row["PRINCIPAL_NAME"].ToString().Trim();
+                inbrddr["principal_phone"] = row["PRINCIPAL_TEL"].ToString().Trim();
+                inbrddr["principal_address"] = row["PRINCIPAL_ADDRESS"].ToString().Trim();
+                inbrddr["management_name"] = row["MANAGEMENT_NAME"].ToString().Trim();
+                inbrddr["management_phone"] = row["MANAGEMENT_TEL"].ToString().Trim();
+                inbrddr["bank"] = row["BANK"].ToString().Trim();
+                inbrddr["bank_accounts"] = row["BANK_ACCOUNTS"].ToString().Trim();
+                inbrddr["description"] = "";
+                inbrddr["is_active"] = row["ISACTIVE"].ToString();
+                inbrddr["update_time"] = DateTime.Now;
+                ds.Tables["DWV_IORG_CUSTOMER"].Rows.Add(inbrddr);
+            }
+            return ds;
+        }
+        /// <summary>
+        ///保存虚拟表 创联
+        /// </summary>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        public DataSet Inserts(DataTable custTable)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            foreach (DataRow row in custTable.Rows)
+            {
+                DataRow inbrddr = ds.Tables["DWV_IORG_CUSTOMER"].NewRow();
+                inbrddr["customer_code"] = row["CUST_CODE"].ToString().Trim();
+                inbrddr["custom_code"] = row["CUST_N"].ToString().Trim();
+                inbrddr["customer_name"] = row["CUST_NAME"].ToString().Trim();
+                inbrddr["company_code"] = row["ORG_CODE"].ToString().Trim();
+                inbrddr["sale_region_code"] = row["SALE_REG_CODE"].ToString().Trim();
+                inbrddr["uniform_code"] = row["N_CUST_CODE"].ToString().Trim();
+                inbrddr["customer_type"] = row["CUST_TYPE"].ToString().Trim() == "" ? "1" : row["CUST_TYPE"];
+                inbrddr["sale_scope"] = row["CUST_TYPE"].ToString().Trim() == "" ? "1" : row["CUST_TYPE"];
                 inbrddr["industry_type"] = row["RTL_CUST_TYPE_CODE"].ToString().Trim();
                 inbrddr["city_or_countryside"] = row["CUST_GEO_TYPE_CODE"].ToString().Trim();
                 inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();

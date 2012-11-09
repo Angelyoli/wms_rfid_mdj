@@ -76,34 +76,34 @@ namespace Wms.Controllers.Wms.Inventory
         public ActionResult DoDailyBalance(string warehouseCode, string settleDate)
         {
             DownBusinessSystemsDailyBalanceBll dbll = new DownBusinessSystemsDailyBalanceBll();
-            dbll.DownDayEndInfo(settleDate);
+            //dbll.DownDayEndInfo(settleDate);
             string errorInfo = string.Empty;
-            bool bResult = DailyBalanceService.DoDailyBalance(warehouseCode, settleDate, ref errorInfo);
+            bool bResult =DailyBalanceService.DoDailyBalance(warehouseCode, settleDate, ref errorInfo);
             string msg = bResult ? "日结成功！" : "日结失败！";
-            //if (bResult)
-            //{
-            //    if (!CellService.uploadCell())
-            //    {
-            //        msg = msg + "上报仓储属性表失败！";
-            //    }
-            //    if (!StorageService.uploadStorage())
-            //    {
-            //        msg = msg + "上报库存表失败！";
-            //    }
-            //    if (!StorageService.uploadBusiStorage())
-            //    {
-            //        msg = msg + "上报业务库存表失败！";
-            //    }
-            //    if (!InBillMasterService.uploadInBill())
-            //    {
-            //        msg = msg + "上报入库信息失败！";
-            //    }
-            //    if (!OutBillMasterService.uploadOutBill())
-            //    {
-            //        msg = msg + "上报出库信息失败！";
-            //    }
-            //    upload.InsertSynchro();
-            //}
+            if (bResult)
+            {
+                //if (!CellService.uploadCell())
+                //{
+                //    msg = msg + "上报仓储属性表失败！";
+                //}
+                //if (!StorageService.uploadStorage())
+                //{
+                //    msg = msg + "上报库存表失败！";
+                //}
+                //if (!StorageService.uploadBusiStorage())
+                //{
+                //    msg = msg + "上报业务库存表失败！";
+                //}
+                //if (!InBillMasterService.uploadInBill())
+                //{
+                //    msg = msg + "上报入库信息失败！";
+                //}
+                //if (!OutBillMasterService.uploadOutBill())
+                //{
+                //    msg = msg + "上报出库信息失败！";
+                //}
+                //upload.InsertSynchro();
+            }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 

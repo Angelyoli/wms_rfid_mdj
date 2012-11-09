@@ -215,6 +215,15 @@ namespace THOK.Wms.Bll.Service
                             , o.Description
                         );
                 }
+                if (outBillDetail.Count() > 0)
+                {
+                    dt.Rows.Add(
+                        null, null, null, "总数：",
+                        outBillDetail.Sum(m => m.BillQuantity),
+                        outBillDetail.Sum(m => m.AllotQuantity),
+                        outBillDetail.Sum(m => m.RealQuantity),
+                        null);
+                }
             }
             return dt;
         } 

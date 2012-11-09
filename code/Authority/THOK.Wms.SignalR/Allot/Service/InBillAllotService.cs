@@ -10,6 +10,8 @@ using System.Threading;
 using THOK.Wms.SignalR.Model;
 using THOK.Wms.SignalR.Common;
 using Entities.Extensions;
+using THOK.Authority;
+using THOK.Authority.Dal.Interfaces;
 namespace THOK.Wms.SignalR.Allot.Service
 {
     public class InBillAllotService : Notifier<AllotStockInConnection>, IInBillAllotService
@@ -24,8 +26,8 @@ namespace THOK.Wms.SignalR.Allot.Service
         public IInBillDetailRepository InBillDetailRepository { get; set; }
 
         [Dependency]
-        public ISystemParameterRepository SystemParameterRepository { get; set; }
-
+        public ISystemParameterRepository SystemParameterRepository { get; set; }        
+         
         [Dependency]
         public IWarehouseRepository WarehouseRepository { get; set; }
         [Dependency]
@@ -44,7 +46,7 @@ namespace THOK.Wms.SignalR.Allot.Service
             ps.State = StateType.Start;
             ps.Messages.Add("开始分配!");
             NotifyConnection(ps.Clone());
-            IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+            IQueryable<THOK.Authority.DbModel.SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
             IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();            
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 

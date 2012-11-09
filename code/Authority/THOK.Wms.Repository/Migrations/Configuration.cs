@@ -22,8 +22,8 @@
                 new City()
                 {
                     CityID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471105"),
-                    CityName = "柳州市",
-                    Description = "柳州市",
+                    CityName = "平顶山市",
+                    Description = "平顶山市",
                     IsActive = true
                 }
             );
@@ -34,8 +34,8 @@
                 new Server()
                 {
                     ServerID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471106"),
-                    ServerName = "柳州市主服务器",
-                    Description = "柳州市主服务器",
+                    ServerName = "平顶山主服务器",
+                    Description = "平顶山主服务器",
                     Url = "",
                     IsActive = true,
                     City = city,
@@ -80,7 +80,7 @@
             CreateSearch(context);
             CreateProductQuality(context);
 
-            CreateUpload(context);
+            //CreateUpload(context);
             //CreateAutomotiveSystems(context);
             CreateSystemParameter(context);
         }
@@ -823,38 +823,6 @@
                     FunctionName = "查询",
                     ControlName = "search",
                     IndicateImage = "icon-search",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("AB8A58CC-584E-4aee-9A36-96F99003C755"),
-                    FunctionName = "新增",
-                    ControlName = "add",
-                    IndicateImage = "icon-add",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("8F0B2F3A-2A72-41ec-80F6-05756A252846"),
-                    FunctionName = "编辑",
-                    ControlName = "edit",
-                    IndicateImage = "icon-edit",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("225BAE5D-9516-43b4-8353-82B961099991"),
-                    FunctionName = "删除",
-                    ControlName = "delete",
-                    IndicateImage = "icon-remove",
-                    Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("2890F02A-FE5F-4459-82BD-1F7DD8A16D9B"),
-                    FunctionName = "打印",
-                    ControlName = "print",
-                    IndicateImage = "icon-print",
                     Module_ModuleID = new Guid("63D5366F-1B84-4d72-9DC0-38BB68F0AAE0")
                 },
                 new Function()

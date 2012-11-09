@@ -12,6 +12,7 @@ using System.Transactions;
 using THOK.Wms.SignalR.Model;
 using System.Threading;
 using Entities.Extensions;
+using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.SignalR.Dispatch.Service
 {
@@ -42,7 +43,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
         public ISortingLineRepository SortingLineRepository { get; set; }
         [Dependency]
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
-        
+
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
+
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
@@ -78,26 +82,33 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             IQueryable<SortWorkDispatch> sortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
 
+            IQueryable<THOK.Authority.DbModel.SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+
+
+            var IsUselowerlimit = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsUselowerlimit");//查询调度是否使用下限 0 否 1是
+ 
             workDispatchId = workDispatchId.Substring(0, workDispatchId.Length - 1);
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
-
-            //调度表未作业的数据
-            var temp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
-                                           .Where(s => s.WorkStatus == "1")
-                                           .Join(sortOrderQuery,
-                                                dp => new { dp.OrderDate, dp.DeliverLineCode },
-                                                om => new { om.OrderDate, om.DeliverLineCode },
-                                                (dp, om) => new { dp.OrderDate, dp.SortingLine, dp.DeliverLineCode, om.OrderID }
-                                           ).Join(sortOrderDetailQuery,
-                                                dm => new { dm.OrderID },
-                                                od => new { od.OrderID },
-                                                (dm, od) => new { dm.OrderDate, dm.SortingLine, od.Product, od.UnitCode, od.Price, od.RealQuantity }
-                                           ).GroupBy(r => new { r.OrderDate, r.SortingLine, r.Product, r.UnitCode, r.Price })
-                                            .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, r.Key.Product, r.Key.UnitCode, r.Key.Price, SumQuantity = r.Sum(p => p.RealQuantity * r.Key.Product.UnitList.Unit02.Count) })
-                                            .GroupBy(r => new { r.OrderDate, r.SortingLine })
-                                            .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
-                                            .ToArray();
-
+            
+                //调度表未作业的数据
+            var temp = sortOrderDispatchQuery.Join(sortOrderQuery,
+                                                 dp => new { dp.OrderDate, dp.DeliverLineCode },
+                                                 om => new { om.OrderDate, om.DeliverLineCode },
+                                                 (dp, om) => new { dp.ID, dp.WorkStatus, dp.OrderDate, dp.SortingLine, dp.DeliverLineCode, om.OrderID }
+                                            ).Join(sortOrderDetailQuery,
+                                                 dm => new { dm.OrderID },
+                                                 od => new { od.OrderID },
+                                                 (dm, od) => new { dm.ID, dm.WorkStatus, dm.OrderDate, dm.SortingLine, od.Product, od.UnitCode, od.Price, od.RealQuantity }
+                                            ).WhereIn(s => s.ID, work)
+                                             .Where(s => s.WorkStatus == "1")
+                                             .GroupBy(r => new { r.OrderDate, r.SortingLine, r.Product, r.UnitCode, r.Price })
+                                             .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, r.Key.Product, r.Key.UnitCode, r.Key.Price, SumQuantity = r.Sum(p => p.RealQuantity * r.Key.Product.UnitList.Unit02.Count) })
+                                             .AsParallel()
+                                             .GroupBy(r => new { r.OrderDate, r.SortingLine })
+                                             .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
+                                             .ToArray();
+           
+            
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
             if (employee == null)
@@ -144,7 +155,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                                                                                     item.SortingLine.MoveBillTypeCode,
                                                                                                     operatePersonID);
                             moveBillMaster.Origin = "2";
-                            moveBillMaster.Description = "分拣调度生成！";
+                            moveBillMaster.Description = item.SortingLine.SortingLineCode + " 分拣调度生成！";
                             lastMoveBillMaster = moveBillMaster;
                             foreach (var product in item.Products.ToArray())
                             {
@@ -197,6 +208,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     areaQuantiy = areaSumQuantitys.Sum(s => s.Quantity - s.OutFrozenQuantity);
                                 }
 
+                                //是否使用下限
+                                if (IsUselowerlimit != null && IsUselowerlimit.ParameterValue == "0")
+                                    lowerlimitQuantity = 0;
+
                                 if (cancellationToken.IsCancellationRequested) return;
 
                                 //获取移库量（按整件计）出库量加上下限量减去备货区库存量取整
@@ -218,6 +233,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     }
                                 }
 
+                                //取整托盘
+                                decimal wholeTray = 0;
+                                if (product.Product.IsRounding == "2")
+                                {
+                                    wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                    quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
+                                }
+
                                 //不取整的烟直接出库。
                                 if (product.Product.IsRounding == "1")
                                 {
@@ -235,7 +258,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     //生成移库不完整,可能是库存不足；
                                     hasError = true;
                                     ps.State = StateType.Error;
-                                    ps.Errors.Add(product.Product.ProductCode + " " + product.Product.ProductName + " 库存不足！");
+                                    ps.Errors.Add(item.SortingLine.SortingLineCode + "线," + product.Product.ProductCode + " " + product.Product.ProductName + ",库存不足！当前总量：" + Convert.ToDecimal(product.SumQuantity / product.Product.UnitList.Unit02.Count) + "(条),缺少：" + Convert.ToDecimal(quantity / product.Product.UnitList.Unit02.Count) + "(条)");
                                     NotifyConnection(ps.Clone());
                                 }
                             }
@@ -248,7 +271,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                                                                                     item.SortingLine.OutBillTypeCode,
                                                                                                     operatePersonID);
                                 outBillMaster.Origin = "2";
-                                outBillMaster.Description = "分拣调度生成!";
+                                outBillMaster.Description = item.SortingLine.SortingLineCode + " 分拣调度生成!";
                                 //添加出库单细单
                                 foreach (var product in item.Products.ToArray())
                                 {
@@ -261,8 +284,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 SortWorkDispatch sortWorkDisp = AddSortWorkDispMaster(moveBillMaster, outBillMaster, item.SortingLine.SortingLineCode, item.OrderDate);
 
                                 //修改线路调度作业状态和作业ID
-                                var sortDispTemp = sortOrderDispatchQuery.WhereIn(s=>s.ID,work)
-                                                                         .Where(s=>s.OrderDate == item.OrderDate
+                                var sortDispTemp = sortOrderDispatchQuery.WhereIn(s => s.ID, work)
+                                                                         .Where(s => s.OrderDate == item.OrderDate
                                                                          && s.SortingLineCode == item.SortingLine.SortingLineCode);
 
                                 foreach (var sortDisp in sortDispTemp.ToArray())
@@ -328,7 +351,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             return sortWorkDispatch;
         }
 
-        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps,string cellCode)
+        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps, string cellCode)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             //选择当前订单操作目标仓库；
@@ -340,18 +363,16 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             string[] areaTypes = new string[] { "2", "3", "5" };
             var ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPallet(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
+                             .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotPallet(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
 
             //分配件烟；件烟区 
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "2" };
             ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
 
             //分配件烟 (下层储位)；排除 件烟区 条烟区 残烟区 备货区
             if (cancellationToken.IsCancellationRequested) return;
@@ -359,9 +380,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
 
             //分配件烟 (非下层储位)；排除 件烟区 条烟区 残烟区 备货区
             if (cancellationToken.IsCancellationRequested) return;
@@ -369,26 +389,23 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
 
             //分配条烟；条烟区
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "3" };
             ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
 
             //分配条烟；件烟区
             areaTypes = new string[] { "2" };
             ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
 
             //分配条烟 (下层储位)；排除 件烟区 条烟区 残烟区 本货位
             if (cancellationToken.IsCancellationRequested) return;
@@ -396,9 +413,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && !cellCode.Contains(s.Cell.CellCode)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken,ps);
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
 
             //分配条烟 (非下层储位)；排除 件烟区 条烟区 残烟区 本货位
             if (cancellationToken.IsCancellationRequested) return;
@@ -406,9 +422,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && !cellCode.Contains(s.Cell.CellCode)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
-                             .OrderBy(s => s.StorageTime)
-                             .OrderBy(s => s.Cell.Area.AllotOutOrder);
-            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity,cancellationToken,ps);
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
+            if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
         }
 
         private void AllotBar(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps)
