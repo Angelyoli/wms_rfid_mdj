@@ -220,6 +220,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
                                                * product.Product.Unit.Count;
 
+                                //取整托盘
+                                decimal wholeTray = 0;
+                                if (product.Product.IsRounding == "2")
+                                {
+                                    wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                    quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
+                                }
+
                                 if (areaQuantiy < quantity)//判断当前这个卷烟库存是否小于移库量
                                 {
                                     //出库量减去备货区库存量取整
@@ -231,14 +239,6 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         //出库量减去备货区库存量
                                         quantity = product.SumQuantity - storQuantity;
                                     }
-                                }
-
-                                //取整托盘
-                                decimal wholeTray = 0;
-                                if (product.Product.IsRounding == "2")
-                                {
-                                    wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
-                                    quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
                                 }
 
                                 //不取整的烟直接出库。
