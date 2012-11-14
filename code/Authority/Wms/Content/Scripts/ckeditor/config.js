@@ -22,7 +22,9 @@ CKEDITOR.editorConfig = function (config) {
 
     config.toolbarStartupExpanded = true; //工具栏默认是否展开
 
-    config.uiColor = '#00ccff'; // 背景颜色
+    config.uiColor = '#CD8500'; // 背景颜色
+
+//    config.uiColor = '#00ccff'; // 背景颜色
 
     config.disableObjectResizing = true; //是否开启 图片和表格 的改变大小的功能 
 
