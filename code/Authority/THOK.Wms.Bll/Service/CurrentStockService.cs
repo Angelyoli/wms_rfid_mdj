@@ -188,6 +188,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     dt.Rows.Add(null, "总数：",
                         currentstorage.Sum(m => m.Quantity1),
+                        currentstorage.Sum(m => m.Quantity2),
                         currentstorage.Sum(m => m.Quantity3));
                 }
                 return dt;
@@ -225,6 +226,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     dt.Rows.Add(null, "总数：",
                         currentstorage.Sum(m => m.Quantity1),
+                        currentstorage.Sum(m => m.Quantity2),
                         currentstorage.Sum(m => m.Quantity3));
                 }
                 return dt;
