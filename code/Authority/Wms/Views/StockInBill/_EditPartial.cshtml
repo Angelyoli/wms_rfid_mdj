@@ -7,25 +7,25 @@
             if (row.Status != "已录入") {
                 $.messager.confirm('错误', '该记录状态不是已录入状态无法编辑！');
             } else {
-            isInBillMasterAdd = false;
-            isShowInBillDetail = true;
-            $('#dlg').dialog('open').dialog('setTitle', '编辑入库主单信息');
-            editKey = true;
-            $('#fm').form('load', row);
-            $('#inBillDetail').datagrid({ url: '/StockInBill/InBillDetails/?BillNo=' + row.BillNo });
-            $('#fm .easyui-validatebox').validatebox({
-                required: true
-            });
-            $('form input').removeAttr("disabled");
-            $('form textarea').removeAttr("disabled");
-            $('#btnAddBillDetail').css('display', 'inline'); //设置新增明细按钮的可见性
-            $('#btnDeleteBillDetail').css('display', 'inline'); //设置删除明细按钮的可见性
-            $('#btnEditBillDetail').css('display', 'inline'); //设置修改明细按钮的可见性
-            url = '/StockInBill/Edit/';
-            detailUrl = '/StockInBill/InBillDetailEdit/';
-        }
+                isInBillMasterAdd = false;
+                isShowInBillDetail = true;
+                $('#dlg').dialog('open').dialog('setTitle', '编辑入库主单信息');
+                editKey = true;
+                $('#fm').form('load', row);
+                $('#inBillDetail').datagrid({ url: '/StockInBill/InBillDetails/?BillNo=' + row.BillNo });
+                $('#fm .easyui-validatebox').validatebox({
+                    required: true
+                });
+                $('form input').removeAttr("disabled");
+                $('form textarea').removeAttr("disabled");
+                $('#btnAddBillDetail').css('display', 'inline'); //设置新增明细按钮的可见性
+                $('#btnDeleteBillDetail').css('display', 'inline'); //设置删除明细按钮的可见性
+                $('#btnEditBillDetail').css('display', 'inline'); //设置修改明细按钮的可见性
+                url = '/StockInBill/Edit/';
+                detailUrl = '/StockInBill/InBillDetailEdit/';
+            }
         } else {
-            $.messager.confirm('错误', '没有选择行！');
+            $.messager.alert(g_MsgBoxTitle,'没有选择行！',"error");
         }
     };
 </script>
