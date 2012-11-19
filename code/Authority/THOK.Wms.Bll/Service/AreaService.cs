@@ -141,7 +141,7 @@ namespace THOK.Wms.Bll.Service
                 wareTree.state = "open";
                 wareTree.attributes = "ware";
 
-                var areas = AreaRepository.GetQueryable().Where(a => a.Warehouse.WarehouseCode == warehouse.WarehouseCode)
+                var areas = AreaRepository.GetQueryable().Where(a => a.Warehouse.WarehouseCode == warehouse.WarehouseCode && a.IsActive=="1")
                                                          .OrderBy(a => a.AreaCode).Select(a => a);
                 HashSet<Tree> areaSet = new HashSet<Tree>();
                 foreach (var area in areas)//库区
