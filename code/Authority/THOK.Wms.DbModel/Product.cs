@@ -56,6 +56,7 @@ namespace THOK.Wms.DbModel
         public string IsActive { get; set; }
         public DateTime UpdateTime { get; set; }
         public string IsRounding { get; set; }
+        public int CellMaxProductQuantity { get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual Supplier Supplier { get; set; }

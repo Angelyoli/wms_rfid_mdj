@@ -39,7 +39,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     string billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
                     billnolist = UtinString.StringMake(billnolist);
                     billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
-                    DataTable masterdt = this.InBillMasters(billnolist);
+                    DataTable masterdt = this.InBillMaster(billnolist);
 
                     string inDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
                     inDetailList = UtinString.StringMake(inDetailList);
