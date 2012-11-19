@@ -203,8 +203,6 @@
     <Content Include="App_Data\aspnetdb_log.ldf">
       <DependentUpon>ASPNETDB.MDF</DependentUpon>
     </Content>
-    <Content Include="bin\Authority.dll" />
-    <Content Include="bin\Authority.pdb" />
     <Content Include="bin\CKFinder.dll" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EntityFramework.xml" />
