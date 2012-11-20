@@ -22,5 +22,7 @@ namespace THOK.Authority.Bll.Interfaces
 
         object Help(string helpId);
 
+
+        object GetSingleContentTxt(string helpId);
     }
 }

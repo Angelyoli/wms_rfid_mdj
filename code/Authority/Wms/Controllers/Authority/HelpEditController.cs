@@ -49,5 +49,12 @@ namespace Authority.Controllers.Authority
             var helpContent = HelpContentService.GetContentTxt(helpId);
             return Json(helpContent, "text", JsonRequestBehavior.AllowGet);
         }
+        //依据ID获取帮助文档内容
+        // GET: /HelpEdit/GetContentTxt_02/
+        public ActionResult GetSingleContentTxt(string helpId)
+        {
+            var helpContent = HelpContentService.GetSingleContentTxt(helpId);
+            return Json(helpContent, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

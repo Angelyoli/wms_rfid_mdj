@@ -169,26 +169,33 @@ namespace Authority.Controllers.Wms.StockOut
             string errorInfo = string.Empty;
             beginDate = Convert.ToDateTime(beginDate).ToString("yyyyMMdd");
             endDate = Convert.ToDateTime(endDate).ToString("yyyyMMdd");
-
+            bool bResult = false;
             DownUnitBll ubll = new DownUnitBll();
             DownProductBll pbll = new DownProductBll();
             DownOutBillBll ibll = new DownOutBillBll();
             DownCustomerBll custBll = new DownCustomerBll();
-            if (!SystemParameterService.SetSystemParameter())
+            try
             {
-                ubll.DownUnitCodeInfo();
-                pbll.DownProductInfo();
-                custBll.DownCustomerInfo();
-            }
-            else
-            {
-                ubll.DownUnitInfo();//创联
-                pbll.DownProductInfos();//创联
-                custBll.DownCustomerInfos();//创联
-            }
-            bool bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
+                if (!SystemParameterService.SetSystemParameter())
+                {
+                    ubll.DownUnitCodeInfo();
+                    pbll.DownProductInfo();
+                    custBll.DownCustomerInfo();
+                }
+                else
+                {
+                    ubll.DownUnitInfo();//创联
+                    pbll.DownProductInfos();//创联
+                    custBll.DownCustomerInfos();//创联
+                }
+                bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
 
-            //bool bResult = OutBillMasterService.DownOutBillMaster(beginDate, endDate, out errorInfo);
+            }
+            catch (Exception e)
+            {
+                errorInfo += e.Message;
+            }
+
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

@@ -27,6 +27,29 @@ namespace THOK.Wms.Bll.Service
 
         #region IProductService 增，删，改，查等方法
 
+        /// <summary>
+        /// 判断卷烟调度时的取整类型
+        /// </summary>
+        /// <param name="type">类型代码</param>
+        /// <returns>取整类型</returns>
+        public string WhatRoundingType(string type)
+        {
+            string typeStr = "";
+            switch (type)
+            {
+                case "0":
+                    typeStr = "取整件";
+                    break;
+                case "1":
+                    typeStr = "不取整";
+                    break;
+                case "2":
+                    typeStr = "取整托盘";
+                    break;
+            }
+            return typeStr;
+        }
+
         public object GetDetails(int page, int rows, string ProductName, string ProductCode, string CustomCode, string BrandCode, string UniformCode, string AbcTypeCode, string ShortCode, string PriceLevelCode, string SupplierCode)
         {
             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
@@ -92,7 +115,7 @@ namespace THOK.Wms.Bll.Service
                 c.Unit.UnitName,
                 c.UnitListCode,
                 UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
-                IsRounding = c.IsRounding == "0" ? "是" : "否"
+                IsRounding = WhatRoundingType(c.IsRounding)
             });
             return new { total, rows = temp.ToArray() };
         }
