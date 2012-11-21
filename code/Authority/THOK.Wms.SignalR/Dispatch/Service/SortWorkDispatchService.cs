@@ -495,7 +495,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                 if (cancellationToken.IsCancellationRequested) return;
                 if (quantity > 0)
                 {
-                    decimal allotQuantity = s.Product.CellMaxProductQuantity * s.Product.Unit.Count;// s.Quantity - s.OutFrozenQuantity;
+                    decimal allotQuantity = s.Quantity - s.OutFrozenQuantity;
                     decimal billQuantity = Math.Floor(quantity / s.Product.Unit.Count)
                                             * s.Product.Unit.Count;
                     if (billQuantity >= allotQuantity)

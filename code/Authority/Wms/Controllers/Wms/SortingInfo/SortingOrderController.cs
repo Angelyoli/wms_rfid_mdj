@@ -89,7 +89,7 @@ namespace Authority.Controllers.Wms.SortingInfo
                 if (!SystemParameterService.SetSystemParameter())
                 {
                     bool custResult = custBll.DownCustomerInfo();
-                    //carBll.DownDistCarBillInfo(beginDate);
+                    carBll.DownDistCarBillInfo(beginDate);
                     if (isSortDown)
                     {
                         //从分拣下载分拣数据
