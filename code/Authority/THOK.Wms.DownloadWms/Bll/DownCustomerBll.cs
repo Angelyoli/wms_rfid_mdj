@@ -32,7 +32,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     DataSet custDs = this.Insert(customerDt);
                     this.Insert(custDs);
                     //上报客户信息数据
-                    //upload.InsertCustom(custDs);
+                   // upload.InsertCustom(custDs);
                 }    
             }
             catch (Exception e)
@@ -58,7 +58,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataSet custDs = this.Inserts(customerDt);
                 this.Insert(custDs);
                 //上报客户信息数据
-                //upload.InsertCustom(custDs);
+                upload.InsertCustom(custDs);
             }
             return tag;
         }

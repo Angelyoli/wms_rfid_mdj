@@ -66,7 +66,7 @@ namespace THOK.WMS.Upload.Bll
             {
                 UploadDao dao = new UploadDao();
                 dao.SetPersistentManager(pm);
-                dao.InsertEmployee(cell);
+                dao.InsertCell(cell);
             }
         }
         //²Ö¿â¿â´æ±í

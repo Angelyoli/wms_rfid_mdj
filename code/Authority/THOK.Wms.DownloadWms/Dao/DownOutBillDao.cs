@@ -14,7 +14,7 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetOutBillMaster(string outBillNo)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_OUT_ORDER WHERE {0}", outBillNo);
+            string sql = string.Format("SELECT * FROM V_WMS_OUT_ORDER WHERE {0} AND ORDER_TYPE='70'", outBillNo);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
