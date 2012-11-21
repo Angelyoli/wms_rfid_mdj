@@ -365,6 +365,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             if (cancellationToken.IsCancellationRequested) return;
             string[] areaTypes = new string[] { "2", "3", "5" };
             var ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+                                        && s.Cell.IsSingle == "1"
                                         && s.ProductCode == product.ProductCode)
                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
             if (quantity > 0) AllotPallet(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
