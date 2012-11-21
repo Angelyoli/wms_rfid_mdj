@@ -363,7 +363,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             //分配整盘；排除 件烟区 条烟区 备货区 残烟区
             if (cancellationToken.IsCancellationRequested) return;
-            string[] areaTypes = new string[] { "2", "3", "5" };
+            string[] areaTypes = new string[] { "2", "3"};
             var ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
                                         && s.Cell.IsSingle == "1"
                                         && s.ProductCode == product.ProductCode)
@@ -380,7 +380,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             //分配件烟 (下层储位)；排除 件烟区 条烟区 残烟区 备货区
             if (cancellationToken.IsCancellationRequested) return;
-            areaTypes = new string[] { "2", "3", "5" };
+            areaTypes = new string[] { "2", "3"};
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
@@ -389,7 +389,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             //分配件烟 (非下层储位)；排除 件烟区 条烟区 残烟区 备货区
             if (cancellationToken.IsCancellationRequested) return;
-            areaTypes = new string[] { "2", "3", "5" };
+            areaTypes = new string[] { "2", "3"};
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
