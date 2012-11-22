@@ -19,7 +19,7 @@ namespace THOK.Wms.Bll.Interfaces
 
         object FindProduct(int page, int rows, string QueryString, string value);
 
-        object checkFindProduct();
+        object checkFindProduct(string QueryString, string value);
 
         object FindProduct();
 

@@ -383,10 +383,20 @@ namespace THOK.Wms.Bll.Service
         /// 产品盘点显示卷烟信息，入库新增显示卷烟数据
         /// </summary>
         /// <returns></returns>
-        public object checkFindProduct()
+        public object checkFindProduct(string QueryString, string value)
         {
             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
             IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+            string ProductName = "";
+            string ProductCode = "";
+            if (QueryString == "ProductCode")
+            {
+                ProductCode = value;
+            }
+            else
+            {
+                ProductName = value;
+            }
             var storage = StorageQuery.Join(ProductQuery,
                                            s => s.ProductCode,
                                            p => p.ProductCode,
@@ -400,7 +410,7 @@ namespace THOK.Wms.Bll.Service
                                                UnitName = s.Key.Unit.UnitName,
                                                BuyPrice = s.Key.BuyPrice,
                                                Quantity = s.Sum(st => (st.Quantity / st.Product.Unit.Count))
-                                           });
+                                           }).Where(p=>p.ProductCode.Contains(ProductCode)&&p.ProductName.Contains(ProductName));
             // var product = ProductQuery.OrderBy(p => p.ProductCode).Where(p => p.Storages.Any(s => s.ProductCode == p.ProductCode));
             return storage.ToArray();
         }
