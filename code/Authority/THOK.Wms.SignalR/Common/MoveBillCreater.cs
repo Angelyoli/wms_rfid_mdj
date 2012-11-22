@@ -22,6 +22,8 @@ namespace THOK.Wms.SignalR.Common
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
         public IStorageLocker Locker { get; set; }
+        [Dependency]
+        public IAreaRepository AreaRepository { get; set; }
 
         public MoveBillMaster CreateMoveBillMaster(string warehouseCode, string billTypeCode, string operatePersonID)
         {
@@ -89,32 +91,60 @@ namespace THOK.Wms.SignalR.Common
                 return;
 
             MoveBillDetailRepository.SaveChanges();
-
-            //主库区件烟库区条烟移到条烟区
-            areaTypes = new string[] { "1", "2" };
-            ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
-                                        && (s.Quantity - s.OutFrozenQuantity) % s.Product.Unit.Count > 0)
-                         .ToArray();
-
-            if (Locker.Lock(ss))
+            //主库区条烟移到件烟区，没有条烟区
+            if (AreaRepository.GetQueryable().Where(a => a.AreaType == "3").Select(a => a.IsActive).ToArray()[0] == "0")
             {
-                areaTypes = new string[] { "3" };
-                var cc = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
-                                                && c.IsSingle == "1")
-                              .ToArray();
+                areaTypes = new string[] { "1" };
+                ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+                                            && (s.Quantity - s.OutFrozenQuantity) % s.Product.Unit.Count > 0)
+                             .ToArray();
 
-                ss.AsParallel().ForAll(
-                    (Action<Storage>)delegate(Storage s)
-                    {
-                        MoveToBarArea(moveBillMaster, s,cc);
-                    }
-                );
+                if (Locker.Lock(ss))
+                {
+                    areaTypes = new string[] { "2" };
+                    var cc = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
+                                                    && c.IsSingle == "1")
+                                  .ToArray();
 
-                Locker.UnLock(ss);
+                    ss.AsParallel().ForAll(
+                        (Action<Storage>)delegate(Storage s)
+                        {
+                            MoveToBarArea(moveBillMaster, s, cc);
+                        }
+                    );
+
+                    Locker.UnLock(ss);
+                }
+                else
+                    return;
             }
             else
-                return;
+            {
+                //主库区件烟库区条烟移到条烟区
+                areaTypes = new string[] { "1","2" };
+                ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+                                            && (s.Quantity - s.OutFrozenQuantity) % s.Product.Unit.Count > 0)
+                             .ToArray();
 
+                if (Locker.Lock(ss))
+                {
+                    areaTypes = new string[] { "3" };
+                    var cc = cells.Where(c => areaTypes.Any(a => a == c.Area.AreaType)
+                                                    && c.IsSingle == "1")
+                                  .ToArray();
+
+                    ss.AsParallel().ForAll(
+                        (Action<Storage>)delegate(Storage s)
+                        {
+                            MoveToBarArea(moveBillMaster, s, cc);
+                        }
+                    );
+
+                    Locker.UnLock(ss);
+                }
+                else
+                    return;
+            }
             MoveBillDetailRepository.SaveChanges();
         }
 

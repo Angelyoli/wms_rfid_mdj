@@ -58,7 +58,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataSet brandCodeDs = this.Inserts(bradCodeTable);
                 this.Insert(brandCodeDs);
                 //上报数据
-                //upload.InsertProduct(brandCodeDs);
+                upload.InsertProduct(brandCodeDs);
             }
             else
             {

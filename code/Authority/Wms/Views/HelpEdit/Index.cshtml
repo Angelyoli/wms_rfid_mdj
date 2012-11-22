@@ -13,7 +13,7 @@
             onClick: function (node) {
                 if (node) {
                     helpID = node.attributes.AttributeId;
-                    $.getJSON("/HelpEdit/GetContentTxt/", { 'helpId': helpID }, function (helpContent) {
+                    $.getJSON("/HelpEdit/GetSingleContentTxt/", { 'helpId': helpID }, function (helpContent) {
                         $('#helpId').val(helpID);
                         HelpTxt = helpContent.ContentText;
                         $('#helpId').val(helpID);
