@@ -71,9 +71,17 @@ namespace Authority.Controllers.ProductInfo
 
         //盘点查询卷烟信息 
         // GET: /Product/CheckFindProduct/
-        public ActionResult CheckFindProduct()
+        public ActionResult CheckFindProduct(string QueryString, string value)
         {
-            var product = ProductService.checkFindProduct();
+            if (QueryString == null)
+            {
+                QueryString = "ProductCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var product = ProductService.checkFindProduct(QueryString,value);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 

@@ -139,6 +139,7 @@ namespace THOK.Wms.DownloadWms.Bll
                 masterrow["is_active"] = "1";
                 masterrow["update_time"] = DateTime.Now;
                 masterrow["deliver_line_code"] = row["DIST_BILL_ID"].ToString();// row["DELIVERLINECODE"].ToString();// +"_" + row["DIST_BILL_ID"].ToString();
+                masterrow["dist_bill_id"] = row["DIST_BILL_ID"].ToString();
                 ds.Tables["WMS_SORT_ORDER"].Rows.Add(masterrow);
             }
             return ds;
@@ -184,7 +185,7 @@ namespace THOK.Wms.DownloadWms.Bll
                 DataRow disprow = ds.Tables["WMS_SORT_ORDER_DISPATCH"].NewRow();
                 disprow["order_date"] = row["OrderDate"].ToString();//订单时间
                 disprow["sorting_line_code"] = sortingLine;//调度分拣线
-                disprow["deliver_line_code"] = row["DELIVERLINECODE"].ToString();// +"_" + row["DIST_BILL_ID"].ToString();
+                disprow["deliver_line_code"] = row["DIST_BILL_ID"].ToString();// row["DELIVERLINECODE"].ToString();// +"_" ;
                 disprow["is_active"] = "1";//是否可用
                 disprow["update_time"] = DateTime.Now;//调度时间
                 disprow["sort_work_dispatch_id"] = null;//作业调度ID
@@ -245,6 +246,7 @@ namespace THOK.Wms.DownloadWms.Bll
             mastertable.Columns.Add("is_active");
             mastertable.Columns.Add("update_time");
             mastertable.Columns.Add("deliver_line_code");
+            mastertable.Columns.Add("dist_bill_id");
 
             DataTable detailtable = ds.Tables.Add("WMS_SORT_ORDER_DETAIL");
             detailtable.Columns.Add("order_detail_id");
