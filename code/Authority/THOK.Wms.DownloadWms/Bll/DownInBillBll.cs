@@ -6,7 +6,6 @@ using System.Data;
 using THOK.WMS.DownloadWms.Dao;
 using System.Threading;
 using THOK.Wms.Dal.Interfaces;
-//using Microsoft.Practices.Unity;
 using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 
