@@ -413,7 +413,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             //分配条烟 (下层储位)；排除 件烟区 条烟区 残烟区 本货位
             if (cancellationToken.IsCancellationRequested) return;
-            areaTypes = new string[] { "2", "3", "5" };
+            areaTypes = new string[] { "2", "3" };
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && !cellCode.Contains(s.Cell.CellCode)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer == 1)
@@ -422,7 +422,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             //分配条烟 (非下层储位)；排除 件烟区 条烟区 残烟区 本货位
             if (cancellationToken.IsCancellationRequested) return;
-            areaTypes = new string[] { "2", "3", "5" };
+            areaTypes = new string[] { "2", "3" };
             ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType) && !cellCode.Contains(s.Cell.CellCode)
                                         && s.ProductCode == product.ProductCode
                                         && s.Cell.Layer != 1)
