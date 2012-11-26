@@ -812,7 +812,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && c.IsActive == "1"
                                             && (c.Storages.Count == 0 || c.Storages.Any(s => (s.ProductCode == productCode && (c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity) > 0))
-                                            || c.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) == 0))
+                                            || c.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) == 0 ||c.IsSingle=="0"))
                                              .OrderBy(c => c.CellCode).Select(c => c);
                 }
                 else if (inOrOut == "stockOut")//查询可以出库的数量 --出库使用

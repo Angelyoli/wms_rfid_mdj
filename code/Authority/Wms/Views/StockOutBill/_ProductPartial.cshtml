@@ -6,7 +6,7 @@
             productcode = $('#ProductInfo').val();
         else if($('#queryType').combobox('getValue') == "ProductName")
             productname = $('#ProductInfo').val();
-        $('#productDetail').datagrid({ url: '/Product/CheckFindProduct/?ProductName=' + productname + '&ProductCode=' + productcode });
+        $('#productDetail').datagrid({ url: '/Product/CheckFindProduct/?QueryString=' + $('#queryType').combobox('getValue') + '&Value=' + $('#ProductInfo').val() });
         $("#productDetail").datagrid('reload');
     };
 
@@ -75,11 +75,11 @@
         href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#productData').dialog('close')">
         取消</a>
 </div>
-@*<div id="btn-query">
+<div id="btn-query">
 <select id="queryType" name="QueryString" class="easyui-combobox" style="width: 100px;" readonly="true">
 		                <option value="ProductCode">产品代码</option>
 		                <option value="ProductName">产品名称</option>
 	                </select>
                     <input id="ProductInfo">
  <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ProductQueryClick()" id="ProductQuery">查询</a>
-</div>*@
+</div>

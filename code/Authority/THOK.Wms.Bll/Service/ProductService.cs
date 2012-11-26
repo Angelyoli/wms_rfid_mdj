@@ -27,6 +27,29 @@ namespace THOK.Wms.Bll.Service
 
         #region IProductService 增，删，改，查等方法
 
+        /// <summary>
+        /// 判断卷烟调度时的取整类型
+        /// </summary>
+        /// <param name="type">类型代码</param>
+        /// <returns>取整类型</returns>
+        public string WhatRoundingType(string type)
+        {
+            string typeStr = "";
+            switch (type)
+            {
+                case "0":
+                    typeStr = "取整件";
+                    break;
+                case "1":
+                    typeStr = "不取整";
+                    break;
+                case "2":
+                    typeStr = "取整托盘";
+                    break;
+            }
+            return typeStr;
+        }
+
         public object GetDetails(int page, int rows, string ProductName, string ProductCode, string CustomCode, string BrandCode, string UniformCode, string AbcTypeCode, string ShortCode, string PriceLevelCode, string SupplierCode)
         {
             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
@@ -92,7 +115,7 @@ namespace THOK.Wms.Bll.Service
                 c.Unit.UnitName,
                 c.UnitListCode,
                 UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
-                IsRounding = c.IsRounding == "0" ? "是" : "否"
+                IsRounding = WhatRoundingType(c.IsRounding)
             });
             return new { total, rows = temp.ToArray() };
         }
@@ -360,10 +383,20 @@ namespace THOK.Wms.Bll.Service
         /// 产品盘点显示卷烟信息，入库新增显示卷烟数据
         /// </summary>
         /// <returns></returns>
-        public object checkFindProduct()
+        public object checkFindProduct(string QueryString, string value)
         {
             IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
             IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+            string ProductName = "";
+            string ProductCode = "";
+            if (QueryString == "ProductCode")
+            {
+                ProductCode = value;
+            }
+            else
+            {
+                ProductName = value;
+            }
             var storage = StorageQuery.Join(ProductQuery,
                                            s => s.ProductCode,
                                            p => p.ProductCode,
@@ -377,7 +410,7 @@ namespace THOK.Wms.Bll.Service
                                                UnitName = s.Key.Unit.UnitName,
                                                BuyPrice = s.Key.BuyPrice,
                                                Quantity = s.Sum(st => (st.Quantity / st.Product.Unit.Count))
-                                           });
+                                           }).Where(p=>p.ProductCode.Contains(ProductCode)&&p.ProductName.Contains(ProductName));
             // var product = ProductQuery.OrderBy(p => p.ProductCode).Where(p => p.Storages.Any(s => s.ProductCode == p.ProductCode));
             return storage.ToArray();
         }

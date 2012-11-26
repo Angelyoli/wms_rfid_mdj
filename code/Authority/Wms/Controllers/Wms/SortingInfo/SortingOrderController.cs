@@ -82,42 +82,49 @@ namespace Authority.Controllers.Wms.SortingInfo
             DownCustomerBll custBll = new DownCustomerBll();
             DownDistStationBll stationBll = new DownDistStationBll();
             DownDistCarBillBll carBll = new DownDistCarBillBll();
-            routeBll.DeleteTable();
-            stationBll.DownDistStationInfo();
-            if (!SystemParameterService.SetSystemParameter())
-            {                
-                bool custResult = custBll.DownCustomerInfo();                
-                carBll.DownDistCarBillInfo(beginDate);
-                if (isSortDown)
-                {
-                    //从分拣下载分拣数据
-                    lineResult = routeBll.DownSortRouteInfo();
-                    bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
-                }
-                else
-                {
-                    //从营销下载分拣数据 
-                    lineResult = routeBll.DownRouteInfo();
-                    bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
-                }
-            }
-            else
+            try
             {
-                bool custResult = custBll.DownCustomerInfos();//创联
-                //carBll.DownDistCarBillInfo(beginDate);
-                if (isSortDown)
+                routeBll.DeleteTable();
+                stationBll.DownDistStationInfo();
+                if (!SystemParameterService.SetSystemParameter())
                 {
-                    //从分拣下载分拣数据
-                    lineResult = routeBll.DownSortRouteInfo();
-                    bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+                    bool custResult = custBll.DownCustomerInfo();
+                    carBll.DownDistCarBillInfo(beginDate);
+                    if (isSortDown)
+                    {
+                        //从分拣下载分拣数据
+                        lineResult = routeBll.DownSortRouteInfo();
+                        bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+                    }
+                    else
+                    {
+                        //从营销下载分拣数据 
+                        lineResult = routeBll.DownRouteInfo();
+                        bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                    }
                 }
                 else
                 {
-                    //从营销下载分拣数据 创联
-                    lineResult = routeBll.DownRouteInfos();
-                    bResult = orderBll.GetSortingOrderDates(beginDate, endDate, out errorInfo);
+                    bool custResult = custBll.DownCustomerInfos();//创联
+                    //carBll.DownDistCarBillInfo(beginDate);
+                    if (isSortDown)
+                    {
+                        //从分拣下载分拣数据
+                        lineResult = routeBll.DownSortRouteInfo();
+                        bResult = sortBll.GetSortingOrderDate(beginDate, endDate, sortLineCode, batch, out errorInfo);
+                    }
+                    else
+                    {
+                        //从营销下载分拣数据 创联
+                        lineResult = routeBll.DownRouteInfos();
+                        bResult = orderBll.GetSortingOrderDates(beginDate, endDate, out errorInfo);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                errorInfo += e.Message;
+            }            
 
             string info = "线路：" + lineErrorInfo + "。客户：" + custErrorInfo + "。分拣" + errorInfo;
             string msg = bResult ? "下载成功" : "下载失败";

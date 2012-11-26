@@ -138,7 +138,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["bar_barcode"] = row["BARCODE_BAR"];
                 inbrddr["package_barcode"] = row["BARCODE_PACKAGE"];
                 inbrddr["one_project_barcode"] = row["BARCODE_ONE_PROJECT"];
-                inbrddr["buy_price"] = row["BU_PRICE"];
+                inbrddr["buy_price"] = row["BUY_PRICE"];
                 inbrddr["trade_price"] = row["TRADE_PRICE"];
                 inbrddr["retail_price"] = row["RETAIL_PRICE"];
                 inbrddr["cost_price"] = row["COST_PRICE"];

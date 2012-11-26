@@ -321,5 +321,18 @@ namespace THOK.Authority.Bll.Service
             var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ModuleID == new_ID);
             return new { help.ContentText };
         }
+
+
+        public object GetSingleContentTxt(string helpId)
+        {
+            Guid newId = new Guid(helpId);
+            var system=SystemRepository.GetQueryable().FirstOrDefault(i=>i.SystemID==newId);
+            var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ID == newId);
+            if (system!= null)
+            {
+                help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.Module.System_SystemID == newId);
+            }
+            return new { help.ContentText};
+        }
     }
 }

@@ -249,7 +249,7 @@ namespace THOK.WMS.DownloadWms.Bll
                    DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
                    DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();
                    i++;
-                   detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim() + i;
+                   detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim();
                    detailrow["order_id"] = row["ORDER_ID"].ToString().Trim();
                    detailrow["product_code"] = row["BRAND_N"].ToString().Trim();
                    detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
