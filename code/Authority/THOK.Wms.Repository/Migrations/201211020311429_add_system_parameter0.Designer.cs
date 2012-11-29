@@ -4,7 +4,7 @@ namespace THOK.Wms.Repository.Migrations
     using System.Data.Entity.Migrations;
     using System.Data.Entity.Migrations.Infrastructure;
     
-    public sealed partial class add_system_parameter : IMigrationMetadata
+    public sealed partial class add_system_parameter0 : IMigrationMetadata
     {
         string IMigrationMetadata.Id
         {
