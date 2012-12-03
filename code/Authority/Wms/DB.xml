@@ -1,16 +1,19 @@
 ﻿<?xml version="1.0"?>
 <Connections>
   <Connection Name = "DefaultConnection" DatabaseType = "SQLSERVER">
-    <ConnectionString Value = "server=.;database =wms_rfid_db;UID =sa" />
+    <ConnectionString Value = "server=10.66.64.59;database =wms_rfid_db;UID =sa" />
     <Password Name = "PWD" Value = "65CED0851FFD283F"/>
   </Connection>
   <Connection Name = "YXConnection" DatabaseType="DB2">
-    <ConnectionString Value="server=10.80.1.239:50000;database =gxv3td;UID=lzcc" />
-    <Password Name="PWD" Value="1C46DA89365D7DA2"/>
+    <ConnectionString Value="server=10.66.65.51:50000;database =tradectr;UID=ic" />
+    <Password Name="PWD" Value="76CBF27DE3DFFA09740A8CDF7192058B"/>
   </Connection>
   <Connection Name = "ZYJCConnection" DatabaseType = "SQLSERVER">
     <ConnectionString Value = "server=10.81.64.171;database =CORP_SCAN;UID =sa" />
     <Password Name = "PWD" Value = "F343AB1C018D8B2C"/>
   </Connection>
+  <Connection Name = "ZYDB2Connection" DatabaseType = "DB2">
+    <ConnectionString Value = "server=10.66.65.30:50000;database =wlctr;UID =ms" />
+    <Password Name = "PWD" Value = "A0E5B8AA619AE888"/>
+  </Connection>
 </Connections>
-

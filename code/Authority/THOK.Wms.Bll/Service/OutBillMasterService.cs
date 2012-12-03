@@ -652,9 +652,18 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 DataSet ds = Insert();
-                upload.InsertOutMasterBill(ds);
-                upload.InsertOutDetailBill(ds);
-                upload.InsertOutBusiBill(ds);
+                if (ds.Tables["WMS_OUT_BILLMASTER"].Rows.Count > 0)
+                {
+                    upload.InsertOutMasterBill(ds);
+                }
+                if (ds.Tables["WMS_OUT_BILLDETAIL"].Rows.Count > 0)
+                {
+                    upload.InsertOutDetailBill(ds);
+                }
+                if (ds.Tables["WMS_OUT_BILLALLOT"].Rows.Count > 0)
+                {
+                    upload.InsertOutBusiBill(ds);
+                }
                 return true;
             }
             catch { return false; }
@@ -667,12 +676,12 @@ namespace THOK.Wms.Bll.Service
             IQueryable<OutBillMaster> outBillMaster = OutBillMasterRepository.GetQueryable();
             IQueryable<OutBillAllot> outBillAllot = OutBillAllotRepository.GetQueryable();
             IQueryable<OutBillDetail> outBillDetail = OutBillDetailRepository.GetQueryable();
-            var outBillMasterQuery = outBillMaster.Where(i => i.Status == "6").Select(i => new
+            var outBillMasterQuery = outBillMaster.ToArray().Where(i => i.Status == "6").Select(i => new
             {
                 STORE_BILL_ID = i.BillNo,
                 RELATE_BUSI_BILL_NUM = outBillAllot.Count(a => a.BillNo == i.BillNo),
                 DIST_CTR_CODE = i.WarehouseCode,
-                QUANTITY_SUM = outBillAllot.Where(a => a.BillNo == i.BillNo).Sum(a => a.AllotQuantity / 200),
+                QUANTITY_SUM =outBillAllot.Where(a => a.BillNo == i.BillNo).Sum(a => a.AllotQuantity / 200),
                 AMOUNT_SUM = outBillDetail.Where(d => d.BillNo == i.BillNo).Sum(d => d.Price * d.AllotQuantity / 200),
                 DETAIL_NUM = outBillDetail.Count(d => d.BillNo == i.BillNo),
                 personCode = i.VerifyPerson,
@@ -692,13 +701,13 @@ namespace THOK.Wms.Bll.Service
                 inbrddr["QUANTITY_SUM"] =-p.QUANTITY_SUM;
                 inbrddr["AMOUNT_SUM"] = p.AMOUNT_SUM;
                 inbrddr["DETAIL_NUM"] = p.DETAIL_NUM;
-                inbrddr["CREATOR_CODE"] = p.operater.ToString() ?? "";
+                inbrddr["CREATOR_CODE"] ="";
                 inbrddr["CREATE_DATE"] = p.operateDate;
-                inbrddr["AUDITOR_CODE"] = p.personCode.ToString() ?? "";
+                inbrddr["AUDITOR_CODE"] ="";
                 inbrddr["AUDIT_DATE"] = p.personDate;
-                inbrddr["ASSIGNER_CODE"] = p.operater;
+                inbrddr["ASSIGNER_CODE"] ="";
                 inbrddr["ASSIGN_DATE"] = p.operateDate;
-                inbrddr["AFFIRM_CODE"] = p.operater;
+                inbrddr["AFFIRM_CODE"] = "";
                 inbrddr["AFFIRM_DATE"] = p.operateDate;
                 inbrddr["IN_OUT_TYPE"] = "1203";
                 inbrddr["BILL_TYPE"] = p.BILL_TYPE;
@@ -722,7 +731,7 @@ namespace THOK.Wms.Bll.Service
                 inbrddrDetail["STORE_BILL_ID"] = p.STORE_BILL_ID;
                 inbrddrDetail["BRAND_CODE"] = p.BRAND_CODE;
                 inbrddrDetail["BRAND_NAME"] = p.BRAND_NAME;
-                inbrddrDetail["QUANTITY"] =- p.QUANTITY;
+                inbrddrDetail["QUANTITY"] =-p.QUANTITY;
                 inbrddrDetail["IS_IMPORT"] = "0";
                 ds.Tables["WMS_OUT_BILLDETAIL"].Rows.Add(inbrddrDetail);
             }
@@ -736,6 +745,7 @@ namespace THOK.Wms.Bll.Service
                 QUANTITY = i.AllotQuantity / 200,
                 DIST_CTR_CODE = i.OutBillMaster.WarehouseCode,
                 STORE_PLACE_CODE = i.Storage.CellCode,
+                STORE_PLACE_NAME = i.Storage.Cell.CellName,
                 UPDATE_CODE = i.Operator,
                 //BEGIN_STOCK_QUANTITY =StorageRepository.GetQueryable().Where(s=>s.ProductCode==i.ProductCode).Sum(s=>s.Quantity/200)-i.AllotQuantity,
                 //END_STOCK_QUANTITY = i.AllotQuantity,
@@ -754,16 +764,16 @@ namespace THOK.Wms.Bll.Service
                 inbrddrAllot["ORG_CODE"] = "01";
                 inbrddrAllot["STORE_ROOM_CODE"] = "001";
                 inbrddrAllot["STORE_PLACE_CODE"] = p.STORE_PLACE_CODE;
-                inbrddrAllot["TARGET_NAME"] = p.STORE_PLACE_CODE;
+                inbrddrAllot["TARGET_NAME"] = p.STORE_PLACE_NAME;
                 inbrddrAllot["IN_OUT_TYPE"] = "1203";
                 inbrddrAllot["BILL_TYPE"] = p.BILL_TYPE;
                 inbrddrAllot["BEGIN_STOCK_QUANTITY"] = 0;
                 inbrddrAllot["END_STOCK_QUANTITY"] = 0;
                 inbrddrAllot["DISUSE_STATUS"] = "0";
                 inbrddrAllot["RECKON_STATUS"] = "1";
-                inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
+                inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyyMMdd");
                 inbrddrAllot["UPDATE_CODE"] = p.UPDATE_CODE;
-                inbrddrAllot["UPDATE_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
+                inbrddrAllot["UPDATE_DATE"] = DateTime.Now.ToString("yyyyMMdd");
                 inbrddrAllot["IS_IMPORT"] = "0";
                 ds.Tables["WMS_OUT_BILLALLOT"].Rows.Add(inbrddrAllot);
             }
