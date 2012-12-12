@@ -60,10 +60,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataGrid" />
     <Reference Include="System.Xml" />
-    <Reference Include="THOK.WES.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\code\THOK.WES\THOK.WES\THOK.WES.App\bin\Debug\THOK.WES.Interface.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dal\BillDal.cs" />
