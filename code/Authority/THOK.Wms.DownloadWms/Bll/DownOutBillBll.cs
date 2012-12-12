@@ -63,7 +63,54 @@ namespace THOK.WMS.DownloadWms.Bll
             return tag;
         }
 
+        /// <summary>
+        /// 选择日期从营销系统下载出库单据 创联
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public bool GetOutBills(string startDate, string endDate, string EmployeeCode, out string errorInfo, string wareCode, string billType)
+        {
+            bool tag = true;
+            Employee = EmployeeCode;
+            errorInfo = string.Empty;
+            using (PersistentManager dbpm = new PersistentManager())
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                DataTable emply = dao.FindEmployee(EmployeeCode);
+                DataTable outBillNoTable = this.GetOutBillNo(startDate);
+                string outBillList = UtinString.MakeString(outBillNoTable, "bill_no");
+                outBillList = string.Format("ORDER_DATE ='{0}' AND ORDER_ID NOT IN({1}) ", startDate, outBillList);
+                DataTable masterdt = this.GetOutBillMasters(outBillList);
 
+                string outDetailList = UtinString.MakeString(masterdt, "ORDER_ID");
+                outDetailList = "ORDER_ID IN(" + outDetailList + ")";
+                DataTable detaildt = this.GetOutBillDetail(outDetailList);
+
+                if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                {
+                    try
+                    {
+                        string billno = this.GetNewBillNo();
+                        DataSet middleds = this.MiddleTable(masterdt, billno);
+                        //DataSet masterds = this.OutBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType);
+                        DataSet detailds = this.OutBillDetail(detaildt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType, startDate, billno);
+                        this.Insert(detailds, middleds);
+                    }
+                    catch (Exception e)
+                    {
+                        errorInfo += e.Message;
+                        tag = false;
+                    }
+                }
+                else
+                {
+                    errorInfo = "没有可下载的出库数据！";
+                    tag = false;
+                }
+            }
+            return tag;
+        }
         /// <summary>
         /// 根据时间查询仓库出库单据号
         /// </summary>
@@ -90,7 +137,19 @@ namespace THOK.WMS.DownloadWms.Bll
                 return dao.GetOutBillMaster(billno);
             }
         }
-
+        /// <summary>
+        /// 下载出库主表信息 创联
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetOutBillMasters(string billno)
+        {
+            using (PersistentManager dbpm = new PersistentManager("YXConnection"))
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                dao.SetPersistentManager(dbpm);
+                return dao.GetOutBillMasters(billno);
+            }
+        }
         /// <summary>
         /// 下载出库明细表信息
         /// </summary>

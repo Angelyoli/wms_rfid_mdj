@@ -230,7 +230,7 @@ namespace THOK.Wms.Bll.Service
                     areaType = s.Max(t=>t.Cell.Area.AreaType),
                     warehouseCode = s.Max(t=>t.Cell.WarehouseCode),
                     storageTime = s.Max(t=>t.StorageTime),
-                    quantity = s.Sum(t=>t.Quantity )/ (s.Max(t=>t.Product.UnitList.Quantity02) * s.Max(t=>t.Product.UnitList.Quantity03))
+                    quantity = s.Sum(t=>t.Quantity / (s.Max(r=>r.Product.UnitList.Quantity02) * s.Max(r=>r.Product.UnitList.Quantity03)))
                 });
                 DataSet ds = this.GenerateEmptyTables();
                 for (int i=0;i<storage.ToArray().Length;i++)
@@ -276,7 +276,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     productCode = s.Max(t=>t.ProductCode),
                     warehouseCode =s.Max(t=>t.Cell.WarehouseCode),
-                    quantity = s.Sum(t=>t.Quantity) /(s.Max(t=>t.Product.UnitList.Quantity02) * s.Max(t=>t.Product.UnitList.Quantity03))
+                    quantity = s.Sum(t=>t.Quantity /(s.Max(r=>r.Product.UnitList.Quantity02) * s.Max(r=>r.Product.UnitList.Quantity03)))
                 });
                 DataSet ds = this.GenerateEmptyTable();
                 foreach (var p in storage.Where(s=>s.quantity>0))

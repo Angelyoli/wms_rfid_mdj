@@ -810,10 +810,34 @@ namespace THOK.Wms.Bll.Service
                 }
                 else if (inOrOut == "in")//查询出可以移入卷烟的货位 ,
                 {
+                    var cellf = cells.Where(c => c.Shelf.ShelfCode == shelfCode && c.IsSingle == "0" && c.IsActive == "1").OrderBy(c => c.CellCode).Select(c => c);
                     cells = cells.Where(c => c.Shelf.ShelfCode == shelfCode && c.IsActive == "1"
                                             && (c.Storages.Count == 0 || c.Storages.Any(s => (s.ProductCode == productCode && (c.MaxQuantity * s.Product.Unit.Count) - (s.Quantity + s.InFrozenQuantity) > 0))
-                                            || c.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) == 0 ||c.IsSingle=="0"))
+                                            || c.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) == 0) && c.IsSingle == "1")
                                              .OrderBy(c => c.CellCode).Select(c => c);
+                    foreach (var cell in cellf)//货位
+                    {
+                        string quantityStr = "";
+                        if (inOrOut == "in")
+                        {
+                            if (cell.Storages.Count != 0 && cell.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) != 0)
+                            {
+                                var cellQuantity = cell.Storages.GroupBy(g => new { g.Cell }).Select(s => new { quan = s.Key.Cell.Product == null ? s.Key.Cell.MaxQuantity : ((s.Key.Cell.MaxQuantity * s.Key.Cell.Product.Unit.Count) - s.Sum(p => p.Quantity + p.InFrozenQuantity)) / s.Key.Cell.Product.Unit.Count });
+                                decimal quantity = Convert.ToDecimal(cellQuantity.Sum(s => s.quan));
+                                // quantity = Math.Round(quantity, 2);
+                                quantityStr = "<可入：" + quantity + ">件,当前品牌：" + productCode + "";
+                            }
+                            else
+                                quantityStr = "<可入：" + cell.MaxQuantity + ">件";
+                        }
+
+                        Tree cellTree = new Tree();
+                        cellTree.id = cell.CellCode;
+                        cellTree.text = "货位：" + cell.CellName + quantityStr;
+                        cellTree.state = "open";
+                        cellTree.attributes = "cell";
+                        wareSet.Add(cellTree);
+                    }
                 }
                 else if (inOrOut == "stockOut")//查询可以出库的数量 --出库使用
                 {
