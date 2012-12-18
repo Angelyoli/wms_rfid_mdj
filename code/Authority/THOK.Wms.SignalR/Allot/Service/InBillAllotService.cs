@@ -94,7 +94,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                              .ToArray();
 
             //件烟区 货位是单一存储的空货位； 
-            areaTypes = new string[] {"2"};
+            areaTypes = new string[] {"2","4"};
             var cell3 = cells.Where(c =>areaTypes.Any(a => a == c.Area.AreaType) 
                                         && c.IsSingle == "1" 
                                         && c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) 

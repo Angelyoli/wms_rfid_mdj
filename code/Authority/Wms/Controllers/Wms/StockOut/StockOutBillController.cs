@@ -188,7 +188,7 @@ namespace Authority.Controllers.Wms.StockOut
                     pbll.DownProductInfos();//创联
                     custBll.DownCustomerInfos();//创联
                 }
-                bResult = ibll.GetOutBill(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
+                bResult = ibll.GetOutBills(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
 
             }
             catch (Exception e)

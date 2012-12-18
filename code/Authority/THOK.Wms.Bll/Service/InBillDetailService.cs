@@ -121,7 +121,7 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-                var ibd = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && inBillDetail.ProductCode == inBillDetail.ProductCode);
+                var ibd = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);
                 var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
                 if ((ibd != null && ibd.ID == inBillDetail.ID) || ibd == null)
                 {

@@ -224,14 +224,13 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-                var storage = storageQuery.Where(s=>s.Quantity>0 ||s.InFrozenQuantity>0||s.OutFrozenQuantity>0).Select(s => new
+                var storage = storageQuery.Where(s=>s.Quantity>0).GroupBy(s=>s.ProductCode).Select(s => new
                 {
-                    cellCode = s.CellCode,
-                    productCode = s.ProductCode,
-                    areaType = s.Cell.Area.AreaType,
-                    warehouseCode = s.Cell.WarehouseCode,
-                    storageTime = s.StorageTime,
-                    quantity = s.Quantity / (s.Product.UnitList.Quantity02 * s.Product.UnitList.Quantity03)
+                    productCode = s.Max(t=>t.ProductCode),
+                    areaType = s.Max(t=>t.Cell.Area.AreaType),
+                    warehouseCode = s.Max(t=>t.Cell.WarehouseCode),
+                    storageTime = s.Max(t=>t.StorageTime),
+                    quantity = s.Sum(t=>t.Quantity / (s.Max(r=>r.Product.UnitList.Quantity02) * s.Max(r=>r.Product.UnitList.Quantity03)))
                 });
                 DataSet ds = this.GenerateEmptyTables();
                 for (int i=0;i<storage.ToArray().Length;i++)
@@ -250,7 +249,7 @@ namespace THOK.Wms.Bll.Service
                     {
                         inbrddr["area_type"] = "0901";
                     }
-                    inbrddr["cell_code"] = p[i].cellCode;
+                    inbrddr["cell_code"] = "10002";
                     inbrddr["product_code"] = p[i].productCode;
                     inbrddr["brand_batch"] = p[i].storageTime;
                     inbrddr["dist_ctr_code"] = p[i].warehouseCode;
@@ -277,7 +276,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     productCode = s.Max(t=>t.ProductCode),
                     warehouseCode =s.Max(t=>t.Cell.WarehouseCode),
-                    quantity = s.Sum(t=>t.Quantity) /(s.Max(t=>t.Product.UnitList.Quantity02) * s.Max(t=>t.Product.UnitList.Quantity03))
+                    quantity = s.Sum(t=>t.Quantity /(s.Max(r=>r.Product.UnitList.Quantity02) * s.Max(r=>r.Product.UnitList.Quantity03)))
                 });
                 DataSet ds = this.GenerateEmptyTable();
                 foreach (var p in storage.Where(s=>s.quantity>0))

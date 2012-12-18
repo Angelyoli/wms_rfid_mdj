@@ -38,6 +38,8 @@ namespace THOK.Wms.Bll.Service
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
         public ICellRepository CellRepository { get; set; }
+        [Dependency]
+        public IUnitListRepository UnitListRespository { get; set; }
 
         UploadBll upload = new UploadBll();
 
@@ -619,9 +621,18 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 DataSet ds = Insert();
-                upload.InsertInMasterBill(ds);
-                upload.InsertInDetailBill(ds);
-                upload.InsertInBusiBill(ds);
+                if (ds.Tables["WMS_IN_BILLMASTER"].Rows.Count > 0)
+                {
+                    upload.InsertInMasterBill(ds);
+                }
+                if (ds.Tables["WMS_IN_BILLDETAIL"].Rows.Count > 0)
+                {
+                    upload.InsertInDetailBill(ds);
+                }
+                if (ds.Tables["WMS_IN_BILLALLOT"].Rows.Count > 0)
+                {
+                    upload.InsertInBusiBill(ds);
+                }
                 return true;
             }
             catch
@@ -637,18 +648,21 @@ namespace THOK.Wms.Bll.Service
             IQueryable<InBillMaster> inBillMaster = InBillMasterRepository.GetQueryable();
             IQueryable<InBillAllot> inBillAllot = InBillAllotRepository.GetQueryable();
             IQueryable<InBillDetail> inBillDetail = InBillDetailRepository.GetQueryable();
+            IQueryable<UnitList> unitCode = UnitListRespository.GetQueryable();
+            var inBillAllots = inBillAllot.Join(unitCode, s => s.UnitCode, p => p.UnitCode01, (s, p) => new { inBillAllot = s, unitCode = p }).ToArray();
+            var inBillDetails = inBillDetail.Join(unitCode, s => s.UnitCode, p => p.UnitCode01, (s, p) => new { inBillDetail = s, unitCode = p }).ToArray();
             var inBillMasterQuery = inBillMaster.ToArray().Where(i => i.Status == "6").Select(i => new
             {
                 STORE_BILL_ID = i.BillNo,
-                RELATE_BUSI_BILL_NUM = inBillAllot.Count(a => a.BillNo == i.BillNo),
+                RELATE_BUSI_BILL_NUM =inBillAllot.Count(a => a.BillNo == i.BillNo),
                 DIST_CTR_CODE = i.WarehouseCode,
-                QUANTITY_SUM =Int32.Parse(inBillAllot.Where(a => a.BillNo == i.BillNo).Sum(a => a.AllotQuantity / 200).ToString()),
-                AMOUNT_SUM = Int32.Parse(inBillDetail.Where(d => d.BillNo == i.BillNo).Sum(d => d.Price * d.AllotQuantity / 200).ToString()),
+                QUANTITY_SUM = inBillAllots.Where(a => a.inBillAllot.BillNo == i.BillNo).Sum(a => a.inBillAllot.AllotQuantity / (a.unitCode.Quantity02 * a.unitCode.Quantity03)),
+                AMOUNT_SUM = inBillDetails.Where(d => d.inBillDetail.BillNo == i.BillNo).Sum(d => d.inBillDetail.Price * d.inBillDetail.AllotQuantity / (d.unitCode.Quantity02 * d.unitCode.Quantity03)),
                 DETAIL_NUM = inBillDetail.Count(d => d.BillNo == i.BillNo),
                 personCode = i.VerifyPerson,
                 personDate = i.VerifyDate,
                 operater = i.OperatePerson,
-                operateDate = i.BillDate,
+                operateDate = Convert.ToDateTime(i.BillDate).ToString("yyyyMMdd"),
                 BILL_TYPE = i.BillTypeCode
             });
             DataSet ds = this.GenerateEmptyTables();
@@ -662,28 +676,28 @@ namespace THOK.Wms.Bll.Service
                 inbrddr["QUANTITY_SUM"] = p.QUANTITY_SUM;
                 inbrddr["AMOUNT_SUM"] = p.AMOUNT_SUM;
                 inbrddr["DETAIL_NUM"] = p.DETAIL_NUM;
-                inbrddr["CREATOR_CODE"] = p.operater.ToString() ?? "";
-                inbrddr["CREATE_DATE"] = p.operateDate;
-                inbrddr["AUDITOR_CODE"] = p.personCode.ToString() ?? "";
-                inbrddr["AUDIT_DATE"] = p.personDate;
-                inbrddr["ASSIGNER_CODE"] = p.operater;
-                inbrddr["ASSIGN_DATE"] = p.operateDate;
-                inbrddr["AFFIRM_CODE"] = p.operater;
-                inbrddr["AFFIRM_DATE"] = p.operateDate;
+                inbrddr["CREATOR_CODE"] = "";
+                inbrddr["CREATE_DATE"] = Convert.ToDateTime(p.personDate).ToString("yyyyMMdd");
+                inbrddr["AUDITOR_CODE"] ="";
+                inbrddr["AUDIT_DATE"] = Convert.ToDateTime(p.personDate).ToString("yyyyMMdd");
+                inbrddr["ASSIGNER_CODE"] ="";
+                inbrddr["ASSIGN_DATE"] = Convert.ToDateTime(p.personDate).ToString("yyyyMMdd");
+                inbrddr["AFFIRM_CODE"] = "";
+                inbrddr["AFFIRM_DATE"] = Convert.ToDateTime(p.personDate).ToString("yyyyMMdd");
                 inbrddr["IN_OUT_TYPE"] = "1202";
                 inbrddr["BILL_TYPE"] = p.BILL_TYPE;
                 inbrddr["BILL_STATUS"] = "99";
                 inbrddr["DISUSE_STATUS"] = "0";
-                inbrddr["IS_IMPORT"] = "1";
+                inbrddr["IS_IMPORT"] = "0";
                 ds.Tables["WMS_IN_BILLMASTER"].Rows.Add(inbrddr);
             }
-            var inBillDetailQuery = inBillDetail.ToArray().Where(i => i.InBillMaster.Status == "6").Select(i => new
+            var inBillDetailQuery = inBillDetails.ToArray().Where(i => i.inBillDetail.InBillMaster.Status == "6").Select(i => new
             {
-                STORE_BILL_DETAIL_ID = i.ID,
-                STORE_BILL_ID = i.BillNo,
-                BRAND_CODE = i.ProductCode,
-                BRAND_NAME = i.Product.ProductName,
-                QUANTITY =Int32.Parse((i.BillQuantity / 200).ToString())
+                STORE_BILL_DETAIL_ID = i.inBillDetail.ID,
+                STORE_BILL_ID = i.inBillDetail.BillNo,
+                BRAND_CODE = i.inBillDetail.ProductCode,
+                BRAND_NAME = i.inBillDetail.Product.ProductName,
+                QUANTITY =i.inBillDetail.BillQuantity /(i.unitCode.Quantity02*i.unitCode.Quantity03)
             });
             foreach (var p in inBillDetailQuery)
             {
@@ -696,18 +710,19 @@ namespace THOK.Wms.Bll.Service
                 inbrddrDetail["IS_IMPORT"] = "0";
                 ds.Tables["WMS_IN_BILLDETAIL"].Rows.Add(inbrddrDetail);
             }
-            var inBillAllotQuery = inBillAllot.ToArray().Where(i => i.InBillMaster.Status == "6").Select(i => new
+            var inBillAllotQuery = inBillAllots.ToArray().Where(i => i.inBillAllot.InBillMaster.Status == "6").Select(i => new
             {
-                BUSI_ACT_ID = i.ID,
-                BUSI_BILL_DETAIL_ID = i.InBillDetailId,
-                BUSI_BILL_ID = i.BillNo,
-                BRAND_CODE = i.ProductCode,
-                BRAND_NAME = i.Product.ProductName,
-                QUANTITY = i.AllotQuantity / 200,
-                DIST_CTR_CODE = i.InBillMaster.WarehouseCode,
-                STORE_PLACE_CODE = i.Storage.CellCode,
-                UPDATE_CODE = i.Operator,
-                BILL_TYPE = i.InBillMaster.BillTypeCode
+                BUSI_ACT_ID = i.inBillAllot.ID,
+                BUSI_BILL_DETAIL_ID = i.inBillAllot.InBillDetailId,
+                BUSI_BILL_ID = i.inBillAllot.BillNo,
+                BRAND_CODE = i.inBillAllot.ProductCode,
+                BRAND_NAME = i.inBillAllot.Product.ProductName,
+                QUANTITY = i.inBillAllot.AllotQuantity / (i.unitCode.Quantity02*i.unitCode.Quantity03),
+                DIST_CTR_CODE = i.inBillAllot.InBillMaster.WarehouseCode,
+                STORE_PLACE_CODE = i.inBillAllot.Storage.CellCode,
+                STORE_PLACE_NAME=i.inBillAllot.Storage.Cell.CellName,
+                UPDATE_CODE = i.inBillAllot.Operator,
+                BILL_TYPE = i.inBillAllot.InBillMaster.BillTypeCode
                 //BEGIN_STOCK_QUANTITY = StorageRepository.GetQueryable().Where(s => s.ProductCode == i.ProductCode).Sum(s => s.Quantity / 200) + i.AllotQuantity,
                 //END_STOCK_QUANTITY = i.AllotQuantity,
             });
@@ -723,17 +738,17 @@ namespace THOK.Wms.Bll.Service
                 inbrddrAllot["DIST_CTR_CODE"] = p.DIST_CTR_CODE;
                 inbrddrAllot["ORG_CODE"] = "01";
                 inbrddrAllot["STORE_ROOM_CODE"] = "001";
-                inbrddrAllot["STORE_PLACE_CODE"] = p.STORE_PLACE_CODE;
-                inbrddrAllot["TARGET_NAME"] = p.STORE_PLACE_CODE;
+                inbrddrAllot["STORE_PLACE_CODE"] = "10002";
+                inbrddrAllot["TARGET_NAME"] =p.STORE_PLACE_NAME;
                 inbrddrAllot["IN_OUT_TYPE"] = "1202";
                 inbrddrAllot["BILL_TYPE"] = p.BILL_TYPE;
                 inbrddrAllot["BEGIN_STOCK_QUANTITY"] = 0;
                 inbrddrAllot["END_STOCK_QUANTITY"] = 0;
                 inbrddrAllot["DISUSE_STATUS"] = "0";
                 inbrddrAllot["RECKON_STATUS"] = "1";
-                inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
-                inbrddrAllot["UPDATE_CODE"] = p.UPDATE_CODE;
-                inbrddrAllot["UPDATE_DATE"] = DateTime.Now.ToString("yyyy-MM-dd");
+                inbrddrAllot["RECKON_DATE"] = DateTime.Now.ToString("yyyyMMdd");
+                inbrddrAllot["UPDATE_CODE"] = "050000";
+                inbrddrAllot["UPDATE_DATE"] = DateTime.Now.ToString("yyyyMMdd");
                 inbrddrAllot["IS_IMPORT"] = "0";
                 ds.Tables["WMS_IN_BILLALLOT"].Rows.Add(inbrddrAllot);
             }
