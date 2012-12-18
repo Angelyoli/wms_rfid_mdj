@@ -17,7 +17,15 @@ namespace THOK.WMS.DownloadWms.Dao
             string sql = string.Format("SELECT * FROM V_WMS_OUT_ORDER WHERE {0} AND ORDER_TYPE='70'", outBillNo);
             return this.ExecuteQuery(sql).Tables[0];
         }
-
+        /// <summary>
+        /// 从营销系统下载出库单主表单据数据  创联
+        /// </summary>
+        /// <returns></returns>
+        public DataTable GetOutBillMasters(string outBillNo)
+        {
+            string sql = string.Format("SELECT * FROM V_WMS_OUT_ORDER WHERE {0} AND ORDER_TYPE='1003'", outBillNo);
+            return this.ExecuteQuery(sql).Tables[0];
+        }
         /// <summary>
         /// 从营销系统下载出库单明细表数据
         /// </summary>

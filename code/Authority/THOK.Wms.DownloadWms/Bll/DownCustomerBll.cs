@@ -146,11 +146,26 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["customer_code"] = row["CUST_CODE"].ToString().Trim();
                 inbrddr["custom_code"] = row["CUST_N"].ToString().Trim();
                 inbrddr["customer_name"] = row["CUST_NAME"].ToString().Trim();
-                inbrddr["company_code"] = row["ORG_CODE"].ToString().Trim();
-                inbrddr["sale_region_code"] = row["SALE_REG_CODE"].ToString().Trim();
+                //inbrddr["company_code"] = row["ORG_CODE"].ToString().Trim();
+                //inbrddr["sale_region_code"] = row["SALE_REG_CODE"].ToString().Trim();
+                inbrddr["company_code"] = "01";
+                inbrddr["sale_region_code"] = row["ORG_CODE"].ToString().Trim();
                 inbrddr["uniform_code"] = row["N_CUST_CODE"].ToString().Trim();
-                inbrddr["customer_type"] = row["CUST_TYPE"].ToString().Trim() == "" ? "1" : row["CUST_TYPE"];
-                inbrddr["sale_scope"] = row["CUST_TYPE"].ToString().Trim() == "" ? "1" : row["CUST_TYPE"];
+                string cust_type="";
+                if (row["CUST_TYPE"].ToString() == "3")
+                {
+                    cust_type = "2401";
+                }
+                else if (row["CUST_TYPE"].ToString() == "2")
+                {
+                    cust_type = "2402";
+                }
+                else
+                {
+                    cust_type = "2401";
+                }
+                inbrddr["customer_type"] = cust_type;
+                inbrddr["sale_scope"] = cust_type;
                 inbrddr["industry_type"] = row["RTL_CUST_TYPE_CODE"].ToString().Trim();
                 inbrddr["city_or_countryside"] = row["CUST_GEO_TYPE_CODE"].ToString().Trim();
                 inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();
