@@ -82,8 +82,13 @@ namespace Authority.Controllers.Wms.SortingInfo
             DownCustomerBll custBll = new DownCustomerBll();
             DownDistStationBll stationBll = new DownDistStationBll();
             DownDistCarBillBll carBll = new DownDistCarBillBll();
+            DownUnitBll ubll = new DownUnitBll();
+            DownProductBll pbll = new DownProductBll();
+
             try
             {
+                ubll.DownUnitCodeInfo();
+                pbll.DownProductInfo();
                 routeBll.DeleteTable();
                 stationBll.DownDistStationInfo();
                 if (!SystemParameterService.SetSystemParameter())
