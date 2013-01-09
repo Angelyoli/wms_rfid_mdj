@@ -830,7 +830,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                         if (o.BillQuantity - o.AllotQuantity > 0)
                         {
-                            throw new Exception(sortWork.SortingLine.SortingLineName + " " + o.ProductCode + " " + o.Product.ProductName + "库存不足，缺少：" + Convert.ToDecimal((o.BillQuantity - o.AllotQuantity) / o.Product.UnitList.Unit02.Count) + "(条)，未能结单！");
+                            throw new Exception(sortWork.SortingLine.SortingLineName + " " + o.ProductCode + " " + o.Product.ProductName + "库存不足，缺少：" + Convert.ToDecimal((o.BillQuantity - o.AllotQuantity) / o.Product.Unit.Count) + "(件)，未能结单！");
                         }
                     }
                 );
