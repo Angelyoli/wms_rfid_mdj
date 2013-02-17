@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <Com>
+    <strReadSTX>0A7B</strReadSTX>
+    <strReadEND>7D0B</strReadEND>
+    <Encoder type="THOK.Zeng.ComfixtureHandle.el100.Encoder" />
+    <SerialPortSet>
+      <BaudRate>115200</BaudRate>
+      <Parity>0</Parity>
+      <DataBits>8</DataBits>
+      <StopBits>1</StopBits>
+    </SerialPortSet>
+  </Com>
+  <ComfixtureHandle type="THOK.Zeng.ComfixtureHandle.el100.ELabelOperator">
+    <TimeOut>1</TimeOut>
+    <ShowMode>
+      <mode1>3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33</mode1>
+      <mode2>34,35,36,37,38,39,40,41</mode2>
+    </ShowMode>
+  </ComfixtureHandle>
+</Root>

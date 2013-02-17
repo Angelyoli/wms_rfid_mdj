@@ -1,0 +1,5 @@
+USE [master]
+GO
+/****** 对象:  Database [elinterfacebak]    脚本日期: 01/19/2010 11:19:20 ******/
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'Elinterface')
+CREATE DATABASE [Elinterface] 
