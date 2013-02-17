@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Connections>
+  <Connection Name="DefaultConnection" DatabaseType="SQLSERVER">
+    <ConnectionString Value="server=.;database=wms_rfid_db;uid=sa;" />
+    <Password Name="password" Value="F012153F9FB66D12B669D44BACC915AB" />
+  </Connection>
+  <Connection Name="WMSConnection" DatabaseType="SQLSERVER">
+    <ConnectionString Value="server=.;database=wms_rfid_db;uid=sa;" />
+    <Password Name="password" Value="F012153F9FB66D12B669D44BACC915AB" />
+  </Connection>
+  <Connection Name="DB2Connection" DatabaseType="DB2">
+    <ConnectionString Value="server=.;database=TEST;uid=db2admin;" />
+    <Password Name="password" Value="78DAC4845ECAB0D5" />
+  </Connection>
+</Connections>

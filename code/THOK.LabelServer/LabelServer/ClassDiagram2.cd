@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DataRabbit.HashOrm.Storages">
+    <Position X="0.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AIEgAAQAAEAFCBAAAAACBEAAKAgAQ0jCBqCACQRICkA=</HashCode>
+      <FileName>DBEntity\Storages.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="宋体" Size="9" />
+</ClassDiagram>

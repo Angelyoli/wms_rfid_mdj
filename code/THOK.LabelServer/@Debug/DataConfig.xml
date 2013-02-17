@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <DataConfig>
+    <IP>.</IP>
+    <DbName>wms_rfid_db</DbName>
+    <User>sa</User>
+    <Pwd>hehuadong.2010</Pwd>
+  </DataConfig>
+</Root>

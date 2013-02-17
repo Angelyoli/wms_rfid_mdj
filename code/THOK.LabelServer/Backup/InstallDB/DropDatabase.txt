@@ -1,0 +1,3 @@
+USE [master]
+/****** 对象:  Database [Elinterface]    脚本日期: 01/19/2010 10:55:32 ******/
+DROP DATABASE [Elinterface]
