@@ -69,12 +69,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6C57276DD58BC8B9A7276C2E6D3B205D"
-        "OwnerKey" = "8:_42D9CF0976D84726A5C19324231792B5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_76D7C40241404C5CA1F139601B38B006"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -82,6 +76,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7F7A892921C3EDA362E0FB90B3F2A9AD"
+        "OwnerKey" = "8:_42D9CF0976D84726A5C19324231792B5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_804B444137D19F2A86ECEC04DCA7095B"
         "OwnerKey" = "8:_42D9CF0976D84726A5C19324231792B5"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -160,6 +160,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_804B444137D19F2A86ECEC04DCA7095B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_42D9CF0976D84726A5C19324231792B5"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -167,12 +173,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_7F7A892921C3EDA362E0FB90B3F2A9AD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6C57276DD58BC8B9A7276C2E6D3B205D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -489,20 +489,20 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6C57276DD58BC8B9A7276C2E6D3B205D"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7F7A892921C3EDA362E0FB90B3F2A9AD"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:THOK.WES.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:THOK.Util, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6C57276DD58BC8B9A7276C2E6D3B205D"
+                    "_7F7A892921C3EDA362E0FB90B3F2A9AD"
                     {
-                    "Name" = "8:THOK.WES.Interface.dll"
+                    "Name" = "8:THOK.Util.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:THOK.WES.Interface.dll"
+            "SourcePath" = "8:THOK.Util.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_00C1B18493A24ABB97F85D5CA2EA7395"
@@ -520,20 +520,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7F7A892921C3EDA362E0FB90B3F2A9AD"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_804B444137D19F2A86ECEC04DCA7095B"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:THOK.Util, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:THOK.WES.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_7F7A892921C3EDA362E0FB90B3F2A9AD"
+                    "_804B444137D19F2A86ECEC04DCA7095B"
                     {
-                    "Name" = "8:THOK.Util.dll"
+                    "Name" = "8:THOK.WES.Interface.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:THOK.Util.dll"
+            "SourcePath" = "8:THOK.WES.Interface.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_00C1B18493A24ABB97F85D5CA2EA7395"
@@ -845,7 +845,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:数字化仓储标签服务管理系统"
         "ProductCode" = "8:{6E5CDDF8-820A-41F0-B959-ACA9E84D51D1}"
-        "PackageCode" = "8:{D8426D77-C1CF-4A76-92C8-E7A4B7C07138}"
+        "PackageCode" = "8:{557D7F9A-E0C3-40E8-B292-DD75F3408EA2}"
         "UpgradeCode" = "8:{F0115442-6A12-4CD9-90FA-59F85DC569CE}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
