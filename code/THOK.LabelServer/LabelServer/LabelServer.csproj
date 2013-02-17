@@ -56,15 +56,15 @@
   <ItemGroup>
     <Reference Include="DataRabbit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\zys\桌面\DataRabbit 学习资料\DataRabbit资源 2009.09.15\DataRabbit.EntityCreator\DataRabbit.dll</HintPath>
+      <HintPath>..\DataRabbit.dll</HintPath>
     </Reference>
     <Reference Include="DataRabbit.DBAccessing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\zys\桌面\DataRabbit 学习资料\DataRabbit资源 2009.09.15\DataRabbit.EntityCreator\DataRabbit.DBAccessing.dll</HintPath>
+      <HintPath>..\DataRabbit.DBAccessing.dll</HintPath>
     </Reference>
     <Reference Include="ESBasic, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\zys\桌面\DataRabbit 学习资料\DataRabbit资源 2009.09.15\DataRabbit.EntityCreator\ESBasic.dll</HintPath>
+      <HintPath>..\ESBasic.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
