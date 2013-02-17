@@ -845,7 +845,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:数字化仓储标签服务管理系统"
         "ProductCode" = "8:{6E5CDDF8-820A-41F0-B959-ACA9E84D51D1}"
-        "PackageCode" = "8:{517796DF-DD37-436F-A5D4-6BC3F0E76195}"
+        "PackageCode" = "8:{D8426D77-C1CF-4A76-92C8-E7A4B7C07138}"
         "UpgradeCode" = "8:{F0115442-6A12-4CD9-90FA-59F85DC569CE}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

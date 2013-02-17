@@ -91,7 +91,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\THOK.Util.dll</HintPath>
     </Reference>
-    <Reference Include="THOK.WES.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="THOK.WES.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\THOK.WES.Interface.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapter.cs">
