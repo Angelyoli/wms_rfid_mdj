@@ -3858,7 +3858,7 @@
                     new Module()
                     {
                         ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D"),
-                        ModuleName = "系统参数",
+                        ModuleName = "系统参数管理",
                         ShowOrder = 15,
                         ModuleURL = "",
                         IndicateImage = "icon-Menu_Jurisdiction",
