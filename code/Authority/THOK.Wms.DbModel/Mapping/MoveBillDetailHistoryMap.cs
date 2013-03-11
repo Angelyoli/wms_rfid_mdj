@@ -6,7 +6,7 @@ using THOK.Common.Ef.MappingStrategy;
 
 namespace THOK.Wms.DbModel.Mapping
 {
-    class MoveBillDetailHistoryMap : EntityMappingBase<MoveBillDetailHistory>
+   public class MoveBillDetailHistoryMap : EntityMappingBase<MoveBillDetailHistory>
     {
         public MoveBillDetailHistoryMap()
             : base("Wms")

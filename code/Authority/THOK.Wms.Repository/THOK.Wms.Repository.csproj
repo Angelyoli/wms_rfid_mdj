@@ -293,6 +293,18 @@
     <Compile Include="Migrations\201302220246405_modify_product_customer_code.Designer.cs">
       <DependentUpon>201302220246405_modify_product_customer_code.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201303080912060_add_History_Tray.cs" />
+    <Compile Include="Migrations\201303080912060_add_History_Tray.Designer.cs">
+      <DependentUpon>201303080912060_add_History_Tray.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201303080919122_add_History_Tray1.cs" />
+    <Compile Include="Migrations\201303080919122_add_History_Tray1.Designer.cs">
+      <DependentUpon>201303080919122_add_History_Tray1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201303110125193_add_web_Config.cs" />
+    <Compile Include="Migrations\201303110125193_add_web_Config.Designer.cs">
+      <DependentUpon>201303110125193_add_web_Config.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
