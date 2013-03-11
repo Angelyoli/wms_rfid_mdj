@@ -425,8 +425,8 @@ namespace THOK.Wms.Bll.Service
         {
             try
             {
-                using (var scope = new TransactionScope())
-                {
+                //using (var scope = new TransactionScope())
+                //{
                     var inQuery = InBillDetailRepository.GetQueryable().AsEnumerable();
                     var outQuery = OutBillDetailRepository.GetQueryable().AsEnumerable();
                     var profitLossQuery = ProfitLossBillDetailRepository.GetQueryable().AsEnumerable();
@@ -538,10 +538,10 @@ namespace THOK.Wms.Bll.Service
                     }
 
                     DailyBalanceRepository.SaveChanges();
-                    scope.Complete();
+                    //scope.Complete();
 
                     return true;
-                }
+               // }
             }
             catch (Exception e)
             {

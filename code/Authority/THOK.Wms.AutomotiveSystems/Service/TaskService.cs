@@ -686,7 +686,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
-                                        //判断移入的事件是否小于移出的时间
+                                        //判断移入的时间是否小于移出的时间
                                         if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
                                             moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
                                         moveDetail.MoveBillMaster.Status = "3";
@@ -830,7 +830,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                         if (o.BillQuantity - o.AllotQuantity > 0)
                         {
-                            throw new Exception(sortWork.SortingLine.SortingLineName + " " + o.ProductCode + " " + o.Product.ProductName + "库存不足，缺少：" + Convert.ToDecimal((o.BillQuantity - o.AllotQuantity) / o.Product.UnitList.Unit02.Count) + "(条)，未能结单！");
+                            throw new Exception(sortWork.SortingLine.SortingLineName + " " + o.ProductCode + " " + o.Product.ProductName + "库存不足，缺少：" + Convert.ToDecimal((o.BillQuantity - o.AllotQuantity) / o.Product.Unit.Count) + "(件)，未能结单！");
                         }
                     }
                 );

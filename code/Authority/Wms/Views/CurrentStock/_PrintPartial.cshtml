@@ -22,7 +22,7 @@
         if ($('#productCode').val() == null) { productCode = ""; } else { productCode = $('#productCode').val(); }
         if (document.getElementById('unit_Type') == null) { unitType = ""; } else { unitType = $('#unit_Type').combo('getValue'); }
 
-        $.messager.confirm('打印', '是否打印包含异性烟', function (r) {
+        $.messager.confirm('打印', '是否打印包含异型烟', function (r) {
             var isAbnormity = false;
             if (r) {
                 isAbnormity = true;
