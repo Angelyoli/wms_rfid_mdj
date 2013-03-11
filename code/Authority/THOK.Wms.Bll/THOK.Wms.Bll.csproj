@@ -59,7 +59,9 @@
     <Compile Include="Interfaces\IDifferSearchDetailService.cs" />
     <Compile Include="Interfaces\IDistributionService.cs" />
     <Compile Include="Interfaces\IHistoricalDetailService.cs" />
+    <Compile Include="Interfaces\IInBillDetailHistoryService.cs" />
     <Compile Include="Interfaces\IInBillDetailService.cs" />
+    <Compile Include="Interfaces\IInBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IInBillMasterService.cs" />
     <Compile Include="Interfaces\IIntoSearchDetailService.cs" />
     <Compile Include="Interfaces\IMoveBillDetailService.cs" />
@@ -118,7 +120,9 @@
     <Compile Include="Service\DifferSearchDetailService.cs" />
     <Compile Include="Service\DistributionService.cs" />
     <Compile Include="Service\HistoricalDetailService.cs" />
+    <Compile Include="Service\InBillDetailHistoryService.cs" />
     <Compile Include="Service\InBillDetailService.cs" />
+    <Compile Include="Service\InBillMasterHistoryService .cs" />
     <Compile Include="Service\InBillMasterService.cs" />
     <Compile Include="Service\IntoSearchDetailService.cs" />
     <Compile Include="Service\MoveBillDetailService.cs" />
