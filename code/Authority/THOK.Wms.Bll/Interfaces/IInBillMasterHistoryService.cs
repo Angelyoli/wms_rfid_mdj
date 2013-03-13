@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using THOK.Wms.DbModel;
 
 namespace THOK.Wms.Bll.Interfaces
 {
-    public interface IInBillMasterHistoryService
+    public interface IInBillMasterHistoryService : IService<InBillMaster>
     {
-        bool Add(DateTime datetime);
+        bool Add(DateTime datetime, out string strResult);
+
+        bool DeleteMaster(DateTime datetime, out string strResult);
     }
 }

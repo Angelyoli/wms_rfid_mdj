@@ -5,7 +5,7 @@ using System.Text;
 
 namespace THOK.Wms.Bll.Interfaces
 {
-    public interface IInBillDetailHistoryService
+    public interface IDailyBalanceHistoryService
     {
         bool Add(DateTime datetime);
     }

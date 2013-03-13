@@ -52,6 +52,7 @@
     <Compile Include="Interfaces\ICheckSearchDetailService.cs" />
     <Compile Include="Interfaces\ICurrentStockService.cs" />
     <Compile Include="Interfaces\ICustomerService.cs" />
+    <Compile Include="Interfaces\IDailyBalanceHistoryService.cs" />
     <Compile Include="Interfaces\IDailyBalanceService.cs" />
     <Compile Include="Interfaces\IBusinessSystemsDailyBalanceService.cs" />
     <Compile Include="Interfaces\IDeliverDistService.cs" />
@@ -59,7 +60,6 @@
     <Compile Include="Interfaces\IDifferSearchDetailService.cs" />
     <Compile Include="Interfaces\IDistributionService.cs" />
     <Compile Include="Interfaces\IHistoricalDetailService.cs" />
-    <Compile Include="Interfaces\IInBillDetailHistoryService.cs" />
     <Compile Include="Interfaces\IInBillDetailService.cs" />
     <Compile Include="Interfaces\IInBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IInBillMasterService.cs" />
@@ -68,7 +68,9 @@
     <Compile Include="Interfaces\IMoveBillMasterService.cs" />
     <Compile Include="Interfaces\IMoveSearchDetailService.cs" />
     <Compile Include="Interfaces\IOrderSearchDetailService.cs" />
+    <Compile Include="Interfaces\IOutBillDetailHistoryService.cs" />
     <Compile Include="Interfaces\IOutBillDetailService.cs" />
+    <Compile Include="Interfaces\IOutBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IOutBillMasterService.cs" />
     <Compile Include="Interfaces\IOutSearchDetailService.cs" />
     <Compile Include="Interfaces\IProductWarningService.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Service\CheckSearchDetailService.cs" />
     <Compile Include="Service\CurrentStockService.cs" />
     <Compile Include="Service\CustomerService.cs" />
+    <Compile Include="Service\DailyBalanceHistoryService.cs" />
     <Compile Include="Service\DailyBalanceService.cs" />
     <Compile Include="Service\BusinessSystemsDailyBalanceService.cs" />
     <Compile Include="Service\DeliverDistService.cs" />
@@ -120,7 +123,6 @@
     <Compile Include="Service\DifferSearchDetailService.cs" />
     <Compile Include="Service\DistributionService.cs" />
     <Compile Include="Service\HistoricalDetailService.cs" />
-    <Compile Include="Service\InBillDetailHistoryService.cs" />
     <Compile Include="Service\InBillDetailService.cs" />
     <Compile Include="Service\InBillMasterHistoryService .cs" />
     <Compile Include="Service\InBillMasterService.cs" />
@@ -129,7 +131,9 @@
     <Compile Include="Service\MoveBillMasterService.cs" />
     <Compile Include="Service\MoveSearchDetailService.cs" />
     <Compile Include="Service\OrderSearchDetailService.cs" />
+    <Compile Include="Service\OutBillDetailHistoryService.cs" />
     <Compile Include="Service\OutBillDetailService.cs" />
+    <Compile Include="Service\OutBillMasterHistoryService.cs" />
     <Compile Include="Service\OutBillMasterService.cs" />
     <Compile Include="Service\OutSearchDetailService.cs" />
     <Compile Include="Service\ProductWarningService.cs" />
