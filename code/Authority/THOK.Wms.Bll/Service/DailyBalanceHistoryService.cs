@@ -12,17 +12,18 @@ namespace THOK.Wms.Bll.Service
     public class DailyBalanceHistoryService : IDailyBalanceHistoryService
     {
         [Dependency]
-        public IDailyBalanceRepository inBillDetailRepository { get; set; }
+        public IDailyBalanceRepository DailyBalanceRepository { get; set; }
         [Dependency]
-        public IDailyBalanceHistoryRepository dailyBalanceHistoryRepository { get; set; }
+        public IDailyBalanceHistoryRepository DailyBalanceHistoryRepository { get; set; }
 
-        #region IDailyBalanceHistoryService 成员
-
-        public bool Add(DateTime datetime)
+        public bool Add(DateTime datetime,out string strResult)
         {
+            strResult=string.Empty;
             bool result = false;
-            var inBillDetail = inBillDetailRepository.GetQueryable().Where(i => i.SettleDate <= datetime);
-            foreach (var item in inBillDetail.ToArray())
+            var dailyBalancelHistory = DailyBalanceRepository.GetQueryable().Where(i => i.SettleDate <= datetime);
+            
+            #region 日结表移入历史表
+            foreach (var item in dailyBalancelHistory.ToArray())
             {
                 DailyBalanceHistory history = new DailyBalanceHistory();
                 try
@@ -38,18 +39,41 @@ namespace THOK.Wms.Bll.Service
                     history.LossAmount = item.LossAmount;
                     history.Ending = item.Ending;
 
-                    dailyBalanceHistoryRepository.Add(history);
-                    dailyBalanceHistoryRepository.SaveChanges();
+                    DailyBalanceHistoryRepository.Add(history);
+                    DailyBalanceHistoryRepository.SaveChanges();
                     result = true;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    result = false;
+                    strResult = "提示" + e.Message;
                 }
-            }
+            } 
+            #endregion
+
+            #region 删除记录
+            //if (dailyBalancelHistory != null)
+            //{
+            //    foreach (var item in dailyBalancelHistory.ToList())
+            //    {
+            //        try
+            //        {
+            //            DailyBalanceRepository.Delete(item);
+            //            DailyBalanceRepository.SaveChanges();
+            //            result = true;
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            strResult = "删除失败，原因：" + ex.Message;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    strResult = "删除失败！未找到当前需要删除的数据！";
+            //}
+            #endregion
+
             return result;
         }
-
-        #endregion
     }
 }

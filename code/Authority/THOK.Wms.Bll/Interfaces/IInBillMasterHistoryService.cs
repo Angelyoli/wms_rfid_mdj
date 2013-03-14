@@ -9,7 +9,6 @@ namespace THOK.Wms.Bll.Interfaces
     public interface IInBillMasterHistoryService : IService<InBillMaster>
     {
         bool Add(DateTime datetime, out string strResult);
-
-        bool DeleteMaster(DateTime datetime, out string strResult);
+        bool Add2(DateTime datetime, out string strResult);
     }
 }
