@@ -30,12 +30,14 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public bool Add(DateTime datetime, out string masterResult, out string detailResult, out string allotResult)
+        public bool Add(DateTime datetime, out string masterResult, out string detailResult, out string allotResult, out string deleteResult)
         {
             bool result = false;
             masterResult = string.Empty;
             detailResult = string.Empty;
             allotResult = string.Empty;
+            deleteResult = string.Empty;
+
             var inBillMaster = InBillMasterRepository.GetQueryable().Where(i => i.BillDate <= datetime);
             var inBillDetail = InBillDetailRepository.GetQueryable().Where(i => i.InBillMaster.BillDate <= datetime);
             var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.InBillMaster.BillDate <= datetime);
@@ -160,28 +162,31 @@ namespace THOK.Wms.Bll.Service
                             Del(InBillAllotRepository, item.InBillAllots);
                             Del(InBillDetailRepository, item.InBillDetails);
                             InBillMasterRepository.Delete(item);
+                            InBillMasterRepository.SaveChanges();
                             result = true;
                         }
                         catch (Exception ex)
                         {
-                            masterResult = "删除失败，原因：" + ex.Message;
+                            deleteResult = "删除失败，原因：" + ex.Message;
+                            result = false;
                         }
                     }
                 }
                 else
                 {
-                    masterResult = "删除失败！未找到当前需要删除的数据！";
+                    deleteResult = "删除失败！未找到当前需要删除的数据！";
+                    result = false;
                 }
                 #endregion
             }
             else
             {
-                masterResult = "删除失败";
+                deleteResult = "删除失败";
             }
             return result;
         }
 
-        #region MyRegion
+        #region Test
         public bool Add2(DateTime datetime, out string strResult)
         {
             strResult = string.Empty;

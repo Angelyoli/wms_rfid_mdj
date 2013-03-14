@@ -35,11 +35,14 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             string masterResult = string.Empty;
             string detailResult = string.Empty;
             string allotResult = string.Empty;
-            bool bResult = InBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out masterResult, out detailResult, out allotResult);
+            string deleteResult = string.Empty;
+            bool bResult = InBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out masterResult, out detailResult, out allotResult, out deleteResult);
             string msg = bResult ? "成功！" : "失败！";
             string result = "-------------------------------------------------【主表：" + masterResult 
                         + "】-------------------------------------------------【细表：" + detailResult 
-                        + "】-------------------------------------------------【分配表：" + allotResult + "】";
+                        + "】-------------------------------------------------【分配表：" + allotResult
+                        + "】-------------------------------------------------【删除情况：" + allotResult
+                        + "】";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
         public ActionResult InBillMasterHistory2(string datetime)
