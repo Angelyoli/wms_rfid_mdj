@@ -80,7 +80,7 @@ namespace THOK.Wms.Bll.Service
 
                 if (outBillDetail != null)
                 {
-                    var outBillDetailHistory = OutBillDetailHistoryRepository.GetQueryable().Where(i => i.OutBillMasterHistory.BillDate == datetime);
+                    var outBillDetailHistory = OutBillDetailHistoryRepository.GetQueryable().Where(i => i.OutBillMasterHistory.BillDate <= datetime);
 
                     #region 细表移入历史表
                     try
