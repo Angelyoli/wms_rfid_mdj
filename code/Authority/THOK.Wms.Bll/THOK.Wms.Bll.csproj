@@ -48,6 +48,7 @@
     <Compile Include="Interfaces\ICargospaceService.cs" />
     <Compile Include="Interfaces\ICellHistoricalService.cs" />
     <Compile Include="Interfaces\ICheckBillDetailService.cs" />
+    <Compile Include="Interfaces\ICheckBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\ICheckBillMasterService.cs" />
     <Compile Include="Interfaces\ICheckSearchDetailService.cs" />
     <Compile Include="Interfaces\ICurrentStockService.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Service\CargospaceService.cs" />
     <Compile Include="Service\CellHistoricalService.cs" />
     <Compile Include="Service\CheckBillDetailService.cs" />
+    <Compile Include="Service\CheckBillMasterHistoryService.cs" />
     <Compile Include="Service\CheckBillMasterService.cs" />
     <Compile Include="Service\CheckSearchDetailService.cs" />
     <Compile Include="Service\CurrentStockService.cs" />

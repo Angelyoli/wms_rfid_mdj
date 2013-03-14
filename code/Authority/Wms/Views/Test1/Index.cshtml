@@ -1,19 +1,19 @@
 ﻿<script type="text/javascript">
     function searchClick() {
-        var datetime = "2012-10-22 11:00:04.000";
-        window.location.href = "/Test1/InBillMasterHistory/?datetime=" + datetime;
+        //var datetime = "2012-10-22 11:00:04.000";//入库
+        var datetime = "2012-10-24"; //盘点
+        window.location.href = "/Test1/CheckBillMasterHistory/?datetime=" + datetime;
     }
     function addClick() {
-        var datetime = "2012-10-23";
+        var datetime = "2012-10-23"; //出库
         window.location.href = "/Test1/OutBillMasterHistory/?datetime=" + datetime;
     }
     function editClick() {
-        var datetime = "2012-10-31";
+        var datetime = "2012-10-31"; //日结
         window.location.href = "/Test1/DailyBalanceHistory/?datetime=" + datetime;
     }
     function deleteClick() {
-        alert(1);
-        var datetime = "2012-10-23";
+        var datetime = "2012-10-23"; //移库
         window.location.href = "/Test1/MoveBillMasterHistory/?datetime=" + datetime;
     }
 </script>

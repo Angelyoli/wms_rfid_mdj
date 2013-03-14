@@ -19,6 +19,8 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         public IDailyBalanceHistoryService DailyBalanceHistoryService { get; set; }
         [Dependency]
         public IMoveBillMasterHistoryService MoveBillMasterHistoryService { get; set; }
+        [Dependency]
+        public ICheckBillMasterHistoryService CheckBillMasterHistoryService { get; set; }
 
         //
         // GET: /Test1/
@@ -95,6 +97,24 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             string detailResult = string.Empty;
             string deleteResult = string.Empty;
             bool bResult = MoveBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out masterResult, out detailResult, out deleteResult);
+            string msg = bResult ? "成功！" : "失败！";
+            if (msg == "失败")
+            {
+                result = "-------------------------------------------------【主表：" + masterResult
+                            + "】-------------------------------------------------【细表：" + detailResult
+                            + "】-------------------------------------------------【删除情况：" + deleteResult
+                            + "】";
+            }
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult CheckBillMasterHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string masterResult = string.Empty;
+            string detailResult = string.Empty;
+            string deleteResult = string.Empty;
+            bool bResult = CheckBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out masterResult, out detailResult, out deleteResult);
             string msg = bResult ? "成功！" : "失败！";
             if (msg == "失败")
             {
