@@ -65,6 +65,7 @@
     <Compile Include="Interfaces\IInBillMasterService.cs" />
     <Compile Include="Interfaces\IIntoSearchDetailService.cs" />
     <Compile Include="Interfaces\IMoveBillDetailService.cs" />
+    <Compile Include="Interfaces\IMoveBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IMoveBillMasterService.cs" />
     <Compile Include="Interfaces\IMoveSearchDetailService.cs" />
     <Compile Include="Interfaces\IOrderSearchDetailService.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Service\InBillMasterService.cs" />
     <Compile Include="Service\IntoSearchDetailService.cs" />
     <Compile Include="Service\MoveBillDetailService.cs" />
+    <Compile Include="Service\MoveBillMasterHistoryService.cs" />
     <Compile Include="Service\MoveBillMasterService.cs" />
     <Compile Include="Service\MoveSearchDetailService.cs" />
     <Compile Include="Service\OrderSearchDetailService.cs" />

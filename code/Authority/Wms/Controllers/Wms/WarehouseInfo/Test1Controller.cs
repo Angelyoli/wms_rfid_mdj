@@ -17,6 +17,8 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         public IOutBillMasterHistoryService OutBillMasterHistoryService { get; set; }
         [Dependency]
         public IDailyBalanceHistoryService DailyBalanceHistoryService { get; set; }
+        [Dependency]
+        public IMoveBillMasterHistoryService MoveBillMasterHistoryService { get; set; }
 
         //
         // GET: /Test1/
@@ -32,19 +34,24 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         }
         public ActionResult InBillMasterHistory(string datetime)
         {
+            string result = string.Empty;
             string masterResult = string.Empty;
             string detailResult = string.Empty;
             string allotResult = string.Empty;
             string deleteResult = string.Empty;
             bool bResult = InBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out masterResult, out detailResult, out allotResult, out deleteResult);
             string msg = bResult ? "成功！" : "失败！";
-            string result = "-------------------------------------------------【主表：" + masterResult 
-                        + "】-------------------------------------------------【细表：" + detailResult 
-                        + "】-------------------------------------------------【分配表：" + allotResult
-                        + "】-------------------------------------------------【删除情况：" + allotResult
-                        + "】";
+            if (msg == "失败")
+            {
+                result = "-------------------------------------------------【主表：" + masterResult
+                            + "】-------------------------------------------------【细表：" + detailResult
+                            + "】-------------------------------------------------【分配表：" + allotResult
+                            + "】-------------------------------------------------【删除情况：" + deleteResult
+                            + "】";
+            }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult InBillMasterHistory2(string datetime)
         {
             string strResult = string.Empty;
@@ -55,17 +62,48 @@ namespace Wms.Controllers.Wms.WarehouseInfo
 
         public ActionResult OutBillMasterHistory(DateTime datetime)
         {
-            string strResult = string.Empty;
-            bool bResult = OutBillMasterHistoryService.Add(datetime, out strResult);
+            string result = string.Empty;
+            string masterResult = string.Empty;
+            string detailResult = string.Empty;
+            string allotResult = string.Empty;
+            string deleteResult = string.Empty;
+            bool bResult = OutBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out masterResult, out detailResult, out allotResult, out deleteResult);
             string msg = bResult ? "成功！" : "失败！";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+            if (msg == "失败")
+            {
+                result = "-------------------------------------------------【主表：" + masterResult
+                            + "】-------------------------------------------------【细表：" + detailResult
+                            + "】-------------------------------------------------【分配表：" + allotResult
+                            + "】-------------------------------------------------【删除情况：" + deleteResult
+                            + "】";
+            }
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult DailyBalanceHistory(DateTime datetime)
         {
             string strResult = string.Empty;
             bool bResult = DailyBalanceHistoryService.Add(datetime, out strResult);
             string msg = bResult ? "成功！" : "失败！";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult MoveBillMasterHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string masterResult = string.Empty;
+            string detailResult = string.Empty;
+            string deleteResult = string.Empty;
+            bool bResult = MoveBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out masterResult, out detailResult, out deleteResult);
+            string msg = bResult ? "成功！" : "失败！";
+            if (msg == "失败")
+            {
+                result = "-------------------------------------------------【主表：" + masterResult
+                            + "】-------------------------------------------------【细表：" + detailResult
+                            + "】-------------------------------------------------【删除情况：" + deleteResult
+                            + "】";
+            }
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

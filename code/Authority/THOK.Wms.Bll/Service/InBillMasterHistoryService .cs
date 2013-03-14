@@ -79,7 +79,6 @@ namespace THOK.Wms.Bll.Service
 
                 if (inBillDetail != null)
                 {
-                    //获取InBillDetailHistory表
                     var inBillDetailHistory = InBillDetailHistoryRepository.GetQueryable().Where(i => i.InBillMasterHistory.BillDate == datetime);
 
                     #region 细表移入历史表
@@ -108,9 +107,10 @@ namespace THOK.Wms.Bll.Service
                         result = false;
                     }
                     #endregion
+
                     if (inBillAllot != null)
                     {
-                        var inBillAllotHistory = InBillAllotHistoryRepository.GetQueryable().Where(i => i.InBillMasterHistory.BillDate <= datetime);
+                        //var inBillAllotHistory = InBillAllotHistoryRepository.GetQueryable().Where(i => i.InBillMasterHistory.BillDate <= datetime);
 
                         #region 分配表移入历史表
                         foreach (var itemDetailHistory in inBillDetailHistory.ToArray())

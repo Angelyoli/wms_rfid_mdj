@@ -21,77 +21,134 @@ namespace THOK.Wms.Bll.Service
         public IOutBillDetailHistoryRepository OutBillDetailHistoryRepository { get; set; }
         [Dependency]
         public IOutBillAllotRepository OutBillAllotRepository { get; set; }
+        [Dependency]
+        public IOutBillAllotHistoryRepository OutBillAllotHistoryRepository { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        public bool Add(DateTime datetime, out string strResult)
+        public bool Add(DateTime datetime, out string masterResult, out string detailResult, out string allotResult, out string deleteResult)
         {
-            strResult = string.Empty;
             bool result = false;
+            masterResult = string.Empty;
+            detailResult = string.Empty;
+            allotResult = string.Empty;
+            deleteResult = string.Empty;
+
             var outBillMaster = OutBillMasterRepository.GetQueryable().Where(i => i.BillDate <= datetime);
             var outBillDetail = OutBillDetailRepository.GetQueryable().Where(i => i.OutBillMaster.BillDate <= datetime);
+            var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.OutBillMaster.BillDate <= datetime);
 
-            #region 主表移入历史表
-            foreach (var item in outBillMaster.ToArray())
+            if (outBillMaster != null)
             {
-                OutBillMasterHistory history = new OutBillMasterHistory();
+                var outBillMasterHistory = OutBillMasterHistoryRepository.GetQueryable().Where(i => i.BillDate <= datetime);
+
+                #region 主表移入历史表
                 try
                 {
-                    history.BillNo = item.BillNo;
-                    history.BillDate = item.BillDate;
-                    history.BillTypeCode = item.BillTypeCode;
-                    history.WarehouseCode = item.WarehouseCode;
-                    history.OperatePersonID = item.OperatePersonID;
-                    history.Status = item.Status;
-                    history.VerifyPersonID = item.VerifyPersonID;
-                    history.VerifyDate = item.VerifyDate;
-                    history.Description = item.Description;
-                    history.IsActive = item.IsActive;
-                    history.UpdateTime = item.UpdateTime;
-                    history.Origin = item.Origin;
-                    history.TargetCellCode = item.TargetCellCode;
+                    foreach (var item in outBillMaster.ToArray())
+                    {
+                        OutBillMasterHistory history = new OutBillMasterHistory();
 
-                    OutBillMasterHistoryRepository.Add(history);                    
+                        history.BillNo = item.BillNo;
+                        history.BillDate = item.BillDate;
+                        history.BillTypeCode = item.BillTypeCode;
+                        history.WarehouseCode = item.WarehouseCode;
+                        history.OperatePersonID = item.OperatePersonID;
+                        history.Status = item.Status;
+                        history.VerifyPersonID = item.VerifyPersonID;
+                        history.VerifyDate = item.VerifyDate;
+                        history.Description = item.Description;
+                        history.IsActive = item.IsActive;
+                        history.UpdateTime = item.UpdateTime;
+                        history.Origin = item.Origin;
+                        history.TargetCellCode = item.TargetCellCode;
+
+                        OutBillMasterHistoryRepository.Add(history);
+                    }
+                    OutBillMasterHistoryRepository.SaveChanges();
                     result = true;
                 }
                 catch (Exception e)
                 {
-                    strResult = e.Message;
+                    masterResult = e.InnerException.ToString();
                     result = false;
                 }
-            }
-            
-            #endregion
+                #endregion
 
-            #region 细表移入历史表
-            foreach (var item in outBillDetail.ToArray())
-            {
-                OutBillDetailHistory history = new OutBillDetailHistory();
-                try
+                if (outBillDetail != null)
                 {
-                    history.BillNo = item.BillNo;
-                    history.ProductCode = item.ProductCode;
-                    history.UnitCode = item.UnitCode;
-                    history.Price = item.Price;
-                    history.BillQuantity = item.BillQuantity;
-                    history.AllotQuantity = item.AllotQuantity;
-                    history.RealQuantity = item.RealQuantity;
-                    history.Description = item.Description;
+                    var outBillDetailHistory = OutBillDetailHistoryRepository.GetQueryable().Where(i => i.OutBillMasterHistory.BillDate == datetime);
 
-                    OutBillDetailHistoryRepository.Add(history);
-                    
-                    result = true;
-                }
-                catch (Exception e)
-                {
-                    strResult = e.Message;
+                    #region 细表移入历史表
+                    try
+                    {
+                        foreach (var item in outBillDetail.ToArray())
+                        {
+                            OutBillDetailHistory history = new OutBillDetailHistory();
+
+                            history.BillNo = item.BillNo;
+                            history.ProductCode = item.ProductCode;
+                            history.UnitCode = item.UnitCode;
+                            history.Price = item.Price;
+                            history.BillQuantity = item.BillQuantity;
+                            history.AllotQuantity = item.AllotQuantity;
+                            history.RealQuantity = item.RealQuantity;
+                            history.Description = item.Description;
+
+                            OutBillDetailHistoryRepository.Add(history);
+                            OutBillDetailHistoryRepository.SaveChanges();
+                            result = true;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        detailResult = e.Message;
+                    }
+                    #endregion
+
+                    if (outBillAllot != null)
+                    {
+                        #region 分配表移入历史表
+                        foreach (var itemDetailHistory in outBillDetailHistory.ToArray())
+                        {
+                            try
+                            {
+                                foreach (var item3 in outBillAllot.ToArray())
+                                {
+                                    OutBillAllotHistory history3 = new OutBillAllotHistory();
+                                    history3.BillNo = item3.BillNo;
+                                    history3.ProductCode = item3.ProductCode;
+                                    history3.OutBillDetailId = itemDetailHistory.ID;
+                                    history3.CellCode = item3.CellCode;
+                                    history3.StorageCode = item3.StorageCode;
+                                    history3.UnitCode = item3.UnitCode;
+                                    history3.AllotQuantity = item3.AllotQuantity;
+                                    history3.RealQuantity = item3.RealQuantity;
+                                    history3.OperatePersonID = item3.OperatePersonID;
+                                    history3.Operator = item3.Operator;
+                                    history3.StartTime = item3.StartTime;
+                                    history3.FinishTime = item3.FinishTime;
+                                    history3.Status = item3.Status;
+
+                                    OutBillAllotHistoryRepository.Add(history3);
+                                }
+                                OutBillAllotHistoryRepository.SaveChanges();
+                                result = true;
+                            }
+                            catch (Exception e)
+                            {
+                                //throw e.InnerException;
+                                allotResult = "原因：" + e.InnerException;
+                                result = false;
+                            }
+                        }
+                        #endregion
+                    }
                 }
             }
-            #endregion
-
             #region 删除主细分配表
             if (outBillMaster != null)
             {
@@ -102,28 +159,20 @@ namespace THOK.Wms.Bll.Service
                         Del(OutBillAllotRepository, item.OutBillAllots);
                         Del(OutBillDetailRepository, item.OutBillDetails);
                         OutBillMasterRepository.Delete(item);
+                        OutBillMasterRepository.SaveChanges();
                         result = true;
                     }
                     catch (Exception ex)
                     {
-                        strResult = "删除失败，原因：" + ex.Message;
+                        deleteResult = "删除失败，原因：" + ex.Message;
                     }
                 }
             }
             else
             {
-                strResult = "删除失败！未找到当前需要删除的数据！";
+                deleteResult = "删除失败！未找到当前需要删除的数据！";
             }
             #endregion
-
-            try
-            {
-                OutBillMasterHistoryRepository.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                strResult = e.Message;
-            }
 
             return result;
         }
