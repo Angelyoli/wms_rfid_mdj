@@ -46,14 +46,17 @@ namespace THOK.Wms.Bll.Service
                         history.BillNo = item.BillNo;
                         history.BillDate = item.BillDate;
                         history.BillTypeCode = item.BillTypeCode;
+                        history.CheckBillNo = item.CheckBillNo;
                         history.WarehouseCode = item.WarehouseCode;
-                        history.OperatePersonID = item.OperatePersonID;
                         history.Status = item.Status;
                         history.VerifyPersonID = item.VerifyPersonID;
                         history.VerifyDate = item.VerifyDate;
                         history.Description = item.Description;
                         history.IsActive = item.IsActive;
                         history.UpdateTime = item.UpdateTime;
+                        history.OperatePersonID = item.OperatePersonID;
+                        history.LockTag = item.LockTag;
+                        history.RowVersion = item.RowVersion;
 
                         ProfitLossBillMasterHistoryRepository.Add(history);
                     }

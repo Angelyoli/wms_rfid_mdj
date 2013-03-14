@@ -69,6 +69,7 @@
     <Compile Include="Interfaces\IMoveBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IMoveBillMasterService.cs" />
     <Compile Include="Interfaces\IMoveSearchDetailService.cs" />
+    <Compile Include="Interfaces\IProfitLossBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IOrderSearchDetailService.cs" />
     <Compile Include="Interfaces\IOutBillDetailService.cs" />
     <Compile Include="Interfaces\IOutBillMasterHistoryService.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Service\OutSearchDetailService.cs" />
     <Compile Include="Service\ProductWarningService.cs" />
     <Compile Include="Service\ProfitLossBillDetailService.cs" />
+    <Compile Include="Service\ProfitLossBillMasterHistoryService.cs" />
     <Compile Include="Service\ProfitLossBillMasterService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
     <Compile Include="Service\AreaService.cs" />
