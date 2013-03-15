@@ -30,7 +30,6 @@ namespace THOK.Wms.Bll.Service
                     foreach (var item in dailyBalancel.ToArray())
                     {
                         DailyBalanceHistory history = new DailyBalanceHistory();
-
                         history.ID = item.ID;
                         history.SettleDate = item.SettleDate;
                         history.WarehouseCode = item.WarehouseCode;
@@ -42,15 +41,14 @@ namespace THOK.Wms.Bll.Service
                         history.ProfitAmount = item.ProfitAmount;
                         history.LossAmount = item.LossAmount;
                         history.Ending = item.Ending;
-
                         DailyBalanceHistoryRepository.Add(history);
-                        DailyBalanceHistoryRepository.SaveChanges();
-                        result = true;
                     }
+                    DailyBalanceHistoryRepository.SaveChanges();
+                    result = true;
                 }
                 catch (Exception e)
                 {
-                    strResult = "提示" + e.InnerException;
+                    strResult = e.InnerException.ToString();
                 }
                 #endregion
             }
@@ -65,9 +63,9 @@ namespace THOK.Wms.Bll.Service
                         DailyBalanceRepository.SaveChanges();
                         result = true;
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        strResult = "删除失败，原因：" + ex.Message;
+                        strResult = e.InnerException.ToString();
                     }
                 }
             }

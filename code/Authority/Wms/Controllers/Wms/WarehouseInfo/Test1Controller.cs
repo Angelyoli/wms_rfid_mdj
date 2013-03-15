@@ -33,6 +33,8 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             ViewBag.hasAdd = true;
             ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
+            ViewBag.hasPrint = true;
+            ViewBag.hasHelp = true;
             ViewBag.moduleID = moduleID;
             return View();
         }
@@ -55,15 +57,6 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult InBillMasterHistory2(string datetime)
-        {
-            string strResult = string.Empty;
-            bool bResult = InBillMasterHistoryService.Add2(Convert.ToDateTime(datetime), out strResult);
-            string msg = bResult ? "成功！" : "失败！";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
-        }
-
         public ActionResult OutBillMasterHistory(DateTime datetime)
         {
             string result = string.Empty;

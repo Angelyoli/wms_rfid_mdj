@@ -37,14 +37,12 @@ namespace THOK.Wms.Bll.Service
 
             if (moveBillMaster != null)
             {
-
                 #region 主表移入历史表
                 try
                 {
                     foreach (var item in moveBillMaster.ToArray())
                     {
                         MoveBillMasterHistory history = new MoveBillMasterHistory();
-
                         history.BillNo = item.BillNo;
                         history.BillDate = item.BillDate;
                         history.BillTypeCode = item.BillTypeCode;
@@ -55,9 +53,8 @@ namespace THOK.Wms.Bll.Service
                         history.VerifyDate = item.VerifyDate;
                         history.Description = item.Description;
                         history.IsActive = item.IsActive;
-                        history.UpdateTime = DateTime.Now;
+                        history.UpdateTime = item.UpdateTime;
                         history.Origin = item.Origin;
-
                         MoveBillMasterHistoryRepository.Add(history);
                     }
                     MoveBillMasterHistoryRepository.SaveChanges();
@@ -93,7 +90,6 @@ namespace THOK.Wms.Bll.Service
                             history.Operator = item.Operator;
                             history.CanRealOperate = item.CanRealOperate;
                             history.PalletTag = item.PalletTag;
-
                             MoveBillDetailHistoryRepository.Add(history);
                         }
                         MoveBillDetailHistoryRepository.SaveChanges();
@@ -105,31 +101,26 @@ namespace THOK.Wms.Bll.Service
                     }
                     #endregion
                 }
-            }
-            #region 删除主细分配表
-            if (moveBillMaster != null)
-            {
-                foreach (var item in moveBillMaster.ToList())
+                if (result == true)
                 {
+                    #region 删除主细分配表
                     try
                     {
-                        Del(MoveBillDetailRepository, item.MoveBillDetails);
-                        MoveBillMasterRepository.Delete(item);
-                        MoveBillMasterRepository.SaveChanges();
-                        result = true;
+                        foreach (var item in moveBillMaster.ToList())
+                        {
+                            Del(MoveBillDetailRepository, item.MoveBillDetails);
+                            MoveBillMasterRepository.Delete(item);
+                            MoveBillMasterRepository.SaveChanges();
+                            result = true;
+                        }
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        deleteResult = "删除失败，原因：" + ex.Message;
+                        deleteResult = e.InnerException.ToString();
                     }
+                    #endregion
                 }
             }
-            else
-            {
-                deleteResult = "删除失败！未找到当前需要删除的数据！";
-            }
-            #endregion
-
             return result;
         }
     }

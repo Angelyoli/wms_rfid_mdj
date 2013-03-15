@@ -57,7 +57,6 @@ namespace THOK.Wms.Bll.Service
                         history.OperatePersonID = item.OperatePersonID;
                         history.LockTag = item.LockTag;
                         history.RowVersion = item.RowVersion;
-
                         ProfitLossBillMasterHistoryRepository.Add(history);
                     }
                     ProfitLossBillMasterHistoryRepository.SaveChanges();
@@ -86,7 +85,6 @@ namespace THOK.Wms.Bll.Service
                             history.Price = item.Price;
                             history.Quantity = item.Quantity;
                             history.Description = item.Description;
-
                             ProfitLossBillDetailHistoryRepository.Add(history);
                         }
                         ProfitLossBillDetailHistoryRepository.SaveChanges();
@@ -98,31 +96,27 @@ namespace THOK.Wms.Bll.Service
                     }
                     #endregion
                 }
-            }
-            #region 删除主细分配表
-            if (profitLossBillMaster != null)
-            {
-                foreach (var item in profitLossBillMaster.ToList())
+                if (result == true)
                 {
-                    try
-                    {
-                        Del(ProfitLossBillDetailRepository, item.ProfitLossBillDetails);
-                        ProfitLossBillMasterRepository.Delete(item);
-                        ProfitLossBillMasterRepository.SaveChanges();
-                        result = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        deleteResult = "删除失败，原因：" + ex.Message;
-                    }
-                }
-            }
-            else
-            {
-                deleteResult = "删除失败！未找到当前需要删除的数据！";
-            }
-            #endregion
+                    #region 删除主细分配表
+                    //try
+                    //{
+                    //    foreach (var item in profitLossBillMaster.ToList())
+                    //    {
 
+                    //        Del(ProfitLossBillDetailRepository, item.ProfitLossBillDetails);
+                    //        ProfitLossBillMasterRepository.Delete(item);
+                    //        ProfitLossBillMasterRepository.SaveChanges();
+                    //        result = true;
+                    //    }
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    deleteResult = e.InnerException.ToString();
+                    //}
+                    #endregion
+                }
+            }            
             return result;
         }
     }

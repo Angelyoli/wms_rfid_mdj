@@ -98,30 +98,26 @@ namespace THOK.Wms.Bll.Service
                     }
                     #endregion
                 }
-            }
-            #region 删除主细分配表
-            if (checkBillMaster != null)
-            {
-                foreach (var item in checkBillMaster.ToList())
+                if (result == true)
                 {
+                    #region 删除主细分配表
                     try
                     {
-                        Del(CheckBillDetailRepository, item.CheckBillDetails);
-                        CheckBillMasterRepository.Delete(item);
-                        CheckBillMasterRepository.SaveChanges();
-                        result = true;
+                        foreach (var item in checkBillMaster.ToList())
+                        {
+                            Del(CheckBillDetailRepository, item.CheckBillDetails);
+                            CheckBillMasterRepository.Delete(item);
+                            CheckBillMasterRepository.SaveChanges();
+                            result = true;
+                        }
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        deleteResult = "删除失败，原因：" + ex.Message;
+                        deleteResult = e.InnerException.ToString();
                     }
+                    #endregion
                 }
-            }
-            else
-            {
-                deleteResult = "删除失败！未找到当前需要删除的数据！";
-            }
-            #endregion
+            }            
             return result;
         }
     }
