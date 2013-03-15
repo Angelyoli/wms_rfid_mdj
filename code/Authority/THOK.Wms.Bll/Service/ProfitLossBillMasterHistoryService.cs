@@ -46,7 +46,7 @@ namespace THOK.Wms.Bll.Service
                         history.BillNo = item.BillNo;
                         history.BillDate = item.BillDate;
                         history.BillTypeCode = item.BillTypeCode;
-                        history.CheckBillNo = item.CheckBillNo;
+                        history.CheckBillNo = "";
                         history.WarehouseCode = item.WarehouseCode;
                         history.Status = item.Status;
                         history.VerifyPersonID = item.VerifyPersonID;
@@ -99,21 +99,21 @@ namespace THOK.Wms.Bll.Service
                 if (result == true)
                 {
                     #region 删除主细分配表
-                    //try
-                    //{
-                    //    foreach (var item in profitLossBillMaster.ToList())
-                    //    {
+                    try
+                    {
+                        foreach (var item in profitLossBillMaster.ToList())
+                        {
 
-                    //        Del(ProfitLossBillDetailRepository, item.ProfitLossBillDetails);
-                    //        ProfitLossBillMasterRepository.Delete(item);
-                    //        ProfitLossBillMasterRepository.SaveChanges();
-                    //        result = true;
-                    //    }
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    deleteResult = e.InnerException.ToString();
-                    //}
+                            Del(ProfitLossBillDetailRepository, item.ProfitLossBillDetails);
+                            ProfitLossBillMasterRepository.Delete(item);
+                            ProfitLossBillMasterRepository.SaveChanges();
+                            result = true;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        deleteResult = e.InnerException.ToString();
+                    }
                     #endregion
                 }
             }            
