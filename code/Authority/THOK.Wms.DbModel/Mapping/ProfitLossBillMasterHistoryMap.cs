@@ -24,7 +24,7 @@ namespace THOK.Wms.DbModel.Mapping
 
             this.Property(t => t.BillTypeCode)
                 .IsRequired()
-                .HasMaxLength(1);
+                .HasMaxLength(4);
 
             this.Property(t => t.CheckBillNo)
                 .HasMaxLength(20);

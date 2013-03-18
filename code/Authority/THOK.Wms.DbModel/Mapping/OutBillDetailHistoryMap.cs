@@ -18,8 +18,8 @@ namespace THOK.Wms.DbModel.Mapping
             // Properties
             this.Property(t => t.ID)
              .IsRequired()
-             .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-
+             .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+             
             this.Property(t => t.BillNo)
                 .IsRequired()
                 .HasMaxLength(20);

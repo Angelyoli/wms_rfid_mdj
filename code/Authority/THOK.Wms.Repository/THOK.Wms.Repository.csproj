@@ -305,6 +305,18 @@
     <Compile Include="Migrations\201303110125193_add_web_Config.Designer.cs">
       <DependentUpon>201303110125193_add_web_Config.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201303150639236_modify_in_bill_detail_history.cs" />
+    <Compile Include="Migrations\201303150639236_modify_in_bill_detail_history.Designer.cs">
+      <DependentUpon>201303150639236_modify_in_bill_detail_history.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201303150647026_modify_out_bill_detail_history.cs" />
+    <Compile Include="Migrations\201303150647026_modify_out_bill_detail_history.Designer.cs">
+      <DependentUpon>201303150647026_modify_out_bill_detail_history.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201303150916466_modify_profit_loss_master_history.cs" />
+    <Compile Include="Migrations\201303150916466_modify_profit_loss_master_history.Designer.cs">
+      <DependentUpon>201303150916466_modify_profit_loss_master_history.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
