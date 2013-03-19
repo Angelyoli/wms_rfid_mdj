@@ -3,7 +3,7 @@ namespace THOK.Wms.Repository.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class add_History_Tray1 : DbMigration
+    public partial class add_history_data : DbMigration
     {
         public override void Up()
         {
@@ -43,7 +43,7 @@ namespace THOK.Wms.Repository.Migrations
                 "dbo.wms_in_bill_detail_history",
                 c => new
                     {
-                        id = c.Int(nullable: false, identity: true),
+                        id = c.Int(nullable: false),
                         bill_no = c.String(nullable: false, maxLength: 20),
                         product_code = c.String(nullable: false, maxLength: 20),
                         unit_code = c.String(nullable: false, maxLength: 20),
@@ -109,7 +109,7 @@ namespace THOK.Wms.Repository.Migrations
                 "dbo.wms_out_bill_detail_history",
                 c => new
                     {
-                        id = c.Int(nullable: false, identity: true),
+                        id = c.Int(nullable: false),
                         bill_no = c.String(nullable: false, maxLength: 20),
                         product_code = c.String(nullable: false, maxLength: 20),
                         unit_code = c.String(nullable: false, maxLength: 20),
@@ -244,7 +244,7 @@ namespace THOK.Wms.Repository.Migrations
                     {
                         bill_no = c.String(nullable: false, maxLength: 20),
                         bill_date = c.DateTime(nullable: false),
-                        bill_type_code = c.String(nullable: false, maxLength: 1),
+                        bill_type_code = c.String(nullable: false, maxLength: 4),
                         check_bill_no = c.String(maxLength: 20),
                         warehouse_code = c.String(nullable: false, maxLength: 20),
                         operate_person_id = c.Guid(nullable: false),

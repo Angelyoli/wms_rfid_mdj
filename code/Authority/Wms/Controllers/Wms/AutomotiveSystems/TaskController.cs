@@ -5,6 +5,8 @@ using System.Web.Script.Serialization;
 using Microsoft.Practices.Unity;
 using THOK.Wms.AutomotiveSystems.Interfaces;
 using System.Text;
+using THOK.Wms.Bll.Interfaces;
+using THOK.WebUtil;
 
 namespace Wms.Controllers.Wms.AutomotiveSystems
 {
@@ -12,6 +14,24 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
     {
         [Dependency]
         public ITaskService TaskService { get; set; }
+
+        [Dependency]
+        public IInBillMasterHistoryService InBillMasterHistory { get; set; }
+
+        [Dependency]
+        public IOutBillMasterHistoryService OutBillMasterHistory { get; set; }
+
+        [Dependency]
+        public IMoveBillMasterHistoryService MoveBillMasterHistory { get; set; }
+
+        [Dependency]
+        public ICheckBillMasterHistoryService CheckBillMasterHistory { get; set; }
+
+        [Dependency]
+        public IProfitLossBillMasterHistoryService ProfitLossBillMasterHistory { get; set; }
+
+        [Dependency]
+        public IDailyBalanceHistoryService DailyBalanceHistoryService { get; set; }
 
         public ActionResult Index(string parameter)
         {
@@ -74,6 +94,67 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
                 msg = string.Format(msg, "false", "2", error);
             }
             return new ContentResult() { Content = msg, ContentEncoding = Encoding.GetEncoding("GB2312"), ContentType= "text" };
+        }
+
+        public ActionResult MoveDataIsHistory(string dateTime,string billType)
+        {
+            string msg = string.Empty;
+            bool bResult;
+            string masterResult = string.Empty;
+            string detailResult = string.Empty;
+            string allotResult = string.Empty;
+            string deleteResult = string.Empty;
+            switch (billType)
+            {
+                case "1"://入库单据
+                    bResult = InBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out allotResult, out deleteResult);
+                    if (!bResult)
+                    {
+                        msg = string.Format("入库操作---主表：{0},细表：{1},分配表{2},删除操作:{3}",
+                                    masterResult, detailResult, allotResult, deleteResult);
+                    }
+                    break;
+                case "2"://出库单据
+                    bResult = OutBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out allotResult, out deleteResult);
+                    if (!bResult)
+                    {
+                        msg = string.Format("出库操作---主表：{0},细表：{1},分配表{2},删除操作:{3}",
+                                    masterResult, detailResult, allotResult, deleteResult);
+                    }
+                    break;
+                case "3"://移库单据
+                    bResult = MoveBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out deleteResult);
+                    if (!bResult)
+                    {
+                        msg = string.Format("移库操作---主表：{0},细表：{1},删除操作:{2}", masterResult, detailResult, deleteResult);
+                    }
+                    break;
+                case "4"://盘点单据
+                    bResult = CheckBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out deleteResult);
+                    if (!bResult)
+                    {
+                        msg = string.Format("盘点操作---主表：{0},细表：{1},删除操作:{2}", masterResult, detailResult, deleteResult);
+                    }
+                    break;
+                case "5"://损益单据
+                    bResult = ProfitLossBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out deleteResult);
+                    if (!bResult)
+                    {
+                        msg = string.Format("损益操作---主表：{0},细表：{1},删除操作:{2}", masterResult, detailResult, deleteResult);
+                    }
+                    break;
+                case "6"://日结
+                    bResult = DailyBalanceHistoryService.Add(Convert.ToDateTime(dateTime), out masterResult);
+                    if (!bResult)
+                    {
+                        msg = string.Format("日结操作---日结表：{0}", masterResult);
+                    }
+                    break;
+                default:
+                    msg = "调用了未定义的方法！";
+                    break;
+            }
+            return new ContentResult() { Content = msg, ContentEncoding = Encoding.GetEncoding("GB2312"), ContentType = "text" };
         }
     }
 }

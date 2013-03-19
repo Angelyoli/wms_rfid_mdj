@@ -64,7 +64,7 @@ namespace THOK.Wms.Bll.Service
                         history.TargetCellCode = item.TargetCellCode;
                         OutBillMasterHistoryRepository.Add(history);
                     }
-                    OutBillMasterHistoryRepository.SaveChanges();
+                    
                     result = true;
                 }
                 catch (Exception e)
@@ -93,7 +93,6 @@ namespace THOK.Wms.Bll.Service
                             history.Description = item.Description;
                             OutBillDetailHistoryRepository.Add(history);
                         }
-                        OutBillDetailHistoryRepository.SaveChanges();
                         result = true;
                     }
                     catch (Exception e)
@@ -126,7 +125,7 @@ namespace THOK.Wms.Bll.Service
                                 history3.Status = item3.Status;
                                 OutBillAllotHistoryRepository.Add(history3);
                             }
-                            OutBillAllotHistoryRepository.SaveChanges();
+                            
                             result = true;
                         }
                         catch (Exception e)
@@ -148,7 +147,7 @@ namespace THOK.Wms.Bll.Service
                             Del(OutBillAllotRepository, item.OutBillAllots);
                             Del(OutBillDetailRepository, item.OutBillDetails);
                             OutBillMasterRepository.Delete(item);
-                            OutBillMasterRepository.SaveChanges();
+                            
                             result = true;
                         }
                     }
@@ -156,6 +155,7 @@ namespace THOK.Wms.Bll.Service
                     {
                         deleteResult = e.InnerException.ToString();
                     }
+                    OutBillMasterHistoryRepository.SaveChanges();
                     #endregion
                 }
             }
