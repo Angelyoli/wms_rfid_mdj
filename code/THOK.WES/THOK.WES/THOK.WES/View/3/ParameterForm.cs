@@ -37,18 +37,16 @@ namespace THOK.WES.View
             parameter.UdpPort = udp["PORT"];
             
             rfid = configUtil.GetConfig("RFID");
-            if (rfid["USEDRFID"] == "0")
-                parameter.UsedRFID = false;
-            else
-                parameter.UsedRFID = true;
             parameter.RfidPort = rfid["PORT"];
+            parameter.UsedRFID = rfid["USEDRFID"];
 
             layers = configUtil.GetConfig("Layers");
             parameter.LayersNumber = layers["Number"];          
 
             deviceType = configUtil.GetConfig("DeviceType");
             parameter.SelectItem = Convert.ToInt32( deviceType["Device"]);
-            propertyGrid.SelectedObject = parameter;            
+            propertyGrid.SelectedObject = parameter;
+            
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -63,7 +61,7 @@ namespace THOK.WES.View
                 configUtil.SaveConfig("UDP", udp);
 
                 rfid["PORT"] = parameter.RfidPort;
-                rfid["USEDRFID"] = parameter.UsedRFID ? "1" : "0";
+                rfid["USEDRFID"] = parameter.UsedRFID;
                 configUtil.SaveConfig("RFID", rfid);
 
                 layers["Number"] = parameter.LayersNumber;

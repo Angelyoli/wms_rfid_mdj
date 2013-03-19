@@ -8,6 +8,8 @@ namespace THOK.WES.Interface.Model
     {
         public bool IsSuccess = false;
         public string Message = string.Empty;
+        public string ProductCode = string.Empty;
+        public decimal Quantity;
         public BillMaster[] BillMasters = new BillMaster[] { };
         public BillDetail[] BillDetails = new BillDetail[] { };
     }

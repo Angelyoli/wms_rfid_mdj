@@ -42,9 +42,9 @@ namespace THOK.WES
             set { udpPort = value; }
         }
 
-        private bool usedRFID;
+        private string usedRFID;
         [CategoryAttribute("[04] RFID参数"), DescriptionAttribute("使用RFID"), Chinese("使用RFID")]
-        public bool UsedRFID
+        public string UsedRFID
         {
             get { return usedRFID; }
             set { usedRFID = value; }

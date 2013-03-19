@@ -18,6 +18,8 @@ namespace THOK.Wms.AutomotiveSystems.Interfaces
 
         void Execute(BillDetail[] billDetail, string useTag, Result result);
 
+        void SearchRfidInfo(string rfidId, Result result);
+
         bool ProcessSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId, ref string error);
     }
 }

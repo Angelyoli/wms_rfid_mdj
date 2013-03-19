@@ -16,14 +16,15 @@ namespace THOK.WES.View
 {
     public partial class BaseTaskForm : THOK.AF.View.ToolbarForm
     {
+        public delegate string TimerStateInMainThread();
         private ConfigUtil configUtil = new ConfigUtil();
+        private ReadRfid rRfid = new ReadRfid();
         private string operateStorageName = "";
         private string targetStorageName = "";
         private string operateName = "";
         private string operateProductName = "";
         private int operatePieceQuantity = 0;
         private int operateBarQuantity = 0;
-
         private string url = @"http://59.61.87.212:8090/Task";
 
         /// <summary>
@@ -52,9 +53,19 @@ namespace THOK.WES.View
         private string UseTag = "";
 
         /// <summary>
-        /// 使用Rfid  = 0：不使用；1：使用；
+        /// 使用Rfid  = 0：不使用；1：手动使用；2：自动使用；
         /// </summary>
         private string UseRfid = "";
+
+        /// <summary>
+        /// 读取的托盘RFID号；
+        /// </summary>
+        private string RfidCode = "";
+
+        /// <summary>
+        /// 错误消息；
+        /// </summary>
+        private string errInfo;
 
         private Connection connection = null;
         public BaseTaskForm()
@@ -192,44 +203,33 @@ namespace THOK.WES.View
         //申请
         private void btnApply_Click(object sender, EventArgs e)
         {
-            try
+            List<string> listRfid = new List<string>();            
+            string productRfid="";
+            decimal quantityRfid = 0;
+            if (BillTypes == "1")
             {
-                if (dgvMain.SelectedRows.Count != 0)
+                while (RfidCode.Equals(""))
                 {
                     DisplayPlWailt();
-                    IList<BillDetail> billDetails = new List<BillDetail>();
-                    foreach (DataGridViewRow row in dgvMain.SelectedRows)
-                    {
-                        BillDetail billDetail = new BillDetail();
-                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
-                        billDetail.BillType = row.Cells["@BillType"].Value.ToString();
-                        billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
-                        billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
-                        billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
-                        //billDetail.OperatePieceQuantity = Convert.ToDecimal(row.Cells["OperatePieceQuantity"].Value);
-                        //billDetail.OperateBarQuantity = Convert.ToDecimal(row.Cells["OperateBarQuantity"].Value);
-                        billDetail.Operator = Environment.MachineName;
-                        billDetails.Add(billDetail);
-                    }
-                    BillDetail[] tmp = new BillDetail[billDetails.Count];
-                    billDetails.CopyTo(tmp, 0);
-
-                    Task task = new Task(url);
-                    task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
-                    {
-                        if (!isSuccess)
-                            MessageBox.Show(msg);
-                        RefreshData();
-                    });
-                    task.Apply(tmp, UseTag);
+                    listRfid = rRfid.ReadTrayRfid();
+                    RfidCode = listRfid[0].ToString();
+                    Application.DoEvents();
                 }
-                else
-                    MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                Task task = new Task(url);
+                task.SearchRfidInfo(RfidCode);
+                task.GetRfidInfoCompleted += new Task.GetRfidInfoCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
+                {
+                    if (billDetails != null && billDetails.Length != 0)
+                    {
+                        productRfid = billDetails[0].ProductCode;
+                        quantityRfid = billDetails[0].PieceQuantity;
+                    }
+                    ApplyPublicMethod(UseRfid, RfidCode, productRfid, quantityRfid);
+                });  
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("申请失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ApplyPublicMethod();
             }
         }
 
@@ -262,6 +262,7 @@ namespace THOK.WES.View
                         RefreshData();
                     });
                     task.Cancel(tmp, UseTag);
+                    RfidCode = "";
                 }
                 else
                     MessageBox.Show("请选择要取消的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -275,80 +276,17 @@ namespace THOK.WES.View
         //确认
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (dgvMain.SelectedRows.Count > 1)
-                {
-                    MessageBox.Show("当前操作只允许操作一个任务！", "提示",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (dgvMain.SelectedRows.Count == 1)
-                {
-                    IList<BillDetail> billDetails = new List<BillDetail>();
-                    BillDetail billDetail = new BillDetail();
-                    foreach (DataGridViewRow row in dgvMain.SelectedRows)
-                    {
-                        if (row.Cells["StatusName"].Value.ToString() == "已申请")
-                        {
-                            billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
-                            billDetail.BillType = row.Cells["@BillType"].Value.ToString();
-                            billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
-                            billDetail.Operator = Environment.MachineName;
-
-                            billDetail.OperatePieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
-                            billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
-
-                            operateStorageName = row.Cells["Storage"].Value.ToString();
-                            targetStorageName = row.Cells["TargetStorage"].Value.ToString();
-                            operateName = row.Cells["BillTypeName"].Value.ToString();
-                            operateProductName = row.Cells["ProductName"].Value.ToString();
-                            operatePieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
-                            operateBarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
-                        }
-                    }
-
-                    ConfirmDialog confirmForm = new ConfirmDialog(BillTypes, operateStorageName, targetStorageName, operateName, operateProductName);
-                    confirmForm.Piece = operatePieceQuantity;
-                    confirmForm.Item = operateBarQuantity;
-
-                    if (confirmForm.ShowDialog() == DialogResult.OK)
-                    {
-                        DisplayPlWailt();
-
-                        if (BillTypes == "4")
-                        {
-                            billDetail.OperatePieceQuantity = confirmForm.Piece;
-                            billDetail.OperateBarQuantity = confirmForm.Item;
-                        }
-
-                        //todo RFID 确认，及RFID 记录；
-
-                        billDetails.Add(billDetail);
-                        BillDetail[] tmp = new BillDetail[billDetails.Count];
-                        billDetails.CopyTo(tmp, 0);
-
-                        Task task = new Task(url);
-                        task.ExecuteCompleted += new Task.ExecuteCompletedEventHandler(delegate(bool isSuccess, string msg)
-                        {
-                            if (!isSuccess)
-                                MessageBox.Show(msg);
-                            RefreshData();
-                        });
-                        task.Execute(tmp, UseTag);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("执行失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            ConfirmPubliceMethod(UseRfid);
         }
 
         //批量确认
         private void btnBatConfirm_Click(object sender, EventArgs e)
         {
+            if (!UseRfid.Equals("0"))
+            {
+                MessageBox.Show("使用RFID无法批量完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             if (MessageBox.Show("当前操作将批量确认选择的已申请的所有任务！", "提示",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
             {
@@ -445,6 +383,7 @@ namespace THOK.WES.View
         }
 
         delegate void RefreshTask();
+
         void connection_Received(string data)
         {
             if (data == "TaskStart")
@@ -488,30 +427,339 @@ namespace THOK.WES.View
             }
         }
 
-        //private bool isBcCompose = false;
-        //private void btnBC_Click(object sender, EventArgs e)
-        //{
-        //    btnBC.Enabled = false;
-        //    if (!isBcCompose && BillTypes == "3" && BillMaster != null)
-        //    {                
-        //        Task task = new Task(Application.OpenForms[0], url.Replace("Task", "StockMoveBill/GeneratePalletTag"));
-        //        task.BcComposeCompleted += new Task.BcComposeEventHandler(delegate(bool isSuccess, string msg)
-        //        {
-        //            dgvMain.Columns["PalletTag"].Visible = true;
-        //            RefreshData();
-        //            btnBC.Enabled = true;
-        //            isBcCompose = true;
-        //        });
-        //        task.BcCompose(BillMaster.BillNo);
-        //    }
-        //    else
-        //    {
-        //        dgvMain.Columns["PalletTag"].Visible = false;
-        //        RefreshData();
-        //        btnBC.Enabled = true;
-        //        isBcCompose = false;
-        //    }
-        //}
+        public void ApplyPublicMethod(string uRfid, string rfidId, string rfidProductCode, decimal rfidQuantity)
+        {
+            try
+            {
+                errInfo = "";
+                bool isRfid = true;
+                RfidCode = rfidId;
+                decimal rfidQty = Convert.ToInt32(rfidQuantity);
+                if (dgvMain.SelectedRows.Count != 0)
+                {
+                    foreach (DataGridViewRow row in dgvMain.Rows)
+                    {
+                        if (row.Cells["Status"].Value.ToString().Equals("1") && !uRfid.Equals("0"))
+                        {
+                            MessageBox.Show("使用RFID,只能申请一条数据。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                    }
+                    DisplayPlWailt();                    
+                    IList<BillDetail> billDetails = new List<BillDetail>();
+                    
+                    switch (uRfid)
+                    {
+                        case "0":
+                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                            {
+                                BillDetail billDetail = new BillDetail();
+                                billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                billDetail.BillType = row.Cells["@BillType"].Value.ToString();
+                                billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
+                                billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                                billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
+                                billDetail.Operator = Environment.MachineName;
+                                billDetails.Add(billDetail);
+                            }
+                            isRfid = false;
+                            break;
+                        case "1":
+                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                            {
+                                if (rfidProductCode.Equals(row.Cells["ProductCode"].Value.ToString())
+                                && rfidQty == Convert.ToInt32(row.Cells["PieceQuantity"].Value)
+                                && row.Cells["Status"].Value.ToString().Equals("0"))
+                                {
+                                    BillDetail billDetail = new BillDetail();
+                                    billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                    billDetail.BillType = row.Cells["@BillType"].Value.ToString();
+                                    billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
+                                    billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                                    billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
+                                    billDetail.Operator = Environment.MachineName;
+                                    billDetails.Add(billDetail);
+                                    isRfid = false;
+                                    break;
+                                }
+                            }
+                            break;
+                        case "2":
+                            foreach (DataGridViewRow row in dgvMain.Rows)
+                            {
+                                //判断卷烟和数量与读取的是否一样。根据状态排除已经申请的货位。
+                                if (rfidProductCode.Equals(row.Cells["ProductCode"].Value.ToString())
+                                    && rfidQty == Convert.ToInt32(row.Cells["PieceQuantity"].Value)
+                                    && row.Cells["Status"].Value.ToString().Equals("0"))
+                                {
+                                    BillDetail billDetail = new BillDetail();
+                                    billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                    billDetail.BillType = row.Cells["@BillType"].Value.ToString();
+                                    billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
+                                    billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                                    billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
+                                    billDetail.Operator = Environment.MachineName;
+                                    billDetails.Add(billDetail);
+                                    isRfid = false;
+                                    break;
+                                }
+                            }
+                            break;
+                        default:
+                            errInfo = "请查看使用RFID配置参数是否正确！";
+                            break;
+                    }
+
+                    BillDetail[] tmp = new BillDetail[billDetails.Count];
+                    billDetails.CopyTo(tmp, 0);
+
+                    Task task = new Task(url);
+                    task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
+                    {
+                        if (!isSuccess)
+                            errInfo += "  " + msg;
+                        RefreshData();
+                    });
+                    task.Apply(tmp, UseTag);
+
+                    if (isRfid)
+                        MessageBox.Show("申请失败，原因：当前托盘卷烟和数量与作业数据不匹配或者 其他错误:  " + errInfo, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                    MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("申请失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ApplyPublicMethod()
+        {
+            try
+            {
+                string storageRfide = "";
+                if (dgvMain.SelectedRows.Count > 1)
+                {
+                    MessageBox.Show("当前操作只允许操作一个任务！", "提示",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                foreach (DataGridViewRow row in dgvMain.Rows)
+                {
+                    if (row.Cells["Status"].Value.ToString().Equals("1"))
+                    {
+                        MessageBox.Show("使用RFID,只能申请一条数据。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+                if (dgvMain.SelectedRows.Count != 0)
+                {
+                    DisplayPlWailt();
+                    IList<BillDetail> billDetails = new List<BillDetail>();
+
+                    foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                    {
+                        BillDetail billDetail = new BillDetail();
+                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                        billDetail.BillType = row.Cells["@BillType"].Value.ToString();
+                        billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
+                        billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                        billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
+                        billDetail.Operator = Environment.MachineName;
+                        billDetails.Add(billDetail);
+                        storageRfide = row.Cells["StorageRfid"].Value.ToString();
+                    }
+
+                    BillDetail[] tmp = new BillDetail[billDetails.Count];
+                    billDetails.CopyTo(tmp, 0);
+
+                    Task task = new Task(url);
+                    task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
+                    {
+                        if (!isSuccess)
+                            MessageBox.Show(msg);
+                        RefreshData();
+                    });
+                    task.Apply(tmp, UseTag);
+                }
+                else
+                    MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                //if (!RfidCode.Equals(storageRfide))
+                //    MessageBox.Show("读取的rfid信息与申请的数据信息不一致，请重新申请", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("申请失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ConfirmPubliceMethod(string Rfid)
+        {
+            try
+            {
+                bool isRfid = true;               
+                List<string> listRfid = new List<string>();
+                listRfid = rRfid.ReadTrayRfid();
+                if (dgvMain.SelectedRows.Count > 1)
+                {
+                    MessageBox.Show("当前操作只允许操作一个任务！", "提示",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                if (listRfid.Count==0)
+                {
+                    MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
+                          MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+
+                }
+                IList<BillDetail> billDetails = new List<BillDetail>();
+                BillDetail billDetail = new BillDetail();
+                switch (Rfid)
+                {
+                    case "0":
+                        if (dgvMain.SelectedRows.Count == 1)
+                        {
+                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                            {
+                                ConfirmMethod(row, billDetail, billDetails, RfidCode);
+                                isRfid = false;
+                            }
+                        }
+                        else
+                            errInfo = "请选择一条数据确认！";
+                        break;
+                    case "1":
+                        if (dgvMain.SelectedRows.Count == 1)
+                        {
+                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                            {
+                                string cellRfid = row.Cells["CellRfid"].Value.ToString();
+                                if (BillTypes == "3")
+                                {
+                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))
+                                    {
+                                        MessageBox.Show("读取RFID信息与数据不一致！请检查托盘卷烟与数据是否符合！", "提示",
+                                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        return;
+                                    }
+                                    cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();
+                                }
+                                if (listRfid.Contains(cellRfid))
+                                {
+                                    ConfirmMethod(row, billDetail, billDetails, RfidCode);
+                                    isRfid = false;
+                                }
+                            }
+                        }
+                        else
+                            errInfo = "请选择一条数据确认！";
+                        break;
+                    case "2":
+                        foreach (DataGridViewRow row in dgvMain.Rows)
+                        {
+                            string cellRfid = row.Cells["CellRfid"].Value.ToString();
+                            if (BillTypes == "3")
+                            {
+                                if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))
+                                {
+                                    MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
+                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    return;
+                                }
+                                cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();
+                            }
+                            if (listRfid.Contains(cellRfid))
+                            {
+                                ConfirmMethod(row, billDetail, billDetails, RfidCode);
+                                isRfid = false;
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        errInfo = "请查看使用RFID配置参数是否正确！";
+                        break;
+                }
+                if (isRfid)
+                    MessageBox.Show("完成确认失败，原因：找不到与货位RFID相等的数据！其他错误：" + errInfo);
+                else
+                    RfidCode = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("执行失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ConfirmMethod(DataGridViewRow row, BillDetail billDetail, IList<BillDetail> billDetails, string rfidID)
+        {
+            if (row.Cells["StatusName"].Value.ToString() == "已申请")
+            {
+                billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                billDetail.BillType = row.Cells["@BillType"].Value.ToString();
+                billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
+                billDetail.Operator = Environment.MachineName;
+                billDetail.StorageRfid = rfidID;//托盘rfid
+                billDetail.OperatePieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                billDetail.OperateBarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
+
+                operateStorageName = row.Cells["Storage"].Value.ToString();
+                targetStorageName = row.Cells["TargetStorage"].Value.ToString();
+                operateName = row.Cells["BillTypeName"].Value.ToString();
+                operateProductName = row.Cells["ProductName"].Value.ToString();
+                operatePieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                operateBarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
+            }
+
+            ConfirmDialog confirmForm = new ConfirmDialog(BillTypes, operateStorageName, targetStorageName, operateName, operateProductName);
+            confirmForm.Piece = operatePieceQuantity;
+            confirmForm.Item = operateBarQuantity;
+            if (confirmForm.ShowDialog() == DialogResult.OK)
+            {
+                DisplayPlWailt();
+
+                if (BillTypes == "4")
+                {
+                    billDetail.OperatePieceQuantity = confirmForm.Piece;
+                    billDetail.OperateBarQuantity = confirmForm.Item;
+                }
+
+                //todo RFID 确认，及RFID 记录；
+
+                billDetails.Add(billDetail);
+                BillDetail[] tmp = new BillDetail[billDetails.Count];
+                billDetails.CopyTo(tmp, 0);
+
+                Task task = new Task(url);
+                task.ExecuteCompleted += new Task.ExecuteCompletedEventHandler(delegate(bool isSuccess, string msg)
+                {
+                    if (!isSuccess)
+                        MessageBox.Show(msg);
+                    RefreshData();
+                });
+                task.Execute(tmp, UseTag);
+            }
+        }
+
+        public void ReadRfidCycle()
+        {
+            if (UseRfid.Equals("2"))
+            {
+                if (RfidCode.Equals(""))
+                    btnApply_Click(null, null);
+            }
+        }
+
+        private void CyleTimer_Tick(object sender, EventArgs e)
+        {
+            if (BillMaster != null)
+            {
+                this.ReadRfidCycle();
+            }
+        }
     }
 }
 

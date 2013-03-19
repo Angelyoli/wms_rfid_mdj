@@ -76,6 +76,14 @@ namespace THOK.WES.Interface.Model
             set { storageRfid = value; }
         }
 
+        private string cellRfid = string.Empty;
+
+        public string CellRfid
+        {
+            get { return cellRfid; }
+            set { cellRfid = value; }
+        }
+
         private string targetStorageName = string.Empty;
 
         public string TargetStorageName

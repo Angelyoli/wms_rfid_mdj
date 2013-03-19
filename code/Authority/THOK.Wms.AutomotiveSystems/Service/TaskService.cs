@@ -54,6 +54,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ISortingLineRepository SortingLineRepository { get; set; }
 
         [Dependency]
+        public ITrayInfoRepository TrayInfoRepository { get; set; }
+
+        [Dependency]
         public IStorageLocker Locker { get; set; }
  
         public void GetBillMaster(string[] BillTypes, Result result)
@@ -132,7 +135,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                                     DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
-                                    StorageRfid = i.Cell.Rfid,
+                                    StorageRfid = i.Storage.Rfid,
+                                    CellRfid = i.Cell.Rfid,
                                     TargetStorageName = "",
                                     TargetStorageRfid = "",
 
@@ -166,7 +170,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                                     DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
-                                    StorageRfid = i.Cell.Rfid,
+                                    StorageRfid = i.Storage.Rfid,
+                                    CellRfid =i.Cell.Rfid,
                                     TargetStorageName = "",
                                     TargetStorageRfid = "",
 
@@ -240,7 +245,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                                     DetailID = i.ID,
                                     StorageName = i.OutCell.CellName,
-                                    StorageRfid = i.OutCell.Rfid,
+                                    StorageRfid = i.OutStorage.Rfid,
+                                    CellRfid = i.OutCell.Rfid,
                                     TargetStorageName = i.InCell.CellName,
                                     TargetStorageRfid = i.InCell.Rfid,
 
@@ -274,7 +280,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                                     DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
-                                    StorageRfid = i.Cell.Rfid,
+                                    StorageRfid = i.Storage.Rfid,
+                                    CellRfid = i.Cell.Rfid,
                                     TargetStorageName = "",
                                     TargetStorageRfid = "",
 
@@ -324,7 +331,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     .Where(i => i.BillNo == billDetail.BillNo
                                         && i.ID == billDetail.DetailID
                                         && i.Status == "0")
-                                    .FirstOrDefault();
+                                    .FirstOrDefault();                                
                                 if (inAllot != null)
                                 {
                                     inAllot.Status = "1";
@@ -585,6 +592,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         && inAllot.Storage.InFrozenQuantity >= quantity)
                                     {
                                         inAllot.Status = "2";
+                                        inAllot.Storage.Rfid = billDetail.StorageRfid;
                                         inAllot.RealQuantity += quantity;
                                         inAllot.Storage.Quantity += quantity;
                                         if(inAllot.Storage.Cell.IsSingle=="1")//货位管理更改入库时间
@@ -637,6 +645,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         outAllot.Status = "2";
                                         outAllot.RealQuantity += quantity;
                                         outAllot.Storage.Quantity -= quantity;
+                                        if (outAllot.Storage.Quantity == 0)
+                                            outAllot.Storage.Rfid = "";
                                         outAllot.Storage.OutFrozenQuantity -= quantity;
                                         outAllot.OutBillDetail.RealQuantity += quantity;
                                         outAllot.OutBillMaster.Status = "5";
@@ -684,8 +694,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.Status = "2";
                                         moveDetail.InStorage.Quantity += moveDetail.RealQuantity;
                                         moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
+                                        moveDetail.InStorage.Rfid = billDetail.StorageRfid;
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                                        moveDetail.OutStorage.Rfid = "";
                                         //判断移入的时间是否小于移出的时间
                                         if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
                                             moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
@@ -772,6 +784,30 @@ namespace THOK.Wms.AutomotiveSystems.Service
             {
                 result.IsSuccess = false;
                 result.Message = "调用服务器服务执行作业任务失败，详情：" + e.InnerException.Message+"  其他错误："+e.Message;
+            }
+        }
+
+        public void SearchRfidInfo(string rfid, Result result)
+        {
+            BillDetail[] billDetails = new BillDetail[] { };
+            try
+            {
+                var taryInfo = TrayInfoRepository.GetQueryable()
+                               .Where(t => t.TaryRfid == rfid)
+                               .Select(t => new BillDetail()
+                                {
+                                    ProductCode = t.ProductCode,
+                                    PieceQuantity = t.Quantity
+                                }).ToArray();
+                billDetails = billDetails.Concat(taryInfo).ToArray();
+
+                result.IsSuccess = true;
+                result.BillDetails = billDetails;
+            }
+            catch (Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = "调用服务器服务查询托盘信息失败！，详情：" + e.InnerException.Message + "  其他错误" + e.Message;
             }
         }
 

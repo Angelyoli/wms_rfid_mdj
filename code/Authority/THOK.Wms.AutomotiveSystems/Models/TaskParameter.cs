@@ -16,5 +16,6 @@ namespace THOK.Wms.AutomotiveSystems.Models
         public BillMaster[] BillMasters { get; set; }
         public BillDetail[] BillDetails { get; set; }
         public string UseTag { get; set; }
+        public string RfidId { get; set; }
     }
 }

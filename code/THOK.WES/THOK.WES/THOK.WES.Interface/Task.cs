@@ -31,6 +31,10 @@ namespace THOK.WES.Interface
 
         public event ExecuteCompletedEventHandler ExecuteCompleted;
 
+        public delegate void GetRfidInfoCompletedEventHandler(bool isSuccess, string msg, BillDetail[] billDetails);
+
+        public event GetRfidInfoCompletedEventHandler GetRfidInfoCompleted;
+
         public delegate void BcComposeEventHandler(bool isSuccess, string msg);
 
         public event BcComposeEventHandler BcComposeCompleted;
@@ -96,6 +100,17 @@ namespace THOK.WES.Interface
             client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
         }
 
+        //根据rfid查询卷烟和数量；
+        public void SearchRfidInfo(string rfid)
+        {
+            taskType = "getRfidInfo";
+            WebClient client = new WebClient();
+            client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
+            //string parameter = JsonMapper.ToJson(rfid.Split(','));
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getRfidInfo','RfidId':" + rfid + "}");
+            client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
+        }
+
         public void BcCompose(string billNo)
         {
             taskType = "compose";
@@ -109,6 +124,7 @@ namespace THOK.WES.Interface
         {           
             switch (taskType)
             {
+                #region 主单
                 case "getBillMaster":
                     try
                     {
@@ -138,6 +154,8 @@ namespace THOK.WES.Interface
                     }
 
                     break;
+                #endregion
+                #region 细单
                 case "getBillDetail":
                     try
                     {
@@ -166,6 +184,8 @@ namespace THOK.WES.Interface
                         }
                     }
                     break;
+                #endregion
+                #region 申请
                 case "apply":
                     try
                     {
@@ -194,6 +214,8 @@ namespace THOK.WES.Interface
                         }
                     }
                     break;
+                #endregion
+                #region 取消
                 case "cancel":
                     try
                     {
@@ -222,6 +244,8 @@ namespace THOK.WES.Interface
                         }
                     }
                     break;
+                #endregion
+                #region 确认
                 case "execute":
                     try
                     {
@@ -250,6 +274,38 @@ namespace THOK.WES.Interface
                         }
                     }
                     break;
+                #endregion
+                #region RFID
+                case "getRfidInfo":
+                    try
+                    {
+                        string result = ex.Result;
+                        Result r = JsonMapper.ToObject<Result>(result);
+                        if (r.IsSuccess)
+                        {
+                            if (GetRfidInfoCompleted != null)
+                            {
+                                GetRfidInfoCompleted(true, r.Message, r.BillDetails);
+                            }
+                        }
+                        else
+                        {
+                            if (GetRfidInfoCompleted != null)
+                            {
+                                GetRfidInfoCompleted(false, r.Message, r.BillDetails);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        if (GetRfidInfoCompleted != null)
+                        {
+                            GetRfidInfoCompleted(false, e.Message, null);
+                        }
+                    }
+                    break;
+                #endregion
+                #region 其他
                 case "compose":
                     try
                     {
@@ -278,6 +334,7 @@ namespace THOK.WES.Interface
                         }
                     }
                     break;
+                #endregion
                 default:
                     break;
             }

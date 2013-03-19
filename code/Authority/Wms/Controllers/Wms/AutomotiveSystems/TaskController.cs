@@ -37,6 +37,9 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
                     case "execute":
                         TaskService.Execute(taskParameter.BillDetails,taskParameter.UseTag, result);
                         break;
+                    case "getRfidInfo":
+                        TaskService.SearchRfidInfo(taskParameter.RfidId, result);
+                        break;
                     default:
                         result.IsSuccess = false;
                         result.Message = "调用了未定义的方法！";
