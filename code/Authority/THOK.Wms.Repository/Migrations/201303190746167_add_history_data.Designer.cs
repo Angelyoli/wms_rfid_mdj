@@ -4,11 +4,11 @@ namespace THOK.Wms.Repository.Migrations
     using System.Data.Entity.Migrations;
     using System.Data.Entity.Migrations.Infrastructure;
     
-    public sealed partial class modify_profit_loss_master_history : IMigrationMetadata
+    public sealed partial class add_history_data : IMigrationMetadata
     {
         string IMigrationMetadata.Id
         {
-            get { return "201303150916466_modify_profit_loss_master_history"; }
+            get { return "201303190746167_add_history_data"; }
         }
         
         string IMigrationMetadata.Source

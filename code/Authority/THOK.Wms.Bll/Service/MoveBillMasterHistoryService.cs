@@ -57,7 +57,7 @@ namespace THOK.Wms.Bll.Service
                         history.Origin = item.Origin;
                         MoveBillMasterHistoryRepository.Add(history);
                     }
-                    MoveBillMasterHistoryRepository.SaveChanges();
+                    
                     result = true;
                 }
                 catch (Exception e)
@@ -92,7 +92,6 @@ namespace THOK.Wms.Bll.Service
                             history.PalletTag = item.PalletTag;
                             MoveBillDetailHistoryRepository.Add(history);
                         }
-                        MoveBillDetailHistoryRepository.SaveChanges();
                         result = true;
                     }
                     catch (Exception e)
@@ -110,7 +109,6 @@ namespace THOK.Wms.Bll.Service
                         {
                             Del(MoveBillDetailRepository, item.MoveBillDetails);
                             MoveBillMasterRepository.Delete(item);
-                            MoveBillMasterRepository.SaveChanges();
                             result = true;
                         }
                     }
@@ -118,6 +116,7 @@ namespace THOK.Wms.Bll.Service
                     {
                         deleteResult = e.InnerException.ToString();
                     }
+                    MoveBillMasterHistoryRepository.SaveChanges();
                     #endregion
                 }
             }

@@ -43,7 +43,6 @@ namespace THOK.Wms.Bll.Service
                         history.Ending = item.Ending;
                         DailyBalanceHistoryRepository.Add(history);
                     }
-                    DailyBalanceHistoryRepository.SaveChanges();
                     result = true;
                 }
                 catch (Exception e)
@@ -68,6 +67,7 @@ namespace THOK.Wms.Bll.Service
                         strResult = e.InnerException.ToString();
                     }
                 }
+                DailyBalanceHistoryRepository.SaveChanges();
             }
             else
             {

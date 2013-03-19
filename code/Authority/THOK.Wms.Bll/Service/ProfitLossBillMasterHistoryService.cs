@@ -59,7 +59,6 @@ namespace THOK.Wms.Bll.Service
                         history.RowVersion = item.RowVersion;
                         ProfitLossBillMasterHistoryRepository.Add(history);
                     }
-                    ProfitLossBillMasterHistoryRepository.SaveChanges();
                     result = true;
                 }
                 catch (Exception e)
@@ -87,7 +86,6 @@ namespace THOK.Wms.Bll.Service
                             history.Description = item.Description;
                             ProfitLossBillDetailHistoryRepository.Add(history);
                         }
-                        ProfitLossBillDetailHistoryRepository.SaveChanges();
                         result = true;
                     }
                     catch (Exception e)
@@ -106,7 +104,6 @@ namespace THOK.Wms.Bll.Service
 
                             Del(ProfitLossBillDetailRepository, item.ProfitLossBillDetails);
                             ProfitLossBillMasterRepository.Delete(item);
-                            ProfitLossBillMasterRepository.SaveChanges();
                             result = true;
                         }
                     }
@@ -114,6 +111,8 @@ namespace THOK.Wms.Bll.Service
                     {
                         deleteResult = e.InnerException.ToString();
                     }
+
+                    ProfitLossBillMasterHistoryRepository.SaveChanges();
                     #endregion
                 }
             }            

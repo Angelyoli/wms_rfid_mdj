@@ -58,7 +58,6 @@ namespace THOK.Wms.Bll.Service
 
                         CheckBillMasterHistoryRepository.Add(history);
                     }
-                    CheckBillMasterHistoryRepository.SaveChanges();
                     result = true;
                 }
                 catch (Exception e)
@@ -89,7 +88,6 @@ namespace THOK.Wms.Bll.Service
 
                             CheckBillDetailHistoryRepository.Add(history);
                         }
-                        CheckBillDetailHistoryRepository.SaveChanges();
                         result = true;
                     }
                     catch (Exception e)
@@ -107,7 +105,6 @@ namespace THOK.Wms.Bll.Service
                         {
                             Del(CheckBillDetailRepository, item.CheckBillDetails);
                             CheckBillMasterRepository.Delete(item);
-                            CheckBillMasterRepository.SaveChanges();
                             result = true;
                         }
                     }
@@ -115,6 +112,7 @@ namespace THOK.Wms.Bll.Service
                     {
                         deleteResult = e.InnerException.ToString();
                     }
+                    CheckBillMasterHistoryRepository.SaveChanges();
                     #endregion
                 }
             }            

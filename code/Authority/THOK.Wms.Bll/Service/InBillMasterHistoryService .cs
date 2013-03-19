@@ -64,7 +64,6 @@ namespace THOK.Wms.Bll.Service
                         history.TargetCellCode = item.TargetCellCode;
                         InBillMasterHistoryRepository.Add(history);
                     }
-                    InBillMasterHistoryRepository.SaveChanges();
                     result = true;
                 }
                 catch (Exception e)
@@ -93,7 +92,6 @@ namespace THOK.Wms.Bll.Service
                             history2.Description = item2.Description;
                             InBillDetailHistoryRepository.Add(history2);
                         }
-                        InBillDetailHistoryRepository.SaveChanges();
                         result = true;
                     }
                     catch (Exception e)
@@ -126,7 +124,6 @@ namespace THOK.Wms.Bll.Service
                                 history3.Status = item3.Status;
                                 InBillAllotHistoryRepository.Add(history3);
                             }
-                            InBillAllotHistoryRepository.SaveChanges();
                             result = true;
                         }
                         catch (Exception e)
@@ -146,8 +143,7 @@ namespace THOK.Wms.Bll.Service
                         {
                             Del(InBillAllotRepository, item.InBillAllots);
                             Del(InBillDetailRepository, item.InBillDetails);
-                            InBillMasterRepository.Delete(item);
-                            InBillMasterRepository.SaveChanges();
+                            InBillMasterRepository.Delete(item);                            
                             result = true;
                         }
                     }
@@ -156,10 +152,12 @@ namespace THOK.Wms.Bll.Service
                         deleteResult = e.InnerException.ToString();
                         result = false;
                     }
+                    InBillMasterRepository.SaveChanges();
                     #endregion
                 }
             }
             return result;
         }
+
     }
 }
