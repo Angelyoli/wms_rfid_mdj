@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
+using THOK.Wms.Bll.Models;
 
 namespace Wms.Controllers.Wms.ComplexSearch
 {
@@ -23,7 +24,7 @@ namespace Wms.Controllers.Wms.ComplexSearch
         [Dependency]
         public ICheckBillMasterHistoryService CheckBillMasterHistoryService { get; set; }
         [Dependency]
-        public IProfitLossBillMasterHistoryService ProfitLossBillMasterHistoryService { get; set; } 
+        public IProfitLossBillMasterHistoryService ProfitLossBillMasterHistoryService { get; set; }
         #endregion
 
         #region 构造
@@ -34,7 +35,7 @@ namespace Wms.Controllers.Wms.ComplexSearch
         {
             ViewBag.moduleID = moduleID;
             return View();
-        } 
+        }
         #endregion
 
         #region 入库
@@ -56,7 +57,7 @@ namespace Wms.Controllers.Wms.ComplexSearch
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        } 
+        }
         #endregion
 
         #region 出库
@@ -78,7 +79,7 @@ namespace Wms.Controllers.Wms.ComplexSearch
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        } 
+        }
         #endregion
 
         #region 移库
@@ -98,7 +99,7 @@ namespace Wms.Controllers.Wms.ComplexSearch
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        } 
+        }
         #endregion
 
         #region 盘点
@@ -118,7 +119,7 @@ namespace Wms.Controllers.Wms.ComplexSearch
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        } 
+        }
         #endregion
 
         #region 损益
@@ -138,7 +139,7 @@ namespace Wms.Controllers.Wms.ComplexSearch
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        } 
+        }
         #endregion
 
         #region 日结
@@ -148,6 +149,23 @@ namespace Wms.Controllers.Wms.ComplexSearch
             bool bResult = DailyBalanceHistoryService.Add(datetime, out strResult);
             string msg = bResult ? "成功！" : "失败！";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+        #region 多选（未完成）
+        public object GetTree()
+        {
+            string[] type = { "入库", "出库", "移库", "盘点", "损益", "日结" }; //{ 1, 2, 3, 4, 5, 6 };
+            HashSet<THOK.Wms.Bll.Models.Tree> hashSet = new HashSet<THOK.Wms.Bll.Models.Tree>();
+            for (int i = 0; i < type.Length; i++)
+            {
+                THOK.Wms.Bll.Models.Tree tree = new THOK.Wms.Bll.Models.Tree();
+                tree.id = i.ToString();
+                tree.text = type[i];
+                tree.state = "open";
+                hashSet.Add(tree);
+            }
+            return hashSet.ToArray();
         } 
         #endregion
     }

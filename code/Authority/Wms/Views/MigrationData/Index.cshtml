@@ -1,17 +1,22 @@
 ﻿<script type="text/javascript">
-    function getSelected(obj) {
-        //window.document.getElementById("choose").innerHTML = obj.value
-    }
     function begin() {
         var myDate = new Date();
         var year = myDate.getFullYear() - 1;
         var month = myDate.getMonth() + 1;
-        var date = myDate.getDate();
-                                                                //myDate.getHours();//myDate.getMinutes();//myDate.getSeconds();
+        var date = myDate.getDate();                            //myDate.getHours();//myDate.getMinutes();//myDate.getSeconds();
         var datetime = year + "-" + month + "-" + date;         //alert(datetime);
         switch (document.getElementById("type").value) {
             case "1":
-                window.location.href = "/MigrationData/InBillMasterHistory/?datetime=" + datetime;
+                $.ajaxSender.send('/MigrationData/InBillMasterHistory/',
+                                        {
+                                            'datetime': datetime
+                                        },
+                                        function (data) {
+
+                                        }, $('#choose'));
+                //                $.ajax({"/MigrationData/InBillMasterHistory/",cache:false,success:function(data){}
+                //                    $.messager.alert('提示', 'OK！')
+                //                });
                 break;
             case "2":
                 window.location.href = "/MigrationData/OutBillMasterHistory/?datetime=" + datetime;
@@ -29,9 +34,11 @@
                 window.location.href = "/MigrationData/DailyBalanceHistory/?datetime=" + datetime;
                 break;
             default:
-                $.messager.confirm('错误', '请选择迁移的类型！');
+                $.messager.alert('提示', '请选择迁移的类型！');
         }
     }
+    //function getSelected(obj) { window.document.getElementById("choose").innerHTML = obj.value}    
+    //$(function () { $('#choose').combotree({ url: '/MigrationData/GetTree/', multiple: true, width: 160 }); })    
 </script>
 <div region="center" split="true" border="false">
     <div id="choose">
@@ -47,7 +54,22 @@
             </select>
         </div>
         <div id="dlg-buttons" style="float: left; margin: 8px 10px 10px 5px;">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="begin()">开始迁移</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="begin()">开始迁移：一年之前的数据</a>
         </div>
     </div>
+    @* <div style="float: left; margin: 10px 5px 10px 10px;">
+        <select id="choose" 
+                class="easyui-combotree" 
+                name="language" 
+                url="" 
+                valuefield="id"
+                textfield="text" 
+                multiple="true" 
+                panelheight="auto" 
+                panelwidth="160px">
+        </select>
+    </div>
+    <div id="dlg-buttons" style="float: left; margin: 9px 10px 10px 5px;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="begin()">开始迁移：一年之前的数据</a>
+    </div>*@
 </div>

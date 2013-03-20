@@ -190,7 +190,6 @@
     <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\ShelfController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\StorageController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\Test1Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\Warehouse2Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
@@ -2220,7 +2219,6 @@
     <Content Include="Views\ParameterSet\_EditPartial.cshtml" />
     <Content Include="Views\ParameterSet\_DeletePartial.cshtml" />
     <Content Include="Views\ParameterSet\_SystemNamePartial.cshtml" />
-    <Content Include="Views\Test1\Index.cshtml" />
     <Content Include="Views\MigrationData\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
