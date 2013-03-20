@@ -127,6 +127,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\ComplexSearch\MigrationDataController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\SortOrderSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockCheckSearchController.cs" />
@@ -2220,6 +2221,7 @@
     <Content Include="Views\ParameterSet\_DeletePartial.cshtml" />
     <Content Include="Views\ParameterSet\_SystemNamePartial.cshtml" />
     <Content Include="Views\Test1\Index.cshtml" />
+    <Content Include="Views\MigrationData\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

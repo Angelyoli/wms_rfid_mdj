@@ -7,10 +7,11 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 
-namespace Wms.Controllers.Wms.WarehouseInfo
+namespace Wms.Controllers.Wms.ComplexSearch
 {
-    public class Test1Controller : Controller
+    public class MigrationDataController : Controller
     {
+        #region 接口
         [Dependency]
         public IInBillMasterHistoryService InBillMasterHistoryService { get; set; }
         [Dependency]
@@ -22,22 +23,21 @@ namespace Wms.Controllers.Wms.WarehouseInfo
         [Dependency]
         public ICheckBillMasterHistoryService CheckBillMasterHistoryService { get; set; }
         [Dependency]
-        public IProfitLossBillMasterHistoryService ProfitLossBillMasterHistoryService { get; set; }
+        public IProfitLossBillMasterHistoryService ProfitLossBillMasterHistoryService { get; set; } 
+        #endregion
 
+        #region 构造
         //
-        // GET: /Test1/
+        // GET: /MigrationData/
 
         public ActionResult Index(string moduleID)
         {
-            ViewBag.hasSearch = true;
-            ViewBag.hasAdd = true;
-            ViewBag.hasEdit = true;
-            ViewBag.hasDelete = true;
-            ViewBag.hasPrint = true;
-            ViewBag.hasHelp = true;
             ViewBag.moduleID = moduleID;
             return View();
-        }
+        } 
+        #endregion
+
+        #region 入库
         public ActionResult InBillMasterHistory(string datetime)
         {
             string result = string.Empty;
@@ -56,7 +56,10 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        }
+        } 
+        #endregion
+
+        #region 出库
         public ActionResult OutBillMasterHistory(DateTime datetime)
         {
             string result = string.Empty;
@@ -75,16 +78,10 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        }
+        } 
+        #endregion
 
-        public ActionResult DailyBalanceHistory(DateTime datetime)
-        {
-            string strResult = string.Empty;
-            bool bResult = DailyBalanceHistoryService.Add(datetime, out strResult);
-            string msg = bResult ? "成功！" : "失败！";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
-        }
-
+        #region 移库
         public ActionResult MoveBillMasterHistory(DateTime datetime)
         {
             string result = string.Empty;
@@ -101,8 +98,10 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        }
+        } 
+        #endregion
 
+        #region 盘点
         public ActionResult CheckBillMasterHistory(DateTime datetime)
         {
             string result = string.Empty;
@@ -119,8 +118,10 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        }
+        } 
+        #endregion
 
+        #region 损益
         public ActionResult ProfitLossBillMasterHistory(DateTime datetime)
         {
             string result = string.Empty;
@@ -137,6 +138,17 @@ namespace Wms.Controllers.Wms.WarehouseInfo
                             + "】";
             }
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
-        }
+        } 
+        #endregion
+
+        #region 日结
+        public ActionResult DailyBalanceHistory(DateTime datetime)
+        {
+            string strResult = string.Empty;
+            bool bResult = DailyBalanceHistoryService.Add(datetime, out strResult);
+            string msg = bResult ? "成功！" : "失败！";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        } 
+        #endregion
     }
 }

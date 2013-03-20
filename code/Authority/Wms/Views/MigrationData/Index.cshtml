@@ -1,0 +1,53 @@
+﻿<script type="text/javascript">
+    function getSelected(obj) {
+        //window.document.getElementById("choose").innerHTML = obj.value
+    }
+    function begin() {
+        var myDate = new Date();
+        var year = myDate.getFullYear() - 1;
+        var month = myDate.getMonth() + 1;
+        var date = myDate.getDate();
+                                                                //myDate.getHours();//myDate.getMinutes();//myDate.getSeconds();
+        var datetime = year + "-" + month + "-" + date;         //alert(datetime);
+        switch (document.getElementById("type").value) {
+            case "1":
+                window.location.href = "/MigrationData/InBillMasterHistory/?datetime=" + datetime;
+                break;
+            case "2":
+                window.location.href = "/MigrationData/OutBillMasterHistory/?datetime=" + datetime;
+                break;
+            case "3":
+                window.location.href = "/MigrationData/MoveBillMasterHistory/?datetime=" + datetime;
+                break;
+            case "4":
+                window.location.href = "/MigrationData/CheckBillMasterHistory/?datetime=" + datetime;
+                break;
+            case "5":
+                window.location.href = "/MigrationData/ProfitLossBillMasterHistory/?datetime=" + datetime;
+                break;
+            case "6":
+                window.location.href = "/MigrationData/DailyBalanceHistory/?datetime=" + datetime;
+                break;
+            default:
+                $.messager.confirm('错误', '请选择迁移的类型！');
+        }
+    }
+</script>
+<div region="center" split="true" border="false">
+    <div id="choose">
+        <div style="float: left; margin: 10px 5px 10px 10px;">
+            <select id="type">
+                <option value="0" style="color: Gray;">请选择</option>
+                <option value="1">入库</option>
+                <option value="2">出库</option>
+                <option value="3">移库</option>
+                <option value="4">盘点</option>
+                <option value="5">损益</option>
+                <option value="6">日结</option>
+            </select>
+        </div>
+        <div id="dlg-buttons" style="float: left; margin: 8px 10px 10px 5px;">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="begin()">开始迁移</a>
+        </div>
+    </div>
+</div>

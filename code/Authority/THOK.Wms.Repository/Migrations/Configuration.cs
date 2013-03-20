@@ -3137,6 +3137,18 @@
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("FE344F88-08AD-4FDA-8F45-EAD3BB471101")
+                    },
+                    new Module() 
+                    {
+                        ModuleID = new Guid("B1EDDD7E-9458-480B-AA2F-B972DE41AA93"),
+                        ModuleName = "迁移数据库",
+                        ShowOrder = 8,
+                        ModuleURL = "/MigrationData/",
+                        IndicateImage = "icon-son_SortOrder",
+                        DeskTopImage = "image-son_SortOrder",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("FE344F88-08AD-4FDA-8F45-EAD3BB471101")
                     }
                 );
             context.SaveChanges();
