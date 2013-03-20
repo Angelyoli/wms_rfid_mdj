@@ -22,8 +22,8 @@
                 new City()
                 {
                     CityID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471105"),
-                    CityName = "平顶山市",
-                    Description = "平顶山市",
+                    CityName = "柳州市",
+                    Description = "柳州市",
                     IsActive = true
                 }
             );
@@ -34,8 +34,8 @@
                 new Server()
                 {
                     ServerID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471106"),
-                    ServerName = "平顶山主服务器",
-                    Description = "平顶山主服务器",
+                    ServerName = "柳州主服务器",
+                    Description = "柳州主服务器",
                     Url = "",
                     IsActive = true,
                     City = city,
@@ -3858,7 +3858,7 @@
                     new Module()
                     {
                         ModuleID = new Guid("EDABFF3B-AD8A-4D50-8DB9-71D36EF77F9D"),
-                        ModuleName = "系统参数",
+                        ModuleName = "系统参数管理",
                         ShowOrder = 15,
                         ModuleURL = "",
                         IndicateImage = "icon-Menu_Jurisdiction",

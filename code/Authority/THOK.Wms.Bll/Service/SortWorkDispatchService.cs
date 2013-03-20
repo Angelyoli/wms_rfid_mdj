@@ -315,12 +315,12 @@ namespace THOK.Wms.Bll.Service
                     errorInfo = "当前选择的调度记录不存在，未能结单！";
                     return false;
                 }
-                if (sortWork.DispatchStatus != "3")
+                if (sortWork.DispatchStatus == "1")
                 {
                     errorInfo = "当前选择的调度记录不是执行中，未能结单！";
                     return false;
                 }
-                if (sortWork.MoveBillMaster.Status != "3")
+                if (sortWork.MoveBillMaster.Status == "1")
                 {
                     errorInfo = "当前选择的调度记录移库单不是执行中，未能结单！";
                     return false;

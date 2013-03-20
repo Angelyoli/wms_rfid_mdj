@@ -1,0 +1,42 @@
+USE [Elinterface]
+GO
+/****** 对象:  Table [dbo].[Sy_ShowInfo]    脚本日期: 01/19/2010 11:23:24 ******/
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Sy_ShowInfo]') AND type in (N'U'))
+CREATE TABLE [dbo].[Sy_ShowInfo](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[OrderMasterID] [varchar](50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+	[OrderDetailID] [varchar](50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+	[StorageID] [varchar](50) COLLATE SQL_1xCompat_CP850_CI_AS NOT NULL,
+	[OperateType] [int] NULL,
+	[TobaccoName] [varchar](200) COLLATE Chinese_PRC_CI_AS NULL,
+	[OperatePiece] [int] NULL,
+	[OperateItem] [int] NULL,
+	[ConfirmState] [int] NULL,
+	[ReadState] [int] NULL,
+	[HardwareReadState] [int] NULL,
+	[ManyLine] [varchar](50) COLLATE Chinese_PRC_CI_AS NULL,
+ CONSTRAINT [PK_Sy_ShowInfo_1] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** 对象:  Table [dbo].[Storages]    脚本日期: 01/19/2010 11:25:18 ******/
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Storages]') AND type in (N'U'))
+CREATE TABLE [dbo].[Storages](
+	[StorageID] [varchar](50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+	[StorageName] [varchar](50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+	[Row] [varchar](50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+	[Address] [varchar](50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+	[Port] [varchar](50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+	[Act] [varchar](50) COLLATE Chinese_PRC_CI_AS NULL,
+	[ProductName] [varchar](200) COLLATE Chinese_PRC_CI_AS NULL,
+	[Contents] [varchar](50) COLLATE Chinese_PRC_CI_AS NULL,
+	[NumberShow] [varchar](50) COLLATE Chinese_PRC_CI_AS NULL,
+	[Sign] [int] NULL,
+	[Err] [int] NULL,
+CONSTRAINT [PK_Storages_2] PRIMARY KEY CLUSTERED 
+(
+	[StorageID] ASC
+)WITH (IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]

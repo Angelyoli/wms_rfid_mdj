@@ -289,6 +289,14 @@
     <Compile Include="Migrations\201211081248509_modify_product_cell_max_product_quantity.Designer.cs">
       <DependentUpon>201211081248509_modify_product_cell_max_product_quantity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201302220246405_modify_product_customer_code.cs" />
+    <Compile Include="Migrations\201302220246405_modify_product_customer_code.Designer.cs">
+      <DependentUpon>201302220246405_modify_product_customer_code.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201303190746167_add_history_data.cs" />
+    <Compile Include="Migrations\201303190746167_add_history_data.Designer.cs">
+      <DependentUpon>201303190746167_add_history_data.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

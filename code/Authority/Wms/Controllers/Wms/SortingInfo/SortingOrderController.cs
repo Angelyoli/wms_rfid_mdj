@@ -87,8 +87,8 @@ namespace Authority.Controllers.Wms.SortingInfo
 
             try
             {
-                ubll.DownUnitCodeInfo();
-                pbll.DownProductInfo();
+                //ubll.DownUnitCodeInfo();
+                //pbll.DownProductInfo();
                 routeBll.DeleteTable();
                 stationBll.DownDistStationInfo();
                 if (!SystemParameterService.SetSystemParameter())

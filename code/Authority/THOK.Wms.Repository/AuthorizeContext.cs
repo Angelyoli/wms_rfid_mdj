@@ -90,9 +90,32 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new BusinessSystemsDailyBalanceMap());
             modelBuilder.Configurations.Add(new ProductWarningMap());
 
+            modelBuilder.Configurations.Add(new TrayInfoMap());
+
+            modelBuilder.Configurations.Add(new InBillMasterHistoryMap());
+            modelBuilder.Configurations.Add(new InBillDetailHistoryMap());
+            modelBuilder.Configurations.Add(new InBillAllotHistoryMap());
+
+            modelBuilder.Configurations.Add(new OutBillMasterHistoryMap());
+            modelBuilder.Configurations.Add(new OutBillDetailHistoryMap());
+            modelBuilder.Configurations.Add(new OutBillAllotHistoryMap());
+
+            modelBuilder.Configurations.Add(new MoveBillMasterHistoryMap());
+            modelBuilder.Configurations.Add(new MoveBillDetailHistoryMap());
+
+            modelBuilder.Configurations.Add(new CheckBillMasterHistoryMap());
+            modelBuilder.Configurations.Add(new CheckBillDetailHistoryMap());
+
+            modelBuilder.Configurations.Add(new ProfitLossBillMasterHistoryMap());
+            modelBuilder.Configurations.Add(new ProfitLossBillDetailHistoryMap());
+
+            modelBuilder.Configurations.Add(new DailyBalanceHistoryMap());
+
             #endregion
 
             modelBuilder.Configurations.Add(new SystemParameterMap());
+
+            
         }
     }
 }

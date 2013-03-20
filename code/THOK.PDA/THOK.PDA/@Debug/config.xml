@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Config>
+  <Connection>
+    <ConnectionString name="ConnectionString" value="server=10.82.211.240;database=THOK_WES_DATA;uid=sa;pwd=hehuadong.2010" />
+  </Connection>
+  <ConnetionType>
+    <Type name="Type" value="网络连接" />
+  </ConnetionType>
+	<HttpConnectionStr>
+		<Type name="HttpConnStr" value="http://10.82.211.240:8090/Task/" />
+	</HttpConnectionStr>
+</Config>

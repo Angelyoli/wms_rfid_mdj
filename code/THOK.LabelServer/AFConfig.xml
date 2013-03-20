@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Config>
+  <URL>
+    <URL name="URL" value="http://10.82.211.240:8090/Task/" />
+  </URL>
+  <UDP>
+    <IP name="IP" value="192.168.0.200" />
+    <PORT name="PORT" value="5000" />
+  </UDP>
+  <RFID>
+    <PORT name="USEDRFID" value="0" />
+    <PORT name="PORT" value="com2" />
+  </RFID>
+  <Layers>
+    <Number name="Number" value="0,1,2,3" />
+  </Layers>
+  <DeviceType>
+    <Device name="Device" value="2" />
+  </DeviceType>
+</Config>

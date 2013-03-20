@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <OrderFormConfig>
+    <Top>0</Top>
+    <Left>351</Left>
+    <Height>260</Height>
+    <Width>510</Width>
+    <TimerInterval>10000</TimerInterval>
+    <IsSendToasynChronousScreen>1</IsSendToasynChronousScreen>
+  </OrderFormConfig>
+</Root>

@@ -12,6 +12,7 @@ namespace THOK.Wms.AutomotiveSystems.Models
         public int DetailID = 0;
         public string StorageName = string.Empty;
         public string StorageRfid = string.Empty;
+        public string CellRfid = string.Empty;
         public string TargetStorageName = string.Empty;
         public string TargetStorageRfid = string.Empty;
 
