@@ -237,7 +237,12 @@ namespace THOK.Wms.SignalR.Allot.Service
                         * billDetail.Product.Unit.Count;
                     if (billQuantity >= allotQuantity)
                     {
-                        Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s,billDetail.Product), allotQuantity, ps);
+                        Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
+                    }
+                    else if (billQuantity >= 300000) 
+                    {
+                        allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                        Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
                     }
                     else break;
                 }

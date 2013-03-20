@@ -10,6 +10,8 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetCellDetails(int page, int rows, string type, string id);
 
+        object GetCellDetails(string type, string id);
+
         System.Data.DataTable GetCargospace(int page, int rows, string type, string id);
     }
 }

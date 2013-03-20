@@ -124,5 +124,26 @@ namespace Authority.Controllers.Authority
             bool bResult = UserService.Check(userName);
             return Json(bResult, "text", JsonRequestBehavior.AllowGet);
         }
+        // POST: /User/Create/
+        public ActionResult GetUserIp(string userName)
+        {
+            var bResult = UserService.GetUserIp(userName);
+            return Json(bResult, "text", JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult UpdateUserInfo(string userName)
+        {
+            bool bResult = UserService.UpdateUserInfo(userName);
+            return Json(bResult, "text", JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DeleteUserIp(string userName)
+        {
+            bool bResult = UserService.DeleteUserIp(userName);
+            return Json(bResult, "text", JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetLocalIp(string userName)
+        {
+            var bResult = UserService.GetLocalIp(userName);
+            return Json(bResult, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }
