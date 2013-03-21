@@ -6,7 +6,7 @@ namespace THOK.Wms.DbModel.Mapping
     public class PositionMap : EntityMappingBase<Position>
     {
         public PositionMap()
-            : base("Wms")
+            : base("Wcs")
         {
             // Primary Key
             this.HasKey(t => t.ID);

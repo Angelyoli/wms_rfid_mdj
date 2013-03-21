@@ -6,7 +6,7 @@ namespace THOK.Wms.DbModel.Mapping
     public class SRMMap : EntityMappingBase<SRM>
     {
         public SRMMap()
-            : base("Wms")
+            : base("Wcs")
         {
             // Primary Key
             this.HasKey(t => t.ID);
