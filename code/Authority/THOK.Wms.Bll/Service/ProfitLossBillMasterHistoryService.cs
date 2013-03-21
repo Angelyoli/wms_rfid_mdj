@@ -25,12 +25,10 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public bool Add(DateTime datetime, out string masterResult, out string detailResult, out string deleteResult)
+        public bool Add(DateTime datetime, out string strResult)
         {
             bool result = false;
-            masterResult = string.Empty;
-            detailResult = string.Empty;
-            deleteResult = string.Empty;
+            strResult = string.Empty;
 
             var profitLossBillMaster = ProfitLossBillMasterRepository.GetQueryable().Where(i => i.BillDate <= datetime);
             var profitLossBillDetail = ProfitLossBillDetailRepository.GetQueryable().Where(i => i.ProfitLossBillMaster.BillDate <= datetime);
@@ -63,7 +61,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception e)
                 {
-                    masterResult = e.InnerException.ToString();
+                    strResult = "主库单：" + e.InnerException.ToString();
                     result = false;
                 }
                 #endregion
@@ -90,7 +88,7 @@ namespace THOK.Wms.Bll.Service
                     }
                     catch (Exception e)
                     {
-                        detailResult = e.InnerException.ToString(); ;
+                        strResult = "细库单：" + e.InnerException.ToString(); ;
                     }
                     #endregion
                 }
@@ -109,7 +107,7 @@ namespace THOK.Wms.Bll.Service
                     }
                     catch (Exception e)
                     {
-                        deleteResult = e.InnerException.ToString();
+                        strResult = "删除情况：" + e.InnerException.ToString();
                     }
 
                     ProfitLossBillMasterHistoryRepository.SaveChanges();

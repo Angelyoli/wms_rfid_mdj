@@ -30,13 +30,10 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public bool Add(DateTime datetime, out string masterResult, out string detailResult, out string allotResult, out string deleteResult)
+        public bool Add(DateTime datetime, out string strResult)
         {
             bool result = false;
-            masterResult = string.Empty;
-            detailResult = string.Empty;
-            allotResult = string.Empty;
-            deleteResult = string.Empty;
+            strResult = string.Empty;
 
             var inBillMaster = InBillMasterRepository.GetQueryable().Where(i => i.BillDate <= datetime);
             var inBillDetail = InBillDetailRepository.GetQueryable().Where(i => i.InBillMaster.BillDate <= datetime);
@@ -68,7 +65,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception e)
                 {
-                    masterResult = e.InnerException.ToString();
+                    strResult = "迁移主表时：" + e.InnerException.ToString();
                     result = false;
                 }
                 #endregion
@@ -96,7 +93,7 @@ namespace THOK.Wms.Bll.Service
                     }
                     catch (Exception e)
                     {
-                        detailResult = e.InnerException.ToString();
+                        strResult = "迁移细表时：" + e.InnerException.ToString();
                         result = false;
                     }
                     #endregion
@@ -128,7 +125,7 @@ namespace THOK.Wms.Bll.Service
                         }
                         catch (Exception e)
                         {
-                            allotResult = e.InnerException.ToString();
+                            strResult = "迁移分配表时：" + e.InnerException.ToString();
                             result = false;
                         }
                         #endregion
@@ -137,21 +134,21 @@ namespace THOK.Wms.Bll.Service
                 if (result == true)
                 {
                     #region 删除主细分配表
-                    try
-                    {
-                        foreach (var item in inBillMaster.ToList())
-                        {
-                            Del(InBillAllotRepository, item.InBillAllots);
-                            Del(InBillDetailRepository, item.InBillDetails);
-                            InBillMasterRepository.Delete(item);                            
-                            result = true;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        deleteResult = e.InnerException.ToString();
-                        result = false;
-                    }
+                    //try
+                    //{
+                    //    foreach (var item in inBillMaster.ToList())
+                    //    {
+                    //        Del(InBillAllotRepository, item.InBillAllots);
+                    //        Del(InBillDetailRepository, item.InBillDetails);
+                    //        InBillMasterRepository.Delete(item);
+                    //        result = true;
+                    //    }
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    strResult = "删除操作时：" + e.InnerException.ToString();
+                    //    result = false;
+                    //}
                     InBillMasterRepository.SaveChanges();
                     #endregion
                 }

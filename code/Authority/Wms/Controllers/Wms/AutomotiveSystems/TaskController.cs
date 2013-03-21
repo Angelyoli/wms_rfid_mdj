@@ -49,13 +49,13 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
                         TaskService.GetBillDetail(taskParameter.BillMasters, taskParameter.productCode, taskParameter.OperateType, taskParameter.OperateArea, taskParameter.Operator, result);
                         break;
                     case "apply":
-                        TaskService.Apply(taskParameter.BillDetails, taskParameter.UseTag,result);
+                        TaskService.Apply(taskParameter.BillDetails, taskParameter.UseTag, result);
                         break;
                     case "cancel":
-                        TaskService.Cancel(taskParameter.BillDetails, taskParameter.UseTag,result);
+                        TaskService.Cancel(taskParameter.BillDetails, taskParameter.UseTag, result);
                         break;
                     case "execute":
-                        TaskService.Execute(taskParameter.BillDetails,taskParameter.UseTag, result);
+                        TaskService.Execute(taskParameter.BillDetails, taskParameter.UseTag, result);
                         break;
                     case "getRfidInfo":
                         TaskService.SearchRfidInfo(taskParameter.RfidId, result);
@@ -75,7 +75,7 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
             return Json(result, "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult SendSortInfo(string orderdate,string batchId,string sortingLineCode, string orderId)
+        public ActionResult SendSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId)
         {
             string msg = @"<?xml version='1.0' encoding='GB2312' ?>
                             <message>
@@ -93,62 +93,39 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
             {
                 msg = string.Format(msg, "false", "2", error);
             }
-            return new ContentResult() { Content = msg, ContentEncoding = Encoding.GetEncoding("GB2312"), ContentType= "text" };
+            return new ContentResult() { Content = msg, ContentEncoding = Encoding.GetEncoding("GB2312"), ContentType = "text" };
         }
 
-        public ActionResult MoveDataIsHistory(string dateTime,string billType)
+        public ActionResult MoveDataIsHistory(string dateTime, string billType)
         {
             string msg = string.Empty;
             bool bResult;
-            string masterResult = string.Empty;
-            string detailResult = string.Empty;
-            string allotResult = string.Empty;
-            string deleteResult = string.Empty;
+            string strResult = string.Empty;
             switch (billType)
             {
                 case "1"://入库单据
-                    bResult = InBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out allotResult, out deleteResult);
-                    if (!bResult)
-                    {
-                        msg = string.Format("入库操作---主表：{0},细表：{1},分配表{2},删除操作:{3}",
-                                    masterResult, detailResult, allotResult, deleteResult);
-                    }
+                    bResult = InBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
+                    if (!bResult) msg = string.Format("入库操作：", strResult);
                     break;
                 case "2"://出库单据
-                    bResult = OutBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out allotResult, out deleteResult);
-                    if (!bResult)
-                    {
-                        msg = string.Format("出库操作---主表：{0},细表：{1},分配表{2},删除操作:{3}",
-                                    masterResult, detailResult, allotResult, deleteResult);
-                    }
+                    bResult = OutBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
+                    if (!bResult) msg = string.Format("出库操作：", strResult);
                     break;
                 case "3"://移库单据
-                    bResult = MoveBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out deleteResult);
-                    if (!bResult)
-                    {
-                        msg = string.Format("移库操作---主表：{0},细表：{1},删除操作:{2}", masterResult, detailResult, deleteResult);
-                    }
+                    bResult = MoveBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
+                    if (!bResult) msg = string.Format("移库操作：", strResult);
                     break;
                 case "4"://盘点单据
-                    bResult = CheckBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out deleteResult);
-                    if (!bResult)
-                    {
-                        msg = string.Format("盘点操作---主表：{0},细表：{1},删除操作:{2}", masterResult, detailResult, deleteResult);
-                    }
+                    bResult = CheckBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
+                    if (!bResult) msg = string.Format("盘点操作：", strResult);
                     break;
                 case "5"://损益单据
-                    bResult = ProfitLossBillMasterHistory.Add(Convert.ToDateTime(dateTime), out masterResult, out detailResult, out deleteResult);
-                    if (!bResult)
-                    {
-                        msg = string.Format("损益操作---主表：{0},细表：{1},删除操作:{2}", masterResult, detailResult, deleteResult);
-                    }
+                    bResult = ProfitLossBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
+                    if (!bResult) msg = string.Format("损益操作：", strResult);
                     break;
                 case "6"://日结
-                    bResult = DailyBalanceHistoryService.Add(Convert.ToDateTime(dateTime), out masterResult);
-                    if (!bResult)
-                    {
-                        msg = string.Format("日结操作---日结表：{0}", masterResult);
-                    }
+                    bResult = DailyBalanceHistoryService.Add(Convert.ToDateTime(dateTime), out strResult);
+                    if (!bResult) msg = string.Format("出库操作：", strResult);
                     break;
                 default:
                     msg = "调用了未定义的方法！";

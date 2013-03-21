@@ -29,13 +29,10 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public bool Add(DateTime datetime, out string masterResult, out string detailResult, out string allotResult, out string deleteResult)
+        public bool Add(DateTime datetime, out string strResult)
         {
             bool result = false;
-            masterResult = string.Empty;
-            detailResult = string.Empty;
-            allotResult = string.Empty;
-            deleteResult = string.Empty;
+            strResult = string.Empty;
 
             var outBillMaster = OutBillMasterRepository.GetQueryable().Where(i => i.BillDate <= datetime);
             var outBillDetail = OutBillDetailRepository.GetQueryable().Where(i => i.OutBillMaster.BillDate <= datetime);
@@ -63,13 +60,12 @@ namespace THOK.Wms.Bll.Service
                         history.Origin = item.Origin;
                         history.TargetCellCode = item.TargetCellCode;
                         OutBillMasterHistoryRepository.Add(history);
-                    }
-                    
+                    }                    
                     result = true;
                 }
                 catch (Exception e)
                 {
-                    masterResult = e.InnerException.ToString();
+                    strResult = "主库单：" + e.InnerException.ToString();
                     result = false;
                 }
                 #endregion
@@ -97,7 +93,7 @@ namespace THOK.Wms.Bll.Service
                     }
                     catch (Exception e)
                     {
-                        detailResult = e.InnerException.ToString();
+                        strResult = "细库单" + e.InnerException.ToString();
                         return false;
                     }
                     #endregion
@@ -124,13 +120,12 @@ namespace THOK.Wms.Bll.Service
                                 history3.FinishTime = item3.FinishTime;
                                 history3.Status = item3.Status;
                                 OutBillAllotHistoryRepository.Add(history3);
-                            }
-                            
+                            }                            
                             result = true;
                         }
                         catch (Exception e)
                         {
-                            allotResult = e.InnerException.ToString();
+                            strResult = "分配单：" + e.InnerException.ToString();
                             result = false;
                         }
                         #endregion
@@ -153,7 +148,7 @@ namespace THOK.Wms.Bll.Service
                     }
                     catch (Exception e)
                     {
-                        deleteResult = e.InnerException.ToString();
+                        strResult = "删除情况：" + e.InnerException.ToString();
                     }
                     OutBillMasterHistoryRepository.SaveChanges();
                     #endregion

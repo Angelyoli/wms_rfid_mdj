@@ -127,7 +127,6 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\MigrationDataController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\SortOrderSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockCheckSearchController.cs" />
@@ -1891,6 +1890,8 @@
     <Content Include="Views\AutomotiveConfig\Index.cshtml" />
     <Content Include="Views\DeliverLine\_DistCode.cshtml" />
     <Content Include="Views\Help\Index.cshtml" />
+    <Content Include="Views\CheckBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\DailyBalance\_MigrationPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2219,7 +2220,10 @@
     <Content Include="Views\ParameterSet\_EditPartial.cshtml" />
     <Content Include="Views\ParameterSet\_DeletePartial.cshtml" />
     <Content Include="Views\ParameterSet\_SystemNamePartial.cshtml" />
-    <Content Include="Views\MigrationData\Index.cshtml" />
+    <Content Include="Views\StockInBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\StockMoveBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\ProfitLossBill\_MigrationPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

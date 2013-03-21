@@ -17,6 +17,8 @@ namespace Authority.Controllers.Wms.StockMove
         public IMoveBillMasterService MoveBillMasterService { get; set; }
         [Dependency]
         public IMoveBillDetailService MoveBillDetailService { get; set; }
+        [Dependency]
+        public IMoveBillMasterHistoryService MoveBillMasterHistoryService { get; set; }
         //
         // GET: /MovePositionBill/
 
@@ -29,6 +31,7 @@ namespace Authority.Controllers.Wms.StockMove
             ViewBag.hasAudit = true;
             ViewBag.hasAntiTrial = true;
             ViewBag.hasSettle = true;
+            ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -202,5 +205,15 @@ namespace Authority.Controllers.Wms.StockMove
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion
+
+        public ActionResult MoveBillMasterHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }
