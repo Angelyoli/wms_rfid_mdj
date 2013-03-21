@@ -111,6 +111,9 @@ namespace THOK.Wms.Repository
 
             modelBuilder.Configurations.Add(new DailyBalanceHistoryMap());
 
+            #endregion
+
+            #region wcs
 
             modelBuilder.Configurations.Add(new RegionMap());
             modelBuilder.Configurations.Add(new SRMMap());
@@ -120,6 +123,7 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new CellPositionMap());
             modelBuilder.Configurations.Add(new SizeMap());
             modelBuilder.Configurations.Add(new ProductSizeMap());
+            modelBuilder.Configurations.Add(new TaskMap());
 
             #endregion
 

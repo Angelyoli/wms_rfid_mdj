@@ -6,7 +6,7 @@ namespace THOK.Wms.DbModel.Mapping
     public class ProductSizeMap : EntityMappingBase<ProductSize>
     {
         public ProductSizeMap()
-            : base("Wms")
+            : base("Wcs")
         {
             // Primary Key
             this.HasKey(t => t.ID);

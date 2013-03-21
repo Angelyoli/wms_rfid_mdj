@@ -116,6 +116,7 @@
     <Compile Include="EntityRepository\StockOutSearchRepository.cs" />
     <Compile Include="EntityRepository\StorageRepository.cs" />
     <Compile Include="EntityRepository\SupplierRepository.cs" />
+    <Compile Include="EntityRepository\TaskRepository.cs" />
     <Compile Include="EntityRepository\TrayInfoRepository.cs" />
     <Compile Include="EntityRepository\UnitListRepository.cs" />
     <Compile Include="EntityRepository\UnitRepository.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Interfaces\IStockOutSearchRepository.cs" />
     <Compile Include="Interfaces\IStorageRepository.cs" />
     <Compile Include="Interfaces\ISupplierRepository.cs" />
+    <Compile Include="Interfaces\ITaskRepository.cs" />
     <Compile Include="Interfaces\ITrayInfoRepository.cs" />
     <Compile Include="Interfaces\IUnitListRepository.cs" />
     <Compile Include="Interfaces\IUnitRepository.cs" />

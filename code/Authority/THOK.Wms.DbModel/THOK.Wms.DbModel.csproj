@@ -125,6 +125,7 @@
     <Compile Include="Mapping\SRMMap.cs" />
     <Compile Include="Mapping\StorageMap.cs" />
     <Compile Include="Mapping\SupplierMap.cs" />
+    <Compile Include="Mapping\TaskMap.cs" />
     <Compile Include="Mapping\TrayInfoMap.cs" />
     <Compile Include="Mapping\UnitListMap.cs" />
     <Compile Include="Mapping\UnitMap.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="SRM.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="Supplier.cs" />
+    <Compile Include="Task.cs" />
     <Compile Include="TrayInfo.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="UnitList.cs" />

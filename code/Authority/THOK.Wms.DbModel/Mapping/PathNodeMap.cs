@@ -6,7 +6,7 @@ namespace THOK.Wms.DbModel.Mapping
     public class PathNodeMap : EntityMappingBase<PathNode>
     {
         public PathNodeMap()
-            : base("Wms")
+            : base("Wcs")
         {
             // Primary Key
             this.HasKey(t => t.ID);

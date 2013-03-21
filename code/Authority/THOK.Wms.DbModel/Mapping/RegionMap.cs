@@ -10,7 +10,7 @@ namespace THOK.Wms.DbModel.Mapping
     public class RegionMap : EntityMappingBase<Region>
     {
         public RegionMap()
-            : base("Wms")
+            : base("Wcs")
         {
             // Primary Key
             this.HasKey(t => t.ID);
