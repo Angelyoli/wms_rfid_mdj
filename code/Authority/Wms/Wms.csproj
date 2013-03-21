@@ -2220,6 +2220,10 @@
     <Content Include="Views\ParameterSet\_DeletePartial.cshtml" />
     <Content Include="Views\ParameterSet\_SystemNamePartial.cshtml" />
     <Content Include="Views\Test1\Index.cshtml" />
+    <Content Include="Views\Shared\_TaskPartial.cshtml" />
+    <Content Include="Views\StockInBill\_TaskPartial.cshtml" />
+    <Content Include="Views\StockMoveBill\_TaskPartial.cshtml" />
+    <Content Include="Views\SortWorkDispatch\_TaskPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
