@@ -113,6 +113,20 @@ namespace THOK.Wms.Repository
 
             #endregion
 
+            #region wcs
+
+            modelBuilder.Configurations.Add(new RegionMap());
+            modelBuilder.Configurations.Add(new SRMMap());
+            modelBuilder.Configurations.Add(new PositionMap());
+            modelBuilder.Configurations.Add(new PathMap());
+            modelBuilder.Configurations.Add(new PathNodeMap());
+            modelBuilder.Configurations.Add(new CellPositionMap());
+            modelBuilder.Configurations.Add(new SizeMap());
+            modelBuilder.Configurations.Add(new ProductSizeMap());
+            modelBuilder.Configurations.Add(new TaskMap());
+
+            #endregion
+
             modelBuilder.Configurations.Add(new SystemParameterMap());
 
             

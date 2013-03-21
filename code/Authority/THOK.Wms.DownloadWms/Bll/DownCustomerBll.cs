@@ -165,7 +165,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     cust_type = "2401";
                 }
                 inbrddr["customer_type"] = cust_type;
-                inbrddr["sale_scope"] = cust_type;
+                inbrddr["sale_scope"] = row["CUST_TYPE"].ToString();
                 inbrddr["industry_type"] = row["RTL_CUST_TYPE_CODE"].ToString().Trim();
                 inbrddr["city_or_countryside"] = row["CUST_GEO_TYPE_CODE"].ToString().Trim();
                 inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();

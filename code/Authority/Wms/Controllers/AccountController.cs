@@ -7,6 +7,8 @@ using System.Web.Script.Serialization;
 using THOK.Common;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Authority.Bll.Models;
+using System.Collections;
+using System;
 
 namespace Authority.Controllers
 {
@@ -58,6 +60,7 @@ namespace Authority.Controllers
                 this.AddCookie("cityid", cityId);
                 this.AddCookie("systemid", systemId);
                 this.AddCookie("serverid", serverId);
+                this.AddCookie("username", userName);
             }
             return new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" } });
         }
@@ -65,7 +68,7 @@ namespace Authority.Controllers
         public ActionResult LogOff()
         {
             FormsService.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index","Home");
         }
 
         [Authorize]

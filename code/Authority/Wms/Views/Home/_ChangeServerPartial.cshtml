@@ -1,6 +1,7 @@
 ﻿<script type="text/javascript">
     $(function () {
         $('#changeServer').click(function () {
+            refreshs();
             $('#cg-changeserver').combogrid('setValue', '').combo('setText', '');
             $('#dlg-changeserver').dialog('open').dialog('setTitle', '切换服务器');
         });

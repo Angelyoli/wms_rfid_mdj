@@ -13,7 +13,7 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
     public class TaskController : Controller
     {
         [Dependency]
-        public ITaskService TaskService { get; set; }
+        public THOK.Wms.AutomotiveSystems.Interfaces.ITaskService TaskService { get; set; }
 
         [Dependency]
         public IInBillMasterHistoryService InBillMasterHistory { get; set; }

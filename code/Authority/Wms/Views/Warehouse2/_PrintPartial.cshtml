@@ -1,15 +1,16 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var row = $('#warehouseTree').tree('getSelected');
+        var treeObj = $.fn.zTree.getZTreeObj("warehouseTree");
+        var row = treeObj.getSelectedNodes();
         if (row) {
             var rowAttr = null, rowId = null;
 
-            if (row.attributes == null) { rowAttr = ""; } else { rowAttr = row.attributes; }
-            if (row.id == null) { rowId = ""; } else { rowId = row.id; }
+            if (row[0].type == null) { rowAttr = ""; } else { rowAttr = row[0].type; }
+            if (row[0].id == null) { rowId = ""; } else { rowId = row[0].id; }
 
             window.location.href = "/Warehouse2/CreateExcelToClient/"
-                                            + "?type=" + row.attributes
-                                            + "&id=" + row.id;
+                                            + "?type=" + row[0].type 
+                                            + "&id=" + row[0].id;
         }
         else {
             $.messager.alert("系统提示", "未选中树形菜单", "info");
