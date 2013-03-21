@@ -47,6 +47,7 @@
     <Compile Include="Interfaces\IBillTypeService.cs" />
     <Compile Include="Interfaces\ICargospaceService.cs" />
     <Compile Include="Interfaces\ICellHistoricalService.cs" />
+    <Compile Include="Interfaces\ICellPositionService.cs" />
     <Compile Include="Interfaces\ICheckBillDetailService.cs" />
     <Compile Include="Interfaces\ICheckBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\ICheckBillMasterService.cs" />
@@ -69,6 +70,10 @@
     <Compile Include="Interfaces\IMoveBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IMoveBillMasterService.cs" />
     <Compile Include="Interfaces\IMoveSearchDetailService.cs" />
+    <Compile Include="Interfaces\IPathNodeService.cs" />
+    <Compile Include="Interfaces\IPathService.cs" />
+    <Compile Include="Interfaces\IPositionService.cs" />
+    <Compile Include="Interfaces\IProductSizeService.cs" />
     <Compile Include="Interfaces\IProfitLossBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IOrderSearchDetailService.cs" />
     <Compile Include="Interfaces\IOutBillDetailService.cs" />
@@ -78,6 +83,7 @@
     <Compile Include="Interfaces\IProductWarningService.cs" />
     <Compile Include="Interfaces\IProfitLossBillDetailService.cs" />
     <Compile Include="Interfaces\IProfitLossBillMasterService.cs" />
+    <Compile Include="Interfaces\IRegionService.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Interfaces\IAreaService.cs" />
     <Compile Include="Interfaces\IBrandService.cs" />
@@ -88,6 +94,7 @@
     <Compile Include="Interfaces\IJobService.cs" />
     <Compile Include="Interfaces\IProductService.cs" />
     <Compile Include="Interfaces\IShelfService.cs" />
+    <Compile Include="Interfaces\ISizeService.cs" />
     <Compile Include="Interfaces\ISortingLineService.cs" />
     <Compile Include="Interfaces\ISortingLowerlimitService.cs" />
     <Compile Include="Interfaces\ISortOrderDetailService.cs" />
@@ -95,6 +102,7 @@
     <Compile Include="Interfaces\ISortOrderSearchService.cs" />
     <Compile Include="Interfaces\ISortOrderService.cs" />
     <Compile Include="Interfaces\ISortWorkDispatchService.cs" />
+    <Compile Include="Interfaces\ISRMService.cs" />
     <Compile Include="Interfaces\IStockCheckSearchService.cs" />
     <Compile Include="Interfaces\IStockDifferSearchService.cs" />
     <Compile Include="Interfaces\IStockIntoSearchService.cs" />
@@ -112,6 +120,7 @@
     <Compile Include="Service\BillTypeService.cs" />
     <Compile Include="Service\CargospaceService.cs" />
     <Compile Include="Service\CellHistoricalService.cs" />
+    <Compile Include="Service\CellPositionService.cs" />
     <Compile Include="Service\CheckBillDetailService.cs" />
     <Compile Include="Service\CheckBillMasterHistoryService.cs" />
     <Compile Include="Service\CheckBillMasterService.cs" />
@@ -139,10 +148,15 @@
     <Compile Include="Service\OutBillMasterHistoryService.cs" />
     <Compile Include="Service\OutBillMasterService.cs" />
     <Compile Include="Service\OutSearchDetailService.cs" />
+    <Compile Include="Service\PathNodeService.cs" />
+    <Compile Include="Service\PathService.cs" />
+    <Compile Include="Service\PositionService.cs" />
+    <Compile Include="Service\ProductSizeService.cs" />
     <Compile Include="Service\ProductWarningService.cs" />
     <Compile Include="Service\ProfitLossBillDetailService.cs" />
     <Compile Include="Service\ProfitLossBillMasterHistoryService.cs" />
     <Compile Include="Service\ProfitLossBillMasterService.cs" />
+    <Compile Include="Service\RegionService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
     <Compile Include="Service\AreaService.cs" />
     <Compile Include="Service\BrandService.cs" />
@@ -153,6 +167,7 @@
     <Compile Include="Service\JobService.cs" />
     <Compile Include="Service\ProductService.cs" />
     <Compile Include="Service\ShelfService.cs" />
+    <Compile Include="Service\SizeService.cs" />
     <Compile Include="Service\SortingLineService.cs" />
     <Compile Include="Service\SortingLowerlimitService.cs" />
     <Compile Include="Service\SortOrder.cs" />
@@ -160,6 +175,7 @@
     <Compile Include="Service\SortOrderDispatchService.cs" />
     <Compile Include="Service\SortOrderSearchService.cs" />
     <Compile Include="Service\SortWorkDispatchService.cs" />
+    <Compile Include="Service\SRMService.cs" />
     <Compile Include="Service\StockCheckSearchService.cs" />
     <Compile Include="Service\StockDifferSearchService.cs" />
     <Compile Include="Service\StockIntoSearchService.cs" />
