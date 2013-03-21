@@ -7,8 +7,8 @@
             } else {
                 $.messager.confirm('作业', '确认要作业吗？作业后将无法删除重新调度！', function (r) {
                     if (r) {
-                        $.ajaxSender.send('/SortWorkDispatch/Task/',
-                            { moveBillNo: row.MoveBillNo },
+                        $.ajaxSender.send('/StockInBill/InBillMasterSettle/',
+                            { BillNo: row.BillNo },
                             function () {
                                 $('#details').datagrid('load');
                             });
