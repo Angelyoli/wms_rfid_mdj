@@ -29,6 +29,50 @@ namespace THOK.Authority.Bll.Service
         {
             get { return this.GetType(); }
         }
+        public bool UpdateUserInfo(string userName)
+        {
+            string ipaddress=System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
+            var user = UserRepository.GetSingle(i => i.UserName == userName);
+            if (user != null)
+            {
+                user.UserName = userName;
+                user.LoginPC = ipaddress;
+                UserRepository.SaveChanges();
+                return true;
+            }
+            else { return false; }
+        }
+        public string GetLocalIp(string userName)
+        {
+            string ipaddress = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
+            return ipaddress;
+        }
+        public string GetUserIp(string userName)
+        {
+            string loginPC = "";
+            var user = UserRepository.GetQueryable().Where(i => i.UserName == userName).ToArray();
+            if (user.Count() > 0)
+            {
+                loginPC = user[0].LoginPC;
+                return loginPC;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        public bool DeleteUserIp(string userName)
+        {
+            var user = UserRepository.GetSingle(i => i.UserName == userName);
+            if (user != null)
+            {
+                user.LoginPC = "";
+                UserRepository.SaveChanges();
+                return true;
+            }
+            else { return false; }
+        }
 
         public object GetDetails(int page, int rows, string userName, string chineseName, string isLock, string isAdmin, string memo)
         {

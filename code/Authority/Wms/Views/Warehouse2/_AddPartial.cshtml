@@ -2,9 +2,10 @@
     var url;
     var fm;
     function addClick() {
+        var treeObj = $.fn.zTree.getZTreeObj("warehouseTree");
+        var row = treeObj.getSelectedNodes();
         var divid;
         var addName;
-        var row = $('#warehouseTree').tree('getSelected');
         if (row == null) {
             divid = "ware";
             url = '/Warehouse/WareCreate/';
@@ -16,42 +17,42 @@
                     $('#wareID').val(json);
                 }
             });
-        } else if (row.attributes == "cell") {
+        } else if (row[0].type == "cell") {
             $('#dlg').dialog('close');
             $.messager.alert(g_MsgBoxTitle,"货位下不能新增", "error");
-            $('#details').treegrid('reload');
-        } else if (row.attributes == "ware") {
+            $('#details').ztree('reload');
+        } else if (row[0].type == "ware") {
             divid = "area";
             url = '/Area/AreaCreate/';
             addClass("wareArea", "");
             addName = "库区";
-            $.getJSON("/Area/GetAreaCode/", { wareCode: row.id }, function (json) {
+            $.getJSON("/Area/GetAreaCode/", { wareCode: row[0].id }, function (json) {
                 if (json) {
                     $('#areaID').attr("readonly", true);
                     $('#areaID').val(json);
                 }
             });
-        } else if (row.attributes == "area") {
+        } else if (row[0].type == "area") {
             divid = "shelf";
             url = '/Shelf/ShelfCreate/';
             addClass("wareShelf", "areaShelf");
             addName = "货架";
-            $.getJSON("/Shelf/GetShelfCode/", { areaCode: row.id }, function (json) {
+            $.getJSON("/Shelf/GetShelfCode/", { areaCode: row[0].id }, function (json) {
                 if (json) {
                     $('#shelfID').attr("readonly", true);
                     $('#shelfID').val(json);
                 }
             });
-        } else if (row.attributes == "shelf") {
+        } else if (row[0].type == "shelf") {
             divid = "cell";
             url = '/Cell/CellCreate/';
             addClass("wareCell", "areaCell");
             addName = "货位";
-            $.getJSON("/Cell/GetCellCode/", { shelfCode: row.id }, function (json) {
+            $.getJSON("/Cell/GetCellCode/", { shelfCode: row[0].id }, function (json) {
                 if (json) {
                     $('#cellID').attr("readonly", true);
                     $('#cellID').val(json);
-                    $('#cellCol').val(json.substr(row.ShelfCode.length + 1, 2));
+                    $('#cellCol').val(json.substr(row[0].ShelfCode.length + 1, 2));
                 }
             });
         }
@@ -73,7 +74,7 @@
                 return $(this).form('validate');
             },
             success: function (result) {
-                $('#warehouseTree').tree('reload');
+                $.fn.zTree.getZTreeObj("warehouseTree").refresh();
                 var result = eval('(' + result + ')');
                 if (result.success) {
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");

@@ -1,33 +1,34 @@
 ﻿<script type="text/javascript">
     function deleteClick() {
-        var row = $('#warehouseTree').tree('getSelected');
+        var treeObj = $.fn.zTree.getZTreeObj("warehouseTree");
+        var row = treeObj.getSelectedNodes();
         if (row) {
             $('form input').attr("disabled", "disabled");
             var divid;
             var laod;
             var deleteName;
-            if (row.attributes == "ware") {
+            if (row[0].type == "ware") {
                 divid = "ware";
-                Load("/Warehouse2/FindWarehouse", row.id, divid);
-                url = "/Warehouse2/Delete/?warehouseCode=" + row.id;
+                Load("/Warehouse2/FindWarehouse", row[0].id, divid);
+                url = "/Warehouse2/Delete/?warehouseCode=" + row[0].id;
                 deleteName = "仓库";
-            } else if (row.attributes == "area") {
+            } else if (row[0].type == "area") {
                 divid = "area";
-                Load("/Area/FindArea", row.id, divid);
+                Load("/Area/FindArea", row[0].id, divid);
                 addClass("wareArea", "");
-                url = "/Area/Delete/?areaCode=" + row.id;
+                url = "/Area/Delete/?areaCode=" + row[0].id;
                 deleteName = "库区";
-            } else if (row.attributes == "shelf") {
+            } else if (row[0].type == "shelf") {
                 divid = "shelf";
-                Load("/Shelf/FindShelf", row.id, divid);
+                Load("/Shelf/FindShelf", row[0].id, divid);
                 addClass("wareShelf", "areaShelf");
-                url = "/Shelf/Delete/?shelfCode=" + row.id;
+                url = "/Shelf/Delete/?shelfCode=" + row[0].id;
                 deleteName = "货架";
-            } else if (row.attributes == "cell") {
+            } else if (row[0].type == "cell") {
                 divid = "cell";
-                Load("/Cell/FindCell", row.id, divid);
+                Load("/Cell/FindCell", row[0].id, divid);
                 addClass("wareCell", "areaCell")
-                url = "/Cell/Delete/?cellCode=" + row.id;
+                url = "/Cell/Delete/?cellCode=" + row[0].id;
                 deleteName = "货位";
             }
             fm = divid + "fm";

@@ -1,6 +1,7 @@
 ﻿<script type="text/javascript">
     $(function () {
         $('#changeSystem').click(function () {
+            refreshs();
             $('#cg-changesystem').combogrid('setValue', '').combo('setText', '');
             $('#dlg-changesystem').dialog('open').dialog('setTitle', '切换系统');
         });

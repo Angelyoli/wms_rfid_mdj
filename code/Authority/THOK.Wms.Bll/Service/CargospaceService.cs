@@ -6,13 +6,15 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
-
+using System.Data;
 namespace THOK.Wms.Bll.Service
 {
     public class CargospaceService : ServiceBase<Storage>, ICargospaceService
     {
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -62,6 +64,56 @@ namespace THOK.Wms.Bll.Service
                     UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
                 });
                 return new { total, rows = Storage.ToArray() };
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public object GetCellDetails(string type, string id)
+        {
+            try
+            {
+                IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+                var cells = cellQuery.Where(s => s.CellCode != null);
+                if (type == "ware")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id);
+                }
+                else if (type == "area")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id);
+                }
+                else if (type == "shelf")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id);
+                }
+                else if (type == "cell")
+                {
+                    cells = cellQuery.Where(c => c.CellCode == id);
+                }
+
+                var Cell = cells.ToArray().ToArray().Select(c => new
+                {
+                    c.CellCode,
+                    c.CellName,
+                    c.Product.ProductCode,
+                    c.Product.ProductName,
+                    c.Product.Unit.UnitCode,
+                    c.Product.Unit.UnitName,
+                    c.MaxQuantity,
+                    c.Layer,
+                    Quantity = c.Storages.Max(s=>s.Quantity)/ c.Product.Unit.Count,
+                    EmptyQuantity = c.MaxQuantity - c.Storages.Max(s => s.Quantity) / c.Product.Unit.Count,
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd")
+                });
+                for (int i = 0; i <Cell.Count(); i++)
+                {
+                    DataSet tc = new DataSet();
+
+                }
+                return Cell.ToArray();
             }
             catch (Exception ex)
             {

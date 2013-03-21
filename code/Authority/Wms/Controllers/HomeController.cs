@@ -20,27 +20,42 @@ namespace Authority.Controllers
         public ISystemService SystemService { get; set; }
         [Dependency]
         public IFormsAuthenticationService FormsService { get; set; }
+        [Dependency]
+        public IUserService UserService { get; set; }
         public ActionResult Index()
         {
+            string userName = this.GetCookieValue("username");
             string cityId = this.GetCookieValue("cityid");
             string serverId = this.GetCookieValue("serverid");
             string systemId = this.GetCookieValue("systemid");
+            string ipAdress = UserService.GetUserIp(userName);
+            string localip = UserService.GetLocalIp(userName);
             if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty))
             {
                 ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
                 ViewBag.ServerName = ServerService.GetServerById(serverId).ToString();
                 ViewBag.SystemName = SystemService.GetSystemById(systemId).ToString();
+                ViewBag.userName = userName;
+                if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && !ipAdress.Equals(string.Empty))
+                {
+                    ViewBag.ipAdress = ipAdress;
+                    ViewBag.localip = localip;
+                }
+                else
+                {
+                    ViewBag.localip = localip;
+                }
             }
             else
             {
                 this.RemoveCookie(cityId);
                 this.RemoveCookie(serverId);
                 this.RemoveCookie(systemId);
+                this.RemoveCookie(userName);
                 FormsService.SignOut();
             }
             return View();
         }
-
         public ActionResult GetUser()
         {
             return Json(User,"text", JsonRequestBehavior.AllowGet);

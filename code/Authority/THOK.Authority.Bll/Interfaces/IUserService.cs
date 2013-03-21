@@ -4,6 +4,14 @@ namespace THOK.Authority.Bll.Interfaces
 {
     public interface IUserService : IService<User>
     {
+        string GetUserIp(string userName);
+
+        bool UpdateUserInfo(string userName);
+
+        string GetLocalIp(string userName);
+
+        bool DeleteUserIp(string userName);
+
         object GetDetails(int page, int rows, string userName, string chineseName, string isLock, string isAdmin, string memo);
 
         bool Add(string userName, string pwd, string ChineseName, bool isLock, bool isAdmin,string memo);
