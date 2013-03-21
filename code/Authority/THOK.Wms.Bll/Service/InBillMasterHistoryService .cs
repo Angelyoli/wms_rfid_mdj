@@ -39,7 +39,7 @@ namespace THOK.Wms.Bll.Service
             var inBillDetail = InBillDetailRepository.GetQueryable().Where(i => i.InBillMaster.BillDate <= datetime);
             var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.InBillMaster.BillDate <= datetime);
 
-            if (inBillMaster != null)
+            if (inBillMaster.Any())
             {
                 #region 主表移入历史表
                 try
@@ -70,7 +70,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 #endregion
 
-                if (inBillDetail != null)
+                if (inBillDetail.Any())
                 {
                     #region 细表移入历史表
                     try
@@ -98,7 +98,7 @@ namespace THOK.Wms.Bll.Service
                     }
                     #endregion
 
-                    if (inBillAllot != null)
+                    if (inBillAllot.Any())
                     {
                         #region 分配表移入历史表
                         try
@@ -134,27 +134,30 @@ namespace THOK.Wms.Bll.Service
                 if (result == true)
                 {
                     #region 删除主细分配表
-                    //try
-                    //{
-                    //    foreach (var item in inBillMaster.ToList())
-                    //    {
-                    //        Del(InBillAllotRepository, item.InBillAllots);
-                    //        Del(InBillDetailRepository, item.InBillDetails);
-                    //        InBillMasterRepository.Delete(item);
-                    //        result = true;
-                    //    }
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    strResult = "删除操作时：" + e.InnerException.ToString();
-                    //    result = false;
-                    //}
+                    try
+                    {
+                        foreach (var item in inBillMaster.ToList())
+                        {
+                            Del(InBillAllotRepository, item.InBillAllots);
+                            Del(InBillDetailRepository, item.InBillDetails);
+                            InBillMasterRepository.Delete(item);
+                            result = true;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        strResult = "删除操作时：" + e.InnerException.ToString();
+                        result = false;
+                    }
                     InBillMasterRepository.SaveChanges();
                     #endregion
                 }
             }
+            else 
+            {
+                strResult = "数据不存在！";
+            }
             return result;
         }
-
     }
 }

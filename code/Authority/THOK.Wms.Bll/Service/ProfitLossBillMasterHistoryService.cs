@@ -33,7 +33,7 @@ namespace THOK.Wms.Bll.Service
             var profitLossBillMaster = ProfitLossBillMasterRepository.GetQueryable().Where(i => i.BillDate <= datetime);
             var profitLossBillDetail = ProfitLossBillDetailRepository.GetQueryable().Where(i => i.ProfitLossBillMaster.BillDate <= datetime);
 
-            if (profitLossBillMaster != null)
+            if (profitLossBillMaster.Any())
             {
                 #region 主表移入历史表
                 try
@@ -66,7 +66,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 #endregion
 
-                if (profitLossBillDetail != null)
+                if (profitLossBillDetail.Any())
                 {
                     #region 细表移入历史表
                     try
@@ -113,7 +113,11 @@ namespace THOK.Wms.Bll.Service
                     ProfitLossBillMasterHistoryRepository.SaveChanges();
                     #endregion
                 }
-            }            
+            }
+            else
+            {
+                strResult = "数据不存在！";
+            }
             return result;
         }
     }

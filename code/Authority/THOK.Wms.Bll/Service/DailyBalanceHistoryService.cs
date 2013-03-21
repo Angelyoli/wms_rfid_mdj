@@ -22,7 +22,7 @@ namespace THOK.Wms.Bll.Service
             bool result = false;
             var dailyBalancel = DailyBalanceRepository.GetQueryable().Where(i => i.SettleDate <= datetime);
 
-            if (dailyBalancel != null)
+            if (dailyBalancel.Any())
             {
                 #region 日结表移入历史表
                 try
@@ -48,33 +48,33 @@ namespace THOK.Wms.Bll.Service
                 catch (Exception e)
                 {
                     strResult = e.InnerException.ToString();
+                    result = false;
                 }
                 #endregion
-            }
-            #region 删除记录
-            if (dailyBalancel != null)
-            {
-                foreach (var item in dailyBalancel.ToList())
+
+                #region 删除数据
+                try
                 {
-                    try
+                    foreach (var item in dailyBalancel.ToList())
                     {
                         DailyBalanceRepository.Delete(item);
                         DailyBalanceRepository.SaveChanges();
                         result = true;
                     }
-                    catch (Exception e)
-                    {
-                        strResult = e.InnerException.ToString();
-                    }
                 }
+                catch (Exception e)
+                {
+                    strResult = e.InnerException.ToString();
+                    result = false;
+                } 
+                #endregion
+
                 DailyBalanceHistoryRepository.SaveChanges();
             }
             else
             {
-                strResult = "删除失败！未找到当前需要删除的数据！";
+                strResult = "数据不存在！";
             }
-            #endregion
-
             return result;
         }
     }

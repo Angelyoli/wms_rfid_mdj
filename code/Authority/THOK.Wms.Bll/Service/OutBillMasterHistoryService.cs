@@ -38,7 +38,7 @@ namespace THOK.Wms.Bll.Service
             var outBillDetail = OutBillDetailRepository.GetQueryable().Where(i => i.OutBillMaster.BillDate <= datetime);
             var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.OutBillMaster.BillDate <= datetime);
 
-            if (outBillMaster != null)
+            if (outBillMaster.Any())
             {
                 #region 主表移入历史表
                 try
@@ -60,7 +60,7 @@ namespace THOK.Wms.Bll.Service
                         history.Origin = item.Origin;
                         history.TargetCellCode = item.TargetCellCode;
                         OutBillMasterHistoryRepository.Add(history);
-                    }                    
+                    }
                     result = true;
                 }
                 catch (Exception e)
@@ -70,7 +70,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 #endregion
 
-                if (outBillDetail != null)
+                if (outBillDetail.Any())
                 {
                     #region 细表移入历史表
                     try
@@ -98,7 +98,7 @@ namespace THOK.Wms.Bll.Service
                     }
                     #endregion
 
-                    if (outBillAllot != null)
+                    if (outBillAllot.Any())
                     {
                         #region 分配表移入历史表
                         try
@@ -120,7 +120,7 @@ namespace THOK.Wms.Bll.Service
                                 history3.FinishTime = item3.FinishTime;
                                 history3.Status = item3.Status;
                                 OutBillAllotHistoryRepository.Add(history3);
-                            }                            
+                            }
                             result = true;
                         }
                         catch (Exception e)
@@ -142,7 +142,7 @@ namespace THOK.Wms.Bll.Service
                             Del(OutBillAllotRepository, item.OutBillAllots);
                             Del(OutBillDetailRepository, item.OutBillDetails);
                             OutBillMasterRepository.Delete(item);
-                            
+
                             result = true;
                         }
                     }
@@ -153,6 +153,10 @@ namespace THOK.Wms.Bll.Service
                     OutBillMasterHistoryRepository.SaveChanges();
                     #endregion
                 }
+            }
+            else
+            {
+                strResult = "数据不存在！";
             }
             return result;
         }

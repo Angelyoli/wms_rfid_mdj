@@ -33,7 +33,7 @@ namespace THOK.Wms.Bll.Service
             var moveBillMaster = MoveBillMasterRepository.GetQueryable().Where(i => i.BillDate <= datetime);
             var moveBillDetail = MoveBillDetailRepository.GetQueryable().Where(i => i.MoveBillMaster.BillDate <= datetime);
 
-            if (moveBillMaster != null)
+            if (moveBillMaster.Any())
             {
                 #region 主表移入历史表
                 try
@@ -64,7 +64,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 #endregion
 
-                if (moveBillDetail != null)
+                if (moveBillDetail.Any())
                 {
                     #region 细表移入历史表
                     try
@@ -116,6 +116,10 @@ namespace THOK.Wms.Bll.Service
                     MoveBillMasterHistoryRepository.SaveChanges();
                     #endregion
                 }
+            }
+            else
+            {
+                strResult = "数据不存在！";
             }
             return result;
         }

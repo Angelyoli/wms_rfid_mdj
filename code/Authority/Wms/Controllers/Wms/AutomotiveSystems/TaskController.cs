@@ -101,31 +101,32 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
             string msg = string.Empty;
             bool bResult;
             string strResult = string.Empty;
+            DateTime time = Convert.ToDateTime(dateTime);
             switch (billType)
             {
                 case "1"://入库单据
-                    bResult = InBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
-                    if (!bResult) msg = string.Format("入库操作：", strResult);
+                    bResult = InBillMasterHistory.Add(time, out strResult);
+                    if (!bResult) msg = "入库操作：" + strResult;
                     break;
                 case "2"://出库单据
-                    bResult = OutBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
-                    if (!bResult) msg = string.Format("出库操作：", strResult);
+                    bResult = OutBillMasterHistory.Add(time, out strResult);
+                    if (!bResult) msg = "出库操作：" + strResult;
                     break;
                 case "3"://移库单据
-                    bResult = MoveBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
-                    if (!bResult) msg = string.Format("移库操作：", strResult);
+                    bResult = MoveBillMasterHistory.Add(time, out strResult);
+                    if (!bResult) msg = "移库操作：" + strResult;
                     break;
                 case "4"://盘点单据
-                    bResult = CheckBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
-                    if (!bResult) msg = string.Format("盘点操作：", strResult);
+                    bResult = CheckBillMasterHistory.Add(time, out strResult);
+                    if (!bResult) msg = "盘点操作：" + strResult;
                     break;
                 case "5"://损益单据
-                    bResult = ProfitLossBillMasterHistory.Add(Convert.ToDateTime(dateTime), out strResult);
-                    if (!bResult) msg = string.Format("损益操作：", strResult);
+                    bResult = ProfitLossBillMasterHistory.Add(time, out strResult);
+                    if (!bResult) msg = "损益操作：" + strResult;
                     break;
                 case "6"://日结
-                    bResult = DailyBalanceHistoryService.Add(Convert.ToDateTime(dateTime), out strResult);
-                    if (!bResult) msg = string.Format("出库操作：", strResult);
+                    bResult = DailyBalanceHistoryService.Add(time, out strResult);
+                    if (!bResult) msg = "出库操作：" + strResult;
                     break;
                 default:
                     msg = "调用了未定义的方法！";
