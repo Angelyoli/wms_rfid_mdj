@@ -1599,6 +1599,7 @@
     <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
     <Content Include="Scripts\mykeyboardshortcuts.js" />
+    <Content Include="Scripts\mymigration.js" />
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
