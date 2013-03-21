@@ -297,6 +297,14 @@
     <Compile Include="Migrations\201303190746167_add_history_data.Designer.cs">
       <DependentUpon>201303190746167_add_history_data.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201303200752178_region.cs" />
+    <Compile Include="Migrations\201303200752178_region.Designer.cs">
+      <DependentUpon>201303200752178_region.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201303210345569_add_WCSBaseInfoTable.cs" />
+    <Compile Include="Migrations\201303210345569_add_WCSBaseInfoTable.Designer.cs">
+      <DependentUpon>201303210345569_add_WCSBaseInfoTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
