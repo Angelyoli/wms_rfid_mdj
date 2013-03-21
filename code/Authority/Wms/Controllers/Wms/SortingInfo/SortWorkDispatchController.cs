@@ -24,6 +24,7 @@ namespace Authority.Controllers.Wms.SortingInfo
             ViewBag.hasDelete = true;
             ViewBag.hasAudit = true;
             ViewBag.hasAntiTrial = true;
+            ViewBag.hasTask = true;
             ViewBag.hasSettle = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
