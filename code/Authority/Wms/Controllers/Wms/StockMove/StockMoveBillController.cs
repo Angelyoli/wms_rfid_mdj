@@ -17,8 +17,10 @@ namespace Authority.Controllers.Wms.StockMove
         public IMoveBillMasterService MoveBillMasterService { get; set; }
         [Dependency]
         public IMoveBillDetailService MoveBillDetailService { get; set; }
+        [Dependency]
+        public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
         //
-        // GET: /MovePositionBill/
+        // GET: /StockMoveBill/
 
         public ActionResult Index(string moduleID)
         {
@@ -37,7 +39,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // GET: /MoveBillMaster/Details/
+        // GET: /StockMoveBill/Details/
 
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
@@ -54,7 +56,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // GET: /MoveBillDetail/MoveBillDetails/
+        // GET: /StockMoveBill/MoveBillDetails/
 
         public ActionResult MoveBillDetails(int page, int rows, string BillNo)
         {
@@ -63,7 +65,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // GET: /MoveBillMaster/GenMoveBillNo/
+        // GET: /StockMoveBill/GenMoveBillNo/
 
         public ActionResult GenMoveBillNo()
         {
@@ -72,7 +74,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillMaster/Create/
+        // POST: /StockMoveBill/Create/
 
         [HttpPost]
         public ActionResult Create(MoveBillMaster moveBillMaster)
@@ -84,7 +86,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillMaster/Edit/
+        // POST: /StockMoveBill/Edit/
 
         [HttpPost]
         public ActionResult Edit(MoveBillMaster moveBillMaster)
@@ -96,7 +98,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillMaster/Delete/
+        // POST: /StockMoveBill/Delete/
         public ActionResult Delete(string BillNo)
         {
             string strResult = string.Empty;
@@ -106,7 +108,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillMaster/Audit/
+        // POST: /StockMoveBill/Audit/
         public ActionResult Audit(string BillNo)
         {
             string strResult = string.Empty;
@@ -116,7 +118,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillMaster/AntiTrial/
+        // POST: /StockMoveBill/AntiTrial/
         public ActionResult AntiTrial(string BillNo)
         {
             string strResult = string.Empty;
@@ -126,7 +128,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillDetail/MoveBillDetailDelete/
+        // POST: /StockMoveBill/MoveBillDetailDelete/
 
         public ActionResult MoveBillDetailDelete(string ID)
         {
@@ -137,7 +139,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillDetail/MoveBillDetailCreate/
+        // POST: /StockMoveBill/MoveBillDetailCreate/
 
         [HttpPost]
         public ActionResult MoveBillDetailCreate(MoveBillDetail moveBillDetail)
@@ -149,7 +151,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillDetail/MoveBillDetailEdit/
+        // POST: /StockMoveBill/MoveBillDetailEdit/
 
         [HttpPost]
         public ActionResult MoveBillDetailEdit(MoveBillDetail moveBillDetail)
@@ -170,7 +172,7 @@ namespace Authority.Controllers.Wms.StockMove
         }
 
         //
-        // POST: /MoveBillMaster/moveBillMasterSettle/
+        // POST: /StockMoveBill/moveBillMasterSettle/
 
         public ActionResult MoveBillMasterSettle(string billNo)
         {
@@ -180,7 +182,17 @@ namespace Authority.Controllers.Wms.StockMove
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        #region /MoveBillMaster/CreateExcelToClient/
+        //移库作业
+        // POST: /StockMoveBill/MoveBillTask/       
+        public ActionResult MoveBillTask(string moveBillNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = TaskService.MoveBIllTask(moveBillNo, out strResult);
+            string msg = bResult ? "作业成功" : "作业失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        #region /StockMoveBill/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;

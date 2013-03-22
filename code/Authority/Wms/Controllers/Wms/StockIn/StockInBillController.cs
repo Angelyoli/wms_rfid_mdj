@@ -21,6 +21,8 @@ namespace Authority.Controllers.Wms.StockIn
         public IInBillDetailService InBillDetailService { get; set; }
         [Dependency]
         public ISystemParameterService SystemParameterService { get; set; }
+        [Dependency]
+        public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
         //
         // GET: /StockInBill/
 
@@ -48,7 +50,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // GET: /InBillMaster/Details/
+        // GET: /StockInBill/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             string BillNo = collection["BillNo"] ?? "";
@@ -64,7 +66,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // GET: /InBillDetail/InBillDetails/
+        // GET: /StockInBill/InBillDetails/
 
         public ActionResult InBillDetails(int page, int rows, string BillNo)
         {
@@ -73,7 +75,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // GET: /InBillMaster/GenInBillNo/
+        // GET: /StockInBill/GenInBillNo/
 
         public ActionResult GenInBillNo()
         {
@@ -82,7 +84,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillMaster/Create/
+        // POST: /StockInBill/Create/
 
         [HttpPost]
         public ActionResult Create(InBillMaster inBillMaster)
@@ -94,7 +96,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillMaster/Edit/
+        // POST: /StockInBill/Edit/
 
         [HttpPost]
         public ActionResult Edit(InBillMaster inBillMaster)
@@ -106,7 +108,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillMaster/Delete/
+        // POST: /StockInBill/Delete/
         public ActionResult Delete(string BillNo)
         {
             DownDecidePlanBll planBll = new DownDecidePlanBll();
@@ -119,7 +121,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillDetail/InBillDetailCreate/
+        // POST: /StockInBill/InBillDetailCreate/
 
         [HttpPost]
         public ActionResult InBillDetailCreate(InBillDetail inBillDetail)
@@ -131,7 +133,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillDetail/InBillDetailDelete/
+        // POST: /StockInBill/InBillDetailDelete/
 
         [HttpPost]
         public ActionResult InBillDetailDelete(string ID)
@@ -143,7 +145,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillMaster/Audit/
+        // POST: /StockInBill/Audit/
         public ActionResult Audit(string BillNo)
         {
             string strResult = string.Empty;
@@ -163,7 +165,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillDetail/InBillDetailEdit/
+        // POST: /StockInBill/InBillDetailEdit/
 
         [HttpPost]
         public ActionResult InBillDetailEdit(InBillDetail inBillDetail)
@@ -175,7 +177,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillMaster/GetBillTypeDetail/
+        // POST: /StockInBill/GetBillTypeDetail/
 
         [HttpPost]
         public ActionResult GetBillTypeDetail(string BillClass, string IsActive)
@@ -185,7 +187,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillMaster/GetWareHouseDetail/
+        // POST: /StockInBill/GetWareHouseDetail/
 
         [HttpPost]
         public ActionResult GetWareHouseDetail(string IsActive)
@@ -195,7 +197,7 @@ namespace Authority.Controllers.Wms.StockIn
         }
 
         //
-        // POST: /InBillDetail/GetProductDetails/
+        // POST: /StockInBill/GetProductDetails/
 
         [HttpPost]
         public ActionResult GetProductDetails(int page, int rows, string QueryString, string Value)
@@ -212,13 +214,24 @@ namespace Authority.Controllers.Wms.StockIn
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 
-        //
-        // POST: /InBillMaster/inBillMasterSettle/
+        //入库结单
+        // POST: /StockInBill/inBillMasterSettle/
         public ActionResult InBillMasterSettle(string BillNo)
         {
             string strResult = string.Empty;
             bool bResult = InBillMasterService.Settle(BillNo, out strResult);
             string msg = bResult ? "结单成功" : "结单失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //入库订单作业
+        // POST: /StockInBill/InBillTask/
+        
+        public ActionResult InBillTask(string BillNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = TaskService.InBIllTask(BillNo, out strResult);
+            string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 

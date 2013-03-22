@@ -7,8 +7,8 @@
             } else {
                 $.messager.confirm('作业', '确认要作业吗？作业后将无法反审！', function (r) {
                     if (r) {
-                        $.ajaxSender.send('/StockInBill/InBillMasterSettle/',
-                            { BillNo: row.BillNo },
+                        $.ajaxSender.send('/StockMoveBill/MoveBillTask/',
+                            { moveBillNo: row.BillNo },
                             function () {
                                 $('#details').datagrid('load');
                             });
