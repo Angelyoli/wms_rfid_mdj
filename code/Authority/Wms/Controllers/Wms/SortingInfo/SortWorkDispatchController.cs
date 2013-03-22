@@ -14,7 +14,8 @@ namespace Authority.Controllers.Wms.SortingInfo
     {
         [Dependency]
         public ISortWorkDispatchService SortWorkDispatchService { get; set; }
-
+        [Dependency]
+        public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
         //
         // GET: /SortWorkDispatch/
         public ActionResult Index(string moduleID)
@@ -89,6 +90,16 @@ namespace Authority.Controllers.Wms.SortingInfo
             string errorInfo = string.Empty;
             bool bResult = SortWorkDispatchService.Settle(id, ref errorInfo);
             string msg = bResult ? "结单成功" : "结单失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //分拣调度移库作业
+        // POST: /SortWorkDispatch/Task/
+        public ActionResult Task(string moveBillNo)
+        {
+            string errorInfo = string.Empty;
+            bool bResult = TaskService.MoveBIllTask(moveBillNo, out errorInfo);
+            string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 

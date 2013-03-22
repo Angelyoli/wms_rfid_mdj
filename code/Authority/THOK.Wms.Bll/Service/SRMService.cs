@@ -15,5 +15,6 @@ namespace THOK.Wms.Bll.Service
         {
             get { return this.GetType(); }
         }
+
     }
 }
