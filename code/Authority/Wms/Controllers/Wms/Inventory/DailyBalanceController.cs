@@ -170,9 +170,11 @@ namespace Wms.Controllers.Wms.Inventory
 
         public ActionResult DailyBalanceHistory(DateTime datetime)
         {
+            string result = string.Empty;
             string strResult = string.Empty;
             bool bResult = DailyBalanceHistoryService.Add(datetime, out strResult);
             string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }

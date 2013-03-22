@@ -190,7 +190,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             string strResult = string.Empty;
             bool bResult = CheckBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
             string msg = bResult ? "迁移成功" : "迁移失败";
-            if (msg != "迁移成功") result = strResult;
+            if (msg != "迁移成功") result = "原因：" + strResult;
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
     }

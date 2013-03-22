@@ -211,7 +211,7 @@ namespace Authority.Controllers.Wms.StockOut
             string strResult = string.Empty;
             bool bResult = OutBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
             string msg = bResult ? "迁移成功" : "迁移失败";
-            if (msg != "迁移成功") result = strResult;
+            if (msg != "迁移成功") result = "原因：" + strResult;
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
     }
