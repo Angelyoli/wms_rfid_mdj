@@ -189,7 +189,6 @@
     <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\ShelfController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\StorageController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\Test1Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\Warehouse2Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
@@ -1600,6 +1599,7 @@
     <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
     <Content Include="Scripts\mykeyboardshortcuts.js" />
+    <Content Include="Scripts\mymigration.js" />
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1891,6 +1891,8 @@
     <Content Include="Views\AutomotiveConfig\Index.cshtml" />
     <Content Include="Views\DeliverLine\_DistCode.cshtml" />
     <Content Include="Views\Help\Index.cshtml" />
+    <Content Include="Views\CheckBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\DailyBalance\_MigrationPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2224,6 +2226,10 @@
     <Content Include="Views\StockInBill\_TaskPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_TaskPartial.cshtml" />
     <Content Include="Views\SortWorkDispatch\_TaskPartial.cshtml" />
+    <Content Include="Views\StockInBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\StockMoveBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\ProfitLossBill\_MigrationPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

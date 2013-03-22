@@ -7,6 +7,6 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface ICheckBillMasterHistoryService
     {
-        bool Add(DateTime datetime, out string masterResult, out string detailResult, out string deleteResult);
+        bool Add(DateTime datetime, out string strResult);
     }
 }

@@ -16,6 +16,8 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
         public IProfitLossBillMasterService ProfitLossBillMasterService { get; set; }
         [Dependency]
         public IProfitLossBillDetailService ProfitLossBillDetailService { get; set; }
+        [Dependency]
+        public IProfitLossBillMasterHistoryService ProfitLossBillMasterHistoryService { get; set; }
         //
         // GET: /ProfitLossBill/
 
@@ -26,6 +28,7 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
             ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
             ViewBag.hasAudit = true;
+            ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -45,7 +48,7 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
             string CheckPersonCode = collection["CheckPersonCode"] ?? "";
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var profitLossBillMaster = ProfitLossBillMasterService.GetDetails(page, rows, BillNo,WareHouseCode,beginDate,endDate,OperatePersonCode,CheckPersonCode, Status, IsActive);
+            var profitLossBillMaster = ProfitLossBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, beginDate, endDate, OperatePersonCode, CheckPersonCode, Status, IsActive);
             return Json(profitLossBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -166,7 +169,17 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
                 , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
-        } 
+        }
         #endregion
+
+        public ActionResult ProfitLossBillMasterHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = ProfitLossBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

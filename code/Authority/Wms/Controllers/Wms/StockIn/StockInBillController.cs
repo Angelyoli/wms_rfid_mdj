@@ -23,6 +23,9 @@ namespace Authority.Controllers.Wms.StockIn
         public ISystemParameterService SystemParameterService { get; set; }
         [Dependency]
         public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
+		[Dependency]
+        public IInBillMasterHistoryService InBillMasterHistoryService { get; set; }
+
         //
         // GET: /StockInBill/
 
@@ -38,6 +41,7 @@ namespace Authority.Controllers.Wms.StockIn
             ViewBag.hasAllot = true;
             ViewBag.hasTask = true;
             ViewBag.hasSettle = true;
+            ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -139,7 +143,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult InBillDetailDelete(string ID)
         {
             string strResult = string.Empty;
-            bool bResult = InBillDetailService.Delete(ID, out strResult);           
+            bool bResult = InBillDetailService.Delete(ID, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -272,9 +276,21 @@ namespace Authority.Controllers.Wms.StockIn
             {
                 errorInfo += e.Message;
             }
-            
+
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // GET: /StockInBill/InBillMasterHistory/
+        public ActionResult InBillMasterHistory(string datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = InBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

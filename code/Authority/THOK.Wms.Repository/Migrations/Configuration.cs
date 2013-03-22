@@ -1748,6 +1748,14 @@
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("D8344F88-08AD-4FDA-8F45-EAD3BB471103")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("7B5B9063-D425-4911-9345-6433ADF6610A"),
+                    FunctionName = "迁移",
+                    ControlName = "migration",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("D8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 }
                 );
             context.SaveChanges();
@@ -1909,12 +1917,12 @@
                     Module_ModuleID = new Guid("E8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 },
                 new Function()
-                {
-                    FunctionID = new Guid("DDD65519-A56F-44e2-856D-24C2868142C1"),
-                    FunctionName = "结单",
-                    ControlName = "settle",
-                    IndicateImage = "icon-Menu_CheckBill",
-                    Module_ModuleID = new Guid("E8344F88-08AD-4FDA-8F45-EAD3BB471103")
+                 {
+                     FunctionID = new Guid("DDD65519-A56F-44e2-856D-24C2868142C1"),
+                     FunctionName = "结单",
+                     ControlName = "settle",
+                     IndicateImage = "icon-Menu_CheckBill",
+                     Module_ModuleID = new Guid("E8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 },
                 new Function()
                 {
@@ -1930,6 +1938,14 @@
                     FunctionName = "帮助",
                     ControlName = "help",
                     IndicateImage = "icon-help",
+                    Module_ModuleID = new Guid("E8344F88-08AD-4FDA-8F45-EAD3BB471103")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("65F3A9C6-C3C7-4C06-992F-CD19FA4182E0"),
+                    FunctionName = "迁移",
+                    ControlName = "migration",
+                    IndicateImage = "icon-reload",
                     Module_ModuleID = new Guid("E8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 }
                 );
@@ -2099,6 +2115,14 @@
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("F8344F88-08AD-4FDA-8F45-EAD3BB471103")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("2A115F40-39D7-45D7-9472-01F448D87C21"),
+                    FunctionName = "迁移",
+                    ControlName = "migration",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("F8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 }
                 );
             context.SaveChanges();
@@ -2267,6 +2291,14 @@
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("FA344F88-08AD-4FDA-8F45-EAD3BB471104")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("F6E6597A-64A9-4eb2-9C72-9C24C39F5652"),
+                    FunctionName = "迁移",
+                    ControlName = "migration",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("FA344F88-08AD-4FDA-8F45-EAD3BB471104")
                 }
                 );
             context.SaveChanges();
@@ -2419,6 +2451,14 @@
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("FB344F88-08AD-4FDA-8F45-EAD3BB471103")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("0758E8EB-715F-4D95-B9DC-E2D88DC3DA8C"),
+                    FunctionName = "迁移",
+                    ControlName = "migration",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("FB344F88-08AD-4FDA-8F45-EAD3BB471103")
                 }
                 );
             context.SaveChanges();
@@ -2568,6 +2608,14 @@
                     FunctionName = "帮助",
                     ControlName = "help",
                     IndicateImage = "icon-help",
+                    Module_ModuleID = new Guid("FC344F88-08AD-4FDA-8F45-EAD3BB471102")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("EF48B5AA-35EA-4ADC-A229-89C05DD36CC4"),
+                    FunctionName = "迁移",
+                    ControlName = "migration",
+                    IndicateImage = "icon-reload",
                     Module_ModuleID = new Guid("FC344F88-08AD-4FDA-8F45-EAD3BB471102")
                 },
                 new Function()
@@ -3848,7 +3896,7 @@
                    Module_ModuleID = new Guid("3F67FD24-D57A-48CF-A5C1-FC2F9BB8DB1D")
                }
             );
-           // context.SaveChanges();
+            // context.SaveChanges();
         }
 
         private void CreateSystemParameter(AuthorizeContext context)

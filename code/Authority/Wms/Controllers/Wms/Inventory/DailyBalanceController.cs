@@ -29,6 +29,8 @@ namespace Wms.Controllers.Wms.Inventory
         public IInBillMasterService InBillMasterService { get; set; }
         [Dependency]
         public IOutBillMasterService OutBillMasterService { get; set; }
+        [Dependency]
+        public IDailyBalanceHistoryService DailyBalanceHistoryService { get; set; }
 
         UploadBll upload = new UploadBll();
 
@@ -39,6 +41,7 @@ namespace Wms.Controllers.Wms.Inventory
             ViewBag.hasBalance = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
+            ViewBag.hasMigration = true;
             ViewBag.ModuleID = moduleID;
             return View();
         }
@@ -164,5 +167,15 @@ namespace Wms.Controllers.Wms.Inventory
         //    var DailyBalanceInfo = DailyBalanceService.GetDailyBalanceInfos(page, rows, warehouseCode, settleDate);
         //    return Json(DailyBalanceInfo, "text", JsonRequestBehavior.AllowGet);
         //}
+
+        public ActionResult DailyBalanceHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = DailyBalanceHistoryService.Add(datetime, out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }
