@@ -127,6 +127,8 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\SRMController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\SortOrderSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockCheckSearchController.cs" />
@@ -2230,6 +2232,14 @@
     <Content Include="Views\StockOutBill\_MigrationPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_MigrationPartial.cshtml" />
     <Content Include="Views\ProfitLossBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\SRM\AddPage.cshtml" />
+    <Content Include="Views\SRM\Index.cshtml" />
+    <Content Include="Views\SRM\SearchPage.cshtml" />
+    <Content Include="Views\SRM\_AddPartial.cshtml" />
+    <Content Include="Views\SRM\_DeletePartial.cshtml" />
+    <Content Include="Views\SRM\_EditPartial.cshtml" />
+    <Content Include="Views\SRM\_PrintPartial.cshtml" />
+    <Content Include="Views\SRM\_SearchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
