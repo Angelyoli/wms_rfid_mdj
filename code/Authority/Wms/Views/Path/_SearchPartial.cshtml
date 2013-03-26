@@ -1,0 +1,60 @@
+﻿<script type="text/javascript">
+    var searchDialog;
+    var module = "Path";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
+    function searchClick() {
+        $('#State').combo({
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+        $("input[type=text]").attr("value", "");
+        $('#State').combo('setValue', "");
+        $('#companyType').combo('setValue', "");
+        if (searchDialog == null) {
+            searchDialog = $('<div></div>').dialog({
+                title: '查询',
+                width: 310,
+                height: 210,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Path/SearchPage/',
+                buttons: [{
+                    text: '查询',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        GetQueryParams();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        searchDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                }
+            });
+        }
+        searchKey = true;
+        searchDialog.dialog('open');
+    };
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ID = $('#ID').val();
+        queryParams.PathName = $('#PathName').val();
+        queryParams.State = $('#State').combo('getValue');
+        queryParams.OriginRegionID = $('#OriginRegionID ').val();
+        queryParams.TargetRegionID = $('#TargetRegionID').val();
+        queryParams.Description = $('#Description').val();
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+</script>
+<script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
+
