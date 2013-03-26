@@ -13,7 +13,7 @@
                 required: false
             });
             $('#State').combo({
-                hasDownArrow: false
+                hasDownArrow: true
             });
             if (row.State == '可用') {
                 $('#State').combo('setValue', '01').combo('setText', row.State);

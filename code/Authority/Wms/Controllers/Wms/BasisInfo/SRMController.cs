@@ -89,7 +89,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             if (queryString == null)
             {
-                queryString = "JobCode";
+                queryString = "ID";
             }
             if (value == null)
             {

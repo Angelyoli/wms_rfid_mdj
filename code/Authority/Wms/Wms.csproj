@@ -2240,6 +2240,14 @@
     <Content Include="Views\SRM\_EditPartial.cshtml" />
     <Content Include="Views\SRM\_PrintPartial.cshtml" />
     <Content Include="Views\SRM\_SearchPartial.cshtml" />
+    <Content Include="Views\Region\Index.cshtml" />
+    <Content Include="Views\Region\SearchPage.cshtml" />
+    <Content Include="Views\Region\_SearchPartial.cshtml" />
+    <Content Include="Views\Region\AddPage.cshtml" />
+    <Content Include="Views\Region\_AddPartial.cshtml" />
+    <Content Include="Views\Region\_EditPartial.cshtml" />
+    <Content Include="Views\Region\_DeletePartial.cshtml" />
+    <Content Include="Views\Region\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
