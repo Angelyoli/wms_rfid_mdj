@@ -127,6 +127,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\ProductSizeController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\SizeController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\SRMController.cs" />
@@ -2257,6 +2258,14 @@
     <Content Include="Views\Size\_EditPartial.cshtml" />
     <Content Include="Views\Size\_DeletePartial.cshtml" />
     <Content Include="Views\Size\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductSize\Index.cshtml" />
+    <Content Include="Views\ProductSize\SearchPage.cshtml" />
+    <Content Include="Views\ProductSize\_SearchPartial.cshtml" />
+    <Content Include="Views\ProductSize\AddPage.cshtml" />
+    <Content Include="Views\ProductSize\_AddPartial.cshtml" />
+    <Content Include="Views\ProductSize\_EditPartial.cshtml" />
+    <Content Include="Views\ProductSize\_DeletePartial.cshtml" />
+    <Content Include="Views\ProductSize\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
