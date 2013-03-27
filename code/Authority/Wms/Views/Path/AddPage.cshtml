@@ -1,0 +1,64 @@
+﻿@{
+    Layout = null;
+}
+<div class="easyui-layout" fit="true" border="false">
+    <div region="center" border="false" style="padding: 10px 10px; background: #fff;border: 1px solid #ccc;">
+        <form id="fm" method="post" novalidate>
+        <table width="460">
+            <tr>
+                <td width="60">
+                    路径ID:
+                </td>
+                <td width="160">
+                    <input name="ID" id="id" class="easyui-validatebox" validtype="maxLength[8]" required="true" />
+                    <input name="ID" style="display: none" />
+                </td>
+                    <td width="60" >
+                    路径名称：
+                </td>
+                <td width="168">
+                    <input name="PathName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                </td>
+                 
+            </tr>
+            <tr>
+             <td width="60" >
+                    起始区域ID：
+                </td>
+                <td width="168">
+                    <input name="OriginRegionID" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                </td>
+                  <td width="60" >
+                    目标区域ID：
+                </td>
+                <td width="168">
+                    <input name="TargetRegionID" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                </td>
+            
+            
+            </tr>
+            <tr>
+                <td width="60">
+                    状态：
+                </td>
+                <td>
+                    <select id="state_path" name="State" class="easyui-combobox" style="width: 130px">
+                        <option value="1">可用</option>
+                        <option value="0">不可用</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="60" align="right">
+                    描述:
+                </td>
+                <td width="168" colspan="3">
+                    <textarea name="Description" id="desId"  style="width: 351px; height: 80px"></textarea>
+                </td>
+            </tr>
+        </table>
+        </form>
+    </div>
+</div>
+
+
