@@ -54,6 +54,7 @@ namespace Authority.Controllers
                 this.RemoveCookie(userName);
                 FormsService.SignOut();
             }
+            Session["username"] = userName;
             return View();
         }
         public ActionResult GetUser()

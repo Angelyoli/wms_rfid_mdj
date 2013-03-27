@@ -1,8 +1,59 @@
 ﻿<script type="text/javascript">
+    function createTable(type, id) {
+        var div = document.getElementById("drop");
+        div.removeChild(div.firstChild);
+        var table = document.createElement("table"); //创建table
+        table.width = "3700";
+        $.getJSON('/Cargospace/TreeDetails/?type=' + type + '&id=' + id, function (data) {
+            if (data.length > 0) {
+                var y = 0;
+                for (var s in data) {
+                    if (data[s].asdd2 != y) {
+                        var row1 = table.insertRow(); //创建一行 
+                        var row2 = table.insertRow(); //创建一行 
+                        var row3 = table.insertRow(); //创建一行 
+                        y = data[s].asdd2;
+                    }
+                    var per = data[s].Quantity / data[s].maxQuantity
+                    if (data[s].asdd3 == '1') {
+                        var cell = row1.insertCell(); //创建一个单元 
+                        cell.width = "100"; //更改cell的各种属性
+                        cell.height = "100";
+                        cell.padding = false;
+                        cell.style.backgroundColor = "#40e0d0";
+                        cell.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                    }
+                    if (data[s].asdd3 == '2') {
+                        var cell = row2.insertCell(); //创建一个单元 
+                        cell.width = "100"; //更改cell的各种属性
+                        cell.height = "100";
+                        cell.padding = false;
+                        cell.style.backgroundColor = "#40e0d0";
+                        cell.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                    }
+                    if (data[s].asdd3 == '3') {
+                        var cell = row3.insertCell(); //创建一个单元 
+                        cell.width = "100"; //更改cell的各种属性
+                        cell.height = "100";
+                        cell.padding = false;
+                        cell.style.backgroundColor = "#40e0d0";
+                        cell.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                    }
+                }
+
+            }
+            else {
+                var row = table.insertRow(); //创建一行
+                var cell = row.insertCell(); //创建一个单元  
+            }
+            div.appendChild(table);
+        });
+    }
     $(function () {
-         $('#warehouseTree').tree({
+        $('#warehouseTree').tree({
             onClick: function (node) {
                 if (node) {
+                    createTable(node.attributes, node.id);
                     $('#listdetails').datagrid('options').url = '/Cargospace/Details/?type=' + node.attributes + '&id=' + node.id;
                     $('#listdetails').datagrid('reload');
                 }
@@ -33,8 +84,8 @@
                 </thead>
             </table>
         </div>
-        <div title="图形模式" data-options="tools:'#p-tools'" style="padding:1px;"> 
-        未完成
-        </div> 
-    </div>  
+        <div title="图形模式" id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> 
+        </div>
+    </div> 
 </div>
+
