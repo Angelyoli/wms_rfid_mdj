@@ -31,9 +31,18 @@ namespace THOK.Wms.Bll.Service
                 });
             if (ID != "" && ID != null)
             {
+                int k = -1;
                 try
                 {
-                    int k = Convert.ToInt32(ID);
+                    k = Convert.ToInt32(ID);
+
+                }
+                catch
+                {
+                    k = -1;
+                }
+                finally 
+                {
                     srm = srmQuery.Where(s => s.SRMName.Contains(SRMName) && s.State.Contains(State) && s.ID == k)
                         .OrderBy(s => s.ID).AsEnumerable()
                         .Select(s => new
@@ -44,7 +53,6 @@ namespace THOK.Wms.Bll.Service
                             State = s.State == "01" ? "可用" : "不可用",
                         });
                 }
-                finally { }
             }
             int total = srm.Count();
             srm = srm.Skip((page - 1) * rows).Take(rows);

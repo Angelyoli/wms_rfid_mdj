@@ -1,0 +1,53 @@
+﻿@{
+    Layout = null;
+}
+<div class="easyui-layout" fit="true" border="false">
+	<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " > 
+      <form id="fm" method="post" >  
+        <table width="280">
+                    <tr>
+                    <td width="60" align="right">尺寸ID：</td>
+                    <td width="168">
+                    <input name="ID" id="inputID" type="text" readonly="readonly" value="自动增长"/>
+                    <input name="ID"  style="display:none" /></td>
+
+                    <tr>
+                    <td width="60" align="right">尺寸名称：</td>
+                    <td width="168">
+                    <input name="SizeName" id="inputSizeName" class="easyui-validatebox" required="true" type="text"/>
+                    <input name="ID"  style="display:none" /></td>    
+                    </tr>
+
+                    <tr>
+                    <td width="60" align="right">尺寸编号：</td>
+                    <td width="168">
+                    <input name="SizeNo" id="inputSizeNo" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入面积（必须为数字）"/>
+                    <input name="ID"  style="display:none" /></td>    
+                    </tr>
+
+                    <tr>
+                    <td width="60" align="right">长度：</td>
+                    <td width="168">
+                    <input name="Length" id="inputLength" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入面积（必须为数字）"/>
+                    <input name="ID"  style="display:none" /></td>    
+                    </tr>
+
+                    <tr>
+                    <td width="60" align="right">宽度：</td>
+                    <td width="168">
+                    <input name="Width" id="inputWidth" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入面积（必须为数字）"/>
+                    <input name="ID"  style="display:none" /></td>    
+                    </tr>
+
+                    <tr>
+                    <td width="60" align="right">高度：</td>
+                    <td width="168">
+                    <input name="Height" id="inputHeight" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入面积（必须为数字）"/>
+                    <input name="ID"  style="display:none" /></td>    
+                    </tr>
+
+                    </tr>
+                </table>
+            </form>
+    </div>
+</div>
