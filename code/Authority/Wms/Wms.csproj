@@ -128,6 +128,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\PositionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\SizeController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\SRMController.cs" />
@@ -2264,6 +2265,14 @@
     <Content Include="Views\Size\_EditPartial.cshtml" />
     <Content Include="Views\Size\_DeletePartial.cshtml" />
     <Content Include="Views\Size\_PrintPartial.cshtml" />
+    <Content Include="Views\Position\Index.cshtml" />
+    <Content Include="Views\Position\_AddPartial.cshtml" />
+    <Content Include="Views\Position\_DeletePartial.cshtml" />
+    <Content Include="Views\Position\_EditPartial.cshtml" />
+    <Content Include="Views\Position\_SearchPartial.cshtml" />
+    <Content Include="Views\Position\SearchPage.cshtml" />
+    <Content Include="Views\Position\AddPage.cshtml" />
+    <Content Include="Views\Path\_RegionPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

@@ -136,20 +136,38 @@ namespace THOK.Wms.Bll.Service
 
         public object GetRegion(int page, int rows, string queryString, string value)
         {
-            string id = "", regionName = "";
-
+            string regionName = "";
+            int id=-1;
             if (queryString == "id")
             {
-                id = value;
+                try { id = Convert.ToInt32(value); }
+                catch { id = -1; }
             }
             else
             {
                 regionName = value;
             }
+            //IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
+            //var region = regionQuery.OrderBy(r => r.ID).AsEnumerable().
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-            int Id = Convert.ToInt32(id);
-            var region = regionQuery.Where(r => r.ID == Id && r.RegionName.Contains(regionName) && r.State == "01")
+            var region = regionQuery.Where(r =>r.RegionName.Contains(regionName) && r.State == "1")
                 .OrderBy(r => r.ID).AsEnumerable().
+                Select(r => new
+                {
+                    r.ID,
+                    r.RegionName,
+                    r.Description,
+                    State = r.State == "01" ? "可用" : "不可用"
+                });
+            if (id > 0)
+            {
+                region = region.Where(r => r.ID == id);
+            }
+            else 
+            {
+                region = region.Where(r => r.RegionName.Contains(regionName));
+            }
+            region = region.AsEnumerable().
                 Select(r => new
                 {
                     r.ID,

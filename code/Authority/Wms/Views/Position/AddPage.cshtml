@@ -1,0 +1,121 @@
+﻿@{
+    Layout = null;
+}
+
+ <div class="easyui-layout" fit="true" border="false">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <form id="positionfm" method="post">
+            <table width="480">
+                <tr>
+                    <td width="60">
+                        位置编号:
+                    </td>
+                    <td width="168">
+                        <input name="ID" id="inputID" class="easyui-validatebox" validtype="maxLength[8]"
+                            required="true" />
+                        <input name="ID" style="display: none" />
+                    </td>
+                    <td width="60">
+                        位置名称：
+                    </td>
+                    <td width="168">
+                        <input name="PositionName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                      <td width="60">
+                        位置类型：
+                    </td>
+                    <td width="168">
+                        <select id="position_type" name="PositionType" class="easyui-combobox" required="true"
+                            style="width: 129px">
+                            <option value="1">正常位置</option>
+                            <option value="2">大品种出库位</option>
+                            <option value="3">小品种出库位</option>
+                            <option value="4">异性烟出库位</option>
+                            <option value="5">空托盘出库位</option>
+                        </select>
+                    </td>
+                    <td width="60">
+                        区域编号：
+                    </td>
+                    <td width="168">
+                        <input name="RegionID" validtype="maxLength[8]" />
+                    </td>
+                </tr>
+                <tr>
+                      <td width="60">
+                        是否有货物：
+                    </td>
+                    <td width="168">
+                        <select id="hasGoods" name="HasGoods" class="easyui-combobox" required="true"
+                            style="width: 129px">
+                            <option value="1">是</option>
+                            <option value="2">否</option>
+                       </select>
+                    </td>
+                    <td width="60">
+                        是否出库：
+                    </td>
+                    <td width="168">
+                        <select id="ableStockOut" name="AbleStockOut" class="easyui-combobox" required="true"
+                            style="width: 129px">
+                            <option value="1">是</option>
+                            <option value="2">否</option>
+                       </select>
+                    </td>
+                </tr>
+                <tr>
+                     <td width="60">
+                        可否叠空托盘：
+                    </td>
+                    <td width="168">
+                        <select id="ableStockInPallet" name="AbleStockInPallet" class="easyui-combobox" required="true"
+                            style="width: 129px">
+                            <option value="1">是</option>
+                            <option value="2">否</option>
+                       </select>
+                    </td>
+                    <td width="60">
+                        电子标签地址：
+                    </td>
+                    <td width="168">
+                        <input name="tagAddress" class="easyui-numberbox" min="0" max="999999999" type="text"
+                            required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                       当前任务编号：
+                    </td>
+                    <td width="168">
+                        <input name="CurrentTaskID" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                    </td>
+
+                    <td>
+                        状态:
+                    </td>
+                    <td>
+                        <select id="isActive_com" name="IsActive" class="easyui-combobox" required="true"
+                            style="width: 129px">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        描述:
+                    </td>
+                    <td width="168" colspan="3">
+                        <textarea name="Description" id="desId"  style="width: 367px; height: 60px"></textarea>
+                        @*class="easyui-validatebox" required="false" validtype="maxLength[0,100]" invalidmessage='文本过长'*@
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+
+
