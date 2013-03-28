@@ -17,7 +17,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string ID, string RegionName, string State)
+        public object GetDetails(int page, int rows,string RegionName, string State)
         {
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
             var region = regionQuery.Where(r => r.RegionName.Contains(RegionName) && r.State.Contains(State))
@@ -29,30 +29,7 @@ namespace THOK.Wms.Bll.Service
                     r.Description,
                     State = r.State == "01" ? "可用" : "不可用",
                 });
-            if (ID != "" && ID != null)
-            {
-                int k = -1;
-                try
-                {
-                    k = Convert.ToInt32(ID);
-                }
-                catch
-                {
-                    k = -1;
-                }
-                finally 
-                {
-                    region = regionQuery.Where(r => r.RegionName.Contains(RegionName) && r.State.Contains(State) && r.ID == k)
-                        .OrderBy(r => r.ID).AsEnumerable()
-                        .Select(r => new
-                        {
-                            r.ID,
-                            r.RegionName,
-                            r.Description,
-                            State = r.State == "01" ? "可用" : "不可用",
-                        });
-                }
-            }
+            
             int total = region.Count();
             region = region.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = region.ToArray() };

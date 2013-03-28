@@ -14,7 +14,7 @@
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
                 width: 310,
-                height: 200,
+                height: 150,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -41,7 +41,6 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.SizeID = $('#SizeID').val();
         queryParams.SizeName = $('#SizeName').val();
         queryParams.SizeNo = $('#SizeNo').val();
         $('#details').datagrid('options').queryParams = queryParams;
