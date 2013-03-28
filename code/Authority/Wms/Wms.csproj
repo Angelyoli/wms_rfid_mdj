@@ -127,6 +127,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\CellPositionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\ProductSizeController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\SizeController.cs" />
@@ -1897,6 +1898,12 @@
     <Content Include="Views\Help\Index.cshtml" />
     <Content Include="Views\CheckBill\_MigrationPartial.cshtml" />
     <Content Include="Views\DailyBalance\_MigrationPartial.cshtml" />
+    <Content Include="Views\CellPosition\Index.cshtml" />
+    <Content Include="Views\CellPosition\SearchPage.cshtml" />
+    <Content Include="Views\CellPosition\_SearchPartial.cshtml" />
+    <Content Include="Views\CellPosition\AddPage.cshtml" />
+    <Content Include="Views\CellPosition\_AddPartial.cshtml" />
+    <Content Include="Views\CellPosition\_ParentPositionNamePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
