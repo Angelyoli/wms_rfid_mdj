@@ -17,7 +17,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string ID, string ProductCode, string SizeNo, string AreaNo)
+        public object GetDetails(int page, int rows, string ProductCode, string SizeNo, string AreaNo)
         {
             IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable();
             var productSize = productSizeQuery.Where(p => p.ProductCode.Contains(ProductCode))
@@ -29,48 +29,24 @@ namespace THOK.Wms.Bll.Service
                     p.SizeNo,
                     p.AreaNo
                 });
-            int id = -1, sizeno = -1, areano = -1;
-            if ((ID != "" && ID!= null) && (SizeNo==""|| SizeNo==null) && (AreaNo==""|| AreaNo==null))
-            {
-                try { id = Convert.ToInt32(ID); }
-                catch { id = -1; }
-                finally { productSize = productSize.Where(p => p.ID == id ); }
-            }
-            if ((ID == "" || ID == null) && (SizeNo != "" && SizeNo != null) && (AreaNo == "" || AreaNo == null))
+            int sizeno = -1, areano = -1;
+            if ((SizeNo != "" && SizeNo != null) && (AreaNo == "" || AreaNo == null))
             {
                 try { sizeno= Convert.ToInt32(SizeNo);}
                 catch { sizeno = -1; }
                 finally { productSize = productSize.Where(p => p.SizeNo == sizeno); }
             }
-            if ((ID == "" || ID == null) && (SizeNo == "" || SizeNo == null) && (AreaNo != "" && AreaNo != null))
+            if ((SizeNo == "" || SizeNo == null) && (AreaNo != "" && AreaNo != null))
             {
                 try { areano = Convert.ToInt32(AreaNo); }
                 catch { areano = -1; }
                 finally { productSize = productSize.Where(p => p.AreaNo == areano); }
             }
-            if ((ID != "" && ID != null) && (SizeNo == "" || SizeNo == null) && (AreaNo != "" && AreaNo != null))
-            {
-                try { id=Convert.ToInt32(ID); areano = Convert.ToInt32(AreaNo); }
-                catch { areano = -1; }
-                finally { productSize = productSize.Where(p =>p.ID==id && p.AreaNo == areano); }
-            }
-            if ((ID != "" && ID != null) && (SizeNo != "" && SizeNo != null) && (AreaNo == "" || AreaNo == null))
-            {
-                try { id = Convert.ToInt32(ID); sizeno = Convert.ToInt32(SizeNo); }
-                catch { id = -1; }
-                finally { productSize = productSize.Where(p =>p.ID==id && p.SizeNo==sizeno); }
-            }
-            if ((ID == "" || ID == null) && (SizeNo != "" && SizeNo != null) && (AreaNo != "" && AreaNo != null))
+            if ((SizeNo != "" && SizeNo != null) && (AreaNo != "" && AreaNo != null))
             {
                 try { sizeno = Convert.ToInt32(SizeNo); areano = Convert.ToInt32(AreaNo); }
                 catch { areano = -1; }
                 finally { productSize = productSize.Where(p => p.SizeNo==sizeno && p.AreaNo == areano); }
-            }
-            if ((ID != "" && ID != null) && (SizeNo != "" && SizeNo != null) && (AreaNo != "" && AreaNo != null))
-            {
-                try { id = Convert.ToInt32(ID); sizeno = Convert.ToInt32(SizeNo); areano = Convert.ToInt32(AreaNo); }
-                catch { areano = -1; }
-                finally { productSize = productSize.Where(p => p.ID==id && p.SizeNo == sizeno && p.AreaNo == areano); }
             }
             productSize = productSize.OrderBy(p => p.ID).AsEnumerable()
                 .Select(p => new
