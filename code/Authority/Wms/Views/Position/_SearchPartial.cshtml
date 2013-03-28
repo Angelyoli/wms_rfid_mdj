@@ -1,0 +1,55 @@
+﻿<script type="text/javascript">
+    var searchDialog;
+    var module = "Position";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
+    var parentComNameKey = false;
+
+    function searchClick() {
+        $("input[type=text]").attr("value", "");
+        $('#state').combo('setValue', "");
+        $('#positionType').combo('setValue', "");
+        if (searchDialog == null) {
+            searchDialog = $('<div></div>').dialog({
+                title: '查询',
+                width: 300,
+                height: 260,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Position/SearchPage/',
+                buttons: [{
+                    text: '查询',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        GetQueryParams();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        searchDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                }
+            });
+        }
+        searchKey = true;
+        searchDialog.dialog('open');
+    };
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ID = $('#ID').val();
+        queryParams.PositionName = $('#PositionName').val();
+        queryParams.PositionType = $('#PositionType').combo('getValue');
+        queryParams.State = $('#State').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+</script>
+<script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
+
