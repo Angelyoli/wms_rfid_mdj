@@ -34,10 +34,9 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /Size/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string ID = collection["SizeID"] ?? "";
             string SizeName = collection["SizeName"] ?? "";
             string SizeNo = collection["SizeNo"] ?? "";
-            var srm = SizeService.GetDetails(page, rows, ID, SizeName, SizeNo);
+            var srm = SizeService.GetDetails(page, rows,SizeName, SizeNo);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 
