@@ -509,7 +509,7 @@ namespace THOK.Wms.Allot.Service
                                         ibm.Status = "3";
                                         storage.LockTag = string.Empty;
                                         StorageRepository.SaveChanges();
-                                        strResult = "手工分配成功！";
+                                        strResult = "";
                                         result = true;
                                     }
                                     catch (Exception)

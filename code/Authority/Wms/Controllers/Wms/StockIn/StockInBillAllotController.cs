@@ -75,7 +75,7 @@ namespace Authority.Controllers.Wms.StockIn
         {
             string strResult = string.Empty;
             bool bResult = InBillAllotService.AllotAdd(billNo, id, cellCode, allotQuantity, productname, out strResult);
-            string msg = bResult ? "添加分配成功" : "添加分配失败";
+            string msg = bResult ? "" : "添加分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
         #region /StockInBillAllot/CreateExcelToClient/

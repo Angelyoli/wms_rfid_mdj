@@ -80,19 +80,19 @@ namespace THOK.Wms.Bll.Service
                 var cells = cellQuery.Where(s => s.MaxPalletQuantity==0);
                 if (type == "ware")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "area")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "shelf")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "cell")
                 {
-                    cells = cellQuery.Where(c => c.CellCode == id);
+                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0);
                 }
                 var sCells = cells.Join(storages, c => c.CellCode, s => s.CellCode, (c, s) => new { cells = c, storages = s }).ToArray();
                 if (sCells.Count() > 0)
@@ -143,19 +143,19 @@ namespace THOK.Wms.Bll.Service
                 var cells = cellQuery.Where(s => s.MaxPalletQuantity == 0);
                 if (type == "ware")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity==0);
                 }
                 else if (type == "area")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "shelf")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "cell")
                 {
-                    cells = cellQuery.Where(c => c.CellCode == id);
+                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0);
                 }
                 var sCells = cells.Join(storages, c => c.CellCode, s => s.CellCode, (c, s) => new { cells = c, storages = s }).ToArray();
                 if (sCells.Count() > 0)
@@ -180,7 +180,15 @@ namespace THOK.Wms.Bll.Service
                         UpdateTime = c.storages.UpdateTime.ToString("yyyy-MM-dd")
                     }).OrderByDescending(c => c.asdd4).OrderByDescending(c => c.asdd3).OrderByDescending(c => c.asdd2).OrderByDescending(c => c.asdd1);
                     var Cells = Cell.Where(c=>c.EmptyQuantity>0);
-                    return Cells.ToArray();
+                    if (Cells.Count() > 0)
+                    {
+                        return Cells.ToArray();
+                    }
+                    else
+                    {
+                        var s = "".ToArray();
+                        return s;
+                    }
                 }
                 else
                 {
@@ -206,19 +214,19 @@ namespace THOK.Wms.Bll.Service
                 var cells = cellQuery.Where(s => s.MaxPalletQuantity == 0);
                 if (type == "ware")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "area")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "shelf")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "cell")
                 {
-                    cells = cellQuery.Where(c => c.CellCode == id);
+                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0);
                 }
                 var sCells = cells.Join(storages, c => c.CellCode, s => s.CellCode, (c, s) => new { cells = c, storages = s }).ToArray();
                 if (sCells.Count() > 0)

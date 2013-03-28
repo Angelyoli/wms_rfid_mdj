@@ -1,7 +1,139 @@
 ﻿<script type="text/javascript">
+    var row;
+    var detailId;
+    var allotQuantity;
+    var productCode;
+    var productNames;
+    $(function () {
+        $('#outBillDetail').datagrid('options').onClickRow = function () {
+            var row = $('#outBillDetail').datagrid('getSelected');
+            detailId = row.ID;
+            productCode = row.ProductCode;
+            productNames = row.ProductName
+            allotQuantity = row.BillQuantity - row.AllotQuantity;
+        }
+        $('#warehouseTrees').tree({
+            onClick: function (node) {
+                if (node) {
+                    createTable(node.attributes, node.id);
+                }
+            }
+        });
+    });
+    function createTable(type, id) {
+        var div = document.getElementById("drop");
+        div.removeChild(div.firstChild);
+        var table = document.createElement("table"); //创建table
+        $.getJSON('/Cargospace/AllotOutTreeDetails/?type=' + type + '&id=' + id + '&productCode=' + productCode, function (data) {
+            if (data.length > 0) {
+                var y = 0;
+                for (var s in data) {
+                    if (data[s].asdd2 != y) {
+                        var row1 = table.insertRow(); //创建一行
+                        var row2 = table.insertRow(); //创建一行
+                        var row3 = table.insertRow(); //创建一行
+                        y = data[s].asdd2;
+                    }
+                    if (data[s].asdd3 == '1') {
+                        var mydiv = document.createElement("div");
+                        mydiv.setAttribute("class", "itemdiv");
+                        mydiv.id = data[s].cellCode;
+                        mydiv.class = data[s].Quantity;
+                        var cell = row1.insertCell(); //创建一个单元
+                        mydiv.style.width = "100px";
+                        mydiv.style.height = "100px";
+                        mydiv.style.backgroundColor = "#40e0d0";
+                        cell.appendChild(mydiv);
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                    }
+                    if (data[s].asdd3 == '2') {
+                        var mydiv = document.createElement("div");
+                        mydiv.setAttribute("class", "itemdiv");
+                        mydiv.id = data[s].cellCode;
+                        mydiv.class = data[s].Quantity;
+                        var cell = row2.insertCell(); //创建一个单元
+                        mydiv.style.width = "100px";
+                        mydiv.style.height = "100px";
+                        mydiv.style.backgroundColor = "#40e0d0";
+                        cell.appendChild(mydiv);
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+
+                    }
+                    if (data[s].asdd3 == '3') {
+                        var mydiv = document.createElement("div");
+                        mydiv.setAttribute("class", "itemdiv");
+                        mydiv.id = data[s].cellCode;
+                        mydiv.class = data[s].Quantity;
+                        var cell = row3.insertCell(); //创建一个单元
+                        mydiv.style.width = "100px";
+                        mydiv.style.height = "100px";
+                        mydiv.style.backgroundColor = "#40e0d0";
+                        cell.appendChild(mydiv);
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                    }
+                }
+            }
+            else {
+                var row = table.insertRow(); //创建一行
+                var cell = row.insertCell(); //创建一个单元
+            }
+            div.appendChild(table);
+            $('.itemdiv').draggable({
+                revert: true,
+                proxy: 'clone',
+                onStartDrag: function () {
+                    id = $(this).attr('id');
+                },
+                onStopDrag: function () {
+                    var cellname = document.getElementById(id).innerHTML.substring(0, 11);
+                    var row = $('#details').datagrid('getSelected');
+                    emptyQuantity = document.getElementById(id).class;
+                    if (allotQuantity > emptyQuantity) {
+                        quantity = emptyQuantity;
+                    }
+                    else {
+                        quantity = allotQuantity;
+                    };
+                    $.ajaxSender.send('/StockOutBillAllot/AllotAdds/',
+                                         {
+                                             billNo: row.BillNo,
+                                             id: detailId,
+                                             cellCode: id,
+                                             allotQuantity: quantity,
+                                             productCode: productCode,
+                                             productName: productNames
+                                         });
+                    $('#outBillDetail').datagrid('reload');
+                    $(this).draggable('options').cursor = 'move';
+                    document.getElementById(id).innerHTML = cellname + '<br />' + productNames + '<br />' + (emptyQuantity - quantity) + '件';
+                    document.getElementById(id).style.backgroundColor = "green";
+                }
+            });
+        });
+    }
+    function manualAllot() {
+        if (row) {
+            $('#area').combotree({
+                url: '/Area/GetDetailsTree/',
+                multiple: true,
+                width: 160
+            });
+            isInBillMasterSaved = false;
+            isInBillMasterCanEdit = true;
+            if (row.Status == "已录入") {
+                $.messager.confirm('错误', '该记录未审核无法进行分配！');
+            } else {
+                $('#manualAllot').dialog('open').dialog('setTitle', '手动分配出库单');
+                $('#outBillDetail').datagrid({ url: '/StockOutBill/OutBillDetails/?BillNo=' + row.BillNo });
+                billNo = row.BillNo;
+            }
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    }
     var billNo = "";    
     function allotClick() {
-        var row = $('#details').datagrid('getSelected');
+         row = $('#details').datagrid('getSelected');
         if (row) {
             $('#area').combotree({
                 url: '/Area/GetDetailsTree/',
@@ -181,6 +313,7 @@
             panelWidth="160px"
             id="area"></select>
     <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="allot()">自动分配</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="manualAllot()">手动分配</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="cancelAllot()">取消分配</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="allotAdd()">手工增加</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="allotEdit()">手工修改</a>
@@ -237,7 +370,33 @@
                 </table>
         </form>
 </div>
-
+<div id="manualAllot" class="easyui-dialog" modal="true"  style="width:1000px;height:500px;padding:4px 4px"closed="true">
+ <div region="center" split="true" class="outDetail"  border="false" style="height:25%;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">   
+            <table class="easyui-datagrid" border="false" singleSelect="true" id="outBillDetail"
+                fit="true" fitColumns="true"  pagination="true" rownumbers="true" pageSize="10">
+                <thead>
+                    <tr>
+                        <th field="ID" width="50" align="left" hidden="true">ID</th>
+                        <th field="BillNo" width="80"  hidden="true">订单号</th>
+                        <th field="ProductCode" width="100">商品编码</th>
+                        <th field="ProductName" width="80" align="right">商品名称</th>
+                        <th field="UnitCode" width="80" align="right">单位编码</th>
+                        <th field="UnitName" width="80" align="right">单位名称</th>
+                        <th field="BillQuantity" width="80" align="right">订单数量</th>
+                        <th field="AllotQuantity" width="80" align="right">已分配数量</th>
+                        <th field="RealQuantity" width="80" align="right">实际出库量</th>
+                        <th field="Description" width="80" align="right">备注</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+  <div  class="onediv" style="width:220px; height:350px;float:left;margin:0 0 0 5px; border-top-width:0px; border:1px #99BBE8 solid;">
+        <ul id="warehouseTrees" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul>
+        </div>
+        <div class="twodiv"  style="width:500px;height:350px;float:left;margin:0 0 0 5px; border:1px #99BBE8;">
+        <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
+       </div>
+</div>
 <div id="dlg_allot_modify_buttons">
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="AllotModifySave()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg_allot_modify').dialog('close')">取消</a>
