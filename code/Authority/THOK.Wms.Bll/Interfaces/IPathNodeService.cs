@@ -6,22 +6,16 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string ID, string PathID, string PositionID, string PathNodeOrder);
 
+        bool Delete(PathNode PathID,string strResult);
 
-        //bool Save(PathNode PathNode, out string strResult);
+        object GetPathNode(int page, int rows, string PathID);
 
-        //bool Delete(int PathID, out string strResult);
+        System.Data.DataTable GetPathNode(int page, int rows, string ID, string PathID, string PositionID, string PathNodeOrder);
+        //System.Data.DataTable GetPathNode(int page, int rows, string PathID);
 
-        //object GetPathNode(int page, int rows, string PathID);
+        object GetPathNode(int page, int rows, string queryString, string value);
 
-        //System.Data.DataTable GetPathNode(int page, int rows, string ID, string PathID, string PositionID, string PathNodeOrder);
-
-        ////bool Add(PathNode ID, out string strResult);
-
-        ////bool Save(PathNode ID, out string strResult);
-
-        //object GetPathNode(int page, int rows, string queryString, string value);
-
-        bool Add(PathNode PathNode, string strResult);
+        bool Add(PathNode ID, string strResult);
 
         bool Save(PathNode ID, string strResult);
     }

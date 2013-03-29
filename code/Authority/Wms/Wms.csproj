@@ -127,6 +127,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PathNodeController.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -2270,6 +2271,22 @@
     <Content Include="Views\ProductSize\_EditPartial.cshtml" />
     <Content Include="Views\ProductSize\_DeletePartial.cshtml" />
     <Content Include="Views\ProductSize\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\Index.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_AddPartial.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
+    <Content Include="Views\Path\_SearchPartial.cshtml" />
+    <Content Include="Views\PathNode\AddPage.cshtml" />
+    <Content Include="Views\PathNode\Index.cshtml" />
+    <Content Include="Views\PathNode\SearchPage.cshtml" />
+    <Content Include="Views\PathNode\_AddPartial.cshtml" />
+    <Content Include="Views\PathNode\_DeletePartial.cshtml" />
+    <Content Include="Views\PathNode\_EditPartial.cshtml" />
+    <Content Include="Views\PathNode\_PrintPartial.cshtml" />
+    <Content Include="Views\PathNode\_SearchPartial.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
