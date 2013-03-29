@@ -1,28 +1,25 @@
 ﻿<script type="text/javascript">
     var searchDialog;
-    var module = "Path";
+    var module = "Position";
     var searchKey = false;
     var addKey = false;
     var editKey = false;
     var deleteKey = false;
+    var parentComNameKey = false;
+
     function searchClick() {
-        $('#State').combo({
-            editable: false,
-            panelHeight: 65,
-            panelWidth: 130
-        });
         $("input[type=text]").attr("value", "");
-        $('#State').combo('setValue', "");
-        $('#pathType').combo('setValue', "");
+        $('#state').combo('setValue', "");
+        $('#positionType').combo('setValue', "");
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
-                width: 310,
-                height: 250,
+                width: 300,
+                height: 260,
                 closed: true,
                 cache: false,
                 modal: true,
-                href: '/Path/SearchPage/',
+                href: '/Position/SearchPage/',
                 buttons: [{
                     text: '查询',
                     iconCls: 'icon-ok',
@@ -46,11 +43,9 @@
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.ID = $('#ID').val();
-        queryParams.PathName = $('#PathName').val();
+        queryParams.PositionName = $('#PositionName').val();
+        queryParams.PositionType = $('#PositionType').combo('getValue');
         queryParams.State = $('#State').combo('getValue');
-        queryParams.OriginRegionID = $('#OriginRegionID ').val();
-        queryParams.TargetRegionID = $('#TargetRegionID').val();
-        queryParams.Description = $('#Description').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');

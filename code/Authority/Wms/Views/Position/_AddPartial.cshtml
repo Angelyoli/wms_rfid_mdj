@@ -1,32 +1,33 @@
 ﻿<script type="text/javascript">
     var url;
     var addDialog;
-    function AddLoad() {
-        $('#state_path').combo({
-            required: true,
-            editable: false,
-            panelHeight: 45,
-            panelWidth: 130
-        });
-    }
 
-    //加载新增、编辑和删除窗体
+    $(function () {
+        $.extend($.fn.validatebox.defaults.rules, {
+            maxLength: {
+                validator: function (value, param) {
+                    return value.length <= param[0];
+                },
+                message: '不能超过{0}个字符.'
+            }
+        });
+    })
+
+    //加载新增和编辑窗体
     function showDialog(title) {
         if (addDialog == null) {
             addDialog = $('<div></div>').dialog({
                 title: title,
                 width: 510,
-                height: 250,
+                height: 300,
                 closed: true,
                 cache: false,
                 modal: true,
-                href: '/Path/AddPage/',
+                href: '/Position/AddPage/',
                 buttons: [{
                     text: '确定',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        
-                      
                         save();
                     }
                 }, {
@@ -39,11 +40,11 @@
                 onLoad: function () {
                     if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
-                        $('#fm').form('load', erow);
+                        $('#positionfm').form('load', erow);
                     }
                     else if (title == '删除') {
                         var drow = $('#details').datagrid('getSelected');
-                        $('#fm').form('load', drow);
+                        $('#positionfm').form('load', drow);
                         $('form input').attr("disabled", "disabled");
                         $('form textarea').attr("disabled", "disabled");
                     }
@@ -56,27 +57,26 @@
     }
 
     function addClick() {
-        
         AddLoad();
         showDialog('新增');
         addKey = true;
         addDialog.dialog('open');
-        $('form input').removeAttr("disabled");
-        $('form textarea').removeAttr("disabled");
-        $('#fm').form('clear');
-        $('#fm .easyui-validatebox').validatebox({
+
+        $('#positionfm .easyui-validatebox').validatebox({
             required: true
         });
-        $('input#inputID').attr("value", "自动增长");
-        //$('form input').removeAttr("disabled");
-       // $('form textarea').removeAttr("disabled");
-        //$('#id').attr("readonly", false);
-       // $('#state_path').combo({
-        //    hasDownArrow: true
-       // });
-        url = '/Path/Create/';
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#positionfm').form('clear');
+        $('#inputID').attr("readonly", false);
+        $('#position_type').combo({
+            hasDownArrow: true
+        });
+        $('#state_com').combo({
+            hasDownArrow: true
+        });
+        url = '/Position/Create/';
     };
-
     function save() {
         if ($("#desId").val().length > 100) {
             $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
@@ -84,7 +84,7 @@
         }
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
-        $('#fm').form('submit', {
+        $('#positionfm').form('submit', {
             url: url,
             onSubmit: function () {
                 return $(this).form('validate');
@@ -106,11 +106,28 @@
             }
         });
     }
-    function regionSearchClick() {
-        $('#regionData').dialog('open').dialog('setTitle', '选择区域');
-        $('#regionDetail').datagrid({ url: '/Region/GetRegion/' });
-        $("#regionDetail").datagrid('reload');
-    }
-</script>
+    function AddLoad() {
+        $('#state_com').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 130
+        });
 
+        $('#position_type').combo({
+            required: true,
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+    }
+   // function parentCompanyNameSearchClick() {
+      //  addKey = false;
+      //  editKey = false;
+      //  $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
+      //  parentComNameKey = true;
+      //  $('#parentCompanyNameDetail').datagrid({ url: '/Position/GetParentName/' });
+      //  $("#parentCompanyNameDetail").datagrid('reload');
+   // }
+</script>
 

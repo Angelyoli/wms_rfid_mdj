@@ -1,0 +1,58 @@
+﻿@{
+    Layout = null;
+}
+
+    <div class="easyui-layout" fit="true" border="false">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <table width="250">
+                <tr>
+                    <td width="60">
+                        位置编号:
+                    </td>
+                    <td width="168">
+                        <input id="ID" type="text"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        位置名称：
+                    </td>
+                    <td width="168">
+                        <input id="PositionName" type="text"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        位置类型：
+                    </td>
+                    <td width="168">
+                        <select id="positionType" class="easyui-combobox" style="width: 130px">
+                                <option value="">请选择</option>
+		                        <option value="1">正常位置</option>
+		                        <option value="2">大品种出库位</option>
+                                <option value="3">小品种出库位</option>
+                                <option value="3">异性烟出库位</option>
+                                <option value="3">空托盘出库位</option>
+	                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        状态:
+                    </td>
+                    <td>
+                        <select id="state" class="easyui-combobox" style="width: 130px">
+                            <option value="">请选择</option>
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+

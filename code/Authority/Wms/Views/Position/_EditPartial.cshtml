@@ -1,0 +1,51 @@
+﻿<script type="text/javascript">
+    function editClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            AddLoad();
+            showDialog('编辑');
+            editKey = true;
+            addDialog.dialog('open');
+
+            url = '/Position/Edit/';
+            //            $('#dlg').dialog('open').dialog('setTitle', '编辑');
+            $('form input').removeAttr("disabled");
+            $('form textarea').removeAttr("disabled");
+            $('#inputID').attr("readonly", true);
+            $('#positionfm').form('load', row);
+            $('#positionfm .easyui-validatebox').validatebox({
+                required: true
+            });
+            //CompantyType
+            if (row.PositionType == "正常位置") {
+                $('position_type').combo('setValue', 1).combo('setText', row.PositionType);
+            }
+            else if (row.PositionType == "大品种出库位") {
+                $('position_type').combo('setValue', 2).combo('setText', row.PositionType);
+            }
+            else if (row.PositionType == "小品种出库位") {
+                $('position_type').combo('setValue', 3).combo('setText', row.PositionType);
+            }
+            else if (row.PositionType == "异性烟出库位") {
+                $('position_type').combo('setValue', 4).combo('setText', row.PositionType);
+            }
+            else if (row.PositionType == "空托盘出库位") {
+                $('position_type').combo('setValue', 5).combo('setText', row.PositionType);
+            }
+            $('#position_type').combo({
+                hasDownArrow: true
+            });
+            //IsActive
+            if (row.State == '可用') {
+                $('#state_com').combo('setValue', 1).combo('setText', row.State);
+            } else {
+                $('#state_com').combo('setValue', 0).combo('setText', row.State);
+            }
+            $('#state_com').combo({
+                hasDownArrow: true
+            });
+        } else {
+            $.messager.alert('错误', '没有选择行！', 'info');
+        }
+    };
+</script>
