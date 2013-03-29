@@ -127,6 +127,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+
     <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
 
     <Compile Include="Controllers\Wms\BasisInfo\PathNodeController.cs">
@@ -135,6 +136,9 @@
     <Compile Include="Controllers\Wms\BasisInfo\ProductSizeController.cs" />
 
     <Compile Include="Controllers\Wms\BasisInfo\PositionController.cs" />
+
+
+    <Compile Include="Controllers\Wms\BasisInfo\ProductSizeController.cs" />
 
     <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\SizeController.cs" />
@@ -2267,7 +2271,7 @@
     <Content Include="Views\Path\_DeletePartial.cshtml" />
     <Content Include="Views\Path\_EditPartial.cshtml" />
     <Content Include="Views\Path\_SearchPartial.cshtml" />
-
+    
     <Content Include="Views\Size\Index.cshtml" />
     <Content Include="Views\Size\SearchPage.cshtml" />
     <Content Include="Views\Size\_SearchPartial.cshtml" />
@@ -2285,6 +2289,7 @@
     <Content Include="Views\ProductSize\_EditPartial.cshtml" />
     <Content Include="Views\ProductSize\_DeletePartial.cshtml" />
     <Content Include="Views\ProductSize\_PrintPartial.cshtml" />
+
     <Content Include="Views\Path\AddPage.cshtml" />
     <Content Include="Views\Path\Index.cshtml" />
     <Content Include="Views\Path\SearchPage.cshtml" />
@@ -2310,6 +2315,7 @@
     <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
     <Content Include="Views\Path\_RegionPartial.cshtml" />
+
 
   </ItemGroup>
   <ItemGroup>
