@@ -1,4 +1,20 @@
 ﻿<script type="text/javascript">
+    var setting = {
+        view: {
+            showLine: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onClick: onclick
+        }
+    };
+    function onclick(event, treeId, treeNode) {
+        createTable(treeNode.type, treeNode.id);
+    }
     function productName(val, row) {
         var s = '<div class="item" id="' + row.ID + '"><p style="color:red;">' + row.ProductName + '</p><p style="color:White;width:0px;height:0px">' + row.BillQuantity + '</p><p style="color:White;width:0px;height:0px">' + row.AllotQuantity + '</p></div>';
      return s;
@@ -27,13 +43,20 @@
              }
          });
      }
-     $('#warehouseTree').tree({
-         onClick: function (node) {
-             if (node) {
-                 createTable(node.attributes, node.id);
-             }
-         }
-     });
+     $.ajaxSender.send('/DefaultProductSet/CellCodeSet/', ///Cell/GetCheckDetails/  /DefaultProductSet/CellCodeSet/
+                            {
+                            'productId': ''
+                        },
+                    function (data) {
+                        $.fn.zTree.init($("#warehouseTree"), setting, data);
+                    });
+     //     $('#warehouseTree').tree({
+     //         onClick: function (node) {
+     //             if (node) {
+     //                 createTable(node.attributes, node.id);
+     //             }
+     //         }
+     //     });
  });
  function createTable(type, id) {
      var div = document.getElementById("drop");
@@ -95,7 +118,7 @@
          div.appendChild(table);
          $('.itemdiv').droppable({
              onDrop: function (e, source) {
-                 var row = $('#details').datagrid('getSelected');
+                 row = $('#details').datagrid('getSelected');
                  id = $(this).attr('id');
                  emptyQuantity = document.getElementById(id).class;
                  if (allotQuantity > emptyQuantity) {
@@ -119,6 +142,8 @@
                                                                        s.style.backgroundColor = "red";
                                                                    });
                  $('#inAllotBillDetail').datagrid('reload');
+                 $('#inAllotBillDetails').datagrid('reload');
+                 $('#allotBillDetails').datagrid('reload');
                  $(source).draggable('options').cursor = 'move';
              }
          });
@@ -159,6 +184,7 @@
     }
 
     function manualAllot() {
+        createTable('','');
         if (row) {
             $('#area').combotree({
                 url: '/Area/GetDetailsTree/',
@@ -232,7 +258,7 @@
         $.ajaxSender.send('/StockInBillAllot/AllotCancel/',
                         { billNo: billNo },
                         function (data) {
-                            $('#details').datagrid('reload');
+                            //$('#details').datagrid('reload');
                             $('#inBillDetails').datagrid('reload');
                             $('#inAllotBillDetails').datagrid('reload');
                             $('#allotBillDetails').datagrid('reload');
@@ -411,7 +437,9 @@
             </table>
 </div>
         <div   style="width:200px; height:350px;float:left; margin-bottom:0px; margin:0 0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid;">
-        <ul id="warehouseTree" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul></div>
+        @*<ul id="warehouseTree" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul>*@
+        <ul id="warehouseTree" class="ztree"></ul>
+        </div>
        <div  style="width:750px; height:350px; overflow:auto;" >
         <div  style="width:750px;height:350px;float:left;margin-bottom:0px; margin:0 0 0 0px; border:1px #99BBE8;">
         <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
