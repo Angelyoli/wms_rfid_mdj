@@ -160,7 +160,7 @@
     }
     var billNo = "";    
     function allotClick() {
-         row = $('#details').datagrid('getSelected');
+        row = $('#details').datagrid('getSelected');
         if (row) {
             $('#area').combotree({
                 url: '/Area/GetDetailsTree/',
@@ -417,11 +417,10 @@
                 </thead>
             </table>
         </div> 
-  <div   style="width:200px; height:350px;float:left;margin:0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid;">
+  <div   style="width:200px; height:350px;float:left;margin:0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid; overflow:auto;">
         <ul id="warehouseTrees" class="ztree"></ul>
         </div>
-        <div  style="width:750px; height:350px; overflow:auto;" >
-        <div   style="width:500px;height:350px;float:left;margin:0 0 0 0px; border:1px #99BBE8;">
+        <div   style="width:750px;height:350px;float:left;margin:0 0 0 0px; border:1px #99BBE8; overflow:auto;">
         <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
        </div></div>
 </div>
