@@ -113,11 +113,13 @@
                                                                        cellCode: id,
                                                                        allotQuantity: quantity,
                                                                        productname: productnames
+                                                                   },
+                                                                   function (data) {
+                                                                       s.innerHTML = cellname + '<br />' + productnames + '<br />' + quantity + '件';
+                                                                       s.style.backgroundColor = "red";
                                                                    });
                  $('#inAllotBillDetail').datagrid('reload');
                  $(source).draggable('options').cursor = 'move';
-                 s.innerHTML = cellname + '<br />' + productnames + '<br />' + quantity + '件';
-                 s.style.backgroundColor = "red";
              }
          });
      });
@@ -408,12 +410,12 @@
                 </thead>
             </table>
 </div>
-        <div  class="onediv" style="width:220px; height:350px;float:left; margin-bottom:0px; margin: 0 0 0 5px; border-top-width:0px; border:1px #99BBE8 solid;">
-        <ul id="warehouseTree" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul>
-        </div>
-        <div class="twodiv"  style="width:500px;height:350px;float:left;margin-bottom:0px; margin:0 0 0 5px; border:1px #99BBE8;">
+        <div   style="width:200px; height:350px;float:left; margin-bottom:0px; margin:0 0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid;">
+        <ul id="warehouseTree" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul></div>
+       <div  style="width:750px; height:350px; overflow:auto;" >
+        <div  style="width:750px;height:350px;float:left;margin-bottom:0px; margin:0 0 0 0px; border:1px #99BBE8;">
         <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
-       </div>
+       </div></div>
 </div>
 <div id="dlg_allot_modify_buttons">
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="AllotModifySave()">确定</a>
