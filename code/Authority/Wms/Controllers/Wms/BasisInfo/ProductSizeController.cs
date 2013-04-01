@@ -33,11 +33,10 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /ProductSize/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string ID = collection["ID"] ?? "";
             string ProductCode = collection["ProductCode"] ?? "";
             string SizeNo = collection["SizeNo"] ?? "";
             string AreaNo = collection["AreaNo"] ?? "";
-            var productSize = ProductSizeService.GetDetails(page, rows, ID, ProductCode, SizeNo, AreaNo);
+            var productSize = ProductSizeService.GetDetails(page, rows,ProductCode, SizeNo, AreaNo);
             return Json(productSize, "text", JsonRequestBehavior.AllowGet);
         }
 

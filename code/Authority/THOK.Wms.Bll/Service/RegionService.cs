@@ -17,7 +17,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string ID, string RegionName, string State)
+        public object GetDetails(int page, int rows,string RegionName, string State)
         {
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
             var region = regionQuery.Where(r => r.RegionName.Contains(RegionName) && r.State.Contains(State))
@@ -29,30 +29,7 @@ namespace THOK.Wms.Bll.Service
                     r.Description,
                     State = r.State == "01" ? "可用" : "不可用",
                 });
-            if (ID != "" && ID != null)
-            {
-                int k = -1;
-                try
-                {
-                    k = Convert.ToInt32(ID);
-                }
-                catch
-                {
-                    k = -1;
-                }
-                finally 
-                {
-                    region = regionQuery.Where(r => r.RegionName.Contains(RegionName) && r.State.Contains(State) && r.ID == k)
-                        .OrderBy(r => r.ID).AsEnumerable()
-                        .Select(r => new
-                        {
-                            r.ID,
-                            r.RegionName,
-                            r.Description,
-                            State = r.State == "01" ? "可用" : "不可用",
-                        });
-                }
-            }
+            
             int total = region.Count();
             region = region.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = region.ToArray() };
@@ -143,26 +120,40 @@ namespace THOK.Wms.Bll.Service
 
         public object GetRegion(int page, int rows, string queryString, string value)
         {
-            string id = "", regionName = "";
-
-            if (queryString == "id")
+            string regionName = "";
+            int id=-1;
+            if (queryString == "ID" && value!="")
             {
-                id = value;
+                try { id = Convert.ToInt32(value); }
+                catch { id =0; }
             }
             else
             {
                 regionName = value;
             }
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-            int Id = Convert.ToInt32(id);
-            var region = regionQuery.Where(r => r.ID == Id && r.RegionName.Contains(regionName) && r.State == "01")
+            var region = regionQuery.Where(r=> r.State == "01")
                 .OrderBy(r => r.ID).AsEnumerable().
                 Select(r => new
                 {
                     r.ID,
                     r.RegionName,
-                    r.Description,
                     State = r.State == "01" ? "可用" : "不可用"
+                });
+            if (id >=0)
+            {
+                region = region.Where(r => r.ID == id);
+            }
+            else 
+            {
+                region = region.Where(r => r.RegionName.Contains(regionName));
+            }
+            region = region.AsEnumerable().
+                Select(r => new
+                {
+                    r.ID,
+                    r.RegionName,
+                    r.State
                 });
             int total = region.Count();
             region = region.Skip((page - 1) * rows).Take(rows);

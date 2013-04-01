@@ -1,0 +1,23 @@
+﻿<script type="text/javascript">
+    function deleteClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            url = '/Position/Delete/?positionID=' + row.ID;
+            showDialog('删除');
+            deleteKey = true;
+            addDialog.dialog('open');
+            $('form input').removeAttr("disabled");
+            $('form textarea').removeAttr("disabled");
+            $('#positionfm').form('load', row);
+            $('form input').attr("disabled", "disabled");
+            $('form textarea').attr("disabled", "disabled");
+            $('#positionfm .easyui-validatebox').validatebox({
+                required: false
+            });
+        } else {
+            $.messager.alert('错误', '没有选择行！', 'info');
+        }
+    };
+</script>
+
+

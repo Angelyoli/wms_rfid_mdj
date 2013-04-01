@@ -4,7 +4,7 @@ namespace THOK.Wms.Bll.Interfaces
 {
      public interface IRegionService:IService<Region>
     {
-         object GetDetails(int page, int rows, string ID, string RegionName, string State);
+         object GetDetails(int page, int rows, string RegionName, string State);
 
          bool Add(Region region, out string strResult);
 

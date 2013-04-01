@@ -10,12 +10,12 @@ using THOK.WebUtil;
 
 namespace Wms.Controllers.Wms.BasisInfo
 {
-    public class SRMController : Controller
+    public class PositionController : Controller
     {
         [Dependency]
-        public ISRMService SRMService { get; set; }
+        public IPositionService PositionService { get; set; }
         //
-        // GET: /SRM/
+        // GET: /Position/
 
         public ActionResult Index(string moduleID)
         {
@@ -28,17 +28,6 @@ namespace Wms.Controllers.Wms.BasisInfo
             ViewBag.ModuleID = moduleID;
             return View();
         }
-
-        //
-        // GET: /SRM/Details/
-        public ActionResult Details(int page, int rows, FormCollection collection)
-        {
-            string SRMName = collection["SRMName"] ?? "";
-            string State = collection["State"] ?? "";
-            var srm = SRMService.GetDetails(page, rows,SRMName,State);
-            return Json(srm, "text", JsonRequestBehavior.AllowGet);
-        }
-
         public ActionResult SearchPage()
         {
             return View();
@@ -50,67 +39,79 @@ namespace Wms.Controllers.Wms.BasisInfo
         }
 
         //
-        // POST: /SRM/Create/
-        [HttpPost]
-        public ActionResult Create(SRM srm)
-        {
-            string strResult = string.Empty;
-            bool bResult = SRMService.Add(srm, out strResult);
-            string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
-        }
+        // GET: /Position/Details/5
 
+        public ActionResult Details (int page, int rows, FormCollection collection)
+        {
+            string PositionName = collection["PositionName"] ?? "";
+            string PositionType = collection["PositionType"] ?? "";
+            string SRMName = collection["SRMName"] ?? "";
+            string State = collection["State"] ?? "";
+
+            var path = PositionService.GetDetails(page, rows, PositionName, PositionType,SRMName, State);
+            return Json(path, "text", JsonRequestBehavior.AllowGet);
+        }
         //
-        // POST: /SRM/Edit/5
-        public ActionResult Edit(SRM srm)
+        // POST: /Position/Create
+
+        [HttpPost]
+        public ActionResult Create(Position position)
         {
             string strResult = string.Empty;
-            bool bResult = SRMService.Save(srm, out strResult);
+            bool bResult = PositionService.Add(position, out strResult);
+            string msg = bResult ? "新增成功" : "新增失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+        
+      
+        //
+        // POST: /Position/Edit/5
+
+        [HttpPost]
+        public ActionResult Edit(Position position)
+        {
+            string strResult = string.Empty;
+            bool bResult = PositionService.Save(position, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
-        // POST: /SRM/Delete/
+        // POST: /Position/Delete/5
+
         [HttpPost]
-        public ActionResult Delete(int  srmId)
+        public ActionResult Delete(int positionId)
         {
             string strResult = string.Empty;
-            bool bResult = false;
-            bResult = SRMService.Delete(srmId, out strResult);
+            bool bResult = PositionService.Delete(positionId, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
-
-        // POST: /SRM/GetSRM/
-        public ActionResult GetSRM(int page, int rows, string queryString, string value)
+         // POST: /Position/GetPosition/
+        public ActionResult GetPosition(int page, int rows, string queryString, string value)
         {
+            
             if (queryString == null)
             {
-                queryString = "ID";
+                queryString = "EmployeeCode";
             }
             if (value == null)
             {
                 value = "";
             }
-            var srm = SRMService.GetSRM(page, rows, queryString, value);
-            return Json(srm, "text", JsonRequestBehavior.AllowGet);
+            var employee = PositionService.GetPosition(page, rows, queryString, value);
+            return Json(employee, "text", JsonRequestBehavior.AllowGet);
         }
 
-        //  /SRM/CreateExcelToClient/
+        #region /Position/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            //int id=0;// =Convert .ToInt32( Request.QueryString["id"]);
-            //if (Request.QueryString["id"] != null && Request.QueryString["id"] != "")
-            //{
-            //    id = Convert.ToInt32(Request.QueryString["id"]);
-            //}
+            string positionName = Request.QueryString["positionName"];
             string srmName = Request.QueryString["srmName"];
-            string state = Request.QueryString["state"];
 
-            System.Data.DataTable dt = SRMService.GetSRM(page, rows, srmName, state,null);
-            string headText = "堆垛机信息";
+            System.Data.DataTable dt = PositionService.GetPosition(page, rows, positionName, srmName,null );
+            string headText = "位置信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10;
             string[] HeaderFooder = {   
@@ -124,6 +125,9 @@ namespace Wms.Controllers.Wms.BasisInfo
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
                 , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
-        }  
+        } 
+        #endregion
     }
 }
+    
+

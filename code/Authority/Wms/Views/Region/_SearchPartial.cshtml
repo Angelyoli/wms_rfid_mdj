@@ -14,7 +14,7 @@
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
                 width: 310,
-                height: 200,
+                height: 150,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -41,7 +41,6 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.RegionID = $('#RegionID').val();
         queryParams.RegionName = $('#RegionName').val();
         queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;

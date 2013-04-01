@@ -1,6 +1,6 @@
 ﻿<script type="text/javascript">
     var searchDialog;
-    var module = "SRM";
+    var module = "Position";
     var searchKey = false;
     var addKey = false;
     var editKey = false;
@@ -10,15 +10,16 @@
     function searchClick() {
         $("input[type=text]").attr("value", "");
         $('#State').combo('setValue', "");
+        $('#PositionType').combo('setValue', "");
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
-                width: 310,
-                height: 150,
+                width: 300,
+                height: 200,
                 closed: true,
                 cache: false,
                 modal: true,
-                href: '/SRM/SearchPage/',
+                href: '/Position/SearchPage/',
                 buttons: [{
                     text: '查询',
                     iconCls: 'icon-ok',
@@ -41,6 +42,8 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.PositionName = $('#PositionName').val();
+        queryParams.PositionType = $('#PositionType').combo('getValue');
         queryParams.SRMName = $('#SRMName').val();
         queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
@@ -49,3 +52,4 @@
     }
 </script>
 <script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
+
