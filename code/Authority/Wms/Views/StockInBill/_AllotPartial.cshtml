@@ -32,6 +32,7 @@
                  p.html($(source).html()).appendTo('body');
                  return p;
              },
+             cursor: 'pointer',
              onStartDrag: function () {
                  var id = $(this).attr('id');
                  var ProductName = $(this).find('p:eq(0)').html();
@@ -43,24 +44,19 @@
              }
          });
      }
-     $.ajaxSender.send('/DefaultProductSet/CellCodeSet/', ///Cell/GetCheckDetails/  /DefaultProductSet/CellCodeSet/
+     $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
                             {
                             'productId': ''
                         },
                     function (data) {
                         $.fn.zTree.init($("#warehouseTree"), setting, data);
                     });
-     //     $('#warehouseTree').tree({
-     //         onClick: function (node) {
-     //             if (node) {
-     //                 createTable(node.attributes, node.id);
-     //             }
-     //         }
-     //     });
  });
  function createTable(type, id) {
      var div = document.getElementById("drop");
-     div.removeChild(div.firstChild);
+     while (div.hasChildNodes()) {
+         div.removeChild(div.firstChild);
+     }
      var table = document.createElement("table"); //创建table
      $.getJSON('/Cargospace/AllotInTreeDetails/?type=' + type + '&id=' + id, function (data) {
          if (data.length > 0) {
@@ -359,9 +355,9 @@
             panelWidth="160px"
             id="area"></select>
     <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="allot()">自动分配</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="manualAllot()">手动分配</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="cancelAllot()">取消分配</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="allotAdd()">手工增加</a>
+    <a href="#" class="easyui-linkbutton" iCls="icon-Menu_CheckBill" plain="true" onclick="manualAllot()">手动分配</a>
+    <a href="#" class="easyui-linkbutton" iconconCls="icon-add" plain="true" onclick="allotAdd()">手工增加</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="allotEdit()">手工修改</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="allotDelete()">手工删除</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="confirmAllot()">确认分配</a>
@@ -418,7 +414,7 @@
         </form>
 </div>
 <div id="manualAllot" class="easyui-dialog" modal="true"  style="width:1000px;height:500px;padding:4px 4px"closed="true">
- <div region="center" split="true"  border="false" style="height:25%;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">   
+    <div region="center" split="true"  border="false" style="height:25%; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">
             <table class="easyui-datagrid" border="false" singleSelect="true" id="inAllotBillDetail"
                 fit="true" fitColumns="true"  pagination="true" rownumbers="true" pageSize="10">
                 <thead>
@@ -435,14 +431,15 @@
                     </tr>
                 </thead>
             </table>
-</div>
+    </div>
+    <div region="south" split="true" border="false" >
         <div   style="width:200px; height:350px;float:left; margin-bottom:0px; margin:0 0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid;overflow:auto">
-        @*<ul id="warehouseTree" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul>*@
-        <ul id="warehouseTree" class="ztree"></ul>
+            <ul id="warehouseTree" class="ztree"></ul>
         </div>
         <div  style="width:750px;height:350px;float:left;margin-bottom:0px; margin:0 0 0 0 0px; border:1px #99BBE8; overflow:auto;">
-        <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
+            <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
        </div>
+    </div>
 </div>
 <div id="dlg_allot_modify_buttons">
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="AllotModifySave()">确定</a>

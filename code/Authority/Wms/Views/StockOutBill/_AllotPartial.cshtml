@@ -44,9 +44,11 @@
         //            }
         //        });
     });
-                function createTable(type, id) {
+    function createTable(type, id) {
         var div = document.getElementById("drop");
-        div.removeChild(div.firstChild);
+        while (div.hasChildNodes()) {
+            div.removeChild(div.firstChild);
+        }
         var table = document.createElement("table"); //创建table
         $.getJSON('/Cargospace/AllotOutTreeDetails/?type=' + type + '&id=' + id + '&productCode=' + productCode, function (data) {
             if (data.length > 0) {
@@ -105,6 +107,7 @@
             $('.itemdiv').draggable({
                 revert: true,
                 proxy: 'clone',
+                cursor: 'pointer',
                 onStopDrag: function () {
                     id = $(this).attr('id');
                     var cellname = document.getElementById(id).innerHTML.substring(0, 11);
@@ -282,7 +285,7 @@
 <div id="dlg-allot" class="easyui-dialog" modal="true"
         style="width:1000px;height:500px;padding:0px 0px"
         closed="true" buttons="" >
-    <div class="easyui-layout" fit="true" >  
+    <div class="easyui-layout" fit="true" >
         <div region="center" split="true"  border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">   
             <table class="easyui-datagrid" border="false" singleSelect="true" id="outBillDetails1" url="" toolbar="#bar"
                 fit="true" fitColumns="true"  pagination="true" rownumbers="true" pageSize="50">
@@ -356,7 +359,7 @@
             <input type="hidden" name="ID" readonly="true"/>
             <table style="padding:10px 10px 0px 5px">
                 <tr>
-                    <td width ="60px">入库单号</td>
+                    <td width ="60px">出库单号</td>
                     <td align="left"><input type="text" name="BillNo" readonly="true"/></td>
                   </tr>
                   <tr>
@@ -398,7 +401,7 @@
         </form>
 </div>
 <div id="manualAllot" class="easyui-dialog" modal="true"  style="width:1000px;height:500px;padding:4px 4px"closed="true">
- <div region="center" split="true" class="outDetail"  border="false" style="height:25%;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">   
+        <div region="center" split="true" class="outDetail"  border="false" style="height:25%;border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">   
             <table class="easyui-datagrid" border="false" singleSelect="true" id="outBillDetail"
                 fit="true" fitColumns="true"  pagination="true" rownumbers="true" pageSize="10">
                 <thead>
@@ -417,12 +420,12 @@
                 </thead>
             </table>
         </div> 
-  <div   style="width:200px; height:350px;float:left;margin:0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid; overflow:auto;">
-        <ul id="warehouseTrees" class="ztree"></ul>
+        <div style="width:200px; height:350px;float:left;margin:0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid; overflow:auto;">
+            <ul id="warehouseTrees" class="ztree"></ul>
         </div>
         <div   style="width:750px;height:350px;float:left;margin:0 0 0 0px; border:1px #99BBE8; overflow:auto;">
-        <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
-       </div></div>
+            <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
+        </div>
 </div>
 <div id="dlg_allot_modify_buttons">
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="AllotModifySave()">确定</a>

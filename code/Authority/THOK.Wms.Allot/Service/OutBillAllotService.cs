@@ -256,39 +256,46 @@ namespace THOK.Wms.Allot.Service
                             decimal q1 = obm.BillQuantity - obm.AllotQuantity;
                             decimal q2 = allotQuantity * obm.Unit.Count;
                             decimal q3 = storage.Quantity - storage.OutFrozenQuantity;
-                            if (q1 >= q2 && q2 <= q3)
+                            if (q1 >= q2)
                             {
-                                try
+                                if (q2 <= q3)
                                 {
-                                    billAllot = new OutBillAllot()
+                                    try
                                     {
-                                        BillNo = billNo,
-                                        OutBillDetailId = obm.ID,
-                                        ProductCode = obm.ProductCode,
-                                        CellCode = storage.CellCode,
-                                        StorageCode = storage.StorageCode,
-                                        UnitCode = obm.UnitCode,
-                                        AllotQuantity = q2,
-                                        RealQuantity = 0,
-                                        Status = "0"
-                                    };
-                                    obm.AllotQuantity += q2;
-                                    storage.OutFrozenQuantity += q2;
-                                    ibm.OutBillAllots.Add(billAllot);
-                                    ibm.Status = "3";
-                                    storage.LockTag = string.Empty;
-                                    StorageRepository.SaveChanges();
-                                    strResult = "保存修改成功！";
-                                    result = true;
+                                        billAllot = new OutBillAllot()
+                                        {
+                                            BillNo = billNo,
+                                            OutBillDetailId = obm.ID,
+                                            ProductCode = obm.ProductCode,
+                                            CellCode = storage.CellCode,
+                                            StorageCode = storage.StorageCode,
+                                            UnitCode = obm.UnitCode,
+                                            AllotQuantity = q2,
+                                            RealQuantity = 0,
+                                            Status = "0"
+                                        };
+                                        obm.AllotQuantity += q2;
+                                        storage.OutFrozenQuantity += q2;
+                                        ibm.OutBillAllots.Add(billAllot);
+                                        ibm.Status = "3";
+                                        storage.LockTag = string.Empty;
+                                        StorageRepository.SaveChanges();
+                                        strResult = "保存修改成功！";
+                                        result = true;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        strResult = "保存添加失败，订单或储位其他人正在操作！";
+                                    }
                                 }
-                                catch (Exception)
+                                else
                                 {
-                                    strResult = "保存添加失败，订单或储位其他人正在操作！";
+                                    strResult = "当前储位库存量不足！";
                                 }
                             }
                             else
                             {
-                                strResult = "分配数量超过订单数量,或者当前储位库存量不足！";
+                                strResult = "分配数量超过订单数量！";
                             }
                         }
                         else

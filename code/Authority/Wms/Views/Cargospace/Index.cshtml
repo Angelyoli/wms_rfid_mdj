@@ -1,9 +1,29 @@
 ﻿<script type="text/javascript">
+    var setting = {
+        view: {
+            showLine: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onClick: onclick
+        }
+    };
+    function onclick(event, treeId, treeNode) {
+        createTable(treeNode.type, treeNode.id);
+        $('#listdetails').datagrid('options').url = '/Cargospace/Details/?type=' + treeNode.type + '&id=' + treeNode.id;
+        $('#listdetails').datagrid('reload');
+    }
     function createTable(type, id) {
         var div = document.getElementById("drop");
-        div.removeChild(div.firstChild);
+        while (div.hasChildNodes())
+        {
+            div.removeChild(div.firstChild);
+        }
         var table = document.createElement("table"); //创建table
-        table.width = "3700";
         $.getJSON('/Cargospace/TreeDetails/?type=' + type + '&id=' + id, function (data) {
             if (data.length > 0) {
                 var y = 0;
@@ -16,28 +36,31 @@
                     }
                     var per = data[s].Quantity / data[s].maxQuantity
                     if (data[s].asdd3 == '1') {
+                        var mydiv = document.createElement("div");
+                        mydiv.style.width = "100px";
+                        mydiv.style.height = "100px";
+                        mydiv.style.backgroundColor = "#40e0d0";
                         var cell = row1.insertCell(); //创建一个单元 
-                        cell.width = "100"; //更改cell的各种属性
-                        cell.height = "100";
-                        cell.padding = false;
-                        cell.style.backgroundColor = "#40e0d0";
-                        cell.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                        cell.appendChild(mydiv);
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
                     }
                     if (data[s].asdd3 == '2') {
                         var cell = row2.insertCell(); //创建一个单元 
-                        cell.width = "100"; //更改cell的各种属性
-                        cell.height = "100";
-                        cell.padding = false;
-                        cell.style.backgroundColor = "#40e0d0";
-                        cell.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                        var mydiv = document.createElement("div");
+                        mydiv.style.width = "100px";
+                        mydiv.style.height = "100px";
+                        mydiv.style.backgroundColor = "#40e0d0";
+                        cell.appendChild(mydiv);
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
                     }
                     if (data[s].asdd3 == '3') {
                         var cell = row3.insertCell(); //创建一个单元 
-                        cell.width = "100"; //更改cell的各种属性
-                        cell.height = "100";
-                        cell.padding = false;
-                        cell.style.backgroundColor = "#40e0d0";
-                        cell.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                        var mydiv = document.createElement("div");
+                        mydiv.style.width = "100px";
+                        mydiv.style.height = "100px";
+                        mydiv.style.backgroundColor = "#40e0d0";
+                        cell.appendChild(mydiv);
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
                     }
                 }
 
@@ -50,19 +73,18 @@
         });
     }
     $(function () {
-        $('#warehouseTree').tree({
-            onClick: function (node) {
-                if (node) {
-                    createTable(node.attributes, node.id);
-                    $('#listdetails').datagrid('options').url = '/Cargospace/Details/?type=' + node.attributes + '&id=' + node.id;
-                    $('#listdetails').datagrid('reload');
-                }
-            }
-        });
+        createTable('', '');
+        $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
+                            {
+                                'productId': ''
+                            },
+                    function (data) {
+                        $.fn.zTree.init($("#warehouseTree"), setting, data);
+                    });
     });
 </script>
 <div id="sidebar" region="west" split="true"  style="width: 220px; overflow: scroll; padding: 1px; margin: 1px">
-    <ul id="warehouseTree" class="easyui-tree" url='/Cell/GetCheckDetails/'></ul>
+    <ul id="warehouseTree" class="ztree"></ul>
 </div>
 <div region="center" split="true" border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">    
     <div id="spaceTabs" class="easyui-tabs" fit="true"> 
