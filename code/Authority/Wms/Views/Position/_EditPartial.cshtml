@@ -2,13 +2,10 @@
     function editClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            AddLoad();
             showDialog('编辑');
             editKey = true;
             addDialog.dialog('open');
-
             url = '/Position/Edit/';
-            //            $('#dlg').dialog('open').dialog('setTitle', '编辑');
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
             $('#inputID').attr("readonly", true);
@@ -16,34 +13,59 @@
             $('#positionfm .easyui-validatebox').validatebox({
                 required: true
             });
-            //CompantyType
+            //PositionType
             if (row.PositionType == "正常位置") {
-                $('position_type').combo('setValue', 1).combo('setText', row.PositionType);
+                $('#inputPositionType').combo('setValue', '01').combo('setText', row.PositionType);
             }
             else if (row.PositionType == "大品种出库位") {
-                $('position_type').combo('setValue', 2).combo('setText', row.PositionType);
+                $('#inputPositionType').combo('setValue', '02').combo('setText', row.PositionType);
             }
             else if (row.PositionType == "小品种出库位") {
-                $('position_type').combo('setValue', 3).combo('setText', row.PositionType);
+                $('#inputPositionType').combo('setValue', '03').combo('setText', row.PositionType);
             }
-            else if (row.PositionType == "异性烟出库位") {
-                $('position_type').combo('setValue', 4).combo('setText', row.PositionType);
+            else if (row.PositionType == "异形烟出库位") {
+                $('#inputPositionType').combo('setValue', '04').combo('setText', row.PositionType);
             }
             else if (row.PositionType == "空托盘出库位") {
-                $('position_type').combo('setValue', 5).combo('setText', row.PositionType);
+                $('#inputPositionType').combo('setValue', '05').combo('setText', row.PositionType);
             }
-            $('#position_type').combo({
-                hasDownArrow: true
-            });
+            //Extension
+            if (row.Extension == "单右伸") {
+                $('#selectExtension').combo('setValue', 0).combo('setText', row.Extension);
+            }
+            else if (row.Extension == "双右伸") {
+                $('#selectExtension').combo('setValue', 4).combo('setText', row.Extension);
+            }
+            else if (row.Extension == "单左伸") {
+                $('#selectExtension').combo('setValue', 8).combo('setText', row.Extension);
+            }
+            else if (row.Extension == "双左伸") {
+                $('#selectExtension').combo('setValue', 12).combo('setText', row.Extension);
+            }
+            //HasGoods
+            if (row.HasGoods == '是') {
+                $('#selectHasGoods').combo('setValue', true).combo('setText', row.HasGoods);
+            } else {
+                $('#selectHasGoods').combo('setValue', false).combo('setText', row.HasGoods);
+            }
+            //AbleStockOut
+            if (row.AbleStockOut == '是') {
+                $('#selectAbleStockOut').combo('setValue', true).combo('setText', row.AbleStockOut);
+            } else {
+                $('#selectAbleStockOut').combo('setValue', false).combo('setText', row.AbleStockOut);
+            }
+            //AbleStockInPallet
+            if (row.AbleStockInPallet == '是') {
+                $('#selectAbleStockInPallet').combo('setValue', true).combo('setText', row.AbleStockInPallet);
+            } else {
+                $('#selectAbleStockInPallet').combo('setValue', false).combo('setText', row.AbleStockInPallet);
+            }
             //IsActive
             if (row.State == '可用') {
-                $('#state_com').combo('setValue', 1).combo('setText', row.State);
+                $('#selectState').combo('setValue', '01').combo('setText', row.State);
             } else {
-                $('#state_com').combo('setValue', 0).combo('setText', row.State);
+                $('#selectState').combo('setValue', '02').combo('setText', row.State);
             }
-            $('#state_com').combo({
-                hasDownArrow: true
-            });
         } else {
             $.messager.alert('错误', '没有选择行！', 'info');
         }

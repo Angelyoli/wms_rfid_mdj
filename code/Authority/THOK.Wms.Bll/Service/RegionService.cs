@@ -122,28 +122,25 @@ namespace THOK.Wms.Bll.Service
         {
             string regionName = "";
             int id=-1;
-            if (queryString == "id")
+            if (queryString == "ID" && value!="")
             {
                 try { id = Convert.ToInt32(value); }
-                catch { id = -1; }
+                catch { id =0; }
             }
             else
             {
                 regionName = value;
             }
-            //IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-            //var region = regionQuery.OrderBy(r => r.ID).AsEnumerable().
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-            var region = regionQuery.Where(r =>r.RegionName.Contains(regionName) && r.State == "1")
+            var region = regionQuery.Where(r=> r.State == "01")
                 .OrderBy(r => r.ID).AsEnumerable().
                 Select(r => new
                 {
                     r.ID,
                     r.RegionName,
-                    r.Description,
                     State = r.State == "01" ? "可用" : "不可用"
                 });
-            if (id > 0)
+            if (id >=0)
             {
                 region = region.Where(r => r.ID == id);
             }
@@ -156,8 +153,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     r.ID,
                     r.RegionName,
-                    r.Description,
-                    State = r.State == "01" ? "可用" : "不可用"
+                    r.State
                 });
             int total = region.Count();
             region = region.Skip((page - 1) * rows).Take(rows);

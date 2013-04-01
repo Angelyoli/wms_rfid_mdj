@@ -6,101 +6,125 @@
         <div region="center" border="false" style="padding: 10px 10px; background: #fff;
             border: 1px solid #ccc;">
             <form id="positionfm" method="post">
-            <table width="480">
-                <tr>
-                    <td width="60">
+            <table width="510">
+                <tr hidden="true">
+                    <td width="85">
                         位置编号:
                     </td>
                     <td width="168">
-                        <input name="ID" id="inputID" class="easyui-validatebox" validtype="maxLength[8]"
-                            required="true" />
+                        <input name="ID" id="inputID"/>
                         <input name="ID" style="display: none" />
                     </td>
-                    <td width="60">
-                        位置名称：
-                    </td>
-                    <td width="168">
-                        <input name="PositionName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
-                    </td>
                 </tr>
                 <tr>
-                      <td width="60">
-                        位置类型：
-                    </td>
-                    <td width="168">
-                        <select id="position_type" name="PositionType" class="easyui-combobox" required="true"
+                   <td width="85">位置名称：</td>
+                   <td width="168"><input name="PositionName" id="inputPositionName" class="easyui-validatebox" required="true" type="text" /></td>
+                   <td width="85">位置类型：</td>
+                   <td width="168">
+                     <select id="inputPositionType" name="PositionType" class="easyui-combobox" required="true"
                             style="width: 129px">
-                            <option value="1">正常位置</option>
-                            <option value="2">大品种出库位</option>
-                            <option value="3">小品种出库位</option>
-                            <option value="4">异性烟出库位</option>
-                            <option value="5">空托盘出库位</option>
+                            <option value="01">正常位置</option>
+                            <option value="02">大品种出库位</option>
+                            <option value="03">小品种出库位</option>
+                            <option value="04">异性烟出库位</option>
+                            <option value="05">空托盘出库位</option>
                         </select>
                     </td>
-                    <td width="60">
-                        区域编号：
+                </tr>
+                <tr>
+                      <td width="85">
+                        区域名称：
                     </td>
                     <td width="168">
-                        <input name="RegionID" validtype="maxLength[8]" />
+                        <input name="RegionID" id="inputRegionID" style ="display:none"/>
+                        <input name="RegionName" id="inputRegionName" class="easyui-validatebox" required="true" type="text" readonly="readonly"/>
+                        <a href="#" id="RegionNameSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="RegionNameSearchClick()"></a>
+                    </td>
+                    <td width="85">
+                        堆垛机名称：
+                    </td>
+                    <td width="168">
+                        <input name="SRMName" id="inputSRMName" class="easyui-validatebox" required="true" type="text"/>
                     </td>
                 </tr>
                 <tr>
-                      <td width="60">
-                        是否有货物：
-                    </td>
+                    <td width="85">行走位置：</td>
+                    <td width="168"><input name="TravelPos" id="inputTravelPos"class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="必须为数字"/></td>
+                    <td width="85">升降位置：</td>
+                    <td width="168"><input name="LiftPos" id="inputLiftPos" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="必须为数字"/></td>
+                </tr>
+                <tr>
+                    <td width="85"> 货叉伸位：</td>
                     <td width="168">
-                        <select id="hasGoods" name="HasGoods" class="easyui-combobox" required="true"
+                        <select id="selectExtension" name="Extension" class="easyui-combobox" required="true"
                             style="width: 129px">
-                            <option value="1">是</option>
-                            <option value="2">否</option>
+                            <option value="0">单右伸</option>
+                            <option value="4">双右伸</option>
+                            <option value="8">单左伸</option>
+                            <option value="12">双左伸</option>
                        </select>
                     </td>
-                    <td width="60">
-                        是否出库：
-                    </td>
+                    <td width="85">是否有货物：</td>
                     <td width="168">
-                        <select id="ableStockOut" name="AbleStockOut" class="easyui-combobox" required="true"
+                        <select id="selectHasGoods" name="HasGoods" class="easyui-combobox" required="true"
                             style="width: 129px">
-                            <option value="1">是</option>
-                            <option value="2">否</option>
+                            <option value="true">是</option>
+                            <option value="false">否</option>
                        </select>
                     </td>
                 </tr>
                 <tr>
-                     <td width="60">
+                     <td width="85">
+                        可否出库：
+                    </td>
+                    <td width="168">
+                        <select id="selectAbleStockOut" name="AbleStockOut" class="easyui-combobox" required="true"
+                            style="width: 129px">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                       </select>
+                    </td>
+                    <td width="85">
                         可否叠空托盘：
                     </td>
                     <td width="168">
-                        <select id="ableStockInPallet" name="AbleStockInPallet" class="easyui-combobox" required="true"
+                        <select id="selectAbleStockInPallet" name="AbleStockInPallet" class="easyui-combobox" required="true"
                             style="width: 129px">
-                            <option value="1">是</option>
-                            <option value="2">否</option>
+                            <option value="true">是</option>
+                            <option value="false">否</option>
                        </select>
-                    </td>
-                    <td width="60">
-                        电子标签地址：
-                    </td>
-                    <td width="168">
-                        <input name="tagAddress" class="easyui-numberbox" min="0" max="999999999" type="text"
-                            required="true" />
                     </td>
                 </tr>
                 <tr>
-                    <td width="60">
-                       当前任务编号：
+                     <td width="85">
+                        电子标签地址:
                     </td>
                     <td width="168">
-                        <input name="CurrentTaskID" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                        <input name="TagAddress" id="inputTagAddress" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="必须为数字"/>
+                    </td>
+                    <td width="85">
+                        当前任务编号：
+                    </td>
+                    <td width="168">
+                        <input name="CurrentTaskID" id="inputCurrentTaskID" class="easyui-numberbox" placeholder="只能为数字" type="text"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="85">
+                       当前操作数量:
+                    </td>
+                    <td width="168">
+                        <input name="CurrentOperateQuantity" id="inputCurrentOperateQuantity" class="easyui-numberbox" placeholder="只能为数字" type="text"/>
                     </td>
 
                     <td>
                         状态:
                     </td>
                     <td>
-                        <select id="isActive_com" name="IsActive" class="easyui-combobox" required="true"
+                        <select id="selectState" name="State" class="easyui-combobox" required="true"
                             style="width: 129px">
-                            <option value="1">可用</option>
-                            <option value="0">不可用</option>
+                            <option value="01">可用</option>
+                            <option value="02">不可用</option>
                         </select>
                     </td>
                 </tr>
@@ -109,7 +133,7 @@
                         描述:
                     </td>
                     <td width="168" colspan="3">
-                        <textarea name="Description" id="desId"  style="width: 367px; height: 60px"></textarea>
+                        <textarea name="Description" id="desId"  style="width: 383px; height: 60px"></textarea>
                         @*class="easyui-validatebox" required="false" validtype="maxLength[0,100]" invalidmessage='文本过长'*@
                     </td>
                 </tr>
@@ -117,5 +141,5 @@
             </form>
         </div>
     </div>
-
+    @Html.Partial("_RegionNamePartial");
 
