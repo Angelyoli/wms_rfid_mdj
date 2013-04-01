@@ -31,7 +31,7 @@ namespace Authority.Controllers.Wms.StockIn
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllotEdit(string billNo, long id, string cellCode, int allotQuantity)
+        public ActionResult AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity)
         {
             string strResult = string.Empty;
             bool bResult = InBillAllotService.AllotEdit(billNo, id, cellCode, allotQuantity, out strResult);
@@ -63,7 +63,7 @@ namespace Authority.Controllers.Wms.StockIn
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllotAdd(string billNo, long id, string cellCode, int allotQuantity)
+        public ActionResult AllotAdd(string billNo, long id, string cellCode, decimal allotQuantity)
         {
             string strResult = string.Empty;
             bool bResult = InBillAllotService.AllotAdd(billNo, id, cellCode, allotQuantity, out strResult);
@@ -71,7 +71,7 @@ namespace Authority.Controllers.Wms.StockIn
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllotAdds(string billNo, long id, string cellCode, int allotQuantity, string productname)
+        public ActionResult AllotAdds(string billNo, long id, string cellCode, decimal allotQuantity, string productname)
         {
             string strResult = string.Empty;
             bool bResult = InBillAllotService.AllotAdd(billNo, id, cellCode, allotQuantity, productname, out strResult);

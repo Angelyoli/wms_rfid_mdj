@@ -167,7 +167,7 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
 
-        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, int allotQuantity, out string strResult)
+        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity, out string strResult)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo);
@@ -236,7 +236,7 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
         #region 手动分配出库
-        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, int allotQuantity,string productName, out string strResult)
+        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity,string productName, out string strResult)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo);
@@ -369,7 +369,7 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
 
-        public bool AllotEdit(string billNo, long id, string cellCode, int allotQuantity, out string strResult)
+        public bool AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity, out string strResult)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "3");
