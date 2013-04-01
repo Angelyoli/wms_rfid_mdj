@@ -355,8 +355,8 @@
             panelWidth="160px"
             id="area"></select>
     <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="allot()">自动分配</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="manualAllot()">手动分配</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="cancelAllot()">取消分配</a>
-    <a href="#" class="easyui-linkbutton" iCls="icon-Menu_CheckBill" plain="true" onclick="manualAllot()">手动分配</a>
     <a href="#" class="easyui-linkbutton" iconconCls="icon-add" plain="true" onclick="allotAdd()">手工增加</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="allotEdit()">手工修改</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="allotDelete()">手工删除</a>
@@ -408,7 +408,7 @@
                   </tr>
                   <tr>
                     <td >分配数量</td>
-                    <td align="left"><input type="text" name="AllotQuantity" class="easyui-numberbox" id="allotQuantity" required="true"/></td>
+                    <td align="left"><input type="text" name="AllotQuantity" class="easyui-numberbox" min="0" max="999999999" precision="2" id="allotQuantity" required="true"/></td>
                   </tr>
                 </table>
         </form>
