@@ -9,13 +9,13 @@
 
     function searchClick() {
         $("input[type=text]").attr("value", "");
-        $('#state').combo('setValue', "");
-        $('#positionType').combo('setValue', "");
+        $('#State').combo('setValue', "");
+        $('#PositionType').combo('setValue', "");
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
                 width: 300,
-                height: 260,
+                height: 200,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -42,9 +42,9 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.ID = $('#ID').val();
         queryParams.PositionName = $('#PositionName').val();
         queryParams.PositionType = $('#PositionType').combo('getValue');
+        queryParams.SRMName = $('#SRMName').val();
         queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
