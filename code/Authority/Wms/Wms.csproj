@@ -1903,7 +1903,7 @@
     <Content Include="Views\CellPosition\_SearchPartial.cshtml" />
     <Content Include="Views\CellPosition\AddPage.cshtml" />
     <Content Include="Views\CellPosition\_AddPartial.cshtml" />
-    <Content Include="Views\CellPosition\_ParentPositionNamePartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellPositionNamePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

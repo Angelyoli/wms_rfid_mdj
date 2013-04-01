@@ -47,5 +47,19 @@
         $("#details").datagrid('load');
         searchDialog.dialog('close');
     }
+    function CellPositionSearchClick(k) {
+        
+        addKey = false;
+        editKey = false;
+        if (k == 1) {
+            $('#cellPositionNameData').dialog('open').dialog('setTitle', '选择入库位置名称');
+        }
+        else if (k == 2) {
+            $('#cellPositionNameData').dialog('open').dialog('setTitle', '选择出库价位置名称');
+        }
+        parentComNameKey = true;
+        $('#CellPositionNameDetail').datagrid({ url: '/Position/GetPosition/' });
+        $("#CellPositionNameDetail").datagrid('reload');
+    }
 </script>
 <script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
