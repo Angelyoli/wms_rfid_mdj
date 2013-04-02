@@ -75,7 +75,7 @@ namespace THOK.Wms.Bll.Service
            path = path.Skip((page - 1) * rows).Take(rows);
            return new { total, rows = path.ToArray() };
         }
-       
+
 
         public bool Add(Path path, out string strResult)
         {
@@ -89,7 +89,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     try
                     {
-                        emp.ID =path.ID;
+                        emp.ID = path.ID;
                         emp.PathName = path.PathName;
                         emp.Description = path.Description;
                         emp.OriginRegionID = path.OriginRegionID;
@@ -114,6 +114,7 @@ namespace THOK.Wms.Bll.Service
                 strResult = "原因：该编号已存在！";
             }
             return result;
+        }
            
         public bool Save(Path path, out string strResult)
         {
