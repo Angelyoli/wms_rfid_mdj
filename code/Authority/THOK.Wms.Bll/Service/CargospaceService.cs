@@ -75,45 +75,188 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
-                var cells = cellQuery.Where(s => s.CellCode != null);
+                IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+                var storages = storageQuery;
+                var cells = cellQuery.Where(s => s.MaxPalletQuantity==0);
                 if (type == "ware")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "area")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "shelf")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id);
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0);
                 }
                 else if (type == "cell")
                 {
-                    cells = cellQuery.Where(c => c.CellCode == id);
+                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0);
                 }
-
-                var Cell = cells.ToArray().ToArray().Select(c => new
+                var sCells = cells.Join(storages, c => c.CellCode, s => s.CellCode, (c, s) => new { cells = c, storages = s }).ToArray();
+                if (sCells.Count() > 0)
                 {
-                    c.CellCode,
-                    c.CellName,
-                    c.Product.ProductCode,
-                    c.Product.ProductName,
-                    c.Product.Unit.UnitCode,
-                    c.Product.Unit.UnitName,
-                    c.MaxQuantity,
-                    c.Layer,
-                    Quantity = c.Storages.Max(s=>s.Quantity)/ c.Product.Unit.Count,
-                    EmptyQuantity = c.MaxQuantity - c.Storages.Max(s => s.Quantity) / c.Product.Unit.Count,
-                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd")
-                });
-                for (int i = 0; i <Cell.Count(); i++)
-                {
-                    DataSet tc = new DataSet();
+                    var Cell = sCells.Select(c => new
+                    {
+                        cellCode = c.cells.CellCode,
+                        cellName = c.cells.CellName,
+                        productCode = string.IsNullOrEmpty(c.storages.ProductCode) == true ? "" : c.storages.ProductCode,
+                        productName = c.storages.Product == null ? "" : c.storages.Product.ProductName,
+                        shelfCode = c.cells.ShelfCode,
+                        unitCode = c.storages.Product == null ? "" : c.storages.Product.Unit.UnitCode,
+                        unitName = c.storages.Product == null ? "" : c.storages.Product.Unit.UnitName,
+                        maxQuantity = c.cells.MaxQuantity,
+                        asdd1 = c.cells.CellCode.Substring(4, 2),//区
+                        asdd2 = c.cells.CellCode.Substring(8, 2),//货架
+                        asdd3 = c.cells.CellCode.Substring(14, 1),//层
+                        asdd4 = c.cells.CellCode.Substring(11, 2),//列
+                        Quantity = c.storages.Product == null ? 0 : c.storages.Quantity / c.storages.Product.Unit.Count,
+                        EmptyQuantity = c.storages.Product == null ? c.cells.MaxQuantity : c.cells.MaxQuantity - c.storages.Quantity / c.storages.Product.Unit.Count,
+                        IsActive = c.cells.IsActive == "1" ? "可用" : "不可用",
+                        UpdateTime = c.storages.UpdateTime.ToString("yyyy-MM-dd")
+                    }).OrderByDescending(c => c.asdd4).OrderByDescending(c => c.asdd3).OrderByDescending(c => c.asdd2).OrderByDescending(c => c.asdd1);
 
+                    return Cell.ToArray();
                 }
-                return Cell.ToArray();
+                else
+                {
+                   var s="".ToArray();
+                    return s;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region 入库可用货位选择
+        public object GetInCellDetail(string type, string id)
+        {
+            try
+            {
+                IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+                IQueryable<Storage> storageQuery = StorageRepository.GetQueryable().Where(s=>s.InFrozenQuantity==0&&s.OutFrozenQuantity==0&&s.IsActive=="1"&&s.LockTag=="");
+                var storages = storageQuery;
+                var cells = cellQuery.Where(s => s.MaxPalletQuantity == 0);
+                if (type == "ware")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity==0);
+                }
+                else if (type == "area")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0);
+                }
+                else if (type == "shelf")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0);
+                }
+                else if (type == "cell")
+                {
+                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0);
+                }
+                var sCells = cells.Join(storages, c => c.CellCode, s => s.CellCode, (c, s) => new { cells = c, storages = s }).ToArray();
+                if (sCells.Count() > 0)
+                {
+                    var Cell = sCells.Select(c => new
+                    {
+                        cellCode = c.cells.CellCode,
+                        cellName = c.cells.CellName,
+                        productCode = string.IsNullOrEmpty(c.storages.ProductCode) == true ? "" : c.storages.ProductCode,
+                        productName = c.storages.Product == null ? "" : c.storages.Product.ProductName,
+                        shelfCode = c.cells.ShelfCode,
+                        unitCode = c.storages.Product == null ? "" : c.storages.Product.Unit.UnitCode,
+                        unitName = c.storages.Product == null ? "" : c.storages.Product.Unit.UnitName,
+                        maxQuantity = c.cells.MaxQuantity,
+                        asdd1 = c.cells.CellCode.Substring(4, 2),//区
+                        asdd2 = c.cells.CellCode.Substring(8, 2),//货架
+                        asdd3 = c.cells.CellCode.Substring(14, 1),//层
+                        asdd4 = c.cells.CellCode.Substring(11, 2),//列
+                        Quantity = c.storages.Product == null ? 0 : c.storages.Quantity / c.storages.Product.Unit.Count,
+                        EmptyQuantity = c.storages.Product == null ? c.cells.MaxQuantity : c.cells.MaxQuantity - c.storages.Quantity / c.storages.Product.Unit.Count,
+                        IsActive = c.cells.IsActive == "1" ? "可用" : "不可用",
+                        UpdateTime = c.storages.UpdateTime.ToString("yyyy-MM-dd")
+                    }).OrderByDescending(c => c.asdd4).OrderByDescending(c => c.asdd3).OrderByDescending(c => c.asdd2).OrderByDescending(c => c.asdd1);
+                    var Cells = Cell.Where(c=>c.EmptyQuantity>0);
+                    if (Cells.Count() > 0)
+                    {
+                        return Cells.ToArray();
+                    }
+                    else
+                    {
+                        var s = "".ToArray();
+                        return s;
+                    }
+                }
+                else
+                {
+                    var s = "".ToArray();
+                    return s;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region 出库可用货位选择
+        public object GetOutCellDetail(string type, string id, string productCode)
+        {
+            try
+            {
+                IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+                IQueryable<Storage> storageQuery = StorageRepository.GetQueryable().Where(s => s.InFrozenQuantity == 0 && s.OutFrozenQuantity == 0 && s.IsActive == "1" && s.LockTag == ""&&s.Quantity>0&&s.ProductCode.Contains(productCode));
+                var storages = storageQuery;
+                var cells = cellQuery.Where(s => s.MaxPalletQuantity == 0);
+                if (type == "ware")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity == 0);
+                }
+                else if (type == "area")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0);
+                }
+                else if (type == "shelf")
+                {
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0);
+                }
+                else if (type == "cell")
+                {
+                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0);
+                }
+                var sCells = cells.Join(storages, c => c.CellCode, s => s.CellCode, (c, s) => new { cells = c, storages = s }).ToArray();
+                if (sCells.Count() > 0)
+                {
+                    var Cell = sCells.Select(c => new
+                    {
+                        cellCode = c.cells.CellCode,
+                        cellName = c.cells.CellName,
+                        productCode = string.IsNullOrEmpty(c.storages.ProductCode) == true ? "" : c.storages.ProductCode,
+                        productName = c.storages.Product == null ? "" : c.storages.Product.ProductName,
+                        shelfCode = c.cells.ShelfCode,
+                        unitCode = c.storages.Product == null ? "" : c.storages.Product.Unit.UnitCode,
+                        unitName = c.storages.Product == null ? "" : c.storages.Product.Unit.UnitName,
+                        maxQuantity = c.cells.MaxQuantity,
+                        asdd1 = c.cells.CellCode.Substring(4, 2),//区
+                        asdd2 = c.cells.CellCode.Substring(8, 2),//货架
+                        asdd3 = c.cells.CellCode.Substring(14, 1),//层
+                        asdd4 = c.cells.CellCode.Substring(11, 2),//列
+                        Quantity = c.storages.Product == null ? 0 : c.storages.Quantity / c.storages.Product.Unit.Count,
+                        EmptyQuantity = c.storages.Product == null ? c.cells.MaxQuantity : c.cells.MaxQuantity - c.storages.Quantity / c.storages.Product.Unit.Count,
+                        IsActive = c.cells.IsActive == "1" ? "可用" : "不可用",
+                        UpdateTime = c.storages.UpdateTime.ToString("yyyy-MM-dd")
+                    }).OrderByDescending(c => c.asdd4).OrderByDescending(c => c.asdd3).OrderByDescending(c => c.asdd2).OrderByDescending(c => c.asdd1);
+                    return Cell.ToArray();
+                }
+                else
+                {
+                    var s = "".ToArray();
+                    return s;
+                }
             }
             catch (Exception ex)
             {

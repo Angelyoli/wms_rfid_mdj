@@ -204,6 +204,7 @@
     <Compile Include="Security\FormsAuthenticationService.cs" />
     <Compile Include="Security\FormsAuthorizeAttribute.cs" />
     <Compile Include="Security\IFormsAuthenticationService.cs" />
+    <Compile Include="Security\TokenAclAuthorizeAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ASPNETDB.MDF" />
