@@ -8,15 +8,9 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface IPathService : IService<Path>
     {
-
-
-        
-
         bool Add(Path path, out string strResult);
 
         bool Save(Path path, out string strResult);
-
-        //bool Delete(int ID, out string strResult);
 
         object GetPath(int page, int rows, string queryString, string value);
 
