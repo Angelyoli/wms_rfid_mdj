@@ -14,12 +14,26 @@
                     <td width="168"><input id="PathName" type="text"/></td>
                     </tr> 
                     <tr>
-                    <td width="60">起始区域ID：</td>
-                    <td width="168"><input id="OriginRegionID" type="text"/></td>
+                     <td width="60">
+                    起始区域编号：
+                </td>
+                <td width="168" align="left">
+                    <input id="region-id" name="RegionID" type="text" style="display:none;"/>
+                    <input id="region-name" name="RegionName" type="text" readonly="readonly"/>
+                    <a href="#" id="region-search" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                        onclick="regionSearchClick()"></a>
+                </td>
                     </tr>  
                     <tr>
-                    <td width="60">目标区域ID：</td>
-                    <td width="168"><input id="TargetRegionID" type="text"/></td>
+                    <td width="60">
+                    目标区域编号：
+                </td>
+                <td width="168" align="left">
+                    <input id="region-id" name="RegionID" type="text" style="display:none;"/>
+                    <input id="region-name" name="RegionName" type="text" readonly="readonly"/>
+                    <a href="#" id="region-search" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                        onclick="regionSearchClick()"></a>
+                </td>
                     </tr>                       
                     <tr>
                     <td width="60">状态：</td>

@@ -62,17 +62,18 @@
         addKey = true;
         addDialog.dialog('open');
         $('form input').removeAttr("disabled");
-       // $('form textarea').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
         $('#fm').form('clear');
         $('#fm .easyui-validatebox').validatebox({
             required: true
-       });
-      //  $('form input').removeAttr("disabled");
-       // $('form textarea').removeAttr("disabled");
-        $('#id').attr("readonly", false);
-        $('#state_path').combo({
-            hasDownArrow: true
         });
+        $('input#inputID').attr("value", "自动增长");
+        //$('form input').removeAttr("disabled");
+       // $('form textarea').removeAttr("disabled");
+        //$('#id').attr("readonly", false);
+       // $('#state_path').combo({
+        //    hasDownArrow: true
+       // });
         url = '/Path/Create/';
     };
 
@@ -104,6 +105,11 @@
                 }
             }
         });
+    }
+    function regionSearchClick() {
+        $('#regionData').dialog('open').dialog('setTitle', '选择区域');
+        $('#regionDetail').datagrid({ url: '/Region/GetRegion/' });
+        $("#regionDetail").datagrid('reload');
     }
 </script>
 

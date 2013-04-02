@@ -33,11 +33,9 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /SRM/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string ID = collection["SRMID"] ?? "";
             string SRMName = collection["SRMName"] ?? "";
-            string Description = collection["Description"] ?? "";
             string State = collection["State"] ?? "";
-            var srm = SRMService.GetDetails(page, rows, ID, SRMName,Description, State);
+            var srm = SRMService.GetDetails(page, rows,SRMName,State);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 

@@ -8,15 +8,14 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 
-
-namespace Wms.Controllers.Wms.Organization
+namespace Wms.Controllers.Wms.BasisInfo
 {
-    public class PathController : Controller
+    public class PositionController : Controller
     {
         [Dependency]
-        public IPathService PathService { get; set; }
+        public IPositionService PositionService { get; set; }
         //
-        // GET: /Path/
+        // GET: /Position/
 
         public ActionResult Index(string moduleID)
         {
@@ -24,98 +23,95 @@ namespace Wms.Controllers.Wms.Organization
             ViewBag.hasAdd = true;
             ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
-           
+            ViewBag.hasPrint = true;
+            ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
             return View();
         }
-        public ActionResult AddPage()
-        {
-            return View();
-        }
-
         public ActionResult SearchPage()
         {
             return View();
         }
 
-        //
-        // GET: /Path/Details/
-
-        public ActionResult Details(int page, int rows, FormCollection collection)
+        public ActionResult AddPage()
         {
-            string ID = collection["ID"] ?? "";
-            string PathName = collection["PathName"] ?? "";
-            string Description = collection["Description"] ?? "";
-            string State = collection["State"] ?? "";
-            string RegionID = collection["RegionID"] ?? "";
-            //string OriginRegionID = collection["OriginRegionID"] ?? "";
-            //string  TargetRegionID = collection["TargetRegionID"] ?? "";
+            return View();
+        }
 
-            var path = PathService.GetDetails(page, rows, ID, PathName, RegionID, Description, State);
+        //
+        // GET: /Position/Details/5
+
+        public ActionResult Details (int page, int rows, FormCollection collection)
+        {
+            string PositionName = collection["PositionName"] ?? "";
+            string PositionType = collection["PositionType"] ?? "";
+            string SRMName = collection["SRMName"] ?? "";
+            string State = collection["State"] ?? "";
+
+            var path = PositionService.GetDetails(page, rows, PositionName, PositionType,SRMName, State);
             return Json(path, "text", JsonRequestBehavior.AllowGet);
         }
-
         //
-        // POST: /Path/Create/
+        // POST: /Position/Create
 
         [HttpPost]
-        public ActionResult Create(Path path)
+        public ActionResult Create(Position position)
         {
             string strResult = string.Empty;
-            bool bResult = PathService.Add(path, out strResult);
+            bool bResult = PositionService.Add(position, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
-
+        
+      
         //
-        // POST: /Path/Edit/5
+        // POST: /Position/Edit/5
 
-        public ActionResult Edit(Path path)
+        [HttpPost]
+        public ActionResult Edit(Position position)
         {
             string strResult = string.Empty;
-            bool bResult = PathService.Save(path, out strResult);
+            bool bResult = PositionService.Save(position, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
         //
-        // POST: /Path/Delete/
+        // POST: /Position/Delete/5
 
         [HttpPost]
-        public ActionResult Delete(int pathId)
+        public ActionResult Delete(int positionId)
         {
             string strResult = string.Empty;
-            bool bResult = false;
-            bResult = PathService.Delete(pathId, out strResult);
+            bool bResult = PositionService.Delete(positionId, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
+         // POST: /Position/GetPosition/
+        public ActionResult GetPosition(int page, int rows, string queryString, string value)
+        {
+            
+            if (queryString == null)
+            {
+                queryString = "EmployeeCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var employee = PositionService.GetPosition(page, rows, queryString, value);
+            return Json(employee, "text", JsonRequestBehavior.AllowGet);
+        }
 
-        // POST: /Path/GetJob/
-        //public ActionResult GetJob(int page, int rows, string queryString, string value)
-        //{
-        //    if (queryString == null)
-        //    {
-        //        queryString = "JobCode";
-        //    }
-        //    if (value == null)
-        //    {
-        //        value = "";
-        //    }
-        //    var job = PathService.GetJob(page, rows, queryString, value);
-        //    return Json(job, "text", JsonRequestBehavior.AllowGet);
-        //}
-
-        #region /Path/CreateExcelToClient/
+        #region /Position/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string PathName = Request.QueryString["PathName"];
-            string Description = Request.QueryString["Description"];
-            string State = Request.QueryString["State"];
+            string positionName = Request.QueryString["positionName"];
+            string srmName = Request.QueryString["srmName"];
 
-            System.Data.DataTable dt = PathService.GetPath(page, rows, PathName, Description, State);
-            string headText = "路径信息";
+            System.Data.DataTable dt = PositionService.GetPosition(page, rows, positionName, srmName,null );
+            string headText = "位置信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10;
             string[] HeaderFooder = {   
@@ -129,7 +125,9 @@ namespace Wms.Controllers.Wms.Organization
             System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
                 , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
-        }
+        } 
         #endregion
     }
 }
+    
+

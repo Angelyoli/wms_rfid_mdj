@@ -6,6 +6,8 @@ using THOK.Wms.DbModel;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
+using System.Data;
+using THOK.WMS.Upload.Bll;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -14,84 +16,66 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IPathRepository PathRepository { get; set; }
 
+        public IRegionRepository RegionRepository { get; set; }
+
+        UploadBll Upload = new UploadBll();
+
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        //public object GetDetails(int page, int rows, int ID, string PathName, string Description, string State)
-        //{
-        //    IQueryable<Path> jobQuery = PathRepository.GetQueryable();
-        //    var path = jobQuery.Where(p => p.PathName.Contains(PathName))
-        //        .OrderByDescending(p => p.ID).AsEnumerable()
-        //        .Select(p => new
-        //        {
-        //            p.ID,
-        //            p.PathName,
-        //            p.OriginRegionID,
-        //            p.TargetRegionID,
-        //            p.Description,
-        //            State = p.State == "1" ? "可用" : "不可用",
-        //            //UpdateTime = p.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-        //        });
-        //    if (!State.Equals(""))
-        //    {
-        //        path = jobQuery.Where(p => p.PathName.Contains(PathName) && p.State.Contains(State))
-        //             .OrderByDescending(p => p.ID).AsEnumerable()
-        //            .Select(p => new
-        //            {
-        //                p.ID,
-        //                p.PathName,
-        //                p.OriginRegionID,
-        //                p.TargetRegionID,
-        //                p.Description,
-        //                State = p.State == "1" ? "可用" : "不可用",
-        //            });
-        //    }
-        //    int total = path.Count();
-        //    path = path.Skip((page - 1) * rows).Take(rows);
-        //    return new { total, rows = path.ToArray() };
-        //}
-
-
-       public bool Add(Path path, out string strResult)
+        public bool Add(Path path, out string strResult)
        {
-           strResult = string.Empty;
-           bool result = false;
-           var pa = new Path();
-           var pathExist = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == path.ID);
-           if (pathExist == null)
-           {
-               if (pa != null)
-               {
-                   try
-                   {
-                       pa.ID = path.ID;
-                       pa.PathName = path.PathName;
-                       pa.Description = path.Description;
-                       pa.State = path.State;
-                       pa.OriginRegionID = path.OriginRegionID;
-                       pa.TargetRegionID = pa.TargetRegionID;
-
-                       PathRepository.Add(pa);
-                       PathRepository.SaveChanges();
-                       result = true;
-                   }
-                   catch (Exception ex)
-                   {
-                       strResult = "原因：" + ex.Message;
-                   }
-               }
-               else
-               {
-                   strResult = "原因：找不到当前登陆用户！请重新登陆！";
-               }
-           }
-           else
-           {
-               strResult = "原因：该编号已存在！";
-           }
-           return result;
+          strResult = string.Empty;
+            bool result = false;
+            var pa = new Path();
+            var re = new Region();
+            var region = RegionRepository.GetQueryable().FirstOrDefault(r => r.ID == path.ID);
+            //var department = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == employee.DepartmentID);
+            var empExist = PathRepository.GetQueryable().FirstOrDefault(e => e.ID == path.ID);
+            if (empExist == null)
+            {
+                if (pa != null)
+                {
+                    try
+                    {
+                        //pa.ID = Guid.NewGuid();
+                        pa.ID = path.ID;
+                        pa.PathName = path.PathName;
+                        pa.Description = path.Description;
+                        //pa.Department = department;
+                        pa.OriginRegion = path.OriginRegion;
+                        pa.TargetRegion = path.TargetRegion;
+                        pa.TargetRegionID = region.ID;
+                        pa.OriginRegionID = region.ID;
+                       
+                        pa.State = path.State;
+                        //pa.UserName = employee.UserName;
+                        //pa.UpdateTime = DateTime.Now;
+                        PathRepository.Add(pa);
+                        PathRepository.SaveChanges();
+                        //人员信息上报
+                        //DataSet ds = this.Insert(emp);
+                        //Upload.UploadEmployee(ds);
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                }
+            }
+            else
+            {
+                strResult = "原因：该编号已存在！";
+            }
+            return result;
        }
 
 
@@ -100,18 +84,31 @@ namespace THOK.Wms.Bll.Service
            strResult = string.Empty;
            bool result = false;
            var pa = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == path.ID);
+           //var department = DepartmentRepository.GetQueryable().FirstOrDefault(d => d.ID == employee.DepartmentID);
+           var region = RegionRepository.GetQueryable().FirstOrDefault(r => r.ID == path.ID);
 
            if (pa != null)
            {
                try
                {
+                   //pa.ID = Guid.NewGuid();
                    pa.ID = path.ID;
                    pa.PathName = path.PathName;
                    pa.Description = path.Description;
+                   //pa.Department = department;
+                   pa.OriginRegion = path.OriginRegion;
+                   pa.TargetRegion = path.TargetRegion;
+                   pa.TargetRegionID = region.ID;
+                   pa.OriginRegionID = region.ID;
+
                    pa.State = path.State;
-                   pa.OriginRegionID = path.OriginRegionID;
-                   pa.TargetRegionID = path.TargetRegionID;
+                   //pa.UserName = employee.UserName;
+                   //pa.UpdateTime = DateTime.Now;
+                   PathRepository.Add(pa);
                    PathRepository.SaveChanges();
+                   //人员信息上报
+                   //DataSet ds = this.Insert(emp);
+                   //Upload.UploadEmployee(ds);
                    result = true;
                }
                catch (Exception ex)
@@ -154,16 +151,43 @@ namespace THOK.Wms.Bll.Service
        }
 
 
-       //public object GetJob(int page, int rows, string queryString, string value)
-       //{
-       //    throw new NotImplementedException();
-       //}
-
-
-       public System.Data.DataTable GetJob(int page, int rows, string PathName, string Description, string State)
+       public object GetPath(int page, int rows, string queryString, string value)
        {
-           IQueryable<Path> jobQuery = PathRepository.GetQueryable();
-           var path = jobQuery.Where(p => p.PathName.Contains(PathName))
+           string id = "", pathName = "";
+
+           if (queryString == "id")
+           {
+               id = value;
+           }
+           else
+           {
+               pathName = value;
+           }
+           IQueryable<Path> pathQuery = PathRepository.GetQueryable();
+           int Id = Convert.ToInt32(id);
+           var path = pathQuery.Where(p => p.ID == Id && p.PathName.Contains(pathName) && p.State == "01")
+               .OrderBy(p => p.ID).AsEnumerable().
+               Select(p => new
+               {
+                   p.ID,
+                   p.PathName,
+                   p.OriginRegionID,
+                   p.TargetRegionID,
+                   p.TargetRegion,
+                   p.OriginRegion,
+                   p.Description,
+                   State = p.State == "1" ? "可用" : "不可用",
+               });
+           int total = path.Count();
+           path = path.Skip((page - 1) * rows).Take(rows);
+           return new { total, rows = path.ToArray() };
+       }
+
+
+       public System.Data.DataTable GetPath(int page, int rows, string PathName,  string Description, string State)
+       {
+           IQueryable<Path> pathQuery = PathRepository.GetQueryable();
+           var path = pathQuery.Where(p => p.PathName.Contains(PathName))
                 .OrderByDescending(p => p.ID).AsEnumerable()
                .Select(p => new
                {
@@ -172,11 +196,13 @@ namespace THOK.Wms.Bll.Service
                    p.OriginRegionID,
                    p.TargetRegionID,
                    p.Description,
+                   //p.OriginRegion,
+                   //p.TargetRegion,
                    State = p.State == "1" ? "可用" : "不可用",
                });
            if (!State.Equals(""))
            {
-               path = jobQuery.Where(p => p.PathName.Contains(PathName) && p.State.Contains(State))
+               path = pathQuery.Where(p => p.PathName.Contains(PathName) && p.State.Contains(State))
                     .OrderByDescending(p => p.ID).AsEnumerable()
                    .Select(p => new
                    {
@@ -185,6 +211,8 @@ namespace THOK.Wms.Bll.Service
                        p.OriginRegionID,
                        p.TargetRegionID,
                        p.Description,
+                       //p.TargetRegion,
+                       //p.OriginRegion,
                        State = p.State == "1" ? "可用" : "不可用",
                    });
            }
@@ -212,44 +240,42 @@ namespace THOK.Wms.Bll.Service
        }
 
 
-       public object GetJob(int page, int rows, string queryString, string value)
+      
+
+       public object GetDetails(int page, int rows, string ID, string PathName, string RegionID , string Description, string State)
        {
-           throw new NotImplementedException();
+
+           IQueryable<Path> pathQuery = PathRepository.GetQueryable();
+           var path = pathQuery.Where(p => p.PathName.Contains(PathName)
+               && p.State.Contains(State));
+
+           //if (!DepartmentID.Equals(string.Empty))
+           //{
+           //    Guid departID = new Guid(DepartmentID);
+           //    path = path.Where(e => e.DepartmentID == departID);
+           //}
+           if (!RegionID.Equals(string.Empty))
+           {
+               Guid jobID = new Guid(RegionID);
+               //path = path.Where(p =>p.ID == );
+           }
+
+           var temp = path.AsEnumerable().OrderByDescending(p => p.ID).AsEnumerable().Select(p => new
+           {
+               p.ID,
+               p.PathName,
+               p.OriginRegionID,
+               p.TargetRegionID,
+               p.Description,
+               State = p.State == "1" ? "可用" : "不可用",
+           });
+           int total = temp.Count();
+           temp = temp.Skip((page - 1) * rows).Take(rows);
+           return new { total, rows = temp.ToArray() };
        }
 
-       public object GetDetails(int page, int rows, string ID, string PathName, string Description, string State)
-       {
-           IQueryable<Path> jobQuery = PathRepository.GetQueryable();
-           var path = jobQuery.Where(p => p.PathName.Contains(PathName))
-               .OrderByDescending(p => p.ID).AsEnumerable()
-               .Select(p => new
-               {
-                   p.ID,
-                   p.PathName,
-                   p.OriginRegionID,
-                   p.TargetRegionID,
-                   p.Description,
-                   State = p.State == "1" ? "可用" : "不可用",
-                   //UpdateTime = p.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-               });
-           if (!State.Equals(""))
-           {
-               path = jobQuery.Where(p => p.PathName.Contains(PathName) && p.State.Contains(State))
-                    .OrderByDescending(p => p.ID).AsEnumerable()
-                   .Select(p => new
-                   {
-                       p.ID,
-                       p.PathName,
-                       p.OriginRegionID,
-                       p.TargetRegionID,
-                       p.Description,
-                       State = p.State == "1" ? "可用" : "不可用",
-                   });
-           }
-           int total = path.Count();
-           path = path.Skip((page - 1) * rows).Take(rows);
-           return new { total, rows = path.ToArray() };
-       }
+
+      
     }
 }
 

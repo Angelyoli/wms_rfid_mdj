@@ -1,0 +1,11 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var PositionName = null, srmName = null;
+        if ($('#PositionName').val() == null) { positionName = ""; } else { positionName = $('#PositionName').val() }
+        if ($('#SRMName').val() == null) { srmName = ""; } else { srmName = $('#SRMName').val() }
+
+        window.location.href = "/Position/CreateExcelToClient/"
+                                + "?positionName=" + positionName
+                                + "&srmName=" + srmName;alert("123");
+    }
+</script>

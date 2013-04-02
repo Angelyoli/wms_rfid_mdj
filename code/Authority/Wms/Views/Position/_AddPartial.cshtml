@@ -1,0 +1,165 @@
+﻿<script type="text/javascript">
+    var url;
+    var addDialog;
+
+    $(function () {
+        $.extend($.fn.validatebox.defaults.rules, {
+            maxLength: {
+                validator: function (value, param) {
+                    return value.length <= param[0];
+                },
+                message: '不能超过{0}个字符.'
+            }
+        });
+    })
+
+    //加载新增和编辑窗体
+    function showDialog(title) {
+        if (addDialog == null) {
+            addDialog = $('<div></div>').dialog({
+                title: title,
+                width: 540,
+                height: 350,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Position/AddPage/',
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        save();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        addDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                    if (title == '编辑') {
+                        var erow = $('#details').datagrid('getSelected');
+                        $('#positionfm').form('load', erow);
+                        var row = $('#details').datagrid('getSelected');
+                        //PositionType
+                        if (row.PositionType == "正常位置") {
+                            $('#inputPositionType').combo('setValue', '01').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "大品种出库位") {
+                            $('#inputPositionType').combo('setValue', '02').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "小品种出库位") {
+                            $('#inputPositionType').combo('setValue', '03').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "异形烟出库位") {
+                            $('#inputPositionType').combo('setValue', '04').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "空托盘出库位") {
+                            $('#inputPositionType').combo('setValue', '05').combo('setText', row.PositionType);
+                        }
+                        //Extension
+                        if (row.Extension == "单右伸") {
+                            $('#selectExtension').combo('setValue', 0).combo('setText', row.Extension);
+                        }
+                        else if (row.Extension == "双右伸") {
+                            $('#selectExtension').combo('setValue', 4).combo('setText', row.Extension);
+                        }
+                        else if (row.Extension == "单左伸") {
+                            $('#selectExtension').combo('setValue', 8).combo('setText', row.Extension);
+                        }
+                        else if (row.Extension == "双左伸") {
+                            $('#selectExtension').combo('setValue', 12).combo('setText', row.Extension);
+                        }
+                        //HasGoods
+                        if (row.HasGoods == '是') {
+                            $('#selectHasGoods').combo('setValue', true).combo('setText', row.HasGoods);
+                        } else {
+                            $('#selectHasGoods').combo('setValue', false).combo('setText', row.HasGoods);
+                        }
+                        //AbleStockOut
+                        if (row.AbleStockOut == '是') {
+                            $('#selectAbleStockOut').combo('setValue', true).combo('setText', row.AbleStockOut);
+                        } else {
+                            $('#selectAbleStockOut').combo('setValue', false).combo('setText', row.AbleStockOut);
+                        }
+                        //AbleStockInPallet
+                        if (row.AbleStockInPallet == '是') {
+                            $('#selectAbleStockInPallet').combo('setValue', true).combo('setText', row.AbleStockInPallet);
+                        } else {
+                            $('#selectAbleStockInPallet').combo('setValue', false).combo('setText', row.AbleStockInPallet);
+                        }
+                        //IsActive
+                        if (row.State == '可用') {
+                            $('#selectState').combo('setValue', '01').combo('setText', row.State);
+                        } else {
+                            $('#selectState').combo('setValue', '02').combo('setText', row.State);
+                        }
+                    }
+                    else if (title == '删除') {
+                        var drow = $('#details').datagrid('getSelected');
+                        $('#positionfm').form('load', drow);
+                        $('form input').attr("disabled", "disabled");
+                        $('form textarea').attr("disabled", "disabled");
+                    }
+                }
+            });
+        }
+        else {
+            addDialog.dialog({ title: title });
+        }
+    }
+
+    function addClick() {
+        showDialog('新增');
+        addKey = true;
+        addDialog.dialog('open');
+
+        $('#positionfm .easyui-validatebox').validatebox({
+            required: true
+        });
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#positionfm').form('clear');
+        $('#inputID').attr("readonly", false);
+        url = '/Position/Create/';
+    };
+    function save() {
+        if ($("#desId").val().length > 100) {
+            $.messager.alert("提示", "描述应小于100个字(包括空格)", "info");
+            return false
+        }
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#positionfm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
+                    addDialog.dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+    function RegionNameSearchClick() {
+        addKey = false;
+        editKey = false;
+        $('#RegionNameData').dialog('open').dialog('setTitle', '选择区域名称');
+        parentComNameKey = true;
+        $('#RegionNameDetail').datagrid({ url: '/Region/GetRegion/' });
+        $("#RegionNameDetail").datagrid('reload');
+    }
+</script>
+
