@@ -9,22 +9,25 @@
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
             $('#fm').form('load', row);
+            $('#dlg').dialog('open').dialog('setTitle', '删除');
             $('#fm .easyui-validatebox').validatebox({
                 required: false
             });
-            $('#state_path').combo({
+            $('#state_emp').combo({
                 hasDownArrow: false
             });
             if (row.State == '可用') {
-                $('#state_path').combo('setValue', 1).combo('setText', row.State);
+                $('#state_emp').combo('setValue', 01).combo('setText', row.State);
             } else {
-                $('#state_path').combo('setValue', 0).combo('setText', row.State);
+                $('#state_emp').combo('setValue', 02).combo('setText', row.State);
             }
             $('form input').attr("disabled", "disabled");
             $('form textarea').attr("disabled", "disabled");
         } else {
-            $.messager.alert('错误', '没有选择行！', 'info');
+            $.messager.alert('错误', '没有选择行！');
         }
     };
 </script>
+
+
 

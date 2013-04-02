@@ -3,19 +3,25 @@
 
     });
 </script>
-<div region="center" split="true" border="false" >    
-    <table id="details" class="easyui-datagrid" url="/Path/Details/" border="false" singleSelect="true"
-        fit="true" toolbar="#tool"  pagination="true" rownumbers="true" >
+ 
+<div region="center" split="true" border="false">    
+    <table id="details" class="easyui-datagrid" url="/Path/Details/"  singleSelect="true"
+        fit="true" fitColumns="true" toolbar="#tool" border="false" pagination="true" rownumbers="true">
         <thead>
             <tr>
-                <th field="ID" hidden="true" width="80" >路径ID</th>
-                <th field="PathName" width="180" >路径名称</th>
-                <th field="OriginRegionID" width="180">起始区域ID</th>
-                <th field="TargetRegionID" width="200">目标区域ID</th>   
-                <th field="Description" width="160">描述</th>   
-                <th field="State" width="125" >状态</th>
-
+                <th field="ID" width="80">路径编号</th>
                 
+                <th field="PathName" width="100">路径名称</th>
+               
+                <th field="OriginRegionID" hidden="true" width="100">起始区域</th>
+                <th field="OriginRegionName" width="100">起始区域</th>
+             
+                <th field="TargetRegionID" hidden="true" width="80" >目标区域</th>
+                <th field="TargetRegionName" width="80" >目标区域</th>
+                
+                
+                <th field="State" width="80" >状态</th>
+                <th field="Description" width="125" >描述</th>
             </tr>
         </thead>
     </table>

@@ -18,6 +18,7 @@
     function jobSave() {
         var jobRow = $('#jobDetail').datagrid('getSelected');
         if (jobRow) {
+           
             $('#jobId').val(jobRow.ID);
             $('#jobName').val(jobRow.JobName);
             $('#job-id').val(jobRow.ID);

@@ -88,7 +88,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             if (queryString == null)
             {
-                queryString = "ID";
+                queryString = "id";
             }
             if (value == null)
             {

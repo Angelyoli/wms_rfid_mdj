@@ -2,21 +2,23 @@
     var url;
     var addDialog;
     function AddLoad() {
-        $('#state_path').combo({
+
+        $('#state_emp').combo({
             required: true,
             editable: false,
             panelHeight: 45,
             panelWidth: 130
         });
+       
     }
 
-    //加载新增、编辑和删除窗体
+    //加载新增和编辑窗体
     function showDialog(title) {
         if (addDialog == null) {
             addDialog = $('<div></div>').dialog({
                 title: title,
-                width: 510,
-                height: 250,
+                width: 560,
+                height: 320,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -25,8 +27,6 @@
                     text: '确定',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        
-                      
                         save();
                     }
                 }, {
@@ -56,7 +56,6 @@
     }
 
     function addClick() {
-        
         AddLoad();
         showDialog('新增');
         addKey = true;
@@ -67,13 +66,12 @@
         $('#fm .easyui-validatebox').validatebox({
             required: true
         });
-        $('input#inputID').attr("value", "自动增长");
-        //$('form input').removeAttr("disabled");
-       // $('form textarea').removeAttr("disabled");
-        //$('#id').attr("readonly", false);
-       // $('#state_path').combo({
-        //    hasDownArrow: true
-       // });
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#inputID').attr("readonly", false);
+        $('#state_emp').combo({
+            hasDownArrow: true
+        });
         url = '/Path/Create/';
     };
 
@@ -106,11 +104,17 @@
             }
         });
     }
-    function regionSearchClick() {
-        $('#regionData').dialog('open').dialog('setTitle', '选择区域');
-        $('#regionDetail').datagrid({ url: '/Region/GetRegion/' });
-        $("#regionDetail").datagrid('reload');
+    function OriginSearchClick() {
+        $('#originData').dialog('open').dialog('setTitle', '选择区域');
+        $('#originDetail').datagrid({ url: '/Region/GetRegion/' });
+        $("#originDetail").datagrid('reload');
     }
+    function TargetSearchClick() {
+        $('#jobData').dialog('open').dialog('setTitle', '选择区域');
+        $('#jobDetail').datagrid({ url: '/Region/GetRegion/' });
+        $("#jobDetail").datagrid('reload');
+    }
+
 </script>
 
 

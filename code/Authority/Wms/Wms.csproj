@@ -2250,13 +2250,6 @@
     <Content Include="Views\Region\_EditPartial.cshtml" />
     <Content Include="Views\Region\_DeletePartial.cshtml" />
     <Content Include="Views\Region\_PrintPartial.cshtml" />
-    <Content Include="Views\Path\AddPage.cshtml" />
-    <Content Include="Views\Path\Index.cshtml" />
-    <Content Include="Views\Path\SearchPage.cshtml" />
-    <Content Include="Views\Path\_AddPartial.cshtml" />
-    <Content Include="Views\Path\_DeletePartial.cshtml" />
-    <Content Include="Views\Path\_EditPartial.cshtml" />
-    <Content Include="Views\Path\_SearchPartial.cshtml" />
     <Content Include="Views\Size\Index.cshtml" />
     <Content Include="Views\Size\SearchPage.cshtml" />
     <Content Include="Views\Size\_SearchPartial.cshtml" />
@@ -2272,7 +2265,17 @@
     <Content Include="Views\Position\_SearchPartial.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
-    <Content Include="Views\Path\_RegionPartial.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
+    <Content Include="Views\Path\Index.cshtml" />
+    <Content Include="Views\Path\_TargetPartial.cshtml" />
+    <Content Include="Views\Path\_OriginPartial.cshtml" />
+    <Content Include="Views\Path\_AddPartial.cshtml" />
+    <Content Include="Views\Path\_SearchPartial.cshtml" />
+    <Content Include="Views\Path\_HelpPartial.cshtml" />
+    <Content Include="Views\Path\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

@@ -9,23 +9,25 @@
             url = '/Path/Edit/';
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
-            $('#id').attr("readonly", true);
+            $('#inputID').attr("readonly", true);
             $('#fm').form('load', row);
+            $('#dlg').dialog('open').dialog('setTitle', '编辑');
             $('#fm .easyui-validatebox').validatebox({
                 required: true
             });
+           
+            //IsActive
             if (row.State == '可用') {
-                $('#state_path').combo('setValue', 1).combo('setText', row.State);
-            } else {
-                $('#state_path').combo('setValue', 0).combo('setText', row.State);
+                $('#state_emp').combo('setValue', 01).combo('setText', row.State);
             }
-            $('#state_path').combo({
+            else {
+                $('#state_emp').combo('setValue', 02).combo('setText', row.State);
+            }
+            $('#state_emp').combo({
                 hasDownArrow: true
             });
         } else {
-            $.messager.alert('错误', '没有选择行！', 'info');
+            $.messager.alert('错误', '没有选择行！');
         }
     };
 </script>
-   
-
