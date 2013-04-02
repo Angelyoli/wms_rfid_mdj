@@ -11,5 +11,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Save(CellPosition cellPosition, out string strResult);
 
         bool Delete(int sizeId, out string strResult);
+
+        System.Data.DataTable GetCellPosition(int page, int rows, string cellCode);
     }
 }

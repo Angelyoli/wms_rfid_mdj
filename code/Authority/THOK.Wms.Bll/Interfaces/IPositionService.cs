@@ -19,6 +19,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetPosition(int page, int rows, string queryString, string value);
 
-        System.Data.DataTable GetPosition(int page, int rows, string positionName, string srmName, string t);
+        System.Data.DataTable GetPosition(int page, int rows, string positionName, string srmName,string t);
     }
 }

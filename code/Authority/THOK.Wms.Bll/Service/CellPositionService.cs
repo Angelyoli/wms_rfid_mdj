@@ -37,10 +37,10 @@ namespace THOK.Wms.Bll.Service
                                          {
                                              p.ID,
                                              p.CellCode,
-                                             p.InName,
-                                             p.OutName,
                                              p.StockInPositionID,
-                                             p.StockOutPositionID
+                                             p.InName,
+                                             p.StockOutPositionID,
+                                             p.OutName
                                          });
             
             int total = cellPosition.Count();
@@ -129,6 +129,45 @@ namespace THOK.Wms.Bll.Service
                 strResult = "原因：未找到当前需要删除的数据！";
             }
             return result;
+        }
+
+        public System.Data.DataTable GetCellPosition(int page, int rows, string cellCode)
+        {
+            IQueryable<CellPosition> cellPositionQuery = CellPositionRepository.GetQueryable();
+            IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+            var cellPosition = cellPositionQuery.Join(positionQuery,
+                                         c => c.StockInPositionID,
+                                         p1 => p1.ID,
+                                         (c, p1) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, InName = p1.PositionName })
+                                         .Join(positionQuery,
+                                         c => c.StockOutPositionID,
+                                         p2 => p2.ID,
+                                         (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName = p2.PositionName })
+                                         .Where(p => p.CellCode.Contains(cellCode))
+                                         .OrderBy(p => p.ID).AsEnumerable()
+                                         .Select(p => new
+                                         {
+                                             p.ID,
+                                             p.CellCode,
+                                             p.InName,
+                                             p.OutName
+                                         });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("货位ID", typeof(string));
+            dt.Columns.Add("货位代码", typeof(string));
+            dt.Columns.Add("入库位置", typeof(string));
+            dt.Columns.Add("出库位置", typeof(string));
+            foreach (var item in cellPosition)
+            {
+                dt.Rows.Add
+                    (
+                        item.ID,
+                        item.CellCode,
+                        item.InName,
+                        item.OutName
+                    );
+            }
+            return dt;
         }
     }
 }

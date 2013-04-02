@@ -93,7 +93,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             
             if (queryString == null)
             {
-                queryString = "EmployeeCode";
+                queryString = "PositionName";
             }
             if (value == null)
             {
@@ -110,7 +110,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             string positionName = Request.QueryString["positionName"];
             string srmName = Request.QueryString["srmName"];
 
-            System.Data.DataTable dt = PositionService.GetPosition(page, rows, positionName, srmName,null );
+            System.Data.DataTable dt = PositionService.GetPosition(page, rows, positionName, srmName,null);
             string headText = "位置信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10;

@@ -183,46 +183,44 @@ namespace THOK.Wms.Bll.Service
 
         public object GetPosition(int page, int rows, string queryString, string value)
         {
-            string id = "", PositionName = "";
-
-            if (queryString == "id")
+            string name= "",type="";
+            if (queryString == "PositionName")
             {
-                id = value;
+                name = value;
             }
             else
             {
-                PositionName = value;
+                type = value;
             }
             IQueryable<Position> companyQuery = PositionRepository.GetQueryable();
-            var position = companyQuery.Where(p => p.PositionName.Contains(PositionName) && p.State == "1")
+            var position = companyQuery.Where(p => p.State.Contains("01")&&p.PositionName.Contains(name))
                 .OrderBy(p => p.ID).AsEnumerable()
                 .Select(p => new
                 {
                     p.ID,
                     p.PositionName,
-                    p.RegionID,
-                    p.SRMName,
-                    //PositionType = p.PositionType == "1" ? "正常位置" : p.PositionType == "2" ? "大品种出库位" : "小",
-                    p.PositionType,
-                    p.TravelPos,
-                    p.LiftPos,
-                    p.Extension,
-                    p.Description,
-                    p.HasGoods,
-                    p.AbleStockOut,
-                    p.AbleStockInPallet,
-                    p.TagAddress,
-                    p.CurrentTaskID,
-                    p.CurrentOperateQuantity,
-                    State = p.State == "01" ? "可用" : "不可用",
+                    PositionType = p.PositionType == "01" ? "正常位置" : (p.PositionType == "02" ? "大品种出库位" : (p.PositionType == "03" ? "小品种出库位" : (p.PositionType == "04" ? "异形烟出库位" : "空托盘出库位"))),
+                    State = p.State == "01" ? "可用" : "不可用"
                 });
+            if (type != "" && type != null)
+            {
+                position = position.Where(p =>  p.PositionType.Contains(type))
+                .OrderBy(p => p.ID).AsEnumerable()
+                .Select(p => new
+                {
+                    p.ID,
+                    p.PositionName,
+                    p.PositionType ,
+                    p.State
+                });
+            }
             int total = position.Count();
             position = position.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = position.ToArray() };
         }
 
 
-        public System.Data.DataTable GetPosition(int page, int rows, string positionName, string srmName, string t)
+        public System.Data.DataTable GetPosition(int page, int rows, string positionName, string srmName ,string t)
         {
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();

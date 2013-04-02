@@ -19,7 +19,7 @@
             addDialog = $('<div></div>').dialog({
                 title: title,
                 width: 310,
-                height: 200,
+                height: 220,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -91,13 +91,5 @@
                 }
             }
         });
-    }
-    function StockInPositionSearchClick() {
-        addKey = false;
-        editKey = false;
-        $('#parentPositionNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
-        parentComNameKey = true;
-     //   $('#parentPositionNameDetail').datagrid({ url: '/Company/GetParentName/' });
-     //   $("#parentPositionNameDetail").datagrid('reload');
     }
 </script>
