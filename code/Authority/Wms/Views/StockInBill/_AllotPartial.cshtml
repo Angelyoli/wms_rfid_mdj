@@ -1,12 +1,158 @@
 ﻿<script type="text/javascript">
-    var billNo = "";    
+    var setting = {
+        view: {
+            showLine: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onClick: onclick
+        }
+    };
+    function onclick(event, treeId, treeNode) {
+        createTable(treeNode.type, treeNode.id);
+    }
+    function productName(val, row) {
+        var s = '<div class="item" id="' + row.ID + '"><p style="color:red;">' + row.ProductName + '</p><p style="color:White;width:0px;height:0px">' + row.BillQuantity + '</p><p style="color:White;width:0px;height:0px">' + row.AllotQuantity + '</p></div>';
+     return s;
+ }
+ var detailId;
+ var productnames;
+ var allotQuantity;
+ var row;
+ $(function () {
+     $('#inAllotBillDetail').datagrid('options').onLoadSuccess = function () {
+         $('.item').draggable({
+             revert: true,
+             proxy: function (source) {
+                 var p = $('<div style="z-index:2147483647;"></div>');
+                 p.html($(source).html()).appendTo('body');
+                 return p;
+             },
+             cursor: 'pointer',
+             onStartDrag: function () {
+                 var id = $(this).attr('id');
+                 var ProductName = $(this).find('p:eq(0)').html();
+                 var BillQuantity = $(this).find('p:eq(1)').html();
+                 var AllotQuantity = $(this).find('p:eq(2)').html();
+                 detailId = id;
+                 productnames = ProductName;
+                 allotQuantity = BillQuantity - AllotQuantity;
+             }
+         });
+     }
+     $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
+                            {
+                            'productId': ''
+                        },
+                    function (data) {
+                        $.fn.zTree.init($("#warehouseTree"), setting, data);
+                    });
+ });
+ function createTable(type, id) {
+     var div = document.getElementById("drop");
+     while (div.hasChildNodes()) {
+         div.removeChild(div.firstChild);
+     }
+     var table = document.createElement("table"); //创建table
+     $.getJSON('/Cargospace/AllotInTreeDetails/?type=' + type + '&id=' + id, function (data) {
+         if (data.length > 0) {
+             var y = 0;
+             for (var s in data) {
+                 if (data[s].asdd2 != y) {
+                     var row1 = table.insertRow(); //创建一行
+                     var row2 = table.insertRow(); //创建一行
+                     var row3 = table.insertRow(); //创建一行
+                     y = data[s].asdd2;
+                 }
+                 if (data[s].asdd3 == '1') {
+                     var mydiv = document.createElement("div");
+                     mydiv.setAttribute("class", "itemdiv");
+                     mydiv.id = data[s].cellCode;
+                     mydiv.class = data[s].EmptyQuantity;
+                     var cell = row1.insertCell(); //创建一个单元
+                     mydiv.style.width = "100px";
+                     mydiv.style.height = "100px";
+                     mydiv.style.backgroundColor = "#40e0d0";
+                     cell.appendChild(mydiv);
+                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                 }
+                 if (data[s].asdd3 == '2') {
+                     var mydiv = document.createElement("div");
+                     mydiv.setAttribute("class", "itemdiv");
+                     mydiv.id = data[s].cellCode;
+                     mydiv.class = data[s].EmptyQuantity;
+                     var cell = row2.insertCell(); //创建一个单元
+                     mydiv.style.width = "100px";
+                     mydiv.style.height = "100px";
+                     mydiv.style.backgroundColor = "#40e0d0";
+                     cell.appendChild(mydiv);
+                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+
+                 }
+                 if (data[s].asdd3 == '3') {
+                     var mydiv = document.createElement("div");
+                     mydiv.setAttribute("class", "itemdiv");
+                     mydiv.id = data[s].cellCode;
+                     mydiv.class = data[s].EmptyQuantity;
+                     var cell = row3.insertCell(); //创建一个单元
+                     mydiv.style.width = "100px";
+                     mydiv.style.height = "100px";
+                     mydiv.style.backgroundColor = "#40e0d0";
+                     cell.appendChild(mydiv);
+                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                 }
+             }
+         }
+         else {
+             var row = table.insertRow(); //创建一行
+             var cell = row.insertCell(); //创建一个单元
+         }
+         div.appendChild(table);
+         $('.itemdiv').droppable({
+             onDrop: function (e, source) {
+                 row = $('#details').datagrid('getSelected');
+                 id = $(this).attr('id');
+                 emptyQuantity = document.getElementById(id).class;
+                 if (allotQuantity > emptyQuantity) {
+                     quantity = emptyQuantity;
+                 }
+                 else {
+                     quantity = allotQuantity;
+                 };
+                 var s = document.getElementById(id);
+                 var cellname = s.innerHTML.substring(0, 11);
+                 $.ajaxSender.send('/StockInBillAllot/AllotAdds/',
+                                                                   {
+                                                                       billNo: row.BillNo,
+                                                                       id: detailId,
+                                                                       cellCode: id,
+                                                                       allotQuantity: quantity,
+                                                                       productname: productnames
+                                                                   },
+                                                                   function (data) {
+                                                                       s.innerHTML = cellname + '<br />' + productnames + '<br />' + quantity + '件';
+                                                                       s.style.backgroundColor = "red";
+                                                                   });
+                 $('#inAllotBillDetail').datagrid('reload');
+                 $('#inAllotBillDetails').datagrid('reload');
+                 $('#allotBillDetails').datagrid('reload');
+                 $(source).draggable('options').cursor = 'move';
+             }
+         });
+     });
+ }
+    var billNo = "";
     function allotClick() {
-        var row = $('#details').datagrid('getSelected');
+        row = $('#details').datagrid('getSelected');
         if (row) {
             $('#area').combotree({
                 url: '/Area/GetDetailsTree/',
                 multiple: true,
-                width:160
+                width: 160
             });
             isInBillMasterSaved = false;
             isInBillMasterCanEdit = true;
@@ -33,6 +179,27 @@
         $.asyncProcessing.Start('/allotStockIn', $.toJSON({ ActionType: 'start', BillNo: billNo, AreaCodes: areas }));
     }
 
+    function manualAllot() {
+        createTable('','');
+        if (row) {
+            $('#area').combotree({
+                url: '/Area/GetDetailsTree/',
+                multiple: true,
+                width: 160
+            });
+            isInBillMasterSaved = false;
+            isInBillMasterCanEdit = true;
+            if (row.Status == "已录入") {
+                $.messager.confirm('错误', '该记录未审核无法进行分配！');
+            } else {
+                $('#manualAllot').dialog('open').dialog('setTitle', '手动分配入库单');
+                $('#inAllotBillDetail').datagrid({ url: '/StockInBill/InBillDetails/?BillNo=' + row.BillNo });
+                billNo = row.BillNo;
+            }
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    }
     var modifyUrl;
 
     //新增入库单明细分配
@@ -87,7 +254,7 @@
         $.ajaxSender.send('/StockInBillAllot/AllotCancel/',
                         { billNo: billNo },
                         function (data) {
-                            $('#details').datagrid('reload');
+                            //$('#details').datagrid('reload');
                             $('#inBillDetails').datagrid('reload');
                             $('#inAllotBillDetails').datagrid('reload');
                             $('#allotBillDetails').datagrid('reload');
@@ -131,7 +298,7 @@
 <div id="dlg-allot" class="easyui-dialog" modal="true"
         style="width:1000px;height:500px;padding:0px 0px"
         closed="true" buttons="" >
-    <div class="easyui-layout" fit="true" >  
+    <div class="easyui-layout" fit="true" > 
         <div region="center" split="true"  border="false" style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">   
             <table class="easyui-datagrid" border="false" singleSelect="true" id="inAllotBillDetails" url="" toolbar="#bar"
                 fit="true" fitColumns="true"  pagination="true" rownumbers="true" pageSize="50">
@@ -188,8 +355,9 @@
             panelWidth="160px"
             id="area"></select>
     <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="allot()">自动分配</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-Menu_CheckBill" plain="true" onclick="manualAllot()">手动分配</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="cancelAllot()">取消分配</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="allotAdd()">手工增加</a>
+    <a href="#" class="easyui-linkbutton" iconconCls="icon-add" plain="true" onclick="allotAdd()">手工增加</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="allotEdit()">手工修改</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="allotDelete()">手工删除</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick="confirmAllot()">确认分配</a>
@@ -240,12 +408,39 @@
                   </tr>
                   <tr>
                     <td >分配数量</td>
-                    <td align="left"><input type="text" name="AllotQuantity" class="easyui-numberbox" id="allotQuantity" required="true"/></td>
+                    <td align="left"><input type="text" name="AllotQuantity" class="easyui-numberbox" min="0" max="999999999" precision="2" id="allotQuantity" required="true"/></td>
                   </tr>
                 </table>
         </form>
 </div>
-
+<div id="manualAllot" class="easyui-dialog" modal="true"  style="width:1000px;height:500px;padding:4px 4px"closed="true">
+    <div region="center" split="true"  border="false" style="height:25%; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #99BBE8">
+            <table class="easyui-datagrid" border="false" singleSelect="true" id="inAllotBillDetail"
+                fit="true" fitColumns="true"  pagination="true" rownumbers="true" pageSize="10">
+                <thead>
+                    <tr>
+                        <th field="ID" width="50" align="left" hidden="true">ID</th>
+                        <th field="ProductCode" width="100">商品编码</th>
+                        <th field="ProductName" width="80" align="right" formatter="productName">商品名称</th>
+                        <th field="UnitCode" width="80" align="right">单位编码</th>
+                        <th field="UnitName" width="80" align="right">单位名称</th>
+                        <th field="BillQuantity" width="80" align="right">订单数量</th>
+                        <th field="AllotQuantity" width="80" align="right">已分配数量</th>
+                        <th field="RealQuantity" width="80" align="right">实际入库量</th>
+                        <th field="Description" width="80" align="right">备注</th>
+                    </tr>
+                </thead>
+            </table>
+    </div>
+    <div region="south" split="true" border="false" >
+        <div   style="width:200px; height:350px;float:left; margin-bottom:0px; margin:0 0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid;overflow:auto">
+            <ul id="warehouseTree" class="ztree"></ul>
+        </div>
+        <div  style="width:750px;height:350px;float:left;margin-bottom:0px; margin:0 0 0 0 0px; border:1px #99BBE8; overflow:auto;">
+            <div  id="drop" data-options="tools:'#p-tools'" style="padding:0px;"> </div>
+       </div>
+    </div>
+</div>
 <div id="dlg_allot_modify_buttons">
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="AllotModifySave()">确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg_allot_modify').dialog('close')">取消</a>
