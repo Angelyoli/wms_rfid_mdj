@@ -120,44 +120,65 @@ namespace THOK.Wms.Bll.Service
 
         public object GetRegion(int page, int rows, string queryString, string value)
         {
-            string regionName = "";
-            int id=-1;
-            if (queryString == "ID" && value!="")
+
+            string id = "", regionName = "";
+
+            if (queryString == "id")
             {
-                try { id = Convert.ToInt32(value); }
-                catch { id =0; }
+                id = value;
+
+            //string regionName = "";
+            //int id=-1;
+            //if (queryString == "ID" && value!="")
+            //{
+            //    try { id = Convert.ToInt32(value); }
+            //    catch { id =0; }
+
             }
             else
             {
                 regionName = value;
             }
-            IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-            var region = regionQuery.Where(r=> r.State == "01")
-                .OrderBy(r => r.ID).AsEnumerable().
-                Select(r => new
+
+            IQueryable<Region> employeeQuery = RegionRepository.GetQueryable();
+            var region = employeeQuery.Where(r =>r.RegionName.Contains(regionName) && r.State == "01")
+                .OrderBy(r => r.ID).AsEnumerable()
+                .Select(r => new
                 {
                     r.ID,
+                    r.Description,
                     r.RegionName,
-                    State = r.State == "01" ? "可用" : "不可用"
-                });
-            if (id >=0)
-            {
-                region = region.Where(r => r.ID == id);
-            }
-            else 
-            {
-                region = region.Where(r => r.RegionName.Contains(regionName));
-            }
-            region = region.AsEnumerable().
-                Select(r => new
-                {
-                    r.ID,
-                    r.RegionName,
-                    r.State
-                });
+                    State = r.State == "01" ? "可用" : "不可用",
+
+            //IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
+            //var region = regionQuery.Where(r=> r.State == "01")
+            //    .OrderBy(r => r.ID).AsEnumerable().
+            //    Select(r => new
+            //    {
+            //        r.ID,
+            //        r.RegionName,
+            //        State = r.State == "01" ? "可用" : "不可用"
+            //    });
+            //if (id >=0)
+            //{
+            //    region = region.Where(r => r.ID == id);
+            //}
+            //else 
+            //{
+            //    region = region.Where(r => r.RegionName.Contains(regionName));
+            //}
+            //region = region.AsEnumerable().
+            //    Select(r => new
+            //    {
+            //        r.ID,
+            //        r.RegionName,
+            //        r.State
+
+            });
             int total = region.Count();
             region = region.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = region.ToArray() };
+           
         }
 
         public System.Data.DataTable GetRegion(int page, int rows, string regionName, string state, string t)
