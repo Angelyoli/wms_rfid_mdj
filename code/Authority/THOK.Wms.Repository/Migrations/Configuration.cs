@@ -58,6 +58,13 @@
                         SystemName = "烟草商业企业数字仓储管理系统",
                         Description = "烟草商业企业数字仓储管理系统",
                         Status = true
+                    },
+                    new System()
+                    {
+                        SystemID = new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B234A19"),
+                        SystemName = "烟草数字仓储控制系统",
+                        Description = "烟草数字仓储控制系统",
+                        Status = true
                     }
                 );
             context.SaveChanges();
@@ -3955,6 +3962,160 @@
                      IndicateImage = "icon-edit",
                      Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
                  },
+                 new Function()
+                 {
+                     FunctionID = new Guid("C8A9E599-D227-4058-9E5E-D77C8D3794BB"),
+                     FunctionName = "删除",
+                     ControlName = "delete",
+                     IndicateImage = "icon-remove",
+                     Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                 }
+            );
+            context.SaveChanges();
+        }
+
+        private void CreateSystemInfo(AuthorizeContext context)
+        {
+            System system = context.Set<System>().SingleOrDefault(s => s.SystemID == new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B234A19"));
+            context.Set<Module>().AddOrUpdate(
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D"),
+                        ModuleName = "基础信息管理",
+                        ShowOrder = 15,
+                        ModuleURL = "",
+                        IndicateImage = "icon-Menu_Jurisdiction",
+                        DeskTopImage = "image-Menu_Jurisdiction",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003311C7B1DC"),
+                        ModuleName = "堆垛机信息",
+                        ShowOrder = 1,
+                        ModuleURL = "/SRM/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    }
+                    ,
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003312C7B1DC"),
+                        ModuleName = "区域信息",
+                        ShowOrder = 2,
+                        ModuleURL = "/Region/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003313C7B1DC"),
+                        ModuleName = "位置信息",
+                        ShowOrder = 3,
+                        ModuleURL = "/Position/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003314C7B1DC"),
+                        ModuleName = "路径信息",
+                        ShowOrder = 4,
+                        ModuleURL = "/Path/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003315C7B1DC"),
+                        ModuleName = "路径节点",
+                        ShowOrder = 5,
+                        ModuleURL = "/PathNode/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003316C7B1DC"),
+                        ModuleName = "货位位置",
+                        ShowOrder = 6,
+                        ModuleURL = "/CellPosition/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003317C7B1DC"),
+                        ModuleName = "尺寸信息",
+                        ShowOrder = 7,
+                        ModuleURL = "/Size/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003318C7B1DC"),
+                        ModuleName = "卷烟尺寸",
+                        ShowOrder = 8,
+                        ModuleURL = "/ProductSize/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF0-AD8A-4D50-8DB9-71D36EF77F9D")
+                    }
+
+            );
+            context.SaveChanges();
+
+            context.Set<Function>().AddOrUpdate(
+                new Function()
+                {
+                    FunctionID = new Guid("EAB101C1-8A93-4E4B-8929-C664C068919F"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("938034C4-5622-43A1-8402-38BF28ADEFB4"),
+                    FunctionName = "增加",
+                    ControlName = "add",
+                    IndicateImage = "icon-add",
+                    Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("A6EAC93E-9618-4B19-86DD-18643D1FC308"),
+                    FunctionName = "修改",
+                    ControlName = "edit",
+                    IndicateImage = "icon-edit",
+                    Module_ModuleID = new Guid("3C735153-AC3C-4F58-91A7-003311C7B1DC")
+                },
                  new Function()
                  {
                      FunctionID = new Guid("C8A9E599-D227-4058-9E5E-D77C8D3794BB"),

@@ -17,7 +17,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string ID, string SizeName, string SizeNo)
+        public object GetDetails(int page, int rows,string SizeName, string SizeNo)
         {
             IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
             var size = sizeQuery.Where(s => s.SizeName.Contains(SizeName))
@@ -31,21 +31,14 @@ namespace THOK.Wms.Bll.Service
                     s.Width,
                     s.Height
                 });
-            int id=-1;
-            int sizeno = -1;
-            if ((ID != "" && ID != null) && (SizeNo == "" || SizeNo==null))
+            if(SizeNo != "" && SizeNo!=null)
             {
-                try
-                {
-                    id = Convert.ToInt32(ID);
-                }
-                catch
-                {
-                    id = -1;
-                }
+                int sizeno = -1;
+                try { sizeno = Convert.ToInt32(SizeNo); }
+                catch { sizeno = -1; }
                 finally 
                 {
-                    size = sizeQuery.Where(s => s.SizeName.Contains(SizeName) && s.ID == id)
+                    size = size.Where(s => s.SizeNo == sizeno)
                         .OrderBy(s => s.ID).AsEnumerable()
                         .Select(s => new
                         {
@@ -58,57 +51,7 @@ namespace THOK.Wms.Bll.Service
                         });
                 }
             }
-            else if((ID == "" || ID == null) && (SizeNo != "" && SizeNo!=null))
-            {
-                try
-                {
-                    sizeno = Convert.ToInt32(SizeNo);
-                }
-                catch
-                {
-                    sizeno = -1;
-                }
-                finally 
-                {
-                    size = sizeQuery.Where(s => s.SizeName.Contains(SizeName) && s.SizeNo == sizeno)
-                        .OrderBy(s => s.ID).AsEnumerable()
-                        .Select(s => new
-                        {
-                            s.ID,
-                            s.SizeName,
-                            s.SizeNo,
-                            s.Length,
-                            s.Width,
-                            s.Height
-                        });
-                }
-            }
-            else if ((ID != "" && ID != null) && (SizeNo != "" && SizeNo != null))
-            {
-                try
-                {
-                    id = Convert.ToInt32(ID);
-                    sizeno = Convert.ToInt32(SizeNo);
-                }
-                catch
-                {
-                    id = -1;
-                }
-                finally 
-                {
-                    size = sizeQuery.Where(s => s.SizeName.Contains(SizeName) && s.ID == id && s.SizeNo == sizeno)
-                        .OrderBy(s => s.ID).AsEnumerable()
-                        .Select(s => new
-                        {
-                            s.ID,
-                            s.SizeName,
-                            s.SizeNo,
-                            s.Length,
-                            s.Width,
-                            s.Height
-                        });
-                }
-            }
+            
             int total = size.Count();
             size = size.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = size.ToArray() };

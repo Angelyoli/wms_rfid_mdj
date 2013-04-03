@@ -8,8 +8,11 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface IPathService : IService<Path>
     {
+<<<<<<< HEAD
         object GetDetails(int page, int rows, string ID, string PathName,string Description,string State);
 
+=======
+>>>>>>> Zqb/master
         bool Add(Path path, out string strResult);
 
         bool Save(Path path, out string strResult);

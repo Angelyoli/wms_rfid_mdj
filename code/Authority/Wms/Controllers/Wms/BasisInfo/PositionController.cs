@@ -23,7 +23,8 @@ namespace Wms.Controllers.Wms.BasisInfo
             ViewBag.hasAdd = true;
             ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
-           
+            ViewBag.hasPrint = true;
+            ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
             return View();
         }
@@ -42,14 +43,12 @@ namespace Wms.Controllers.Wms.BasisInfo
 
         public ActionResult Details (int page, int rows, FormCollection collection)
         {
-            string ID = collection["ID"] ?? "";
             string PositionName = collection["PositionName"] ?? "";
             string PositionType = collection["PositionType"] ?? "";
-            string RegionID = collection["RegionID"] ?? "";
             string SRMName = collection["SRMName"] ?? "";
             string State = collection["State"] ?? "";
 
-            var path = PositionService.GetDetails(page, rows, ID, PositionName, PositionType,SRMName, RegionID, State);
+            var path = PositionService.GetDetails(page, rows, PositionName, PositionType,SRMName, State);
             return Json(path, "text", JsonRequestBehavior.AllowGet);
         }
         //
@@ -94,7 +93,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             
             if (queryString == null)
             {
-                queryString = "EmployeeCode";
+                queryString = "PositionName";
             }
             if (value == null)
             {
@@ -108,14 +107,10 @@ namespace Wms.Controllers.Wms.BasisInfo
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string id = Request.QueryString["id"];
-            string positioNname = Request.QueryString["positioNname"];
-            string positionType = Request.QueryString["positionType"];
-            string sRMName = Request.QueryString["sRMName"];
-            string regionID = Request.QueryString["regionID"];
-            string state = Request.QueryString["state"];
+            string positionName = Request.QueryString["positionName"];
+            string srmName = Request.QueryString["srmName"];
 
-            System.Data.DataTable dt = PositionService.GetPosition(page, rows, id, positioNname, positionType, sRMName, regionID, state);
+            System.Data.DataTable dt = PositionService.GetPosition(page, rows, positionName, srmName,null);
             string headText = "位置信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10;

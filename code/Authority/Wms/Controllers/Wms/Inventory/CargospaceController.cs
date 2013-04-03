@@ -34,6 +34,22 @@ namespace Authority.Controllers.Wms.Inventory
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult TreeDetails(string type, string id)
+        {
+            var storage = CargospaceService.GetCellDetails(type, id);
+            return Json(storage, "text", JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AllotInTreeDetails(string type, string id)
+        {
+            var storage = CargospaceService.GetInCellDetail(type, id);
+            return Json(storage, "text", JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AllotOutTreeDetails(string type, string id, string productCode)
+        {
+            var storage = CargospaceService.GetOutCellDetail(type,id,productCode);
+            return Json(storage, "text", JsonRequestBehavior.AllowGet);
+        }
+
         #region /Cargospace/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {

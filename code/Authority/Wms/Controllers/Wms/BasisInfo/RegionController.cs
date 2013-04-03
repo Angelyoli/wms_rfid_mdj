@@ -33,10 +33,9 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /Region/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string  ID = collection["RegionID"] ?? "";
             string RegionName = collection["RegionName"] ?? "";
             string State = collection["State"] ?? "";
-            var srm = RegionService.GetDetails(page, rows, ID, RegionName, State);
+            var srm = RegionService.GetDetails(page, rows,RegionName, State);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 

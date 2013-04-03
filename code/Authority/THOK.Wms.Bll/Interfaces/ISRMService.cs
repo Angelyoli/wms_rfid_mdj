@@ -4,7 +4,7 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface ISRMService :IService<SRM>
     {
-        object GetDetails(int page, int rows, string ID, string SRMName, string Description, string State);
+        object GetDetails(int page, int rows,string SRMName,string State);
 
         bool Add(SRM srm, out string strResult);
 

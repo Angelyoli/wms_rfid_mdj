@@ -40,12 +40,15 @@
     @if (ViewBag.hasTask != null && ViewBag.hasTask)
     {<a id="task" href="#" class="easyui-linkbutton"  plain="true" fun="true">作业</a>}
     @if (ViewBag.hasSettle != null && ViewBag.hasSettle)
-    {<a id="settle" href="#" class="easyui-linkbutton"  plain="true" fun="true">结单</a>}                                                                                                        
+    {<a id="settle" href="#" class="easyui-linkbutton"  plain="true" fun="true">结单</a>} 
+    @if (ViewBag.hasMigration != null && ViewBag.hasMigration)
+    {<a id="migration" href="#" class="easyui-linkbutton" plain="true" fun="true">迁移</a>}                                                                                                       
     @if (ViewBag.hasPrint != null && ViewBag.hasPrint)
     {<a id="print" href="#" class="easyui-linkbutton"  plain="true" fun="true">打印</a>}
     @if (ViewBag.hasHelp != null && ViewBag.hasHelp)
     {<a id="help" href="#" class="easyui-linkbutton"  plain="true" fun="true">帮助</a>}
     @if (ViewBag.hasUpload != null && ViewBag.hasUpload)
+        
     {<a id="upload" href="#" class="easyui-linkbutton"  plain="true" fun="true">上报</a>}
     @if (ViewBag.hasApply != null && ViewBag.hasApply)
     {<a id="apply" href="#" class="easyui-linkbutton" plain="true" fun="true">申请</a>}
@@ -56,6 +59,5 @@
     @if (ViewBag.hasBatch != null && ViewBag.hasBatch)
     {<a id="batch" href="#" class="easyui-linkbutton" plain="true" fun="true">批量</a>}
     
-    @if (ViewBag.hasMigration != null && ViewBag.hasMigration)
-    {<a id="migration" href="#" class="easyui-linkbutton" plain="true" fun="true">迁移</a>}
+
 </div>

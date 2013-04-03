@@ -127,7 +127,12 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\CellPositionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\PathNodeController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\Wms\BasisInfo\ProductSizeController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PositionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\SizeController.cs" />
@@ -203,6 +208,7 @@
     <Compile Include="Security\FormsAuthenticationService.cs" />
     <Compile Include="Security\FormsAuthorizeAttribute.cs" />
     <Compile Include="Security\IFormsAuthenticationService.cs" />
+    <Compile Include="Security\TokenAclAuthorizeAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ASPNETDB.MDF" />
@@ -1784,6 +1790,7 @@
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\diy\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\Thumbs.db" />
     <None Include="ExcelTemplate\DailyBalance.xls" />
+    <Content Include="Index.cshtml" />
     <None Include="obj\Debug\build.force" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
@@ -1898,6 +1905,16 @@
     <Content Include="Views\Help\Index.cshtml" />
     <Content Include="Views\CheckBill\_MigrationPartial.cshtml" />
     <Content Include="Views\DailyBalance\_MigrationPartial.cshtml" />
+    <Content Include="Views\CellPosition\Index.cshtml" />
+    <Content Include="Views\CellPosition\SearchPage.cshtml" />
+    <Content Include="Views\CellPosition\_SearchPartial.cshtml" />
+    <Content Include="Views\CellPosition\AddPage.cshtml" />
+    <Content Include="Views\CellPosition\_AddPartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellPositionNamePartial.cshtml" />
+    <Content Include="Views\CellPosition\_EditPartial.cshtml" />
+    <Content Include="Views\CellPosition\_DeletePartial.cshtml" />
+    <Content Include="Views\CellPosition\_PrintPartial.cshtml" />
+    <Content Include="SearchPage.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2258,13 +2275,44 @@
     <Content Include="Views\Size\_EditPartial.cshtml" />
     <Content Include="Views\Size\_DeletePartial.cshtml" />
     <Content Include="Views\Size\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductSize\Index.cshtml" />
+    <Content Include="Views\ProductSize\SearchPage.cshtml" />
+    <Content Include="Views\ProductSize\_SearchPartial.cshtml" />
+    <Content Include="Views\ProductSize\AddPage.cshtml" />
+    <Content Include="Views\ProductSize\_AddPartial.cshtml" />
+    <Content Include="Views\ProductSize\_EditPartial.cshtml" />
+    <Content Include="Views\ProductSize\_DeletePartial.cshtml" />
+    <Content Include="Views\ProductSize\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\Index.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_AddPartial.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
+    <Content Include="Views\Path\_SearchPartial.cshtml" />
+    <Content Include="Views\PathNode\AddPage.cshtml" />
+    <Content Include="Views\PathNode\Index.cshtml" />
+    <Content Include="Views\PathNode\SearchPage.cshtml" />
+    <Content Include="Views\PathNode\_AddPartial.cshtml" />
+    <Content Include="Views\PathNode\_DeletePartial.cshtml" />
+    <Content Include="Views\PathNode\_EditPartial.cshtml" />
+    <Content Include="Views\PathNode\_PrintPartial.cshtml" />
+    <Content Include="Views\PathNode\_SearchPartial.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Position\Index.cshtml" />
+
+    <Content Include="Views\Position\AddPage.cshtml" />
+    <Content Include="Views\Position\Index.cshtml" />
+    <Content Include="Views\Position\SearchPage.cshtml" />
+
     <Content Include="Views\Position\_AddPartial.cshtml" />
     <Content Include="Views\Position\_DeletePartial.cshtml" />
     <Content Include="Views\Position\_EditPartial.cshtml" />
     <Content Include="Views\Position\_SearchPartial.cshtml" />
+
     <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
+
     <Content Include="Views\Path\AddPage.cshtml" />
     <Content Include="Views\Path\SearchPage.cshtml" />
     <Content Include="Views\Path\_DeletePartial.cshtml" />
@@ -2276,6 +2324,15 @@
     <Content Include="Views\Path\_SearchPartial.cshtml" />
     <Content Include="Views\Path\_HelpPartial.cshtml" />
     <Content Include="Views\Path\_PrintPartial.cshtml" />
+
+    <Content Include="Views\Path\_RegionPartial.cshtml" />
+
+    <Content Include="Views\Position\_RegionNamePartial.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Position\_PrintPartial.cshtml" />
+
+
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
@@ -2297,7 +2354,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>41365</DevelopmentServerPort>
+          <DevelopmentServerPort>11030</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

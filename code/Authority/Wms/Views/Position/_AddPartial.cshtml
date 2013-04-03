@@ -18,8 +18,8 @@
         if (addDialog == null) {
             addDialog = $('<div></div>').dialog({
                 title: title,
-                width: 510,
-                height: 300,
+                width: 540,
+                height: 350,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -41,6 +41,60 @@
                     if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#positionfm').form('load', erow);
+                        var row = $('#details').datagrid('getSelected');
+                        //PositionType
+                        if (row.PositionType == "正常位置") {
+                            $('#inputPositionType').combo('setValue', '01').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "大品种出库位") {
+                            $('#inputPositionType').combo('setValue', '02').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "小品种出库位") {
+                            $('#inputPositionType').combo('setValue', '03').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "异形烟出库位") {
+                            $('#inputPositionType').combo('setValue', '04').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "空托盘出库位") {
+                            $('#inputPositionType').combo('setValue', '05').combo('setText', row.PositionType);
+                        }
+                        //Extension
+                        if (row.Extension == "单右伸") {
+                            $('#selectExtension').combo('setValue', 0).combo('setText', row.Extension);
+                        }
+                        else if (row.Extension == "双右伸") {
+                            $('#selectExtension').combo('setValue', 4).combo('setText', row.Extension);
+                        }
+                        else if (row.Extension == "单左伸") {
+                            $('#selectExtension').combo('setValue', 8).combo('setText', row.Extension);
+                        }
+                        else if (row.Extension == "双左伸") {
+                            $('#selectExtension').combo('setValue', 12).combo('setText', row.Extension);
+                        }
+                        //HasGoods
+                        if (row.HasGoods == '是') {
+                            $('#selectHasGoods').combo('setValue', true).combo('setText', row.HasGoods);
+                        } else {
+                            $('#selectHasGoods').combo('setValue', false).combo('setText', row.HasGoods);
+                        }
+                        //AbleStockOut
+                        if (row.AbleStockOut == '是') {
+                            $('#selectAbleStockOut').combo('setValue', true).combo('setText', row.AbleStockOut);
+                        } else {
+                            $('#selectAbleStockOut').combo('setValue', false).combo('setText', row.AbleStockOut);
+                        }
+                        //AbleStockInPallet
+                        if (row.AbleStockInPallet == '是') {
+                            $('#selectAbleStockInPallet').combo('setValue', true).combo('setText', row.AbleStockInPallet);
+                        } else {
+                            $('#selectAbleStockInPallet').combo('setValue', false).combo('setText', row.AbleStockInPallet);
+                        }
+                        //IsActive
+                        if (row.State == '可用') {
+                            $('#selectState').combo('setValue', '01').combo('setText', row.State);
+                        } else {
+                            $('#selectState').combo('setValue', '02').combo('setText', row.State);
+                        }
                     }
                     else if (title == '删除') {
                         var drow = $('#details').datagrid('getSelected');
@@ -57,7 +111,6 @@
     }
 
     function addClick() {
-        AddLoad();
         showDialog('新增');
         addKey = true;
         addDialog.dialog('open');
@@ -69,12 +122,6 @@
         $('form textarea').removeAttr("disabled");
         $('#positionfm').form('clear');
         $('#inputID').attr("readonly", false);
-        $('#position_type').combo({
-            hasDownArrow: true
-        });
-        $('#state_com').combo({
-            hasDownArrow: true
-        });
         url = '/Position/Create/';
     };
     function save() {
@@ -106,28 +153,13 @@
             }
         });
     }
-    function AddLoad() {
-        $('#state_com').combo({
-            required: true,
-            editable: false,
-            panelHeight: 45,
-            panelWidth: 130
-        });
-
-        $('#position_type').combo({
-            required: true,
-            editable: false,
-            panelHeight: 65,
-            panelWidth: 130
-        });
+    function RegionNameSearchClick() {
+        addKey = false;
+        editKey = false;
+        $('#RegionNameData').dialog('open').dialog('setTitle', '选择区域名称');
+        parentComNameKey = true;
+        $('#RegionNameDetail').datagrid({ url: '/Region/GetRegion/' });
+        $("#RegionNameDetail").datagrid('reload');
     }
-   // function parentCompanyNameSearchClick() {
-      //  addKey = false;
-      //  editKey = false;
-      //  $('#parentCompanyNameData').dialog('open').dialog('setTitle', '选择上级公司名称');
-      //  parentComNameKey = true;
-      //  $('#parentCompanyNameDetail').datagrid({ url: '/Position/GetParentName/' });
-      //  $("#parentCompanyNameDetail").datagrid('reload');
-   // }
 </script>
 

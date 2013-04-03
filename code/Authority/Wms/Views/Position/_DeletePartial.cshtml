@@ -14,17 +14,6 @@
             $('#positionfm .easyui-validatebox').validatebox({
                 required: false
             });
-            $('#state_com').combo({
-                hasDownArrow: false
-            });
-            $('#position_type').combo({
-                hasDownArrow: false
-            });
-            if (row.State == '启用') {
-                $('#state_com').combo('setValue', 1).combo('setText', row.State);
-            } else {
-                $('#state_com').combo('setValue', 0).combo('setText', row.State);
-            }
         } else {
             $.messager.alert('错误', '没有选择行！', 'info');
         }

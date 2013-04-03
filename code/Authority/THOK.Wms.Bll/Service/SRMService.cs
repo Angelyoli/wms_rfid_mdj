@@ -17,7 +17,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string ID, string SRMName, string Description, string State)
+        public object GetDetails(int page, int rows,string SRMName,string State)
         {
             IQueryable<SRM> srmQuery = SRMRepository.GetQueryable();
             var srm = srmQuery.Where(s => s.SRMName.Contains(SRMName) && s.State.Contains(State))
@@ -29,23 +29,7 @@ namespace THOK.Wms.Bll.Service
                     s.Description,
                     State = s.State == "01" ? "可用" : "不可用",
                 });
-            if (ID != "" && ID != null)
-            {
-                try
-                {
-                    int k = Convert.ToInt32(ID);
-                    srm = srmQuery.Where(s => s.SRMName.Contains(SRMName) && s.State.Contains(State) && s.ID == k)
-                        .OrderBy(s => s.ID).AsEnumerable()
-                        .Select(s => new
-                        {
-                            s.ID,
-                            s.SRMName,
-                            s.Description,
-                            State = s.State == "01" ? "可用" : "不可用",
-                        });
-                }
-                finally { }
-            }
+           
             int total = srm.Count();
             srm = srm.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = srm.ToArray() };

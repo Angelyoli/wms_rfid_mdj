@@ -11,7 +11,7 @@ using SignalR;
 using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Connection;
 using System.IO.Compression;
-
+using THOK.Security;
 namespace Wms
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
@@ -22,6 +22,8 @@ namespace Wms
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            TokenAclAuthorizeAttribute filter = new TokenAclAuthorizeAttribute();
+            //filters.Add(filter);
         }
 
         public static void RegisterRoutes(RouteCollection routes)
