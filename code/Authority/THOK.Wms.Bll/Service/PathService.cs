@@ -151,32 +151,16 @@ namespace THOK.Wms.Bll.Service
        }
 
 
-       public object GetPath(int page, int rows, string queryString, string value)
+       public object GetPath(int page, int rows,string value)
        {
-           string id = "", pathName = "";
-
-           if (queryString == "id")
-           {
-               id = value;
-           }
-           else
-           {
-               pathName = value;
-           }
            IQueryable<Path> pathQuery = PathRepository.GetQueryable();
-           int Id = Convert.ToInt32(id);
-           var path = pathQuery.Where(p => p.ID == Id && p.PathName.Contains(pathName) && p.State == "01")
+           var path = pathQuery.Where(p => p.PathName.Contains(value) && p.State == "01")
                .OrderBy(p => p.ID).AsEnumerable().
                Select(p => new
                {
                    p.ID,
                    p.PathName,
-                   p.OriginRegionID,
-                   p.TargetRegionID,
-                   p.TargetRegion,
-                   p.OriginRegion,
-                   p.Description,
-                   State = p.State == "1" ? "可用" : "不可用",
+                   State = p.State == "01" ? "可用" : "不可用",
                });
            int total = path.Count();
            path = path.Skip((page - 1) * rows).Take(rows);

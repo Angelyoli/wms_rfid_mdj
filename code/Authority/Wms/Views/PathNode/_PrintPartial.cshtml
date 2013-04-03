@@ -1,12 +1,9 @@
 ﻿<script type="text/javascript">
     function printClick() {
         var id = null, PathID = null;
-       // if ($('#ID').val() == null) { id = ""; } else { id=$('#ID').val()}
-        if ($('#PathID').val() == null) { PathID = ""; } else { PathID = $('#PathID').val() }
-//        if (document.getElementById('#State') == null) { state = ""; } else { state = $('#State').combo('getValue') }
-
+        if ($('#ID').val() == null) { id = ""; } else { id=$('#ID').val()}
+   //     if ($('#PathID').val() == null) { PathID = ""; } else { PathID = $('#PathID').val() }
         window.location.href = "/PathNode/CreateExcelToClient/"
-                                + "?PathID=" + srmName;
-//                                + "&state=" + state;
+                                + "?id=" + id;
     }
 </script>

@@ -91,20 +91,16 @@ namespace Wms.Controllers.Wms.Organization
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        // POST: /Path/GetJob/
-        //public ActionResult GetJob(int page, int rows, string queryString, string value)
-        //{
-        //    if (queryString == null)
-        //    {
-        //        queryString = "JobCode";
-        //    }
-        //    if (value == null)
-        //    {
-        //        value = "";
-        //    }
-        //    var job = PathService.GetJob(page, rows, queryString, value);
-        //    return Json(job, "text", JsonRequestBehavior.AllowGet);
-        //}
+        //  POST: /Path/GetPath/
+        public ActionResult GetPath(int page, int rows,string value)
+        {
+            if (value == null)
+            {
+                value = "";
+            }
+            var path = PathService.GetPath(page, rows, value);
+            return Json(path, "text", JsonRequestBehavior.AllowGet);
+        }
 
         #region /Path/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()

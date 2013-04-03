@@ -1,0 +1,69 @@
+﻿<script type="text/javascript">   
+    $(function () {
+        $('#pathDetail').datagrid({
+            //双击赋值
+            onDblClickRow: function () {
+                pathSave();
+            }
+        })
+        //属性初始化
+        $('#queryTypePath').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 100
+        })
+    });
+    //选中赋值
+    function pathSave() {
+        var pathRow = $('#pathDetail').datagrid('getSelected');
+        if (pathRow) {
+            $('#inputPathID').val(pathRow.ID);
+            $('#inputPathName').val(pathRow.PathName);
+            $('#pathData').dialog('close');
+        }
+        else {
+            $.messager.alert('提示', '没有选择行!', 'info');
+        }
+    }
+    //根据条件查询
+    function pathQueryClick() {
+        $("#pathDetail").datagrid({
+            url: '/Path/GetPath/?value=' + $('#pathInfo').val()
+        });
+        $("#pathDetail").datagrid('reload');
+    }
+
+</script>
+<div id="pathData" class="easyui-dialog" modal="true" style="width: 500px;
+    height: 420px; padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
+    <div id="btnQuery">
+       路径名称:
+        <input id="pathInfo">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="pathQueryClick()"
+            id="pathQuery">查询</a>
+    </div>
+    <div split="true" border="false" style="width: 486px; height: 320px;">
+        <table id="pathDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+            <thead>
+                <tr>
+                    <th field="ID" hidden="true" width="60">
+                        路径ID
+                    </th>
+                    <th field="PathName" width="60">
+                        路径名称
+                    </th>
+                    <th field="State" width="60">
+                        是否可用
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="dlgDepart-buttons" style="float:right; margin-top:10px; margin-right:10px;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="pathSave()">确定</a>
+        <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#pathData').dialog('close')">
+            取消</a>
+    </div>
+</div>

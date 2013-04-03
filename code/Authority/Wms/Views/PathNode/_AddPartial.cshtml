@@ -9,6 +9,7 @@
             panelWidth: 130
         });
     }
+
     //加载新增、编辑和删除窗体
     function showDialog(title) {
         if (addDialog == null) {
@@ -64,12 +65,6 @@
             required: true
         });
         $('input#inputID').attr("value", "自动增长");
-       // $('form input').removeAttr("disabled");
-     //   $('form textarea').removeAttr("disabled");
-    //    $('#inputJobCode').attr("readonly", false);
-//        $('#isActive_job').combo({
-//            hasDownArrow: true
-//        });
         url = '/PathNode/Create/';
     };
 
@@ -97,5 +92,15 @@
                 }
             }
         });
+    }
+    function PathIDSearchClick() {
+        $('#pathData').dialog('open').dialog('setTitle', '选择路径ID');
+        $('#pathDetail').datagrid({ url: '/Path/GetPath/' });
+        $("#pathDetail").datagrid('reload');
+    }
+    function PositionIDSearchClick() {
+        $('#positionData').dialog('open').dialog('setTitle', '选择位置ID');
+        $('#positionDetail').datagrid({ url: '/Position/GetPosition/' });
+        $("#positionDetail").datagrid('reload');
     }
 </script>
