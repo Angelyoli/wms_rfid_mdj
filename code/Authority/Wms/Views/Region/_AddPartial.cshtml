@@ -37,6 +37,11 @@
                     if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', erow);
+                        if (erow.State == '可用') {
+                            $('#State').combo('setValue', '01').combo('setText', erow.State);
+                        } else {
+                            $('#State').combo('setValue', '02').combo('setText', erow.State);
+                        }
                     }
                     else if (title == '删除') {
                         var drow = $('#details').datagrid('getSelected');
