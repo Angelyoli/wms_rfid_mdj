@@ -1,0 +1,8 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var productCode = null;
+        if ($('#ProductCode').val() == null) { productCode = ""; } else { productCode = $('#ProductCode').val() }
+        window.location.href = "/ProductSize/CreateExcelToClient/"
+                                + "?productCode=" + productCode;
+    }
+</script>
