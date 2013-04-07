@@ -13,6 +13,45 @@
         });
     })
 
+    function AddLoad() {
+        $("#inputPositionType").combo({
+            required: true,
+            editable:false,
+            panelHeight:102,
+            panelWith:130
+        })
+        $("#selectExtension").combo({
+            required: true,
+            editable:false,
+            panelHeight:90,
+            panelWith:130
+        })
+        $("#selectHasGoods").combo({
+            required: true,
+            editable:false,
+            panelHeight:45,
+            panelWith:130
+        })
+        $("#selectAbleStockOut").combo({
+            reqired:true,
+            editable:false,
+            panelHeight:45,
+            panelWith:130
+        })
+        $("#selectAbleStockInPallet").combo({
+            required: true,
+            editable:false,
+            panelHeight:45,
+            panelWith:130
+        })
+        $("#selectState").combo({
+            required: true,
+            editable:false,
+            panelHeight:45,
+            panelWith:130
+        })
+    }
+
     //加载新增和编辑窗体
     function showDialog(title) {
         if (addDialog == null) {
@@ -102,6 +141,7 @@
                         $('form input').attr("disabled", "disabled");
                         $('form textarea').attr("disabled", "disabled");
                     }
+                    AddLoad();
                 }
             });
         }
@@ -160,6 +200,11 @@
         parentComNameKey = true;
         $('#RegionNameDetail').datagrid({ url: '/Region/GetRegion/' });
         $("#RegionNameDetail").datagrid('reload');
+        $("#queryType").combo({
+            editable: false,
+            panelHeight: 45,
+            panelWith: 130
+        });
     }
 </script>
 

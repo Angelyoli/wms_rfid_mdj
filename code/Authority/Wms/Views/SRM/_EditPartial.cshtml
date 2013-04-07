@@ -2,7 +2,6 @@
     function editClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            AddLoad();
             showDialog('编辑');
             editKey = true;
             addDialog.dialog('open');

@@ -69,6 +69,11 @@
         parentComNameKey = true;
         $('#CellPositionNameDetail').datagrid({ url: '/Position/GetPosition/' });
         $("#CellPositionNameDetail").datagrid('reload');
+        $("#queryType").combo({
+            editable: false,
+            panelHeight: 45,
+            panelWith: 130
+        });
     }
 </script>
 <script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
