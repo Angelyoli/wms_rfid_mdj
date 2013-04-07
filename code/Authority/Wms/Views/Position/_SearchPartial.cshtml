@@ -6,7 +6,18 @@
     var editKey = false;
     var deleteKey = false;
     var parentComNameKey = false;
-
+    function SearchLoad() {
+        $("#PositionType").combo({
+            editable: false,
+            panelHeight: 125,
+            panelWith: 130
+        })
+        $("#State").combo({
+            editable: false,
+            panelHeight: 65,
+            panelWith: 130
+        })
+    }
     function searchClick() {
         $("input[type=text]").attr("value", "");
         $('#State').combo('setValue', "");
@@ -34,6 +45,7 @@
                     }
                 }],
                 onLoad: function () {
+                    SearchLoad();
                 }
             });
         }

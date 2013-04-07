@@ -37,7 +37,6 @@
                     if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', erow);
-                        
                         if (erow.State == '可用') {
                             $('#State').combo('setValue', '01').combo('setText', erow.State);
                         } else {
@@ -49,7 +48,8 @@
                         $('#fm').form('load', drow);
                         $('form input').attr("disabled", "disabled");
                         $('form textarea').attr("disabled", "disabled");
-                    }
+                    } 
+                    AddLoad();
                 }
             });
         }
@@ -59,10 +59,10 @@
     }
 
     function addClick() {
-        AddLoad();
         showDialog('新增');
         addKey = true;
         addDialog.dialog('open');
+        
         $('form input').removeAttr("disabled"); //removeAttr() 方法从被选元素中移除属性。
         $('form textarea').removeAttr("disabled");
         $('#fm').form('clear');
@@ -70,12 +70,6 @@
             required: true
         });
         $('input#inputID').attr("value", "自动增长");
-       // $('form input').removeAttr("disabled");
-     //   $('form textarea').removeAttr("disabled");
-    //    $('#inputJobCode').attr("readonly", false);
-//        $('#isActive_job').combo({
-//            hasDownArrow: true
-//        });
         url = '/SRM/Create/';
     };
 

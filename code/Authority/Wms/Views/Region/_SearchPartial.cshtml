@@ -6,15 +6,21 @@
     var editKey = false;
     var deleteKey = false;
     var parentComNameKey = false;
-
+    function SearchLoad() {
+        $("#SearchState").combo({
+            editable:false,
+            panelHeight:65,
+            panelWith:130
+            })
+    }
     function searchClick() {
         $("input[type=text]").attr("value", "");
-        $('#State').combo('setValue', "");
+        $('#SearchState').combo('setValue', "");
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
                 width: 310,
-                height: 150,
+                height: 180,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -33,6 +39,7 @@
                     }
                 }],
                 onLoad: function () {
+                    SearchLoad();
                 }
             });
         }
@@ -42,7 +49,7 @@
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.RegionName = $('#RegionName').val();
-        queryParams.State = $('#State').combo('getValue');
+        queryParams.State = $('#SearchState').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');
