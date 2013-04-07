@@ -9,67 +9,63 @@ namespace THOK.Wms.Bll.Service
 {
     public class PathNodeService : ServiceBase<PathNode>, IPathNodeService
     {
-        //private object PathID;
         [Dependency]
         public IPathNodeRepository PathNodeRepository { get; set; }
+        [Dependency]
+        public IPathRepository PathRepository { get; set; }
+        [Dependency]
+        public IPositionRepository PositionRepository { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string PathID, string PositionID, string PathNodeOrder)
+        public object GetDetails(int page, int rows, string PathName, string PositionName, string PathNodeOrder)
         {
+            //引入表
             IQueryable<PathNode> pathNodeQuery = PathNodeRepository.GetQueryable();
-            var pathNode = pathNodeQuery
-                //.Where(p => p.ID == PathID)
+            IQueryable<Path> pathQuery = PathRepository.GetQueryable();
+            IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+            //关联表
+            var pathNode = pathNodeQuery.Join(pathQuery,
+                             pn => pn.PathID,
+                             p => p.ID,
+                             (pn, p) => new { pn.ID, pn.PathID, pn.PositionID, pn.PathNodeOrder, p.PathName })
+                             .Join(positionQuery,
+                             pn => pn.PositionID,
+                             p => p.ID,
+                             (pn, p) => new { pn.ID, pn.PathID, pn.PositionID, pn.PathNodeOrder, pn.PathName,p.PositionName })
+                .Where(p => p.PathName.Contains(PathName) && p.PositionName.Contains(PositionName))
                 .OrderBy(p => p.ID).AsEnumerable()
                 .Select(p => new
                 {
                     p.ID,
                     p.PathID,
+                    p.PathName,
                     p.PositionID,
+                    p.PositionName,
                     p.PathNodeOrder,
                 });
-
-            int pathID = -1, positionID = -1, pathNodeOrder = -1;
-            if ((PathID != "" && PathID != null) && (PositionID == "" || PositionID == null) && (PathNodeOrder != "" && PathNodeOrder != null))
+            int Order = -1;
+            if (PathNodeOrder != "" && PathNodeOrder != null)
             {
-                try { pathID = Convert.ToInt32(PathID); }
-                catch { pathID = -1; }
-                finally { pathNode = pathNode.Where(p => p.PathID == pathID); }
-            }
-            if ((PathID == "" || PathID == null) && (PositionID != "" && PositionID != null) && (PathNodeOrder != "" && PathNodeOrder != null))
-            {
-                try { positionID = Convert.ToInt32(PositionID); }
-                catch { positionID = -1; }
-                finally { pathNode = pathNode.Where(p => p.PositionID == positionID); }
-            }
-            if ((PathID == "" || PathID == null) && (PositionID != "" && PositionID != null) && (PathNodeOrder != "" && PathNodeOrder != null))
-            {
-                try { pathNodeOrder = Convert.ToInt32(PositionID); }
-                catch { pathNodeOrder = -1; }
-                finally { pathNode = pathNode.Where(p => p.PathNodeOrder == pathNodeOrder); }
-            }
-            if ((PathID != "" && PathID != null) && (PositionID != "" && PositionID != null) && (PathNodeOrder != "" && PathNodeOrder != null))
-            {
-                try
-                {
-                    pathID = Convert.ToInt32(PathID);
-                    positionID = Convert.ToInt32(PositionID);
-                    pathNodeOrder = Convert.ToInt32(PositionID);
+                try { Order = Convert.ToInt32(PathNodeOrder); }
+                catch { Order = -1; }
+                finally { 
+                    pathNode=pathNode.Where(p =>p.PathNodeOrder==Order)
+                            .OrderBy(p => p.ID).AsEnumerable()
+                            .Select(p => new
+                            {
+                                p.ID,
+                                p.PathID,
+                                p.PathName,
+                                p.PositionID,
+                                p.PositionName,
+                                p.PathNodeOrder,
+                            });
                 }
-                catch { pathNodeOrder = -1; }
-                finally { pathNode = pathNode.Where(p => p.PathID == pathID && p.PositionID == positionID && p.PathNodeOrder == pathNodeOrder); }
             }
-            pathNode = pathNode.OrderBy(p => p.ID).AsEnumerable()
-                .Select(p => new
-                {
-                    p.ID,
-                    p.PathID,
-                    p.PositionID,
-                    p.PathNodeOrder,
-                });
             int total = pathNode.Count();
             pathNode = pathNode.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = pathNode.ToArray() };
@@ -108,8 +104,7 @@ namespace THOK.Wms.Bll.Service
         {
             strResult = string.Empty;
             bool result = false;
-            var p = PathNodeRepository.GetQueryable().FirstOrDefault(pn => pn.PathID == pathNode.PathID);
-            //var p = new PathNode();
+            var p = PathNodeRepository.GetQueryable().FirstOrDefault(pn => pn.ID == pathNode.ID);
             if (p != null)
             {
                 try
@@ -186,44 +181,58 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = PathNode.ToArray() };
         }
 
-        public System.Data.DataTable GetPathNode(int page, int rows, string PathID)
+        public System.Data.DataTable GetPathNode(int page, int rows, string id)
         {
-            IQueryable<PathNode> PathNodeQuery = PathNodeRepository.GetQueryable();
-            var PathNode = PathNodeQuery
+            int t=-1;
+
+            IQueryable<PathNode> pathNodeQuery = PathNodeRepository.GetQueryable();
+            IQueryable<Path> pathQuery = PathRepository.GetQueryable();
+            IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+
+            var pathNode = pathNodeQuery.Join(pathQuery,
+                             pn => pn.PathID,
+                             p => p.ID,
+                             (pn, p) => new { pn.ID, pn.PathID, pn.PositionID, pn.PathNodeOrder, PathName = p.PathName })
+                             .Join(positionQuery,
+                             pn => pn.PositionID,
+                             p => p.ID,
+                             (pn, p) => new { pn.ID, pn.PathID, pn.PositionID, pn.PathNodeOrder, pn.PathName, PositionName = p.PositionName })
                 //.Where(p => p.ID == PathID)
+              //  .Where(p => p.ID == t)
                 .OrderBy(p => p.ID).AsEnumerable()
                 .Select(p => new
                 {
                     p.ID,
-                    p.PathID,
-                    p.PositionID,
+                    p.PathName,
+                    p.PositionName,
                     p.PathNodeOrder,
                 });
-            if (!PathID.Equals(""))
+            try { t = Convert.ToInt32(id); }
+            catch { t = -1; }
+            finally
             {
-                PathNode = PathNodeQuery
-                    //.Where(p => p.ID == PathID)
-                    .OrderBy(p => p.ID).AsEnumerable()
-                    .Select(p => new
-                    {
-                        p.ID,
-                        p.PathID,
-                        p.PositionID,
-                        p.PathNodeOrder,
-                    });
+                pathNode = pathNode.Where(p => p.ID == t)
+                        .OrderBy(p => p.ID).AsEnumerable()
+                        .Select(p => new
+                        {
+                            p.ID,
+                            p.PathName,
+                            p.PositionName,
+                            p.PathNodeOrder,
+                        });
             }
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("ID", typeof(string));
-            dt.Columns.Add("路径ID", typeof(string));
-            dt.Columns.Add("位置ID", typeof(string));
+            dt.Columns.Add("路径名称", typeof(string));
+            dt.Columns.Add("位置名称", typeof(string));
             dt.Columns.Add("路径节点顺序", typeof(string));
-            foreach (var item in PathNode)
+            foreach (var item in pathNode)
             {
                 dt.Rows.Add
                     (
                         item.ID,
-                        item.PathID,
-                        item.PositionID,
+                        item.PathName,
+                        item.PositionName,
                         item.PathNodeOrder
                     );
             }

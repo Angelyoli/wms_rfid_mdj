@@ -31,11 +31,11 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /PathNode/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string ID = collection["ID"] ?? "";
-            string PathID = collection["PathID"] ?? "";
-            string PositionID = collection["PositionID"] ?? "";
+           // string ID = collection["ID"] ?? "";
+            string PathName = collection["PathName"] ?? "";
+            string PositionName = collection["PositionName"] ?? "";
             string PathNodeOrder = collection["PathNodeOrder"] ?? "";
-            var srm = PathNodeService.GetDetails(page, rows, PathID, PositionID, PathNodeOrder);
+            var srm = PathNodeService.GetDetails(page, rows, PathName, PositionName, PathNodeOrder);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -100,8 +100,8 @@ namespace Wms.Controllers.Wms.BasisInfo
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string PathID = Request.QueryString["PathID"];
-            System.Data.DataTable dt = PathNodeService.GetPathNode(page, rows, PathID);
+            string id = Request.QueryString["id"];
+            System.Data.DataTable dt = PathNodeService.GetPathNode(page, rows, id);
             string headText = "路径节点信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10;

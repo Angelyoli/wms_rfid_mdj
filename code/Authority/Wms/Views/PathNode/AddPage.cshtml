@@ -5,35 +5,42 @@
 	<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " > 
       <form id="fm" method="post" >  
         <table width="280">
-@*                    <tr>
-                    <td width="60" align="right">ID：</td>
+                    <tr  style="display:none">
+                        <td  width="75">ID</td>
+                        <td width="168">
+                        <input name="ID" id="inputID" type="text" />
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                    <td width="75" align="right">路径名称：</td>
                     <td width="168">
-                    <input name="ID" id="inputID"  required="true" type="text" readonly="readonly" value="自动增长"/>
-                    <input name="ID"  style="display:none" /></td>
-                    <tr>*@
-                    <td width="60" align="right">路径ID：</td>
-                    <td width="168">
-                    <input name="PathID" id="inputPathID" class="easyui-validatebox" required="true" type="text"/>
-                    <input name="PathID"  style="display:none" /></td>
-                        
+                    <input name="PathName" id="inputPathName" readonly="readonly" class="easyui-validatebox"  required="true" type="text" missingmessage="请选择" />
+                    <input name="PathID" id ="inputPathID"  style="display:none" />
+                    <a href="#" id="PathIDSearch" class="easyui-linkbutton" iconcls="icon-search"
+                       plain="true" onclick="PathIDSearchClick()"></a>
+                       </td>
                     </tr>
 
                     <tr>
-                    <td width="60" align="right">位置ID：</td>
+                    <td width="75" align="right">位置名称：</td>
                     <td width="168">
-                    <input name="PositionID" id="inputPositionID" class="easyui-validatebox" required="true" type="text"/>
-                    <input name="PositionID"  style="display:none" /></td>
-
+                    <input name="PositionName" id="inputPositionName" required="true" readonly="readonly" type="text" class="easyui-validatebox" missingmessage="请选择"/>
+                    <input name="PositionID" id="inputPositionID"  style="display:none" />                    
+                    <a href="#" id="PositionIDSearch" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="PositionIDSearchClick()"></a>
+                    </td>
                     </tr> 
                                           
                     <tr>
-                    <td width="60" align="right">路径节点顺序：</td>
+                    <td width="75" align="right">路径节点顺序：</td>
                     <td width="168">
-                    <input name="PathNodeOrder" id="inputPathNodeOrder" class="easyui-validatebox" required="true" type="text"/>
-                    <input name="PathNodeOrder"  style="display:none" /></td>
-	                
+                    <input name="PathNodeOrder" id="inputPathNodeOrder" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入（必须为数字）"/>
+                    <input name="PathNodeOrder"  style="display:none" /></td>	                
                     </tr>
                 </table>
             </form>
     </div>
 </div>
+@Html.Partial("_PathIDPartial")
+@Html.Partial("_PositionIDPartial")

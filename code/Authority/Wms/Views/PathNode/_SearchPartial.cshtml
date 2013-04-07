@@ -9,7 +9,6 @@
 
     function searchClick() {
         $("input[type=text]").attr("value", "");
-
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
@@ -41,8 +40,9 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.ID = $('#PathID').val();
-        queryParams.PathID = $('#PathID').val();
+        queryParams.PathName = $('#PathName').val();
+        queryParams.PositionName = $('#PositionName').val();
+        queryParams.PathNodeOrder = $('#PathNodeOrder').val();
 
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
