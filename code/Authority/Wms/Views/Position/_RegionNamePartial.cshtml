@@ -31,7 +31,7 @@
     //查询
     function RegionNameQueryClick() {
         $("#RegionNameDetail").datagrid({
-            url: '/Region/GetRegion/?queryString=' + $('#queryType').combogrid('getValue') + '&value=' + $('#RegionNameInfo').val()
+            url: '/Region/GetRegion/?queryString=' + 'RegionName' + '&value=' + $('#RegionNameInfo').val()
         });
         $("#RegionNameDetail").datagrid('reload');
         editKey = true;
@@ -41,13 +41,16 @@
 <div id="RegionNameData" class="easyui-dialog" modal="true" style="width: 500px;
     height: 420px; padding: 0px 0px" closed="true"buttons="#dlgProd uct-buttons">
     <div id="btnQuery">
-        <select id="queryType" class="easyui-combobox" style="width: 100px;" readonly="true">
-            <option value="ID">区域编码</option>
-            <option value="RegionName">区域名称</option>
-        </select>
-        <input id="RegionNameInfo">
-        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="RegionNameQueryClick()"
-            id="RegionNameQuery">查询</a>
+        <table>
+            <tr>
+                <td>区域名称：</td>
+                <td>
+                     <input id="RegionNameInfo">
+                     <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="RegionNameQueryClick()"
+                         id="RegionNameQuery">查询</a>
+                </td>
+            </tr>
+        </table>
     </div>
     <div split="true" border="false" style="width: 486px; height: 320px;">
         <table id="RegionNameDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
