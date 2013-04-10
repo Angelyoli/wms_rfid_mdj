@@ -12,6 +12,7 @@ using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Connection;
 using System.IO.Compression;
 using THOK.Security;
+using Wms.Security;
 namespace Wms
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
@@ -22,8 +23,6 @@ namespace Wms
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
-            TokenAclAuthorizeAttribute filter = new TokenAclAuthorizeAttribute();
-            //filters.Add(filter);
         }
 
         public static void RegisterRoutes(RouteCollection routes)
@@ -51,13 +50,15 @@ namespace Wms
 
         void Application_Start()
         {
+            UserServiceFactory userserviceFactory = new UserServiceFactory();
+            ControllerBuilder.Current.SetControllerFactory(userserviceFactory);
             RegisterIocUnityControllerFactory();
             AreaRegistration.RegisterAllAreas();
             RegisterGlobalFilters(GlobalFilters.Filters);           
             RegisterRoutes(RouteTable.Routes);
         }
 
-        void Application_Error1()
+        void Application_Error()
         {
             Exception exception = Server.GetLastError();
             if (exception != null)
@@ -70,12 +71,15 @@ namespace Wms
                 if (httpException == null)
                 {
 
-                    if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                    if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                     {
+                        //error += "发生异常页: " + Request.Url.ToString() + "<br>";
+                        Session["ErrorLog"] = exception.Message;
                         routeData.Values.Add("action", "Error");
                     }
                     else
                     {
+                        Session["AjaxErrorLog"] = exception.Message;
                         routeData.Values.Add("action", "AjaxError");
                     }
                     if (exception != null)
@@ -88,33 +92,39 @@ namespace Wms
                     switch (httpException.GetHttpCode())
                     {
                         case 404:
-                            if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
+                                Session["PageNotFoundLog"] = exception.Message;
                                 routeData.Values.Add("action", "PageNotFound");
                             }
                             else
                             {
+                                Session["AjaxPageNotFoundLog"] = exception.Message;
                                 routeData.Values.Add("action", "AjaxPageNotFound");
                             }
                             break;
                         case 500:
-                            if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
+                                Session["ServerErrorLog"] = exception.Message;
                                 routeData.Values.Add("action", "ServerError");
                             }
                             else
                             {
+                                Session["AjaxServerErrorLog"] = exception.Message;
                                 routeData.Values.Add("action", "AjaxServerError");
                             }
                             Trace.TraceError("Server Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                         default:
-                            if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
+                                Session["Error"] = exception.Message;
                                 routeData.Values.Add("action", "Error");
                             }
                             else
                             {
+                                Session["AjaxError"] = exception.Message;
                                 routeData.Values.Add("action", "AjaxError");
                             }
                             Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());

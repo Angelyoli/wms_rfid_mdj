@@ -97,42 +97,51 @@ namespace Authority.Controllers
 
         public ActionResult PageNotFound()
         {
+            ViewBag.PageNotFoundLog = Session["PageNotFoundLog"].ToString();
             return View();
         }
 
         public ActionResult ServerError()
         {
+            ViewBag.ServerErrorLog = Session["ServerErrorLog"].ToString();
             return View();
         }
 
         public ActionResult Error()
         {
+            ViewBag.ErrorLog = Session["ErrorLog"].ToString();
             return View();
         }
 
         public ActionResult Unauthorized()
         {
+            ViewBag.UnauthorizedLog = Session["UnauthorizedLog"].ToString();
             return View();
         }
 
         public ActionResult AjaxPageNotFound()
         {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务不存在！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
+            string msg = Session["AjaxPageNotFoundLog"].ToString();
+            return Json(JsonMessageHelper.getJsonMessage(false,msg), "text", JsonRequestBehavior.AllowGet);
+            //, this.HttpContext.Request.RawUrl
         }
 
         public ActionResult AjaxServerError()
         {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务发生未处理的服务器错误！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
+            string msg = Session["AjaxServerErrorLog"].ToString();
+            return Json(JsonMessageHelper.getJsonMessage(false, msg), "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AjaxError()
         {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务发生未知的服务器错误！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
+            string msg = Session["AjaxErrorLog"].ToString();
+            return Json(JsonMessageHelper.getJsonMessage(false, msg), "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AjaxUnauthorized()
         {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务验证失败，没有相应的权限！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
+            string msg = Session["AjaxUnauthorizedLog"].ToString();
+            return Json(JsonMessageHelper.getJsonMessage(false, msg), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }
