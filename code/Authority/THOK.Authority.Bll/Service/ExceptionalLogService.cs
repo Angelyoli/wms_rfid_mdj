@@ -22,18 +22,21 @@ namespace THOK.Authority.Bll.Service
         public bool CreateExceptionLog(string ModuleNam, string FunctionName, string ExceptionalType, string ExceptionalDescription, string State)
         {
             var moduleRepository = ModuleRepository.GetQueryable().Where(m => m.ModuleURL == ModuleNam).Select(m => new {modulname=m.ModuleName }).ToArray();
-            var ExceptionalLogs = new ExceptionalLog()
+            if (moduleRepository.Length > 0)
             {
-                ExceptionalLogID = Guid.NewGuid(),
-                CatchTime = DateTime.Now.ToString(),
-                ModuleName = moduleRepository[0].modulname,
-                FunctionName = FunctionName,
-                ExceptionalType = ExceptionalType,
-                ExceptionalDescription = ExceptionalDescription,
-                State = State,
-            };
-            ExceptionalLogRepository.Add(ExceptionalLogs);
-            ExceptionalLogRepository.SaveChanges();
+                var ExceptionalLogs = new ExceptionalLog()
+                {
+                    ExceptionalLogID = Guid.NewGuid(),
+                    CatchTime = DateTime.Now.ToString(),
+                    ModuleName = moduleRepository[0].modulname,
+                    FunctionName = FunctionName,
+                    ExceptionalType = ExceptionalType,
+                    ExceptionalDescription = ExceptionalDescription,
+                    State = State,
+                };
+                ExceptionalLogRepository.Add(ExceptionalLogs);
+                ExceptionalLogRepository.SaveChanges();
+            }
             return true;
         }
     }

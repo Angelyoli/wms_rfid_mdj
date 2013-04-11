@@ -78,10 +78,10 @@ namespace THOK.Authority.Bll.Service
         }
         public bool UpdateLoginLog(string user_name,string logout_time)
         {
-           var LoginLog=LoginLogRepository.GetQueryable().Where(s=>s.User.UserName==user_name).Select(s=>s).OrderByDescending(s=>s.LoginTime).ToArray()[0];
-           if (LoginLog != null)
+           var LoginLog=LoginLogRepository.GetQueryable().Where(s=>s.User.UserName==user_name).Select(s=>s).OrderByDescending(s=>s.LoginTime).ToArray();
+           if (LoginLog.Length>0)
             {
-                LoginLog.LogoutTime = logout_time;
+                LoginLog[0].LogoutTime = logout_time;
                 LoginLogRepository.SaveChanges();
                 return true;
             }
