@@ -562,7 +562,7 @@
                        ModuleID = new Guid("A031D57E-2352-4a4d-81A5-8E7001915A29"),
                        ModuleName = "登录日志",
                        ShowOrder = 1,
-                       ModuleURL = "/SystemEventLog/",
+                       ModuleURL = "/LoginLog/",
                        IndicateImage = "icon-Son_LoginLog",
                        DeskTopImage = "image-Son_LoginLog",
                        System = system,
