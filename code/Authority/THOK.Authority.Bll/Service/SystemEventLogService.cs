@@ -38,6 +38,27 @@ namespace THOK.Authority.Bll.Service
             get { return this.GetType(); }
         }
 
+        public bool CreateEventLog(string EventName, string EventDescription, string OperateUser, string TargetSystem)
+        {
+            string userPC = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
+            var userid = UserRepository.GetQueryable().Where(s => s.UserName == OperateUser).Select(s => new { userId = s.UserID });
+            var EventLogs = new SystemEventLog()
+            {
+                EventLogID = Guid.NewGuid(),
+                EventLogTime = DateTime.Now.ToString(),
+                EventType="1",
+                EventName = EventName,
+                EventDescription = EventDescription,
+                FromPC = userPC,
+                OperateUser = userid.ToArray()[0].userId.ToString(),
+                TargetSystem = TargetSystem
+            };
+            SystemEventLogRepository.Add(EventLogs);
+            SystemEventLogRepository.SaveChanges();
+            return true;
+        }
+
+        #region 登陆日志
         public bool CreateLoginLog(string login_time, string logout_time, string user_name, Guid system_ID)
         {
             string ipaddress = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
@@ -57,10 +78,10 @@ namespace THOK.Authority.Bll.Service
         }
         public bool UpdateLoginLog(string user_name,string logout_time)
         {
-           var LoginLog=LoginLogRepository.GetQueryable().Where(s=>s.User.UserName==user_name).Select(s=>s).OrderByDescending(s=>s.LoginTime).ToArray()[0];
-           if (LoginLog != null)
+           var LoginLog=LoginLogRepository.GetQueryable().Where(s=>s.User.UserName==user_name).Select(s=>s).OrderByDescending(s=>s.LoginTime).ToArray();
+           if (LoginLog.Length>0)
             {
-                LoginLog.LogoutTime = logout_time;
+                LoginLog[0].LogoutTime = logout_time;
                 LoginLogRepository.SaveChanges();
                 return true;
             }
@@ -142,5 +163,6 @@ namespace THOK.Authority.Bll.Service
             }
             return dt;
         }
+        #endregion
     }
 }

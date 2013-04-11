@@ -23,6 +23,7 @@ namespace Wms
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new SystemEventLogAttribute());
         }
 
         public static void RegisterRoutes(RouteCollection routes)
@@ -60,6 +61,7 @@ namespace Wms
 
         void Application_Error()
         {
+            SystemEventLogFactory EventLogFactory = new SystemEventLogFactory();
             Exception exception = Server.GetLastError();
             if (exception != null)
             {
@@ -68,12 +70,18 @@ namespace Wms
 
                 RouteData routeData = new RouteData();
                 routeData.Values.Add("controller", "Home");
+
+                string ModuleName = "1";
+                string ModuleNam ="/"+ Context.Request.RequestContext.RouteData.Values["controller"].ToString()+"/";
+                string FunctionName = Context.Request.RequestContext.RouteData.Values["action"].ToString();
+                string ExceptionalType = exception.Message;
+                string ExceptionalDescription = exception.ToString();
+                string State = "1";
                 if (httpException == null)
                 {
 
                     if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                     {
-                        //error += "发生异常页: " + Request.Url.ToString() + "<br>";
                         Session["ErrorLog"] = exception.Message;
                         routeData.Values.Add("action", "Error");
                     }
@@ -131,6 +139,11 @@ namespace Wms
                             break;
                     }
                 }
+                if (ModuleName != ModuleNam)
+                {
+                    EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
+                    ModuleName = ModuleNam;
+                }
                 Server.ClearError();
                 Response.TrySkipIisCustomErrors = true;
                 IController errorController = new HomeController();
@@ -145,7 +158,9 @@ namespace Wms
 
         void Session_End()
         {
-
+            UserServiceFactory UserFactory = new UserServiceFactory();
+            UserFactory.userService.DeleteUserIp(Session["username"].ToString());
+            UserFactory.SystemEventLogService.UpdateLoginLog(Session["username"].ToString(),DateTime.Now.ToString());
         }        
 
         void Application_AuthenticateRequest1(object sender, EventArgs e)

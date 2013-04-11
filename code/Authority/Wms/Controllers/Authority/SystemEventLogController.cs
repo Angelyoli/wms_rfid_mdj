@@ -88,6 +88,12 @@ namespace Authority.Controllers.Authority
             return new FileStreamResult(ms, "application/ms-excel");
         }  
 
+        public ActionResult CreateEventLog(string EventName, string EventDescription, string OperateUser, string TargetSystem)
+        {
+            bool result=SystemEventLogService.CreateEventLog(EventName,EventDescription,OperateUser,TargetSystem);
+            return Json(result);
+        }
+
     }
 }
 

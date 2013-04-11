@@ -1,15 +1,19 @@
 ﻿@{
     ViewBag.Title = "发生错误";
 }
-<table>
-    <tr>
-        <td>
-            <h2>发生错误!</h2>
-        </td>
-    </tr>
-    <tr align>
-        <td>
-            <p style="color:Blue; font-size:20px;">@ViewBag.ErrorLog</p>
-        </td>
-    </tr>
-</table>
+<div>
+    <table>
+        <tr>
+            <td>
+            <div style=" text-align:center; margin-left:40%; font-size:12px;">
+                <input  type="image" style=" width:300px; height:300px" src="../../Content/themes/base/images/2Son_WrongLog.png" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p style="color: Blue; font-size: 20px;">@ViewBag.ErrorLog</p>
+            </td>
+        </tr>
+    </table>
+</div>

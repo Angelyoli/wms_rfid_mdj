@@ -39,8 +39,26 @@ namespace Authority.Controllers.Authority
         }
 
         //
+        // POST: /LoginLog/Create/
+        public ActionResult Create(string login_time, string logout_time, string user_name, string system_ID)
+        {
+            login_time = DateTime.Now.ToString();
+            logout_time = "";
+            bool bResult =SystemEventLogService.CreateLoginLog(login_time,logout_time,user_name,Guid.Parse(system_ID));
+            return Json(bResult, JsonRequestBehavior.AllowGet);
+        }
+ 
+        //
+        // POST: /LoginLog/Edit/5
+        public ActionResult Edit(string user_name, string logout_time)
+        {
+            logout_time = DateTime.Now.ToString();
+            bool bResult = SystemEventLogService.UpdateLoginLog(user_name, logout_time);
+            return Json(bResult,JsonRequestBehavior.AllowGet);
+        }
+
+        //
         // POST: /LoginLog/Delete/
-        [HttpPost]
         public ActionResult Delete(string loginLogId)
         {
             string strResult = string.Empty;

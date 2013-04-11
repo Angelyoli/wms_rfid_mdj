@@ -1,35 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using THOK.Authority.Bll.Interfaces;
 using Microsoft.Practices.Unity;
-using System.Configuration;
-using Microsoft.Practices.Unity.Configuration;
+using THOK.Authority.Bll.Interfaces;
 using Microsoft.Practices.ServiceLocation;
-using System.Web.Routing;
+using Microsoft.Practices.Unity.Configuration;
+using System.Configuration;
 using THOK.Authority.Bll.Service;
+using System.Web.Routing;
 
-namespace THOK.Security
+namespace Wms.Security
 {
-    public class UserServiceFactory : DefaultControllerFactory
+    public class SystemEventLogFactory : DefaultControllerFactory
     {
         private readonly IUnityContainer _container;
-        public IUserService userService;
-        public ISystemEventLogService SystemEventLogService;
-        public UserServiceFactory()
+        public  ISystemEventLogService SystemEventLogService;
+        public IExceptionalLogService ExceptionalLogService;
+        public SystemEventLogFactory()
         {
             _container = new UnityContainer();          
             UnityConfigurationSection section = (UnityConfigurationSection)ConfigurationManager.GetSection("unity");
             section.Configure(_container, "defaultContainer");
-            userService = _container.Resolve<IUserService>() as UserService;
             SystemEventLogService = _container.Resolve<ISystemEventLogService>() as SystemEventLogService;
+            ExceptionalLogService = _container.Resolve<IExceptionalLogService>() as ExceptionalLogService;
             ServiceLocatorProvider sp = new ServiceLocatorProvider(GetServiceLocator);
             ServiceLocator.SetLocatorProvider(sp);
         }
 
-        public UserServiceFactory(IUnityContainer container)
+        public SystemEventLogFactory(IUnityContainer container)
         {
             _container = container;
             ServiceLocatorProvider sp = new ServiceLocatorProvider(GetServiceLocator);
