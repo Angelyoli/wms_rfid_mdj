@@ -5,8 +5,6 @@
         var b = n > document.documentElement.scrollWidth - 20;
         if (b && window.event.clientY < 0 || window.event.altKey) {
             $.getJSON('/User/DeleteUserIp/?userName=' + userNames, function (data) {
-                if (data) {
-                }
             })
         }
     }   
@@ -15,8 +13,6 @@
         var userNames = document.getElementById('userNames').value;
         if (event.clientX <= 0 && event.clientY < 0) {
             $.getJSON('/User/DeleteUserIp/?userName=' + userNames, function (data) {
-                if (data) {
-                }
             })
         }
         else {
@@ -24,8 +20,6 @@
             }
             else {
                 $.getJSON('/User/DeleteUserIp/?userName=' + userNames, function (data) {
-                    if (data) {
-                    }
                 })
             }
         } 
@@ -97,30 +91,34 @@
         $.getJSON('/User/GetUserIp/?userName=' + userName, function (data) {
             $('#ipadress').text(data);
             $('#user').text(userName);
-            if (data.length > 0 && data != ipAdress) {
-                $('#dlg-forcelogon').dialog('open').dialog('setTitle', '强制登陆');
-            }
-            else {
-                if (data2.success) {
+            if (data2.success) {
+                if (data.length > 0 && data != ipAdress) {
+                    $('#dlg-forcelogon').dialog('open').dialog('setTitle', '强制登陆');
+                }
+                else {
                     $.messager.show({
                         title: '成功',
                         msg: data2.msg
                     });
                     s = true;
                     $('#dlg-changepassword').dialog('close');
-                    $.getJSON('/User/UpdateUserInfo/?userName=' + userName, function (data) {
-                        if (data) {
+                    $.getJSON('/LoginLog/Create/?user_name=' + userName + '&system_ID=' + $('#cg-logon-changesystem').combotree('getValues'), function (data3) {
+
+                    })
+                    $.getJSON('/User/UpdateUserInfo/?userName=' + userName, function (data4) {
+                        if (data4) {
                             location.href = data2.data;
                         }
                     });
                 }
-                else {
-                    $.messager.confirm('系统提示', data2.msg, function (r) {
-                        if (r) {
-                            location.href = '/Account/LogOff';
-                        }
-                    });
-                }
+            }
+            else {
+                $.messager.confirm('系统提示', data2.msg, function (r) {
+                    if (r) {
+                        location.href = '/Account/LogOff';
+                    }
+                });
+
             }
         });
     }
@@ -137,30 +135,34 @@
     }
     function login2() {
         var userName = document.getElementById('username').value;
-        var datas=true;
+        var datas = true;
         $.getJSON('/User/UpdateUserInfo/?userName=' + userName, function (data) {
             if (data) {
-                datas =true;
+                datas = true;
             }
-        });
-        $('#fm-logon').form('submit', {
-            onSubmit: function () {
-                return $(this).form('validate');
-            },
-            success: function (result) {
-                if (datas) {
-                    var result = eval('(' + result + ')');
-                    if (result.success) {
-                        $.messager.show({
-                            title: '成功',
-                            msg: result.msg
-                        });
-                        s = true;
-                        $('#dlg-changepassword').dialog('close');
-                        location.href = result.data;
-                    }
-                }
-            }
+            $.getJSON('/LoginLog/Edit/?user_name=' + userName, function (data) {
+                $.getJSON('/LoginLog/Create/?user_name=' + userName + '&system_ID=' + $('#cg-logon-changesystem').combotree('getValues'), function (data) {
+                    $('#fm-logon').form('submit', {
+                        onSubmit: function () {
+                            return $(this).form('validate');
+                        },
+                        success: function (result) {
+                            if (datas) {
+                                var result = eval('(' + result + ')');
+                                if (result.success) {
+                                    $.messager.show({
+                                        title: '成功',
+                                        msg: result.msg
+                                    });
+                                    s = true;
+                                    $('#dlg-changepassword').dialog('close');
+                                    location.href = result.data;
+                                }
+                            }
+                        }
+                    });
+                });
+            });           
         });
     }
 </script>
@@ -186,7 +188,7 @@
                               </tr>
                               <tr style="height: 25px";>
                                 <td style="height: 20px; color:White;">密&nbsp;&nbsp;&nbsp;码:</td>
-                                <td style="height: 20px; text-align:left; width: 217px;"><input style="height: 22px;width: 180px" name="password" type="password" required="true" class="easyui-validatebox"></input></td>
+                                <td style="height: 20px; text-align:left; width: 217px;"><input style="height: 22px;width: 180px" name="password"  type="password" required="true" class="easyui-validatebox"></input></td>
                                 <td></td>
                               </tr>
                               <tr style="height: 25px";>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Practices.Unity;
+using THOK.Authority.Bll.Interfaces;
 
 namespace Authority.Controllers.Authority
 {
@@ -10,6 +12,8 @@ namespace Authority.Controllers.Authority
     {
         //
         // GET: /LoginLog/
+        [Dependency]
+        public ISystemEventLogService SystemEventLogService { get; set; }
 
         public ActionResult Index(string moduleID)
         {
@@ -31,9 +35,12 @@ namespace Authority.Controllers.Authority
         //
         // GET: /LoginLog/Create
 
-        public ActionResult Create()
+        public ActionResult Create(string login_time, string logout_time, string user_name, string system_ID)
         {
-            return View();
+            login_time = DateTime.Now.ToString();
+            logout_time = "";
+            bool bResult =SystemEventLogService.CreateLoginLog(login_time,logout_time,user_name,Guid.Parse(system_ID));
+            return Json(bResult, JsonRequestBehavior.AllowGet);
         } 
 
         //
@@ -56,10 +63,12 @@ namespace Authority.Controllers.Authority
         
         //
         // GET: /LoginLog/Edit/5
- 
-        public ActionResult Edit(int id)
+
+        public ActionResult Edit(string user_name, string logout_time)
         {
-            return View();
+            logout_time = DateTime.Now.ToString();
+            bool bResult = SystemEventLogService.UpdateLoginLog(user_name, logout_time);
+            return Json(bResult,JsonRequestBehavior.AllowGet);
         }
 
         //

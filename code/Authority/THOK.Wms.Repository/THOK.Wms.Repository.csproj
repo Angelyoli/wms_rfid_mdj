@@ -309,6 +309,10 @@
     <Compile Include="Migrations\201303210814470_add_WCS_Task.Designer.cs">
       <DependentUpon>201303210814470_add_WCS_Task.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201304110123094_add_exceptional_log.cs" />
+    <Compile Include="Migrations\201304110123094_add_exceptional_log.Designer.cs">
+      <DependentUpon>201304110123094_add_exceptional_log.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

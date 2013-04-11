@@ -10,6 +10,7 @@ using THOK.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
 using THOK.Wms.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockIn
 {

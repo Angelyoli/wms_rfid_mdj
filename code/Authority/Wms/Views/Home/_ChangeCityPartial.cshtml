@@ -25,11 +25,13 @@
                 location.href = '/Account/LogOff';
             }
             else {
-                $.getJSON('/User/DeleteUserIp/?userName=' + userName, function (data) {
-                    if (data) {
-                        location.href = '/Account/LogOff';
-                    }
-                })
+                $.getJSON('/LoginLog/Edit/?user_name=' + userName, function (data) {
+                    $.getJSON('/User/DeleteUserIp/?userName=' + userName, function (data1) {
+                        if (data1) {
+                            location.href = '/Account/LogOff';
+                        }
+                    });
+                });
             }
         });
     }

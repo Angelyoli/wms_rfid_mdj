@@ -12,6 +12,7 @@ using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Connection;
 using System.IO.Compression;
 using THOK.Security;
+using Wms.Security;
 namespace Wms
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
@@ -22,8 +23,7 @@ namespace Wms
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
-            TokenAclAuthorizeAttribute filter = new TokenAclAuthorizeAttribute();
-            //filters.Add(filter);
+            filters.Add(new SystemEventLogAttribute());
         }
 
         public static void RegisterRoutes(RouteCollection routes)
@@ -51,14 +51,17 @@ namespace Wms
 
         void Application_Start()
         {
+            UserServiceFactory userserviceFactory = new UserServiceFactory();
+            ControllerBuilder.Current.SetControllerFactory(userserviceFactory);
             RegisterIocUnityControllerFactory();
             AreaRegistration.RegisterAllAreas();
             RegisterGlobalFilters(GlobalFilters.Filters);           
             RegisterRoutes(RouteTable.Routes);
         }
 
-        void Application_Error1()
+        void Application_Error()
         {
+            SystemEventLogFactory EventLogFactory = new SystemEventLogFactory();
             Exception exception = Server.GetLastError();
             if (exception != null)
             {
@@ -67,15 +70,25 @@ namespace Wms
 
                 RouteData routeData = new RouteData();
                 routeData.Values.Add("controller", "Home");
+
+                string ModuleName = "1";
+                string ModuleNam = Context.Request.FilePath;
+                string FunctionName = Context.Request.RequestContext.RouteData.Values["action"].ToString();
+                string ExceptionalType = exception.Message;
+                string ExceptionalDescription = exception.ToString();
+                string State = "1";
                 if (httpException == null)
                 {
 
-                    if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                    if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                     {
+                        //error += "发生异常页: " + Request.Url.ToString() + "<br>";
+                        Session["ErrorLog"] = exception.Message;
                         routeData.Values.Add("action", "Error");
                     }
                     else
                     {
+                        Session["AjaxErrorLog"] = exception.Message;
                         routeData.Values.Add("action", "AjaxError");
                     }
                     if (exception != null)
@@ -88,38 +101,49 @@ namespace Wms
                     switch (httpException.GetHttpCode())
                     {
                         case 404:
-                            if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
+                                Session["PageNotFoundLog"] = exception.Message;
                                 routeData.Values.Add("action", "PageNotFound");
                             }
                             else
                             {
+                                Session["AjaxPageNotFoundLog"] = exception.Message;
                                 routeData.Values.Add("action", "AjaxPageNotFound");
                             }
                             break;
                         case 500:
-                            if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
+                                Session["ServerErrorLog"] = exception.Message;
                                 routeData.Values.Add("action", "ServerError");
                             }
                             else
                             {
+                                Session["AjaxServerErrorLog"] = exception.Message;
                                 routeData.Values.Add("action", "AjaxServerError");
                             }
                             Trace.TraceError("Server Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                         default:
-                            if (Context.Request.RequestContext.RouteData.Values["action"] == "Index")
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
+                                Session["Error"] = exception.Message;
                                 routeData.Values.Add("action", "Error");
                             }
                             else
                             {
+                                Session["AjaxError"] = exception.Message;
                                 routeData.Values.Add("action", "AjaxError");
                             }
                             Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                     }
+                }
+                if (ModuleName != ModuleNam)
+                {
+                    EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
+                    ModuleName = ModuleNam;
                 }
                 Server.ClearError();
                 Response.TrySkipIisCustomErrors = true;
@@ -135,7 +159,7 @@ namespace Wms
 
         void Session_End()
         {
-
+           
         }        
 
         void Application_AuthenticateRequest1(object sender, EventArgs e)
