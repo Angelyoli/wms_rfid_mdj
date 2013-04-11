@@ -40,7 +40,7 @@ namespace Authority.Controllers.Authority
             login_time = DateTime.Now.ToString();
             logout_time = "";
             bool bResult =SystemEventLogService.CreateLoginLog(login_time,logout_time,user_name,Guid.Parse(system_ID));
-            return Json(bResult);
+            return Json(bResult, JsonRequestBehavior.AllowGet);
         } 
 
         //
@@ -68,7 +68,7 @@ namespace Authority.Controllers.Authority
         {
             logout_time = DateTime.Now.ToString();
             bool bResult = SystemEventLogService.UpdateLoginLog(user_name, logout_time);
-            return Json(bResult);
+            return Json(bResult,JsonRequestBehavior.AllowGet);
         }
 
         //

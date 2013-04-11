@@ -55,6 +55,7 @@ namespace Authority.Controllers
                 FormsService.SignOut();
             }
             Session["username"] = userName;
+            Session["targetSystem"] = systemId;
             return View();
         }
         public ActionResult GetUser()
