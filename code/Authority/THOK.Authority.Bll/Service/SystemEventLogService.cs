@@ -18,18 +18,18 @@ namespace THOK.Authority.Bll.Service
         [Dependency]
         public ISystemRepository SystemRepository{get;set;}
 
-        public object GetDetails(int page, int rows, string eventlogtime, string eventtype, string eventname, string frompc, string operateuser, string targetsystem)
+        public object GetDetails(int page, int rows,string eventname,string operateuser, string targetsystem)
         {
-            IQueryable<THOK.Authority.DbModel.SystemEventLog> query = SystemEventLogRepository.GetQueryable();
-            var systemeventlogs = query.Where(i => i.EventLogTime.Contains(eventlogtime)
-                    && i.EventType.Contains(eventtype) && i.EventName.Contains(eventname) && i.FromPC.Contains(frompc) && i.OperateUser.Contains(operateuser) && i.TargetSystem.Contains(targetsystem))
-                    .OrderBy(i => i.EventLogID)
-                    .Select(i => new { i.EventLogID, i.EventName, i.EventType, i.FromPC, i.EventLogTime, i.OperateUser, i.EventDescription, i.TargetSystem });
+            IQueryable<SystemEventLog> systemEventLogQuery = SystemEventLogRepository.GetQueryable();
+            var eventlogs = systemEventLogQuery
+                    .Where(i => i.EventName.Contains(eventname) && i.OperateUser.Contains(operateuser) && i.TargetSystem.Contains(targetsystem))
+                    .OrderByDescending(e=>e.EventLogTime)
+                    .Select(e => new { e.EventLogID, e.EventName, e.EventType, e.FromPC, e.EventDescription, e.EventLogTime, e.OperateUser, e.TargetSystem});
 
 
-            int total = systemeventlogs.Count();
-            systemeventlogs = systemeventlogs.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = systemeventlogs.ToArray() };
+            int total = eventlogs.Count();
+            eventlogs = eventlogs.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = eventlogs.ToArray() };
         }
 
 
@@ -65,6 +65,82 @@ namespace THOK.Authority.Bll.Service
                 return true;
             }
             else { return false; }
+        }
+
+        public bool Delete(string eventLogId, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            Guid eventid = new Guid(eventLogId);
+            var eventlog = SystemEventLogRepository.GetQueryable().FirstOrDefault(lo => lo.EventLogID == eventid);
+            if (eventlog != null)
+            {
+                try
+                {
+                    SystemEventLogRepository.Delete(eventlog);
+                    SystemEventLogRepository.SaveChanges();
+                    result = true;
+                }
+                catch(Exception e)
+                {
+                    strResult = "原因：" + e;
+                }
+            }
+            else
+            {
+                strResult = "原因：未找到当前需要删除的数据！";
+            }
+            return result;
+        }
+
+        public bool Emptys(out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var eventlog = SystemEventLogRepository.GetQueryable();
+            if (eventlog != null)
+            {
+                foreach (var log in eventlog)
+                {
+                    SystemEventLogRepository.Delete(log);
+                }
+                LoginLogRepository.SaveChanges();
+                result = true;
+            }
+            else
+            {
+                strResult = "原因：未找到当前需要删除的数据！";
+            }
+            return result;
+        }
+
+        public System.Data.DataTable GetSystemEventLog(int page, int rows, string eventLogTime, string eventName, string fromPC, string operateUser, string targetSystem)
+        {
+            IQueryable<SystemEventLog> systemEventLogQuery = SystemEventLogRepository.GetQueryable();
+            var eventlogs = systemEventLogQuery
+                    .Where(i => i.EventLogTime.Contains(eventLogTime) && i.EventName.Contains(eventName) && i.FromPC.Contains(fromPC) && i.OperateUser.Contains(operateUser) && i.TargetSystem.Contains(targetSystem))
+                    .OrderByDescending(e => e.EventLogTime)
+                    .Select(e => new { e.EventName, e.EventType, e.FromPC, e.EventDescription, e.EventLogTime, e.OperateUser, e.TargetSystem });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("业务时间", typeof(string));
+            dt.Columns.Add("业务名称", typeof(string));
+            dt.Columns.Add("业务描述", typeof(string));
+            dt.Columns.Add("所用电脑", typeof(string));
+            dt.Columns.Add("操作用户", typeof(string));
+            dt.Columns.Add("对象系统", typeof(string));
+            foreach (var item in eventlogs)
+            {
+                dt.Rows.Add
+                    (
+                        item.EventLogTime,
+                        item.EventName,
+                        item.EventDescription,
+                        item.FromPC,
+                        item.OperateUser,
+                        item.TargetSystem
+                    );
+            }
+            return dt;
         }
     }
 }

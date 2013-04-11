@@ -1,0 +1,10 @@
+﻿<script type="text/javascript">
+    function emptyClick() {
+        $.messager.confirm('清空', '您确定要清空吗？', function (r) {
+            if (r) {
+                url = '/SystemEventLog/Emptys/'
+                deleted();
+            }
+        });
+    };
+</script>

@@ -2340,6 +2340,8 @@
     <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
     <Content Include="Views\LoginLog\_EmptyPartial.cshtml" />
     <Content Include="Views\LoginLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
