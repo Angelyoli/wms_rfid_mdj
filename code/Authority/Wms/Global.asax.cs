@@ -72,7 +72,7 @@ namespace Wms
                 routeData.Values.Add("controller", "Home");
 
                 string ModuleName = "1";
-                string ModuleNam = Context.Request.FilePath;
+                string ModuleNam ="/"+ Context.Request.RequestContext.RouteData.Values["controller"].ToString()+"/";
                 string FunctionName = Context.Request.RequestContext.RouteData.Values["action"].ToString();
                 string ExceptionalType = exception.Message;
                 string ExceptionalDescription = exception.ToString();
@@ -82,7 +82,6 @@ namespace Wms
 
                     if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                     {
-                        //error += "发生异常页: " + Request.Url.ToString() + "<br>";
                         Session["ErrorLog"] = exception.Message;
                         routeData.Values.Add("action", "Error");
                     }
@@ -159,7 +158,9 @@ namespace Wms
 
         void Session_End()
         {
-           
+            UserServiceFactory UserFactory = new UserServiceFactory();
+            UserFactory.userService.DeleteUserIp(Session["username"].ToString());
+            UserFactory.SystemEventLogService.UpdateLoginLog(Session["username"].ToString(),DateTime.Now.ToString());
         }        
 
         void Application_AuthenticateRequest1(object sender, EventArgs e)
