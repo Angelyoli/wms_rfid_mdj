@@ -71,7 +71,6 @@ namespace Wms
                 RouteData routeData = new RouteData();
                 routeData.Values.Add("controller", "Home");
 
-                string ModuleName = "1";
                 string ModuleNam ="/"+ Context.Request.RequestContext.RouteData.Values["controller"].ToString()+"/";
                 string FunctionName = Context.Request.RequestContext.RouteData.Values["action"].ToString();
                 string ExceptionalType = exception.Message;
@@ -82,12 +81,14 @@ namespace Wms
 
                     if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                     {
-                        Session["ErrorLog"] = exception.Message;
+                        HttpCookie ErrorLog = new HttpCookie("ErrorLog", exception.Message);
+                        Context.Request.Cookies.Add(ErrorLog);
                         routeData.Values.Add("action", "Error");
                     }
                     else
                     {
-                        Session["AjaxErrorLog"] = exception.Message;
+                        HttpCookie AjaxErrorLog = new HttpCookie("AjaxErrorLog", exception.Message);
+                        Context.Request.Cookies.Add(AjaxErrorLog);
                         routeData.Values.Add("action", "AjaxError");
                     }
                     if (exception != null)
@@ -102,24 +103,28 @@ namespace Wms
                         case 404:
                             if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
-                                Session["PageNotFoundLog"] = exception.Message;
+                                HttpCookie PageNotFoundLog = new HttpCookie("PageNotFoundLog", exception.Message);
+                                Context.Request.Cookies.Add(PageNotFoundLog);
                                 routeData.Values.Add("action", "PageNotFound");
                             }
                             else
                             {
-                                Session["AjaxPageNotFoundLog"] = exception.Message;
+                                HttpCookie AjaxPageNotFoundLog = new HttpCookie("AjaxPageNotFoundLog", exception.Message);
+                                Context.Request.Cookies.Add(AjaxPageNotFoundLog);
                                 routeData.Values.Add("action", "AjaxPageNotFound");
                             }
                             break;
                         case 500:
                             if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
-                                Session["ServerErrorLog"] = exception.Message;
+                                HttpCookie ServerErrorLog = new HttpCookie("ServerErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(ServerErrorLog);
                                 routeData.Values.Add("action", "ServerError");
                             }
                             else
                             {
-                                Session["AjaxServerErrorLog"] = exception.Message;
+                                HttpCookie AjaxServerErrorLog = new HttpCookie("AjaxServerErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(AjaxServerErrorLog);
                                 routeData.Values.Add("action", "AjaxServerError");
                             }
                             Trace.TraceError("Server Error occured and caught in Global.asax - {0}", exception.ToString());
@@ -127,23 +132,21 @@ namespace Wms
                         default:
                             if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
-                                Session["Error"] = exception.Message;
+                                HttpCookie ErrorLog = new HttpCookie("ErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(ErrorLog);
                                 routeData.Values.Add("action", "Error");
                             }
                             else
                             {
-                                Session["AjaxError"] = exception.Message;
+                                HttpCookie AjaxErrorLog = new HttpCookie("AjaxErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(AjaxErrorLog);
                                 routeData.Values.Add("action", "AjaxError");
                             }
                             Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                     }
                 }
-                if (ModuleName != ModuleNam)
-                {
-                    EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
-                    ModuleName = ModuleNam;
-                }
+                EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
                 Server.ClearError();
                 Response.TrySkipIisCustomErrors = true;
                 IController errorController = new HomeController();
@@ -159,8 +162,8 @@ namespace Wms
         void Session_End()
         {
             UserServiceFactory UserFactory = new UserServiceFactory();
-            UserFactory.userService.DeleteUserIp(Session["username"].ToString());
-            UserFactory.SystemEventLogService.UpdateLoginLog(Session["username"].ToString(),DateTime.Now.ToString());
+            UserFactory.userService.DeleteUserIp(Request.Cookies["username"].Value);
+            UserFactory.LoginLogService.UpdateLoginLog(Request.Cookies["username"].Value, DateTime.Now.ToString());
         }        
 
         void Application_AuthenticateRequest1(object sender, EventArgs e)

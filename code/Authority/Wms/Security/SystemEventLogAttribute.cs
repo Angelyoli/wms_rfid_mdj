@@ -9,23 +9,20 @@ namespace Wms.Security
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
     public class SystemEventLogAttribute : AuthorizeAttribute
     {
-        int i = 0;
-        SystemEventLogFactory   EventLogFactory = new SystemEventLogFactory();
+        SystemEventLogFactory EventLogFactory = new SystemEventLogFactory();
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             string eventName = httpContext.Request.RequestContext.RouteData.Values["action"].ToString();
             string eventDescription = httpContext.Request.RawUrl;
-            if (i != 0)
+            if (httpContext.Request.Cookies.Keys.Count > 1)
             {
-                var s = string.IsNullOrEmpty(httpContext.Session["username"].ToString());
-                string operateUser = string.IsNullOrEmpty(httpContext.Session["username"].ToString()) ? "" : httpContext.Session["username"].ToString();
-                string targetSystem = string.IsNullOrEmpty(httpContext.Session["targetSystem"].ToString()) ? "" : httpContext.Session["targetSystem"].ToString();
+                string operateUser = httpContext.Request.Cookies["username"].Value;
+                Guid targetSystem = Guid.Parse(httpContext.Request.Cookies["serverId"].Value);
                 if (operateUser != "" && operateUser != null)
                 {
                     EventLogFactory.SystemEventLogService.CreateEventLog(eventName, eventDescription, operateUser, targetSystem);
                 }
             }
-            i += 1;
             return true;
         }
     }

@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using System.Data;
 using NPOI.SS.Formula.Eval;
 using System.Web.UI;
+using THOK.Security;
 
 namespace Wms.Controllers.Wms.WarehouseInfo
 {

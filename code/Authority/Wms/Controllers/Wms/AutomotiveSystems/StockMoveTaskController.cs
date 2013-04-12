@@ -7,9 +7,11 @@ using THOK.Wms.Allot.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
+using THOK.Security;
 
 namespace Wms.Controllers.Wms.AutomotiveSystems
 {
+    [TokenAclAuthorize]
     public class StockMoveTaskController : Controller
     {
         //

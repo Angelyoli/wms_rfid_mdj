@@ -7,9 +7,11 @@ using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.WarehouseInfo
 {
+    [TokenAclAuthorize]
     public class AreaController : Controller
     {
         [Dependency]

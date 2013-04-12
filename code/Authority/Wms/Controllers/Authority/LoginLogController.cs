@@ -6,9 +6,11 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using System;
+using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
+    [TokenAclAuthorize]
     public class LoginLogController : Controller
     {
         //
@@ -44,7 +46,7 @@ namespace Authority.Controllers.Authority
         {
             login_time = DateTime.Now.ToString();
             logout_time = "";
-            bool bResult =SystemEventLogService.CreateLoginLog(login_time,logout_time,user_name,Guid.Parse(system_ID));
+            bool bResult = LoginLogService.CreateLoginLog(login_time, logout_time, user_name, Guid.Parse(system_ID));
             return Json(bResult, JsonRequestBehavior.AllowGet);
         }
  
@@ -53,7 +55,7 @@ namespace Authority.Controllers.Authority
         public ActionResult Edit(string user_name, string logout_time)
         {
             logout_time = DateTime.Now.ToString();
-            bool bResult = SystemEventLogService.UpdateLoginLog(user_name, logout_time);
+            bool bResult = LoginLogService.UpdateLoginLog(user_name, logout_time);
             return Json(bResult,JsonRequestBehavior.AllowGet);
         }
 

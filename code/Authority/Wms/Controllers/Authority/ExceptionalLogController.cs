@@ -5,9 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Authority.Bll.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
+    [TokenAclAuthorize]
     public class ExceptionalLogController : Controller
     {
         [Dependency]

@@ -242,10 +242,16 @@
     <Content Include="bin\THOK.Authority.Bll.pdb" />
     <Content Include="bin\THOK.Authority.Dal.dll" />
     <Content Include="bin\THOK.Authority.Dal.pdb" />
+    <Content Include="bin\THOK.Wms.Repository.dll" />
+    <Content Include="bin\THOK.Wms.Repository.pdb" />
+    <Content Include="Content\Images\404NotFound.jpg" />
     <Content Include="Content\Images\banner.jpg" />
+    <Content Include="Content\Images\error.jpg" />
     <Content Include="Content\Images\login_bg.jpg" />
     <Content Include="Content\Images\login_bg02.jpg" />
     <Content Include="Content\Images\noscript.gif" />
+    <Content Include="Content\Images\ServerErrorLog.jpg" />
+    <Content Include="Content\Images\Unauthorized.jpg" />
     <Content Include="Content\Scripts\ckeditor\adapters\jquery.js" />
     <Content Include="Content\Scripts\ckeditor\ckeditor.js" />
     <Content Include="Content\Scripts\ckeditor\config.js" />

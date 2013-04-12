@@ -103,12 +103,11 @@
                     s = true;
                     $('#dlg-changepassword').dialog('close');
                     $.getJSON('/LoginLog/Create/?user_name=' + userName + '&system_ID=' + $('#cg-logon-changesystem').combotree('getValues'), function (data3) {
-
-                    })
-                    $.getJSON('/User/UpdateUserInfo/?userName=' + userName, function (data4) {
-                        if (data4) {
-                            location.href = data2.data;
-                        }
+                        $.getJSON('/User/UpdateUserInfo/?userName=' + userName, function (data4) {
+                            if (data4) {
+                                location.href = data2.data;
+                            }
+                        });
                     });
                 }
             }

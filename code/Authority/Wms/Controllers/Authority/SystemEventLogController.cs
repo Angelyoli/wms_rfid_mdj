@@ -6,9 +6,11 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using System;
+using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
+    [TokenAclAuthorize]
     public class SystemEventLogController : Controller
     {
         //
@@ -88,7 +90,7 @@ namespace Authority.Controllers.Authority
             return new FileStreamResult(ms, "application/ms-excel");
         }  
 
-        public ActionResult CreateEventLog(string EventName, string EventDescription, string OperateUser, string TargetSystem)
+        public ActionResult CreateEventLog(string EventName, string EventDescription, string OperateUser, Guid TargetSystem)
         {
             bool result=SystemEventLogService.CreateEventLog(EventName,EventDescription,OperateUser,TargetSystem);
             return Json(result);

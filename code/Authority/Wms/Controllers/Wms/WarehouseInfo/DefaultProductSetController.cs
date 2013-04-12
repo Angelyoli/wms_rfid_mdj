@@ -7,9 +7,11 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
+using THOK.Security;
 
 namespace Wms.Controllers.Wms.WarehouseInfo
 {
+    [TokenAclAuthorize]
     public class DefaultProductSetController : Controller
     {
         [Dependency]

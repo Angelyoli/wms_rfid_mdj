@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.Allot.Interfaces;
+using THOK.Security;
 
 namespace Wms.Controllers.Wms.AutomotiveSystems
 {
+    [TokenAclAuthorize]
     public class StockOutTaskController : Controller
     {
         [Dependency]

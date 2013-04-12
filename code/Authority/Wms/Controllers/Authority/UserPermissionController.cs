@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
+    [TokenAclAuthorize]
     public class UserPermissionController : Controller
     {
         //

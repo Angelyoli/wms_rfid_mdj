@@ -7,9 +7,11 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Authority.DbModel;
 using THOK.Authority.Bll.Interfaces;
+using THOK.Security;
 
 namespace Wms.Controllers.Authority.SystemParameterInfo
 {
+    [TokenAclAuthorize]
     public class ParameterSetController : Controller
     {
         //

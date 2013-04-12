@@ -116,5 +116,40 @@ namespace THOK.Authority.Bll.Service
             }
             return dt;
         }
+        public bool CreateLoginLog(string login_time, string logout_time, string user_name, Guid system_ID)
+        {
+            string ipaddress = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
+            var userid = UserRepository.GetQueryable().Where(s => s.UserName == user_name).Select(s => new { userId = s.UserID });
+            if (userid.ToArray().Length > 0)
+            {
+                var LoginLog = new LoginLog()
+                {
+                    LogID = Guid.NewGuid(),
+                    LoginPC = ipaddress,
+                    LoginTime = login_time,
+                    LogoutTime = logout_time,
+                    User_UserID = userid.ToArray()[0].userId,
+                    System_SystemID = system_ID
+                };
+                LoginLogRepository.Add(LoginLog);
+                LoginLogRepository.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool UpdateLoginLog(string user_name, string logout_time)
+        {
+            var LoginLog = LoginLogRepository.GetQueryable().Where(s => s.User.UserName == user_name).Select(s => s).OrderByDescending(s => s.LoginTime).ToArray();
+            if (LoginLog.Length > 0)
+            {
+                LoginLog[0].LogoutTime = logout_time;
+                LoginLogRepository.SaveChanges();
+                return true;
+            }
+            else { return false; }
+        }
     }
 }

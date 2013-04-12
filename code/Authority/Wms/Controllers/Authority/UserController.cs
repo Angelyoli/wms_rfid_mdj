@@ -6,9 +6,11 @@ using Microsoft.Practices.Unity;
 using THOK.WebUtil;
 using THOK.Wms.DbModel;
 using THOK.Authority.Bll.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
+    [TokenAclAuthorize]
     public class UserController : Controller
     {
         [Dependency]
