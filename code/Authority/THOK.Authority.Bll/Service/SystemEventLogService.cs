@@ -22,10 +22,9 @@ namespace THOK.Authority.Bll.Service
         {
             IQueryable<SystemEventLog> systemEventLogQuery = SystemEventLogRepository.GetQueryable();
             var eventlogs = systemEventLogQuery
-                    .Where(i => i.EventName.Contains(eventname) && i.OperateUser.Contains(operateuser) && i.TargetSystem.Contains(targetsystem))
+                    .Where(e => e.EventName.Contains(eventname) && e.OperateUser.Contains(operateuser) && e.TargetSystem.Contains(targetsystem))
                     .OrderByDescending(e=>e.EventLogTime)
                     .Select(e => new { e.EventLogID, e.EventName, e.EventType, e.FromPC, e.EventDescription, e.EventLogTime, e.OperateUser, e.TargetSystem});
-
 
             int total = eventlogs.Count();
             eventlogs = eventlogs.Skip((page - 1) * rows).Take(rows);
