@@ -13,6 +13,9 @@ using THOK.Wms.SignalR.Connection;
 using System.IO.Compression;
 using THOK.Security;
 using Wms.Security;
+using Microsoft.Practices.ServiceLocation;
+using THOK.Common.Ef.Interfaces;
+using THOK.Common.Ef.Infrastructure;
 namespace Wms
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
@@ -20,6 +23,8 @@ namespace Wms
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        private static IControllerFactory controllerFactory;
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -44,7 +49,7 @@ namespace Wms
         public static void RegisterIocUnityControllerFactory()
         {
             //Set for Controller Factory
-            IControllerFactory controllerFactory = new UnityControllerFactory();
+            controllerFactory = new UnityControllerFactory();
             ControllerBuilder.Current.SetControllerFactory(controllerFactory);
             GlobalHost.DependencyResolver = new UnityConnectionDependencyResolver();
         }
@@ -61,6 +66,7 @@ namespace Wms
 
         void Application_Error()
         {
+            ResetContext();
             SystemEventLogFactory EventLogFactory = new SystemEventLogFactory();
             Exception exception = Server.GetLastError();
             if (exception != null)
@@ -241,6 +247,11 @@ namespace Wms
             }
 
             return null;
+        }
+
+        private static void ResetContext()
+        {
+            ContextManager.SetRepositoryContext(null, @"THOK.Wms.Repository.AuthorizeContext,THOK.Wms.Repository.dll");
         }
     }
 }

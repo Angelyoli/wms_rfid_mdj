@@ -1680,6 +1680,10 @@
       <Project>{F7EB9C5D-6082-4DE6-B1C0-740AFF0CFE11}</Project>
       <Name>THOK.Authority.DbModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
+      <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
+      <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Common.WEBUtil\THOK.Common.WebUtil.csproj">
       <Project>{EC6DCF36-B010-4E48-88FC-BABC33EBCCFB}</Project>
       <Name>THOK.Common.WebUtil</Name>
