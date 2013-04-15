@@ -17,6 +17,8 @@ namespace Authority.Controllers.Authority
         // GET: /LoginLog/
         [Dependency]
         public ILoginLogService LoginLogService { get; set; }
+        [Dependency]
+        public ISystemEventLogService SystemEventLogService { get; set; }
 
         public ActionResult Index(string moduleID)
         {

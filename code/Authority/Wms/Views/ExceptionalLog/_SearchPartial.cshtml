@@ -2,59 +2,43 @@
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
         $('#fmSearch').form('clear');
-        $('#SystemName').combogrid({
-            width: 130,
-            panelWidth: 214,
-            panelHeight: 150,
-            url: '/System/Details/?page=1&rows=1000',
-            idField: 'SystemID',
-            textField: 'SystemName',
-            mode: 'local',
-           // editable: false,
-          //  fitColumns: true,
-            columns: [[
-					{ field: 'SystemID', title: '系统ID', hidden: true, width: 30 },
-					{ field: 'SystemName', title: '系统名称', align: 'left', width: 180 },
-					{ field: 'Status', title: '状态', align: 'left', width: 30 }
-				]]
-        });
     };
 
     function select() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.UserName = $('#UserName').val();
-        queryParams.SystemName = $('#SystemName').combo('getText');
+        queryParams.ModuleName = $('#ModuleName').val();
+        queryParams.FunctionName = $('#FunctionName').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
             pageSize: 10
-        }); 
+        });
         $("#details").datagrid('reload');
-        $('#dlg-search').dialog('close'); 
+        $('#dlg-search').dialog('close');
     }
 
 </script>
 
 <div id="dlg-search" class="easyui-dialog" modal="true" style="width:280px;height:150px;padding:2px 2px"
-		closed="true" buttons="#dlg-buttons-search">
+		closed="true" buttons="#dlg-buttons-s">
     <div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >   
             <form id="fmSearch" method="post">
             <table width="250">
               <tr>
-                <td width="95">登录的用户名：</td>
-                <td width="160" align="left"><input id="UserName"/></td>
+                <td width="95">模块名称：</td>
+                <td width="160" align="left"><input id="ModuleName"/></td>
               </tr>
               <tr>
-                <td width="95">登录的系统：</td>
-                <td width="160" align="left"><input id="SystemName" class="easyui-combobox" style="width:130px"/></td>
+                <td width="95">方法名称：</td>
+                <td width="160" align="left"><input id="FunctionName" /></td>
               </tr>
             </table>
              </form>
         </div>
     </div>
 </div>
-<div id="dlg-buttons-search">
+<div id="dlg-buttons-s">
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="select()">查询</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">取消</a>
 </div>
