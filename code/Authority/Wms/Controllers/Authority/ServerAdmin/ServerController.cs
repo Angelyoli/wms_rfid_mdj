@@ -11,7 +11,6 @@ using THOK.Security;
 
 namespace Authority.Controllers.ServerAdmin
 {
-    [TokenAclAuthorize]
     public class ServerController : Controller
     {
         [Dependency]

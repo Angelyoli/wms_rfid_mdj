@@ -15,7 +15,7 @@ namespace THOK.Security
             {
                 string user = httpContext.Request.Cookies["username"].Value;
                 string ipAdress = UserFactory.userService.GetUserIp(user);
-                string localip = UserFactory.userService.GetLocalIp(user);
+                string localip = UserFactory.userService.GetLocalIp();
                 if (ipAdress != localip)
                 {
                     result = false;

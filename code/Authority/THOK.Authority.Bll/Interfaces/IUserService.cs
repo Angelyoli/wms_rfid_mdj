@@ -8,7 +8,9 @@ namespace THOK.Authority.Bll.Interfaces
 
         bool UpdateUserInfo(string userName);
 
-        string GetLocalIp(string userName);
+        string GetLocalIp();
+
+        bool CheckAdress(string userName);
 
         bool DeleteUserIp(string userName);
 

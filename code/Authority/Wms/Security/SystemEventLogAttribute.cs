@@ -17,7 +17,7 @@ namespace Wms.Security
             if (httpContext.Request.Cookies.Keys.Count > 1)
             {
                 string operateUser = httpContext.Request.Cookies["username"].Value;
-                Guid targetSystem = Guid.Parse(httpContext.Request.Cookies["serverId"].Value);
+                Guid targetSystem = Guid.Parse(httpContext.Request.Cookies["systemid"].Value);
                 if (operateUser != "" && operateUser != null)
                 {
                     EventLogFactory.SystemEventLogService.CreateEventLog(eventName, eventDescription, operateUser, targetSystem);

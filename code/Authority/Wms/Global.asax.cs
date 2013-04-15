@@ -162,8 +162,8 @@ namespace Wms
         void Session_End()
         {
             UserServiceFactory UserFactory = new UserServiceFactory();
-            UserFactory.userService.DeleteUserIp(Request.Cookies["username"].Value);
-            UserFactory.LoginLogService.UpdateLoginLog(Request.Cookies["username"].Value, DateTime.Now.ToString());
+            UserFactory.userService.DeleteUserIp(Session["userName"].ToString());
+            UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
         }        
 
         void Application_AuthenticateRequest1(object sender, EventArgs e)
