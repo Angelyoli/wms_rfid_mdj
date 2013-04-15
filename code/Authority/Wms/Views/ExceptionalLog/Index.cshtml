@@ -1,0 +1,23 @@
+﻿<script type="text/javascript">
+    $(function () {
+
+    });
+</script>
+ 
+<div region="center" split="true" border="false">    
+    <table id="details" class="easyui-datagrid"
+        url="/ExceptionalLog/Details/" border="false" singleSelect="true"
+        fit="true" fitColumns="true" toolbar="#tool" border="false"  pagination="true" rownumbers="true">
+        <thead>
+            <tr>
+                <th field="ExceptionalLogID" hidden="true" width="80">错误编码</th>
+                <th field="CatchTime" width="60">异常时间</th>
+                <th field="ModuleName" width="60">模块名称</th>
+                <th field="FunctionName" width="60">方法名称</th>
+                <th field="ExceptionalType" width="60">异常类型</th>
+                <th field="ExceptionalDescription" width="180">异常描述</th>
+                <th field="State" hidden="true" width="80" hidden="true">异常状态</th>
+            </tr>
+        </thead>
+    </table>
+</div>

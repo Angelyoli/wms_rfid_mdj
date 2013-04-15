@@ -1,0 +1,13 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var catchTime = null, moduleName = null, functionName = null;
+        if ($('#CatchTime').val() == null) { catchTime = ""; } else { catchTime = $('#CatchTime').val() }
+        if ($('#ModuleName').val() == null) { moduleName = ""; } else { moduleName = $('#ModuleName').val() }
+        if ($('#FunctionName').val() == null) { functionName = ""; } else { functionName = $('#FunctionName').val() }
+
+        window.location.href = "/ExceptionalLog/CreateExcelToClient/"
+                                + "?catchTime=" + catchTime
+                                + "&moduleName=" + moduleName
+                                + "&functionName=" + functionName;
+    }
+</script>

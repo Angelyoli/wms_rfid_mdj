@@ -1627,6 +1627,9 @@
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\ExceptionalLog\Index.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Views\Module\_DeletePartial.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1928,6 +1931,10 @@
     <Content Include="Views\CellPosition\_DeletePartial.cshtml" />
     <Content Include="Views\CellPosition\_PrintPartial.cshtml" />
     <Content Include="SearchPage.cshtml" />
+    <Content Include="Views\ExceptionalLog\_SearchPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_DeletePartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2346,6 +2353,7 @@
     <Content Include="Views\SystemEventLog\_EmptyPartial.cshtml" />
     <Content Include="Views\SystemEventLog\_PrintPartial.cshtml" />
     <Content Include="Views\SystemEventLog\_DeletePartial.cshtml" />
+    <Content Include="Views\Shared\_EmptyPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

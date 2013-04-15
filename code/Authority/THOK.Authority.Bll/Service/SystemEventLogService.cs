@@ -124,7 +124,7 @@ namespace THOK.Authority.Bll.Service
                 {
                     SystemEventLogRepository.Delete(log);
                 }
-                LoginLogRepository.SaveChanges();
+                SystemEventLogRepository.SaveChanges();
                 result = true;
             }
             else
