@@ -11,9 +11,9 @@ namespace THOK.Security
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool result = true;
-            if (httpContext.Session["username"] != null && httpContext.Session["username"].ToString() != "")
+            if (httpContext.Request.Cookies.Keys.Count>1)
             {
-                string user = httpContext.Session["username"].ToString();
+                string user = httpContext.Request.Cookies["username"].Value;
                 string ipAdress = UserFactory.userService.GetUserIp(user);
                 string localip = UserFactory.userService.GetLocalIp(user);
                 if (ipAdress != localip)

@@ -8,8 +8,10 @@ using System.Web.Routing;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
+using THOK.Security;
 namespace Authority.Controllers.ProductInfo
 {
+    [TokenAclAuthorize]
     public class ProductController : Controller
     {
         //

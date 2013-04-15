@@ -242,10 +242,16 @@
     <Content Include="bin\THOK.Authority.Bll.pdb" />
     <Content Include="bin\THOK.Authority.Dal.dll" />
     <Content Include="bin\THOK.Authority.Dal.pdb" />
+    <Content Include="bin\THOK.Wms.Repository.dll" />
+    <Content Include="bin\THOK.Wms.Repository.pdb" />
+    <Content Include="Content\Images\404NotFound.jpg" />
     <Content Include="Content\Images\banner.jpg" />
+    <Content Include="Content\Images\error.jpg" />
     <Content Include="Content\Images\login_bg.jpg" />
     <Content Include="Content\Images\login_bg02.jpg" />
     <Content Include="Content\Images\noscript.gif" />
+    <Content Include="Content\Images\ServerErrorLog.jpg" />
+    <Content Include="Content\Images\Unauthorized.jpg" />
     <Content Include="Content\Scripts\ckeditor\adapters\jquery.js" />
     <Content Include="Content\Scripts\ckeditor\ckeditor.js" />
     <Content Include="Content\Scripts\ckeditor\config.js" />
@@ -1627,6 +1633,9 @@
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\ExceptionalLog\Index.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Views\Module\_DeletePartial.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1932,6 +1941,10 @@
     <Content Include="Views\CellPosition\_DeletePartial.cshtml" />
     <Content Include="Views\CellPosition\_PrintPartial.cshtml" />
     <Content Include="SearchPage.cshtml" />
+    <Content Include="Views\ExceptionalLog\_SearchPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_DeletePartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2315,11 +2328,16 @@
     <Content Include="Views\Position\_SearchPartial.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
     <Content Include="Views\Path\Index.cshtml" />
     <Content Include="Views\Path\_TargetPartial.cshtml" />
     <Content Include="Views\Path\_OriginPartial.cshtml" />
     <Content Include="Views\Path\_HelpPartial.cshtml" />
     <Content Include="Views\Path\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\_RegionPartial.cshtml" />
     <Content Include="Views\Position\_RegionNamePartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -2336,6 +2354,13 @@
     <Content Include="Views\Position\Index.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
+    <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
+    <Content Include="Views\LoginLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\LoginLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_DeletePartial.cshtml" />
+    <Content Include="Views\Shared\_EmptyPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
