@@ -48,11 +48,12 @@ namespace Wms.Controllers.Wms.BasisInfo
 
             public ActionResult Details(int page, int rows, FormCollection collection)
             {
-                string ID =  collection["PathID"] ?? "";
+               
                 string PathName = collection["PathName"] ?? "";
                 string State = collection["State"] ?? "";
-                string Description = collection["Description"] ?? "";
-                var systems = PathService.GetDetails(page, rows, ID,PathName, Description, State);
+                string OriginRegion = collection["OriginID"] ?? "";
+                string TargetRegion = collection["TargetID"] ?? "";
+                var systems = PathService.GetDetails(page, rows, OriginRegion, PathName, TargetRegion, State);
                 return Json(systems, "text", JsonRequestBehavior.AllowGet);
             }
 
@@ -106,7 +107,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             {
                 if (queryString == null)
                 {
-                    queryString = "PathCode";
+                    queryString = "PathName";
                 }
                 if (value == null)
                 {

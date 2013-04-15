@@ -26,7 +26,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string ID, string PathName, string Description, string State)
+        public object GetDetails(int page, int rows, string OriginRegion, string PathName, string TargetRegion, string State)
         {
           
            IQueryable<Path> pathQuery = PathRepository.GetQueryable();
@@ -42,6 +42,7 @@ namespace THOK.Wms.Bll.Service
                            p.TargetRegionID,
                            p.Description,
                            p.State,
+                          
                            OriginRegionName = r.RegionName
                        })
                       .Join(regionQuery,
@@ -58,7 +59,8 @@ namespace THOK.Wms.Bll.Service
                           p.OriginRegionName,
                           TargetRegionName=r.RegionName
                       })
-               .Where(p => p.PathName.Contains(PathName) && p.Description.Contains(Description) && p.State.Contains(State) && p.State.Contains(State))
+               .Where(p => p.PathName.Contains(PathName) && p.State.Contains(State) && p.TargetRegionName.Contains(TargetRegion) 
+                   && p.OriginRegionName.Contains(OriginRegion) && p.State.Contains(State))
                 .OrderBy(p => p.ID).AsEnumerable()
                  .Select(p => new
                  {
@@ -82,9 +84,8 @@ namespace THOK.Wms.Bll.Service
             strResult = string.Empty;
             bool result = false;
             var emp = new Path();
-            var empExist = PathRepository.GetQueryable().FirstOrDefault(e => e.ID == path.ID);
-            if (empExist == null)
-            {
+          
+          
                 if (emp != null)
                 {
                     try
@@ -96,6 +97,7 @@ namespace THOK.Wms.Bll.Service
                         emp.TargetRegionID = path.TargetRegionID;
                         emp.State = path.State;
                         PathRepository.Add(emp);
+
                         PathRepository.SaveChanges();
                         result = true;
                     }
@@ -108,11 +110,8 @@ namespace THOK.Wms.Bll.Service
                 {
                     strResult = "原因：找不到当前登陆用户！请重新登陆！";
                 }
-            }
-            else
-            {
-                strResult = "原因：该编号已存在！";
-            }
+           
+            
             return result;
         }
            
@@ -168,7 +167,7 @@ namespace THOK.Wms.Bll.Service
             string id = "", pathName = "";
 
 
-            if (queryString == "id")
+            if (queryString == "PathName")
             {
                 id = value;
             }
@@ -207,6 +206,7 @@ namespace THOK.Wms.Bll.Service
                            p.TargetRegionID,
                            p.Description,
                            p.State,
+                           
                            OriginRegionName = r.RegionName
                        })
                       .Join(regionQuery,
