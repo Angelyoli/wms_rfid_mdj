@@ -54,8 +54,6 @@ namespace Authority.Controllers
                 this.RemoveCookie(userName);
                 FormsService.SignOut();
             }
-            Session["username"] = userName;
-            Session["targetSystem"] = systemId;
             return View();
         }
         public ActionResult GetUser()
@@ -98,51 +96,50 @@ namespace Authority.Controllers
 
         public ActionResult PageNotFound()
         {
-            ViewBag.PageNotFoundLog = Session["PageNotFoundLog"].ToString();
+            ViewBag.PageNotFoundLog = this.GetCookieValue("PageNotFoundLog");
             return View();
         }
 
         public ActionResult ServerError()
         {
-            ViewBag.ServerErrorLog = Session["ServerErrorLog"].ToString();
+            ViewBag.ServerErrorLog = this.GetCookieValue("ServerErrorLog");
             return View();
         }
 
         public ActionResult Error()
         {
-            ViewBag.ErrorLog = Session["ErrorLog"].ToString();
+            ViewBag.ErrorLog = this.GetCookieValue("ErrorLog");
             return View();
         }
 
         public ActionResult Unauthorized()
         {
-            ViewBag.UnauthorizedLog = Session["UnauthorizedLog"].ToString();
+            ViewBag.UnauthorizedLog = this.GetCookieValue("UnauthorizedLog");
             return View();
         }
 
         public ActionResult AjaxPageNotFound()
         {
-            string msg = Session["AjaxPageNotFoundLog"].ToString();
-            return Json(JsonMessageHelper.getJsonMessage(false,msg), "text", JsonRequestBehavior.AllowGet);
-            //, this.HttpContext.Request.RawUrl
+            string msg = this.GetCookieValue("AjaxPageNotFoundLog");
+            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AjaxServerError()
         {
-            string msg = Session["AjaxServerErrorLog"].ToString();
-            return Json(JsonMessageHelper.getJsonMessage(false, msg), "text", JsonRequestBehavior.AllowGet);
+            string msg = this.GetCookieValue("AjaxServerErrorLog");
+            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AjaxError()
         {
-            string msg = Session["AjaxErrorLog"].ToString();
-            return Json(JsonMessageHelper.getJsonMessage(false, msg), "text", JsonRequestBehavior.AllowGet);
+            string msg =this.GetCookieValue("AjaxErrorLog");
+            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AjaxUnauthorized()
         {
-            string msg = Session["AjaxUnauthorizedLog"].ToString();
-            return Json(JsonMessageHelper.getJsonMessage(false, msg), "text", JsonRequestBehavior.AllowGet);
+            string msg = this.GetCookieValue("AjaxUnauthorizedLog");
+            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

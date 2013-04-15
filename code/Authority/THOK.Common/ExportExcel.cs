@@ -176,7 +176,7 @@ namespace THOK.Common
                                 {
                                     headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
                                     headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
-                                    sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth1[column.Ordinal] + columnWidth) * 256));//设置列宽
+                                    sheet.SetColumnWidth(column.Ordinal, (Convert.ToInt32((arrColWidth1[column.Ordinal] + columnWidth) * 256)/256));//设置列宽
                                 }
                             }
                             rowIndex1 = 3; 

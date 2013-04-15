@@ -7,9 +7,11 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.ProductInfo
 {
+    [TokenAclAuthorize]
     public class BrandController : Controller
     {
         [Dependency]

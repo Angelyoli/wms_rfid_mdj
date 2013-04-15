@@ -1,8 +1,21 @@
 ﻿@{
     ViewBag.Title = "500 服务器错误";
 }
-
-<h2>500 服务器错误</h2>
-<p>处理您的请求时服务器发生错误，请重试或联系系统管理员</p>
+<div>
+    <table>
+        <tr>
+            <td>
+            <div>
+                <input  type="image" style=" width:400px; height:300px" src="../../Content/Images/ServerErrorLog.jpg"/>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p style="color: Red; font-size: 30px;">@ViewBag.ServerErrorLog</p>
+            </td>
+        </tr>
+    </table>
+</div>
 
 

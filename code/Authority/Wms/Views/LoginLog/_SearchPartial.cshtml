@@ -1,20 +1,29 @@
 ﻿<script type="text/javascript">
-    $(function () {
-        $('#status').combo({
-            editable: false,
-            panelHeight: 45
-        });
-    })
-
     function searchClick() {
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+        $('#fmSearch').form('clear');
+        $('#SystemName').combogrid({
+            width: 130,
+            panelWidth: 214,
+            panelHeight: 150,
+            url: '/System/Details/?page=1&rows=1000',
+            idField: 'SystemID',
+            textField: 'SystemName',
+            mode: 'local',
+           // editable: false,
+          //  fitColumns: true,
+            columns: [[
+					{ field: 'SystemID', title: '系统ID', hidden: true, width: 30 },
+					{ field: 'SystemName', title: '系统名称', align: 'left', width: 180 },
+					{ field: 'Status', title: '状态', align: 'left', width: 30 }
+				]]
+        });
     };
 
     function select() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.SystemName = $('#systemname').val();
-        queryParams.Description = $('#description').val();
-        queryParams.Status = $('#status').val();
+        queryParams.UserName = $('#UserName').val();
+        queryParams.SystemName = $('#SystemName').combo('getText');
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
@@ -26,29 +35,22 @@
 
 </script>
 
-<div id="dlg-search" class="easyui-dialog" modal="true" style="width:300px;height:210px;padding:2px 2px"
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width:280px;height:150px;padding:2px 2px"
 		closed="true" buttons="#dlg-buttons-search">
     <div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >   
+            <form id="fmSearch" method="post">
             <table width="250">
               <tr>
-                <td width="60">系统信息</td>
-                <td width="168" align="left"><input id="systemname"></td>
+                <td width="95">登录的用户名：</td>
+                <td width="160" align="left"><input id="UserName"/></td>
               </tr>
               <tr>
-                <td>系统描述</td>
-                <td align="left"><textarea id="description" style="width: 180px; height: 50px"></textarea></td>
-              </tr>
-              <tr>
-                <td>系统状态</td>
-                <td align="left">      
-		            <select id="status" name="status" required="true" class="easyui-combobox" style="width: 50px">
-		                <option value="true">启用</option>
-		                <option value="false">禁用</option>
-	                </select>
-	            </td>
+                <td width="95">登录的系统：</td>
+                <td width="160" align="left"><input id="SystemName" class="easyui-combobox" style="width:130px"/></td>
               </tr>
             </table>
+             </form>
         </div>
     </div>
 </div>

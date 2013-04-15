@@ -17,14 +17,14 @@ namespace THOK.Security
     {
         private readonly IUnityContainer _container;
         public IUserService userService;
-        public ISystemEventLogService SystemEventLogService;
+        public ILoginLogService LoginLogService;
         public UserServiceFactory()
         {
             _container = new UnityContainer();          
             UnityConfigurationSection section = (UnityConfigurationSection)ConfigurationManager.GetSection("unity");
             section.Configure(_container, "defaultContainer");
             userService = _container.Resolve<IUserService>() as UserService;
-            SystemEventLogService = _container.Resolve<ISystemEventLogService>() as SystemEventLogService;
+            LoginLogService = _container.Resolve<ILoginLogService>() as LoginLogService;
             ServiceLocatorProvider sp = new ServiceLocatorProvider(GetServiceLocator);
             ServiceLocator.SetLocatorProvider(sp);
         }

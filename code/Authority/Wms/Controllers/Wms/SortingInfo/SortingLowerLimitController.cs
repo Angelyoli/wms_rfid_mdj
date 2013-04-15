@@ -8,9 +8,11 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.Wms.SignalR.Dispatch.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
+    [TokenAclAuthorize]
     public class SortingLowerlimitController : Controller
     {
         [Dependency]

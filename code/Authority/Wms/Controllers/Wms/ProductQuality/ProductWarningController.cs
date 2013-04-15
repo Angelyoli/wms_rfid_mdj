@@ -8,9 +8,11 @@ using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using System.Web.Routing;
 using THOK.WebUtil;
+using THOK.Security;
 
 namespace Wms.Controllers.Wms.ProductQuality
 {
+    [TokenAclAuthorize]
     public class ProductWarningController : Controller
     {
         //
