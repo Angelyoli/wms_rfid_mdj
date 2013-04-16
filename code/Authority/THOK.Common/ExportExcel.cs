@@ -77,6 +77,7 @@ namespace THOK.Common
 
             HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;
             HSSFFont fontContent = workbook.CreateFont() as HSSFFont;
+            contentStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00");//设置所有内容列整型格式，也可以通过数据访问层来改变内容格式
 
             HSSFCellStyle contentStyleDailyBalance = workbook.CreateCellStyle() as HSSFCellStyle;
             HSSFFont fontDailyBalance = workbook.CreateFont() as HSSFFont; 
