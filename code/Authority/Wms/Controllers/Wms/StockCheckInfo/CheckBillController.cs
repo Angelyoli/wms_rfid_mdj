@@ -164,21 +164,10 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
 
-            System.Data.DataTable dt = CheckBillDetailService.GetCheckBillDetail(page, rows, billNo);
-
-            string headText = "盘点单明细";
-            string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = CheckBillDetailService.GetCheckBillDetail(page, rows, billNo);
+            ep.HeadTitle1 = "盘点单明细";
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

@@ -65,20 +65,10 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
             string billClass = "0005";
             string isActive = Request.QueryString["isActive"];
 
-            System.Data.DataTable dt = BillTypeService.GetBillType(page, rows, billTypeCode, billTypeName, billClass, isActive);
-            string headText = "损益类型设置";
-            string headFont = "微软雅黑"; short headSize = 20;
-            string colHeadFont = "Arial"; short colHeadSize = 10;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = BillTypeService.GetBillType(page, rows, billTypeCode, billTypeName, billClass, isActive);
+            ep.HeadTitle1 = "损益类型设置";
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

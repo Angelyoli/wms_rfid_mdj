@@ -47,21 +47,10 @@ namespace Wms.Controllers.Wms.Inventory
             string type = Request.QueryString["type"];
             string id = Request.QueryString["id"];
 
-            System.Data.DataTable dt1 = CellHistoricalService.GetCellHistory(page, rows, beginDate, endDate, type, id);
-
-            string headText1 = "货位历史明细";
-            string headFont = "微软雅黑"; short headSize = 20;
-            string colHeadFont = "Arial"; short colHeadSize = 10;
-            string[] HeaderFooder = {   
-                                         "……"    //眉左
-                                        ,"……"  //眉中
-                                        ,"……"    //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, null, headText1, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = CellHistoricalService.GetCellHistory(page, rows, beginDate, endDate, type, id);
+            ep.HeadTitle1 = "货位历史明细";
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

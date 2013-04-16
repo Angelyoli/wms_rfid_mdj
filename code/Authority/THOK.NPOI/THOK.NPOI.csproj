@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</ProjectGuid>
+    <ProjectGuid>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>THOK.Common</RootNamespace>
-    <AssemblyName>THOK.Common</AssemblyName>
+    <RootNamespace>THOK.NPOI</RootNamespace>
+    <AssemblyName>THOK.NPOI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,25 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\Libraries\log4net.dll</HintPath>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Unity">
-      <HintPath>..\Libraries\Microsoft.Practices.Unity.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Unity.Configuration">
-      <HintPath>..\Libraries\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    <Reference Include="NPOI">
+      <HintPath>..\packages\npoi.1.2.5\.net 4.0\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,16 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigSettings.cs" />
-    <Compile Include="Des.cs" />
-    <Compile Include="EntityCollection.cs" />
-    <Compile Include="LoggerBase.cs" />
-    <Compile Include="LogManager.cs" />
-    <Compile Include="NullHandler.cs" />
-    <Compile Include="Obj.cs" />
+    <Compile Include="Common\ExportExcelHeper.cs" />
+    <Compile Include="Service\ExportExcelAuto.cs" />
+    <Compile Include="Service\ExportExcelTemplate.cs" />
+    <Compile Include="Models\ExportParam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnityControllerFactory.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
