@@ -1,29 +1,11 @@
 ﻿<script type="text/javascript">
     window.onbeforeunload = function (event) {
-        var userNames = document.getElementById('userNames').value;
         var n = window.event.screenX - window.screenLeft;
         var b = n > document.documentElement.scrollWidth - 20;
         if (b && window.event.clientY < 0 || window.event.altKey) {
-            $.getJSON('/User/DeleteUserIp/?userName=' + userNames, function (data) {
-            })
+            $.getJSON('/Account/LogOff');
         }
     }   
-    var s = false;
-    window.onunload = function () {
-        var userNames = document.getElementById('userNames').value;
-        if (event.clientX <= 0 && event.clientY < 0) {
-            $.getJSON('/User/DeleteUserIp/?userName=' + userNames, function (data) {
-            })
-        }
-        else {
-            if (s) {
-            }
-            else {
-                $.getJSON('/User/DeleteUserIp/?userName=' + userNames, function (data) {
-                })
-            }
-        }
-    }
     $(function () {
         $('#logOn').click(function () {
             $('#dlg-logon').dialog('open');
@@ -197,7 +179,6 @@
          </form>
     </div> 
      <input type="hidden" id="ipAdress" name="hiddenField" value="@ViewBag.localip">
-    <input type="hidden" id="userNames" name="hiddenField" value="@ViewBag.userName"> 
     <div id="dlg-forcelogon" class="easyui-dialog" modal="true" closed="true"
         style="width:310px;height:160px;padding:2px 2px">
         <div style="color:Red; height:20px; padding-bottom:5px;text-align:center; font-size:18px">该账号已登录！</div>
