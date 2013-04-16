@@ -9,7 +9,6 @@ using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
-    [TokenAclAuthorize]
     public class SystemController : Controller
     {
         [Dependency]
