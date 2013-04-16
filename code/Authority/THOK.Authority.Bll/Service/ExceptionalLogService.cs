@@ -45,12 +45,12 @@ namespace THOK.Authority.Bll.Service
             IQueryable<ExceptionalLog> exceptionalLogQuery = ExceptionalLogRepository.GetQueryable();
             var exceptionalLog = exceptionalLogQuery
                     .Where(e => e.ModuleName.Contains(moduleName) && e.FunctionName.Contains(functionName))
-                    .OrderByDescending(e => e.CatchTime)
-                    .Select(e => new { e.ExceptionalLogID, e.CatchTime, e.ModuleName, e.FunctionName,e.ExceptionalType, e.ExceptionalDescription, e.State});
-
+                    .OrderByDescending(e => e.CatchTime);
             int total = exceptionalLog.Count();
-            exceptionalLog = exceptionalLog.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = exceptionalLog.ToArray() };
+            var exceptionalLogs = exceptionalLog.Skip((page - 1) * rows).Take(rows);
+            var exception = exceptionalLogs
+                    .Select(e => new { e.ExceptionalLogID, e.CatchTime, e.ModuleName, e.FunctionName,e.ExceptionalType, e.ExceptionalDescription, e.State});   
+            return new { total, rows = exception.ToArray() };
         }
 
         public bool Delete(string exceptionalLogId, out string strResult)
