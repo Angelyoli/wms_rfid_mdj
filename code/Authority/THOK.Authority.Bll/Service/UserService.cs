@@ -42,7 +42,7 @@ namespace THOK.Authority.Bll.Service
             }
             else { return false; }
         }
-        public string GetLocalIp(string userName)
+        public string GetLocalIp()
         {
             string ipaddress = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
             return ipaddress;
@@ -59,6 +59,27 @@ namespace THOK.Authority.Bll.Service
             else
             {
                 return "";
+            }
+        }
+
+        public bool CheckAdress(string userName)
+        {
+            string LocalAdress = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
+            var loginPcAdres = UserRepository.GetQueryable().Where(i => i.UserName == userName).ToArray();
+            if (loginPcAdres.Count() > 0)
+            {
+                if (LocalAdress == loginPcAdres[0].LoginPC)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
 

@@ -29,7 +29,7 @@ namespace Authority.Controllers
             string serverId = this.GetCookieValue("serverid");
             string systemId = this.GetCookieValue("systemid");
             string ipAdress = UserService.GetUserIp(userName);
-            string localip = UserService.GetLocalIp(userName);
+            string localip = UserService.GetLocalIp();
             if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty))
             {
                 ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
@@ -54,6 +54,7 @@ namespace Authority.Controllers
                 this.RemoveCookie(userName);
                 FormsService.SignOut();
             }
+            Session["userName"] = userName;
             return View();
         }
         public ActionResult GetUser()

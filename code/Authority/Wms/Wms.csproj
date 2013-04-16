@@ -1932,6 +1932,11 @@
     <Content Include="Views\CellPosition\_DeletePartial.cshtml" />
     <Content Include="Views\CellPosition\_PrintPartial.cshtml" />
     <Content Include="SearchPage.cshtml" />
+    <Content Include="Views\ExceptionalLog\Index.cshtml" />
+    <Content Include="Views\ExceptionalLog\_DeletePartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_PrintPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_SearchPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2336,6 +2341,13 @@
     <Content Include="Views\Position\Index.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
+    <Content Include="Views\Home\_ProductWarningPartial.cshtml" />
+    <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
+    <Content Include="Views\LoginLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\LoginLog\_PrintPartial.cshtml" />
+    <Content Include="Views\Shared\_EmptyPartial.cshtml">
+      <SubType>Code</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

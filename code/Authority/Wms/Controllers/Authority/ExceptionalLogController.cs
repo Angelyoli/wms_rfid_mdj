@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using THOK.WebUtil;
 
 namespace Authority.Controllers.Authority
 {

@@ -44,11 +44,10 @@ namespace Authority.Controllers.Authority
 
         //
         // POST: /LoginLog/Create/
-        public ActionResult Create(string login_time, string logout_time, string user_name, string system_ID)
+        public ActionResult Create(string login_time,string user_name, string system_ID)
         {
             login_time = DateTime.Now.ToString();
-            logout_time = "";
-            bool bResult = LoginLogService.CreateLoginLog(login_time, logout_time, user_name, Guid.Parse(system_ID));
+            bool bResult = LoginLogService.CreateLoginLog(login_time,user_name, Guid.Parse(system_ID));
             return Json(bResult, JsonRequestBehavior.AllowGet);
         }
  

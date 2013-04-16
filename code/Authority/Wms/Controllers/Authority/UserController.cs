@@ -10,7 +10,6 @@ using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
-    [TokenAclAuthorize]
     public class UserController : Controller
     {
         [Dependency]
@@ -142,10 +141,12 @@ namespace Authority.Controllers.Authority
             bool bResult = UserService.DeleteUserIp(userName);
             return Json(bResult, "text", JsonRequestBehavior.AllowGet);
         }
-        public ActionResult GetLocalIp(string userName)
+
+        public ActionResult CheckAdress(string userName)
         {
-            var bResult = UserService.GetLocalIp(userName);
-            return Json(bResult, "text", JsonRequestBehavior.AllowGet);
+            bool bResult = UserService.CheckAdress(userName);
+            return  Json(bResult, "text", JsonRequestBehavior.AllowGet);
         }
+
     }
 }

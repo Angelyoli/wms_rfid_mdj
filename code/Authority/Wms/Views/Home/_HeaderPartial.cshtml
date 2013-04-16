@@ -1,18 +1,9 @@
 ﻿<script type="text/javascript">
-//        window.onbeforeunload = function (e) {
-//            var ipAdress = document.getElementById('ipAdress').value;
-//            var userName = document.getElementById('userName').value;
-//            e = e || window.event;
-//            if (e) {
-//                e.returnValue = '确定退出吗333？';
-//            }
-//            return userName;
-//        };
     $(function () {
         $('#loginOut').click(function () {
             $.messager.confirm('系统提示', '您确定要退出本次登录吗?', function (r) {
                 if (r) {
-                    refresh();
+                    location.href = '/Account/LogOff';
                 }
             });
         })
@@ -20,7 +11,7 @@
         $('#changeUser').click(function () {
             $.messager.confirm('系统提示', '您确定要切换用户登录吗?', function (r) {
                 if (r) {
-                    refresh();
+                    location.href = '/Account/LogOff';
                 }
             });
         })

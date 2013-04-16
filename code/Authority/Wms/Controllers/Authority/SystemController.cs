@@ -9,7 +9,6 @@ using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
-    [TokenAclAuthorize]
     public class SystemController : Controller
     {
         [Dependency]
@@ -69,7 +68,7 @@ namespace Authority.Controllers.Authority
         public ActionResult GetDetailsSystem()
         {
             string cityId = this.GetCookieValue("cityid");
-            string userName = this.User.Identity.Name;
+            string userName = this.GetCookieValue("username");
             string systemId = this.GetCookieValue("systemid");
             var systems = SystemService.GetDetails(userName, systemId, cityId);
             return Json(systems, "text", JsonRequestBehavior.AllowGet);
