@@ -112,11 +112,7 @@
                     })
                 }
                 else {
-                    $.messager.confirm('系统提示', result.msg, function (r) {
-                        if (r) {
-                            location.href = '/Account/LogOff';
-                        }
-                    });
+                    $.messager.alert('系统提示', result.msg,'info', function () {});
                 }
             }
         });

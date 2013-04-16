@@ -62,16 +62,12 @@ $(function () {
     $.ajaxSetup({
         cache: false,
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            if (typeof (errorThrown) != "undefined")
-            //$.evalJSON(XMLHttpRequest.responseText).msg
-                $.messager.alert(g_MsgBoxTitle, "调用服务器失败。<br />" + errorThrown, 'error');
+            var result = $.evalJSON(XMLHttpRequest.responseText);
+            if (XMLHttpRequest.status == 401) {
+                $.messager.alert(g_MsgBoxTitle, "调用服务器失败。<br />" + result.msg, "error", function () { parent.location.reload(); });
+            }
             else {
-                var error = "<b style='color: #f00'>" + XMLHttpRequest.status + "  " + XMLHttpRequest.statusText + "</b>";
-                var start = XMLHttpRequest.responseText.indexOf("<title>");
-                var end = XMLHttpRequest.responseText.indexOf("</title>");
-                if (start > 0 && end > start)
-                    error += "<br /><br />" + XMLHttpRequest.responseText.substring(start + 7, end);
-                $.messager.alert(g_MsgBoxTitle, "调用服务器失败。<br />" + error, 'error');
+                $.messager.alert(g_MsgBoxTitle, "调用服务器失败。<br />" + result.msg, 'error', function () { });
             }
         }
     });
@@ -104,7 +100,7 @@ $(function () {
                             $.ajaxSender.complete(result.data);
                         }                  
                     } else {
-                        $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, 'error');
+                        $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, 'error', function () { });
                     }
                 }
             })
