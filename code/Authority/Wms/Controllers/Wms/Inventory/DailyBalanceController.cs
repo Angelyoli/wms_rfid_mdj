@@ -121,45 +121,18 @@ namespace Wms.Controllers.Wms.Inventory
             string settleDate = Request.QueryString["settleDate"];
             string unitType = Request.QueryString["unitType"];
 
-            System.Data.DataTable dt1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode, settleDate, unitType);
-            System.Data.DataTable dt2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode, settleDate, unitType);
-            string headText1 = "仓库库存日结明细";
-            string headText2 = "仓库库存日结核对";
-            string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
-            string contentChangeColColorFrom = "DailyBalance";
-            short contentChangeColColor = NPOI.HSSF.Util.HSSFColor.RED.index;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt1, dt2, headText1, headText2, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder
-                , contentChangeColColorFrom, contentChangeColColor);
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode, settleDate, unitType);
+            ep.DT2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode, settleDate, unitType);;
+            ep.HeadTitle1 = "仓库库存日结明细";
+            ep.HeadTitle2 = "仓库库存日结核对";
+            ep.ContentModule = "DailyBalance";            
+            ep.ContentModuleColor = NPOI.HSSF.Util.HSSFColor.RED.index;
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
 
-        // GET: /DailyBalance/ExportFromTemplate/
-        public FileStreamResult ExportFromTemplate()
-        {
-            int page = 0, rows = 0;
-            string warehouseCode = Request.QueryString["warehouseCode"];
-            string settleDate = Request.QueryString["settleDate"];
-            string unitType = Request.QueryString["unitType"];
-
-            System.Data.DataTable dt1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode, settleDate, unitType);
-            System.Data.DataTable dt2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode, settleDate, unitType);
-            string excelTemplate = Server.MapPath("~/ExcelTemplate/DailyBalance.xls");
-            string title1 = "仓库库存日结明细";
-            string title2 = "仓库库存日结核对";
-
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportFromTemplate(dt1, dt2, excelTemplate, title1, title2);
-            return new FileStreamResult(ms, "application/ms-excel");
-        }
+       
         #endregion
 
         //
