@@ -85,7 +85,7 @@ namespace Authority.Controllers
             FormsService.SignOut();
             return RedirectToAction("Index","Home");
         }
-
+        [TokenAclAuthorize]
         [Authorize]
         [HttpPost]
         public ActionResult ChangePassword(string userName, string password,string newPassword)
@@ -94,7 +94,7 @@ namespace Authority.Controllers
             string msg = bResult ? "修改密码成功" : "修改密码失败,请确认用户名与密码输入正确！";
             return Json(JsonMessageHelper.getJsonMessage(bResult,msg),"text");
         }
-
+        [TokenAclAuthorize]
         [Authorize]
         public ActionResult ChangeServer(string cityId, string systemId, string serverId)
         {
