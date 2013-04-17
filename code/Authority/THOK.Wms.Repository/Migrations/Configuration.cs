@@ -1812,6 +1812,14 @@
                     ControlName = "migration",
                     IndicateImage = "icon-reload",
                     Module_ModuleID = new Guid("D8344F88-08AD-4FDA-8F45-EAD3BB471103")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("E0000000-D425-4911-9345-6433ADF6610A"),
+                    FunctionName = "作业",
+                    ControlName = "task",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("D8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 }
                 );
             context.SaveChanges();
@@ -2179,6 +2187,14 @@
                     ControlName = "migration",
                     IndicateImage = "icon-reload",
                     Module_ModuleID = new Guid("F8344F88-08AD-4FDA-8F45-EAD3BB471103")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("E0000000-D425-4911-9345-6433ADF66101"),
+                    FunctionName = "作业",
+                    ControlName = "task",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("F8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 }
                 );
             context.SaveChanges();
@@ -2350,7 +2366,7 @@
                 },
                 new Function()
                 {
-                    FunctionID = new Guid("F6E6597A-64A9-4eb2-9C72-9C24C39F5652"),
+                    FunctionID = new Guid("E0000000-64A9-4eb2-9C72-9C24C39F5652"),
                     FunctionName = "迁移",
                     ControlName = "migration",
                     IndicateImage = "icon-reload",

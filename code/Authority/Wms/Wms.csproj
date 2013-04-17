@@ -1759,7 +1759,6 @@
     <Content Include="Views\Authorize\_SearchPartial.cshtml" />
     <Content Include="Views\Company\_%40AddPartial.cshtml" />
     <Content Include="Views\Company\_%40DeletePartial.cshtml" />
-    <Content Include="Views\Company\_HelpPartial.cshtml" />
     <Content Include="Views\Company\_%40SearchPartial.cshtml" />
     <Content Include="Views\Company\_PrintPartial.cshtml" />
     <Content Include="Views\Department\_AddPartial.cshtml" />
@@ -1769,9 +1768,7 @@
     <Content Include="Views\Employee\_DeletePartial.cshtml" />
     <Content Include="Views\Employee\_EditPartial.cshtml" />
     <Content Include="Views\Employee\_SearchPartial.cshtml" />
-    <Content Include="Views\Employee\_HelpPartial.cshtml" />
     <Content Include="Views\Employee\_PrintPartial.cshtml" />
-    <Content Include="Views\Department\_HelpPartial.cshtml" />
     <Content Include="Views\Department\_PrintPartial.cshtml" />
     <Content Include="Views\CheckBill\Index.cshtml" />
     <Content Include="Views\CheckBillVerify\Index.cshtml" />
@@ -1811,7 +1808,6 @@
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\diy\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\Thumbs.db" />
     <None Include="ExcelTemplate\DailyBalance.xls" />
-    <Content Include="Index.cshtml" />
     <None Include="obj\Debug\build.force" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
@@ -1935,7 +1931,6 @@
     <Content Include="Views\CellPosition\_EditPartial.cshtml" />
     <Content Include="Views\CellPosition\_DeletePartial.cshtml" />
     <Content Include="Views\CellPosition\_PrintPartial.cshtml" />
-    <Content Include="SearchPage.cshtml" />
     <Content Include="Views\ExceptionalLog\Index.cshtml" />
     <Content Include="Views\ExceptionalLog\_DeletePartial.cshtml" />
     <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
@@ -2030,7 +2025,6 @@
     <Content Include="Views\Job\_EditPartial.cshtml" />
     <Content Include="Views\Job\_SearchPartial.cshtml" />
     <Content Include="Views\Job\_PrintPartial.cshtml" />
-    <Content Include="Views\Job\_HelpPartial.cshtml" />
     <Content Include="Views\StockMoveBillCheck\Index.cshtml" />
     <Content Include="Views\StockMoveBill\Index.cshtml" />
     <Content Include="Views\StockMoveBillGenerate\Index.cshtml" />
@@ -2324,11 +2318,16 @@
     <Content Include="Views\Position\_SearchPartial.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
     <Content Include="Views\Path\Index.cshtml" />
     <Content Include="Views\Path\_TargetPartial.cshtml" />
     <Content Include="Views\Path\_OriginPartial.cshtml" />
     <Content Include="Views\Path\_HelpPartial.cshtml" />
     <Content Include="Views\Path\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\_RegionPartial.cshtml" />
     <Content Include="Views\Position\_RegionNamePartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -2345,10 +2344,14 @@
     <Content Include="Views\Position\Index.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
-    <Content Include="Views\Home\_ProductWarningPartial.cshtml" />
     <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
     <Content Include="Views\LoginLog\_EmptyPartial.cshtml" />
     <Content Include="Views\LoginLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_DeletePartial.cshtml" />
+    <Content Include="Views\Shared\_EmptyPartial.cshtml" />
+    <Content Include="Views\Home\_ProductWarningPartial.cshtml" />
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
     </Content>

@@ -113,33 +113,24 @@ namespace Authority.Controllers
             return View();
         }
 
-        public ActionResult Unauthorized()
-        {
-            ViewBag.UnauthorizedLog = this.GetCookieValue("UnauthorizedLog");
-            return View();
-        }
-
         public ActionResult AjaxPageNotFound()
         {
             string msg = this.GetCookieValue("AjaxPageNotFoundLog");
+            this.ControllerContext.HttpContext.Response.StatusCode = 404;
             return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AjaxServerError()
         {
             string msg = this.GetCookieValue("AjaxServerErrorLog");
+            this.ControllerContext.HttpContext.Response.StatusCode = 500;
             return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AjaxError()
+        public ActionResult AjaxError(int errorCode)
         {
             string msg =this.GetCookieValue("AjaxErrorLog");
-            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AjaxUnauthorized()
-        {
-            string msg = this.GetCookieValue("AjaxUnauthorizedLog");
+            this.ControllerContext.HttpContext.Response.StatusCode = errorCode;
             return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
         }
     }

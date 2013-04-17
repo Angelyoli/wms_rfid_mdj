@@ -13,8 +13,6 @@ using THOK.Wms.SignalR.Connection;
 using System.IO.Compression;
 using THOK.Security;
 using Wms.Security;
-using Microsoft.Practices.ServiceLocation;
-using THOK.Common.Ef.Interfaces;
 using THOK.Common.Ef.Infrastructure;
 namespace Wms
 {
@@ -72,7 +70,8 @@ namespace Wms
             if (exception != null)
             {
                 Response.Clear();
-                HttpException httpException = exception as HttpException;
+                HttpException httpException = new HttpException(exception.Message, exception);
+                var cxt = new HttpContextWrapper(Context);
 
                 RouteData routeData = new RouteData();
                 routeData.Values.Add("controller", "Home");
@@ -82,32 +81,13 @@ namespace Wms
                 string ExceptionalType = exception.Message;
                 string ExceptionalDescription = exception.ToString();
                 string State = "1";
-                if (httpException == null)
-                {
 
-                    if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
-                    {
-                        HttpCookie ErrorLog = new HttpCookie("ErrorLog", exception.Message);
-                        Context.Request.Cookies.Add(ErrorLog);
-                        routeData.Values.Add("action", "Error");
-                    }
-                    else
-                    {
-                        HttpCookie AjaxErrorLog = new HttpCookie("AjaxErrorLog", exception.Message);
-                        Context.Request.Cookies.Add(AjaxErrorLog);
-                        routeData.Values.Add("action", "AjaxError");
-                    }
-                    if (exception != null)
-                    {
-                        Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());
-                    }
-                }
-                else
+                if (httpException != null)
                 {
                     switch (httpException.GetHttpCode())
                     {
                         case 404:
-                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
+                            if (!cxt.Request.IsAjaxRequest())
                             {
                                 HttpCookie PageNotFoundLog = new HttpCookie("PageNotFoundLog", exception.Message);
                                 Context.Request.Cookies.Add(PageNotFoundLog);
@@ -121,7 +101,7 @@ namespace Wms
                             }
                             break;
                         case 500:
-                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
+                            if (!cxt.Request.IsAjaxRequest())
                             {
                                 HttpCookie ServerErrorLog = new HttpCookie("ServerErrorLog", exception.Message);
                                 Context.Request.Cookies.Add(ServerErrorLog);
@@ -136,7 +116,7 @@ namespace Wms
                             Trace.TraceError("Server Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                         default:
-                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
+                            if (!cxt.Request.IsAjaxRequest())
                             {
                                 HttpCookie ErrorLog = new HttpCookie("ErrorLog", exception.Message);
                                 Context.Request.Cookies.Add(ErrorLog);
@@ -147,6 +127,7 @@ namespace Wms
                                 HttpCookie AjaxErrorLog = new HttpCookie("AjaxErrorLog", exception.Message);
                                 Context.Request.Cookies.Add(AjaxErrorLog);
                                 routeData.Values.Add("action", "AjaxError");
+                                routeData.Values.Add("errorCode", httpException.GetHttpCode());
                             }
                             Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
@@ -169,10 +150,10 @@ namespace Wms
         {
             UserServiceFactory UserFactory = new UserServiceFactory();
             UserFactory.userService.DeleteUserIp(Session["userName"].ToString());
-            UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
+            UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());           
         }        
 
-        void Application_AuthenticateRequest1(object sender, EventArgs e)
+        void Application_AuthenticateRequest(object sender, EventArgs e)
         {
             bool enableGzip = this.Request.Headers["Content-Encoding"] == "gzip";
             if (enableGzip)
