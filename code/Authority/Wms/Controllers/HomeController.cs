@@ -32,18 +32,25 @@ namespace Authority.Controllers
             string localip = UserService.GetLocalIp();
             if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty))
             {
-                ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
-                ViewBag.ServerName = ServerService.GetServerById(serverId).ToString();
-                ViewBag.SystemName = SystemService.GetSystemById(systemId).ToString();
-                ViewBag.userName = userName;
-                if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && !ipAdress.Equals(string.Empty))
+                if (UserService.CheckAdress(userName))
                 {
-                    ViewBag.ipAdress = ipAdress;
-                    ViewBag.localip = localip;
+                    ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
+                    ViewBag.ServerName = ServerService.GetServerById(serverId).ToString();
+                    ViewBag.SystemName = SystemService.GetSystemById(systemId).ToString();
+                    ViewBag.userName = userName;
+                    if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && !ipAdress.Equals(string.Empty))
+                    {
+                        ViewBag.ipAdress = ipAdress;
+                        ViewBag.localip = localip;
+                    }
+                    else
+                    {
+                        ViewBag.localip = localip;
+                    }
                 }
                 else
                 {
-                    ViewBag.localip = localip;
+                    FormsService.SignOut();
                 }
             }
             else

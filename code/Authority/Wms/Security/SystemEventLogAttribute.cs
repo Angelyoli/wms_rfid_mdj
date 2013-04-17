@@ -14,7 +14,7 @@ namespace Wms.Security
         {
             string eventName = httpContext.Request.RequestContext.RouteData.Values["action"].ToString();
             string eventDescription = httpContext.Request.RawUrl;
-            if (httpContext.Request.Cookies.Keys.Count > 1)
+            if (httpContext.Request.Cookies["username"] != null && httpContext.Request.Cookies["systemid"] != null)
             {
                 string operateUser = httpContext.Request.Cookies["username"].Value;
                 Guid targetSystem = Guid.Parse(httpContext.Request.Cookies["systemid"].Value);
