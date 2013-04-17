@@ -49,20 +49,15 @@ namespace Authority.Controllers.Wms.Inventory
             string unitType = Request.QueryString["unitType"];
             bool isAbnormity =Convert.ToBoolean(Request.QueryString["isAbnormity"]);
             string areaName;
-            System.Data.DataTable dt = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType, out areaName, isAbnormity);
-            string headText = "当前库存" + areaName;
-            string headFontName = "微软雅黑"; Int16 headFontSize = 14;
-            string colHeadFontName = "Arial"; Int16 colHeadFontSize = 12;
-            string[] HeaderFooder = {   
-                                         "……"    //眉左
-                                        ,"……"  //眉中
-                                        ,"……"    //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFontName, headFontSize
-                , 0, true, colHeadFontName, colHeadFontSize, 0, true, 0, HeaderFooder, null, 0);
+            
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType, out areaName, isAbnormity);
+            ep.DT2 = null;
+            ep.HeadTitle1 = "当前库存" + areaName;
+            ep.HeadTitle2 = "";
+            ep.ContentModule = null;
+            ep.ContentModuleColor = 0;
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
     }

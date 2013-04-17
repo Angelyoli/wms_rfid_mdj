@@ -1692,6 +1692,10 @@
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.NPOI\THOK.NPOI.csproj">
+      <Project>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</Project>
+      <Name>THOK.NPOI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Allot\THOK.Wms.Allot.csproj">
       <Project>{330D59D0-3B57-4F12-BB7D-49AF46DCD46D}</Project>
       <Name>THOK.Wms.Allot</Name>
