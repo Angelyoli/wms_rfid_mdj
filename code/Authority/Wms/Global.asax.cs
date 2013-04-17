@@ -13,8 +13,6 @@ using THOK.Wms.SignalR.Connection;
 using System.IO.Compression;
 using THOK.Security;
 using Wms.Security;
-using Microsoft.Practices.ServiceLocation;
-using THOK.Common.Ef.Interfaces;
 using THOK.Common.Ef.Infrastructure;
 namespace Wms
 {
@@ -72,84 +70,70 @@ namespace Wms
             if (exception != null)
             {
                 Response.Clear();
-                HttpException httpException = exception as HttpException;
+                HttpException httpException = new HttpException(exception.Message, exception);
+                var cxt = new HttpContextWrapper(Context);
 
                 RouteData routeData = new RouteData();
                 routeData.Values.Add("controller", "Home");
 
-                string ModuleName = "1";
                 string ModuleNam ="/"+ Context.Request.RequestContext.RouteData.Values["controller"].ToString()+"/";
                 string FunctionName = Context.Request.RequestContext.RouteData.Values["action"].ToString();
                 string ExceptionalType = exception.Message;
                 string ExceptionalDescription = exception.ToString();
                 string State = "1";
-                if (httpException == null)
-                {
 
-                    if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
-                    {
-                        Session["ErrorLog"] = exception.Message;
-                        routeData.Values.Add("action", "Error");
-                    }
-                    else
-                    {
-                        Session["AjaxErrorLog"] = exception.Message;
-                        routeData.Values.Add("action", "AjaxError");
-                    }
-                    if (exception != null)
-                    {
-                        Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());
-                    }
-                }
-                else
+                if (httpException != null)
                 {
                     switch (httpException.GetHttpCode())
                     {
                         case 404:
-                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
+                            if (!cxt.Request.IsAjaxRequest())
                             {
-                                Session["PageNotFoundLog"] = exception.Message;
+                                HttpCookie PageNotFoundLog = new HttpCookie("PageNotFoundLog", exception.Message);
+                                Context.Request.Cookies.Add(PageNotFoundLog);
                                 routeData.Values.Add("action", "PageNotFound");
                             }
                             else
                             {
-                                Session["AjaxPageNotFoundLog"] = exception.Message;
+                                HttpCookie AjaxPageNotFoundLog = new HttpCookie("AjaxPageNotFoundLog", exception.Message);
+                                Context.Request.Cookies.Add(AjaxPageNotFoundLog);
                                 routeData.Values.Add("action", "AjaxPageNotFound");
                             }
                             break;
                         case 500:
-                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
+                            if (!cxt.Request.IsAjaxRequest())
                             {
-                                Session["ServerErrorLog"] = exception.Message;
+                                HttpCookie ServerErrorLog = new HttpCookie("ServerErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(ServerErrorLog);
                                 routeData.Values.Add("action", "ServerError");
                             }
                             else
                             {
-                                Session["AjaxServerErrorLog"] = exception.Message;
+                                HttpCookie AjaxServerErrorLog = new HttpCookie("AjaxServerErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(AjaxServerErrorLog);
                                 routeData.Values.Add("action", "AjaxServerError");
                             }
                             Trace.TraceError("Server Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                         default:
-                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
+                            if (!cxt.Request.IsAjaxRequest())
                             {
-                                Session["Error"] = exception.Message;
+                                HttpCookie ErrorLog = new HttpCookie("ErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(ErrorLog);
                                 routeData.Values.Add("action", "Error");
                             }
                             else
                             {
-                                Session["AjaxError"] = exception.Message;
+                                HttpCookie AjaxErrorLog = new HttpCookie("AjaxErrorLog", exception.Message);
+                                Context.Request.Cookies.Add(AjaxErrorLog);
                                 routeData.Values.Add("action", "AjaxError");
+                                routeData.Values.Add("errorCode", httpException.GetHttpCode());
                             }
                             Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                     }
                 }
-                if (ModuleName != ModuleNam)
-                {
-                    EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
-                    ModuleName = ModuleNam;
-                }
+                EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
                 Server.ClearError();
                 Response.TrySkipIisCustomErrors = true;
                 IController errorController = new HomeController();
@@ -165,11 +149,11 @@ namespace Wms
         void Session_End()
         {
             UserServiceFactory UserFactory = new UserServiceFactory();
-            UserFactory.userService.DeleteUserIp(Session["username"].ToString());
-            UserFactory.SystemEventLogService.UpdateLoginLog(Session["username"].ToString(),DateTime.Now.ToString());
+            UserFactory.userService.DeleteUserIp(Session["userName"].ToString());
+            UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());           
         }        
 
-        void Application_AuthenticateRequest1(object sender, EventArgs e)
+        void Application_AuthenticateRequest(object sender, EventArgs e)
         {
             bool enableGzip = this.Request.Headers["Content-Encoding"] == "gzip";
             if (enableGzip)

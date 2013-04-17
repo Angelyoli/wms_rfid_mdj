@@ -1,24 +1,14 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-<title>帮助</title> 
-
-<script type="text/javascript">
-    $(function () {
-        $('#help').click(function () {
-            $('#dlg-help').dialog('open').dialog('setTitle', '帮助');
-
-            $.getJSON("/HelpContent/Help/", "helpId=@ViewBag.ModuleID", function (helpContent) {
-                HelpTxt = helpContent.ContentText;
-                $(HelpTxt).appendTo("#ContentText");
-                $('#aaa').val();
-
-            });
-        });
-    });
+﻿<script type="text/javascript">
+    function helpClick() {        
+        $.getJSON("/HelpContent/Help/", "helpId=@ViewBag.ModuleID", function (helpContent) {
+            HelpTxt = helpContent.ContentText;
+            $("#ContentText").empty();
+            $(HelpTxt).appendTo("#ContentText");
+            $('#dlg-help').dialog('open').dialog('setTitle', '帮助');            
+        });        
+    };
 </script>
-</head>
-<body id="layout-function" class="easyui-layout" fit="true" >
+
 <div id="dlg-help" class="easyui-dialog" modal="true" maximized="true" border="false"
         style="width:auto;height:auto;padding:10px 20px"
 		closed="true">
@@ -26,5 +16,3 @@
             
         </div>
 </div>
-</body>
-</html>

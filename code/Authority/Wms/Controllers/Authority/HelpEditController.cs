@@ -8,9 +8,11 @@ using THOK.WebUtil;
 using THOK.Authority.DbModel;
 using THOK.Authority.Bll.Interfaces;
 using System;
+using THOK.Security;
 
 namespace Authority.Controllers.Authority
 {
+    [TokenAclAuthorize]
     public class HelpEditController : Controller
     {
         //

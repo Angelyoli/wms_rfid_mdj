@@ -7,8 +7,10 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.Security;
 namespace Authority.Controllers.Wms.StockOut
 {
+    [TokenAclAuthorize]
     public class StockOutBillTypeController : Controller
     {
         //

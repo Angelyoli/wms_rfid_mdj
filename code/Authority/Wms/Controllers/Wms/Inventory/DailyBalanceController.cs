@@ -11,9 +11,11 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using System.Data;
 using THOK.WMS.Upload.Bll;
+using THOK.Security;
 
 namespace Wms.Controllers.Wms.Inventory
 {
+    [TokenAclAuthorize]
     public class DailyBalanceController : Controller
     {
         //

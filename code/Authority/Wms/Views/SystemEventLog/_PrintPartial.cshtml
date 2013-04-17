@@ -1,0 +1,17 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var eventLogTime = null, eventName = null, fromPC = null, operateUser = null, targetSystem=null;
+        if ($('#EventLogTime').val() == null) { eventLogTime = ""; } else { eventLogTime = $('#EventLogTime').val() }
+        if ($('#EventName').val() == null) { eventName = ""; } else { eventName = $('#EventName').val() }
+        if ($('#FromPC').val() == null) { fromPC = ""; } else { fromPC = $('#FromPC').val() }
+        if ($('#OperateUser').val() == null) { operateUser = ""; } else { operateUser = $('#OperateUser').val() }
+        if ($('#TargetSystem').val() == null) { targetSystem = ""; } else { targetSystem = $('#TargetSystem').val() }
+
+        window.location.href = "/SystemEventLog/CreateExcelToClient/"
+                                + "?eventLogTime=" + eventLogTime
+                                + "&eventName=" + eventName
+                                + "&fromPC=" + fromPC
+                                + "&operateUser=" + operateUser
+                                + "&targetSystem=" + targetSystem;
+    }
+</script>

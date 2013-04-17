@@ -7,9 +7,11 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.SignalR.Dispatch.Interfaces;
 using THOK.WebUtil;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
+    [TokenAclAuthorize]
     public class SortWorkDispatchController : Controller
     {
         [Dependency]

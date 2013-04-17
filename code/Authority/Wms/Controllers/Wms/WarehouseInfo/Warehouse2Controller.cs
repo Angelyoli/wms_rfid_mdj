@@ -5,8 +5,10 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Service;
+using THOK.Security;
 namespace Wms.Controllers.Wms.WarehouseInfo
 {
+    [TokenAclAuthorize]
     public class Warehouse2Controller : Controller
     {
         [Dependency]

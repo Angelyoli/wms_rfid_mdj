@@ -8,9 +8,11 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.Wms.AutomotiveSystems.Models;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockMove
 {
+    [TokenAclAuthorize]
     public class StockMoveBillController : Controller
     {
         [Dependency]

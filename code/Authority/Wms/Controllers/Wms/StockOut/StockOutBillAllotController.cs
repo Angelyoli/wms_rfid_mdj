@@ -7,9 +7,11 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Allot.Interfaces;
 using THOK.WebUtil;
 using THOK.Wms.Bll.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockOut
 {
+    [TokenAclAuthorize]
     public class StockOutBillAllotController : Controller
     {
         [Dependency]

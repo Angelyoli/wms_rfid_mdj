@@ -9,9 +9,11 @@ using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockOut
 {
+    [TokenAclAuthorize]
     public class StockOutBillController : Controller
     {
 

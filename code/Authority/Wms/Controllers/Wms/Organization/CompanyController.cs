@@ -14,10 +14,12 @@ using NPOI.SS.UserModel;
 using System.IO;
 using System.Data;
 using THOK.Common;
+using THOK.Security;
 #endregion
 
 namespace Authority.Controllers.Organization
 {
+    [TokenAclAuthorize]
     public class CompanyController : Controller
     {
         [Dependency]

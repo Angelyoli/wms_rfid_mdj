@@ -14,6 +14,7 @@ using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockIn
 {
+    [TokenAclAuthorize]
     public class StockInBillController : Controller
     {
         [Dependency]
