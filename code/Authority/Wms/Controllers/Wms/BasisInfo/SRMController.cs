@@ -35,10 +35,18 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /SRM/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string SRMName = collection["SRMName"] ?? "";
-            string State = collection["State"] ?? "";
-            var srm = SRMService.GetDetails(page, rows,SRMName,State);
-            return Json(srm, "text", JsonRequestBehavior.AllowGet);
+            SRM srm = new SRM();
+            srm.SRMName = collection["SRMName"] ?? "";
+            srm.OPCServiceName = collection["OPCServiceName"] ?? "";
+            srm.GetRequest = collection["GetRequest"] ?? "";
+            srm.GetAllow = collection["GetAllow"] ?? "";
+            srm.GetComplete = collection["GetComplete"] ?? "";
+            srm.PutRequest = collection["PutRequest"] ?? "";
+            srm.PutAllow = collection["PutAllow"] ?? "";
+            srm.PutComplete = collection["PutComplete"] ?? "";
+            srm.State = collection["State"] ?? "";
+            var srmDetail = SRMService.GetDetails(page, rows,srm);
+            return Json(srmDetail, "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SearchPage()
@@ -57,7 +65,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(SRM srm)
         {
             string strResult = string.Empty;
-            bool bResult = SRMService.Add(srm, out strResult);
+            bool bResult = SRMService.Add(srm);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -67,7 +75,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(SRM srm)
         {
             string strResult = string.Empty;
-            bool bResult = SRMService.Save(srm, out strResult);
+            bool bResult = SRMService.Save(srm);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -79,7 +87,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = SRMService.Delete(srmId, out strResult);
+            bResult = SRMService.Delete(srmId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -108,10 +116,31 @@ namespace Wms.Controllers.Wms.BasisInfo
             //{
             //    id = Convert.ToInt32(Request.QueryString["id"]);
             //}
-            string srmName = Request.QueryString["srmName"];
-            string state = Request.QueryString["state"];
+            int SRMID =Convert.ToInt32(Request.QueryString["ID"]);
+            string SRMName = Request.QueryString["SRMName"];
+            string OPCServiceName = Request.QueryString["OPCServiceName"];
+            string GetRequest = Request.QueryString["GetRequest"];
+            string GetAllow = Request.QueryString["GetAllow"];
+            string GetComplete = Request.QueryString["GetComplete"];
+            string PutRequest = Request.QueryString["PutRequest"];
+            string PutAllow = Request.QueryString["PutAllow"];
+            string PutComplete = Request.QueryString["PutComplete"];
+            string Description = Request.QueryString["Description"];
+            string State = Request.QueryString["State"];
+            SRM srm = new SRM();
+            srm.ID = SRMID;
+            srm.SRMName = SRMName;
+            srm.OPCServiceName = OPCServiceName;
+            srm.GetRequest = GetRequest;
+            srm.GetAllow = GetAllow;
+            srm.GetComplete = GetComplete;
+            srm.PutRequest = PutRequest;
+            srm.PutAllow = PutAllow;
+            srm.PutComplete = PutComplete;
+            srm.Description = Description;
+            srm.State = State;
 
-            System.Data.DataTable dt = SRMService.GetSRM(page, rows, srmName, state,null);
+            System.Data.DataTable dt = SRMService.GetSRM(page, rows, srm);
             string headText = "堆垛机信息";
             string headFont = "微软雅黑"; Int16 headSize = 20;
             string colHeadFont = "Arial"; Int16 colHeadSize = 10;

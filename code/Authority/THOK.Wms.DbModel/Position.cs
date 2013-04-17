@@ -27,6 +27,7 @@ namespace THOK.Wms.DbModel
         public string TagAddress { get; set; }
         public int CurrentTaskID { get; set; }
         public int CurrentOperateQuantity { get; set; }
+        public string ChannelCode { get; set; }
         public string State { get; set; }
 
         public virtual Region Region { get; set; }

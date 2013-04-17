@@ -17,105 +17,85 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows,string SRMName,string State)
+        public object GetDetails(int page, int rows,SRM srms)
         {
-            IQueryable<SRM> srmQuery = SRMRepository.GetQueryable();
-            var srm = srmQuery.Where(s => s.SRMName.Contains(SRMName) && s.State.Contains(State))
-                .OrderBy(s => s.ID).AsEnumerable()
-                .Select(s => new
-                {
-                    s.ID,
-                    s.SRMName,
-                    s.Description,
-                    State = s.State == "01" ? "可用" : "不可用",
-                });
-           
-            int total = srm.Count();
-            srm = srm.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = srm.ToArray() };
+            IQueryable<SRM> sRMQuery = SRMRepository.GetQueryable();
+
+            var sRMDetail = sRMQuery.Where(s =>
+                s.SRMName.Contains(srms.SRMName)
+                //&& s.OPCServiceName.Contains(srms.OPCServiceName)
+                //&& s.GetRequest.Contains(srms.GetRequest)
+                //&& s.GetAllow.Contains(srms.GetAllow)
+                //&& s.GetComplete.Contains(srms.GetComplete)
+                //&& s.PutRequest.Contains(srms.PutRequest)
+                //&& s.PutAllow.Contains(srms.PutAllow)
+                //&& s.PutComplete.Contains(srms.PutComplete)
+                && s.State.Contains(srms.State)).OrderBy(ul => ul.SRMName);
+            int total = sRMDetail.Count();
+            var sRMDetails = sRMDetail.Skip((page - 1) * rows).Take(rows);
+            var sRM_Detail = sRMDetails.ToArray().Select(s => new
+            {
+                s.ID,
+                s.SRMName,
+                s.OPCServiceName,
+                s.GetRequest,
+                s.GetAllow,
+                s.GetComplete,
+                s.PutRequest,
+                s.PutAllow,
+                s.PutComplete,
+                s.Description,
+                State = s.State == "01" ? "可用" : "不可用"
+            });
+            return new { total, rows = sRM_Detail.ToArray() };
         }
 
-        public bool Add(SRM srm, out string strResult)
+        public bool Add(SRM srm)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var sr = new SRM();
-            if (sr != null)
-            {
-                try
-                {
-                    sr.SRMName = srm.SRMName;
-                    sr.Description = srm.Description;
-                    sr.State = srm.State;
-
-                    SRMRepository.Add(sr);
-                    SRMRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
-            }
-            return result;
+            var s = new SRM();
+            s.SRMName = srm.SRMName;
+            s.Description = srm.Description;
+            s.OPCServiceName = srm.OPCServiceName;
+            s.GetRequest = srm.GetRequest;
+            s.GetAllow = srm.GetAllow;
+            s.GetComplete = srm.GetComplete;
+            s.PutRequest = srm.PutRequest;
+            s.PutAllow = srm.PutAllow;
+            s.PutComplete = srm.PutComplete;
+            s.State = srm.State;
+            SRMRepository.Add(s);
+            SRMRepository.SaveChanges();
+            return true;
         }
 
-        public bool Save(SRM srm, out string strResult)
+        public bool Save(SRM srm)
         {
-            strResult = string.Empty;
-            bool result = false;
             var sr = SRMRepository.GetQueryable().FirstOrDefault(s => s.ID == srm.ID);
-
-            if (sr != null)
-            {
-                try
-                {
-                    sr.SRMName = srm.SRMName;
-                    sr.Description = srm.Description;
-                    sr.State = srm.State;
-
-                    SRMRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要修改的数据！";
-            }
-            return result;
+            sr.SRMName = srm.SRMName;
+            sr.Description = srm.Description;
+            sr.OPCServiceName = srm.OPCServiceName;
+            sr.GetRequest = srm.GetRequest;
+            sr.GetAllow = srm.GetAllow;
+            sr.GetComplete = srm.GetComplete;
+            sr.PutRequest = srm.PutRequest;
+            sr.PutAllow = srm.PutAllow;
+            sr.PutComplete = srm.PutComplete;
+            sr.State = srm.State;
+            SRMRepository.SaveChanges();
+            return true;
         }
 
-        public bool Delete(int srmId, out string strResult)
+        public bool Delete(int srmId)
         {
-            strResult = string.Empty;
-            bool result = false;
             var srm = SRMRepository.GetQueryable().FirstOrDefault(s => s.ID == srmId);
             if (srm != null)
             {
-                try
-                {
-                    SRMRepository.Delete(srm);
-                    SRMRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    strResult = "原因：已在使用";
-                }
+                SRMRepository.Delete(srm);
+                SRMRepository.SaveChanges();
             }
             else
-            {
-                strResult = "原因：未找到当前需要删除的数据！";
-            }
-            return result;
+                return false;
+            return true;
         }
 
         public object GetSRM(int page, int rows, string queryString, string value)
@@ -136,8 +116,14 @@ namespace THOK.Wms.Bll.Service
                 .OrderBy(s => s.ID).AsEnumerable().
                 Select(s => new
                 {
-                    s.ID,
                     s.SRMName,
+                    s.OPCServiceName,
+                    s.GetRequest,
+                    s.GetAllow,
+                    s.GetComplete,
+                    s.PutRequest,
+                    s.PutAllow,
+                    s.PutComplete,
                     s.Description,
                     State = s.State == "01" ? "可用" : "不可用"
                 });
@@ -146,43 +132,65 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = srm.ToArray() };
         }
 
-        public System.Data.DataTable GetSRM(int page, int rows, string srmName, string state, string t)
+        public System.Data.DataTable GetSRM(int page, int rows, SRM srms)
         {
-            IQueryable<SRM> srmQuery = SRMRepository.GetQueryable();
-            var srm = srmQuery.Where(s => s.SRMName.Contains(srmName))
-                .OrderBy(s => s.ID).AsEnumerable()
-                .Select(s => new
-                {
-                    s.ID,
-                    s.SRMName,
-                    s.Description,
-                    State = s.State == "01" ? "可用" : "不可用"
-                });
-            if (!state.Equals(""))
+            IQueryable<SRM> sRMQuery = SRMRepository.GetQueryable();
+
+            var sRMDetail = sRMQuery.Where(s =>
+                s.SRMName.Contains(srms.SRMName)
+                && s.OPCServiceName.Contains(srms.OPCServiceName)
+                && s.GetRequest.Contains(srms.GetRequest)
+                && s.GetAllow.Contains(srms.GetAllow)
+                && s.GetComplete.Contains(srms.GetComplete)
+                && s.PutRequest.Contains(srms.PutRequest)
+                && s.PutAllow.Contains(srms.PutAllow)
+                && s.PutComplete.Contains(srms.PutComplete)
+                && s.State.Contains(srms.State)).OrderBy(ul => ul.SRMName);
+            int total = sRMDetail.Count();
+            var sRMDetails = sRMDetail.Skip((page - 1) * rows).Take(rows);
+            var sRM_Detail = sRMDetails.ToArray().Select(s => new
             {
-                srm = srmQuery.Where(s => s.SRMName.Contains(srmName) && s.State.Contains(state))
-                    .OrderBy(s => s.ID).AsEnumerable()
-                    .Select(s => new
-                    {
-                        s.ID,
-                        s.SRMName,
-                        s.Description,
-                        State = s.State == "01" ? "可用" : "不可用"
-                    });
-            }
+                s.ID,
+                s.SRMName,
+                s.OPCServiceName,
+                s.GetRequest,
+                s.GetAllow,
+                s.GetComplete,
+                s.PutRequest,
+                s.PutAllow,
+                s.PutComplete,
+                s.Description,
+                State = s.State == "01" ? "可用" : "不可用"
+            });
+
             System.Data.DataTable dt = new System.Data.DataTable();
+
             dt.Columns.Add("堆垛机编码", typeof(string));
             dt.Columns.Add("堆垛机名称", typeof(string));
             dt.Columns.Add("描述", typeof(string));
-            dt.Columns.Add("是否可用", typeof(string));
-            foreach (var item in srm)
+            dt.Columns.Add("OPC服务名", typeof(string));
+            dt.Columns.Add("取货请求数据项名", typeof(string));
+            dt.Columns.Add("充许取货数据项名", typeof(string));
+            dt.Columns.Add("取货完成数据项名", typeof(string));
+            dt.Columns.Add("放货请求数据项名", typeof(string));
+            dt.Columns.Add("充许放货数据项名", typeof(string));
+            dt.Columns.Add("放货完成数据项名", typeof(string));
+            dt.Columns.Add("状态", typeof(string));
+            foreach (var s in sRM_Detail)
             {
                 dt.Rows.Add
                     (
-                        item.ID,
-                        item.SRMName,
-                        item.Description,
-                        item.State
+                        s.ID,
+                        s.SRMName,
+                        s.OPCServiceName,
+                        s.GetRequest,
+                        s.GetAllow,
+                        s.GetComplete,
+                        s.PutRequest,
+                        s.PutAllow,
+                        s.PutComplete,
+                        s.Description,
+                        s.State
                     );
             }
             return dt;
