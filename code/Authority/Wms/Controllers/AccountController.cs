@@ -101,11 +101,12 @@ namespace Authority.Controllers
             bool bResult = false;
             string msg = "";
             string userName = this.User.Identity.Name;
+            string nowTime = DateTime.Now.ToString();
             cityId = cityId ?? this.GetCookieValue("cityid");
             systemId = systemId ?? this.GetCookieValue("systemid");
-
             if (UserService.ValidateUserPermission(userName,cityId, systemId))
             {
+                LoginLogService.UpdateLoginLog(userName, nowTime);
                 bResult = true;                
                 msg = "切换成功!";
             }
