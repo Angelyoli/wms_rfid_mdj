@@ -218,11 +218,11 @@
     <Compile Include="Security\SystemEventLogAttribute.cs" />
     <Compile Include="Security\SystemEventLogFactory.cs" />
     <Compile Include="Security\TokenAclAuthorizeAttribute.cs" />
-    <Compile Include="Security\UserServiceFactory.cs" />
     <Compile Include="Service\WMSService.asmx.cs">
       <DependentUpon>WMSService.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Security\ServiceFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ASPNETDB.MDF" />

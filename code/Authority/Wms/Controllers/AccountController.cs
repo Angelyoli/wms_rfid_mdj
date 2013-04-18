@@ -71,7 +71,6 @@ namespace Authority.Controllers
                 }
                 LoginLogService.CreateLoginLog(nowTime, userName, Guid.Parse(systemId),ipAdress);
                 UserService.UpdateUserInfo(userName,ipAdress);
-                this.AddCookie("ipAdress", ipAdress);
             }
             return new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" } });
         }
