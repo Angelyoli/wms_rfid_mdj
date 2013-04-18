@@ -62,7 +62,11 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.OrderType)
               .IsFixedLength()
               .HasMaxLength(2);
-
+            this.Property(t => t.DownloadState)
+                .IsRequired()
+                .IsFixedLength()
+                .HasMaxLength(2);
+            
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));
             this.Property(t => t.TaskType).HasColumnName(ColumnMap.Value.To("TaskType"));
@@ -84,6 +88,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.OrderID).HasColumnName(ColumnMap.Value.To("OrderID"));
             this.Property(t => t.OrderType).HasColumnName(ColumnMap.Value.To("OrderType"));
             this.Property(t => t.AllotID).HasColumnName(ColumnMap.Value.To("AllotID"));
+            this.Property(t => t.DownloadState).HasColumnName(ColumnMap.Value.To("DownloadState"));
         }
     }
 }
