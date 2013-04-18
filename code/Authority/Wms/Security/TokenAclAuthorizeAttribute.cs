@@ -13,7 +13,7 @@ namespace THOK.Security
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool result = true;
-            if (httpContext.Request.Cookies["username"] != null && httpContext.Request.Cookies["ipAdress"]!=null)
+            if (httpContext.Request.Cookies["username"] != null)
             {
                 string user = httpContext.Request.Cookies["username"].Value;
                 string ipAdress = UserFactory.GetService<IUserService>().GetUserIp(user);
