@@ -64,20 +64,23 @@ namespace Authority.Controllers
                 this.AddCookie("serverid", serverId);
                 this.AddCookie("username", userName);
                 string nowTime = DateTime.Now.ToString();
-                if (!UserService.CheckAdress(userName) && UserService.GetUserIp(userName) != "")
+                string ipAdress = this.ControllerContext.HttpContext.Request.UserHostAddress;
+                if (!UserService.CheckAdress(userName, ipAdress) && UserService.GetUserIp(userName) != "")
                 {
                     LoginLogService.UpdateLoginLog(userName, nowTime);
                 }
-                LoginLogService.CreateLoginLog(nowTime, userName, Guid.Parse(systemId));
-                UserService.UpdateUserInfo(userName);
+                LoginLogService.CreateLoginLog(nowTime, userName, Guid.Parse(systemId),ipAdress);
+                UserService.UpdateUserInfo(userName,ipAdress);
+                this.AddCookie("ipAdress", ipAdress);
             }
             return new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" } });
         }
 
         public ActionResult LogOff()
         {
+            string ipAdress = this.ControllerContext.HttpContext.Request.UserHostAddress;
             string username = this.GetCookieValue("username");
-            if (UserService.CheckAdress(username))
+            if (UserService.CheckAdress(username,ipAdress))
             {
                 UserService.DeleteUserIp(username);
                 LoginLogService.UpdateLoginLog(username,DateTime.Now.ToString());

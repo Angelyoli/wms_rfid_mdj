@@ -29,13 +29,10 @@ namespace Authority.Controllers
             string serverId = this.GetCookieValue("serverid");
             string systemId = this.GetCookieValue("systemid");
             string ipAdress = UserService.GetUserIp(userName);
-            string localip = UserService.GetLocalIp();
-            if (!cityId.Equals(string.Empty) 
-                && !serverId.Equals(string.Empty) 
-                && !systemId.Equals(string.Empty)
-                && UserService.CheckAdress(userName)
-                && this.ControllerContext.HttpContext.Request.IsAuthenticated)
+            string localip = this.ControllerContext.HttpContext.Request.UserHostAddress;
+            if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && UserService.CheckAdress(userName, localip))
             {
+
                 ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
                 ViewBag.ServerName = ServerService.GetServerById(serverId).ToString();
                 ViewBag.SystemName = SystemService.GetSystemById(systemId).ToString();
@@ -56,6 +53,7 @@ namespace Authority.Controllers
                 this.RemoveCookie(serverId);
                 this.RemoveCookie(systemId);
                 this.RemoveCookie(userName);
+                this.RemoveCookie(ipAdress);
                 FormsService.SignOut();
                 if (this.ControllerContext.HttpContext.Request.IsAuthenticated)
                 {
