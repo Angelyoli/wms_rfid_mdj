@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ExportExcelHeper.cs" />
-    <Compile Include="Service\ExportExcelAuto.cs" />
+    <Compile Include="Service\ExportExcel.cs" />
     <Compile Include="Service\ExportExcelTemplate.cs" />
     <Compile Include="Models\ExportParam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
