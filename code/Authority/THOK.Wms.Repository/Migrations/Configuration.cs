@@ -3165,6 +3165,14 @@
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("FD344F88-08AD-4FDA-8F45-EAD3BB471106")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("E0000000-D425-4911-9345-6433ADF66102"),
+                    FunctionName = "作业",
+                    ControlName = "task",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("FD344F88-08AD-4FDA-8F45-EAD3BB471106")
                 }
                );
             context.SaveChanges();

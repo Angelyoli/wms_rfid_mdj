@@ -87,7 +87,7 @@ namespace Wms
                     switch (httpException.GetHttpCode())
                     {
                         case 404:
-                            if (!cxt.Request.IsAjaxRequest())
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
                                 HttpCookie PageNotFoundLog = new HttpCookie("PageNotFoundLog", exception.Message);
                                 Context.Request.Cookies.Add(PageNotFoundLog);
@@ -101,7 +101,7 @@ namespace Wms
                             }
                             break;
                         case 500:
-                            if (!cxt.Request.IsAjaxRequest())
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
                                 HttpCookie ServerErrorLog = new HttpCookie("ServerErrorLog", exception.Message);
                                 Context.Request.Cookies.Add(ServerErrorLog);
@@ -116,7 +116,7 @@ namespace Wms
                             Trace.TraceError("Server Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                         default:
-                            if (!cxt.Request.IsAjaxRequest())
+                            if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
                                 HttpCookie ErrorLog = new HttpCookie("ErrorLog", exception.Message);
                                 Context.Request.Cookies.Add(ErrorLog);
@@ -148,9 +148,12 @@ namespace Wms
 
         void Session_End()
         {
-            UserServiceFactory UserFactory = new UserServiceFactory();
-            UserFactory.userService.DeleteUserIp(Session["userName"].ToString());
-            UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());           
+            if (Session["userName"] != null)
+            {
+                UserServiceFactory UserFactory = new UserServiceFactory();
+                UserFactory.userService.DeleteUserIp(Session["userName"].ToString());
+                UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
+            }
         }        
 
         void Application_AuthenticateRequest(object sender, EventArgs e)
