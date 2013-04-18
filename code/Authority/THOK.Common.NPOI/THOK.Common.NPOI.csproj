@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9495DAFA-C32B-445C-B760-341CBE9288C6}</ProjectGuid>
+    <ProjectGuid>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>THOK.Wms.Download</RootNamespace>
-    <AssemblyName>THOK.Wms.Download</AssemblyName>
+    <RootNamespace>THOK.Common.NPOI</RootNamespace>
+    <AssemblyName>THOK.Common.NPOI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,13 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\packages\npoi.1.2.5\.net 4.0\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,34 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\ICustomerDownService.cs" />
-    <Compile Include="Interfaces\IDeliverLineDownService.cs" />
-    <Compile Include="Interfaces\IInBillMasterDownService.cs" />
-    <Compile Include="Interfaces\IOutBillMasterDownService.cs" />
-    <Compile Include="Interfaces\IProductDownService.cs" />
-    <Compile Include="Interfaces\ISortingDownService.cs" />
-    <Compile Include="Interfaces\IUnitDownService.cs" />
-    <Compile Include="Service\CustomerDownService.cs" />
-    <Compile Include="Service\DeliverLineDownService.cs" />
-    <Compile Include="Service\InBillMasterDownService.cs" />
-    <Compile Include="Service\OutBillMasterDownService.cs" />
-    <Compile Include="Service\ProductDownService.cs" />
-    <Compile Include="Service\SortingDownService.cs" />
-    <Compile Include="Service\UnitDownService.cs" />
+    <Compile Include="Common\ExportExcelHeper.cs" />
+    <Compile Include="Service\ExportExcel.cs" />
+    <Compile Include="Service\ExportExcelTemplate.cs" />
+    <Compile Include="Models\ExportParam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SortingDbContext.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
-      <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
