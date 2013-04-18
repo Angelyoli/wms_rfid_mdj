@@ -38,9 +38,8 @@ namespace THOK.Authority.Bll.Service
             get { return this.GetType(); }
         }
 
-        public bool CreateEventLog(string EventName, string EventDescription, string OperateUser, Guid TargetSystem)
+        public bool CreateEventLog(string EventName, string EventDescription, string OperateUser, Guid TargetSystem, string userPC)
         {
-            string userPC = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
             var systemname= SystemRepository.GetQueryable().Where(s => s.SystemID == TargetSystem).Select(s => new { systemname=s.SystemName });
 
             if (systemname.ToArray().Length > 0)

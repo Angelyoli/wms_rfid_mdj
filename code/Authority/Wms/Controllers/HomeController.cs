@@ -29,10 +29,10 @@ namespace Authority.Controllers
             string serverId = this.GetCookieValue("serverid");
             string systemId = this.GetCookieValue("systemid");
             string ipAdress = UserService.GetUserIp(userName);
-            string localip = UserService.GetLocalIp();
-            if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty))
+            string localip = this.ControllerContext.HttpContext.Request.UserHostAddress;
+            if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && UserService.CheckAdress(userName, localip))
             {
-                if (UserService.CheckAdress(userName))
+                if (UserService.CheckAdress(userName,localip))
                 {
                     ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
                     ViewBag.ServerName = ServerService.GetServerById(serverId).ToString();
@@ -59,6 +59,7 @@ namespace Authority.Controllers
                 this.RemoveCookie(serverId);
                 this.RemoveCookie(systemId);
                 this.RemoveCookie(userName);
+                this.RemoveCookie(ipAdress);
                 FormsService.SignOut();
             }
             Session["userName"] = userName;

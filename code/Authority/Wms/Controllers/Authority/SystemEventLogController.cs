@@ -89,13 +89,6 @@ namespace Authority.Controllers.Authority
                 , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
-
-        public ActionResult CreateEventLog(string EventName, string EventDescription, string OperateUser, Guid TargetSystem)
-        {
-            bool result=SystemEventLogService.CreateEventLog(EventName,EventDescription,OperateUser,TargetSystem);
-            return Json(result);
-        }
-
     }
 }
 

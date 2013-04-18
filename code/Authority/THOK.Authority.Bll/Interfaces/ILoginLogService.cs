@@ -13,7 +13,7 @@ namespace THOK.Authority.Bll.Interfaces
 
         System.Data.DataTable GetLoginLog(int page, int rows, string loginPC, string loginTime, string logoutTime);
 
-        bool CreateLoginLog(string login_time,string user_name, Guid system_ID);
+        bool CreateLoginLog(string login_time, string user_name, Guid system_ID, string ipaddress);
 
         bool UpdateLoginLog(string user_name, string logout_time);
     }
