@@ -82,13 +82,6 @@ namespace Authority.Controllers.Authority
             System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
-
-        public ActionResult CreateEventLog(string EventName, string EventDescription, string OperateUser, Guid TargetSystem)
-        {
-            bool result=SystemEventLogService.CreateEventLog(EventName,EventDescription,OperateUser,TargetSystem);
-            return Json(result);
-        }
-
     }
 }
 

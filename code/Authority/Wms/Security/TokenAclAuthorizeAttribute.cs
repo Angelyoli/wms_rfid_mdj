@@ -12,11 +12,11 @@ namespace THOK.Security
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool result = true;
-            if (httpContext.Request.Cookies.Keys.Count>1)
+            if (httpContext.Request.Cookies["username"] != null && httpContext.Request.Cookies["ipAdress"]!=null)
             {
                 string user = httpContext.Request.Cookies["username"].Value;
                 string ipAdress = UserFactory.userService.GetUserIp(user);
-                string localip = UserFactory.userService.GetLocalIp();
+                string localip = httpContext.Request.Cookies["ipAdress"].Value;
                 if (ipAdress != localip)
                 {
                     result = false;

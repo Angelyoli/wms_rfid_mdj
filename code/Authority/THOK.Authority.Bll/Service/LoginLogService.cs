@@ -117,9 +117,8 @@ namespace THOK.Authority.Bll.Service
             }
             return dt;
         }
-        public bool CreateLoginLog(string login_time,string user_name, Guid system_ID)
+        public bool CreateLoginLog(string login_time, string user_name, Guid system_ID, string ipaddress)
         {
-            string ipaddress = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
             var userid = UserRepository.GetQueryable().Where(s => s.UserName == user_name).Select(s => new { userId = s.UserID });
             if (userid.ToArray().Length > 0)
             {

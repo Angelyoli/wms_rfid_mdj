@@ -38,7 +38,7 @@ namespace Authority.Controllers.Wms.StockOut
             ViewBag.hasAudit = true;
             ViewBag.hasAntiTrial = true;
             ViewBag.hasAllot = true;
-            //ViewBag.hasTask = true;
+            ViewBag.hasTask = true;
             ViewBag.hasSettle = true;
             ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
