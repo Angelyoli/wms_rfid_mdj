@@ -14,6 +14,7 @@ using System.IO.Compression;
 using THOK.Security;
 using Wms.Security;
 using THOK.Common.Ef.Infrastructure;
+using THOK.Authority.Bll.Interfaces;
 namespace Wms
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
@@ -54,8 +55,6 @@ namespace Wms
 
         void Application_Start()
         {
-            UserServiceFactory userserviceFactory = new UserServiceFactory();
-            ControllerBuilder.Current.SetControllerFactory(userserviceFactory);
             RegisterIocUnityControllerFactory();
             AreaRegistration.RegisterAllAreas();
             RegisterGlobalFilters(GlobalFilters.Filters);           
@@ -65,7 +64,7 @@ namespace Wms
         void Application_Error()
         {
             ResetContext();
-            UserServiceFactory EventLogFactory = new UserServiceFactory();
+            ServiceFactory EventLogFactory = new ServiceFactory();
             Exception exception = Server.GetLastError();
             if (exception != null)
             {
@@ -128,7 +127,7 @@ namespace Wms
                             break;
                     }
                 }
-                EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
+                EventLogFactory.GetService<IExceptionalLogService>().CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
                 Server.ClearError();
                 Response.TrySkipIisCustomErrors = true;
                 IController errorController = new HomeController();
@@ -145,9 +144,9 @@ namespace Wms
         {
             if (Session["userName"] != null)
             {
-                UserServiceFactory UserFactory = new UserServiceFactory();
-                UserFactory.userService.DeleteUserIp(Session["userName"].ToString());
-                UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
+                ServiceFactory UserFactory = new ServiceFactory();
+                UserFactory.GetService<IUserService>().DeleteUserIp(Session["userName"].ToString());
+                UserFactory.GetService<ILoginLogService>().UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
             }
         }        
 

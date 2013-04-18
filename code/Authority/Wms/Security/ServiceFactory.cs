@@ -13,25 +13,23 @@ using THOK.Authority.Bll.Service;
 
 namespace THOK.Security
 {
-    public class UserServiceFactory : DefaultControllerFactory
+    public class ServiceFactory
     {
         private readonly IUnityContainer _container;
-        public IUserService userService;
-        public ILoginLogService LoginLogService;
-        public ISystemEventLogService SystemEventLogService;
-        public IExceptionalLogService ExceptionalLogService;
-        public UserServiceFactory()
+        public ServiceFactory()
         {
             _container = new UnityContainer();          
             UnityConfigurationSection section = (UnityConfigurationSection)ConfigurationManager.GetSection("unity");
             section.Configure(_container, "defaultContainer");
-            userService = _container.Resolve<IUserService>() as UserService;
-            LoginLogService = _container.Resolve<ILoginLogService>() as LoginLogService;
-            SystemEventLogService = _container.Resolve<ISystemEventLogService>() as SystemEventLogService;
-            ExceptionalLogService = _container.Resolve<IExceptionalLogService>() as ExceptionalLogService;
             ServiceLocatorProvider sp = new ServiceLocatorProvider(GetServiceLocator);
             ServiceLocator.SetLocatorProvider(sp);
         }
+
+        public T GetService<T>()
+        {
+            return _container.Resolve<T>();
+        }
+
         public IServiceLocator GetServiceLocator()
         {
             return new UnityServiceLocator(_container);
