@@ -87,7 +87,7 @@ namespace THOK.NPOI.Service
                 else
                 {
                     page = dt1count / sheetCount + 1;
-                } 
+                }
                 #endregion
 
                 for (int a = 0; a < page; a++)
@@ -99,18 +99,18 @@ namespace THOK.NPOI.Service
                         sheetNum = sheetNum.Substring(0, a.ToString().Length - 1);
                     }
                     string headTitle1_sheetNum = ep.HeadTitle1 + sheetNum;
-                    sheet = workbook.CreateSheet(headTitle1_sheetNum) as HSSFSheet; 
+                    sheet = workbook.CreateSheet(headTitle1_sheetNum) as HSSFSheet;
                     #endregion
 
                     #region SHEET打印设置
                     sheet.PrintSetup.FitHeight = printHeight;
-                    sheet.PrintSetup.FitWidth = printWidth; 
+                    sheet.PrintSetup.FitWidth = printWidth;
                     #endregion
 
                     int rowIndex1 = 0;
 
                     #region 内容分页
-                    DataTable newdt1 = THOK.NPOI.Common.ExportExcelHeper.SetPage(ep.DT1, a + 1, sheetCount); 
+                    DataTable newdt1 = THOK.NPOI.Common.ExportExcelHeper.SetPage(ep.DT1, a + 1, sheetCount);
                     #endregion
 
                     #region 填充数据
@@ -375,7 +375,16 @@ namespace THOK.NPOI.Service
                     int intTemp = Encoding.GetEncoding(936).GetBytes(dt.Rows[i][j].ToString()).Length;
                     if (intTemp > arrColWidth[j])
                     {
-                        arrColWidth[j] = intTemp;
+                        #region NPOI最大限度是255 否则标错
+                        if (intTemp > 250)
+                        {
+                            arrColWidth[j] = 50;
+                        } 
+                        #endregion
+                        else
+                        {
+                            arrColWidth[j] = intTemp;
+                        }
                     }
                 }
             }
