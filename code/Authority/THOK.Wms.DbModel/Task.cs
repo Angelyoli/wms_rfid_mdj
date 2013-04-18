@@ -23,5 +23,6 @@ namespace THOK.Wms.DbModel
         public string OrderID { get; set; }
         public string OrderType { get; set; }
         public int AllotID { get; set; }
+        public string DownloadState { get; set; } 
     }
 }

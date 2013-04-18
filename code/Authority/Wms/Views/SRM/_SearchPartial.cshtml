@@ -49,6 +49,13 @@
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.SRMName = $('#SRMName').val();
+        queryParams.OPCServiceName = $('#OPCServiceName').val();
+        queryParams.GetRequest = $('#GetRequest').val();
+        queryParams.GetAllow = $('#GetAllow').val();
+        queryParams.GetComplete = $('#GetComplete').val();
+        queryParams.PutRequest = $('#PutRequest').val();
+        queryParams.PutAllow = $('#PutAllow').val();
+        queryParams.PutComplete = $('#PutComplete').val();
         queryParams.State = $('#SearchState').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
