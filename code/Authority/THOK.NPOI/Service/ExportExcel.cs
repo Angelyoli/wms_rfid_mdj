@@ -295,6 +295,87 @@ namespace THOK.NPOI.Service
         }
         #endregion
 
+        #region 样式 大标题
+        static HSSFCellStyle GetTitleStyle(string headFont, short headSize, short headColor
+            , HSSFCellStyle cellStyle, HSSFFont font)
+        {
+            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle.Alignment = HorizontalAlignment.CENTER;
+            font = workbook.CreateFont() as HSSFFont;
+            font.FontName = headFont;
+            font.FontHeightInPoints = headSize;
+            font.Color = headColor;
+            font.Boldweight = 700;
+            cellStyle.SetFont(font);
+            return cellStyle;
+        }
+        #endregion
+
+        #region 样式 导出时间
+        static HSSFCellStyle GetExportDate(HSSFCellStyle cellStyle)
+        {
+            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle.Alignment = HorizontalAlignment.CENTER;
+            return cellStyle;
+        }
+        #endregion
+
+        #region 样式 列头
+        static HSSFCellStyle GetColumnStyle(string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder
+            , HSSFCellStyle cellStyle, HSSFFont font)
+        {
+            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
+            cellStyle.Alignment = HorizontalAlignment.CENTER; //居中
+            if (colHeadBorder == true)
+            {
+                //边框
+                cellStyle.BorderBottom = BorderStyle.THIN;
+                cellStyle.BorderLeft = BorderStyle.THIN;
+                cellStyle.BorderRight = BorderStyle.THIN;
+                cellStyle.BorderTop = BorderStyle.THIN;
+            }
+            //font
+            font = workbook.CreateFont() as HSSFFont;
+            font.FontName = colHeadFont;
+            font.FontHeightInPoints = colHeadSize;
+            font.Color = colHeadColor;
+            font.Boldweight = 700;
+
+            cellStyle.SetFont(font);
+            return cellStyle;
+        }
+        #endregion
+        
+        #region 取得列宽
+        static void GetColumnWidth(DataTable dt, int[] arrColWidth)
+        {
+            foreach (DataColumn item in dt.Columns)
+            {
+                arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;//936是指GB2312编码
+            }
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt.Rows[i][j].ToString()).Length;
+                    if (intTemp > arrColWidth[j])
+                    {
+                        #region NPOI最大限度是255 否则报错
+                        if (intTemp > 250)
+                        {
+                            arrColWidth[j] = 50;
+                        } 
+                        #endregion
+                        else
+                        {
+                            arrColWidth[j] = intTemp;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region 填充内容
         /// <summary>填充内容</summary>
         static void FillContent(HSSFRow hssfRow
@@ -358,87 +439,6 @@ namespace THOK.NPOI.Service
             }
             string drValue = row[column].ToString();
             THOK.NPOI.Common.ExportExcelHeper.ChangeFormat(column, drValue, newCell, contentDateStyle);
-        }
-        #endregion
-
-        #region 取得列宽
-        static void GetColumnWidth(DataTable dt, int[] arrColWidth)
-        {
-            foreach (DataColumn item in dt.Columns)
-            {
-                arrColWidth[item.Ordinal] = Encoding.GetEncoding(936).GetBytes(item.ColumnName.ToString()).Length;//936是指GB2312编码
-            }
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                for (int j = 0; j < dt.Columns.Count; j++)
-                {
-                    int intTemp = Encoding.GetEncoding(936).GetBytes(dt.Rows[i][j].ToString()).Length;
-                    if (intTemp > arrColWidth[j])
-                    {
-                        #region NPOI最大限度是255 否则标错
-                        if (intTemp > 250)
-                        {
-                            arrColWidth[j] = 50;
-                        } 
-                        #endregion
-                        else
-                        {
-                            arrColWidth[j] = intTemp;
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region 标题样式
-        static HSSFCellStyle GetTitleStyle(string headFont, short headSize, short headColor
-            , HSSFCellStyle cellStyle, HSSFFont font)
-        {
-            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            cellStyle.Alignment = HorizontalAlignment.CENTER;
-            font = workbook.CreateFont() as HSSFFont;
-            font.FontName = headFont;
-            font.FontHeightInPoints = headSize;
-            font.Color = headColor;
-            font.Boldweight = 700;
-            cellStyle.SetFont(font);
-            return cellStyle;
-        }
-        #endregion
-
-        #region 列头样式
-        static HSSFCellStyle GetColumnStyle(string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder
-            , HSSFCellStyle cellStyle, HSSFFont font)
-        {
-            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            cellStyle.Alignment = HorizontalAlignment.CENTER; //居中
-            if (colHeadBorder == true)
-            {
-                //边框
-                cellStyle.BorderBottom = BorderStyle.THIN;
-                cellStyle.BorderLeft = BorderStyle.THIN;
-                cellStyle.BorderRight = BorderStyle.THIN;
-                cellStyle.BorderTop = BorderStyle.THIN;
-            }
-            //font
-            font = workbook.CreateFont() as HSSFFont;
-            font.FontName = colHeadFont;
-            font.FontHeightInPoints = colHeadSize;
-            font.Color = colHeadColor;
-            font.Boldweight = 700;
-
-            cellStyle.SetFont(font);
-            return cellStyle;
-        }
-        #endregion
-
-        #region 导出时间样式
-        static HSSFCellStyle GetExportDate(HSSFCellStyle cellStyle)
-        {
-            cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
-            cellStyle.Alignment = HorizontalAlignment.CENTER;
-            return cellStyle;
         }
         #endregion
 
