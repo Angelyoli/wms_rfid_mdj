@@ -68,7 +68,9 @@
 .icon-exit{
 	background:url('icons/shut_down.png') no-repeat;
 }
-
+.icon-node{
+	background:url('icons/node.png') no-repeat;
+}
 .icon-mini-add{
 	background:url('icons/mini_add.png') no-repeat 2px 2px;
 }
