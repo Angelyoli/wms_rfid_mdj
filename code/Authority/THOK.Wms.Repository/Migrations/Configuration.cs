@@ -390,7 +390,7 @@
                     FunctionID = new Guid("E3F6C1FE-3F1A-4eb2-9AE7-CB835EFF5DB6"),
                     FunctionName = "功能",
                     ControlName = "functionadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-son_SortWork",
                     Module_ModuleID = new Guid("182120F0-CC8E-43cb-858C-E074972412DC")
                 },
                 new Function()
@@ -446,7 +446,7 @@
                     FunctionID = new Guid("B238E721-ECC9-4b71-A82F-17C69EB1C03D"),
                     FunctionName = "权限",
                     ControlName = "permissionadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_RoleJurisdiction",
                     Module_ModuleID = new Guid("ADD20759-88F7-43db-A885-4508DB9BEEC2")
                 },
                 new Function()
@@ -454,7 +454,7 @@
                     FunctionID = new Guid("EFBF340C-1183-4a59-BABF-A1439696951F"),
                     FunctionName = "用户",
                     ControlName = "useradmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_UserJurisdiction",
                     Module_ModuleID = new Guid("ADD20759-88F7-43db-A885-4508DB9BEEC2")
                 },
                 new Function()
@@ -510,7 +510,7 @@
                     FunctionID = new Guid("8CA2DF4E-F3EC-4d79-87F5-74699BFBBDA9"),
                     FunctionName = "权限",
                     ControlName = "permissionadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_RoleJurisdiction",
                     Module_ModuleID = new Guid("D7A91161-12CB-4938-872C-E9CBFFFF80DA")
                 },
                 new Function()
@@ -518,7 +518,7 @@
                     FunctionID = new Guid("6B579D44-DA6C-422a-900A-DD8FB3DD028E"),
                     FunctionName = "角色",
                     ControlName = "roleadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_RoleJurisdiction",
                     Module_ModuleID = new Guid("D7A91161-12CB-4938-872C-E9CBFFFF80DA")
                 },
                 new Function()
