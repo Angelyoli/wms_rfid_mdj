@@ -34,11 +34,12 @@ namespace THOK.Authority.Bll.Service
                     s => s.SystemID,
                     (lo, s) => new { lo.LogID,lo.LoginPC,lo.LoginTime,lo.LogoutTime,lo.User_UserID,lo.System_SystemID,lo.UserName,s.SystemName})
                     .Where(lo=>lo.UserName.Contains(userName) && lo.SystemName.Contains(systemName))
-                    .OrderByDescending(lo=>lo.LoginTime)
-                    .Select(lo => new { lo.LogID, lo.LoginPC, lo.LoginTime, lo.LogoutTime, lo.User_UserID, lo.System_SystemID,lo.UserName,lo.SystemName });
+                    .OrderByDescending(lo => lo.LoginTime);
             int total = loginlog.Count();
-            loginlog = loginlog.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = loginlog.ToArray() };
+            var loginlogs = loginlog.Skip((page - 1) * rows).Take(rows);
+            var login = loginlogs
+                    .Select(lo => new { lo.LogID, lo.LoginPC, lo.LoginTime, lo.LogoutTime, lo.User_UserID, lo.System_SystemID,lo.UserName,lo.SystemName });
+            return new { total, rows = login.ToArray() };
         }
 
         public bool Delete(string loginLogId, out string strResult)

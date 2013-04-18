@@ -36,9 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
     </Reference>
@@ -1692,6 +1689,10 @@
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.NPOI\THOK.NPOI.csproj">
+      <Project>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</Project>
+      <Name>THOK.NPOI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Allot\THOK.Wms.Allot.csproj">
       <Project>{330D59D0-3B57-4F12-BB7D-49AF46DCD46D}</Project>
       <Name>THOK.Wms.Allot</Name>
@@ -1755,7 +1756,6 @@
     <Content Include="Views\Authorize\_SearchPartial.cshtml" />
     <Content Include="Views\Company\_%40AddPartial.cshtml" />
     <Content Include="Views\Company\_%40DeletePartial.cshtml" />
-    <Content Include="Views\Company\_HelpPartial.cshtml" />
     <Content Include="Views\Company\_%40SearchPartial.cshtml" />
     <Content Include="Views\Company\_PrintPartial.cshtml" />
     <Content Include="Views\Department\_AddPartial.cshtml" />
@@ -1765,9 +1765,7 @@
     <Content Include="Views\Employee\_DeletePartial.cshtml" />
     <Content Include="Views\Employee\_EditPartial.cshtml" />
     <Content Include="Views\Employee\_SearchPartial.cshtml" />
-    <Content Include="Views\Employee\_HelpPartial.cshtml" />
     <Content Include="Views\Employee\_PrintPartial.cshtml" />
-    <Content Include="Views\Department\_HelpPartial.cshtml" />
     <Content Include="Views\Department\_PrintPartial.cshtml" />
     <Content Include="Views\CheckBill\Index.cshtml" />
     <Content Include="Views\CheckBillVerify\Index.cshtml" />
@@ -1807,7 +1805,6 @@
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\diy\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\Thumbs.db" />
     <None Include="ExcelTemplate\DailyBalance.xls" />
-    <Content Include="Index.cshtml" />
     <None Include="obj\Debug\build.force" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
@@ -1931,7 +1928,6 @@
     <Content Include="Views\CellPosition\_EditPartial.cshtml" />
     <Content Include="Views\CellPosition\_DeletePartial.cshtml" />
     <Content Include="Views\CellPosition\_PrintPartial.cshtml" />
-    <Content Include="SearchPage.cshtml" />
     <Content Include="Views\ExceptionalLog\Index.cshtml" />
     <Content Include="Views\ExceptionalLog\_DeletePartial.cshtml" />
     <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
@@ -2026,7 +2022,6 @@
     <Content Include="Views\Job\_EditPartial.cshtml" />
     <Content Include="Views\Job\_SearchPartial.cshtml" />
     <Content Include="Views\Job\_PrintPartial.cshtml" />
-    <Content Include="Views\Job\_HelpPartial.cshtml" />
     <Content Include="Views\StockMoveBillCheck\Index.cshtml" />
     <Content Include="Views\StockMoveBill\Index.cshtml" />
     <Content Include="Views\StockMoveBillGenerate\Index.cshtml" />
@@ -2318,13 +2313,17 @@
     <Content Include="Views\Position\_DeletePartial.cshtml" />
     <Content Include="Views\Position\_EditPartial.cshtml" />
     <Content Include="Views\Position\_SearchPartial.cshtml" />
-    <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
     <Content Include="Views\Path\Index.cshtml" />
     <Content Include="Views\Path\_TargetPartial.cshtml" />
     <Content Include="Views\Path\_OriginPartial.cshtml" />
     <Content Include="Views\Path\_HelpPartial.cshtml" />
     <Content Include="Views\Path\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\_RegionPartial.cshtml" />
     <Content Include="Views\Position\_RegionNamePartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -2339,12 +2338,15 @@
     <Content Include="Views\Path\AddPage.cshtml" />
     <Content Include="Views\Path\SearchPage.cshtml" />
     <Content Include="Views\Position\Index.cshtml" />
-    <Content Include="Views\Position\AddPage.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
-    <Content Include="Views\Home\_ProductWarningPartial.cshtml" />
     <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
     <Content Include="Views\LoginLog\_EmptyPartial.cshtml" />
     <Content Include="Views\LoginLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_DeletePartial.cshtml" />
+    <Content Include="Views\Shared\_EmptyPartial.cshtml" />
+    <Content Include="Views\Home\_ProductWarningPartial.cshtml" />
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
     </Content>

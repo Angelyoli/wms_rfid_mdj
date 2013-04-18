@@ -92,20 +92,13 @@ namespace Authority.Controllers.Authority
             string loginTime = Request.QueryString["loginTime"];
             string logoutTime = Request.QueryString["logoutTime"];
 
-            System.Data.DataTable dt = LoginLogService.GetLoginLog(page, rows, loginPC, loginTime, logoutTime);
-            string headText = "登录日志信息";
-            string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = LoginLogService.GetLoginLog(page, rows, loginPC, loginTime, logoutTime);
+            ep.HeadTitle1 = "登录日志信息";
+            ep.BigHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            ep.ColHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            ep.ContentColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
     }
