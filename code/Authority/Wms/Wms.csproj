@@ -219,6 +219,10 @@
     <Compile Include="Security\SystemEventLogFactory.cs" />
     <Compile Include="Security\TokenAclAuthorizeAttribute.cs" />
     <Compile Include="Security\UserServiceFactory.cs" />
+    <Compile Include="Service\WMSService.asmx.cs">
+      <DependentUpon>WMSService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ASPNETDB.MDF" />
@@ -1621,6 +1625,7 @@
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
     <Content Include="Scripts\mykeyboardshortcuts.js" />
     <Content Include="Scripts\mymigration.js" />
+    <Content Include="Service\WMSService.asmx" />
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
