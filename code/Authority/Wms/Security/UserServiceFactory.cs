@@ -18,6 +18,8 @@ namespace THOK.Security
         private readonly IUnityContainer _container;
         public IUserService userService;
         public ILoginLogService LoginLogService;
+        public ISystemEventLogService SystemEventLogService;
+        public IExceptionalLogService ExceptionalLogService;
         public UserServiceFactory()
         {
             _container = new UnityContainer();          
@@ -25,26 +27,11 @@ namespace THOK.Security
             section.Configure(_container, "defaultContainer");
             userService = _container.Resolve<IUserService>() as UserService;
             LoginLogService = _container.Resolve<ILoginLogService>() as LoginLogService;
+            SystemEventLogService = _container.Resolve<ISystemEventLogService>() as SystemEventLogService;
+            ExceptionalLogService = _container.Resolve<IExceptionalLogService>() as ExceptionalLogService;
             ServiceLocatorProvider sp = new ServiceLocatorProvider(GetServiceLocator);
             ServiceLocator.SetLocatorProvider(sp);
         }
-
-        public UserServiceFactory(IUnityContainer container)
-        {
-            _container = container;
-            ServiceLocatorProvider sp = new ServiceLocatorProvider(GetServiceLocator);
-            ServiceLocator.SetLocatorProvider(sp);
-        }
-
-        protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
-        {
-            if (controllerType != null)
-            {
-                return _container.Resolve(controllerType) as IController;
-            }
-            return base.GetControllerInstance(requestContext, controllerType);
-        }
-
         public IServiceLocator GetServiceLocator()
         {
             return new UnityServiceLocator(_container);
