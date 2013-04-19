@@ -57,91 +57,44 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = size.ToArray() };
         }
 
-        public bool Add(Size size, out string strResult)
+        public bool Add(Size size)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var si = new Size();
-            if (si != null)
-            {
-                try
-                {
-                    si.SizeName = size.SizeName;
-                    si.SizeNo = size.SizeNo;
-                    si.Length = size.Length;
-                    si.Width = size.Width;
-                    si.Height = size.Height;
-
-                    SizeRepository.Add(si);
-                    SizeRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
-            }
-            return result;
+            var s = new Size();
+            s.ID = size.ID;
+            s.Height = size.Height;
+            s.Length = size.Length;
+            s.SizeName = size.SizeName;
+            s.SizeNo = size.SizeNo;
+            s.Width = size.Width;
+            SizeRepository.Add(s);
+            SizeRepository.SaveChanges();
+            return true;
         }
 
-        public bool Save(Size size, out string strResult)
+        public bool Save(Size size)
         {
-            strResult = string.Empty;
-            bool result = false;
             var si = SizeRepository.GetQueryable().FirstOrDefault(s => s.ID == size.ID);
-
-            if (si != null)
-            {
-                try
-                {
-                    si.SizeName = size.SizeName;
-                    si.SizeNo = size.SizeNo;
-                    si.Length = size.Length;
-                    si.Width = size.Width;
-                    si.Height = size.Height;
-
-                    SizeRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要修改的数据！";
-            }
-            return result;
+            si.ID = size.ID;
+            si.Height = size.Height;
+            si.Length = size.Length;
+            si.Width = size.Width;
+            si.SizeNo = size.SizeNo;
+            si.SizeName = size.SizeName;
+            SizeRepository.SaveChanges();
+            return true;
         }
 
-        public bool Delete(int sizeId, out string strResult)
+        public bool Delete(int sizeId)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var si = SizeRepository.GetQueryable().FirstOrDefault(s => s.ID == sizeId);
-            if (si != null)
+            var size= SizeRepository.GetQueryable().FirstOrDefault(s => s.ID == sizeId);
+            if (size != null)
             {
-                try
-                {
-                    SizeRepository.Delete(si);
-                    SizeRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    strResult = "原因：已在使用";
-                }
+                SizeRepository.Delete(size);
+                SizeRepository.SaveChanges();
             }
             else
-            {
-                strResult = "原因：未找到当前需要删除的数据！";
-            }
-            return result;
+                return false;
+            return true;
         }
 
         public object GetSize(int page, int rows, string queryString, string value)
@@ -170,7 +123,6 @@ namespace THOK.Wms.Bll.Service
             size = size.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = size.ToArray() };
         }
-
         public System.Data.DataTable GetSize(int page, int rows, string sizeName)
         {
             IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
@@ -206,5 +158,8 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
+
+       
     }
 }

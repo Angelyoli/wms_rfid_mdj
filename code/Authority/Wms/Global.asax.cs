@@ -76,7 +76,7 @@ namespace Wms
                 RouteData routeData = new RouteData();
                 routeData.Values.Add("controller", "Home");
 
-                string ModuleNam ="/"+ Context.Request.RequestContext.RouteData.Values["controller"].ToString()+"/";
+               string ModuleNam ="/"+ Context.Request.RequestContext.RouteData.Values["controller"].ToString()+"/";
                 string FunctionName = Context.Request.RequestContext.RouteData.Values["action"].ToString();
                 string ExceptionalType = exception.Message;
                 string ExceptionalDescription = exception.ToString();

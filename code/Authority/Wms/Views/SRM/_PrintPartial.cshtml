@@ -1,12 +1,31 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var id=null, srmName = null, state = null;
+        var id = null, srmName = null, state = null,
+       opcserviceName = null, getRequest = null, getAllow = null,
+       getComplete = null, putRequest = null, putAllow = null,
+       putComplete = null, description = null;
        // if ($('#ID').val() == null) { id = ""; } else { id=$('#ID').val()}
         if ($('#SRMName').val() == null) { srmName = ""; } else { srmName = $('#SRMName').val() }
+        if ($('#OPCServiceName').val() == null) { opcserviceName = ""; } else { opcserviceName = $('#OPCServiceName').val() }
+        if ($('#GetRequest').val() == null) { getRequest = ""; } else { getRequest = $('#GetRequest').val() }
+        if ($('#GetAllow').val() == null) { getAllow = ""; } else { getAllow = $('#GetAllow').val() }
+        if ($('#GetComplete').val() == null) { getComplete = ""; } else { getComplete = $('#GetComplete').val() }
+        if ($('#PutRequest').val() == null) { putRequest = ""; } else { putRequest = $('#PutRequest').val() }
+        if ($('#PutAllow').val() == null) { putAllow = ""; } else { putAllow = $('#PutAllow').val() }
+        if ($('#PutComplete').val() == null) { putComplete = ""; } else { putComplete = $('#PutComplete').val() }
+        if ($('#Description').val() == null) { description = ""; } else { description = $('#Description').val() }
         if (document.getElementById('#State') == null) { state = ""; } else { state = $('#State').combo('getValue') }
 
         window.location.href = "/SRM/CreateExcelToClient/"
                                 + "?srmName=" + srmName
-                                + "&state=" + state;
+                                + "&state=" + state
+                                +"&opcserviceName=" + opcserviceName
+                                +"&getRequest=" + getRequest
+                                +"&getAllow=" + getAllow
+                                +"&getComplete=" + getComplete
+                                +"&putRequest=" + putRequest
+                                +"&putAllow=" + putAllow
+                                +"&putComplete=" + putComplete
+                                +"&description=" + description;
     }
 </script>

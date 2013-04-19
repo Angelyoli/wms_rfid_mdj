@@ -17,105 +17,58 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows,string RegionName, string State)
+        public object GetDetails(int page, int rows, Region reg)
         {
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-            var region = regionQuery.Where(r => r.RegionName.Contains(RegionName) && r.State.Contains(State))
-                .OrderBy(r => r.ID).AsEnumerable()
-                .Select(r => new
-                {
-                    r.ID,
-                    r.RegionName,
-                    r.Description,
-                    State = r.State == "01" ? "可用" : "不可用",
-                });
-            
-            int total = region.Count();
-            region = region.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = region.ToArray() };
+            var regDetail = regionQuery.Where(s =>
+               s.RegionName.Contains(reg.RegionName)
+               && s.State.Contains(reg.State)).OrderBy(ul => ul.RegionName);
+            int total = regDetail.Count();
+            var regDetails = regDetail.Skip((page - 1) * rows).Take(rows);
+            var reg_Detail = regDetails.ToArray().Select(s => new
+            {
+                s.ID,
+                s.RegionName,
+                s.Description,
+                State = s.State == "01" ? "可用" : "不可用"
+            });
+            return new { total, rows = reg_Detail.ToArray() };
         }
 
-        public bool Add(Region region, out string strResult)
+        public bool Add(Region region)
         {
-            strResult = string.Empty;
-            bool result = false;
             var reg = new Region();
-            if (reg != null)
-            {
-                try
-                {
-                    reg.RegionName = region.RegionName;
-                    reg.Description = region.Description;
-                    reg.State = region.State;
-
-                    RegionRepository.Add(reg);
-                    RegionRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
-            }
-            return result;
+            reg.ID = region.ID;
+            reg.RegionName = region.RegionName;
+            reg.State = region.State;
+            reg.Description = region.Description;
+            RegionRepository.Add(reg);
+            RegionRepository.SaveChanges();
+            return true;
         }
 
-        public bool Save(Region region, out string strResult)
+        public bool Save(Region region)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var reg = RegionRepository.GetQueryable().FirstOrDefault(r => r.ID == region.ID);
-
-            if (reg != null)
-            {
-                try
-                {
-                    reg.RegionName = region.RegionName;
-                    reg.Description =region.Description;
-                    reg.State = region.State;
-
-                    RegionRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要修改的数据！";
-            }
-            return result;
+            var reg = RegionRepository.GetQueryable().FirstOrDefault(s => s.ID == region.ID);
+            reg.ID = region.ID;
+            reg.RegionName = region.RegionName;
+            reg.State = region.State;
+            reg.Description = region.Description;
+            RegionRepository.SaveChanges();
+            return true;
         }
 
-        public bool Delete(int regionId, out string strResult)
+        public bool Delete(int regionId)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var region = RegionRepository.GetQueryable().FirstOrDefault(r => r.ID == regionId);
-            if (region != null)
+            var reg = RegionRepository.GetQueryable().FirstOrDefault(s => s.ID == regionId );
+            if (reg != null)
             {
-                try
-                {
-                    RegionRepository.Delete(region);
-                    RegionRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    strResult = "原因：已在使用";
-                }
+                RegionRepository.Delete(reg);
+                RegionRepository.SaveChanges();
             }
             else
-            {
-                strResult = "原因：未找到当前需要删除的数据！";
-            }
-            return result;
+                return false;
+            return true;
         }
 
         public object GetRegion(int page, int rows, string queryString, string value)
@@ -222,5 +175,6 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
     }
 }
