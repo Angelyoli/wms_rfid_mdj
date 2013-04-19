@@ -14,6 +14,7 @@ using System.IO.Compression;
 using THOK.Security;
 using Wms.Security;
 using THOK.Common.Ef.Infrastructure;
+using THOK.Authority.Bll.Interfaces;
 namespace Wms
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
@@ -54,8 +55,6 @@ namespace Wms
 
         void Application_Start()
         {
-            UserServiceFactory userserviceFactory = new UserServiceFactory();
-            ControllerBuilder.Current.SetControllerFactory(userserviceFactory);
             RegisterIocUnityControllerFactory();
             AreaRegistration.RegisterAllAreas();
             RegisterGlobalFilters(GlobalFilters.Filters);           
@@ -65,7 +64,7 @@ namespace Wms
         void Application_Error()
         {
             ResetContext();
-            SystemEventLogFactory EventLogFactory = new SystemEventLogFactory();
+            ServiceFactory EventLogFactory = new ServiceFactory();
             Exception exception = Server.GetLastError();
             if (exception != null)
             {
@@ -89,51 +88,46 @@ namespace Wms
                         case 404:
                             if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
-                                HttpCookie PageNotFoundLog = new HttpCookie("PageNotFoundLog", exception.Message);
-                                Context.Request.Cookies.Add(PageNotFoundLog);
                                 routeData.Values.Add("action", "PageNotFound");
+                                routeData.Values.Add("PageNotFoundLog", exception.Message);
                             }
                             else
                             {
-                                HttpCookie AjaxPageNotFoundLog = new HttpCookie("AjaxPageNotFoundLog", exception.Message);
-                                Context.Request.Cookies.Add(AjaxPageNotFoundLog);
                                 routeData.Values.Add("action", "AjaxPageNotFound");
+                                routeData.Values.Add("AjaxPageNotFoundLog", exception.Message);
                             }
                             break;
                         case 500:
                             if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
-                                HttpCookie ServerErrorLog = new HttpCookie("ServerErrorLog", exception.Message);
-                                Context.Request.Cookies.Add(ServerErrorLog);
                                 routeData.Values.Add("action", "ServerError");
+                                routeData.Values.Add("ServerErrorLog", exception.Message);
                             }
                             else
                             {
-                                HttpCookie AjaxServerErrorLog = new HttpCookie("AjaxServerErrorLog", exception.Message);
-                                Context.Request.Cookies.Add(AjaxServerErrorLog);
                                 routeData.Values.Add("action", "AjaxServerError");
+                                routeData.Values.Add("AjaxServerErrorLog", exception.Message);
                             }
                             Trace.TraceError("Server Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                         default:
                             if (Context.Request.RequestContext.RouteData.Values["action"].ToString() == "Index")
                             {
-                                HttpCookie ErrorLog = new HttpCookie("ErrorLog", exception.Message);
-                                Context.Request.Cookies.Add(ErrorLog);
                                 routeData.Values.Add("action", "Error");
+                                routeData.Values.Add("ErrorLog", exception.Message);
+                                routeData.Values.Add("errorCode", httpException.GetHttpCode());
                             }
                             else
                             {
-                                HttpCookie AjaxErrorLog = new HttpCookie("AjaxErrorLog", exception.Message);
-                                Context.Request.Cookies.Add(AjaxErrorLog);
                                 routeData.Values.Add("action", "AjaxError");
+                                routeData.Values.Add("AjaxErrorLog", exception.Message);
                                 routeData.Values.Add("errorCode", httpException.GetHttpCode());
                             }
                             Trace.TraceError("Error occured and caught in Global.asax - {0}", exception.ToString());
                             break;
                     }
                 }
-                EventLogFactory.ExceptionalLogService.CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
+                EventLogFactory.GetService<IExceptionalLogService>().CreateExceptionLog(ModuleNam, FunctionName, ExceptionalType, ExceptionalDescription, State);
                 Server.ClearError();
                 Response.TrySkipIisCustomErrors = true;
                 IController errorController = new HomeController();
@@ -150,9 +144,9 @@ namespace Wms
         {
             if (Session["userName"] != null)
             {
-                UserServiceFactory UserFactory = new UserServiceFactory();
-                UserFactory.userService.DeleteUserIp(Session["userName"].ToString());
-                UserFactory.LoginLogService.UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
+                ServiceFactory UserFactory = new ServiceFactory();
+                UserFactory.GetService<IUserService>().DeleteUserIp(Session["userName"].ToString());
+                UserFactory.GetService<ILoginLogService>().UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
             }
         }        
 

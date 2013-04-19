@@ -59,8 +59,8 @@
     <Compile Include="Service\ProductDownService.cs" />
     <Compile Include="Service\SortingDownService.cs" />
     <Compile Include="Service\UnitDownService.cs" />
-    <Compile Include="SortingDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SortingDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
