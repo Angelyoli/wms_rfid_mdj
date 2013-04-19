@@ -27,6 +27,7 @@ namespace Wms.Controllers.Wms.BasisInfo
                 ViewBag.hasAdd = true;
                 ViewBag.hasEdit = true;
                 ViewBag.hasDelete = true;
+                ViewBag.hasNode = true;
                 ViewBag.hasPrint = true;
                 ViewBag.hasHelp = true;
                 ViewBag.ModuleID = moduleID;

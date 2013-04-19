@@ -4349,6 +4349,14 @@
                      IndicateImage = "icon-remove",
                      Module_ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003314C7B1DC")
                  },
+                  new Function()
+                  {
+                      FunctionID = new Guid("C8A9E599-D227-4056-93A2-D67C6D3794BB"),
+                      FunctionName = "节点",
+                      ControlName = "node",
+                      IndicateImage = "icon-node",
+                      Module_ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003314C7B1DC")
+                  },
                  new Function()
                 {
                     FunctionID = new Guid("EAB101C2-8A95-4E4B-8923-C67DC078919F"),
