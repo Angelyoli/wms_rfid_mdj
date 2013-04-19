@@ -3,7 +3,7 @@ using System.Web.Routing;
 using System.Text;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using System;
 using THOK.Security;
@@ -92,13 +92,13 @@ namespace Authority.Controllers.Authority
             string loginTime = Request.QueryString["loginTime"];
             string logoutTime = Request.QueryString["logoutTime"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = LoginLogService.GetLoginLog(page, rows, loginPC, loginTime, logoutTime);
             ep.HeadTitle1 = "登录日志信息";
             ep.BigHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
             ep.ColHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
             ep.ContentColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
     }

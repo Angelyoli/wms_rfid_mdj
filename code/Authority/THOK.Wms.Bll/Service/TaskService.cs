@@ -100,7 +100,7 @@ using THOK.Authority.Dal.Interfaces;namespace THOK.Wms.Bll.Service
         }
 
         /// <summary>
-        /// 移库但觉作业
+        /// 移库单据作业
         /// </summary>
         /// <param name="billNo">单据号</param>
         /// <param name="errInfo">错误消息</param>

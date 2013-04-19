@@ -243,6 +243,18 @@
     <Content Include="bin\THOK.Authority.Bll.pdb" />
     <Content Include="bin\THOK.Authority.Dal.dll" />
     <Content Include="bin\THOK.Authority.Dal.pdb" />
+    <Content Include="bin\THOK.Common.Highcharts.dll" />
+    <Content Include="bin\THOK.Common.Highcharts.pdb" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\EntityFramework.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\EntityFramework.xml" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\log4net.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.ServiceLocation.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.Configuration.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.pdb" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Dal.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Dal.pdb" />
     <Content Include="Content\Images\banner.jpg" />
     <Content Include="Content\Images\login_bg.jpg" />
     <Content Include="Content\Images\login_bg02.jpg" />
@@ -1099,6 +1111,7 @@
     <Content Include="Content\themes\base\icons\accept.png" />
     <Content Include="Content\themes\base\icons\Menu_DeliverCustomer.ico" />
     <Content Include="Content\themes\base\icons\Menu_DeliverLine.ico" />
+    <Content Include="Content\themes\base\icons\node.png" />
     <Content Include="Content\themes\base\icons\onebit_23.png" />
     <Content Include="Content\themes\base\icons\onebit_24.png" />
     <Content Include="Content\themes\base\icons\shut_down.png" />
@@ -1678,6 +1691,10 @@
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Common.Highcharts\THOK.Common.Highcharts.csproj">
+      <Project>{42BDE168-C741-4339-92B6-0656E798E989}</Project>
+      <Name>THOK.Common.Highcharts</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Common.NPOI\THOK.Common.NPOI.csproj">
       <Project>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</Project>
@@ -2285,7 +2302,6 @@
     <Content Include="Views\Size\_AddPartial.cshtml" />
     <Content Include="Views\Size\_EditPartial.cshtml" />
     <Content Include="Views\Size\_DeletePartial.cshtml" />
-    <Content Include="Views\Size\_PrintPartial.cshtml" />
     <Content Include="Views\ProductSize\Index.cshtml" />
     <Content Include="Views\ProductSize\SearchPage.cshtml" />
     <Content Include="Views\ProductSize\_SearchPartial.cshtml" />
@@ -2308,8 +2324,6 @@
     <Content Include="Views\Position\_EditPartial.cshtml" />
     <Content Include="Views\Position\_SearchPartial.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
-    <Content Include="Views\Path\AddPage.cshtml" />
-    <Content Include="Views\Path\SearchPage.cshtml" />
     <Content Include="Views\Path\_DeletePartial.cshtml" />
     <Content Include="Views\Path\_EditPartial.cshtml" />
     <Content Include="Views\Path\Index.cshtml" />
@@ -2317,7 +2331,6 @@
     <Content Include="Views\Path\_OriginPartial.cshtml" />
     <Content Include="Views\Path\_HelpPartial.cshtml" />
     <Content Include="Views\Path\_PrintPartial.cshtml" />
-    <Content Include="Views\Path\_RegionPartial.cshtml" />
     <Content Include="Views\Position\_RegionNamePartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -2325,9 +2338,6 @@
     <Content Include="Views\PathNode\_PathIDPartial.cshtml" />
     <Content Include="Views\PathNode\_PositionIDPartial.cshtml" />
     <Content Include="Views\Path\_AddPartial.cshtml" />
-    <Content Include="Views\Path\_DeletePartial.cshtml" />
-    <Content Include="Views\Path\_EditPartial.cshtml" />
-    <Content Include="Views\Path\_RegionPartial.cshtml" />
     <Content Include="Views\Path\_SearchPartial.cshtml" />
     <Content Include="Views\Path\AddPage.cshtml" />
     <Content Include="Views\Path\SearchPage.cshtml" />
@@ -2344,6 +2354,19 @@
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\Size\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\Index.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_AddPartial.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
+    <Content Include="Views\Path\_HelpPartial.cshtml" />
+    <Content Include="Views\Path\_OriginPartial.cshtml" />
+    <Content Include="Views\Path\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\_SearchPartial.cshtml" />
+    <Content Include="Views\Path\_TargetPartial.cshtml" />
+    <Content Include="Views\Shared\_NodePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

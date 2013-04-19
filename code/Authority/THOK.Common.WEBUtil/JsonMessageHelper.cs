@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace THOK.WebUtil
+namespace THOK.Common.WebUtil
 {
     public static class JsonMessageHelper
     {

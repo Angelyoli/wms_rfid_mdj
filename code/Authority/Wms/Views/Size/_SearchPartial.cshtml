@@ -41,8 +41,12 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ID = $("#ID").val();
         queryParams.SizeName = $('#SizeName').val();
         queryParams.SizeNo = $('#SizeNo').val();
+        queryParams.Length = $('#Length').val();
+        queryParams.Width = $('#Width').val();
+        queryParams.Height = $('#Height').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');

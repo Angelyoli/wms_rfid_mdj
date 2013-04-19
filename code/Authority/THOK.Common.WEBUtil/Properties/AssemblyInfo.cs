@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("THOK.WEBUtil")]
+[assembly: AssemblyTitle("THOK.Common.WebUtil")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("thok")]
-[assembly: AssemblyProduct("THOK.WEBUtil")]
+[assembly: AssemblyProduct("THOK.Common.WebUtil")]
 [assembly: AssemblyCopyright("Copyright © thok 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

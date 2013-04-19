@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -35,10 +35,11 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /Region/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string RegionName = collection["RegionName"] ?? "";
-            string State = collection["State"] ?? "";
-            var srm = RegionService.GetDetails(page, rows,RegionName, State);
-            return Json(srm, "text", JsonRequestBehavior.AllowGet);
+            Region reg = new Region();
+            reg.RegionName = collection["RegionName"] ?? "";
+            reg.State = collection["State"] ?? "";
+            var regDetail = RegionService.GetDetails(page, rows, reg);
+            return Json(regDetail, "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SearchPage()
@@ -57,7 +58,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(Region region)
         {
             string strResult = string.Empty;
-            bool bResult = RegionService.Add(region, out strResult);
+            bool bResult = RegionService.Add(region);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -67,7 +68,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(Region region)
         {
             string strResult = string.Empty;
-            bool bResult = RegionService.Save(region, out strResult);
+            bool bResult = RegionService.Save(region);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -79,7 +80,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = RegionService.Delete(regionId, out strResult);
+            bResult = RegionService.Delete(regionId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -106,10 +107,10 @@ namespace Wms.Controllers.Wms.BasisInfo
             string regionName = Request.QueryString["regionName"];
             string state = Request.QueryString["state"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = RegionService.GetRegion(page, rows, regionName, state, null);
             ep.HeadTitle1 = "区域信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
     }

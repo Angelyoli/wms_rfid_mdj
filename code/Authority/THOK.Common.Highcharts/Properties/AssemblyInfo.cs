@@ -38,11 +38,11 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Tek4.Highcharts.Exporting")]
+[assembly: AssemblyTitle("THOK.Common.Highcharts")]
 [assembly: AssemblyDescription(
   "ASP.NET chart exporting for Highcharts JS JavaScript charts.")]
 [assembly: AssemblyCompany("Tek4(TM) (http://Tek4.com/)")]
-[assembly: AssemblyProduct("Tek4.Highcharts.Exporting")]
+[assembly: AssemblyProduct("THOK.Common.Highcharts")]
 [assembly: AssemblyCopyright("Copyright (C) 2012 Tek4(TM) - Kevin P. Rice.")]
 [assembly: AssemblyTrademark("Tek4")]
 
