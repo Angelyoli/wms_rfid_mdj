@@ -7,7 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Transactions;
 using THOK.Wms.SignalR.Common;
-using Entities.Extensions;
+using THOK.Common.Entity;
 
 namespace THOK.Wms.Allot.Service
 {

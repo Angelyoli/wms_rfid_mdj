@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 
-namespace THOK.WebUtil
+namespace THOK.Common.WebUtil
 {
     public static class JsonHelper
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Transactions;
 using THOK.Wms.SignalR.Common;
 using THOK.Wms.DbModel;
-using Entities.Extensions;
+using THOK.Common.Entity;
 using THOK.Wms.Dal.EntityRepository;
 using THOK.Wms.SignalR.Connection;
 

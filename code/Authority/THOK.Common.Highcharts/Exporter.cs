@@ -34,7 +34,7 @@
 // 2011-07-16 KPR Created.
 // 2012-03-03 KPR Bug fix: WriteToStream() PNG requires seekable stream.
 
-namespace Tek4.Highcharts.Exporting
+namespace THOK.Common.Highcharts
 {
   using System;
   using System.Collections.Specialized;

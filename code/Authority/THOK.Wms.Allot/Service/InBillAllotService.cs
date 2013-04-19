@@ -6,7 +6,7 @@ using THOK.Wms.Allot.Interfaces;
 using System.Linq;
 using System.Transactions;
 using THOK.Wms.SignalR.Common;
-using Entities.Extensions;
+using THOK.Common.Entity;
 namespace THOK.Wms.Allot.Service
 {
     public class InBillAllotService : ServiceBase<InBillAllot>, IInBillAllotService

@@ -6,7 +6,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.AutomotiveSystems.Interfaces;
 using System.Text;
 using THOK.Wms.Bll.Interfaces;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 
 namespace Wms.Controllers.Wms.AutomotiveSystems
 {

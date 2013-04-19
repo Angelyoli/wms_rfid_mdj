@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -108,10 +108,10 @@ namespace Wms.Controllers.Wms.BasisInfo
             string productCode = Request.QueryString["productCode"];
             //  string state = Request.QueryString["state"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = ProductSizeService.GetProductSize(page, rows, productCode);
             ep.HeadTitle1 = "卷烟件烟尺寸信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
     }

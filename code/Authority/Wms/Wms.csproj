@@ -243,6 +243,8 @@
     <Content Include="bin\THOK.Authority.Bll.pdb" />
     <Content Include="bin\THOK.Authority.Dal.dll" />
     <Content Include="bin\THOK.Authority.Dal.pdb" />
+    <Content Include="bin\THOK.Common.Highcharts.dll" />
+    <Content Include="bin\THOK.Common.Highcharts.pdb" />
     <Content Include="Content\Images\banner.jpg" />
     <Content Include="Content\Images\login_bg.jpg" />
     <Content Include="Content\Images\login_bg02.jpg" />
@@ -1678,6 +1680,10 @@
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Common.Highcharts\THOK.Common.Highcharts.csproj">
+      <Project>{42BDE168-C741-4339-92B6-0656E798E989}</Project>
+      <Name>THOK.Common.Highcharts</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Common.NPOI\THOK.Common.NPOI.csproj">
       <Project>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</Project>

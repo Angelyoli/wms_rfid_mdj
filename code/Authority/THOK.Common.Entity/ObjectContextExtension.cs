@@ -7,7 +7,7 @@ using System.Data.Objects.DataClasses;
 using System.Data.Objects;
 using System.Reflection;
 
-namespace Entities.Extensions
+namespace THOK.Common.Entity
 {
     public static class ObjectContextExtension
     {

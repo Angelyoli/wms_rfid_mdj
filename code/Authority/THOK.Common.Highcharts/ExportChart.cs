@@ -34,7 +34,7 @@
 // 2011-07-17 KPR Created.
 // 
 
-namespace Tek4.Highcharts.Exporting
+namespace THOK.Common.Highcharts
 {
   using System;
   using System.Web;

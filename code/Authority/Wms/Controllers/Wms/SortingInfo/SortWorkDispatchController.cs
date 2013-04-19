@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.SignalR.Dispatch.Interfaces;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Authority.Controllers.Wms.SortingInfo
@@ -113,10 +113,10 @@ namespace Authority.Controllers.Wms.SortingInfo
             string sortingLineCode = Request.QueryString["sortingLineCode"];
             string dispatchStatus = Request.QueryString["dispatchStatus"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = SortWorkDispatchService.GetSortWorkDispatch(page, rows, orderDate, sortingLineCode, dispatchStatus);
             ep.HeadTitle1 = "分拣作业调度";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion
