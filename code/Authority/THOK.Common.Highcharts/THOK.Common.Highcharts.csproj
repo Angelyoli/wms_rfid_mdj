@@ -8,8 +8,8 @@
     <ProjectGuid>{42BDE168-C741-4339-92B6-0656E798E989}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tek4.Highcharts.Exporting</RootNamespace>
-    <AssemblyName>Tek4.Highcharts.Exporting</AssemblyName>
+    <RootNamespace>THOK.Common.Highcharts</RootNamespace>
+    <AssemblyName>THOK.Common.Highcharts</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>

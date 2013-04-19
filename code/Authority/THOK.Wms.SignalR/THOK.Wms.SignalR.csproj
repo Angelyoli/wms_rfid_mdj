@@ -98,10 +98,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Entities.Extensions\Entities.Extensions.csproj">
-      <Project>{D629856F-6F11-4A87-8440-A5B66383A26A}</Project>
-      <Name>Entities.Extensions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\THOK.Authority.Dal\THOK.Authority.Dal.csproj">
       <Project>{A8E32F0A-A9F4-4CDD-8C7A-8304CD034070}</Project>
       <Name>THOK.Authority.Dal</Name>
@@ -113,6 +109,10 @@
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Common.Entity\THOK.Common.Entity.csproj">
+      <Project>{D629856F-6F11-4A87-8440-A5B66383A26A}</Project>
+      <Name>THOK.Common.Entity</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Dal\THOK.Wms.Dal.csproj">
       <Project>{DB6CC091-9BC6-415C-A0D2-E34289669102}</Project>

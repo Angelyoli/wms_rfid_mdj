@@ -182,7 +182,14 @@ namespace THOK.Authority.Bll.Service
 
         public bool ValidateUserPermission(string userName, string cityId, string systemId)
         {
-            return true;
+            if (String.IsNullOrEmpty(userName) || String.IsNullOrEmpty(cityId) || String.IsNullOrEmpty(systemId))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public string GetLogOnUrl(string userName, string password, string cityId, string systemId, string serverId)
