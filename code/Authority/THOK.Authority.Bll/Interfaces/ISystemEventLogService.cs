@@ -7,7 +7,7 @@ namespace THOK.Authority.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string eventname,string operateuser, string targetsystem);
 
-        bool CreateEventLog(string EventName, string EventDescription, string OperateUser, Guid TargetSystem);
+        bool CreateEventLog(string EventName, string EventDescription, string OperateUser, Guid TargetSystem, string userPC);
 
         bool Delete(string eventLogId, out string strResult);
 

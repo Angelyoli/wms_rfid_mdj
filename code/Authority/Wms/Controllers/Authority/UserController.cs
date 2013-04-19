@@ -133,7 +133,8 @@ namespace Authority.Controllers.Authority
         }
         public ActionResult UpdateUserInfo(string userName)
         {
-            bool bResult = UserService.UpdateUserInfo(userName);
+            string localip = this.ControllerContext.HttpContext.Request.UserHostAddress;
+            bool bResult = UserService.UpdateUserInfo(userName, localip);
             return Json(bResult, "text", JsonRequestBehavior.AllowGet);
         }
         public ActionResult DeleteUserIp(string userName)
@@ -144,7 +145,8 @@ namespace Authority.Controllers.Authority
 
         public ActionResult CheckAdress(string userName)
         {
-            bool bResult = UserService.CheckAdress(userName);
+            string localip = this.ControllerContext.HttpContext.Request.UserHostAddress;
+            bool bResult = UserService.CheckAdress(userName, localip);
             return  Json(bResult, "text", JsonRequestBehavior.AllowGet);
         }
 

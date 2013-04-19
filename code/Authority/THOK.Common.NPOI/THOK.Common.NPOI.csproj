@@ -8,8 +8,8 @@
     <ProjectGuid>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>THOK.NPOI</RootNamespace>
-    <AssemblyName>THOK.NPOI</AssemblyName>
+    <RootNamespace>THOK.Common.NPOI</RootNamespace>
+    <AssemblyName>THOK.Common.NPOI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ExportExcelHeper.cs" />
-    <Compile Include="Service\ExportExcelAuto.cs" />
+    <Compile Include="Service\ExportExcel.cs" />
     <Compile Include="Service\ExportExcelTemplate.cs" />
     <Compile Include="Models\ExportParam.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

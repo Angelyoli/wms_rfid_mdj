@@ -40,7 +40,7 @@
       <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
-      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\itextsharp.dll</HintPath>
+      <HintPath>..\THOK.Common.Highcharts\ThirdParty\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -85,7 +85,7 @@
       <HintPath>..\packages\SignalR.Hosting.Common.0.5.2\lib\net40\SignalR.Hosting.Common.dll</HintPath>
     </Reference>
     <Reference Include="Svg">
-      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\Svg.dll</HintPath>
+      <HintPath>..\THOK.Common.Highcharts\ThirdParty\Svg.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -218,7 +218,11 @@
     <Compile Include="Security\SystemEventLogAttribute.cs" />
     <Compile Include="Security\SystemEventLogFactory.cs" />
     <Compile Include="Security\TokenAclAuthorizeAttribute.cs" />
-    <Compile Include="Security\UserServiceFactory.cs" />
+    <Compile Include="Service\WMSService.asmx.cs">
+      <DependentUpon>WMSService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Security\ServiceFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ASPNETDB.MDF" />
@@ -1600,11 +1604,9 @@
     <Content Include="Content\themes\base\images\son_StockPlace.png" />
     <Content Include="Content\themes\base\images\son_Warehouse.png" />
     <Content Include="Content\themes\base\images\tabs_close.gif" />
+    <Content Include="DB.xml" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="obj\Debug\Authority.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\Debug\Authority.dll" />
-    <Content Include="obj\Debug\Authority.pdb" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -1622,6 +1624,7 @@
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
     <Content Include="Scripts\mykeyboardshortcuts.js" />
     <Content Include="Scripts\mymigration.js" />
+    <Content Include="Service\WMSService.asmx" />
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1662,14 +1665,9 @@
     <Folder Include="Content\App_Data\" />
     <Folder Include="Content\Scripts\ckfinder\userfiles\files\" />
     <Folder Include="Content\Scripts\ckfinder\userfiles\flash\" />
-    <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tek4.Highcharts.Exporting\Tek4.Highcharts.Exporting.csproj">
-      <Project>{42BDE168-C741-4339-92B6-0656E798E989}</Project>
-      <Name>Tek4.Highcharts.Exporting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\THOK.Authority.Bll\THOK.Authority.Bll.csproj">
       <Project>{8375EB8C-20CB-4E3E-BCF4-85E54F61D241}</Project>
       <Name>THOK.Authority.Bll</Name>
@@ -1682,6 +1680,10 @@
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.Common.NPOI\THOK.Common.NPOI.csproj">
+      <Project>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</Project>
+      <Name>THOK.Common.NPOI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Common.WEBUtil\THOK.Common.WebUtil.csproj">
       <Project>{EC6DCF36-B010-4E48-88FC-BABC33EBCCFB}</Project>
       <Name>THOK.Common.WebUtil</Name>
@@ -1689,10 +1691,6 @@
     <ProjectReference Include="..\THOK.Common\THOK.Common.csproj">
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\THOK.NPOI\THOK.NPOI.csproj">
-      <Project>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</Project>
-      <Name>THOK.NPOI</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Allot\THOK.Wms.Allot.csproj">
       <Project>{330D59D0-3B57-4F12-BB7D-49AF46DCD46D}</Project>
@@ -1806,10 +1804,6 @@
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\diy\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\Thumbs.db" />
     <None Include="ExcelTemplate\DailyBalance.xls" />
-    <None Include="obj\Debug\build.force" />
-    <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
-    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Include="obj\Debug\ResolveAssemblyReference.cache" />
     <Content Include="Views\Brand\Index.cshtml" />
     <Content Include="Views\Brand\_AddPartial.cshtml" />
     <Content Include="Views\Brand\_DeletePartial.cshtml" />
