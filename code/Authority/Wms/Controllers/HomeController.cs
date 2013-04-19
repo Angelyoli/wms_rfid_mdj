@@ -28,23 +28,15 @@ namespace Authority.Controllers
             string cityId = this.GetCookieValue("cityid");
             string serverId = this.GetCookieValue("serverid");
             string systemId = this.GetCookieValue("systemid");
-            string ipAdress = UserService.GetUserIp(userName);
-            string localip = UserService.GetLocalIp(userName);
-            if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty))
+            string localip = this.ControllerContext.HttpContext.Request.UserHostAddress;
+            if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && UserService.CheckAdress(userName, localip))
             {
+
                 ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
                 ViewBag.ServerName = ServerService.GetServerById(serverId).ToString();
                 ViewBag.SystemName = SystemService.GetSystemById(systemId).ToString();
                 ViewBag.userName = userName;
-                if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && !ipAdress.Equals(string.Empty))
-                {
-                    ViewBag.ipAdress = ipAdress;
-                    ViewBag.localip = localip;
-                }
-                else
-                {
-                    ViewBag.localip = localip;
-                }
+                ViewBag.localip = localip;
             }
             else
             {
@@ -53,7 +45,12 @@ namespace Authority.Controllers
                 this.RemoveCookie(systemId);
                 this.RemoveCookie(userName);
                 FormsService.SignOut();
+                if (this.ControllerContext.HttpContext.Request.IsAuthenticated)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
+            Session["userName"] = userName;
             return View();
         }
         public ActionResult GetUser()
@@ -94,44 +91,40 @@ namespace Authority.Controllers
             return Json(funs,"text",JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult PageNotFound()
+        public ActionResult PageNotFound(string PageNotFoundLog)
         {
+            ViewBag.PageNotFoundLog = PageNotFoundLog;
             return View();
         }
 
-        public ActionResult ServerError()
+        public ActionResult ServerError(string ServerErrorLog)
         {
+            ViewBag.ServerErrorLog = ServerErrorLog;
             return View();
         }
 
-        public ActionResult Error()
+        public ActionResult Error(string errorLog)
         {
+            ViewBag.ErrorLog = errorLog;
             return View();
         }
 
-        public ActionResult Unauthorized()
+        public ActionResult AjaxPageNotFound(string AjaxPageNotFoundLog)
         {
-            return View();
+            this.ControllerContext.HttpContext.Response.StatusCode = 404;
+            return Json(JsonMessageHelper.getJsonMessage(false, AjaxPageNotFoundLog, ""), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AjaxPageNotFound()
+        public ActionResult AjaxServerError(string AjaxServerErrorLog)
         {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务不存在！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
+            this.ControllerContext.HttpContext.Response.StatusCode = 500;
+            return Json(JsonMessageHelper.getJsonMessage(false, AjaxServerErrorLog, ""), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AjaxServerError()
+        public ActionResult AjaxError(int errorCode, string AjaxErrorLog)
         {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务发生未处理的服务器错误！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AjaxError()
-        {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务发生未知的服务器错误！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AjaxUnauthorized()
-        {
-            return Json(JsonMessageHelper.getJsonMessage(false, "当前访问的服务验证失败，没有相应的权限！", this.HttpContext.Request.RawUrl), "text", JsonRequestBehavior.AllowGet);
+            this.ControllerContext.HttpContext.Response.StatusCode = errorCode;
+            return Json(JsonMessageHelper.getJsonMessage(false, AjaxErrorLog, ""), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

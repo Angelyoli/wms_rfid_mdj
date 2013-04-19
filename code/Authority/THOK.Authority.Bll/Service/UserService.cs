@@ -29,9 +29,8 @@ namespace THOK.Authority.Bll.Service
         {
             get { return this.GetType(); }
         }
-        public bool UpdateUserInfo(string userName)
+        public bool UpdateUserInfo(string userName, string ipaddress)
         {
-            string ipaddress=System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
             var user = UserRepository.GetSingle(i => i.UserName == userName);
             if (user != null)
             {
@@ -41,11 +40,6 @@ namespace THOK.Authority.Bll.Service
                 return true;
             }
             else { return false; }
-        }
-        public string GetLocalIp(string userName)
-        {
-            string ipaddress = System.Net.Dns.Resolve(System.Net.Dns.GetHostName()).AddressList[0].ToString();
-            return ipaddress;
         }
         public string GetUserIp(string userName)
         {
@@ -59,6 +53,26 @@ namespace THOK.Authority.Bll.Service
             else
             {
                 return "";
+            }
+        }
+
+        public bool CheckAdress(string userName, string ipaddress)
+        {
+            var loginPcAdres = UserRepository.GetQueryable().Where(i => i.UserName == userName).ToArray();
+            if (loginPcAdres.Count() > 0)
+            {
+                if (ipaddress == loginPcAdres[0].LoginPC)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -168,7 +182,14 @@ namespace THOK.Authority.Bll.Service
 
         public bool ValidateUserPermission(string userName, string cityId, string systemId)
         {
-            return true;
+            if (String.IsNullOrEmpty(userName) || String.IsNullOrEmpty(cityId) || String.IsNullOrEmpty(systemId))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public string GetLogOnUrl(string userName, string password, string cityId, string systemId, string serverId)

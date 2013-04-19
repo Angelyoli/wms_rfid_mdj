@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IExceptionalLogService.cs" />
     <Compile Include="Interfaces\IFunctionService.cs" />
     <Compile Include="Interfaces\IHelpContentService.cs" />
+    <Compile Include="Interfaces\ILoginLogService.cs" />
     <Compile Include="Interfaces\ISystemEventLogService.cs" />
     <Compile Include="Interfaces\ISystemParameterService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
@@ -65,8 +67,10 @@
     <Compile Include="Models\UserLoginInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\CityService.cs" />
+    <Compile Include="Service\ExceptionalLogService.cs" />
     <Compile Include="Service\FunctionService.cs" />
     <Compile Include="Service\HelpContentService.cs" />
+    <Compile Include="Service\LoginLogService.cs" />
     <Compile Include="Service\ModuleService.cs" />
     <Compile Include="Service\RoleService.cs" />
     <Compile Include="Service\ServerService.cs" />

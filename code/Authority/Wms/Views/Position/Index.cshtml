@@ -1,0 +1,32 @@
+﻿<script type="text/javascript">
+    $(function () {
+
+    });
+</script>
+<div region="center" split="true"  border="false">    
+    <table id="details" class="easyui-datagrid" url="/Position/Details/" border="false" singleSelect="true"
+        fit="true" toolbar="#tool"  pagination="true" rownumbers="true" >
+        <thead>
+            <tr>
+                <th field="ID" hidden="true" width="80" >位置ID</th>
+                <th field="PositionName" width="75" >位置名称</th>
+                <th field="PositionType" width="75">位置类型</th>
+                <th field="RegionID" width="80" hidden="true">区域ID</th>   
+                <th field="RegionName" width="80">区域名称</th>
+                <th field="SRMName" width="60">堆垛机名称</th>
+                <th field="TravelPos" width="80">行走位置</th>
+                <th field="LiftPos" width="80" >升降位置</th>               
+                <th field="Extension" width="80">货叉伸位</th> 
+                <th field="Description" width="80" >描述</th>
+                <th field="HasGoods" width="75">是否有货物</th>
+                <th field="AbleStockOut" width="75">可否出库</th>
+                <th field="AbleStockInPallet" width="80">可否叠空托盘</th>
+                <th field="TagAddress" width="84" >电子标签地址</th>
+                <th field="CurrentTaskID" width="80">当前任务ID</th>
+                <th field="CurrentOperateQuantity" width="80">当前操作数量</th>
+                <th field="State" width="80">状态</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+

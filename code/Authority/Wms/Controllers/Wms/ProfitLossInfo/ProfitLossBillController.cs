@@ -7,15 +7,19 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.ProfitLossInfo
 {
+    [TokenAclAuthorize]
     public class ProfitLossBillController : Controller
     {
         [Dependency]
         public IProfitLossBillMasterService ProfitLossBillMasterService { get; set; }
         [Dependency]
         public IProfitLossBillDetailService ProfitLossBillDetailService { get; set; }
+        [Dependency]
+        public IProfitLossBillMasterHistoryService ProfitLossBillMasterHistoryService { get; set; }
         //
         // GET: /ProfitLossBill/
 
@@ -26,6 +30,7 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
             ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
             ViewBag.hasAudit = true;
+            ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -45,7 +50,7 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
             string CheckPersonCode = collection["CheckPersonCode"] ?? "";
             string Status = collection["Status"] ?? "";
             string IsActive = collection["IsActive"] ?? "";
-            var profitLossBillMaster = ProfitLossBillMasterService.GetDetails(page, rows, BillNo,WareHouseCode,beginDate,endDate,OperatePersonCode,CheckPersonCode, Status, IsActive);
+            var profitLossBillMaster = ProfitLossBillMasterService.GetDetails(page, rows, BillNo, WareHouseCode, beginDate, endDate, OperatePersonCode, CheckPersonCode, Status, IsActive);
             return Json(profitLossBillMaster, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -151,22 +156,23 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
         {
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
-            System.Data.DataTable dt = ProfitLossBillDetailService.GetProfitLoassBillDetail(page, rows, billNo);
-            string headText = "损益单明细";
-            string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
+            
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = ProfitLossBillDetailService.GetProfitLoassBillDetail(page, rows, billNo);
+            ep.HeadTitle1 = "损益单明细";
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
-        } 
+        }
         #endregion
+
+        public ActionResult ProfitLossBillMasterHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = ProfitLossBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

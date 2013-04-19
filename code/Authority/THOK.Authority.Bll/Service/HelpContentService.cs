@@ -319,7 +319,11 @@ namespace THOK.Authority.Bll.Service
         {
             Guid new_ID = new Guid(helpId);
             var help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.ModuleID == new_ID);
-            return new { help.ContentText };
+            if (help != null)
+            {
+                return new { help.ContentText };
+            }
+            return new { ContentText =@"<p>当前索引未找到相关文档内容！</p> "};
         }
 
 

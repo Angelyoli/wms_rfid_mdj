@@ -1,0 +1,9 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var id = null, PathID = null;
+        if ($('#ID').val() == null) { id = ""; } else { id=$('#ID').val()}
+   //     if ($('#PathID').val() == null) { PathID = ""; } else { PathID = $('#PathID').val() }
+        window.location.href = "/PathNode/CreateExcelToClient/"
+                                + "?id=" + id;
+    }
+</script>

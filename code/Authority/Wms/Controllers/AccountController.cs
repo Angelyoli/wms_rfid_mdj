@@ -18,6 +18,8 @@ namespace Authority.Controllers
         public IFormsAuthenticationService FormsService { get; set; }
         [Dependency]
         public IUserService UserService { get; set; }
+        [Dependency]
+        public ILoginLogService LoginLogService { get; set; }
 
         [HttpPost]
         public ActionResult LogOn(string userName, string password, string cityId, string systemId, string serverId)
@@ -61,16 +63,31 @@ namespace Authority.Controllers
                 this.AddCookie("systemid", systemId);
                 this.AddCookie("serverid", serverId);
                 this.AddCookie("username", userName);
+                string nowTime = DateTime.Now.ToString();
+                string ipAdress = this.ControllerContext.HttpContext.Request.UserHostAddress;
+                if (!UserService.CheckAdress(userName, ipAdress) && UserService.GetUserIp(userName) != "")
+                {
+                    LoginLogService.UpdateLoginLog(userName, nowTime);
+                }
+                LoginLogService.CreateLoginLog(nowTime, userName, Guid.Parse(systemId),ipAdress);
+                UserService.UpdateUserInfo(userName,ipAdress);
             }
             return new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" } });
         }
 
         public ActionResult LogOff()
         {
+            string ipAdress = this.ControllerContext.HttpContext.Request.UserHostAddress;
+            string username = this.GetCookieValue("username");
+            if (UserService.CheckAdress(username,ipAdress))
+            {
+                UserService.DeleteUserIp(username);
+                LoginLogService.UpdateLoginLog(username,DateTime.Now.ToString());
+            }
             FormsService.SignOut();
             return RedirectToAction("Index","Home");
         }
-
+        [TokenAclAuthorize]
         [Authorize]
         [HttpPost]
         public ActionResult ChangePassword(string userName, string password,string newPassword)
@@ -79,18 +96,19 @@ namespace Authority.Controllers
             string msg = bResult ? "修改密码成功" : "修改密码失败,请确认用户名与密码输入正确！";
             return Json(JsonMessageHelper.getJsonMessage(bResult,msg),"text");
         }
-
+        [TokenAclAuthorize]
         [Authorize]
         public ActionResult ChangeServer(string cityId, string systemId, string serverId)
         {
             bool bResult = false;
             string msg = "";
             string userName = this.User.Identity.Name;
+            string nowTime = DateTime.Now.ToString();
             cityId = cityId ?? this.GetCookieValue("cityid");
             systemId = systemId ?? this.GetCookieValue("systemid");
-
             if (UserService.ValidateUserPermission(userName,cityId, systemId))
             {
+                LoginLogService.UpdateLoginLog(userName, nowTime);
                 bResult = true;                
                 msg = "切换成功!";
             }

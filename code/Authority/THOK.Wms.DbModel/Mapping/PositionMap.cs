@@ -39,6 +39,8 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired();
             this.Property(t => t.TagAddress)
                 .IsRequired();
+            this.Property(t => t.ChannelCode)
+                .HasMaxLength(50);
             this.Property(t => t.State)
                 .IsRequired()
                 .IsFixedLength()
@@ -60,6 +62,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.TagAddress).HasColumnName(ColumnMap.Value.To("TagAddress"));
             this.Property(t => t.CurrentTaskID).HasColumnName(ColumnMap.Value.To("CurrentTaskID"));
             this.Property(t => t.CurrentOperateQuantity).HasColumnName(ColumnMap.Value.To("CurrentOperateQuantity"));
+            this.Property(t => t.ChannelCode).HasColumnName(ColumnMap.Value.To("ChannelCode"));
             this.Property(t => t.State).HasColumnName(ColumnMap.Value.To("State"));
 
             // Relationships

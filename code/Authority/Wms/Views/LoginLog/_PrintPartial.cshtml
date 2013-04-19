@@ -1,0 +1,13 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var loginPC = null, loginTime = null, logoutTime=null;
+        if ($('#LoginPC').val() == null) { loginPC = ""; } else { loginPC = $('#LoginPC').val() }
+        if ($('#LoginTime').val() == null) { loginTime = ""; } else { loginTime = $('#LoginTime').val() }
+        if ($('#LogoutTime').val() == null) { logoutTime = ""; } else { logoutTime = $('#LogoutTime').val() }
+
+        window.location.href = "/LoginLog/CreateExcelToClient/"
+                                + "?loginPC=" + loginPC
+                                + "&loginTime=" + loginTime
+                                + "&logoutTime=" + logoutTime; 
+    }
+</script>

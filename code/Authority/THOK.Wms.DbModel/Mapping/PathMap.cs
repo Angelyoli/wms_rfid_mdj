@@ -21,10 +21,12 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .IsFixedLength()
                 .HasMaxLength(2);
+           
 
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));
             this.Property(t => t.PathName).HasColumnName(ColumnMap.Value.To("PathName"));
+          
             this.Property(t => t.OriginRegionID).HasColumnName(ColumnMap.Value.To("OriginRegionID"));
             this.Property(t => t.TargetRegionID).HasColumnName(ColumnMap.Value.To("TargetRegionID"));
             this.Property(t => t.Description).HasColumnName(ColumnMap.Value.To("Description"));

@@ -8,9 +8,11 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.Wms.AutomotiveSystems.Models;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockMove
 {
+    [TokenAclAuthorize]
     public class StockMoveBillController : Controller
     {
         [Dependency]
@@ -19,6 +21,8 @@ namespace Authority.Controllers.Wms.StockMove
         public IMoveBillDetailService MoveBillDetailService { get; set; }
         [Dependency]
         public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
+	 	[Dependency]
+        public IMoveBillMasterHistoryService MoveBillMasterHistoryService { get; set; }
         //
         // GET: /StockMoveBill/
 
@@ -32,6 +36,7 @@ namespace Authority.Controllers.Wms.StockMove
             ViewBag.hasAntiTrial = true;
             ViewBag.hasTask = true;
             ViewBag.hasSettle = true;
+            ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.ModuleID = moduleID;
@@ -198,22 +203,23 @@ namespace Authority.Controllers.Wms.StockMove
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
             bool isAbnormity = Convert.ToBoolean(Request.QueryString["isAbnormity"]);
-            System.Data.DataTable dt = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo,isAbnormity);
-            string headText = "移库单明细";
-            string headFont = "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 11;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
+            
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo,isAbnormity);
+            ep.HeadTitle1 = "移库单明细";
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion
+
+        public ActionResult MoveBillMasterHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = MoveBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

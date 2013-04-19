@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+<div class="easyui-layout" fit="true" border="false">
+	<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " > 
+      <form id="fm" method="post" >  
+        <table width="280">
+                    <tr  style="display:none">
+                        <td  width="75">ID</td>
+                        <td width="168">
+                        <input name="ID" id="inputID" type="text" />
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                    <td width="75" align="right">路径名称：</td>
+                    <td width="168">
+                    <input name="PathName" id="inputPathName" readonly="readonly" class="easyui-validatebox"  required="true" type="text" missingmessage="请选择" />
+                    <input name="PathID" id ="inputPathID"  style="display:none" />
+                    <a href="#" id="PathIDSearch" class="easyui-linkbutton" iconcls="icon-search"
+                       plain="true" onclick="PathIDSearchClick()"></a>
+                       </td>
+                    </tr>
+
+                    <tr>
+                    <td width="75" align="right">位置名称：</td>
+                    <td width="168">
+                    <input name="PositionName" id="inputPositionName" required="true" readonly="readonly" type="text" class="easyui-validatebox" missingmessage="请选择"/>
+                    <input name="PositionID" id="inputPositionID"  style="display:none" />                    
+                    <a href="#" id="PositionIDSearch" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="PositionIDSearchClick()"></a>
+                    </td>
+                    </tr> 
+                                          
+                    <tr>
+                    <td width="75" align="right">路径节点顺序：</td>
+                    <td width="168">
+                    <input name="PathNodeOrder" id="inputPathNodeOrder" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入（必须为数字）"/>
+                    <input name="PathNodeOrder"  style="display:none" /></td>	                
+                    </tr>
+                </table>
+            </form>
+    </div>
+</div>
+@Html.Partial("_PathIDPartial")
+@Html.Partial("_PositionIDPartial")

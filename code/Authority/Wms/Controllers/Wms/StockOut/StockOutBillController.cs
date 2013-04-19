@@ -9,9 +9,11 @@ using THOK.Wms.DbModel;
 using THOK.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockOut
 {
+    [TokenAclAuthorize]
     public class StockOutBillController : Controller
     {
 
@@ -21,6 +23,8 @@ namespace Authority.Controllers.Wms.StockOut
         public IOutBillDetailService OutBillDetailService { get; set; }
         [Dependency]
         public ISystemParameterService SystemParameterService { get; set; }
+        [Dependency]
+        public IOutBillMasterHistoryService OutBillMasterHistoryService { get; set; }
         //
         // GET: /StockOutBill/
 
@@ -34,8 +38,9 @@ namespace Authority.Controllers.Wms.StockOut
             ViewBag.hasAudit = true;
             ViewBag.hasAntiTrial = true;
             ViewBag.hasAllot = true;
-            //ViewBag.hasTask = true;
+            ViewBag.hasTask = true;
             ViewBag.hasSettle = true;
+            ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;            
             ViewBag.ModuleID = moduleID;
@@ -199,6 +204,18 @@ namespace Authority.Controllers.Wms.StockOut
 
             string msg = bResult ? "下载成功" : "下载失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        //
+        // GET: /StockOutBill/OutBillMasterHistory/
+        public ActionResult OutBillMasterHistory(string datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = OutBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

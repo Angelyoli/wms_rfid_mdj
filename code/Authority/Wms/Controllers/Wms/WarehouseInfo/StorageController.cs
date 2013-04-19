@@ -5,9 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.WarehouseInfo
 {
+    [TokenAclAuthorize]
     public class StorageController : Controller
     {
         [Dependency]

@@ -1,0 +1,12 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var id=null, srmName = null, state = null;
+       // if ($('#ID').val() == null) { id = ""; } else { id=$('#ID').val()}
+        if ($('#SRMName').val() == null) { srmName = ""; } else { srmName = $('#SRMName').val() }
+        if (document.getElementById('#State') == null) { state = ""; } else { state = $('#State').combo('getValue') }
+
+        window.location.href = "/SRM/CreateExcelToClient/"
+                                + "?srmName=" + srmName
+                                + "&state=" + state;
+    }
+</script>

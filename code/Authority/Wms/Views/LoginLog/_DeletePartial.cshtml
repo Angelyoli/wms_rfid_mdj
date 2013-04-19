@@ -1,0 +1,72 @@
+﻿<script type="text/javascript">
+    function deleteClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            url = '/LoginLog/Delete/?loginLogId=' + row.LogID;
+            $('#dlg-delete').dialog('open').dialog('setTitle', '删除');
+            $('#fm').form('load', row);
+        } else {
+            $.messager.alert('错误', '没有选择行！', 'info');
+        }
+    };
+
+    function deleted() {
+        $('#fm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#dlg-delete').dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+
+</script>
+
+<div id="dlg-delete" class="easyui-dialog" modal="true" style="width:280px;height:270px;padding:2px 2px" closed="true" buttons="#dlg-buttons-search">
+    <div class="easyui-layout" fit="true">
+		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " > 
+        <form id="fm" method="post">
+            <table width="250">
+              <tr>
+                <td width="95">登录电脑：</td>
+                <td width="160" align="left"><input id="inputLoginPC" name="LoginPC" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="95">登录电脑：</td>
+                <td width="160" align="left"><input id="inputLoginPC" name="LoginPC" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="95">登录时间：</td>
+                <td width="160" align="left"><input id="inputLoginTime" name="LoginTime" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="95">退出时间：</td>
+                <td width="160" align="left"><input id="inputLogoutTime" name="LogoutTime" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="95">登录的用户名：</td>
+                <td width="160" align="left"><input id="inputUserName" name="UserName" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="95">登录的系统：</td>
+                <td width="160" align="left"><input id="inputSystemName" name="SystemName" disabled="disabled"/></td>
+              </tr>
+            </table>
+        </form>  
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-search">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="deleted()">确定</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-delete').dialog('close')">取消</a>
+</div>

@@ -36,14 +36,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
-      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\itextsharp.dll</HintPath>
+      <HintPath>..\THOK.Common.Highcharts\ThirdParty\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -53,9 +50,17 @@
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.0.208.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Microsoft.Practices.Unity.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -80,7 +85,7 @@
       <HintPath>..\packages\SignalR.Hosting.Common.0.5.2\lib\net40\SignalR.Hosting.Common.dll</HintPath>
     </Reference>
     <Reference Include="Svg">
-      <HintPath>..\Tek4.Highcharts.Exporting\bin\Debug\Svg.dll</HintPath>
+      <HintPath>..\THOK.Common.Highcharts\ThirdParty\Svg.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -108,6 +113,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Authority\AuthorizeController.cs" />
+    <Compile Include="Controllers\Authority\ExceptionalLogController.cs" />
     <Compile Include="Controllers\Authority\FunctionController.cs" />
     <Compile Include="Controllers\Authority\HelpContentController.cs" />
     <Compile Include="Controllers\Authority\HelpController.cs" />
@@ -127,6 +133,16 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\CellPositionController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\PathNodeController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\Wms\BasisInfo\ProductSizeController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\PositionController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\SizeController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\SRMController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\SortOrderSearchController.cs" />
     <Compile Include="Controllers\Wms\ComplexSearch\StockCheckSearchController.cs" />
@@ -189,7 +205,6 @@
     <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\ShelfController.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\StorageController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\Test1Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\Warehouse2Controller.cs" />
     <Compile Include="Controllers\Wms\WarehouseInfo\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
@@ -199,6 +214,15 @@
     <Compile Include="Security\FormsAuthenticationService.cs" />
     <Compile Include="Security\FormsAuthorizeAttribute.cs" />
     <Compile Include="Security\IFormsAuthenticationService.cs" />
+    <Compile Include="Security\NonAuthorizeAttribute.cs" />
+    <Compile Include="Security\SystemEventLogAttribute.cs" />
+    <Compile Include="Security\SystemEventLogFactory.cs" />
+    <Compile Include="Security\TokenAclAuthorizeAttribute.cs" />
+    <Compile Include="Service\WMSService.asmx.cs">
+      <DependentUpon>WMSService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Security\ServiceFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\ASPNETDB.MDF" />
@@ -1575,11 +1599,9 @@
     <Content Include="Content\themes\base\images\son_StockPlace.png" />
     <Content Include="Content\themes\base\images\son_Warehouse.png" />
     <Content Include="Content\themes\base\images\tabs_close.gif" />
+    <Content Include="DB.xml" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="obj\Debug\Authority.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\Debug\Authority.dll" />
-    <Content Include="obj\Debug\Authority.pdb" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -1596,6 +1618,8 @@
     <Content Include="Scripts\jquery.ztree.exhide-3.3.js" />
     <Content Include="Scripts\jquery.ztree.exhide-3.3.min.js" />
     <Content Include="Scripts\mykeyboardshortcuts.js" />
+    <Content Include="Scripts\mymigration.js" />
+    <Content Include="Service\WMSService.asmx" />
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1636,14 +1660,9 @@
     <Folder Include="Content\App_Data\" />
     <Folder Include="Content\Scripts\ckfinder\userfiles\files\" />
     <Folder Include="Content\Scripts\ckfinder\userfiles\flash\" />
-    <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tek4.Highcharts.Exporting\Tek4.Highcharts.Exporting.csproj">
-      <Project>{42BDE168-C741-4339-92B6-0656E798E989}</Project>
-      <Name>Tek4.Highcharts.Exporting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\THOK.Authority.Bll\THOK.Authority.Bll.csproj">
       <Project>{8375EB8C-20CB-4E3E-BCF4-85E54F61D241}</Project>
       <Name>THOK.Authority.Bll</Name>
@@ -1651,6 +1670,14 @@
     <ProjectReference Include="..\THOK.Authority.DbModel\THOK.Authority.DbModel.csproj">
       <Project>{F7EB9C5D-6082-4DE6-B1C0-740AFF0CFE11}</Project>
       <Name>THOK.Authority.DbModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
+      <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
+      <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Common.NPOI\THOK.Common.NPOI.csproj">
+      <Project>{F13B4CEE-A865-4815-B5DA-65D579FF008F}</Project>
+      <Name>THOK.Common.NPOI</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Common.WEBUtil\THOK.Common.WebUtil.csproj">
       <Project>{EC6DCF36-B010-4E48-88FC-BABC33EBCCFB}</Project>
@@ -1723,7 +1750,6 @@
     <Content Include="Views\Authorize\_SearchPartial.cshtml" />
     <Content Include="Views\Company\_%40AddPartial.cshtml" />
     <Content Include="Views\Company\_%40DeletePartial.cshtml" />
-    <Content Include="Views\Company\_HelpPartial.cshtml" />
     <Content Include="Views\Company\_%40SearchPartial.cshtml" />
     <Content Include="Views\Company\_PrintPartial.cshtml" />
     <Content Include="Views\Department\_AddPartial.cshtml" />
@@ -1733,9 +1759,7 @@
     <Content Include="Views\Employee\_DeletePartial.cshtml" />
     <Content Include="Views\Employee\_EditPartial.cshtml" />
     <Content Include="Views\Employee\_SearchPartial.cshtml" />
-    <Content Include="Views\Employee\_HelpPartial.cshtml" />
     <Content Include="Views\Employee\_PrintPartial.cshtml" />
-    <Content Include="Views\Department\_HelpPartial.cshtml" />
     <Content Include="Views\Department\_PrintPartial.cshtml" />
     <Content Include="Views\CheckBill\Index.cshtml" />
     <Content Include="Views\CheckBillVerify\Index.cshtml" />
@@ -1775,10 +1799,6 @@
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\diy\Thumbs.db" />
     <None Include="Content\Scripts\Jquery-zTree-v3.3\zTreeStyle\img\Thumbs.db" />
     <None Include="ExcelTemplate\DailyBalance.xls" />
-    <None Include="obj\Debug\build.force" />
-    <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
-    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <None Include="obj\Debug\ResolveAssemblyReference.cache" />
     <Content Include="Views\Brand\Index.cshtml" />
     <Content Include="Views\Brand\_AddPartial.cshtml" />
     <Content Include="Views\Brand\_DeletePartial.cshtml" />
@@ -1887,6 +1907,22 @@
     <Content Include="Views\AutomotiveConfig\Index.cshtml" />
     <Content Include="Views\DeliverLine\_DistCode.cshtml" />
     <Content Include="Views\Help\Index.cshtml" />
+    <Content Include="Views\CheckBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\DailyBalance\_MigrationPartial.cshtml" />
+    <Content Include="Views\CellPosition\Index.cshtml" />
+    <Content Include="Views\CellPosition\SearchPage.cshtml" />
+    <Content Include="Views\CellPosition\_SearchPartial.cshtml" />
+    <Content Include="Views\CellPosition\AddPage.cshtml" />
+    <Content Include="Views\CellPosition\_AddPartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellPositionNamePartial.cshtml" />
+    <Content Include="Views\CellPosition\_EditPartial.cshtml" />
+    <Content Include="Views\CellPosition\_DeletePartial.cshtml" />
+    <Content Include="Views\CellPosition\_PrintPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\Index.cshtml" />
+    <Content Include="Views\ExceptionalLog\_DeletePartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_PrintPartial.cshtml" />
+    <Content Include="Views\ExceptionalLog\_SearchPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -1902,7 +1938,6 @@
     <Content Include="Views\LoginLog\Index.cshtml" />
     <Content Include="Views\Server\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_HelpPartial.cshtml" />
     <Content Include="Views\System\_AddPartial.cshtml" />
     <Content Include="Views\Module\_AddPartial.cshtml" />
@@ -1977,7 +2012,6 @@
     <Content Include="Views\Job\_EditPartial.cshtml" />
     <Content Include="Views\Job\_SearchPartial.cshtml" />
     <Content Include="Views\Job\_PrintPartial.cshtml" />
-    <Content Include="Views\Job\_HelpPartial.cshtml" />
     <Content Include="Views\StockMoveBillCheck\Index.cshtml" />
     <Content Include="Views\StockMoveBill\Index.cshtml" />
     <Content Include="Views\StockMoveBillGenerate\Index.cshtml" />
@@ -2220,6 +2254,92 @@
     <Content Include="Views\StockInBill\_TaskPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_TaskPartial.cshtml" />
     <Content Include="Views\SortWorkDispatch\_TaskPartial.cshtml" />
+    <Content Include="Views\StockInBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\StockMoveBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\ProfitLossBill\_MigrationPartial.cshtml" />
+    <Content Include="Views\SRM\AddPage.cshtml" />
+    <Content Include="Views\SRM\Index.cshtml" />
+    <Content Include="Views\SRM\SearchPage.cshtml" />
+    <Content Include="Views\SRM\_AddPartial.cshtml" />
+    <Content Include="Views\SRM\_DeletePartial.cshtml" />
+    <Content Include="Views\SRM\_EditPartial.cshtml" />
+    <Content Include="Views\SRM\_PrintPartial.cshtml" />
+    <Content Include="Views\SRM\_SearchPartial.cshtml" />
+    <Content Include="Views\Region\Index.cshtml" />
+    <Content Include="Views\Region\SearchPage.cshtml" />
+    <Content Include="Views\Region\_SearchPartial.cshtml" />
+    <Content Include="Views\Region\AddPage.cshtml" />
+    <Content Include="Views\Region\_AddPartial.cshtml" />
+    <Content Include="Views\Region\_EditPartial.cshtml" />
+    <Content Include="Views\Region\_DeletePartial.cshtml" />
+    <Content Include="Views\Region\_PrintPartial.cshtml" />
+    <Content Include="Views\Size\Index.cshtml" />
+    <Content Include="Views\Size\SearchPage.cshtml" />
+    <Content Include="Views\Size\_SearchPartial.cshtml" />
+    <Content Include="Views\Size\AddPage.cshtml" />
+    <Content Include="Views\Size\_AddPartial.cshtml" />
+    <Content Include="Views\Size\_EditPartial.cshtml" />
+    <Content Include="Views\Size\_DeletePartial.cshtml" />
+    <Content Include="Views\Size\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductSize\Index.cshtml" />
+    <Content Include="Views\ProductSize\SearchPage.cshtml" />
+    <Content Include="Views\ProductSize\_SearchPartial.cshtml" />
+    <Content Include="Views\ProductSize\AddPage.cshtml" />
+    <Content Include="Views\ProductSize\_AddPartial.cshtml" />
+    <Content Include="Views\ProductSize\_EditPartial.cshtml" />
+    <Content Include="Views\ProductSize\_DeletePartial.cshtml" />
+    <Content Include="Views\ProductSize\_PrintPartial.cshtml" />
+    <Content Include="Views\PathNode\AddPage.cshtml" />
+    <Content Include="Views\PathNode\Index.cshtml" />
+    <Content Include="Views\PathNode\SearchPage.cshtml" />
+    <Content Include="Views\PathNode\_AddPartial.cshtml" />
+    <Content Include="Views\PathNode\_DeletePartial.cshtml" />
+    <Content Include="Views\PathNode\_EditPartial.cshtml" />
+    <Content Include="Views\PathNode\_PrintPartial.cshtml" />
+    <Content Include="Views\PathNode\_SearchPartial.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Position\_AddPartial.cshtml" />
+    <Content Include="Views\Position\_DeletePartial.cshtml" />
+    <Content Include="Views\Position\_EditPartial.cshtml" />
+    <Content Include="Views\Position\_SearchPartial.cshtml" />
+    <Content Include="Views\Position\AddPage.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
+    <Content Include="Views\Path\Index.cshtml" />
+    <Content Include="Views\Path\_TargetPartial.cshtml" />
+    <Content Include="Views\Path\_OriginPartial.cshtml" />
+    <Content Include="Views\Path\_HelpPartial.cshtml" />
+    <Content Include="Views\Path\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\_RegionPartial.cshtml" />
+    <Content Include="Views\Position\_RegionNamePartial.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Position\_PrintPartial.cshtml" />
+    <Content Include="Views\PathNode\_PathIDPartial.cshtml" />
+    <Content Include="Views\PathNode\_PositionIDPartial.cshtml" />
+    <Content Include="Views\Path\_AddPartial.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
+    <Content Include="Views\Path\_RegionPartial.cshtml" />
+    <Content Include="Views\Path\_SearchPartial.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Position\Index.cshtml" />
+    <Content Include="Views\Position\SearchPage.cshtml" />
+    <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
+    <Content Include="Views\LoginLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\LoginLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_EmptyPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_PrintPartial.cshtml" />
+    <Content Include="Views\SystemEventLog\_DeletePartial.cshtml" />
+    <Content Include="Views\Shared\_EmptyPartial.cshtml" />
+    <Content Include="Views\Home\_ProductWarningPartial.cshtml" />
+    <Content Include="Views\Shared\_EmptyPartial.cshtml">
+      <SubType>Code</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
@@ -2241,7 +2361,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>41365</DevelopmentServerPort>
+          <DevelopmentServerPort>11030</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

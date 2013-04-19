@@ -1,0 +1,8 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var  srmName = null;
+        if ($('#SizeName').val() == null) { sizeName = ""; } else { sizeName = $('#SizeName').val() }
+        window.location.href = "/Size/CreateExcelToClient/"
+                                + "?sizeName=" + sizeName;
+    }
+</script>

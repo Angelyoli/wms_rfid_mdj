@@ -1,0 +1,86 @@
+﻿<script type="text/javascript">
+    var module = "Path";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
+    function SearchLoad() {
+      
+        $('#state').combo({
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+    }
+    var searchDialog;
+    function searchClick() {
+      
+        SearchLoad();
+        $("input[type=text]").attr("value", "");
+        $('#state').combo('setValue', "");
+       
+        if (searchDialog == null) {
+            searchDialog = $('<div></div>').dialog({
+                title: '查询',
+                width: 300,
+                height: 280,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Path/SearchPage/',
+                buttons: [{
+                    text: '查询',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        GetQueryParams();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        searchDialog.dialog('close');
+                    }
+                }],
+                onLoad: function () {
+                }
+            });
+        }
+        searchKey = true;
+        searchDialog.dialog('open');
+    };
+
+    function select() {
+       
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ID = $('#ID').val();
+        queryParams.PathName = $('#PathName').val();
+        queryParams.OriginID = $('#origin-id').val();
+        queryParams.TargetID = $('#target-id').val();
+       
+        queryParams.State = $('#state').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $('#details').datagrid({
+            pageNumber: 1,
+            pageSize: 10
+        });
+        $("#details").datagrid('reload');
+        $('#dlg-search').dialog('close');
+       
+        $('#state').combobox('clear');
+    }
+
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ID = $('#ID').val();
+        queryParams.PathName = $('#PathName').val();
+        queryParams.OriginID = $('#origin-name').val();
+        queryParams.TargetID = $('#target-name').val();
+        
+        queryParams.State = $('#state').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+</script>
+<script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
+

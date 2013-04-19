@@ -6,17 +6,19 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.WebUtil;
+using THOK.Security;
 
 namespace Authority.Controllers.Wms.StockCheckInfo
 {
+    [TokenAclAuthorize]
     public class CheckBillController : Controller
     {
         [Dependency]
         public ICheckBillMasterService CheckBillMasterService { get; set; }
-
         [Dependency]
         public ICheckBillDetailService CheckBillDetailService { get; set; }
-
+        [Dependency]
+        public ICheckBillMasterHistoryService CheckBillMasterHistoryService { get; set; }
         //
         // GET: /CheckBill/
 
@@ -26,6 +28,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             ViewBag.hasAdd = true;
             //ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
+            ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
             ViewBag.hasAntiTrial = true;
@@ -45,30 +48,30 @@ namespace Authority.Controllers.Wms.StockCheckInfo
 
         //根据货位生成盘点单主表和细表数据
         // POST: /CheckBill/CheckCellCreate/       
-        public ActionResult CheckCellCreate(string wareCodes, string areaCodes, string shelfCodes, string cellCodes,string billType)
+        public ActionResult CheckCellCreate(string wareCodes, string areaCodes, string shelfCodes, string cellCodes, string billType)
         {
             string info = string.Empty;
-            bool bResult = CheckBillMasterService.CellAdd(wareCodes, areaCodes, shelfCodes, cellCodes,this.User.Identity.Name.ToString(),billType, out info);
-            string msg = bResult ? "新增成功" : "新增失败";            
+            bool bResult = CheckBillMasterService.CellAdd(wareCodes, areaCodes, shelfCodes, cellCodes, this.User.Identity.Name.ToString(), billType, out info);
+            string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, info), "text", JsonRequestBehavior.AllowGet);
         }
 
         //根据产品生成盘点单主表和细表数据
         // POST: /CheckBill/CheckProductCreate/       
-        public ActionResult CheckProductCreate(string products,string billType)
+        public ActionResult CheckProductCreate(string products, string billType)
         {
             string info = string.Empty;
-            bool bResult = CheckBillMasterService.ProductAdd(products, this.User.Identity.Name.ToString(),billType, out info);
+            bool bResult = CheckBillMasterService.ProductAdd(products, this.User.Identity.Name.ToString(), billType, out info);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, info), "text", JsonRequestBehavior.AllowGet);
         }
 
         //根据产品生成盘点单主表和细表数据
         // POST: /CheckBill/CheckChangedCreate/       
-        public ActionResult CheckChangedCreate(string beginDate, string endDate,string billType)
+        public ActionResult CheckChangedCreate(string beginDate, string endDate, string billType)
         {
             string info = string.Empty;
-            bool bResult = CheckBillMasterService.ChangedAdd(beginDate, endDate, this.User.Identity.Name.ToString(),billType, out info);
+            bool bResult = CheckBillMasterService.ChangedAdd(beginDate, endDate, this.User.Identity.Name.ToString(), billType, out info);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, info), "text", JsonRequestBehavior.AllowGet);
         }
@@ -151,7 +154,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         // POST: /CheckBill/checkBillMasterConfirm/
         public ActionResult checkBillMasterConfirm(string BillNo)
         {
-            string errorInfo=string.Empty;
+            string errorInfo = string.Empty;
             bool bResult = CheckBillMasterService.confirmCheck(BillNo, this.User.Identity.Name.ToString(), out errorInfo);
             string msg = bResult ? "确认成功" : "确认失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
@@ -163,23 +166,23 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
 
-            System.Data.DataTable dt = CheckBillDetailService.GetCheckBillDetail(page, rows, billNo);
-
-            string headText = "盘点单明细";
-            string headFont= "微软雅黑"; Int16 headSize = 20;
-            string colHeadFont = "Arial"; Int16 colHeadSize = 10;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            System.IO.MemoryStream ms = THOK.Common.ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , 0, true, colHeadFont, colHeadSize, 0, true, 0, HeaderFooder, null, 0);
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = CheckBillDetailService.GetCheckBillDetail(page, rows, billNo);
+            ep.HeadTitle1 = "盘点单明细";
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
-        } 
+        }
         #endregion
+
+
+        public ActionResult CheckBillMasterHistory(DateTime datetime)
+        {
+            string result = string.Empty;
+            string strResult = string.Empty;
+            bool bResult = CheckBillMasterHistoryService.Add(Convert.ToDateTime(datetime), out strResult);
+            string msg = bResult ? "迁移成功" : "迁移失败";
+            if (msg != "迁移成功") result = "原因：" + strResult;
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }

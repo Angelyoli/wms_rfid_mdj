@@ -1,0 +1,82 @@
+﻿<script type="text/javascript">
+    $(function () {
+        $('#originDetail').datagrid({
+            //双击赋值
+            onDblClickRow: function () {
+                originSave();
+            }
+        })
+        //属性初始化
+        $('#queryTypeOrigin').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 100
+        })
+    });
+    //选中赋值
+    function originSave() {
+        var originRow = $('#originDetail').datagrid('getSelected');
+        if (originRow) {
+           
+
+            $('#OriginRegionID').val(originRow.ID);
+            $('#oriName').val(originRow.RegionName);
+            $('#OriginRegion').val(originRow.ID);
+            $('#origin-name').val(originRow.RegionName);
+            $('#originData').dialog('close');
+        }
+        else {
+            $.messager.alert('提示', '没有选择行!', 'info');
+        }
+    }
+    //根据条件查询
+    function originQueryClick() {
+        $("#originDetail").datagrid({
+            url: '/Region/GetRegion/?queryString=' + 'RegionName' + '&value=' + $('#originInfo').val()
+        });
+        $("#originDetail").datagrid('reload');
+    }
+
+</script>
+<div id="originData" class="easyui-dialog" modal="true" style="width: 500px;
+    height: 420px; padding: 0px 0px" closed="true" buttons="#dlgProduct-buttons">
+    <div id="btnQuery">
+        <table>
+            <tr>
+                <td>区域名称：</td>
+                <td>
+                     <input id="originInfo">
+                     <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="originQueryClick()"
+                         id="originQuery">查询</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div split="true" border="false" style="width: 486px; height: 320px;">
+        <table id="originDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+            <thead>
+                <tr>
+                   
+                    <th field="ID" width="60">
+                        区域编号
+                    </th>
+                    <th field="RegionName" width="60">
+                        区域名称
+                    </th>
+                    <th field="State" width="60">
+                        状态
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="dlgDepart-buttons" style="float:right; margin-top:10px; margin-right:10px;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="originSave()">确定</a>
+        <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#originData').dialog('close')">
+            取消</a>
+    </div>
+</div>
+
+

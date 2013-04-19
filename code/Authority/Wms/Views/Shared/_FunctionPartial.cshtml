@@ -9,9 +9,9 @@
 @if (ViewBag.hasDelete != null && ViewBag.hasDelete)
 {    @Html.Partial("_DeletePartial")}
 @if (ViewBag.hasSave != null && ViewBag.hasSave)
-{    @Html.Partial("_SavePartial")} 
+{    @Html.Partial("_SavePartial")}
 @if (ViewBag.hasFunctionAdmin != null && ViewBag.hasFunctionAdmin)
-{    @Html.Partial("_FunctionAdminPartial")}                                                                                             
+{    @Html.Partial("_FunctionAdminPartial")}
 @if (ViewBag.hasPermissionAdmin != null && ViewBag.hasPermissionAdmin)
 {    @Html.Partial("_PermissionAdminPartial")}
 @if (ViewBag.hasRoleAdmin != null && ViewBag.hasRoleAdmin)
@@ -45,7 +45,7 @@
 @if (ViewBag.hasUpload != null && ViewBag.hasUpload)
 {    @Html.Partial("_UploadPartial")}
 @if (ViewBag.hasApply != null && ViewBag.hasApply)
-{    @Html.Partial("_ApplyPartial")}                                   
+{    @Html.Partial("_ApplyPartial")}
 @if (ViewBag.hasCancel != null && ViewBag.hasCancel)
 {    @Html.Partial("_CancelPartial")}
 @if (ViewBag.hasFinish != null && ViewBag.hasFinish)
@@ -54,3 +54,7 @@
 {    @Html.Partial("_BatchPartial")}
 @if (ViewBag.hasTask != null && ViewBag.hasTask)
 {    @Html.Partial("_TaskPartial")}
+@if (ViewBag.hasMigration != null && ViewBag.hasMigration)
+{    @Html.Partial("_MigrationPartial")}
+@if (ViewBag.hasEmpty != null && ViewBag.hasEmpty)
+{    @Html.Partial("_EmptyPartial")}

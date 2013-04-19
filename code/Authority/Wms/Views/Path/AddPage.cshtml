@@ -1,0 +1,72 @@
+﻿@{
+    Layout = null;
+}
+<div class="easyui-layout" fit="true" border="false">
+    <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+        border: 1px solid #ccc;">
+        <form id="fm" method="post" novalidate>
+        <table width="520">
+            <tr>
+                <td width="60" align="right">
+                    路径编号：
+                </td>
+                <td width="168">
+                    <input name="ID" id="inputID" class="easyui-validatebox" validtype="maxLength[8]"
+                        required="true" />
+                    <input name="ID" style="display: none" />
+                </td>
+                <td width="60" align="right">
+                    路径名称：
+                </td>
+                <td width="168">
+                    <input name="PathName" class="easyui-validatebox" validtype="maxLength[50]" required="true" />
+                </td>
+            </tr>
+           
+            <tr>
+                <td align="right">
+                    起始区域：
+                </td>
+                <td width="168">
+                   <input name="OriginRegionID" id="OriginRegionID" style="display: none;"  />
+                    <input name="OriginRegionName" id="oriName" readonly="readonly" class="easyui-validatebox" />
+                    <a href="#" id="originNameSearch" class="easyui-linkbutton" iconcls="icon-search"
+                        plain="true" onclick="OriginSearchClick()"></a>
+                </td>
+               <td width="60" align="right">
+                    目标区域：
+                </td>
+                <td width="168">
+                    <input name="TargetRegionID" id="targetId" required="true" style="display: none;" />
+                    <input name="TargetRegionName" id="targetName" required="true" readonly="readonly" class="easyui-validatebox" />
+                    <a href="#" id="targetSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                        onclick="TargetSearchClick()"></a>
+                </td>
+            </tr>
+            <tr>
+               <td align="right">
+                   状态：
+                </td>
+                <td>
+                    <select id="state_emp" name="State" class="easyui-combobox" style="width: 130px">
+                       
+                        <option value="01">可用</option>
+                        <option value="02">不可用</option>
+                    </select>
+                </td>
+            </tr>
+           
+            <tr>
+                <td width="60" align="right">
+                    描述：
+                </td>
+                <td width="168" colspan="3">
+                    <textarea name="Description" id="desId" style="width: 385px; height: 80px"></textarea>
+                </td>
+            </tr>
+        </table>
+        </form>
+    </div>
+</div>
+@Html.Partial("_OriginPartial")
+@Html.Partial("_TargetPartial")

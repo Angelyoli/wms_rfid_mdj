@@ -179,7 +179,7 @@
         $.getJSON("/Home/GetUser/?t=" + new Date(), function (data) {
             if (data) {
                 if (!data.Identity.IsAuthenticated) {
-                    $.messager.confirm('系统提示', '操作已超时，请重新登录！', function (r) {
+                    $.messager.alert('系统提示', '操作已超时，请重新登录！','info' ,function (r) {
                         location.reload();
                     });
                 }
@@ -188,7 +188,7 @@
                 }
             }
             else {
-                $.messager.confirm('系统提示', '操作已超时，请重新登录！', function (r) {
+                $.messager.alert('系统提示', '操作已超时，请重新登录！', 'info',function (r) {
                     location.reload();
                 });
             }

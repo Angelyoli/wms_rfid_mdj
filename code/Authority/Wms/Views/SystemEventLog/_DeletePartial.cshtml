@@ -1,0 +1,72 @@
+﻿<script type="text/javascript">
+    function deleteClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            url = '/SystemEventLog/Delete/?eventLogId=' + row.EventLogID;
+            $('#dlg-delete').dialog('open').dialog('setTitle', '删除');
+            $('#fm').form('load', row);
+        } else {
+            $.messager.alert('错误', '没有选择行！', 'info');
+        }
+    };
+
+    function deleted() {
+        $('#fm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#dlg-delete').dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+
+</script>
+
+<div id="dlg-delete" class="easyui-dialog" modal="true" style="width:280px;height:270px;padding:2px 2px" closed="true" buttons="#dlg-buttons-search">
+    <div class="easyui-layout" fit="true">
+		<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " > 
+        <form id="fm" method="post">
+            <table width="250">
+              <tr>
+                <td width="60">业务时间：</td>
+                <td width="160" align="left"><input id="inputEventLogTime" name="EventLogTime" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="60">业务名称：</td>
+                <td width="160" align="left"><input id="inputEventName" name="EventName" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="60">业务描述：</td>
+                <td width="160" align="left"><input id="inputEventDescription" name="EventDescription" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="60">所用电脑：</td>
+                <td width="160" align="left"><input id="inputFromPC" name="FromPC" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="60">操作用户：</td>
+                <td width="160" align="left"><input id="inputOperateUser" name="OperateUser" disabled="disabled"/></td>
+              </tr>
+              <tr>
+                <td width="60">对象系统：</td>
+                <td width="160" align="left"><input id="inputTargetSystem" name="TargetSystem" disabled="disabled"/></td>
+              </tr>
+            </table>
+        </form>  
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-search">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="deleted()">确定</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-delete').dialog('close')">取消</a>
+</div>

@@ -13,11 +13,14 @@ using NPOI.HPSF;
 using NPOI.SS.UserModel;
 using System.IO;
 using System.Data;
-using THOK.Common; 
+using THOK.Common;
+using THOK.Security; 
+
 #endregion
 
 namespace Authority.Controllers.Organization
 {
+    [TokenAclAuthorize]
     public class CompanyController : Controller
     {
         [Dependency]
@@ -116,28 +119,16 @@ namespace Authority.Controllers.Organization
             string companyName = Request.QueryString["companyName"] ?? "";
             string companyType = Request.QueryString["companyType"] ?? "";
             string isActive = Request.QueryString["isActive"] ?? "";
-            DataTable dt = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
-
-            string headText = "公司信息";
-            string headFont = "微软雅黑"; 
-            Int16 headSize = 20;
-            Int16 headColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            string colHeadFont = "宋体"; 
-            Int16 colHeadSize = 10;
-            Int16 colHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            Int16 contentColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            string[] HeaderFooder = {   
-                                         "……"  //眉左
-                                        ,"……"  //眉中
-                                        ,"……"  //眉右
-                                        ,"&D"    //脚左 日期
-                                        ,"……"  //脚中
-                                        ,"&P"    //脚右 页码
-                                    };
-            MemoryStream ms = ExportExcel.ExportDT(dt, null, headText, null, headFont, headSize
-                , headColor, false, colHeadFont, colHeadSize, colHeadColor, true, contentColor, HeaderFooder, null, 0);
+            
+            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            ep.DT1 = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
+            ep.HeadTitle1 = "公司信息";
+            ep.BigHeadColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            ep.ColHeadColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            ep.ContentColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
+            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
-        #endregion 
+        #endregion
     }
 }
