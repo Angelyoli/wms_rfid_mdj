@@ -7,7 +7,7 @@ using System.Web.Routing;
 using System.Text;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
 

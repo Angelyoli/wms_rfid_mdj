@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Allot.Interfaces;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Security;
 
@@ -87,12 +87,12 @@ namespace Authority.Controllers.Wms.StockOut
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = OutBillDetailService.GetOutBillDetail(page, rows, billNo);
             ep.DT2 = OutBillAllotService.AllotSearch(page, rows, billNo);
             ep.HeadTitle1 = "出库单据分配";
             ep.HeadTitle2 = "出库单据分配明细";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

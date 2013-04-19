@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 
 
 namespace Wms.Controllers.Wms.Inventory
@@ -47,10 +47,10 @@ namespace Wms.Controllers.Wms.Inventory
             string type = Request.QueryString["type"];
             string id = Request.QueryString["id"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = CellHistoricalService.GetCellHistory(page, rows, beginDate, endDate, type, id);
             ep.HeadTitle1 = "货位历史明细";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

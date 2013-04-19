@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using Microsoft.Practices.Unity;
 using THOK.Security;
 using System.Web.Script.Serialization;

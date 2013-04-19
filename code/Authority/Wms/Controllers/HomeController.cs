@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Script.Serialization;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using Microsoft.Practices.Unity;
 using THOK.Security;
 using THOK.Authority.Bll.Interfaces;

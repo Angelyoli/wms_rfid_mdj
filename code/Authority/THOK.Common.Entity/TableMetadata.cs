@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Data.Metadata.Edm;
 using System.Collections;
 
-namespace Entities.Extensions
+namespace THOK.Common.Entity
 {
     public class TableMetadata
     {
