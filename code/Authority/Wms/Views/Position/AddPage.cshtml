@@ -18,7 +18,9 @@
                 </tr>
                 <tr>
                    <td width="85">位置名称：</td>
-                   <td width="168"><input name="PositionName" id="inputPositionName" class="easyui-validatebox" required="true" type="text" /></td>
+                       <td width="168">
+                           <input name="PositionName" id="inputPositionName" class="easyui-validatebox" required="true" type="text" />
+                       </td>
                    <td width="85">位置类型：</td>
                    <td width="168">
                      <select id="inputPositionType" name="PositionType" class="easyui-combobox" required="true"
@@ -44,7 +46,9 @@
                         堆垛机名称：
                     </td>
                     <td width="168">
-                        <input name="SRMName" id="inputSRMName" class="easyui-validatebox" required="true" type="text"/>
+                       <input name="SRMName" id="inputSRMName" class="easyui-validatebox" required="true" type="text" readonly="readonly"/>
+                       <a href="#" id="SRMNameSearch" class="easyui-linkbutton" iconcls="icon-search"
+                       plain="true" onclick="SRMNameSearchClick()"></a>
                     </td>
                 </tr>
                 <tr>
@@ -97,7 +101,7 @@
                 </tr>
                 <tr>
                      <td width="85">
-                        电子标签地址:
+                        电子标签地址：
                     </td>
                     <td width="168">
                         <input name="TagAddress" id="inputTagAddress" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="必须为数字"/>
@@ -111,14 +115,14 @@
                 </tr>
                 <tr>
                     <td width="85">
-                       当前操作数量:
+                       当前操作数量：
                     </td>
                     <td width="168">
                         <input name="CurrentOperateQuantity" id="inputCurrentOperateQuantity" class="easyui-numberbox" placeholder="只能为数字" type="text"/>
                     </td>
 
                     <td>
-                        状态:
+                        状态：
                     </td>
                     <td>
                         <select id="selectState" name="State" class="easyui-combobox" required="true"
@@ -128,6 +132,13 @@
                         </select>
                     </td>
                 </tr>
+
+                 <tr>
+                   <td width="95">补货烟道代码：</td>
+                   <td width="168">
+                       <input name="ChannelCode" id="inputChannelCode" class="easyui-validatebox" required="true" type="text" />
+                   </td>
+
                 <tr>
                     <td width="60">
                         描述:
@@ -142,4 +153,5 @@
         </div>
     </div>
     @Html.Partial("_RegionNamePartial");
+    @Html.Partial("_SRMNamePartial");
 

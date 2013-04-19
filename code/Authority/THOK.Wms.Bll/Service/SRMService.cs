@@ -111,8 +111,8 @@ namespace THOK.Wms.Bll.Service
                 srmName = value;
             }
             IQueryable<SRM> srmQuery = SRMRepository.GetQueryable();
-            int Id = Convert.ToInt32(id);
-            var srm = srmQuery.Where(s => s.ID == Id && s.SRMName.Contains(srmName) && s.State == "01")
+            //int Id = Convert.ToInt32(id);
+            var srm = srmQuery.Where(s =>s.SRMName.Contains(srmName) && s.State == "01")
                 .OrderBy(s => s.ID).AsEnumerable().
                 Select(s => new
                 {

@@ -1,11 +1,15 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var PositionName = null, srmName = null;
+        var positionName = null,positionType=null, srmName = null, state=null;
         if ($('#PositionName').val() == null) { positionName = ""; } else { positionName = $('#PositionName').val() }
+        if ($('#PositionType').val() == null) { positionType = ""; } else { positionType = $('#PositionType').val() }
         if ($('#SRMName').val() == null) { srmName = ""; } else { srmName = $('#SRMName').val() }
+        if (document.getElementById('#State') == null) { state = ""; } else { state = $('#State').combo('getValue') }
 
         window.location.href = "/Position/CreateExcelToClient/"
                                 + "?positionName=" + positionName
-                                + "&srmName=" + srmName;
+                                +"&PositionType="+positionType
+                                + "&srmName=" + srmName
+                                + "&state=" + state;
     }
 </script>

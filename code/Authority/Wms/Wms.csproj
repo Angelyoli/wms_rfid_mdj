@@ -2350,6 +2350,7 @@
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\Position\_SRMNamePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
