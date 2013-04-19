@@ -3,65 +3,163 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.IO.Ports;
 
 namespace THOK.WES.Interface
 {
-    
+    public delegate void AnalyDataCallback(MessageTran msgTran);
     public class ReadRfid
     {
-
-        //读写器读取标签的ID号并保存在缓冲区中，返回读到的标签数(TagCount)
-        [DllImport("Sense18KAPINet.dll")]
-        static extern short Sense18K_ISOListUID(string ip, byte RAddr, out byte TagCount);
-
-        //从读写器缓冲区中取一个标签数据，同时读写器删除该组标签数据(TagData[])。
-        [DllImport("Sense18KAPINet.dll")]
-        static extern short Sense18K_BufGetOneAndClear(string ip, byte RAddr, out byte TagData);
-
-      
+        public AnalyDataCallback AnalyCallback;
+        private SerialPort iSerialPort;
         private byte g_RAddr = 0xFF;   //读写器地址
         private string g_IP = "";   //读写器地址
         private int errnone = 0;
+        List<string> listRfid = new List<string>();
+        int m_nLenth = 0;
+        byte[] m_btAryBuffer = new byte[4096];
+        public ReadRfid()
+        {
+            iSerialPort = new SerialPort();
+        }
+
+        //关闭串口
+        public void CloseCom()
+        {
+            if (iSerialPort.IsOpen)
+            {
+                iSerialPort.Close();
+            }
+        }
 
         /// <summary>
-        /// 根据id读取rfid
+        /// 打开端口
         /// </summary>
-        /// <param name="rfidId">货位rfid</param>
+        /// <param name="port"></param>
+        /// <param name="com"></param>
+        public int OpenCom(string strPort, int nBaudrate, out string strException)
+        {
+            int m_nType = -1;
+            strException = string.Empty;
+
+            if (iSerialPort.IsOpen)
+            {
+                iSerialPort.Close();
+            }
+
+            try
+            {
+                iSerialPort.PortName = strPort;
+                iSerialPort.BaudRate = nBaudrate;
+                iSerialPort.ReadTimeout = 200;
+                iSerialPort.Open();
+                m_nType = 0;
+            }
+            catch (System.Exception ex)
+            {
+                strException = ex.Message;
+                return -1;
+            }
+
+            return m_nType;
+        }
+
+        /// <summary>
+        /// 读取数据
+        /// </summary>
         /// <returns></returns>
-        //[DllImport("Sense18KAPINet.dll")]        
-        public bool ReadCellRfid(string rfidId)
-        {
-            return true;
-        }
-
-        public string ReadCellRfid()
-        {
-            return "";
-        }
-
-        //public bool ReadTrayRfid(string rfidId)
-        //{
-        //    return true;
-        //}
-
         public List<string> ReadTrayRfid()
         {
-            List<string> listRfid = new List<string>();
-            byte TagCount;
-            byte[] tagData =new byte[255];
-            int status = Sense18K_ISOListUID(g_IP, g_RAddr, out TagCount);
-            if (status == errnone)
+            DateTime now = DateTime.Now;
+            byte btReadId = 0xFF;
+            byte btCmd = 0xb0;
+            MessageTran msgTran = new MessageTran(btReadId, btCmd);
+            iSerialPort.Write(msgTran.AryTranData, 0, msgTran.AryTranData.Length);//给串口发送盘存命令
+            //读取二秒就返回信息
+            do
             {
-                for (int i = 0; i < TagCount; i++)
+                int nCount = iSerialPort.BytesToRead;
+                if (nCount == 0)
                 {
-                    status = Sense18K_BufGetOneAndClear(g_IP, g_RAddr,out tagData[i]);
-                    if (status == errnone)
-                    {
-                        listRfid.Add(tagData[i + 1].ToString());
-                    }
+                    return null;
                 }
-            }
+
+                byte[] btAryBuffer = new byte[nCount];
+                int nRead = iSerialPort.Read(btAryBuffer, 0, nCount);//读取串口缓存区数据
+                RunReceiveDataCallback(btAryBuffer);
+
+            } while (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 2);
             return listRfid;
         }
+
+        private void RunReceiveDataCallback(byte[] btAryReceiveData)
+        {
+            try
+            {
+                int nCount = btAryReceiveData.Length;
+                byte[] btAryBuffer = new byte[nCount + m_nLenth];
+                Array.Copy(m_btAryBuffer, btAryBuffer, m_nLenth);
+                Array.Copy(btAryReceiveData, 0, btAryBuffer, m_nLenth, btAryReceiveData.Length);
+
+                //分析接收数据，以0xA0为数据起点，以协议中数据长度为数据终止点
+                int nIndex = 0;//当数据中存在A0时，记录数据的终止点
+                int nMarkIndex = 0;//当数据中不存在A0时，nMarkIndex等于数据组最大索引
+                for (int nLoop = 0; nLoop < btAryBuffer.Length; nLoop++)
+                {
+                    if (btAryBuffer.Length > nLoop + 1)
+                    {
+                        if (btAryBuffer[nLoop] == 0xA0)
+                        {
+                            int nLen = Convert.ToInt32(btAryBuffer[nLoop + 1]);
+                            if (nLoop + 1 + nLen < btAryBuffer.Length)
+                            {
+                                byte[] btAryAnaly = new byte[nLen + 2];
+                                Array.Copy(btAryBuffer, nLoop, btAryAnaly, 0, nLen + 2);
+                                MessageTran msgTran = new MessageTran(btAryAnaly);
+                                if (msgTran.AryData.Length == 9)
+                                {
+                                    string strUID = CCommondMethod.ByteArrayToString(msgTran.AryData, 1, 8);//rfid数据
+                                    bool isUID = listRfid.Contains(strUID);//判断集合里面是否有这个rfid数据
+                                    if (isUID == false)
+                                    {
+                                        listRfid.Add(strUID);
+                                    }
+                                }
+                                nLoop += 1 + nLen;
+                                nIndex = nLoop + 1;
+                            }
+                            else
+                            {
+                                nLoop += 1 + nLen;
+                            }
+                        }
+                        else
+                        {
+                            nMarkIndex = nLoop;
+                        }
+                    }
+                }
+
+                if (nIndex < nMarkIndex)
+                {
+                    nIndex = nMarkIndex + 1;
+                }
+
+                if (nIndex < btAryBuffer.Length)
+                {
+                    m_nLenth = btAryBuffer.Length - nIndex;
+                    Array.Copy(btAryBuffer, nIndex, m_btAryBuffer, 0, btAryBuffer.Length - nIndex);
+                }
+                else
+                {
+                    m_nLenth = 0;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception("读取数据出错了:" + ex.Message);
+            }
+        }
+
     }
 }
