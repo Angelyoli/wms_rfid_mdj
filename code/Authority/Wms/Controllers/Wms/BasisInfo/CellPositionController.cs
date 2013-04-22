@@ -58,7 +58,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(CellPosition cellPosition)
         {
             string strResult = string.Empty;
-            bool bResult = CellPositionService.Add(cellPosition, out strResult);
+            bool bResult = CellPositionService.Add(cellPosition);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -68,7 +68,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(CellPosition cellPosition)
         {
             string strResult = string.Empty;
-            bool bResult = CellPositionService.Save(cellPosition, out strResult);
+            bool bResult = CellPositionService.Save(cellPosition);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -81,7 +81,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = CellPositionService.Delete(cellPositionId, out strResult);
+            bResult = CellPositionService.Delete(cellPositionId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
