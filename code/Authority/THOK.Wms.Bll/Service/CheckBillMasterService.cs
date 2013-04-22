@@ -9,7 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 using System.Transactions;
 using THOK.Wms.SignalR.Common;
 using System.Diagnostics;
-using Entities.Extensions;
+using THOK.Common.Entity;
 
 namespace THOK.Wms.Bll.Service
 {

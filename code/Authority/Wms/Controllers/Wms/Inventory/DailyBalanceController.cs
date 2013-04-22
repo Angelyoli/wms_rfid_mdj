@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DownloadWms.Bll;
 using NPOI.HSSF.UserModel;
@@ -121,14 +121,14 @@ namespace Wms.Controllers.Wms.Inventory
             string settleDate = Request.QueryString["settleDate"];
             string unitType = Request.QueryString["unitType"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = DailyBalanceService.GetInfoDetail(page, rows, warehouseCode, settleDate, unitType);
             ep.DT2 = DailyBalanceService.GetInfoChecking(page, rows, warehouseCode, settleDate, unitType);;
             ep.HeadTitle1 = "仓库库存日结明细";
             ep.HeadTitle2 = "仓库库存日结核对";
             ep.ContentModule = "DailyBalance";            
             ep.ContentModuleColor = NPOI.HSSF.Util.HSSFColor.RED.index;
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
 

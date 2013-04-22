@@ -6,7 +6,7 @@ using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.Bll.Models;
-using Entities.Extensions;
+using THOK.Common.Entity;
 using THOK.WMS.Upload.Bll;
 using System.Data;
 namespace THOK.Wms.Bll.Service

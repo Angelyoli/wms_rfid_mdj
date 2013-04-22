@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using System.Web;
 
-namespace THOK.WebUtil
+namespace THOK.Common.WebUtil
 {
     public static class CookieHelper
     {

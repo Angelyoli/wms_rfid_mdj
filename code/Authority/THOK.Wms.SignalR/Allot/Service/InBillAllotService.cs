@@ -9,7 +9,7 @@ using THOK.Wms.SignalR.Connection;
 using System.Threading;
 using THOK.Wms.SignalR.Model;
 using THOK.Wms.SignalR.Common;
-using Entities.Extensions;
+using THOK.Common.Entity;
 using THOK.Authority;
 using THOK.Authority.Dal.Interfaces;
 namespace THOK.Wms.SignalR.Allot.Service

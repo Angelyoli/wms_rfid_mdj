@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using THOK.WMS.Upload.Bll;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 
 namespace Wms.Controllers.Wms.Upload
 {

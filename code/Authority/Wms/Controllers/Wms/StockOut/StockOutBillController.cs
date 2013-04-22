@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
@@ -38,7 +38,7 @@ namespace Authority.Controllers.Wms.StockOut
             ViewBag.hasAudit = true;
             ViewBag.hasAntiTrial = true;
             ViewBag.hasAllot = true;
-            //ViewBag.hasTask = true;
+            ViewBag.hasTask = true;
             ViewBag.hasSettle = true;
             ViewBag.hasMigration = true;
             ViewBag.hasPrint = true;

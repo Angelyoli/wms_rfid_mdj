@@ -5,7 +5,7 @@ using System.Text;
 using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
-using Entities.Extensions;
+using THOK.Common.Entity;
 
 namespace THOK.Wms.SignalR.Common
 {

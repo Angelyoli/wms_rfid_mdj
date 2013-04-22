@@ -4,16 +4,17 @@ namespace THOK.Wms.Bll.Interfaces
 {
      public interface IRegionService:IService<Region>
     {
-         object GetDetails(int page, int rows, string RegionName, string State);
+         object GetDetails(int page, int rows, Region reg);
 
-         bool Add(Region region, out string strResult);
+         bool Add(Region region);
 
-         bool Save(Region region, out string strResult);
+         bool Save(Region region);
 
-         bool Delete(int regionId, out string strResult);
+         bool Delete(int regionId);
 
          object GetRegion(int page, int rows, string queryString, string value);
 
          System.Data.DataTable GetRegion(int page, int rows, string regionName, string state, string t);
+
     }
 }

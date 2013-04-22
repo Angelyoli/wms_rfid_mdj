@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Wms.DbModel;
 using THOK.Security;
 
@@ -27,6 +27,7 @@ namespace Wms.Controllers.Wms.BasisInfo
                 ViewBag.hasAdd = true;
                 ViewBag.hasEdit = true;
                 ViewBag.hasDelete = true;
+                ViewBag.hasNode = true;
                 ViewBag.hasPrint = true;
                 ViewBag.hasHelp = true;
                 ViewBag.ModuleID = moduleID;
@@ -128,10 +129,10 @@ namespace Wms.Controllers.Wms.BasisInfo
                 
                 string state = Request.QueryString["state"];
 
-                THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+                THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
                 ep.DT1 = PathService.GetPath(page, rows, Id, pathName, originId, targetId, state);
                 ep.HeadTitle1 = "路径信息";
-                System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+                System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
                 return new FileStreamResult(ms, "application/ms-excel");
             }
             #endregion

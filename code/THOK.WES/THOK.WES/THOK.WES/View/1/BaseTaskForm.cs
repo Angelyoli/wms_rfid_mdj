@@ -105,6 +105,9 @@ namespace THOK.WES.View
                 this.dgvMain.ColumnHeadersDefaultCellStyle.Font = new Font("宋体", 10);
                 UseTag = "1";
             }
+            string strException = string.Empty;
+            string rfidPort = configUtil.GetConfig("RFID")["PORT"];
+            int resule = rRfid.OpenCom(rfidPort, 115200, out strException);          
         }
 
         //查询
@@ -206,30 +209,37 @@ namespace THOK.WES.View
             List<string> listRfid = new List<string>();            
             string productRfid="";
             decimal quantityRfid = 0;
-            if (BillTypes == "1")
+            if (UseRfid == "0")
             {
-                while (RfidCode.Equals(""))
-                {
-                    DisplayPlWailt();
-                    listRfid = rRfid.ReadTrayRfid();
-                    RfidCode = listRfid[0].ToString();
-                    Application.DoEvents();
-                }
-                Task task = new Task(url);
-                task.SearchRfidInfo(RfidCode);
-                task.GetRfidInfoCompleted += new Task.GetRfidInfoCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
-                {
-                    if (billDetails != null && billDetails.Length != 0)
-                    {
-                        productRfid = billDetails[0].ProductCode;
-                        quantityRfid = billDetails[0].PieceQuantity;
-                    }
-                    ApplyPublicMethod(UseRfid, RfidCode, productRfid, quantityRfid);
-                });  
+                ApplyPublicMethod();
             }
             else
             {
-                ApplyPublicMethod();
+                if (BillTypes == "1")
+                {
+                    while (RfidCode.Equals(""))
+                    {
+                        DisplayPlWailt();
+                        listRfid = rRfid.ReadTrayRfid();
+                        RfidCode = listRfid[0].ToString();
+                        Application.DoEvents();
+                    }
+                    Task task = new Task(url);
+                    task.SearchRfidInfo(RfidCode);
+                    task.GetRfidInfoCompleted += new Task.GetRfidInfoCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
+                    {
+                        if (billDetails != null && billDetails.Length != 0)
+                        {
+                            productRfid = billDetails[0].ProductCode;
+                            quantityRfid = billDetails[0].PieceQuantity;
+                        }
+                        ApplyPublicMethod(UseRfid, RfidCode, productRfid, quantityRfid);
+                    });
+                }
+                else
+                {
+                    ApplyPublicMethod();
+                }
             }
         }
 
@@ -539,7 +549,7 @@ namespace THOK.WES.View
             try
             {
                 string storageRfide = "";
-                if (dgvMain.SelectedRows.Count > 1)
+                if (dgvMain.SelectedRows.Count > 1 && UseRfid!="0")
                 {
                     MessageBox.Show("当前操作只允许操作一个任务！", "提示",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -746,10 +756,17 @@ namespace THOK.WES.View
 
         public void ReadRfidCycle()
         {
-            if (UseRfid.Equals("2"))
+            try
             {
-                if (RfidCode.Equals(""))
-                    btnApply_Click(null, null);
+                if (UseRfid.Equals("2"))
+                {
+                    if (RfidCode.Equals(""))
+                        btnApply_Click(null, null);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 

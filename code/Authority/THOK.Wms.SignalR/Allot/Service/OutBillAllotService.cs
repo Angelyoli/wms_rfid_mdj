@@ -7,7 +7,7 @@ using THOK.Wms.SignalR.Model;
 using System.Linq;
 using THOK.Wms.DbModel;
 using System;
-using Entities.Extensions;
+using THOK.Common.Entity;
 
 namespace THOK.Wms.SignalR.Allot.Service
 {

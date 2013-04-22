@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Script.Serialization;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using Microsoft.Practices.Unity;
 using THOK.Security;
 using THOK.Authority.Bll.Interfaces;
@@ -28,27 +28,15 @@ namespace Authority.Controllers
             string cityId = this.GetCookieValue("cityid");
             string serverId = this.GetCookieValue("serverid");
             string systemId = this.GetCookieValue("systemid");
-            string ipAdress = UserService.GetUserIp(userName);
-            string localip = UserService.GetLocalIp();
-            if (!cityId.Equals(string.Empty) 
-                && !serverId.Equals(string.Empty) 
-                && !systemId.Equals(string.Empty)
-                && UserService.CheckAdress(userName)
-                && this.ControllerContext.HttpContext.Request.IsAuthenticated)
+            string localip = this.ControllerContext.HttpContext.Request.UserHostAddress;
+            if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && UserService.CheckAdress(userName, localip))
             {
+
                 ViewBag.CityName = CityService.GetCityByCityID(cityId).ToString();
                 ViewBag.ServerName = ServerService.GetServerById(serverId).ToString();
                 ViewBag.SystemName = SystemService.GetSystemById(systemId).ToString();
                 ViewBag.userName = userName;
-                if (!cityId.Equals(string.Empty) && !serverId.Equals(string.Empty) && !systemId.Equals(string.Empty) && !ipAdress.Equals(string.Empty))
-                {
-                    ViewBag.ipAdress = ipAdress;
-                    ViewBag.localip = localip;
-                }
-                else
-                {
-                    ViewBag.localip = localip;
-                }
+                ViewBag.localip = localip;
             }
             else
             {
@@ -103,43 +91,40 @@ namespace Authority.Controllers
             return Json(funs,"text",JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult PageNotFound()
+        public ActionResult PageNotFound(string PageNotFoundLog)
         {
-            ViewBag.PageNotFoundLog = this.GetCookieValue("PageNotFoundLog");
+            ViewBag.PageNotFoundLog = PageNotFoundLog;
             return View();
         }
 
-        public ActionResult ServerError()
+        public ActionResult ServerError(string ServerErrorLog)
         {
-            ViewBag.ServerErrorLog = this.GetCookieValue("ServerErrorLog");
+            ViewBag.ServerErrorLog = ServerErrorLog;
             return View();
         }
 
-        public ActionResult Error()
+        public ActionResult Error(string errorLog)
         {
-            ViewBag.ErrorLog = this.GetCookieValue("ErrorLog");
+            ViewBag.ErrorLog = errorLog;
             return View();
         }
 
-        public ActionResult AjaxPageNotFound()
+        public ActionResult AjaxPageNotFound(string AjaxPageNotFoundLog)
         {
-            string msg = this.GetCookieValue("AjaxPageNotFoundLog");
             this.ControllerContext.HttpContext.Response.StatusCode = 404;
-            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(false, AjaxPageNotFoundLog, ""), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AjaxServerError()
+        public ActionResult AjaxServerError(string AjaxServerErrorLog)
         {
-            string msg = this.GetCookieValue("AjaxServerErrorLog");
             this.ControllerContext.HttpContext.Response.StatusCode = 500;
-            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(false, AjaxServerErrorLog, ""), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AjaxError(int errorCode)
+        public ActionResult AjaxError(int errorCode, string AjaxErrorLog)
         {
-            string msg =this.GetCookieValue("AjaxErrorLog");
             this.ControllerContext.HttpContext.Response.StatusCode = errorCode;
-            return Json(JsonMessageHelper.getJsonMessage(false, msg,""), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(false, AjaxErrorLog, ""), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

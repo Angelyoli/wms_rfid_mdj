@@ -390,7 +390,7 @@
                     FunctionID = new Guid("E3F6C1FE-3F1A-4eb2-9AE7-CB835EFF5DB6"),
                     FunctionName = "功能",
                     ControlName = "functionadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-son_SortWork",
                     Module_ModuleID = new Guid("182120F0-CC8E-43cb-858C-E074972412DC")
                 },
                 new Function()
@@ -446,7 +446,7 @@
                     FunctionID = new Guid("B238E721-ECC9-4b71-A82F-17C69EB1C03D"),
                     FunctionName = "权限",
                     ControlName = "permissionadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_RoleJurisdiction",
                     Module_ModuleID = new Guid("ADD20759-88F7-43db-A885-4508DB9BEEC2")
                 },
                 new Function()
@@ -454,7 +454,7 @@
                     FunctionID = new Guid("EFBF340C-1183-4a59-BABF-A1439696951F"),
                     FunctionName = "用户",
                     ControlName = "useradmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_UserJurisdiction",
                     Module_ModuleID = new Guid("ADD20759-88F7-43db-A885-4508DB9BEEC2")
                 },
                 new Function()
@@ -510,7 +510,7 @@
                     FunctionID = new Guid("8CA2DF4E-F3EC-4d79-87F5-74699BFBBDA9"),
                     FunctionName = "权限",
                     ControlName = "permissionadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_RoleJurisdiction",
                     Module_ModuleID = new Guid("D7A91161-12CB-4938-872C-E9CBFFFF80DA")
                 },
                 new Function()
@@ -518,7 +518,7 @@
                     FunctionID = new Guid("6B579D44-DA6C-422a-900A-DD8FB3DD028E"),
                     FunctionName = "角色",
                     ControlName = "roleadmin",
-                    IndicateImage = "",
+                    IndicateImage = "icon-Son_RoleJurisdiction",
                     Module_ModuleID = new Guid("D7A91161-12CB-4938-872C-E9CBFFFF80DA")
                 },
                 new Function()
@@ -2009,6 +2009,14 @@
                     FunctionID = new Guid("65F3A9C6-C3C7-4C06-992F-CD19FA4182E0"),
                     FunctionName = "迁移",
                     ControlName = "migration",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("E8344F88-08AD-4FDA-8F45-EAD3BB471103")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("E0000000-D425-4911-9345-6433ADF66104"),
+                    FunctionName = "作业",
+                    ControlName = "task",
                     IndicateImage = "icon-reload",
                     Module_ModuleID = new Guid("E8344F88-08AD-4FDA-8F45-EAD3BB471103")
                 }
@@ -4341,6 +4349,14 @@
                      IndicateImage = "icon-remove",
                      Module_ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003314C7B1DC")
                  },
+                  new Function()
+                  {
+                      FunctionID = new Guid("C8A9E599-D227-4056-93A2-D67C6D3794BB"),
+                      FunctionName = "节点",
+                      ControlName = "node",
+                      IndicateImage = "icon-node",
+                      Module_ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003314C7B1DC")
+                  },
                  new Function()
                 {
                     FunctionID = new Guid("EAB101C2-8A95-4E4B-8923-C67DC078919F"),
