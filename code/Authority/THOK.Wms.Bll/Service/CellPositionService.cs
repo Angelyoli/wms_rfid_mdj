@@ -60,16 +60,35 @@ namespace THOK.Wms.Bll.Service
             return true;
         }
 
-        public bool Save(CellPosition CellPosition)
+        public bool Save(CellPosition CellPosition, out string strResult)
         {
-           
+            strResult = string.Empty;
+            bool result = false;
             var c = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == CellPosition.ID);
-            c.CellCode = CellPosition.CellCode;
-            c.StockInPositionID = CellPosition.StockInPositionID;
-            c.StockOutPositionID = CellPosition.StockOutPositionID;
-            CellPositionRepository.SaveChanges();
-            return true;
+
+            if (c != null)
+            {
+                try
+                {
+                    c.CellCode = CellPosition.CellCode;
+                    c.StockInPositionID = CellPosition.StockInPositionID;
+                    c.StockOutPositionID = CellPosition.StockOutPositionID;
+
+                    CellPositionRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                }
+            }
+            else
+            {
+                strResult = "原因：未找到当前需要修改的数据！";
+            }
+            return result;
         }
+
 
 
         public bool Delete(int cellPositionId)

@@ -35,10 +35,11 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /CellPosition/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
+           
             string CellCode = collection["CellCode"] ?? "";
             string StockInPosition = collection["StockInPosition"] ?? "";
             string StockOutPosition = collection["StockOutPosition"] ?? "";
-            var productSize = CellPositionService.GetDetails(page, rows,CellCode, StockInPosition, StockOutPosition);
+            var productSize = CellPositionService.GetDetails(page, rows,CellCode,StockInPosition,StockOutPosition);
             return Json(productSize, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -68,9 +69,10 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(CellPosition cellPosition)
         {
             string strResult = string.Empty;
-            bool bResult = CellPositionService.Save(cellPosition);
+            bool bResult = CellPositionService.Save(cellPosition, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+
         }
 
 
