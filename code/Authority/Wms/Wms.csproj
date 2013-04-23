@@ -2324,23 +2324,12 @@
     <Content Include="Views\Position\_EditPartial.cshtml" />
     <Content Include="Views\Position\_SearchPartial.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
-    <Content Include="Views\Path\_DeletePartial.cshtml" />
-    <Content Include="Views\Path\_EditPartial.cshtml" />
-    <Content Include="Views\Path\Index.cshtml" />
-    <Content Include="Views\Path\_TargetPartial.cshtml" />
-    <Content Include="Views\Path\_OriginPartial.cshtml" />
-    <Content Include="Views\Path\_HelpPartial.cshtml" />
-    <Content Include="Views\Path\_PrintPartial.cshtml" />
     <Content Include="Views\Position\_RegionNamePartial.cshtml">
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Position\_PrintPartial.cshtml" />
     <Content Include="Views\PathNode\_PathIDPartial.cshtml" />
     <Content Include="Views\PathNode\_PositionIDPartial.cshtml" />
-    <Content Include="Views\Path\_AddPartial.cshtml" />
-    <Content Include="Views\Path\_SearchPartial.cshtml" />
-    <Content Include="Views\Path\AddPage.cshtml" />
-    <Content Include="Views\Path\SearchPage.cshtml" />
     <Content Include="Views\Position\Index.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
@@ -2355,6 +2344,7 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Size\_PrintPartial.cshtml" />
+    <Content Include="Views\Shared\_NodePartial.cshtml" />
     <Content Include="Views\Path\AddPage.cshtml" />
     <Content Include="Views\Path\Index.cshtml" />
     <Content Include="Views\Path\SearchPage.cshtml" />
@@ -2366,7 +2356,8 @@
     <Content Include="Views\Path\_PrintPartial.cshtml" />
     <Content Include="Views\Path\_SearchPartial.cshtml" />
     <Content Include="Views\Path\_TargetPartial.cshtml" />
-    <Content Include="Views\Shared\_NodePartial.cshtml" />
+    <Content Include="Views\Path\_NodePartial.cshtml" />
+    <Content Include="Views\Path\_NodeAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
