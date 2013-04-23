@@ -10,6 +10,7 @@ namespace THOK.Wms.DbModel
         public Contract()
         {
             this.ContractDetails = new List<ContractDetail>();
+            this.Navicerts = new List<Navicert>();
         }
 
         public string ContractCode { get; set; }
@@ -27,5 +28,6 @@ namespace THOK.Wms.DbModel
         public string State { get; set; }
 
         public virtual ICollection<ContractDetail> ContractDetails { get; set; }
+        public virtual ICollection<Navicert> Navicerts { get; set; }
     }
 }
