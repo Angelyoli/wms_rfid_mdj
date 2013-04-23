@@ -27,6 +27,8 @@ namespace THOK.Wms.DbModel
         public string SaleDate { get; set; }
         public string State { get; set; }
 
+        public virtual BillMaster BillMaster { get; set; }
+
         public virtual ICollection<ContractDetail> ContractDetails { get; set; }
         public virtual ICollection<Navicert> Navicerts { get; set; }
     }

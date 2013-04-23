@@ -76,7 +76,9 @@ namespace THOK.Wms.Repository.Migrations
                         sale_date = c.String(maxLength: 100),
                         state = c.String(maxLength: 1),
                     })
-                .PrimaryKey(t => t.contract_code);
+                .PrimaryKey(t => t.contract_code)
+                .ForeignKey("dbo.inter_bill_master", t => t.master_id)
+                .Index(t => t.master_id);
             
             CreateTable(
                 "dbo.inter_contract_detail",
@@ -119,10 +121,12 @@ namespace THOK.Wms.Repository.Migrations
         public override void Down()
         {
             DropIndex("dbo.inter_contract_detail", new[] { "contract_code" });
+            DropIndex("dbo.inter_contract", new[] { "master_id" });
             DropIndex("dbo.inter_navicert", new[] { "contract_code" });
             DropIndex("dbo.inter_navicert", new[] { "master_id" });
             DropIndex("dbo.inter_bill_detail", new[] { "master_id" });
             DropForeignKey("dbo.inter_contract_detail", "contract_code", "dbo.inter_contract");
+            DropForeignKey("dbo.inter_contract", "master_id", "dbo.inter_bill_master");
             DropForeignKey("dbo.inter_navicert", "contract_code", "dbo.inter_contract");
             DropForeignKey("dbo.inter_navicert", "master_id", "dbo.inter_bill_master");
             DropForeignKey("dbo.inter_bill_detail", "master_id", "dbo.inter_bill_master");

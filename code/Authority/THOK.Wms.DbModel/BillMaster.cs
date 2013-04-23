@@ -28,6 +28,7 @@ namespace THOK.Wms.DbModel
         public virtual ICollection<BillDetail> BillDetails { get; set; }
         //public virtual ICollection<InBillAllot> InBillAllots { get; set; }
         public virtual ICollection<Navicert> Navicerts { get; set; }
+        public virtual ICollection<Contract> Contracts { get; set; }
     }
 }
 
