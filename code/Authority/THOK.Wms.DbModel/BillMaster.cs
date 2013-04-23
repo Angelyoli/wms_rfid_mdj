@@ -11,6 +11,7 @@ namespace THOK.Wms.DbModel
         {
             this.BillDetails = new List<BillDetail>();
             //this.InBillAllots = new List<InBillAllot>();
+            this.Navicerts = new List<Navicert>();
         }
         public Guid ID { get; set; }
         public string UUID { get; set; }
@@ -26,6 +27,7 @@ namespace THOK.Wms.DbModel
 
         public virtual ICollection<BillDetail> BillDetails { get; set; }
         //public virtual ICollection<InBillAllot> InBillAllots { get; set; }
+        public virtual ICollection<Navicert> Navicerts { get; set; }
     }
 }
 
