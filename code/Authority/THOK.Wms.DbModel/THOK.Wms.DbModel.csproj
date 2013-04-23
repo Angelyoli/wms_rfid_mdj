@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Area.cs" />
+    <Compile Include="BillDetail.cs" />
     <Compile Include="BillType.cs" />
     <Compile Include="Brand.cs" />
     <Compile Include="Cell.cs" />
@@ -68,8 +69,10 @@
     <Compile Include="InBillDetailHistory.cs" />
     <Compile Include="InBillMaster.cs" />
     <Compile Include="InBillMasterHistory.cs" />
+    <Compile Include="BillMaster.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="Mapping\AreaMap.cs" />
+    <Compile Include="Mapping\BillDetailMap.cs" />
     <Compile Include="Mapping\BillTypeMap.cs" />
     <Compile Include="Mapping\BrandMap.cs" />
     <Compile Include="Mapping\CellMap.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="Mapping\InBillDetailMap.cs" />
     <Compile Include="Mapping\InBillMasterHistoryMap.cs" />
     <Compile Include="Mapping\InBillMasterMap.cs" />
+    <Compile Include="Mapping\BillMasterMap.cs" />
     <Compile Include="Mapping\JobMap.cs" />
     <Compile Include="Mapping\MoveBillDetailHistoryMap.cs" />
     <Compile Include="Mapping\MoveBillDetailMap.cs" />
