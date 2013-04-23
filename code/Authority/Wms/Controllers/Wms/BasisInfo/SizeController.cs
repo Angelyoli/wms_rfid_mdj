@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -38,7 +38,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string SizeName = collection["SizeName"] ?? "";
             string SizeNo = collection["SizeNo"] ?? "";
-            var srm = SizeService.GetDetails(page, rows,SizeName, SizeNo);
+            var srm = SizeService.GetDetails(page, rows, SizeName, SizeNo);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -58,7 +58,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(Size size)
         {
             string strResult = string.Empty;
-            bool bResult = SizeService.Add(size, out strResult);
+            bool bResult = SizeService.Add(size);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -68,7 +68,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(Size size)
         {
             string strResult = string.Empty;
-            bool bResult = SizeService.Save(size, out strResult);
+            bool bResult = SizeService.Save(size);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -81,7 +81,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = SizeService.Delete(sizeId, out strResult);
+            bResult = SizeService.Delete(sizeId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -101,18 +101,19 @@ namespace Wms.Controllers.Wms.BasisInfo
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 
-        //  /Size/CreateExcelToClient/
+       //  /Size/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
             string sizeName = Request.QueryString["sizeName"];
             //string state = Request.QueryString["state"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = SizeService.GetSize(page, rows, sizeName);
             ep.HeadTitle1 = "件烟尺寸信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
+
     }
 }

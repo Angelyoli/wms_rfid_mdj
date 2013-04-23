@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;

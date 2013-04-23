@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Data.Objects;
 
-namespace Entities.Extensions
+namespace THOK.Common.Entity
 {
     public static class QueryableExtensions
     {

@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Authority.Controllers.Wms.SortingInfo
@@ -86,10 +86,10 @@ namespace Authority.Controllers.Wms.SortingInfo
             string sortingLineType = Request.QueryString["SortingLineType"];
             string isActive = Request.QueryString["IsActive"];
             
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = SortingLineService.GetSortingLine(page, rows, sortingLineCode, sortingLineName, sortingLineType, isActive);
             ep.HeadTitle1 = "分拣线信息设置";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

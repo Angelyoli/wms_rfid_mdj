@@ -11,7 +11,7 @@ using NPOI.HSSF.Util;
 using System.Web;
 using System.Web.Mvc;
 
-namespace THOK.NPOI.Service
+namespace THOK.Common.NPOI.Service
 {
     public class ExportExcel
     {
@@ -19,7 +19,7 @@ namespace THOK.NPOI.Service
 
         #region 导出EXCEL单表双表
         /// <summary>导出EXCEL单表双表</summary>
-        public static MemoryStream ExportDT(THOK.NPOI.Models.ExportParam ep)
+        public static MemoryStream ExportDT(THOK.Common.NPOI.Models.ExportParam ep)
         {
             #region 变量
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -31,7 +31,7 @@ namespace THOK.NPOI.Service
             #endregion
 
             #region 浏览器下载
-            THOK.NPOI.Common.ExportExcelHeper.BrowserLoad(ep.HeadTitle1);
+            THOK.Common.NPOI.Common.ExportExcelHeper.BrowserLoad(ep.HeadTitle1);
             #endregion
 
             #region 创建工作表
@@ -110,7 +110,7 @@ namespace THOK.NPOI.Service
                     int rowIndex1 = 0;
 
                     #region 内容分页
-                    DataTable newdt1 = THOK.NPOI.Common.ExportExcelHeper.SetPage(ep.DT1, a + 1, sheetCount);
+                    DataTable newdt1 = THOK.Common.NPOI.Common.ExportExcelHeper.SetPage(ep.DT1, a + 1, sheetCount);
                     #endregion
 
                     #region 填充数据
@@ -198,7 +198,7 @@ namespace THOK.NPOI.Service
                 for (int a = 0; a < page; a++)
                 {
                     int rowIndex2 = 0;
-                    DataTable newdt2 = THOK.NPOI.Common.ExportExcelHeper.SetPage(ep.DT2, a + 1, sheetCount);
+                    DataTable newdt2 = THOK.Common.NPOI.Common.ExportExcelHeper.SetPage(ep.DT2, a + 1, sheetCount);
                     string strA = a.ToString();
                     if (a == 0)
                     {
@@ -383,7 +383,7 @@ namespace THOK.NPOI.Service
             , HSSFCellStyle contentStyle, HSSFFont contentFont
             , HSSFCellStyle contentDateStyle
             , HSSFCellStyle contentStyleDailyBalance, HSSFFont fontDailyBalance
-            , THOK.NPOI.Models.ExportParam ep
+            , THOK.Common.NPOI.Models.ExportParam ep
             , HSSFSheet sheet, string headTextStrA)
         {
             HSSFCell newCell = hssfRow.CreateCell(column.Ordinal) as HSSFCell;
@@ -438,7 +438,7 @@ namespace THOK.NPOI.Service
                 hssfRow.GetCell(column.Ordinal).CellStyle = contentStyle;
             }
             string drValue = row[column].ToString();
-            THOK.NPOI.Common.ExportExcelHeper.ChangeFormat(column, drValue, newCell, contentDateStyle);
+            THOK.Common.NPOI.Common.ExportExcelHeper.ChangeFormat(column, drValue, newCell, contentDateStyle);
         }
         #endregion
 

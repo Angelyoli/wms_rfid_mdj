@@ -7,7 +7,7 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using System.Web.Routing;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.ProductQuality
@@ -98,10 +98,10 @@ namespace Wms.Controllers.Wms.ProductQuality
                 assemblyTime = decimal.Parse(Request.QueryString["assemblyTime"]);
             }
             
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = ProductWarningService.GetProductWarning(page, rows, productCode, minLimited, maxLimited, assemblyTime);
             ep.HeadTitle1 = "产品预警信息设置";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

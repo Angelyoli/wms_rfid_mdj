@@ -40,10 +40,10 @@ namespace Authority.Controllers.Wms.Inventory
             string beginDate = Request.QueryString["beginDate"] ?? "";
             string endDate = Request.QueryString["endDate"] ?? "";
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = HistoricalDetailService.GetHistoryDetail(page, rows, warehouseCode, productCode, beginDate, endDate);
             ep.HeadTitle1 = "库存历史明细";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

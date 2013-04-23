@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace THOK.NPOI.Models
+namespace THOK.Common.NPOI.Models
 {
     public class ExportParam
     {

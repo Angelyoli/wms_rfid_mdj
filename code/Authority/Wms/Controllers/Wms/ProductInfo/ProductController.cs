@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using System.Web.Routing;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Security;
@@ -101,10 +101,10 @@ namespace Authority.Controllers.ProductInfo
             string priceLevelCode = Request.QueryString["priceLevelCode"];
             string supplierCode = Request.QueryString["supplierCode"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = ProductService.GetProduct(page, rows, productName, productCode, customCode, brandCode, uniformCode, abcTypeCode, shortCode, priceLevelCode, supplierCode);
             ep.HeadTitle1 = "卷烟信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

@@ -11,7 +11,7 @@ using THOK.Wms.SignalR.Common;
 using System.Transactions;
 using THOK.Wms.SignalR.Model;
 using System.Threading;
-using Entities.Extensions;
+using THOK.Common.Entity;
 using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.SignalR.Dispatch.Service

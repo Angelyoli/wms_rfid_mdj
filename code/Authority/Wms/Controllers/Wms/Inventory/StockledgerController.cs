@@ -51,10 +51,10 @@ namespace Authority.Controllers.Wms.Inventory
             string productCode = Request.QueryString["productCode"];
             string settleDate = Request.QueryString["settleDate"];
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = StockledgerService.GetInfoDetail(page, rows, warehouseCode, productCode, settleDate);
             ep.HeadTitle1 = "库存历史总账明细";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
         #endregion

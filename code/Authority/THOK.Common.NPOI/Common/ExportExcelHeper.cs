@@ -6,7 +6,7 @@ using System.Web;
 using System.Data;
 using NPOI.HSSF.UserModel;
 
-namespace THOK.NPOI.Common
+namespace THOK.Common.NPOI.Common
 {
     public class ExportExcelHeper
     {

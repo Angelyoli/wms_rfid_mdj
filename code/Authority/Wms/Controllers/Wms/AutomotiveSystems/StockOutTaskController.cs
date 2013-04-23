@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Wms.Allot.Interfaces;
 using THOK.Security;
 

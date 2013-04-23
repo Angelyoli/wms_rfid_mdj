@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Wms.AutomotiveSystems.Models;
 using THOK.Security;
 
@@ -204,10 +204,10 @@ namespace Authority.Controllers.Wms.StockMove
             string billNo = Request.QueryString["billNo"];
             bool isAbnormity = Convert.ToBoolean(Request.QueryString["isAbnormity"]);
             
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo,isAbnormity);
             ep.HeadTitle1 = "移库单明细";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion
