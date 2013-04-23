@@ -7,6 +7,9 @@ namespace THOK.Wms.DbModel
 {
     public class ContractDetail
     {
+        public ContractDetail()
+        {
+        }
         public Guid ID { get; set; }
         public string ContractCode { get; set; }
         public string BrandCode { get; set; }

@@ -10,6 +10,9 @@ namespace THOK.Wms.DbModel.Mapping
     {
         public ContractMap() : base("Inter")
         {
+            // Primary Key
+            this.HasKey(t => t.ContractCode);
+
             // Properties
             this.Property(t => t.ContractCode)
                 .IsRequired()

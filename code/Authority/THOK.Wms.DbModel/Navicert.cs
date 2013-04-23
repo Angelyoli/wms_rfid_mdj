@@ -7,6 +7,9 @@ namespace THOK.Wms.DbModel
 {
     public class Navicert
     {
+        public Navicert()
+        {
+        }
         public Guid ID { get; set; }
         public Guid MasterID { get; set; }
         public string NavicertCode { get; set; }
@@ -16,5 +19,6 @@ namespace THOK.Wms.DbModel
 
         public virtual BillMaster BillMaster { get; set; }
         public virtual Contract Contract { get; set; }
+
     }
 }

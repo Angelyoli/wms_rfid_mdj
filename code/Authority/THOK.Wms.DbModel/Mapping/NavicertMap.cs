@@ -33,12 +33,17 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.NavicertCode).HasColumnName(ColumnMap.Value.To("NavicertCode"));
             this.Property(t => t.NavicertDate).HasColumnName(ColumnMap.Value.To("NavicertDate"));
             this.Property(t => t.TruckPlateNo).HasColumnName(ColumnMap.Value.To("TruckPlateNo"));
-            this.Property(t => t.ContractCode).HasColumnName(ColumnMap.Value.To("ContractCode"));           
+            this.Property(t => t.ContractCode).HasColumnName(ColumnMap.Value.To("ContractCode"));
 
             // Relationships
             this.HasRequired(t => t.BillMaster)
                 .WithMany(t => t.Navicerts)
                 .HasForeignKey(d => d.MasterID)
+                .WillCascadeOnDelete(false);
+
+            this.HasRequired(t => t.Contract)
+                .WithMany(t => t.Navicerts)
+                .HasForeignKey(d => d.ContractCode)
                 .WillCascadeOnDelete(false);
         }
     }
