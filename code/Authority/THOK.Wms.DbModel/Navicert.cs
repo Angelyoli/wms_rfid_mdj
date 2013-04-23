@@ -15,6 +15,6 @@ namespace THOK.Wms.DbModel
         public string ContractCode { get; set; }
 
         public virtual BillMaster BillMaster { get; set; }
-      //  public virtual Contract Contract { get; set; }
+        public virtual Contract Contract { get; set; }
     }
 }
