@@ -6,12 +6,14 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, string CellCode, string StockInPosition, string StockOutPosition);
 
-        bool Add(CellPosition cellPosition, out string strResult);
+        bool Add(CellPosition cellPosition);
 
-        bool Save(CellPosition cellPosition, out string strResult);
+        //bool Save(CellPosition cellPosition);
 
-        bool Delete(int sizeId, out string strResult);
+        bool Delete(int cellPositionId);
 
         System.Data.DataTable GetCellPosition(int page, int rows, string cellCode);
+
+        bool Save(CellPosition cellPosition, out string strResult);
     }
 }
