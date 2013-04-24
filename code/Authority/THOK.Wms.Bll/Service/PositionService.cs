@@ -231,29 +231,27 @@ namespace THOK.Wms.Bll.Service
                 && p.State.Contains(position.State)
                 && p.PositionType.Contains(position.PositionType))
             .OrderBy(ul => ul.ID);
-                    int total = positionDetail.Count();
-                    var positionDetails = positionDetail.Skip((page - 1) * rows).Take(rows);
-                    var position_Detail = positionDetails.ToArray().Select(p => new
-                    {
-                        p.ID,
-                        p.PositionName,
-                        PositionType = p.PositionType == "01" ? "正常位置" : (p.PositionType == "02" ? "大品种出库位" : (p.PositionType == "03" ? "小品种出库位" : (p.PositionType == "04" ? "异形烟出库位" : "空托盘出库位"))),
-                        p.RegionID,
-                        p.RegionName,
-                        p.SRMName,
-                        p.TravelPos,
-                        p.LiftPos,
-                        Extension = p.Extension == 0 ? "单右伸" : (p.Extension == 4 ? "双右伸" : (p.Extension == 8 ? "单左伸" : "双左伸")),
-                        p.Description,
-                        HasGoods = p.HasGoods == true ? "是" : "否",
-                        AbleStockOut = p.AbleStockOut == true ? "是" : "否",
-                        AbleStockInPallet = p.AbleStockInPallet == true ? "是" : "否",
-                        p.TagAddress,
-                        p.CurrentTaskID,
-                        p.CurrentOperateQuantity,
-                        p.ChannelCode,
-                        State = p.State == "01" ? "可用" : "不可用",
-                    });
+            var position_Detail = positionDetail.ToArray().Select(p => new
+            {
+                p.ID,
+                p.PositionName,
+                PositionType = p.PositionType == "01" ? "正常位置" : (p.PositionType == "02" ? "大品种出库位" : (p.PositionType == "03" ? "小品种出库位" : (p.PositionType == "04" ? "异形烟出库位" : "空托盘出库位"))),
+                p.RegionID,
+                p.RegionName,
+                p.SRMName,
+                p.TravelPos,
+                p.LiftPos,
+                HasGoods = p.HasGoods == true ? "是" : "否",
+                AbleStockOut = p.AbleStockOut == true ? "是" : "否",
+                AbleStockInPallet = p.AbleStockInPallet == true ? "是" : "否",
+                p.TagAddress,
+                p.CurrentTaskID,
+                p.CurrentOperateQuantity,
+                p.ChannelCode,
+                Extension = p.Extension == 0 ? "单右伸" : (p.Extension == 4 ? "双右伸" : (p.Extension == 8 ? "单左伸" : "双左伸")),
+                State = p.State == "01" ? "可用" : "不可用",
+                p.Description,
+            });
 
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("位置ID", typeof(string));
@@ -263,8 +261,6 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("堆垛机名称", typeof(string));
             dt.Columns.Add("行走位置", typeof(string));
             dt.Columns.Add("升降位置", typeof(string));
-            dt.Columns.Add("货叉伸位", typeof(string));
-            dt.Columns.Add("描述", typeof(string));
             dt.Columns.Add("是否有货物", typeof(string));
             dt.Columns.Add("可否出库", typeof(string));
             dt.Columns.Add("可否叠空托盘", typeof(string));
@@ -272,7 +268,9 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("当前任务ID", typeof(string));
             dt.Columns.Add("当前操作数量", typeof(string));
             dt.Columns.Add("补货烟道代码", typeof(string));
+            dt.Columns.Add("货叉伸位", typeof(string));
             dt.Columns.Add("状态", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
 
             foreach (var item in position_Detail)
             {
@@ -285,8 +283,6 @@ namespace THOK.Wms.Bll.Service
                     item.PositionType,
                     item.TravelPos,
                     item.LiftPos,
-                    item.Extension,
-                    item.Description,
                     item.HasGoods,
                     item.AbleStockOut,
                     item.AbleStockInPallet,
@@ -294,8 +290,10 @@ namespace THOK.Wms.Bll.Service
                     item.CurrentTaskID,
                     item.CurrentOperateQuantity,
                     item.ChannelCode,
-                    item.State
-                    );
+                    item.Extension,
+                    item.State,
+                    item.Description
+                );
 
             }
             return dt;

@@ -1,6 +1,7 @@
-﻿<script type="text/javascript">
+﻿
+<script type="text/javascript">
     function printClick() {
-        var positionName = null,positionType=null, srmName = null, state=null;
+        var positionName = null, positionType = null, srmName = null, state = null;
         if ($('#PositionName').val() == null) { positionName = ""; } else { positionName = $('#PositionName').val() }
         if ($('#PositionType').val() == null) { positionType = ""; } else { positionType = $('#PositionType').val() }
         if ($('#SRMName').val() == null) { srmName = ""; } else { srmName = $('#SRMName').val() }
@@ -8,7 +9,7 @@
 
         window.location.href = "/Position/CreateExcelToClient/"
                                 + "?positionName=" + positionName
-                                +"&PositionType="+positionType
+                                + "&PositionType=" + positionType
                                 + "&srmName=" + srmName
                                 + "&state=" + state;
     }
