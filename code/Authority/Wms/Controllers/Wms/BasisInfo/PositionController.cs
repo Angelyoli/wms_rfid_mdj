@@ -116,13 +116,13 @@ namespace Wms.Controllers.Wms.BasisInfo
             string SRMName = Request.QueryString["SRMName"];
             string State = Request.QueryString["State"];
             Position position = new Position();
-                    position.PositionName=positionName;
-                    position.PositionType=PositionType;
-                    position.SRMName=SRMName;
-                    position.State=State;
+            position.PositionName = positionName;
+            position.PositionType = PositionType;
+            position.SRMName = SRMName;
+            position.State = State;
 
             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-            ep.DT1 = PositionService.GetPosition(page, rows, positionName, srmName,null);
+            ep.DT1 = PositionService.GetPosition(page, rows, position);
 
             ep.HeadTitle1 = "位置信息";
             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
