@@ -95,8 +95,8 @@ namespace THOK.Wms.Bll.Service
                 sizeName = value;
             }
             IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
-            int Id = Convert.ToInt32(id);
-            var size = sizeQuery.Where(si => si.ID == Id && si.SizeName.Contains(sizeName))
+            //int Id = Convert.ToInt32(id);
+            var size = sizeQuery.Where(si => si.SizeName.Contains(sizeName))
                 .OrderBy(si => si.ID).AsEnumerable().
                 Select(si => new
                 {

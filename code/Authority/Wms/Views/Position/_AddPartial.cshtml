@@ -58,7 +58,7 @@
             addDialog = $('<div></div>').dialog({
                 title: title,
                 width: 540,
-                height: 350,
+                height: 360,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -205,6 +205,11 @@
             panelHeight: 45,
             panelWith: 130
         });
+    }
+    function SRMNameSearchClick() {
+        $('#sRMData').dialog('open').dialog('setTitle', '选择堆垛机名称');
+        $('#sRMDetail').datagrid({ url: '/SRM/GetSRM/' });
+        $("#sRMDetail").datagrid('reload');
     }
 </script>
 
