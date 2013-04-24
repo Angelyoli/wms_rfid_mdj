@@ -10,7 +10,6 @@ namespace THOK.Wms.DbModel
         public BillMaster()
         {
             this.BillDetails = new List<BillDetail>();
-            //this.InBillAllots = new List<InBillAllot>();
             this.Navicerts = new List<Navicert>();
         }
         public Guid ID { get; set; }
@@ -26,7 +25,6 @@ namespace THOK.Wms.DbModel
         public string State { get; set; }
 
         public virtual ICollection<BillDetail> BillDetails { get; set; }
-        //public virtual ICollection<InBillAllot> InBillAllots { get; set; }
         public virtual ICollection<Navicert> Navicerts { get; set; }
         public virtual ICollection<Contract> Contracts { get; set; }
     }

@@ -1,0 +1,67 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.Practices.Unity;
+using THOK.Wms.DbModel;
+using THOK.Wms.Dal.Interfaces;
+using THOK.Wms.Bll.Interfaces;
+
+namespace THOK.Wms.Bll.Service
+{
+    public class BillMasterService : ServiceBase<BillMaster>, IBillMasterService
+    {
+        [Dependency]
+        public IBillMasterRepository BillMasterRepository { get; set; }
+
+        protected override Type LogPrefix
+        {
+            get { return this.GetType(); }
+        }
+
+        public bool Add(BillMaster billMaster, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var billMasters = BillMasterRepository.GetQueryable().FirstOrDefault(c => c.ID == billMaster.ID);
+            var b = new BillMaster();
+            if (billMasters == null)
+            {
+                if (b != null)
+                {
+                    try
+                    {
+                        b.ID = billMaster.ID;
+                        b.UUID = billMaster.UUID;
+                        b.BillType = billMaster.BillType;
+                        b.BillDate = billMaster.BillDate;
+                        b.MakerName = billMaster.MakerName;
+                        b.OperateDate = billMaster.OperateDate;
+                        b.CigaretteType = billMaster.CigaretteType;
+                        b.BillCompanyCode = billMaster.BillCompanyCode;
+                        b.SupplierCode = billMaster.SupplierCode;
+                        b.SupplierType = billMaster.SupplierType;
+                        b.State = billMaster.State;
+
+                        BillMasterRepository.Add(b);
+                        BillMasterRepository.SaveChanges();
+                        result = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                    }
+                }
+                else
+                {
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                }
+            }
+            else
+            {
+                strResult = "原因：该编号已存在！";
+            }
+            return result;
+        }
+    }
+}

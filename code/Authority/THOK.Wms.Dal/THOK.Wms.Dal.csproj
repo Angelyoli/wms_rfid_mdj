@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityRepository\AreaRepository.cs" />
+    <Compile Include="EntityRepository\BillDetailRepository.cs" />
+    <Compile Include="EntityRepository\BillMasterRepository.cs" />
     <Compile Include="EntityRepository\BillTypeRepository.cs" />
     <Compile Include="EntityRepository\BrandRepository.cs" />
     <Compile Include="EntityRepository\CellPositionRepository.cs" />
@@ -58,6 +60,8 @@
     <Compile Include="EntityRepository\CheckBillMasterRepository.cs" />
     <Compile Include="EntityRepository\CheckSearchDetailRepository.cs" />
     <Compile Include="EntityRepository\CompanyRepository.cs" />
+    <Compile Include="EntityRepository\ContractDetailRepository.cs" />
+    <Compile Include="EntityRepository\ContractRepository.cs" />
     <Compile Include="EntityRepository\CustomerRepository.cs" />
     <Compile Include="EntityRepository\DailyBalanceHistoryRepository.cs" />
     <Compile Include="EntityRepository\DailyBalanceRepository.cs" />
@@ -80,6 +84,7 @@
     <Compile Include="EntityRepository\MoveBillMasterHistoryRepository.cs" />
     <Compile Include="EntityRepository\MoveBillMasterRepository.cs" />
     <Compile Include="EntityRepository\MoveSearchDetailRepository.cs" />
+    <Compile Include="EntityRepository\NavicertRepository.cs" />
     <Compile Include="EntityRepository\OrderSearchDetailRepository.cs" />
     <Compile Include="EntityRepository\OutBillAllotHistoryRepository.cs" />
     <Compile Include="EntityRepository\OutBillAllotRepository.cs" />
@@ -122,6 +127,8 @@
     <Compile Include="EntityRepository\UnitRepository.cs" />
     <Compile Include="EntityRepository\WarehouseRepository.cs" />
     <Compile Include="Interfaces\IAreaRepository.cs" />
+    <Compile Include="Interfaces\IBillDetailRepository.cs" />
+    <Compile Include="Interfaces\IBillMasterRepository.cs" />
     <Compile Include="Interfaces\IBillTypeRepository.cs" />
     <Compile Include="Interfaces\IBrandRepository.cs" />
     <Compile Include="Interfaces\ICellPositionRepository.cs" />
@@ -132,6 +139,8 @@
     <Compile Include="Interfaces\ICheckBillMasterRepository.cs" />
     <Compile Include="Interfaces\ICheckSearchDetailRepository.cs" />
     <Compile Include="Interfaces\ICompanyRepository.cs" />
+    <Compile Include="Interfaces\IContractDetailRepository.cs" />
+    <Compile Include="Interfaces\IContractRepository.cs" />
     <Compile Include="Interfaces\ICustomerRepository.cs" />
     <Compile Include="Interfaces\IDailyBalanceHistoryRepository.cs" />
     <Compile Include="Interfaces\IDailyBalanceRepository.cs" />
@@ -154,6 +163,7 @@
     <Compile Include="Interfaces\IMoveBillMasterHistoryRepository.cs" />
     <Compile Include="Interfaces\IMoveBillMasterRepository.cs" />
     <Compile Include="Interfaces\IMoveSearchDetailRepository.cs" />
+    <Compile Include="Interfaces\INavicertRepository.cs" />
     <Compile Include="Interfaces\IOrderSearchDetailRepository.cs" />
     <Compile Include="Interfaces\IOutBillAllotHistoryRepository.cs" />
     <Compile Include="Interfaces\IOutBillAllotRepository.cs" />
