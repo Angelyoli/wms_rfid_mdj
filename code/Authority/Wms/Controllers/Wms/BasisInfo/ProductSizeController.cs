@@ -33,20 +33,6 @@ namespace Wms.Controllers.Wms.BasisInfo
 
         //
         // GET: /ProductSize/Details/
-        //public ActionResult Details(int page, int rows, FormCollection collection)
-        //{
-        //    ProductSize productSize = new ProductSize();
-        //    string ProductCode = collection["ProductCode"] ?? "";
-        //    productSize.ProductNo = Convert.ToInt32(collection["ProductNo"] ?? "");
-        //    string SizeNo = collection["SizeNo"] ?? "";
-        //    string AreaNo = collection["AreaNo"] ?? "";
-        //    //var productSize = ProductSizeService.GetDetails(page, rows,ProductCode, SizeNo, AreaNo);
-        //    //return Json(productSize, "text", JsonRequestBehavior.AllowGet);
-        //    var productSizeDetail = ProductSizeService.GetDetails(page, rows, productSize);
-        //    return Json(productSizeDetail, "text", JsonRequestBehavior.AllowGet);
-        //}
-
-
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
             ProductSize productSize = new ProductSize();
@@ -135,11 +121,18 @@ namespace Wms.Controllers.Wms.BasisInfo
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string productCode = Request.QueryString["productCode"];
-            //  string state = Request.QueryString["state"];
+            string ProductCode = Request.QueryString["ProductCode"];
+            int ProductNo =Convert .ToInt32( Request.QueryString["ProductNo"]);
+            int SizeNo =Convert .ToInt32( Request.QueryString["SizeNo"]);
+            int AreaNo =Convert .ToInt32( Request.QueryString["AreaNo"]);
+            ProductSize productSize = new ProductSize();
+            productSize.ProductCode = ProductCode;
+            productSize.ProductNo = ProductNo;
+            productSize.SizeNo = SizeNo;
+            productSize.AreaNo = AreaNo;
 
             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-            ep.DT1 = ProductSizeService.GetProductSize(page, rows, productCode);
+            ep.DT1 = ProductSizeService.GetProductSize(page, rows, productSize);
             ep.HeadTitle1 = "卷烟件烟尺寸信息";
             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");

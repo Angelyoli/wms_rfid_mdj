@@ -19,53 +19,6 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        //public object GetDetails(int page, int rows, string ProductCode, string SizeNo, string AreaNo)
-        //{
-        //    IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable().Select();
-        //    var productSize = productSizeQuery.Where(p => p.ProductCode.Contains(ProductCode))
-        //        .OrderBy(p => p.ID).AsEnumerable()
-        //        .Select(p => new
-        //        {
-        //            p.ID,
-        //            p.ProductCode,
-        //            p.ProductNo,
-        //            p.SizeNo,
-        //            p.AreaNo
-        //        });
-        //    int sizeno = -1, areano = -1;
-        //    if ((SizeNo != "" && SizeNo != null) && (AreaNo == "" || AreaNo == null))
-        //    {
-        //        try { sizeno = Convert.ToInt32(SizeNo); }
-        //        catch { sizeno = -1; }
-        //        finally { productSize = productSize.Where(p => p.SizeNo == sizeno); }
-        //    }
-        //    if ((SizeNo == "" || SizeNo == null) && (AreaNo != "" && AreaNo != null))
-        //    {
-        //        try { areano = Convert.ToInt32(AreaNo); }
-        //        catch { areano = -1; }
-        //        finally { productSize = productSize.Where(p => p.AreaNo == areano); }
-        //    }
-        //    if ((SizeNo != "" && SizeNo != null) && (AreaNo != "" && AreaNo != null))
-        //    {
-        //        try { sizeno = Convert.ToInt32(SizeNo); areano = Convert.ToInt32(AreaNo); }
-        //        catch { areano = -1; }
-        //        finally { productSize = productSize.Where(p => p.SizeNo == sizeno && p.AreaNo == areano); }
-        //    }
-        //    productSize = productSize.OrderBy(p => p.ID).AsEnumerable()
-        //        .Select(p => new
-        //        {
-        //            p.ID,
-        //            p.ProductCode,
-        //            p.ProductNo,
-        //            p.SizeNo,
-        //            p.AreaNo
-        //        });
-        //    int total = productSize.Count();
-        //    productSize = productSize.Skip((page - 1) * rows).Take(rows);
-        //    return new { total, rows = productSize.ToArray() };
-        //}
-
-
         public object GetDetails(int page, int rows, ProductSize productSize)
         {
 
@@ -105,55 +58,16 @@ namespace THOK.Wms.Bll.Service
                 p.SizeNo,
                 p.AreaNo
             });
-            ////var productSize_Detail = productSizeDetails.ToArray().Select(p=> new
-            ////{
-            ////    p.ID,
-            ////    p.ProductCode,
-            ////    ProductName = p.ProductCode,
-            ////    p.ProductNo,
-            ////    p.SizeNo,
-            ////    p.AreaNo
-            ////});
             return new { total, rows = productSize_Detail.ToArray() };
         }
 
-
-        //public bool Add(ProductSize productSize, out string strResult)
-        //{
-        //    strResult = string.Empty;
-        //    bool result = false;
-        //    var pro = new ProductSize();
-        //    if (pro != null)
-        //    {
-        //        try
-        //        {
-        //            pro.ID = productSize.ID;
-        //            pro.ProductCode = productSize.ProductCode;
-        //            pro.SizeNo = productSize.SizeNo;
-        //            pro.AreaNo = productSize.AreaNo;
-
-        //            ProductSizeRepository.Add(pro);
-        //            ProductSizeRepository.SaveChanges();
-        //            result = true;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            strResult = "原因：" + ex.Message;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        strResult = "原因：找不到当前登陆用户！请重新登陆！";
-        //    }
-        //    return result;
-        //}
 
         public bool Add(ProductSize productSize)
         {
             var pro = new ProductSize(); 
                     pro.ID = productSize.ID;
                     pro.ProductCode = productSize.ProductCode;
-                    
+                    pro.ProductNo = productSize.ProductNo;
                     pro.SizeNo = productSize.SizeNo;
                     pro.AreaNo = productSize.AreaNo;
 
@@ -167,7 +81,7 @@ namespace THOK.Wms.Bll.Service
             var pro = ProductSizeRepository.GetQueryable().FirstOrDefault(s => s.ID == productSize.ID);
                     pro.ID = productSize.ID;
                     pro.ProductCode = productSize.ProductCode;
-                    
+                    pro.ProductNo = productSize.ProductNo;
                     pro.SizeNo = productSize.SizeNo;
                     pro.AreaNo = productSize.AreaNo;
 
@@ -208,6 +122,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     p.ID,
                     p.ProductCode,
+                    p.ProductNo,
                     p.SizeNo,
                     p.AreaNo
                 });
@@ -216,29 +131,35 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = productSize.ToArray() };
         }
 
-        public System.Data.DataTable GetProductSize(int page, int rows, string productCode)
+        public System.Data.DataTable GetProductSize(int page, int rows, ProductSize productSize)
         {
             IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable();
-            var productSize = productSizeQuery.Where(p => p.ProductCode.Contains(productCode))
-                .OrderBy(p => p.ID).AsEnumerable()
-                .Select(p => new
+
+            var productSizeDetail = productSizeQuery.Where(p =>
+                p.ProductCode.Contains(productSize.ProductCode) )
+                .OrderBy(p => p.ID);
+
+            var productSize_Detail = productSizeDetail.ToArray().Select(p => new
                 {
                     p.ID,
                     p.ProductCode,
+                    p.ProductNo,
                     p.SizeNo,
                     p.AreaNo
                 });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("商品ID", typeof(string));
             dt.Columns.Add("商品代码", typeof(string));
+            dt.Columns.Add("商品简码", typeof(string));
             dt.Columns.Add("件烟尺寸编号", typeof(string));
             dt.Columns.Add("存储库区号", typeof(string));
-            foreach (var item in productSize)
+            foreach (var item in productSize_Detail)
             {
                 dt.Rows.Add
                     (
                         item.ID,
                         item.ProductCode,
+                        item.ProductNo,
                         item.SizeNo,
                         item.AreaNo
                     );
