@@ -62,7 +62,7 @@ namespace Wms.Service
             {
                 XElement doc = XElement.Parse(xml);
 
-                #region XML<head>
+                #region Head
                 var heads = from head in doc.Descendants("head")
                             select new
                             {
@@ -78,121 +78,132 @@ namespace Wms.Service
                 var headList = heads.ToArray()[0];
                 #endregion
 
-                #region XML<data>
-                var datas = from data in doc.Descendants("data")
-                            select new
-                            {
-                                BillType = data.Element("bb_type").Value,
-                                UUID = data.Element("bb_uuid").Value,
-                                BillDate = data.Element("bb_input_date").Value,
-                                MakerName = data.Element("bb_input_person").Value,
-                                OperateDate = data.Element("bb_oper_date").Value,
-                                CigaretteType = data.Element("bb_cig_type").Value,
-                                BillCompanyCode = data.Element("bb_commerce_code").Value,
-                                SupplierCode = data.Element("bb_flow_code").Value,
-                                SupplierType = data.Element("bb_flow_type").Value,
-                                State = data.Element("BB_STATE").Value,
-                                BillDetail = from data_1 in doc.Descendants("data_1")
-                                             select new
-                                             {
-                                                 PieceCigarCode = data_1.Element("bd_pcig_code").Value,
-                                                 BoxCigarCode = data_1.Element("bd_bcig_code").Value,
-                                                 BillQuantity = data_1.Element("bd_bill_all_num1").Value,
-                                                 FixedQuantity = data_1.Element("bd_bill_fixed_all_num1").Value,
-                                                 RealQuantity = data_1.Element("BD_BILL_ALL_SCAN_NUM1").Value
-                                             }
-                            };
+                #region BillMaster
+                var billMaster = from data in doc.Descendants("data")
+                                 select new
+                                 {
+                                     BillType = data.Element("bb_type").Value,
+                                     UUID = data.Element("bb_uuid").Value,
+                                     BillDate = data.Element("bb_input_date").Value,
+                                     MakerName = data.Element("bb_input_person").Value,
+                                     OperateDate = data.Element("bb_oper_date").Value,
+                                     CigaretteType = data.Element("bb_cig_type").Value,
+                                     BillCompanyCode = data.Element("bb_commerce_code").Value,
+                                     SupplierCode = data.Element("bb_flow_code").Value,
+                                     SupplierType = data.Element("bb_flow_type").Value,
+                                     State = data.Element("BB_STATE").Value,
+                                     BillDetail = from data_1 in doc.Descendants("data_1")
+                                                  select new
+                                                  {
+                                                      PieceCigarCode = data_1.Element("bd_pcig_code").Value,
+                                                      BoxCigarCode = data_1.Element("bd_bcig_code").Value,
+                                                      BillQuantity = data_1.Element("bd_bill_all_num1").Value,
+                                                      FixedQuantity = data_1.Element("bd_bill_fixed_all_num1").Value,
+                                                      RealQuantity = data_1.Element("BD_BILL_ALL_SCAN_NUM1").Value
+                                                  }
+                                 };
                 //using (var scope = new TransactionScope())
                 //{
-                for (int i = 0; i < datas.Count(); i++)
+                for (int i = 0; i < billMaster.Count(); i++)
                 {
-                    var dataArray = datas.ToArray()[i];
+                    var bmArray = billMaster.ToArray()[i];
                     BillMaster bm = new BillMaster();
-                    bm.BillType = dataArray.BillType;
-                    bm.UUID = dataArray.UUID;
-                    bm.BillDate = Convert.ToDateTime(dataArray.BillDate);
-                    bm.MakerName = dataArray.MakerName;
-                    bm.OperateDate = Convert.ToDateTime(dataArray.OperateDate);
-                    bm.CigaretteType = dataArray.CigaretteType;
-                    bm.BillCompanyCode = dataArray.BillCompanyCode;
-                    bm.SupplierCode = dataArray.SupplierCode;
-                    bm.SupplierType = dataArray.SupplierType;
-                    bm.State = dataArray.State;
+                    bm.ID = Guid.NewGuid();
+                    bm.BillType = bmArray.BillType;
+                    bm.UUID = bmArray.UUID;
+                    bm.BillDate = Convert.ToDateTime(bmArray.BillDate);
+                    bm.MakerName = bmArray.MakerName;
+                    bm.OperateDate = Convert.ToDateTime(bmArray.OperateDate);
+                    bm.CigaretteType = bmArray.CigaretteType;
+                    bm.BillCompanyCode = bmArray.BillCompanyCode;
+                    bm.SupplierCode = bmArray.SupplierCode;
+                    bm.SupplierType = bmArray.SupplierType;
+                    bm.State = bmArray.State;
 
                     b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
 
-                    for (int j = 0; j < dataArray.BillDetail.Count(); j++)
+                    for (int j = 0; j < bmArray.BillDetail.Count(); j++)
                     {
-                        var data1Array = dataArray.BillDetail.ToArray()[j];
+                        var bdArray = bmArray.BillDetail.ToArray()[j];
                         BillDetail bd = new BillDetail();
-                        //bd.MasterID = dataArray.;
-                        bd.PieceCigarCode = data1Array.PieceCigarCode;
-                        bd.BoxCigarCode = data1Array.BoxCigarCode;
-                        bd.BillQuantity = Convert.ToInt32(data1Array.BillQuantity);
-                        bd.FixedQuantity = Convert.ToInt32(data1Array.FixedQuantity);
-                        bd.RealQuantity = Convert.ToInt32(data1Array.RealQuantity);
+                        bd.MasterID = bm.ID;
+                        bd.PieceCigarCode = bdArray.PieceCigarCode;
+                        bd.BoxCigarCode = bdArray.BoxCigarCode;
+                        bd.BillQuantity = Convert.ToInt32(bdArray.BillQuantity);
+                        bd.FixedQuantity = Convert.ToInt32(bdArray.FixedQuantity);
+                        bd.RealQuantity = Convert.ToInt32(bdArray.RealQuantity);
 
                         b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
                     }
-
                     //if (!string.IsNullOrEmpty(result))
                     //{
                     //    scope.Complete();
                     //    break;
                     //}
                 }
-                //}
-                if (b == true)
-                {
-                    result = string.Format(returnMsg, headList.MsgId, headList.StateCode, headList.StateDesc, headList.WsMark, headList.WsMethod, headList.WsParam, headList.CurrTime, headList.CurrUser);
-                }
-
-                //foreach (var bd in bm.BillDetail)
-                //{
-                //    BillDetail entityBD = new BillDetail();
-                //    entityBD.PieceCigarCode = bd.PieceCigarCode;
-                //    entityBD.BoxCigarCode = bd.BoxCigarCode;
-                //    entityBD.BillQuantity = Convert.ToInt32(bd.BillQuantity);
-                //    entityBD.FixedQuantity = Convert.ToInt32(bd.FixedQuantity);
-                //    entityBD.RealQuantity = Convert.ToInt32(bd.RealQuantity);
-                //}
-                //}
-                //}            
+                //} 
                 #endregion
 
                 #region Contract
-                //var contract = from c in doc.Descendants("CONTRACT_BASE_1")
-                //               select new
-                //               {
-                //                   ContractCode = c.Element("CONTRACT_NO").Value,
-                //                   SupplySideCode = c.Element("A_NO").Value,
-                //                   DemandSideCode = c.Element("B_NO").Value,
-                //                   ContractDate = c.Element("CONTRACT_DATE").Value,
-                //                   StartDade = c.Element("START_DATE").Value,
-                //                   EndDate = c.Element("END_DATE").Value,
-                //                   SendPlaceCode = c.Element("SEND_CODE").Value,
-                //                   SendAddress = c.Element("SEND_ADD").Value,
-                //                   ReceivePlaceCode = c.Element("RECEIVE_CODE").Value,
-                //                   ReceiveAddress = c.Element("RECEIVE_ADD").Value,
-                //                   SaleDate = c.Element("SALE_DATE").Value,
-                //                   State = c.Element("USE_STATE").Value,
-                //                   ContractDetail = from cb1 in doc.Descendants("CONTRACT_BASE_1")
-                //                                    select new
-                //                                    {
-                //                                        ContractCode = c.Element("CONTRACT_NO").Value,
-                //                                        BrandCode = c.Element("BRAND_CODE").Value,
-                //                                        Quantity = c.Element("NUM").Value,
-                //                                        Price = c.Element("PRICE").Value,
-                //                                        Amount = c.Element("SUM").Value,
-                //                                        TaxAmount = c.Element("SUM_TAX").Value
-                //                                    }
-                //               };
-                //foreach (var con in contract)
-                //{
-                //    Contract cc = new Contract();
-                //    cc.ContractCode = con.ContractCode.ToString();
-                //    b = ContractService.Add(cc, out strResult);
-                //}
+                var contract = from cb1 in doc.Descendants("CONTRACT_BASE_1")
+                               select new
+                               {
+                                   ContractCode = cb1.Element("CONTRACT_NO").Value,
+                                   SupplySideCode = cb1.Element("A_NO").Value,
+                                   DemandSideCode = cb1.Element("B_NO").Value,
+                                   ContractDate = cb1.Element("CONTRACT_DATE").Value,
+                                   StartDade = cb1.Element("START_DATE").Value,
+                                   EndDate = cb1.Element("END_DATE").Value,
+                                   SendPlaceCode = cb1.Element("SEND_CODE").Value,
+                                   SendAddress = cb1.Element("SEND_ADD").Value,
+                                   ReceivePlaceCode = cb1.Element("RECEIVE_CODE").Value,
+                                   ReceiveAddress = cb1.Element("RECEIVE_ADD").Value,
+                                   SaleDate = cb1.Element("SALE_DATE").Value,
+                                   State = cb1.Element("USE_STATE").Value,
+                                   ContractDetail = from cd1 in doc.Descendants("CONTRACT_DETAIL_1")
+                                                    select new
+                                                    {
+                                                        ContractCode = cd1.Element("CONTRACT_NO").Value,
+                                                        BrandCode = cd1.Element("BRAND_CODE").Value,
+                                                        Quantity = cd1.Element("NUM").Value,
+                                                        Price = cd1.Element("PRICE").Value,
+                                                        Amount = cd1.Element("SUM").Value,
+                                                        TaxAmount = cd1.Element("SUM_TAX").Value
+                                                    }
+                               };
+                for (int i = 0; i < contract.Count(); i++)
+                {
+                    var cArray = contract.ToArray()[i];
+                    Contract con = new Contract();                    
+                    con.ContractCode = cArray.ContractCode;
+                    con.SupplySideCode = cArray.SupplySideCode;
+                    con.DemandSideCode = cArray.DemandSideCode;
+                    con.ContractDate = Convert.ToDateTime(cArray.ContractDate);
+                    con.StartDade = Convert.ToDateTime(cArray.StartDade);
+                    con.EndDate = Convert.ToDateTime(cArray.EndDate);
+                    con.SendPlaceCode = cArray.SendPlaceCode;
+                    con.SendAddress = cArray.SendAddress;
+                    con.ReceivePlaceCode = cArray.ReceivePlaceCode;
+                    con.ReceiveAddress = cArray.ReceiveAddress;
+                    con.SaleDate = cArray.SaleDate;
+                    con.State = cArray.State;
+
+                    b = factory.GetService<IContractService>().Add(con, out strResult);
+
+                    for (int j = 0; j < cArray.ContractDetail.Count(); j++)
+                    {
+                        var cdArray = cArray.ContractDetail.ToArray()[j];
+                        ContractDetail cd = new ContractDetail();
+                        cd.ContractCode = cdArray.ContractCode;
+                        cd.BrandCode = cdArray.BrandCode;
+                        cd.Quantity = cdArray.Quantity;
+                        cd.Price = cdArray.Price;
+                        cd.Amount = Convert.ToInt32(cdArray.Amount);
+                        cd.TaxAmount = Convert.ToInt32(cdArray.TaxAmount);
+
+                        b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
+                    }
+                }
                 #endregion
 
                 #region Navicert
@@ -215,6 +226,11 @@ namespace Wms.Service
                 //    b = NavicertService.Add(nn, out strResult);
                 //}
                 #endregion
+
+                if (b == true)
+                {
+                    result = string.Format(returnMsg, headList.MsgId, headList.StateCode, headList.StateDesc, headList.WsMark, headList.WsMethod, headList.WsParam, headList.CurrTime, headList.CurrUser);
+                }
             }
             return result;
         }

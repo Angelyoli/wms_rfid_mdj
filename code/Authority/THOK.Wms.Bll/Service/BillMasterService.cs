@@ -31,7 +31,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     try
                     {
-                        b.ID = Guid.NewGuid();
+                        b.ID = billMaster.ID;
                         b.UUID = billMaster.UUID;
                         b.BillType = billMaster.BillType;
                         b.BillDate = billMaster.BillDate;
