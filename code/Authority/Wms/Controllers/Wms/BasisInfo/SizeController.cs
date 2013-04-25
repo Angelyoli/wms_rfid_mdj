@@ -110,14 +110,17 @@ namespace Wms.Controllers.Wms.BasisInfo
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string sizeName = Request.QueryString["sizeName"];
-            //string state = Request.QueryString["state"];
-
+            int SizeID = Convert.ToInt32(Request.QueryString["ID"]);
+            string SizeName = Request.QueryString["SizeName"];
+            Size size = new Size();
+            size.ID = SizeID;
+            size.SizeName = SizeName;
             THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
-            ep.DT1 = SizeService.GetSize(page, rows, sizeName);
-            ep.HeadTitle1 = "件烟尺寸信息";
+            ep.DT1 = SizeService.GetSize(page, rows, size);
+            ep.HeadTitle1 = "尺寸信息";
             System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
+           
         }  
 
     }

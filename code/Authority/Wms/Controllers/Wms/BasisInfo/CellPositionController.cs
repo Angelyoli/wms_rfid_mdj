@@ -92,13 +92,17 @@ namespace Wms.Controllers.Wms.BasisInfo
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string cellCode = Request.QueryString["cellCode"];
-
+            int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
+            string CellCode = Request.QueryString["CellCode"];
+            CellPosition cp= new CellPosition();
+            cp.ID = CellPositionID;
+            cp.CellCode = CellCode;
             THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
-            ep.DT1 = CellPositionService.GetCellPosition(page, rows, cellCode);
-            ep.HeadTitle1 = "货位位置信息";
+            ep.DT1 = CellPositionService.GetCellPosition(page, rows, cp);
+            ep.HeadTitle1 = "货位信息";
             System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
+           
         }
         #endregion
     }

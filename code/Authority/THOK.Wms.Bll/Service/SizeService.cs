@@ -108,20 +108,22 @@ namespace THOK.Wms.Bll.Service
             size = size.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = size.ToArray() };
         }
-        public System.Data.DataTable GetSize(int page, int rows, string sizeName)
+        public System.Data.DataTable GetSize(int page, int rows, Size size)
         {
             IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
-            var size = sizeQuery.Where(si => si.SizeName.Contains(sizeName))
-                .OrderBy(si => si.ID).AsEnumerable()
-                .Select(si => new
-                {
-                    si.ID,
-                    si.SizeName,
-                    si.SizeNo,
-                    si.Length,
-                    si.Width,
-                    si.Height
-                });
+            var sizeDetail = sizeQuery.Where(s =>
+            s.SizeName.Contains(size.SizeName))
+            .OrderBy(ul => ul.SizeName);
+            var size_Detail = sizeDetail.ToArray().Select(s => new
+            {
+                s.ID,
+                s.SizeName,
+                s.SizeNo,
+                s.Length,
+                s.Width,
+                s.Height
+            });
+
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("尺寸ID", typeof(string));
             dt.Columns.Add("尺寸名称", typeof(string));
@@ -129,7 +131,7 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("长度", typeof(string));
             dt.Columns.Add("宽度", typeof(string));
             dt.Columns.Add("高度", typeof(string));
-            foreach (var item in size)
+            foreach (var item in size_Detail)
             {
                 dt.Rows.Add
                     (
@@ -143,6 +145,6 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
-
     }
 }
+

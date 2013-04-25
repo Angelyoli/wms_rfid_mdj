@@ -12,8 +12,10 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool Delete(int cellPositionId);
 
-        System.Data.DataTable GetCellPosition(int page, int rows, string cellCode);
+        //System.Data.DataTable GetCellPosition(int page, int rows, string cellCode);
 
         bool Save(CellPosition cellPosition, out string strResult);
+
+        System.Data.DataTable GetCellPosition(int page, int rows, CellPosition cp);
     }
 }
