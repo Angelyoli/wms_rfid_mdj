@@ -4,7 +4,8 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface ISizeService : IService<Size>
     {
-       object GetDetails(int page, int rows,string SizeName, string SizeNo);
+        //object GetDetails(int page, int rows,string SizeName, string SizeNo);
+       
 
         bool Add(Size size);
 
@@ -16,6 +17,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         System.Data.DataTable GetSize(int page, int rows, string sizeName);
 
-        
+        object GetDetails(int page, int rows, Size size);
     }
 }

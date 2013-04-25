@@ -35,10 +35,11 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /CellPosition/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
+           
             string CellCode = collection["CellCode"] ?? "";
             string StockInPosition = collection["StockInPosition"] ?? "";
             string StockOutPosition = collection["StockOutPosition"] ?? "";
-            var productSize = CellPositionService.GetDetails(page, rows,CellCode, StockInPosition, StockOutPosition);
+            var productSize = CellPositionService.GetDetails(page, rows,CellCode,StockInPosition,StockOutPosition);
             return Json(productSize, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -58,7 +59,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(CellPosition cellPosition)
         {
             string strResult = string.Empty;
-            bool bResult = CellPositionService.Add(cellPosition, out strResult);
+            bool bResult = CellPositionService.Add(cellPosition);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -71,6 +72,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             bool bResult = CellPositionService.Save(cellPosition, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+
         }
 
 
@@ -81,7 +83,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = CellPositionService.Delete(cellPositionId, out strResult);
+            bResult = CellPositionService.Delete(cellPositionId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

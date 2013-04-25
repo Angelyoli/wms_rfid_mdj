@@ -55,7 +55,7 @@ namespace Authority.Controllers
         }
         public ActionResult GetUser()
         {
-            return Json(User,"text", JsonRequestBehavior.AllowGet);
+            return Json(new { Identity = new { User.Identity.IsAuthenticated, User.Identity.Name } }, "text", JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
