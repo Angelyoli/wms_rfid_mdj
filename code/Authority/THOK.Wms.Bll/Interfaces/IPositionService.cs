@@ -8,17 +8,16 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface IPositionService : IService<Position>
     {
+        object GetDetails(int page, int rows, Position positions);
 
-        object GetDetails(int page, int rows,string PositionName, string PositionType, string SRMName,string State);
+        bool Add(Position position);
 
-        bool Add(Position position, out string strResult);
+        bool Save(Position position);
 
-        bool Save(Position position, out string strResult);
-
-        bool Delete(int positionId, out string strResult);
+        bool Delete(int positionId);
 
         object GetPosition(int page, int rows, string queryString, string value);
 
-        System.Data.DataTable GetPosition(int page, int rows, string positionName, string srmName,string t);
+        System.Data.DataTable GetPosition(int page, int rows , Position position);
     }
 }

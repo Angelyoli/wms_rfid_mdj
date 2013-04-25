@@ -2343,6 +2343,7 @@
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\Position\_SRMNamePartial.cshtml" />
     <Content Include="Views\Size\_PrintPartial.cshtml" />
     <Content Include="Views\Shared\_NodePartial.cshtml" />
     <Content Include="Views\Path\AddPage.cshtml" />
@@ -2358,6 +2359,8 @@
     <Content Include="Views\Path\_TargetPartial.cshtml" />
     <Content Include="Views\Path\_NodePartial.cshtml" />
     <Content Include="Views\Path\_NodeAdmin.cshtml" />
+    <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
+    <Content Include="Views\ProductSize\_SizePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
@@ -2379,7 +2382,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>11030</DevelopmentServerPort>
+          <DevelopmentServerPort>17822</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
