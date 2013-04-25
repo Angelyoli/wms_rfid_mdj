@@ -23,7 +23,7 @@ namespace THOK.Wms.Bll.Service
         {
             strResult = string.Empty;
             bool result = false;
-            var billMasters = BillMasterRepository.GetQueryable().FirstOrDefault(c => c.ID == billMaster.ID);
+            var billMasters = BillMasterRepository.GetQueryable().FirstOrDefault(c => c.UUID == billMaster.UUID);
             var b = new BillMaster();
             if (billMasters == null)
             {
@@ -31,7 +31,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     try
                     {
-                        b.ID = billMaster.ID;
+                        b.ID = Guid.NewGuid();
                         b.UUID = billMaster.UUID;
                         b.BillType = billMaster.BillType;
                         b.BillDate = billMaster.BillDate;
@@ -42,24 +42,27 @@ namespace THOK.Wms.Bll.Service
                         b.SupplierCode = billMaster.SupplierCode;
                         b.SupplierType = billMaster.SupplierType;
                         b.State = billMaster.State;
-
+                        
                         BillMasterRepository.Add(b);
                         BillMasterRepository.SaveChanges();
                         result = true;
                     }
                     catch (Exception ex)
                     {
-                        strResult = "原因：" + ex.Message;
+                        strResult = "原因：" + ex.ToString(); 
+                        result = false;
                     }
                 }
                 else
                 {
-                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                    strResult = "原因：找不到当前登陆用户！请重新登陆！"; 
+                    result = false;
                 }
             }
             else
             {
-                strResult = "原因：该编号已存在！";
+                strResult = "原因：该编号已存在！"; 
+                result = false;
             }
             return result;
         }
