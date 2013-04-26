@@ -1,8 +1,14 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var productCode = null;
+        var productCode = null,productNo=null, sizeNo=null, areaNo=null;
         if ($('#ProductCode').val() == null) { productCode = ""; } else { productCode = $('#ProductCode').val() }
+        if ($('#ProductNo').val() == null) { productNo = ""; } else { productNo = $('#ProductNo').val() }
+        if ($('#SizeNo').val() == null) { sizeNo = ""; } else { sizeNo = $('#SizeNo').val() }
+        if ($('#AreaNo').val() == null) { areaNo = ""; } else { areaNo = $('#AreaNo').val() }
         window.location.href = "/ProductSize/CreateExcelToClient/"
                                 + "?productCode=" + productCode;
+                                +"?productNo=" + productCode;
+                                +"?sizeNo=" + productCode;
+                                +"?areaNo=" + productCode;
     }
 </script>

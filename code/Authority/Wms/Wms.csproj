@@ -252,6 +252,10 @@
     <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.ServiceLocation.dll" />
     <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.Configuration.dll" />
     <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\NPOI.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\SignalR.Hosting.AspNet.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\SignalR.Hosting.Common.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Tek4.Highcharts.Exporting.dll" />
     <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.dll" />
     <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.pdb" />
     <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Dal.dll" />
@@ -1617,6 +1621,7 @@
     <Content Include="Content\themes\base\images\son_StockPlace.png" />
     <Content Include="Content\themes\base\images\son_Warehouse.png" />
     <Content Include="Content\themes\base\images\tabs_close.gif" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Common.dll" />
     <Content Include="DB.xml" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -2344,6 +2349,7 @@
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\Position\_SRMNamePartial.cshtml" />
     <Content Include="Views\Size\_PrintPartial.cshtml" />
     <Content Include="Views\Shared\_NodePartial.cshtml" />
     <Content Include="Views\Path\AddPage.cshtml" />
@@ -2359,6 +2365,9 @@
     <Content Include="Views\Path\_TargetPartial.cshtml" />
     <Content Include="Views\Path\_NodePartial.cshtml" />
     <Content Include="Views\Path\_NodeAdmin.cshtml" />
+    <Content Include="Views\Shared\_NodePartial.cshtml" />
+    <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
+    <Content Include="Views\ProductSize\_SizePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

@@ -3,7 +3,7 @@
     var isAdd;
     $(function () {
         $('#path_node').window({
-            title: '功能模块',
+            title: '节点模块',
             width: 450,
             modal: true,
             shadow: false,
@@ -18,17 +18,18 @@
 
     //加载
     function nodeClick() {
-        var row = $('#details').treegrid('getSelected');
+        var row = $('#details').datagrid('getSelected');
         if (row) {
             $('#path_node').window('open');
-            $('#path_nodedatagrid').datagrid('clearSelections'); //清空所有选择项
-            pathId = row.PathID;
-            $('#path_nodedatagrid').datagrid({
-                url: '/PathNode/Details/?/PathId=' + row.PathID
+            $('#nodedatagrid').datagrid('clearSelections'); //清空所有选择项
+            pathId = row.ID;
+            alert(pathId);
+            $('#nodedatagrid').datagrid({
+                url: '/PathNode/Details/?/PathId=' + pathId
             });
         } else {
             $('#path_node').window('close');
-            $.messager.show({ title: '系统提示', msg: '请选择模块！' });
+            $.messager.show({ title: '系统提示', msg: '请选择路径！' });
         }
     }
 
@@ -67,36 +68,32 @@
     function current(Parameter) {
         var row = $('#nodeAdmin').datagrid('getSelected');
         $('#PathID').val(pathId);
-        $('#FunctionName').val(row.FunctionName);
-        $('#FunctionID').val(row.FunctionID);
-        $('#ControlName').val(row.ControlName);
-        $('#IndicateImage').val(row.IndicateImage);
+        $('#PositionName').val(row.PositionName);
+        $('#PathNodeOrder').val(row.PathNodeOrder);
         $("input[type=text]").removeAttr("disabled");
         isAdd = Parameter;
-        $('#functiondatagrid').datagrid('clearSelections'); //清空所有选择项
+        $('#nodedatagrid').datagrid('clearSelections'); //清空所有选择项
     }
 
 </script>
 
-<div id="path_functionadmin"  split="true">    
-    <table id="functiondatagrid" class="easyui-datagrid"  rownumbers="true" singleSelect="true" border="0px"
+<div id="path_node"  split="true">   
+    <table id="nodedatagrid" class="easyui-datagrid"  rownumbers="true" singleSelect="true" border="0px"
 			idField="FunctionName" treeField="ControlName" toolbar="#tb" >
         <thead >
             <tr>
-                <th field="FunctionID" width="80" hidden="true">功能编码</th>
-                <th field="FunctionName" width="144">功能名称</th>
-                <th field="ControlName" width="115" >控制名称</th>
-                <th field="IndicateImage"  width="115" >功能图标</th>
-                <th field="Module_ModuleID" hidden="true" width="160" >模块编码</th>
+                <th field="ID" width="80" >ID</th>
+                <th field="PathName" width="120" >路径名称</th>
+                <th field="PositionName" width="150" >位置名称</th>
+                <th field="PathNodeOrder" width="150">路径节点顺序</th>
             </tr>
         </thead>
     </table>
     <div id="tb">
-		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="functionAddClick()" id="functionAdd">新增</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="functionEditClick()" id="functionEdit">编辑</a>
-		<a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="functionDeleteClick()" id="functionDelete">删除</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="nodeAddClick()" id="nodeAdd">新增</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="nodeEditClick()" id="nodeEdit">编辑</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="nodeDeleteClick()" id="nodeDelete">删除</a>
 	</div>
 </div>
-
 @Html.Partial("_NodeAdmin")
                                                                                             

@@ -17,46 +17,31 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows,string SizeName, string SizeNo)
+        public object GetDetails(int page, int rows, Size size)
         {
             IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
-            var size = sizeQuery.Where(s => s.SizeName.Contains(SizeName))
-                .OrderBy(s => s.ID).AsEnumerable()
-                .Select(s => new
-                {
-                    s.ID,
-                    s.SizeName,
-                    s.SizeNo,
-                    s.Length,
-                    s.Width,
-                    s.Height
-                });
-            if(SizeNo != "" && SizeNo!=null)
-            {
-                int sizeno = -1;
-                try { sizeno = Convert.ToInt32(SizeNo); }
-                catch { sizeno = -1; }
-                finally 
-                {
-                    size = size.Where(s => s.SizeNo == sizeno)
-                        .OrderBy(s => s.ID).AsEnumerable()
-                        .Select(s => new
-                        {
-                            s.ID,
-                            s.SizeName,
-                            s.SizeNo,
-                            s.Length,
-                            s.Width,
-                            s.Height
-                        });
-                }
-            }
-            
-            int total = size.Count();
-            size = size.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = size.ToArray() };
-        }
+            var SizeDetail = sizeQuery.Where(s => s.SizeName.Contains(size.SizeName)).OrderBy(s => s.ID);
 
+            var SizeDetail1 = SizeDetail;
+            if (size.SizeNo != null && size.SizeNo != 0)
+            {
+                SizeDetail1 = SizeDetail.Where(s => s.SizeNo == size.SizeNo).OrderBy(s => s.ID);
+            }
+
+            int total = SizeDetail.Count();
+            var sRMDetails = SizeDetail1.Skip((page - 1) * rows).Take(rows);
+            var sRM_Detail = sRMDetails.ToArray().Select(s => new
+            {
+                s.ID,
+                s.SizeName,
+                s.Length,
+                s.SizeNo,
+                s.Width,
+                s.Height
+            });
+            return new { total, rows = sRM_Detail.ToArray() };
+        }
+           
         public bool Add(Size size)
         {
             var s = new Size();
@@ -110,8 +95,8 @@ namespace THOK.Wms.Bll.Service
                 sizeName = value;
             }
             IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
-            int Id = Convert.ToInt32(id);
-            var size = sizeQuery.Where(si => si.ID == Id && si.SizeName.Contains(sizeName))
+            //int Id = Convert.ToInt32(id);
+            var size = sizeQuery.Where(si => si.SizeName.Contains(sizeName))
                 .OrderBy(si => si.ID).AsEnumerable().
                 Select(si => new
                 {

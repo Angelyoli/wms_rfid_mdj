@@ -1,0 +1,69 @@
+﻿<script type="text/javascript">   
+    $(function () {
+        $('#sizeDetail').datagrid({
+            //双击赋值
+            onDblClickRow: function () {
+                sizeSave();
+            }
+        })
+        //属性初始化
+        $('#queryTypeSize').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 100
+        })
+    });
+    //选中赋值
+    function sizeSave() {
+        var sizeRow = $('#sizeDetail').datagrid('getSelected');
+        if (sizeRow) {
+            $('#SizeNo').val(sizeRow.SizeNo);
+            $('#sizeData').dialog('close');
+            editKey = true;
+        }
+        else {
+            $.messager.alert('提示', '没有选择行!', 'info');
+        }
+    }
+    //根据条件查询
+    function sizeQueryClick() {
+        $("#sizeDetail").datagrid({
+            url: '/Size/GetSize/?queryString=' + 'SizeName' + '&value=' + $('#sizeInfo').val()
+        });
+
+        $("#sizeDetail").datagrid('reload');
+        editKey = true;
+    }
+
+</script>
+<div id="sizeData" class="easyui-dialog" modal="true" style="width: 500px;
+    height: 420px; padding: 0px 0px" closed="true" buttons="#dlgSize-buttons">
+    <div id="btnQuery">
+       尺寸名称:
+        <input id="sizeInfo">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="sizeQueryClick()"
+            id="sizeQuery">查询</a>
+    </div>
+    <div split="true" border="false" style="width: 486px; height: 320px;">
+        <table id="sizeDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+            <thead>
+                <tr>
+                    <th field="SizeName" width="60">
+                        尺寸名称
+                    </th>
+                    <th field="SizeNo" width="60">
+                        尺寸编号
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="dlgDepart-buttons" style="float:right; margin-top:10px; margin-right:10px;">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="sizeSave()">确定</a>
+        <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#sizeData').dialog('close')">
+            取消</a>
+    </div>
+</div>
