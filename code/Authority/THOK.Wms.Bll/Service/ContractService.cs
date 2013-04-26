@@ -23,46 +23,46 @@ namespace THOK.Wms.Bll.Service
         {
             strResult = string.Empty;
             bool result = false;
-            var contracts = ContractRepository.GetQueryable().FirstOrDefault(c => c.ContractCode == contract.ContractCode);
+            //var contracts = ContractRepository.GetQueryable().FirstOrDefault(c => c.ContractCode == contract.ContractCode);
             var con = new Contract();
-            if (contracts == null)
+            //if (contracts == null)
+            //{
+            if (con != null)
             {
-                if (con != null)
+                try
                 {
-                    try
-                    {
-                        con.ContractCode = contract.ContractCode;
-                        con.MasterID = contract.MasterID;
-                        con.SupplySideCode = contract.SupplySideCode;
-                        con.DemandSideCode = contract.DemandSideCode;
-                        con.ContractDate = contract.ContractDate;
-                        con.StartDade = contract.StartDade;
-                        con.EndDate = contract.EndDate;
-                        con.SendPlaceCode = contract.SendPlaceCode;
-                        con.SendAddress = contract.SendAddress;
-                        con.ReceivePlaceCode = contract.ReceivePlaceCode;
-                        con.ReceiveAddress = contract.ReceiveAddress;
-                        con.SaleDate = contract.SaleDate;
-                        con.State = contract.State;
+                    con.ContractCode = contract.ContractCode;
+                    con.MasterID = contract.MasterID;
+                    con.SupplySideCode = contract.SupplySideCode;
+                    con.DemandSideCode = contract.DemandSideCode;
+                    con.ContractDate = contract.ContractDate;
+                    con.StartDade = contract.StartDade;
+                    con.EndDate = contract.EndDate;
+                    con.SendPlaceCode = contract.SendPlaceCode;
+                    con.SendAddress = contract.SendAddress;
+                    con.ReceivePlaceCode = contract.ReceivePlaceCode;
+                    con.ReceiveAddress = contract.ReceiveAddress;
+                    con.SaleDate = contract.SaleDate;
+                    con.State = contract.State;
 
-                        ContractRepository.Add(con);
-                        ContractRepository.SaveChanges();
-                        result = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        strResult = "原因：" + ex.Message;
-                    }
+                    ContractRepository.Add(con);
+                    ContractRepository.SaveChanges();
+                    result = true;
                 }
-                else
+                catch (Exception ex)
                 {
-                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
+                    strResult = "原因：" + ex.Message;
                 }
             }
             else
             {
-                strResult = "原因：该编号已存在！";
+                strResult = "原因：找不到当前登陆用户！请重新登陆！";
             }
+            //}
+            //else
+            //{
+            //    strResult = "原因：该编号已存在！";
+            //}
             return result;
         }
     }

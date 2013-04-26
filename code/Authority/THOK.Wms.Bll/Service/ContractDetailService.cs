@@ -27,7 +27,7 @@ namespace THOK.Wms.Bll.Service
             {
                 try
                 {
-                    c.ID = contractDetail.ID;
+                    c.ID = Guid.NewGuid();
                     c.ContractCode = contractDetail.ContractCode;
                     c.BrandCode = contractDetail.BrandCode;
                     c.Quantity = contractDetail.Quantity;
@@ -41,7 +41,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception ex)
                 {
-                    strResult = "原因：" + ex.Message;
+                    strResult = "原因：" + ex.InnerException;
                 }
             }
             else
