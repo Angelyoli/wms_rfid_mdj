@@ -47,5 +47,16 @@
         $("#details").datagrid('load');
         searchDialog.dialog('close');
     }
+
+    function ProductSearchClick() {
+        $('#productData').dialog('open').dialog('setTitle', '商品名称');
+        $('#productDetail').datagrid({ url: '/Product/GetProductBy/' });
+        $("#productDetail").datagrid('reload');
+    }
+    function SizeSearchClick() {
+        $('#sizeData').dialog('open').dialog('setTitle', '件烟尺寸信息');
+        $('#sizeDetail').datagrid({ url: '/Size/GetSize/' });
+        $("#sizeDetail").datagrid('reload');
+    }
 </script>
 <script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>

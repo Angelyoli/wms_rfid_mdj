@@ -111,8 +111,8 @@ namespace THOK.Wms.Bll.Service
                 srmName = value;
             }
             IQueryable<SRM> srmQuery = SRMRepository.GetQueryable();
-            int Id = Convert.ToInt32(id);
-            var srm = srmQuery.Where(s => s.ID == Id && s.SRMName.Contains(srmName) && s.State == "01")
+            //int Id = Convert.ToInt32(id);
+            var srm = srmQuery.Where(s =>s.SRMName.Contains(srmName) && s.State == "01")
                 .OrderBy(s => s.ID).AsEnumerable().
                 Select(s => new
                 {
@@ -146,9 +146,7 @@ namespace THOK.Wms.Bll.Service
                 && s.PutAllow.Contains(srms.PutAllow)
                 && s.PutComplete.Contains(srms.PutComplete)
                 && s.State.Contains(srms.State)).OrderBy(ul => ul.SRMName);
-            int total = sRMDetail.Count();
-            var sRMDetails = sRMDetail.Skip((page - 1) * rows).Take(rows);
-            var sRM_Detail = sRMDetails.ToArray().Select(s => new
+            var sRM_Detail = sRMDetail.ToArray().Select(s => new
             {
                 s.ID,
                 s.SRMName,
@@ -167,7 +165,6 @@ namespace THOK.Wms.Bll.Service
 
             dt.Columns.Add("堆垛机编码", typeof(string));
             dt.Columns.Add("堆垛机名称", typeof(string));
-            dt.Columns.Add("描述", typeof(string));
             dt.Columns.Add("OPC服务名", typeof(string));
             dt.Columns.Add("取货请求数据项名", typeof(string));
             dt.Columns.Add("充许取货数据项名", typeof(string));
@@ -175,6 +172,7 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("放货请求数据项名", typeof(string));
             dt.Columns.Add("充许放货数据项名", typeof(string));
             dt.Columns.Add("放货完成数据项名", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
             dt.Columns.Add("状态", typeof(string));
             foreach (var s in sRM_Detail)
             {

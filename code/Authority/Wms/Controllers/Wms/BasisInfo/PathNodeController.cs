@@ -33,11 +33,12 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /PathNode/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-           // string ID = collection["ID"] ?? "";
+            PathNode pathNode = new PathNode();
+            //string ID = collection["ID"] ?? "";
             string PathName = collection["PathName"] ?? "";
             string PositionName = collection["PositionName"] ?? "";
             string PathNodeOrder = collection["PathNodeOrder"] ?? "";
-            var srm = PathNodeService.GetDetails(page, rows, PathName, PositionName, PathNodeOrder);
+            var srm = PathNodeService.GetDetails(page, rows,PathName, PositionName, PathNodeOrder);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 
