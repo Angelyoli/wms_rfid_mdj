@@ -61,7 +61,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
  
         public void GetBillMaster(string[] BillTypes, Result result)
         {
-            BillMaster[] billMasters = new BillMaster[] { };
+            THOK.Wms.AutomotiveSystems.Models.BillMaster[] billMasters = new THOK.Wms.AutomotiveSystems.Models.BillMaster[] { };
             try
             {
                 foreach (var billType in BillTypes)
@@ -71,28 +71,28 @@ namespace THOK.Wms.AutomotiveSystems.Service
                         case "1"://入库单
                             var inBillMasters = InBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "4" || i.Status == "5")
-                                .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "1" })
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillMaster() { BillNo = i.BillNo, BillType = "1" })
                                 .ToArray();
                             billMasters = billMasters.Concat(inBillMasters).ToArray();
                             break;
                         case "2"://出库单
                             var outBillMasters = OutBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "4" || i.Status == "5")
-                                .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "2" })
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillMaster() { BillNo = i.BillNo, BillType = "2" })
                                 .ToArray();
                             billMasters = billMasters.Concat(outBillMasters).ToArray();
                             break;
                         case "3"://移库单
                             var moveBillMasters = MoveBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "2" || i.Status == "3")
-                                .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "3" })
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillMaster() { BillNo = i.BillNo, BillType = "3" })
                                 .ToArray();
                             billMasters = billMasters.Concat(moveBillMasters).ToArray();
                             break;
                         case "4"://盘点单
                             var checkBillMasters = CheckBillMasterRepository.GetQueryable()
                                 .Where(i => i.Status == "2" || i.Status == "3")
-                                .Select(i => new BillMaster() { BillNo = i.BillNo, BillType = "4" })
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillMaster() { BillNo = i.BillNo, BillType = "4" })
                                 .ToArray();
                             billMasters = billMasters.Concat(checkBillMasters).ToArray();
                             break;
@@ -110,9 +110,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
-        public void GetBillDetail(BillMaster[] billMasters, string productCode, string OperateType, string OperateAreas, string Operator, Result result)
+        public void GetBillDetail(THOK.Wms.AutomotiveSystems.Models.BillMaster[] billMasters, string productCode, string OperateType, string OperateAreas, string Operator, Result result)
         {
-            BillDetail[] billDetails = new BillDetail[] { };
+            THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
             var ops = OperateAreas.Split(',').Select(a => Convert.ToInt32(a)).ToArray();
             
             try
@@ -129,7 +129,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .Where(i => i.BillNo == billNo
                                     && (i.ProductCode == productCode || productCode == string.Empty)                                    
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
-                                .Select(i => new BillDetail() { 
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail() { 
                                     BillNo = i.BillNo, 
                                     BillType = "1" ,
 
@@ -163,7 +163,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
-                                .Select(i => new BillDetail()
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                 {
                                     BillNo = i.BillNo,
                                     BillType = "2",
@@ -203,7 +203,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                             && (i.CanRealOperate == "1" || OperateType != "Real")
                                             && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                                        
                                         .ToArray()
-                                        .Select(i => new BillDetail()
+                                        .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                         {
                                             BillNo = i.BillNo,
                                             BillType = "3",
@@ -238,7 +238,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                               
-                                .Select(i => new BillDetail()
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                 {
                                     BillNo = i.BillNo,
                                     BillType = "3",
@@ -273,7 +273,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
-                                .Select(i => new BillDetail()
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                 {
                                     BillNo = i.BillNo,
                                     BillType = "4",
@@ -316,7 +316,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
-        public void Apply(BillDetail[] billDetails, string useTag, Result result)
+        public void Apply(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails, string useTag, Result result)
         {
             try
             {
@@ -445,7 +445,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
-        public void Cancel(BillDetail[] billDetails, string useTag, Result result)
+        public void Cancel(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails, string useTag, Result result)
         {
             try
             {
@@ -562,7 +562,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
-        public void Execute(BillDetail[] billDetails, string useTag, Result result)
+        public void Execute(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails, string useTag, Result result)
         {
             try
             {
@@ -789,12 +789,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         public void SearchRfidInfo(string rfid, Result result)
         {
-            BillDetail[] billDetails = new BillDetail[] { };
+            THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
             try
             {
                 var taryInfo = TrayInfoRepository.GetQueryable()
                                .Where(t => t.TaryRfid == rfid)
-                               .Select(t => new BillDetail()
+                               .Select(t => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                 {
                                     ProductCode = t.ProductCode,
                                     PieceQuantity = t.Quantity

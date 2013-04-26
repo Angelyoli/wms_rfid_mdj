@@ -53,14 +53,20 @@
         searchDialog.dialog('open');
     };
     function GetQueryParams() {
+     
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.PositionName = $('#PositionName').val();
         queryParams.PositionType = $('#PositionType').combo('getValue');
-        queryParams.SRMName = $('#SRMName').val();
+        queryParams.SRMName = $('#inputSRMName').val();
         queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');
+    }
+    function SRMNameSearchClick() {
+        $('#sRMData').dialog('open').dialog('setTitle', '选择堆垛机名称');
+        $('#sRMDetail').datagrid({ url: '/SRM/GetSRM/' });
+        $("#sRMDetail").datagrid('reload');
     }
 </script>
 <script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
