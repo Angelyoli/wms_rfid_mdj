@@ -11,7 +11,7 @@ namespace THOK.Wms.DbModel
         public string  WmsUUID { get; set; }
         public string UUID { get; set; }
         public string TicketNo { get; set; }
-        public DateTime OperateDate { get; set; }
+        public DateTime? OperateDate { get; set; }
         public string OperateType { get; set; }
         public string BarCodeType { get; set; }
         public string RfidAntCode { get; set; }
