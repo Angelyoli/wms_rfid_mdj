@@ -48,7 +48,7 @@ namespace THOK.Authority.Bll.Service
             if (user.Count() > 0)
             {
                 loginPC = user[0].LoginPC;
-                return loginPC;
+                return string.IsNullOrEmpty(loginPC) ? "" : loginPC;
             }
             else
             {
