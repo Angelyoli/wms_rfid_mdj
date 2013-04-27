@@ -73,7 +73,10 @@
     <Compile Include="Interfaces\IMoveBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IMoveBillMasterService.cs" />
     <Compile Include="Interfaces\IMoveSearchDetailService.cs" />
+
     <Compile Include="Interfaces\INavicertService.cs" />
+    <Compile Include="Interfaces\IPalletService.cs" />
+
     <Compile Include="Interfaces\IPathNodeService.cs" />
     <Compile Include="Interfaces\IPathService.cs" />
     <Compile Include="Interfaces\IPositionService.cs" />
@@ -158,6 +161,7 @@
     <Compile Include="Service\OutBillMasterHistoryService.cs" />
     <Compile Include="Service\OutBillMasterService.cs" />
     <Compile Include="Service\OutSearchDetailService.cs" />
+    <Compile Include="Service\PalletService.cs" />
     <Compile Include="Service\PathNodeService.cs" />
     <Compile Include="Service\PathService.cs" />
     <Compile Include="Service\PositionService.cs" />

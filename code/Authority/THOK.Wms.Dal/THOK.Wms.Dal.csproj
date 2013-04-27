@@ -93,6 +93,7 @@
     <Compile Include="EntityRepository\OutBillMasterHistoryRepository.cs" />
     <Compile Include="EntityRepository\OutBillMasterRepository.cs" />
     <Compile Include="EntityRepository\OutSearchDetailRepository.cs" />
+    <Compile Include="EntityRepository\PalletRepository.cs" />
     <Compile Include="EntityRepository\PathNodeRepository.cs" />
     <Compile Include="EntityRepository\PathRepository.cs" />
     <Compile Include="EntityRepository\PositionRepository.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Interfaces\IOutBillMasterHistoryRepository.cs" />
     <Compile Include="Interfaces\IOutBillMasterRepository.cs" />
     <Compile Include="Interfaces\IOutSearchDetailRepository.cs" />
+    <Compile Include="Interfaces\IPalletRepository.cs" />
     <Compile Include="Interfaces\IPathNodeRepository.cs" />
     <Compile Include="Interfaces\IPathRepository.cs" />
     <Compile Include="Interfaces\IPositionRepository.cs" />
