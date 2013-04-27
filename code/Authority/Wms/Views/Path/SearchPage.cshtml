@@ -4,44 +4,46 @@
 <div class="easyui-layout" fit="true" border="false">
     <div region="center" border="false" style="padding: 10px 10px; background: #fff;
         border: 1px solid #ccc;">
-        <table width="250">
+        <table width="270">
            
             <tr>
-                <td width="60">
+                <td width="80" align="right">
                     路径名称：
                 </td>
-                <td width="168" align="left">
+                <td width="168">
                     <input id="PathName" type="text"/>
                 </td>
             </tr>
+
             <tr>
-                <td width="60">
-                    起始区域：
+                <td width="80" align="right">
+                    起始区域名称：
                 </td>
-                <td width="168" align="left">
+                <td width="168" >
                     <input id="OriginRegion" name="OriginRegionID" type="text" style="display:none;"/>
-                    <input id="origin-name" name="OriginRegionName" type="text" readonly="readonly"/>
+                    <input id="OriginRegionName" name="OriginRegionName" type="text" readonly="readonly"/>
                     <a href="#" id="originNameSearch" class="easyui-linkbutton" iconcls="icon-search"
                         plain="true" onclick="OriginSearchClick()"></a>
                 </td>
             </tr>
+
             <tr>
-               <td width="60">
-                   目标区域：
+               <td width="80" align="right">
+                   目标区域名称：
                 </td>
-                <td width="168" align="left">
+                <td width="168" >
                     <input id="TargetRegion" name="TargetRegionID" type="text" style="display:none;"/>
-                    <input id="target-name" name="TargetRegionName" type="text" readonly="readonly"/>
+                    <input id="TargetRegionName" name="TargetRegionName" type="text" readonly="readonly"/>
                     <a href="#" id="targetSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                         onclick="TargetSearchClick()"></a>
                 </td>
             </tr>
             <tr>
-                <td>
+                <td width="80" align="right">
                     状态：
                 </td>
                 <td>
-                    <select id="state" name="State" class="easyui-combobox" style="width: 130px">
+                    <select id="State" name="State" class="easyui-combobox" style="width: 130px">
                         <option value="01">可用</option>
                         <option value="02">不可用</option>
                     </select>

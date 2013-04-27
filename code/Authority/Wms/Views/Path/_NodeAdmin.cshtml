@@ -23,13 +23,19 @@
                     $('#nodeAdmin').window('close');
                     $('#nodedatagrid').datagrid('options').url = '/PathNode/Details/?PathId=' + moduleId;
                     $('#nodedatagrid').datagrid('reload');
-                } else {
+                } 
+                else {
                     $.messager.show({ title: '系统提示', msg: '修改失败!请检查原因！' });
                 }
             });
         } else {
             $.messager.show({ title: '系统提示', msg: '请输入数据！' });
         }
+
+    function PositionIDSearchClick() {
+        $('#positionData').dialog('open').dialog('setTitle', '选择位置');
+        $('#positionDetail').datagrid({ url: '/Position/GetPosition/' });
+        $("#positionDetail").datagrid('reload');
     }
 </script>
      <div id="nodeAdmin" class="easyui-dialog" modal="true" 
@@ -67,4 +73,5 @@
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="nodeSaveClick()" id='PathNodeSave'>确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#nodeAdmin').dialog('close')">取消</a>
 </div>
-@Html.Partial("_PositionIDPartial")
+
+@Html.Partial("_PositionIDPartial");
