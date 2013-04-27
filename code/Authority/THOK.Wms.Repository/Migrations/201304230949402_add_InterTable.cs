@@ -104,7 +104,7 @@ namespace THOK.Wms.Repository.Migrations
                         wms_uuid = c.String(maxLength: 64),
                         uuid = c.String(maxLength: 64),
                         ticket_no = c.String(maxLength: 100),
-                        operate_date = c.DateTime(),
+                        operate_date = c.DateTime(nullable: false),
                         operate_type = c.String(nullable: false, maxLength: 50),
                         bar_code_type = c.String(maxLength: 2),
                         rfid_ant_code = c.String(maxLength: 20),
