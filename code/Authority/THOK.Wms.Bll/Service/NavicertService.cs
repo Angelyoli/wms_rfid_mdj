@@ -50,5 +50,28 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+        public bool Save(Navicert navicert, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var n = NavicertRepository.GetQueryable().FirstOrDefault(c => c.ContractCode == navicert.Contract.ContractCode);
+            if (n != null)
+            {
+                try
+                {
+                    n.NavicertCode = navicert.NavicertCode;
+                    n.NavicertDate = navicert.NavicertDate;
+                    n.TruckPlateNo = navicert.TruckPlateNo;
+
+                    NavicertRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                }
+            }
+            return result;
+        }
     }
 }

@@ -54,5 +54,30 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+        public bool Save(BillDetail billDetail, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var b = BillDetailRepository.GetQueryable().FirstOrDefault(c => c.BillMaster.UUID == billDetail.BillMaster.UUID);
+            if (b != null)
+            {
+                try
+                {
+                    b.PieceCigarCode = billDetail.PieceCigarCode;
+                    b.BoxCigarCode = billDetail.BoxCigarCode;
+                    b.BillQuantity = billDetail.BillQuantity;
+                    b.FixedQuantity = billDetail.FixedQuantity;
+                    b.RealQuantity = billDetail.RealQuantity;
+
+                    BillDetailRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                }
+            }
+            return result;
+        }
     }
 }

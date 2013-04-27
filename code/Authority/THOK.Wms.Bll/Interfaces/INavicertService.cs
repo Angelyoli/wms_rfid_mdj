@@ -9,5 +9,7 @@ namespace THOK.Wms.Bll.Interfaces
     public interface INavicertService : IService<Navicert>
     {
         bool Add(Navicert navicert, out string strResult);
+
+        bool Save(Navicert navicert, out string strResult);
     }
 }

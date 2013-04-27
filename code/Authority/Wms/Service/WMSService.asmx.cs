@@ -84,7 +84,6 @@ namespace Wms.Service
                                 CurrTime = head.Element("curr_time").Value ?? "",
                                 CurrUser = head.Element("curr_user").Value ?? ""
                             };
-                var headList = heads.ToArray()[0];
                 #endregion
 
                 #region var billMaster
@@ -157,6 +156,8 @@ namespace Wms.Service
                                    };
                 #endregion
 
+                var headList = heads.ToArray()[0];
+
                 using (var scope = new TransactionScope())
                 {
                     #region for (int i = 0; i < billMaster.Count(); i++)
@@ -175,7 +176,18 @@ namespace Wms.Service
                         bm.SupplierCode = bmArray.SupplierCode;
                         bm.SupplierType = bmArray.SupplierType;
                         bm.State = bmArray.State;
-                        b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
+                        if (headList.WsMethod == "BillCreate")
+                        {
+                            b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
+                        }
+                        if (headList.WsMethod == "BillModify")
+                        {
+                            b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
+                        }
+                        if (headList.WsMethod == "BillDelete")
+                        {
+
+                        }
                         for (int j = 0; j < bmArray.BillDetail.Count(); j++)
                         {
                             var bdArray = bmArray.BillDetail.ToArray()[j];
@@ -186,7 +198,19 @@ namespace Wms.Service
                             bd.BillQuantity = Convert.ToInt32(bdArray.BillQuantity);
                             bd.FixedQuantity = Convert.ToInt32(bdArray.FixedQuantity);
                             bd.RealQuantity = Convert.ToInt32(bdArray.RealQuantity);
-                            b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
+                            bd.BillMaster = bm;
+                            if (headList.WsMethod == "BillCreate")
+                            {
+                                b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
+                            }
+                            if (headList.WsMethod == "BillModify")
+                            {
+                                b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
+                            }
+                            if (headList.WsMethod == "BillDelete")
+                            {
+
+                            }
                         }
                         if (b == false)
                         {
@@ -212,7 +236,18 @@ namespace Wms.Service
                                 con.ReceiveAddress = cArray.ReceiveAddress;
                                 con.SaleDate = cArray.SaleDate;
                                 con.State = cArray.State;
-                                b = factory.GetService<IContractService>().Add(con, out strResult);
+                                if (headList.WsMethod == "BillCreate")
+                                {
+                                    b = factory.GetService<IContractService>().Add(con, out strResult);
+                                }
+                                if (headList.WsMethod == "BillModify")
+                                {
+                                    b = factory.GetService<IContractService>().Save(con, out strResult);
+                                }
+                                if (headList.WsMethod == "BillDelete")
+                                {
+
+                                }
                                 for (int l = 0; l < cArray.ContractDetail.Count(); l++)
                                 {
                                     var cdArray = cArray.ContractDetail.ToArray()[l];
@@ -223,7 +258,19 @@ namespace Wms.Service
                                     cd.Price = cdArray.Price;
                                     cd.Amount = Convert.ToInt32(cdArray.Amount);
                                     cd.TaxAmount = Convert.ToInt32(cdArray.TaxAmount);
-                                    b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
+                                    cd.Contract = con;
+                                    if (headList.WsMethod == "BillCreate")
+                                    {
+                                        b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
+                                    }
+                                    if (headList.WsMethod == "BillModify")
+                                    {
+                                        b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
+                                    }
+                                    if (headList.WsMethod == "BillDelete")
+                                    {
+
+                                    }
                                 }
                                 if (b == false)
                                 {
@@ -245,8 +292,20 @@ namespace Wms.Service
                                             na.NavicertCode = nArray.NavicertCode;
                                             na.NavicertDate = Convert.ToDateTime(nArray.NavicertDate);
                                             na.TruckPlateNo = nArray.TruckPlateNo;
+                                            na.Contract = con;
                                         }
-                                        b = factory.GetService<INavicertService>().Add(na, out strResult);
+                                        if (headList.WsMethod == "BillCreate")
+                                        {
+                                            b = factory.GetService<INavicertService>().Add(na, out strResult);
+                                        }
+                                        if (headList.WsMethod == "BillModify")
+                                        {
+                                            b = factory.GetService<INavicertService>().Save(na, out strResult);
+                                        }
+                                        if (headList.WsMethod == "BillDelete")
+                                        {
+
+                                        }
                                         if (b == false)
                                         {
                                             break;
@@ -265,6 +324,10 @@ namespace Wms.Service
                     }
                     #endregion
                 }
+            }
+            else
+            {
+
             }
             return result;
         }
@@ -286,19 +349,19 @@ namespace Wms.Service
         [WebMethod]
         public string WMSPalletInfo(string xml)
         {
-            string result="";
+            string result = "";
             XElement doc = XElement.Parse(xml);
             var queryHead = from d in doc.Descendants("head")
-                        select new
-                        {
-                            msg_id = (d.Element("msg_id") ?? null) == null ? null : d.Element("msg_id").Value,
-                            ws_mark = (d.Element("ws_mark") ?? null) == null ? null : d.Element("ws_mark").Value,
-                            ws_method = (d.Element("ws_method") ?? null) == null ? null : d.Element("ws_method").Value,
-                            ws_param = (d.Element("ws_param") ?? null) == null ? null : d.Element("ws_param").Value,
-                            client_ip = (d.Element("client_ip") ?? null) == null ? null : d.Element("client_ip").Value,
-                            curr_time = (d.Element("curr_time") ?? null) == null ? null : d.Element("curr_time").Value,
-                            curr_user = (d.Element("curr_user") ?? null) == null ? null : d.Element("curr_user").Value
-                        };
+                            select new
+                            {
+                                msg_id = (d.Element("msg_id") ?? null) == null ? null : d.Element("msg_id").Value,
+                                ws_mark = (d.Element("ws_mark") ?? null) == null ? null : d.Element("ws_mark").Value,
+                                ws_method = (d.Element("ws_method") ?? null) == null ? null : d.Element("ws_method").Value,
+                                ws_param = (d.Element("ws_param") ?? null) == null ? null : d.Element("ws_param").Value,
+                                client_ip = (d.Element("client_ip") ?? null) == null ? null : d.Element("client_ip").Value,
+                                curr_time = (d.Element("curr_time") ?? null) == null ? null : d.Element("curr_time").Value,
+                                curr_user = (d.Element("curr_user") ?? null) == null ? null : d.Element("curr_user").Value
+                            };
             var head = queryHead.ToArray()[0];
             var queryData = from d in doc.Descendants("data")
                             select new
@@ -327,7 +390,7 @@ namespace Wms.Service
                     palletAdd.TicketNo = data.bb_ticket_no;
                     palletAdd.OperateDate = Convert.ToDateTime(data.bb_oper_date);
                     palletAdd.OperateType = data.bb_type;
-                    palletAdd.BarCodeType =data.barcode_type;
+                    palletAdd.BarCodeType = data.barcode_type;
                     palletAdd.RfidAntCode = (data.RFIDAntCode).ToString();
                     palletAdd.PieceCigarCode = brandInfo[0];
                     palletAdd.BoxCigarCode = brandInfo[3];
