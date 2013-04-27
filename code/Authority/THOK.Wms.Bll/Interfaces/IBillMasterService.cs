@@ -12,6 +12,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool Save(BillMaster billMaster, out string strResult);
 
-        bool Delete();
+        bool Delete(string uuid, string strResult);
     }
 }
