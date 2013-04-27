@@ -107,7 +107,7 @@ namespace THOK.WES.Interface
             WebClient client = new WebClient();
             client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
             //string parameter = JsonMapper.ToJson(rfid.Split(','));
-            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getRfidInfo','RfidId':" + rfid + "}");
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getRfidInfo','RfidId':'" + rfid + "'}");
             client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
         }
 

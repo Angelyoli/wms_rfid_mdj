@@ -30,6 +30,17 @@ namespace THOK.WMS.DownloadWms.Dao
             return this.ExecuteQuery(sql).Tables[0];
         }
 
+
+        /// <summary>
+        /// 删除客户表
+        /// </summary>
+        /// <returns></returns>
+        public void DeteleCustomer()
+        {
+            string sql = "DELETE WMS_CUSTOMER";
+            this.ExecuteNonQuery(sql);
+        }
+
         /// <summary>
         /// 添加数据到数据库
         /// </summary>
