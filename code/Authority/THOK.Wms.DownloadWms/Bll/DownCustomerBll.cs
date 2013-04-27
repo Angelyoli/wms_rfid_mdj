@@ -22,6 +22,7 @@ namespace THOK.WMS.DownloadWms.Bll
             bool tag = true;
             try
             {
+                this.DeleteCustomer();
                 DataTable customerCodeDt = this.GetCustomerCode();
                 string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
                 //CusromerList = UtinString.StringMake(CusromerList);
@@ -72,6 +73,18 @@ namespace THOK.WMS.DownloadWms.Bll
             {
                 DownCustomerDao dao = new DownCustomerDao();
                 return dao.GetCustomerCode();
+            }
+        }
+
+        /// <summary>
+        /// 删除客户表信息
+        /// </summary>
+        public void DeleteCustomer()
+        {
+            using (PersistentManager dbPm = new PersistentManager())
+            {
+                DownCustomerDao dao = new DownCustomerDao();
+                dao.DeteleCustomer();
             }
         }
 
