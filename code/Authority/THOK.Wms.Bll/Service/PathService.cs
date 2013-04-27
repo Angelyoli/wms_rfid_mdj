@@ -26,12 +26,36 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string OriginRegion, string PathName, string TargetRegion, string State)
+        public object GetDetails(int page, int rows, Path path)
         {
           
            IQueryable<Path> pathQuery = PathRepository.GetQueryable();
            IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-           var path = pathQuery.Join(regionQuery,
+
+           var pathDetail1 = pathQuery;
+           if (path.OriginRegionID != null && path.OriginRegionID != 0)
+           {
+               pathDetail1 = pathQuery.Where(p => p.OriginRegionID == path.OriginRegionID).OrderBy(p => p.ID);
+           }
+           var pathDetail2 = pathDetail1;
+           if (path.TargetRegionID != null && path.TargetRegionID != 0)
+           {
+               pathDetail2 = pathDetail1.Where(p => p.TargetRegionID == path.TargetRegionID).OrderBy(p => p.ID);
+           }
+           var pathDetail3 = pathDetail2;
+           if (path.PathName != null)
+           {
+               pathDetail3 = pathDetail2.Where(p => p.PathName == path.PathName).OrderBy(p => p.ID);
+           }
+           var pathDetail4 = pathDetail3;
+           if (path.State != null)
+           {
+               pathDetail4 = pathDetail3.Where(p => p.State == path.State).OrderBy(p => p.ID);
+           }
+           //int total = pathDetail4.Count();
+           //var pathDetails = pathDetail4.Skip((page - 1) * rows).Take(rows);
+
+           var path_Detail = pathDetail4.Join(regionQuery,
                        p => p.OriginRegionID,
                        r => r.ID,
                        (p, r) => new
@@ -59,10 +83,12 @@ namespace THOK.Wms.Bll.Service
                           p.OriginRegionName,
                           TargetRegionName=r.RegionName
                       })
-               .Where(p => p.PathName.Contains(PathName) && p.State.Contains(State) && p.TargetRegionName.Contains(TargetRegion) 
-                   && p.OriginRegionName.Contains(OriginRegion) && p.State.Contains(State))
-                .OrderBy(p => p.ID).AsEnumerable()
-                 .Select(p => new
+                      //.Where(p => p.PathName.Contains(path.PathName)
+                      //    &&p.State.Contains(path.State))
+                       //&& p.TargetRegionName.Contains(path.TargetRegion)
+                       //&& p.OriginRegionName.Contains(path.OriginRegion)
+               .OrderBy(p => p.ID).AsEnumerable()
+                .Select(p => new
                  {
                      p.ID,
                      p.PathName,
@@ -73,94 +99,54 @@ namespace THOK.Wms.Bll.Service
                      p.Description,
                      State = p.State == "01" ? "可用" : "不可用",
                  });
-           int total = path.Count();
-           path = path.Skip((page - 1) * rows).Take(rows);
-           return new { total, rows = path.ToArray() };
+           int total = path_Detail.Count();
+           var pathDetails = path_Detail.Skip((page - 1) * rows).Take(rows);
+
+           return new { total, rows = pathDetails.ToArray() };
         }
 
 
-        public bool Add(Path path, out string strResult)
+        public bool Add(Path path)
         {
-            strResult = string.Empty;
-            bool result = false;
             var emp = new Path();
-          
-          
-                if (emp != null)
-                {
-                    try
-                    {
-                        emp.ID = path.ID;
-                        emp.PathName = path.PathName;
-                        emp.Description = path.Description;
-                        emp.OriginRegionID = path.OriginRegionID;
-                        emp.TargetRegionID = path.TargetRegionID;
-                        emp.State = path.State;
-                        PathRepository.Add(emp);
+            emp.ID = path.ID;
+            emp.PathName = path.PathName;
+            emp.Description = path.Description;
+            emp.OriginRegionID = path.OriginRegionID;
+            emp.TargetRegionID = path.TargetRegionID;
+            emp.State = path.State;
+            PathRepository.Add(emp);
 
-                        PathRepository.SaveChanges();
-                        result = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        strResult = "原因：" + ex.Message;
-                    }
-                }
-                else
-                {
-                    strResult = "原因：找不到当前登陆用户！请重新登陆！";
-                }
-           
-            
-            return result;
+            PathRepository.SaveChanges();             
+            return true;
         }
            
-        public bool Save(Path path, out string strResult)
+        public bool Save(Path path)
         {
-            strResult = string.Empty;
-            bool result = false;
             var emp = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == path.ID);
-            
+            emp.ID = path.ID;
+            emp.PathName = path.PathName;
+            emp.Description = path.Description;
+            emp.OriginRegionID = path.OriginRegionID;
+            emp.TargetRegionID = path.TargetRegionID;
+            emp.State = path.State;
+            PathRepository.SaveChanges();
+            return true;
+        }
 
-       //public object GetPath(int page, int rows,string value)
-       //{
-       //    IQueryable<Path> pathQuery = PathRepository.GetQueryable();
-       //    var path = pathQuery.Where(p => p.PathName.Contains(value) && p.State == "01")
-       //        .OrderBy(p => p.ID).AsEnumerable().
-       //        Select(p => new
-       //        {
-       //            p.ID,
-       //            p.PathName,
-       //            State = p.State == "01" ? "可用" : "不可用",
-       //        });
-       //    int total = path.Count();
-       //    path = path.Skip((page - 1) * rows).Take(rows);
-       //    return new { total, rows = path.ToArray() };
-       //}
-            if (emp != null)
+        public bool Delete(int pathId)
+        {
+            var path = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == pathId);
+            if (path != null)
             {
-                try
-                {
-                    emp.ID = path.ID;
-                    emp.PathName = path.PathName;
-                    emp.Description = path.Description;
-                    emp.OriginRegionID = path.OriginRegionID;
-                    emp.TargetRegionID = path.TargetRegionID;
-                    emp.State = path.State;
-                    PathRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
+                PathRepository.Delete(path);
+                PathRepository.SaveChanges();
             }
             else
-            {
-                strResult = "原因：未找到当前需要修改的数据！";
-            }
-            return result;
+                return false;
+            return true;
         }
+  
 
         public object GetPath(int page, int rows, string queryString, string value)
         {
@@ -191,11 +177,11 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = path.ToArray() };
         }
 
-        public DataTable GetPath(int page, int rows, string Id, string pathName, string originId, string targetId, string state)
+        public DataTable GetPath(int page, int rows,Path path)
         {
             IQueryable<Path> pathQuery = PathRepository.GetQueryable();
-             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-           var path = pathQuery.Join(regionQuery,
+            IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
+             var pathDetail = pathQuery.Join(regionQuery,
                        p => p.OriginRegionID,
                        r => r.ID,
                        (p, r) => new
@@ -223,8 +209,7 @@ namespace THOK.Wms.Bll.Service
                           p.OriginRegionName,
                           TargetRegionName=r.RegionName
                       })
-               
-                .OrderBy(p => p.ID).AsEnumerable()
+                 .OrderBy(p => p.ID).AsEnumerable()
                  .Select(p => new
                  {
                      p.ID,
@@ -233,17 +218,16 @@ namespace THOK.Wms.Bll.Service
                      p.TargetRegionName,
                      p.Description,
                      State = p.State == "01" ? "可用" : "不可用",
-                 });
-       
+                 });       
          
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("路径编号", typeof(int));
             dt.Columns.Add("路径名称", typeof(string));
-            dt.Columns.Add("起始区域", typeof(string));
-            dt.Columns.Add("目标区域", typeof(string));
+            dt.Columns.Add("起始区域名称", typeof(string));
+            dt.Columns.Add("目标区域名称", typeof(string));
             dt.Columns.Add("描述", typeof(string));
             dt.Columns.Add("状态", typeof(string));
-           foreach (var item in path)
+            foreach (var item in pathDetail)
             {
                 dt.Rows.Add
                     (
@@ -258,37 +242,7 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
-        
-
-        public bool Delete(int pathId, out string strResult)
-        {
-            strResult = string.Empty;
-            bool result = false;
-            var path = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == pathId);
-            if (path != null)
-            {
-                try
-                {
-                    PathRepository.Delete(path);
-                    PathRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    strResult = "原因：已在使用";
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要删除的数据！";
-            }
-            return result;
-        }
-
-
-
-
-       
+            
     }
 }
 

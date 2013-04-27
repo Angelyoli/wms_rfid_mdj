@@ -25,7 +25,7 @@
             pathId = row.ID;
             alert(pathId);
             $('#nodedatagrid').datagrid({
-                url: '/PathNode/Details/?/PathId=' + pathId
+                url: '/PathNode/Details/?/PathName=' + pathId
             });
         } else {
             $('#path_node').window('close');
@@ -82,10 +82,10 @@
 			idField="FunctionName" treeField="ControlName" toolbar="#tb" >
         <thead >
             <tr>
-                <th field="ID" width="80" >ID</th>
-                <th field="PathName" width="120" >路径名称</th>
-                <th field="PositionName" width="150" >位置名称</th>
-                <th field="PathNodeOrder" width="150">路径节点顺序</th>
+                <th field="ID" width="50" >ID</th>
+                <th field="PathName" width="110" >路径名称</th>
+                <th field="PositionName" width="110" >位置名称</th>
+                <th field="PathNodeOrder" width="130">路径节点顺序</th>
             </tr>
         </thead>
     </table>

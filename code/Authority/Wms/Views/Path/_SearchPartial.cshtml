@@ -5,8 +5,8 @@
     var editKey = false;
     var deleteKey = false;
     function SearchLoad() {
-      
-        $('#state').combo({
+
+        $('#State').combo({
             editable: false,
             panelHeight: 65,
             panelWidth: 130
@@ -17,13 +17,13 @@
       
         SearchLoad();
         $("input[type=text]").attr("value", "");
-        $('#state').combo('setValue', "");
+        $('#State').combo('setValue', "");
        
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
                 width: 300,
-                height: 280,
+                height: 200,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -56,8 +56,8 @@
         queryParams.PathName = $('#PathName').val();
         queryParams.OriginID = $('#origin-id').val();
         queryParams.TargetID = $('#target-id').val();
-       
-        queryParams.State = $('#state').combo('getValue');
+
+        queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
             pageNumber: 1,
@@ -65,18 +65,18 @@
         });
         $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
-       
-        $('#state').combobox('clear');
+
+        $('#State').combobox('clear');
     }
 
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.ID = $('#ID').val();
         queryParams.PathName = $('#PathName').val();
-        queryParams.OriginID = $('#origin-name').val();
-        queryParams.TargetID = $('#target-name').val();
-        
-        queryParams.State = $('#state').combo('getValue');
+        queryParams.OriginID = $('#OriginRegionName').val();
+        queryParams.TargetID = $('#TargetRegionName').val();
+
+        queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');

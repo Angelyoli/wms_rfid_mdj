@@ -38,7 +38,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             string PathName = collection["PathName"] ?? "";
             string PositionName = collection["PositionName"] ?? "";
             string PathNodeOrder = collection["PathNodeOrder"] ?? "";
-            var srm = PathNodeService.GetDetails(page, rows,PathName, PositionName, PathNodeOrder);
+            var srm = PathNodeService.GetDetails(page, rows, pathNode);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -58,7 +58,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(PathNode pathNode)
         {
             string strResult = string.Empty;
-            bool bResult = PathNodeService.Add(pathNode, strResult);
+            bool bResult = PathNodeService.Add(pathNode);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -68,7 +68,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(PathNode pathNode)
         {
             string strResult = string.Empty;
-            bool bResult = PathNodeService.Save(pathNode, strResult);
+            bool bResult = PathNodeService.Save(pathNode);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -79,7 +79,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = PathNodeService.Delete(pathNode, strResult);
+            bResult = PathNodeService.Delete(pathNode);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
