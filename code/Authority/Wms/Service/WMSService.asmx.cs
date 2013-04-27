@@ -184,10 +184,6 @@ namespace Wms.Service
                         {
                             b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
                         }
-                        if (headList.WsMethod == "BillDelete")
-                        {
-
-                        }
                         for (int j = 0; j < bmArray.BillDetail.Count(); j++)
                         {
                             var bdArray = bmArray.BillDetail.ToArray()[j];
@@ -206,10 +202,6 @@ namespace Wms.Service
                             if (headList.WsMethod == "BillModify")
                             {
                                 b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
-                            }
-                            if (headList.WsMethod == "BillDelete")
-                            {
-
                             }
                         }
                         if (b == false)
@@ -244,10 +236,6 @@ namespace Wms.Service
                                 {
                                     b = factory.GetService<IContractService>().Save(con, out strResult);
                                 }
-                                if (headList.WsMethod == "BillDelete")
-                                {
-
-                                }
                                 for (int l = 0; l < cArray.ContractDetail.Count(); l++)
                                 {
                                     var cdArray = cArray.ContractDetail.ToArray()[l];
@@ -266,10 +254,6 @@ namespace Wms.Service
                                     if (headList.WsMethod == "BillModify")
                                     {
                                         b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
-                                    }
-                                    if (headList.WsMethod == "BillDelete")
-                                    {
-
                                     }
                                 }
                                 if (b == false)
@@ -302,10 +286,6 @@ namespace Wms.Service
                                         {
                                             b = factory.GetService<INavicertService>().Save(na, out strResult);
                                         }
-                                        if (headList.WsMethod == "BillDelete")
-                                        {
-
-                                        }
                                         if (b == false)
                                         {
                                             break;
@@ -323,6 +303,14 @@ namespace Wms.Service
                         }
                     }
                     #endregion
+                }
+
+                if (headList.WsMethod == "BillDelete")
+                {
+                    for (int a = 0; a < contract.Count(); a++)
+                    {
+
+                    }
                 }
             }
             else

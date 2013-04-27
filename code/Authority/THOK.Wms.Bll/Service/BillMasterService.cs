@@ -6,6 +6,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.DbModel;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.Bll.Interfaces;
+using System.Transactions;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -15,6 +16,12 @@ namespace THOK.Wms.Bll.Service
         public IBillMasterRepository BillMasterRepository { get; set; }
         [Dependency]
         public IBillDetailRepository BillDetailRepository { get; set; }
+        [Dependency]
+        public IContractRepository ContractRepository { get; set; }
+        [Dependency]
+        public IContractDetailRepository ContractDetailRepository { get; set; }
+        [Dependency]
+        public INavicertRepository NavicertRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -29,31 +36,31 @@ namespace THOK.Wms.Bll.Service
             var b = new BillMaster();
             //if (billMasters == null)
             //{
-                if (b != null)
+            if (b != null)
+            {
+                try
                 {
-                    try
-                    {
-                        b.ID = billMaster.ID;
-                        b.UUID = billMaster.UUID;
-                        b.BillType = billMaster.BillType;
-                        b.BillDate = billMaster.BillDate;
-                        b.MakerName = billMaster.MakerName;
-                        b.OperateDate = billMaster.OperateDate;
-                        b.CigaretteType = billMaster.CigaretteType;
-                        b.BillCompanyCode = billMaster.BillCompanyCode;
-                        b.SupplierCode = billMaster.SupplierCode;
-                        b.SupplierType = billMaster.SupplierType;
-                        b.State = billMaster.State;
-                        
-                        BillMasterRepository.Add(b);
-                        BillMasterRepository.SaveChanges();
-                        result = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        strResult = "原因：" + ex.ToString(); 
-                        result = false;
-                    }
+                    b.ID = billMaster.ID;
+                    b.UUID = billMaster.UUID;
+                    b.BillType = billMaster.BillType;
+                    b.BillDate = billMaster.BillDate;
+                    b.MakerName = billMaster.MakerName;
+                    b.OperateDate = billMaster.OperateDate;
+                    b.CigaretteType = billMaster.CigaretteType;
+                    b.BillCompanyCode = billMaster.BillCompanyCode;
+                    b.SupplierCode = billMaster.SupplierCode;
+                    b.SupplierType = billMaster.SupplierType;
+                    b.State = billMaster.State;
+
+                    BillMasterRepository.Add(b);
+                    BillMasterRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.ToString();
+                    result = false;
+                }
                 //}
                 //else
                 //{
@@ -63,7 +70,7 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "原因：该编号已存在！"; 
+                strResult = "原因：该编号已存在！";
                 result = false;
             }
             return result;
@@ -98,35 +105,73 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
-        public bool Delete(string uuid, string strResult)
+        public bool Delete(string contractCode, string uuid, string strResult)
         {
             bool result = false;
             strResult = string.Empty;
 
-            var billMaster = BillMasterRepository.GetQueryable().Where(i => i.UUID == uuid);
+            var navicert = NavicertRepository.GetQueryable().Where(i => i.ContractCode == contractCode);
+
+            var contractDetail = ContractDetailRepository.GetQueryable().Where(i => i.ContractCode == contractCode);
+            var contract = ContractRepository.GetQueryable().Where(i => i.ContractCode == contractCode);
+
             var billDetail = BillDetailRepository.GetQueryable().Where(i => i.BillMaster.UUID == uuid);
-            
-            if (result == true)
+            var billMaster = BillMasterRepository.GetQueryable().Where(i => i.UUID == uuid);
+
+            using (var scope = new TransactionScope())
             {
-                #region 删除主细分配表
-                try
+                if (navicert != null)
                 {
-                    foreach (var item in billMaster.ToList())
+                    try
                     {
-                        //Del(BillDetailRepository, item.InBillAllots);
-                        //Del(InBillDetailRepository, item.InBillDetails);
-                        //InBillMasterRepository.Delete(item);
-                        //result = true;
+                        foreach (var item1 in navicert.ToList())
+                        {
+                            NavicertRepository.Delete(item1);
+                            result = true;
+                        }
+                        if (result == true)
+                        {
+                            try
+                            {
+                                foreach (var item2 in contract.ToList())
+                                {
+                                    Del(ContractDetailRepository, item2.ContractDetails);
+                                    ContractRepository.Delete(item2);
+                                    result = true;
+                                }
+                                if (result == true)
+                                {
+                                    foreach (var item3 in billMaster.ToList())
+                                    {
+                                        Del(BillDetailRepository, item3.BillDetails);
+                                        BillMasterRepository.Delete(item3);
+                                        result = true;
+                                        if (result == true)
+                                        {
+                                            scope.Complete();
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                strResult = "原因：" + ex.Message;
+                                result = false;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        strResult = "原因：" + ex.Message;
+                        result = false;
                     }
                 }
-                catch (Exception e)
-                {
-                    strResult = "删除操作时：" + e.InnerException.ToString();
-                    result = false;
-                }
-                BillMasterRepository.SaveChanges();
-                #endregion
             }
+            BillMasterRepository.SaveChanges();
             return result;
         }
     }
