@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -33,11 +33,12 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /PathNode/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-           // string ID = collection["ID"] ?? "";
+            PathNode pathNode = new PathNode();
+            //string ID = collection["ID"] ?? "";
             string PathName = collection["PathName"] ?? "";
             string PositionName = collection["PositionName"] ?? "";
             string PathNodeOrder = collection["PathNodeOrder"] ?? "";
-            var srm = PathNodeService.GetDetails(page, rows, PathName, PositionName, PathNodeOrder);
+            var srm = PathNodeService.GetDetails(page, rows,PathName, PositionName, PathNodeOrder);
             return Json(srm, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -103,11 +104,11 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             int page = 0, rows = 0;
             string id = Request.QueryString["id"];
-            
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
+
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
             ep.DT1 =  PathNodeService.GetPathNode(page, rows, id);
             ep.HeadTitle1 = "路径节点信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }
     }

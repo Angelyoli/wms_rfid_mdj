@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -109,17 +109,17 @@ namespace Wms.Controllers.Wms.BasisInfo
        //  /Size/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
-            int page = 0, rows = 0;
-            int SizeID = Convert.ToInt32(Request.QueryString["ID"]);
-            string SizeName = Request.QueryString["SizeName"];
-            Size size = new Size();
-            size.ID = SizeID;
-            size.SizeName = SizeName;
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
-            ep.DT1 = SizeService.GetSize(page, rows, size);
-            ep.HeadTitle1 = "尺寸信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+             int page = 0, rows = 0;
+             int SizeID = Convert.ToInt32(Request.QueryString["ID"]);
+             string SizeName = Request.QueryString["SizeName"];
+             Size size = new Size();
+             size.ID = SizeID;
+             size.SizeName = SizeName;
+             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+             ep.DT1 = SizeService.GetSize(page, rows, size);
+             ep.HeadTitle1 = "件烟尺寸信息";
+             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
+             return new FileStreamResult(ms, "application/ms-excel");
            
         }  
 

@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
 

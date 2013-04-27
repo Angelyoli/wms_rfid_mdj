@@ -3,7 +3,7 @@ using System.Text;
 using System.Web.Routing;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
 

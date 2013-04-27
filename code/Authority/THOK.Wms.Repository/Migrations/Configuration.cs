@@ -22,8 +22,8 @@
                 new City()
                 {
                     CityID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471105"),
-                    CityName = "柳州市",
-                    Description = "柳州市",
+                    CityName = "钦州市",
+                    Description = "钦州市",
                     IsActive = true
                 }
             );
@@ -34,8 +34,8 @@
                 new Server()
                 {
                     ServerID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471106"),
-                    ServerName = "柳州主服务器",
-                    Description = "柳州主服务器",
+                    ServerName = "钦州主服务器",
+                    Description = "钦州主服务器",
                     Url = "",
                     IsActive = true,
                     City = city,
@@ -4349,6 +4349,14 @@
                      IndicateImage = "icon-remove",
                      Module_ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003314C7B1DC")
                  },
+                  new Function()
+                  {
+                      FunctionID = new Guid("C8A9E599-D227-4056-93A2-D67C6D3794BB"),
+                      FunctionName = "节点",
+                      ControlName = "node",
+                      IndicateImage = "icon-node",
+                      Module_ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003314C7B1DC")
+                  },
                  new Function()
                 {
                     FunctionID = new Guid("EAB101C2-8A95-4E4B-8923-C67DC078919F"),

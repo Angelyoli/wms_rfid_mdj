@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -35,12 +35,28 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /ProductSize/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string ProductCode = collection["ProductCode"] ?? "";
+            ProductSize productSize = new ProductSize();
+            productSize.ProductCode = collection["ProductCode"] ?? "";
+            //productSize.ProductName = collection["ProductName"] ?? "";
+            string ProductNo = collection["ProductNo"] ?? "";
             string SizeNo = collection["SizeNo"] ?? "";
             string AreaNo = collection["AreaNo"] ?? "";
-            var productSize = ProductSizeService.GetDetails(page, rows,ProductCode, SizeNo, AreaNo);
-            return Json(productSize, "text", JsonRequestBehavior.AllowGet);
+            if (SizeNo != "" && SizeNo != null)
+            {
+                productSize.SizeNo = Convert.ToInt32(SizeNo);
+            }
+            if (AreaNo != "" && AreaNo != null)
+            {
+                productSize.AreaNo = Convert.ToInt32(AreaNo);
+            }
+            if (ProductNo != "" && ProductNo != null)
+            {
+                productSize.ProductNo = Convert.ToInt32(ProductNo);
+            }
+            var productSizeDetail = ProductSizeService.GetDetails(page, rows, productSize);
+            return Json(productSizeDetail, "text", JsonRequestBehavior.AllowGet);
         }
+
 
         public ActionResult SearchPage()
         {
@@ -58,7 +74,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(ProductSize productSize)
         {
             string strResult = string.Empty;
-            bool bResult = ProductSizeService.Add(productSize, out strResult);
+            bool bResult = ProductSizeService.Add(productSize);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -68,7 +84,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(ProductSize productSize)
         {
             string strResult = string.Empty;
-            bool bResult = ProductSizeService.Save(productSize, out strResult);
+            bool bResult = ProductSizeService.Save(productSize);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -81,7 +97,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = ProductSizeService.Delete(productSizeId, out strResult);
+            bResult = ProductSizeService.Delete(productSizeId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -105,13 +121,20 @@ namespace Wms.Controllers.Wms.BasisInfo
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
-            string productCode = Request.QueryString["productCode"];
-            //  string state = Request.QueryString["state"];
+            string ProductCode = Request.QueryString["ProductCode"];
+            int ProductNo =Convert .ToInt32( Request.QueryString["ProductNo"]);
+            int SizeNo =Convert .ToInt32( Request.QueryString["SizeNo"]);
+            int AreaNo =Convert .ToInt32( Request.QueryString["AreaNo"]);
+            ProductSize productSize = new ProductSize();
+            productSize.ProductCode = ProductCode;
+            productSize.ProductNo = ProductNo;
+            productSize.SizeNo = SizeNo;
+            productSize.AreaNo = AreaNo;
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
-            ep.DT1 = ProductSizeService.GetProductSize(page, rows, productCode);
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ep.DT1 = ProductSizeService.GetProductSize(page, rows, productSize);
             ep.HeadTitle1 = "卷烟件烟尺寸信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         }  
     }

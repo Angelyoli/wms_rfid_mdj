@@ -46,6 +46,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Conversion.v4.0" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -88,6 +89,7 @@
       <HintPath>..\THOK.Common.Highcharts\ThirdParty\Svg.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages" />
     <Reference Include="System.Web.Helpers" />
@@ -245,6 +247,20 @@
     <Content Include="bin\THOK.Authority.Dal.pdb" />
     <Content Include="bin\THOK.Common.Highcharts.dll" />
     <Content Include="bin\THOK.Common.Highcharts.pdb" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\EntityFramework.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\EntityFramework.xml" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\log4net.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.ServiceLocation.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.Configuration.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\NPOI.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\SignalR.Hosting.AspNet.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\SignalR.Hosting.Common.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\Tek4.Highcharts.Exporting.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.pdb" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Dal.dll" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Dal.pdb" />
     <Content Include="Content\Images\banner.jpg" />
     <Content Include="Content\Images\login_bg.jpg" />
     <Content Include="Content\Images\login_bg02.jpg" />
@@ -1101,6 +1117,7 @@
     <Content Include="Content\themes\base\icons\accept.png" />
     <Content Include="Content\themes\base\icons\Menu_DeliverCustomer.ico" />
     <Content Include="Content\themes\base\icons\Menu_DeliverLine.ico" />
+    <Content Include="Content\themes\base\icons\node.png" />
     <Content Include="Content\themes\base\icons\onebit_23.png" />
     <Content Include="Content\themes\base\icons\onebit_24.png" />
     <Content Include="Content\themes\base\icons\shut_down.png" />
@@ -1605,6 +1622,7 @@
     <Content Include="Content\themes\base\images\son_StockPlace.png" />
     <Content Include="Content\themes\base\images\son_Warehouse.png" />
     <Content Include="Content\themes\base\images\tabs_close.gif" />
+    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Common.dll" />
     <Content Include="DB.xml" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -2313,23 +2331,12 @@
     <Content Include="Views\Position\_EditPartial.cshtml" />
     <Content Include="Views\Position\_SearchPartial.cshtml" />
     <Content Include="Views\Position\AddPage.cshtml" />
-    <Content Include="Views\Path\_DeletePartial.cshtml" />
-    <Content Include="Views\Path\_EditPartial.cshtml" />
-    <Content Include="Views\Path\Index.cshtml" />
-    <Content Include="Views\Path\_TargetPartial.cshtml" />
-    <Content Include="Views\Path\_OriginPartial.cshtml" />
-    <Content Include="Views\Path\_HelpPartial.cshtml" />
-    <Content Include="Views\Path\_PrintPartial.cshtml" />
     <Content Include="Views\Position\_RegionNamePartial.cshtml">
       <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Position\_PrintPartial.cshtml" />
     <Content Include="Views\PathNode\_PathIDPartial.cshtml" />
     <Content Include="Views\PathNode\_PositionIDPartial.cshtml" />
-    <Content Include="Views\Path\_AddPartial.cshtml" />
-    <Content Include="Views\Path\_SearchPartial.cshtml" />
-    <Content Include="Views\Path\AddPage.cshtml" />
-    <Content Include="Views\Path\SearchPage.cshtml" />
     <Content Include="Views\Position\Index.cshtml" />
     <Content Include="Views\Position\SearchPage.cshtml" />
     <Content Include="Views\LoginLog\_DeletePartial.cshtml" />
@@ -2343,7 +2350,25 @@
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\Position\_SRMNamePartial.cshtml" />
     <Content Include="Views\Size\_PrintPartial.cshtml" />
+    <Content Include="Views\Shared\_NodePartial.cshtml" />
+    <Content Include="Views\Path\AddPage.cshtml" />
+    <Content Include="Views\Path\Index.cshtml" />
+    <Content Include="Views\Path\SearchPage.cshtml" />
+    <Content Include="Views\Path\_AddPartial.cshtml" />
+    <Content Include="Views\Path\_DeletePartial.cshtml" />
+    <Content Include="Views\Path\_EditPartial.cshtml" />
+    <Content Include="Views\Path\_HelpPartial.cshtml" />
+    <Content Include="Views\Path\_OriginPartial.cshtml" />
+    <Content Include="Views\Path\_PrintPartial.cshtml" />
+    <Content Include="Views\Path\_SearchPartial.cshtml" />
+    <Content Include="Views\Path\_TargetPartial.cshtml" />
+    <Content Include="Views\Path\_NodePartial.cshtml" />
+    <Content Include="Views\Path\_NodeAdmin.cshtml" />
+    <Content Include="Views\Shared\_NodePartial.cshtml" />
+    <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
+    <Content Include="Views\ProductSize\_SizePartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
@@ -2365,7 +2390,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>11030</DevelopmentServerPort>
+          <DevelopmentServerPort>3535</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

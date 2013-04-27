@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Script.Serialization;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using Microsoft.Practices.Unity;
 using THOK.Security;
 using THOK.Authority.Bll.Interfaces;
@@ -55,7 +55,7 @@ namespace Authority.Controllers
         }
         public ActionResult GetUser()
         {
-            return Json(User,"text", JsonRequestBehavior.AllowGet);
+            return Json(new { Identity = new { User.Identity.IsAuthenticated, User.Identity.Name } }, "text", JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]

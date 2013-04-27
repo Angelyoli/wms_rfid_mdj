@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -45,13 +45,14 @@ namespace Wms.Controllers.Wms.BasisInfo
 
         public ActionResult Details (int page, int rows, FormCollection collection)
         {
-            string PositionName = collection["PositionName"] ?? "";
-            string PositionType = collection["PositionType"] ?? "";
-            string SRMName = collection["SRMName"] ?? "";
-            string State = collection["State"] ?? "";
+            Position position = new Position();
+            position.PositionName = collection["PositionName"] ?? "";
+            position.PositionType = collection["PositionType"] ?? "";
+            position.SRMName = collection["SRMName"] ?? "";
+            position.State = collection["State"] ?? "";
 
-            var path = PositionService.GetDetails(page, rows, PositionName, PositionType,SRMName, State);
-            return Json(path, "text", JsonRequestBehavior.AllowGet);
+            var positionDetail = PositionService.GetDetails(page, rows, position);
+            return Json(positionDetail, "text", JsonRequestBehavior.AllowGet);
         }
         //
         // POST: /Position/Create
@@ -60,9 +61,9 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(Position position)
         {
             string strResult = string.Empty;
-            bool bResult = PositionService.Add(position, out strResult);
+            bool bResult = PositionService.Add(position);
             string msg = bResult ? "新增成功" : "新增失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
         
       
@@ -73,7 +74,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Edit(Position position)
         {
             string strResult = string.Empty;
-            bool bResult = PositionService.Save(position, out strResult);
+            bool bResult = PositionService.Save(position);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -85,7 +86,8 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Delete(int positionId)
         {
             string strResult = string.Empty;
-            bool bResult = PositionService.Delete(positionId, out strResult);
+            bool bResult = false;
+            bResult = PositionService.Delete(positionId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -110,15 +112,24 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             int page = 0, rows = 0;
             string positionName = Request.QueryString["positionName"];
-            string srmName = Request.QueryString["srmName"];
+            string PositionType = Request.QueryString["PositionType"];
+            string SRMName = Request.QueryString["SRMName"];
+            string State = Request.QueryString["State"];
+            Position position = new Position();
+            position.PositionName = positionName;
+            position.PositionType = PositionType;
+            position.SRMName = SRMName;
+            position.State = State;
 
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
-            ep.DT1 = PositionService.GetPosition(page, rows, positionName, srmName,null);
+            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ep.DT1 = PositionService.GetPosition(page, rows, position);
+
             ep.HeadTitle1 = "位置信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
+            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
             return new FileStreamResult(ms, "application/ms-excel");
         } 
         #endregion
+
     }
 }
     

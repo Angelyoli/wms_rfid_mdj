@@ -6,7 +6,7 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
-using THOK.WebUtil;
+using THOK.Common.WebUtil;
 using THOK.Security;
 
 namespace Wms.Controllers.Wms.BasisInfo
@@ -91,17 +91,17 @@ namespace Wms.Controllers.Wms.BasisInfo
         #region /CellPosition/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
-            int page = 0, rows = 0;
-            int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
-            string CellCode = Request.QueryString["CellCode"];
-            CellPosition cp= new CellPosition();
-            cp.ID = CellPositionID;
-            cp.CellCode = CellCode;
-            THOK.NPOI.Models.ExportParam ep = new THOK.NPOI.Models.ExportParam();
-            ep.DT1 = CellPositionService.GetCellPosition(page, rows, cp);
-            ep.HeadTitle1 = "货位信息";
-            System.IO.MemoryStream ms = THOK.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+             int page = 0, rows = 0;
+             int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
+             string CellCode = Request.QueryString["CellCode"];
+             CellPosition cp= new CellPosition();
+             cp.ID = CellPositionID;
+             cp.CellCode = CellCode;
+             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+             ep.DT1 = CellPositionService.GetCellPosition(page, rows, cp);
+             ep.HeadTitle1 = "货位位置信息";
+             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
+             return new FileStreamResult(ms, "application/ms-excel");
            
         }
         #endregion

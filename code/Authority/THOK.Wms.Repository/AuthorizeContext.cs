@@ -128,6 +128,17 @@ namespace THOK.Wms.Repository
 
             #endregion
 
+            #region Inter
+
+            modelBuilder.Configurations.Add(new BillMasterMap());
+            modelBuilder.Configurations.Add(new BillDetailMap());
+            modelBuilder.Configurations.Add(new ContractMap());
+            modelBuilder.Configurations.Add(new ContractDetailMap());
+            modelBuilder.Configurations.Add(new NavicertMap());
+            modelBuilder.Configurations.Add(new PalletMap());
+
+            #endregion
+
             modelBuilder.Configurations.Add(new SystemParameterMap());
 
             
