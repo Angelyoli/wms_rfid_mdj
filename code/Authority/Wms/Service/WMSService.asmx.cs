@@ -12,6 +12,9 @@ using THOK.Security;
 using THOK.Authority.Bll.Interfaces;
 using System.Transactions;
 using System.Xml;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 
 namespace Wms.Service
 {
@@ -146,6 +149,43 @@ namespace Wms.Service
 
         public string Unzip(string xml)
         {
+            //base64解码
+            System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
+            System.Text.Decoder utf8Decode = encoder.GetDecoder();
+            byte[] todecode_byte = Convert.FromBase64String(xml);
+            int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
+            char[] decoded_char = new char[charCount];
+            utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
+            string decoded = new String(decoded_char);
+            //解压缩
+            byte[] compressBeforeByte = Convert.FromBase64String(decoded);
+            byte[] buffer = new byte[0x1000];
+            try
+            {
+                MemoryStream ms = new MemoryStream(compressBeforeByte);
+                GZipStream zip = new GZipStream(ms, CompressionMode.Decompress, true);
+                MemoryStream msreader = new MemoryStream();
+                while (true)
+                {
+                    int reader = zip.Read(buffer, 0, buffer.Length);
+                    if (reader <= 0)
+                    {
+                        break;
+                    }
+                    msreader.Write(buffer, 0, reader);
+                }
+                zip.Close();
+                ms.Close();
+                msreader.Position = 0;
+                buffer = msreader.ToArray();
+                msreader.Close();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            byte[] compressAfterByte = buffer;
+            xml = Encoding.GetEncoding("UTF-8").GetString(compressAfterByte);
             return xml;
         }
     }
