@@ -489,5 +489,34 @@ namespace Wms.Service
             xml = Encoding.GetEncoding("UTF-8").GetString(compressAfterByte);
             return xml;
         }
+
+        public string Zip(string xml)
+        {
+            //压缩
+            string compressStr = "";
+            byte[] compressBeforeByte = Encoding.GetEncoding("UTF-8").GetBytes(xml);
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                GZipStream zip = new GZipStream(ms, CompressionMode.Compress, true);
+                zip.Write(compressBeforeByte, 0, compressBeforeByte.Length);
+                zip.Close();
+                byte[] buffer = new byte[ms.Length];
+                ms.Position = 0;
+                ms.Read(buffer, 0, buffer.Length);
+                ms.Close();
+                compressStr= Convert.ToBase64String(buffer);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+            //base64编码
+            byte[] encData_byte = new byte[compressStr.Length];
+            encData_byte = System.Text.Encoding.UTF8.GetBytes(compressStr);
+            xml= Convert.ToBase64String(encData_byte);
+            return xml;
+        }
     }
 }
