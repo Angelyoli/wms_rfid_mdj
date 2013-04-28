@@ -104,10 +104,11 @@ namespace THOK.Wms.Bll.Service
             return true;
         }
 
-        public System.Data.DataTable GetCellPosition(int page, int rows, string cellCode)
+        public System.Data.DataTable GetCellPosition(int page, int rows, CellPosition cp)
         {
             IQueryable<CellPosition> cellPositionQuery = CellPositionRepository.GetQueryable();
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+
             var cellPosition = cellPositionQuery.Join(positionQuery,
                                          c => c.StockInPositionID,
                                          p1 => p1.ID,
@@ -116,7 +117,7 @@ namespace THOK.Wms.Bll.Service
                                          c => c.StockOutPositionID,
                                          p2 => p2.ID,
                                          (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName = p2.PositionName })
-                                         .Where(p => p.CellCode.Contains(cellCode))
+                                         .Where(p => p.CellCode.Contains(cp.CellCode))
                                          .OrderBy(p => p.ID).AsEnumerable()
                                          .Select(p => new
                                          {
@@ -142,5 +143,6 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
     }
 }

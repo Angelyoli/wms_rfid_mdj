@@ -134,43 +134,36 @@ namespace THOK.Wms.Bll.Service
            
         }
 
-        public System.Data.DataTable GetRegion(int page, int rows, string regionName, string state, string t)
+        public System.Data.DataTable GetRegion(int page, int rows, Region region)
         {
             IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
-            var srm = regionQuery.Where(r => r.RegionName.Contains(regionName))
-                .OrderBy(r => r.ID).AsEnumerable()
-                .Select(r => new
-                {
-                    r.ID,
-                    r.RegionName,
-                    r.Description,
-                    State = r.State == "01" ? "可用" : "不可用"
-                });
-            if (!state.Equals(""))
+            var RegionDetail = regionQuery.Where(r =>
+               r.RegionName.Contains(region.RegionName)
+               && r.Description.Contains(region.Description)
+               && r.State.Contains(region.State)).OrderBy(ul => ul.RegionName);
+            //int total = RegionDetail.Count();
+            //var sRMDetails = RegionDetail.Skip((page - 1) * rows).Take(rows);
+            var sRM_Detail = RegionDetail.ToArray().Select(r => new
             {
-                srm = regionQuery.Where(r =>r.RegionName.Contains(regionName) && r.State.Contains(state))
-                    .OrderBy(r => r.ID).AsEnumerable()
-                    .Select(r => new
-                    {
-                        r.ID,
-                        r.RegionName,
-                        r.Description,
-                        State = r.State == "01" ? "可用" : "不可用"
-                    });
-            }
-            System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("区域编码", typeof(string));
-            dt.Columns.Add("区域名称", typeof(string));
-            dt.Columns.Add("描述", typeof(string));
-            dt.Columns.Add("是否可用", typeof(string));
-            foreach (var item in srm)
-            {
-                dt.Rows.Add
-                    (
-                        item.ID,
-                        item.RegionName,
-                        item.Description,
-                        item.State
+                r.ID,
+                r.RegionName,
+                r.Description,
+                State = r.State == "01" ? "可用" : "不可用"
+            });
+        
+           System.Data.DataTable dt = new System.Data.DataTable();
+           dt.Columns.Add("区域编码", typeof(string));
+           dt.Columns.Add("区域名称", typeof(string));
+           dt.Columns.Add("描述", typeof(string));
+           dt.Columns.Add("是否可用", typeof(string));
+           foreach (var item in sRM_Detail)
+           {
+               dt.Rows.Add
+                   (
+                       item.ID,
+                       item.RegionName,
+                       item.Description,
+                       item.State
                     );
             }
             return dt;
@@ -178,3 +171,45 @@ namespace THOK.Wms.Bll.Service
 
     }
 }
+
+//            var srm = regionQuery.Where(r => r.RegionName.Contains(regionName))
+//                .OrderBy(r => r.ID).AsEnumerable()
+//                .Select(r => new
+//                {
+//                    r.ID,
+//                    r.RegionName,
+//                    r.Description,
+//                    State = r.State == "01" ? "可用" : "不可用"
+//                });
+//            if (!state.Equals(""))
+//            {
+//                srm = regionQuery.Where(r =>r.RegionName.Contains(regionName) && r.State.Contains(state))
+//                    .OrderBy(r => r.ID).AsEnumerable()
+//                    .Select(r => new
+//                    {
+//                        r.ID,
+//                        r.RegionName,
+//                        r.Description,
+//                        State = r.State == "01" ? "可用" : "不可用"
+//                    });
+//            }
+//            System.Data.DataTable dt = new System.Data.DataTable();
+//            dt.Columns.Add("区域编码", typeof(string));
+//            dt.Columns.Add("区域名称", typeof(string));
+//            dt.Columns.Add("描述", typeof(string));
+//            dt.Columns.Add("是否可用", typeof(string));
+//            foreach (var item in srm)
+//            {
+//                dt.Rows.Add
+//                    (
+//                        item.ID,
+//                        item.RegionName,
+//                        item.Description,
+//                        item.State
+//                    );
+//            }
+//            return dt;
+//        }
+
+//    }
+//}

@@ -3,9 +3,15 @@
         var sizeName = null, sizeNo = null, id = null, height = null, length = null, width = null;
         if ($('#SizeName').val() == null) { sizeName = ""; } else { sizeName = $('#SizeName').val() }
         if ($('#SizeNo').val() == null) { sizeNo = ""; } else { sizeNo = $('#SizeNo').val() }
+        if ($('#Height').val() == null) { height = ""; } else { height = $('#Height').val() }
+        if ($('#Width').val() == null) { width = ""; } else { width = $('#Width').val() }
+        if ($('#Length').val() == null) { length = ""; } else { length = $('#Length').val() }
         window.location.href = "/Size/CreateExcelToClient/"
-                                + "?SizeName=" + sizeName
-                                + "&SizeNo=" + sizeNo;
+                                + "?sizeName=" + sizeName
+                                + "&sizeNo=" + sizeNo
+                                + "&height=" + height
+                                + "&width=" + width
+                                + "&length=" + length;
                                 
     }
 </script>

@@ -15,8 +15,8 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetSize(int page, int rows, string queryString, string value);
 
-        System.Data.DataTable GetSize(int page, int rows, string sizeName);
-
         object GetDetails(int page, int rows, Size size);
+
+        System.Data.DataTable GetSize(int page, int rows, Size size);
     }
 }
