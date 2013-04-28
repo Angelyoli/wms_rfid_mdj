@@ -84,7 +84,7 @@ namespace THOK.WES.Interface
 
             for (int nloop = nIndex; nloop < nIndex + nLen; nloop++)
             {
-                string strTemp = string.Format(" {0:X2}", btAryHex[nloop]);
+                string strTemp = string.Format("{0:X2}", btAryHex[nloop]);
 
                 strResult += strTemp;
             }
