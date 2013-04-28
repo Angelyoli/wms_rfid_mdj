@@ -1,70 +1,74 @@
 ﻿<script type="text/javascript">
     function nodeSaveClick() {
         if (isAdd == 1) {
-            var url = "/PathNode/Create";
-            var field = $('#PathID').val();
-            nodeAddSave(url, moduleId)
+            var url = "/PathNode/PathCreate";
+            nodeAddSave(url, pathId)
         } else if (isAdd == 2) {
             var url = "/PathNode/Edit";
             var field = $('#ID').val();
-            nodeAddSave(url, field)
+            nodeAddSave(url, field);
         } else if (isAdd == 3) {
             var url = "/PathNode/Delete";
             var field = $('#ID').val();
-            nodeAddSave(url, field)
+            nodeAddSave(url, field);
         }
-    };
-
+    }
     function nodeAddSave(url, field) {
-        if ($('#PathNodeName').val() != "" && $('#ControlName').val() != "") {
-            $.post(url, { id: field, PositionID: $('#inputPositionID').val(),PathNodeOrder: $('#inputPathNodeOrder').val() }, node (json) {
+        if ($('#inputPositionName').val() != "" && $('#inputPathNodeOrder').val() != "") {
+            $.post(url, { PathID: field, PositionID: $('#inputPositionID').val(), PathNodeOrder: $('#inputPathNodeOrder').val() }, function (json) {
                 if (json) {
                     $.messager.show({ title: '系统提示', msg: '操作成功！' });
-                    $('#nodeAdmin').window('close');
-                    $('#nodedatagrid').datagrid('options').url = '/PathNode/Details/?PathId=' + moduleId;
+                    $('#nodedatagrid').datagrid('options').url = '/PathNode/PathDetails/?PathId=' + pathId;
                     $('#nodedatagrid').datagrid('reload');
-                } else {
+                    $('#nodeAdmin').window('close');
+                } 
+                else {
                     $.messager.show({ title: '系统提示', msg: '修改失败!请检查原因！' });
-                }
-            });
-        } else {
-            $.messager.show({ title: '系统提示', msg: '请输入数据！' });
+                }});
         }
+    }
+    function PositionIDSearchClick() {
+        $('#positionData').dialog('open').dialog('setTitle', '选择位置');
+        $('#positionDetail').datagrid({ url:'/Position/GetPosition/'});
+        $("#positionDetail").datagrid('reload');
     }
 </script>
      <div id="nodeAdmin" class="easyui-dialog" modal="true" 
         style="width:340px;height:210px;padding:2px 2px"
-        closed="true" buttons="#dlg-buttons">
+        closed="true" buttons="#dlgButtons">
 		<div class="easyui-layout" fit="true">
 			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; "> 
-                    <table width="280">
-                    <tr  style="display:none">
+                    <table width="250">
+                        <tr  style="display:none">
                         <td  width="75">ID</td>
                         <td width="168">
                         <input name="ID" id="inputID" type="text" />
                         </td>
-                    </tr>
+                        </tr>
+                
                     <tr>
                     <td width="75" align="right">位置名称：</td>
                     <td width="168">
                     <input name="PositionName" id="inputPositionName" required="true" readonly="readonly" type="text" class="easyui-validatebox" missingmessage="请选择"/>
                     <input name="PositionID" id="inputPositionID"  style="display:none" />                    
-                    <a href="#" id="PositionIDSearch" class="easyui-linkbutton" iconcls="icon-search"
+                    <a href="#" id="PositionSearch" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true" onclick="PositionIDSearchClick()"></a>
                     </td>
-                    </tr>                  
+                    </tr> 
+                                          
                     <tr>
                     <td width="75" align="right">路径节点顺序：</td>
                     <td width="168">
                     <input name="PathNodeOrder" id="inputPathNodeOrder" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入（必须为数字）"/>
                     <input name="PathNodeOrder"  style="display:none" /></td>	                
                     </tr>
-                </table>
+                    </table>
             </div>
         </div>
     </div>
-<div id="dlg-buttons">
+<div id="dlgButtons">
 	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="nodeSaveClick()" id='PathNodeSave'>确定</a>
 	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#nodeAdmin').dialog('close')">取消</a>
 </div>
-@Html.Partial("_PositionIDPartial")
+
+@Html.Partial("_PositionPartial");

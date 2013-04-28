@@ -134,15 +134,31 @@ namespace THOK.Wms.Bll.Service
         public System.Data.DataTable GetProductSize(int page, int rows, ProductSize productSize)
         {
             IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable();
+            IQueryable<Product> productQuery = ProductRepository.GetQueryable();
 
             var productSizeDetail = productSizeQuery.Where(p =>
-                p.ProductCode.Contains(productSize.ProductCode) )
+                p.ProductCode.Contains(productSize.ProductCode))
                 .OrderBy(p => p.ID);
 
-            var productSize_Detail = productSizeDetail.ToArray().Select(p => new
+            //var productSize_Detail = productSizeDetail.ToArray().Select(p => new
+            //    {
+            //        p.ID,
+            //        p.ProductCode,
+            //        p.ProductNo,
+            //        p.ProductName,
+            //        p.SizeNo,
+            //        p.AreaNo
+            //    });
+            var productSize_Detail = productSizeDetail.Join(productQuery,
+                ps => ps.ProductCode,
+                p => p.ProductCode,
+                (ps, p) => new { ps.ID, ps.ProductCode, ps.ProductNo, ps.SizeNo, ps.AreaNo, p.ProductName })
+                .Where(p => p.ProductCode.Contains(productSize.ProductCode))
+                .OrderBy(p => p.ID).AsEnumerable().Select(p => new
                 {
                     p.ID,
                     p.ProductCode,
+                    p.ProductName,
                     p.ProductNo,
                     p.SizeNo,
                     p.AreaNo
@@ -151,6 +167,7 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("商品ID", typeof(string));
             dt.Columns.Add("商品代码", typeof(string));
             dt.Columns.Add("商品简码", typeof(string));
+            dt.Columns.Add("商品名称", typeof(string));
             dt.Columns.Add("件烟尺寸编号", typeof(string));
             dt.Columns.Add("存储库区号", typeof(string));
             foreach (var item in productSize_Detail)
@@ -160,6 +177,7 @@ namespace THOK.Wms.Bll.Service
                         item.ID,
                         item.ProductCode,
                         item.ProductNo,
+                        item.ProductName,
                         item.SizeNo,
                         item.AreaNo
                     );
