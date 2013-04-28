@@ -176,7 +176,7 @@ namespace Wms.Service
                         #region TransactionScope
                         using (var scope = new TransactionScope())
                         {
-                            #region for (int i = 0; i < billMaster.Count(); i++)
+                            #region
                             for (int i = 0; i < billMaster.Count(); i++)
                             {
                                 var bmArray = billMaster.ToArray()[i];
@@ -204,7 +204,7 @@ namespace Wms.Service
                                 {
                                     b = true;
                                 }
-                                #region for (int j = 0; j < bmArray.BillDetail.Count(); j++)
+                                #region
                                 for (int j = 0; j < bmArray.BillDetail.Count(); j++)
                                 {
                                     var bdArray = bmArray.BillDetail.ToArray()[j];
@@ -232,6 +232,7 @@ namespace Wms.Service
                                 #endregion
                                 if (b == false)
                                 {
+                                    result = string.Format(returnMsg, "", "", "出入库单无数据！", "", "", timeNow, "");
                                     break;
                                 }
                                 else
@@ -266,7 +267,7 @@ namespace Wms.Service
                                         {
                                             b = true;
                                         }
-                                        #region (int l = 0; l < cArray.ContractDetail.Count(); l++)
+                                        #region
                                         for (int l = 0; l < cArray.ContractDetail.Count(); l++)
                                         {
                                             var cdArray = cArray.ContractDetail.ToArray()[l];
@@ -294,11 +295,12 @@ namespace Wms.Service
                                         #endregion
                                         if (b == false)
                                         {
+                                            result = string.Format(returnMsg, "", "", "合同表单无数据！", "", "", timeNow, "");
                                             break;
                                         }
                                         else
                                         {
-                                            #region
+                                            #region 
                                             Navicert na = new Navicert();
 
                                             for (int m = 0; m < contractCodes.Count(); m++)
@@ -327,6 +329,7 @@ namespace Wms.Service
                                                     }
                                                     if (b == false)
                                                     {
+                                                        result = string.Format(returnMsg, "", "", "准运证表无数据！", "", "", timeNow, "");
                                                         break;
                                                     }
                                                 }
