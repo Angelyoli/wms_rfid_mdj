@@ -105,25 +105,22 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
-        public bool Delete(string contractCode, string uuid, string strResult)
+        public bool Delete(string contractCode, string uuid, out string strResult)
         {
             bool result = false;
             strResult = string.Empty;
 
             var navicert = NavicertRepository.GetQueryable().Where(i => i.ContractCode == contractCode);
-
-            var contractDetail = ContractDetailRepository.GetQueryable().Where(i => i.ContractCode == contractCode);
             var contract = ContractRepository.GetQueryable().Where(i => i.ContractCode == contractCode);
-
-            var billDetail = BillDetailRepository.GetQueryable().Where(i => i.BillMaster.UUID == uuid);
             var billMaster = BillMasterRepository.GetQueryable().Where(i => i.UUID == uuid);
 
-            using (var scope = new TransactionScope())
+            if (navicert != null && contract != null && billMaster != null)
             {
-                if (navicert != null)
+                try
                 {
-                    try
+                    using (var scope = new TransactionScope())
                     {
+
                         foreach (var item1 in navicert.ToList())
                         {
                             NavicertRepository.Delete(item1);
@@ -131,47 +128,43 @@ namespace THOK.Wms.Bll.Service
                         }
                         if (result == true)
                         {
-                            try
+                            foreach (var item2 in contract.ToList())
                             {
-                                foreach (var item2 in contract.ToList())
+                                Del(ContractDetailRepository, item2.ContractDetails);
+                                ContractRepository.Delete(item2);
+                                result = true;
+                            }
+                            if (result == true)
+                            {
+                                foreach (var item3 in billMaster.ToList())
                                 {
-                                    Del(ContractDetailRepository, item2.ContractDetails);
-                                    ContractRepository.Delete(item2);
+                                    Del(BillDetailRepository, item3.BillDetails);
+                                    BillMasterRepository.Delete(item3);
                                     result = true;
-                                }
-                                if (result == true)
-                                {
-                                    foreach (var item3 in billMaster.ToList())
+                                    if (result == true)
                                     {
-                                        Del(BillDetailRepository, item3.BillDetails);
-                                        BillMasterRepository.Delete(item3);
-                                        result = true;
-                                        if (result == true)
-                                        {
-                                            scope.Complete();
-                                        }
-                                        else
-                                        {
-                                            break;
-                                        }
+                                        scope.Complete();
+                                    }
+                                    else
+                                    {
+                                        break;
                                     }
                                 }
                             }
-                            catch (Exception ex)
-                            {
-                                strResult = "原因：" + ex.Message;
-                                result = false;
-                            }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        strResult = "原因：" + ex.Message;
-                        result = false;
-                    }
+                    BillMasterRepository.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                    result = false;
                 }
             }
-            BillMasterRepository.SaveChanges();
+            else
+            {
+                strResult = "原因：数据不存在！";
+            }
             return result;
         }
     }

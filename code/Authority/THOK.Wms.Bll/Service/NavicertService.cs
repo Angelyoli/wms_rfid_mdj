@@ -28,7 +28,7 @@ namespace THOK.Wms.Bll.Service
             {
                 try
                 {
-                    n.ID = Guid.NewGuid();
+                    n.ID = navicert.ID;
                     n.MasterID = navicert.MasterID;
                     n.NavicertCode = navicert.NavicertCode;
                     n.NavicertDate = navicert.NavicertDate;
