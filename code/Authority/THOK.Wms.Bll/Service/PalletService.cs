@@ -50,7 +50,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception e)
                 {
-                    resultMsg = "发送失败：" + e;
+                    resultMsg = "发送失败：" + e.Message;
                     return resultMsg;
                 }
             }
@@ -81,7 +81,7 @@ namespace THOK.Wms.Bll.Service
                 }
                 catch (Exception e)
                 {
-                    resultMsg = "发送失败：" + e;
+                    resultMsg = "发送失败：" + e.Message;
                     return resultMsg;
                 }
             }
