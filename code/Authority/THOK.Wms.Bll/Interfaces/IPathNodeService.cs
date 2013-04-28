@@ -16,6 +16,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         System.Data.DataTable GetPathNode(int page, int rows, string id);
 
-
+         object GetDetails(string PathID);
     }
 }
