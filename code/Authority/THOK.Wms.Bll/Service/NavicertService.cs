@@ -28,7 +28,7 @@ namespace THOK.Wms.Bll.Service
             {
                 try
                 {
-                    n.ID = Guid.NewGuid();
+                    n.ID = navicert.ID;
                     n.MasterID = navicert.MasterID;
                     n.NavicertCode = navicert.NavicertCode;
                     n.NavicertDate = navicert.NavicertDate;
@@ -47,6 +47,29 @@ namespace THOK.Wms.Bll.Service
             else
             {
                 strResult = "原因：找不到当前登陆用户！请重新登陆！";
+            }
+            return result;
+        }
+        public bool Save(Navicert navicert, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var n = NavicertRepository.GetQueryable().FirstOrDefault(c => c.ContractCode == navicert.Contract.ContractCode);
+            if (n != null)
+            {
+                try
+                {
+                    n.NavicertCode = navicert.NavicertCode;
+                    n.NavicertDate = navicert.NavicertDate;
+                    n.TruckPlateNo = navicert.TruckPlateNo;
+
+                    NavicertRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                }
             }
             return result;
         }

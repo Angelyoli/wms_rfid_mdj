@@ -50,5 +50,30 @@ namespace THOK.Wms.Bll.Service
             }
             return result;
         }
+        public bool Save(ContractDetail contractDetail, out string strResult)
+        {
+            strResult = string.Empty;
+            bool result = false;
+            var con = ContractDetailRepository.GetQueryable().FirstOrDefault(c => c.ContractCode == contractDetail.Contract.ContractCode);
+            if (con != null)
+            {
+                try
+                {
+                    con.BrandCode = contractDetail.BrandCode;
+                    con.Quantity = contractDetail.Quantity;
+                    con.Price = contractDetail.Price;
+                    con.Amount = contractDetail.Amount;
+                    con.TaxAmount = contractDetail.TaxAmount;
+
+                    ContractDetailRepository.SaveChanges();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    strResult = "原因：" + ex.Message;
+                }
+            }
+            return result;
+        }
     }
 }
