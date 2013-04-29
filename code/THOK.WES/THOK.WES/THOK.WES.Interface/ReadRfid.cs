@@ -70,10 +70,10 @@ namespace THOK.WES.Interface
         /// <returns></returns>
         public List<string> ReadTrayRfid(string strPort, int nBaudrate,out string errString)
         {
-            string strException = errString;
+            errString = string.Empty;
             try
             {
-                int nType = this.OpenCom(strPort, nBaudrate, out strException);
+                int nType = this.OpenCom(strPort, nBaudrate, out errString);
                 if (nType == 0)
                 {
                     DateTime now = DateTime.Now;
@@ -103,8 +103,7 @@ namespace THOK.WES.Interface
             }
             catch (Exception e)
             {
-                errString = strException;
-                throw new Exception("操作串口错误：" + e.Message +","+strException);
+                throw new Exception("操作串口错误：" + e.Message + "," + errString);
             }
         }
 

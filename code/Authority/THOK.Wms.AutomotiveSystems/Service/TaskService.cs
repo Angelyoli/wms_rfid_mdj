@@ -57,6 +57,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ITrayInfoRepository TrayInfoRepository { get; set; }
 
         [Dependency]
+        public IPalletRepository PalletRepository { get; set; }
+
+        [Dependency]
         public IStorageLocker Locker { get; set; }
  
         public void GetBillMaster(string[] BillTypes, Result result)
@@ -307,7 +310,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 }
                 result.IsSuccess = true;
                 result.BillDetails = billDetails.OrderByDescending(i => i.Status)
-                    .ThenByDescending(b => b.TargetStorageName).ToArray();
+                    .ThenBy(b => b.StorageName).ToArray();
             }
             catch (Exception e)
             {
@@ -792,11 +795,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
             THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
             try
             {
-                var taryInfo = TrayInfoRepository.GetQueryable()
-                               .Where(t => t.TaryRfid == rfid)
+                var taryInfo = PalletRepository.GetQueryable()
+                               .Where(t => t.PalletID == rfid)
                                .Select(t => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                 {
-                                    ProductCode = t.ProductCode,
+                                    ProductCode = t.PieceCigarCode,
                                     PieceQuantity = t.Quantity
                                 }).ToArray();
                 billDetails = billDetails.Concat(taryInfo).ToArray();
