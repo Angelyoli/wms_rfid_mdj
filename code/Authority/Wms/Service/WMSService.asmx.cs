@@ -56,6 +56,8 @@ namespace Wms.Service
                                             </dataset>";
         #endregion
 
+        bool b = false;
+
         [WebMethod]
         public string WMSBillService(string xml)
         {
@@ -176,7 +178,7 @@ namespace Wms.Service
                         #region TransactionScope
                         using (var scope = new TransactionScope())
                         {
-                            #region for (int i = 0; i < billMaster.Count(); i++)
+                            #region
                             for (int i = 0; i < billMaster.Count(); i++)
                             {
                                 var bmArray = billMaster.ToArray()[i];
@@ -204,7 +206,7 @@ namespace Wms.Service
                                 {
                                     b = true;
                                 }
-                                #region for (int j = 0; j < bmArray.BillDetail.Count(); j++)
+                                #region
                                 for (int j = 0; j < bmArray.BillDetail.Count(); j++)
                                 {
                                     var bdArray = bmArray.BillDetail.ToArray()[j];
@@ -232,6 +234,7 @@ namespace Wms.Service
                                 #endregion
                                 if (b == false)
                                 {
+                                    result = string.Format(returnMsg, "", "", "出入库单无数据！", "", "", timeNow, "");
                                     break;
                                 }
                                 else
@@ -266,7 +269,7 @@ namespace Wms.Service
                                         {
                                             b = true;
                                         }
-                                        #region (int l = 0; l < cArray.ContractDetail.Count(); l++)
+                                        #region
                                         for (int l = 0; l < cArray.ContractDetail.Count(); l++)
                                         {
                                             var cdArray = cArray.ContractDetail.ToArray()[l];
@@ -294,11 +297,12 @@ namespace Wms.Service
                                         #endregion
                                         if (b == false)
                                         {
+                                            result = string.Format(returnMsg, "", "", "合同表单无数据！", "", "", timeNow, "");
                                             break;
                                         }
                                         else
                                         {
-                                            #region
+                                            #region 
                                             Navicert na = new Navicert();
 
                                             for (int m = 0; m < contractCodes.Count(); m++)
@@ -327,6 +331,7 @@ namespace Wms.Service
                                                     }
                                                     if (b == false)
                                                     {
+                                                        result = string.Format(returnMsg, "", "", "准运证表无数据！", "", "", timeNow, "");
                                                         break;
                                                     }
                                                 }
@@ -379,7 +384,15 @@ namespace Wms.Service
         public string WMSPalletInfo(string xml)
         {
             string result = "";
-            XElement doc = XElement.Parse(xml);
+            XElement doc = null;
+            try
+            {
+                doc = XElement.Parse(xml);
+            }
+            catch
+            {
+                return string.Format(returnMsg, "", "001", "发送失败：不是有效的XML格式字符串", "", "", "", "", "");
+            }
             var queryHead = from d in doc.Descendants("head")
                             select new
                             {
@@ -402,6 +415,7 @@ namespace Wms.Service
                                 bb_oper_date = (d.Element("bb_oper_date") ?? null) == null ? null : d.Element("bb_oper_date").Value,
                                 barcode_type = (d.Element("barcode_type") ?? null) == null ? null : d.Element("barcode_type").Value,
                                 pallet_id = (d.Element("pallet_id") ?? null) == null ? null : d.Element("pallet_id").Value,
+                                pallet_ID = (d.Element("pallet_ID") ?? null) == null ? null : d.Element("pallet_ID").Value,
                                 brand_info = (d.Element("brand_info") ?? null) == null ? null : d.Element("brand_info").Value,
                                 RFIDAntCode = (d.Element("RFIDAntCode") ?? null) == null ? null : d.Element("RFIDAntCode").Value,
                                 scan_time = (d.Element("scan_time") ?? null) == null ? null : d.Element("scan_time").Value
@@ -410,22 +424,42 @@ namespace Wms.Service
             {
                 for (int i = 0; i < queryData.Count(); i++)
                 {
+                    string palletid = "";
                     var data = queryData.ToArray()[i];
                     Pallet palletAdd = new Pallet();
                     string[] brandInfo = (data.brand_info).ToString().Split(';');
-                    palletAdd.PalletID = data.pallet_id;
-                    palletAdd.WmsUUID = "";//
-                    palletAdd.UUID = data.bb_uuid;
-                    palletAdd.TicketNo = data.bb_ticket_no;
-                    palletAdd.OperateDate = Convert.ToDateTime(data.bb_oper_date);
-                    palletAdd.OperateType = data.bb_type;
-                    palletAdd.BarCodeType = data.barcode_type;
-                    palletAdd.RfidAntCode = (data.RFIDAntCode).ToString();
-                    palletAdd.PieceCigarCode = brandInfo[0];
-                    palletAdd.BoxCigarCode = brandInfo[3];
-                    palletAdd.CigaretteName = brandInfo[1];
-                    palletAdd.Quantity = Convert.ToDecimal(brandInfo[2]);
-                    palletAdd.ScanTime = Convert.ToDateTime(data.scan_time);
+                    if (brandInfo.Length < 4)
+                    {
+                        brandInfo = (data.brand_info).ToString().Split('；');
+                    }
+                    if (data.pallet_id != null)
+                    {
+                        palletid = data.pallet_id;
+                    }
+                    else
+                    {
+                        palletid = data.pallet_ID;
+                    }
+                    try
+                    {
+                        palletAdd.PalletID = palletid;
+                        palletAdd.WmsUUID = "";//
+                        palletAdd.UUID = data.bb_uuid;
+                        palletAdd.TicketNo = data.bb_ticket_no;
+                        palletAdd.OperateDate = Convert.ToDateTime(data.bb_oper_date);
+                        palletAdd.OperateType = data.bb_type;
+                        palletAdd.BarCodeType = data.barcode_type;
+                        palletAdd.RfidAntCode = (data.RFIDAntCode).ToString();
+                        palletAdd.PieceCigarCode = brandInfo[0];
+                        palletAdd.BoxCigarCode = brandInfo[3];
+                        palletAdd.CigaretteName = brandInfo[1];
+                        palletAdd.Quantity = Convert.ToDecimal(brandInfo[2]);
+                        palletAdd.ScanTime = Convert.ToDateTime(data.scan_time);
+                    }
+                    catch
+                    {
+                        return string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", "");
+                    }
                     result = factory.GetService<IPalletService>().Add(palletAdd);
                     if (result != "")
                     {
@@ -450,31 +484,48 @@ namespace Wms.Service
         [WebMethod]
         public string WMSPalletInfo_ZipBase64(string xml)
         {
-            try
+            string resultUnzip = Unzip(xml);
+            if (b==true)
             {
-                return WMSPalletInfo(Unzip(xml));
+                try
+                {
+                    return WMSPalletInfo(resultUnzip);
+                }
+                catch
+                {
+                    return returnMsg;
+                }
             }
-            catch (Exception)
+            else 
             {
-                return string.Format(returnMsg);
+                return resultUnzip;
             }
         }
 
         public string Unzip(string xml)
         {
+            string decoded = "";
             //base64解码
-            System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-            System.Text.Decoder utf8Decode = encoder.GetDecoder();
-            byte[] todecode_byte = Convert.FromBase64String(xml);
-            int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
-            char[] decoded_char = new char[charCount];
-            utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
-            string decoded = new String(decoded_char);
-            //解压缩
-            byte[] compressBeforeByte = Convert.FromBase64String(decoded);
-            byte[] buffer = new byte[0x1000];
             try
             {
+                System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
+                System.Text.Decoder utf8Decode = encoder.GetDecoder();
+                byte[] todecode_byte = Convert.FromBase64String(xml);
+                int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
+                char[] decoded_char = new char[charCount];
+                utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
+                decoded = new String(decoded_char);
+            }
+            catch (Exception e)
+            {
+                b = false;
+                return string.Format(returnMsg, "", "001", "发送失败：" + e.Message, "", "", "", "", "");
+            }
+            //解压缩
+            try
+            {
+                byte[] compressBeforeByte = Convert.FromBase64String(decoded);
+                byte[] buffer = new byte[0x1000];
                 MemoryStream ms = new MemoryStream(compressBeforeByte);
                 GZipStream zip = new GZipStream(ms, CompressionMode.Decompress, true);
                 MemoryStream msreader = new MemoryStream();
@@ -492,13 +543,44 @@ namespace Wms.Service
                 msreader.Position = 0;
                 buffer = msreader.ToArray();
                 msreader.Close();
+                byte[] compressAfterByte = buffer;
+                xml = Encoding.GetEncoding("UTF-8").GetString(compressAfterByte);
+            }
+            catch (Exception e)
+            {
+                b = false;
+                return string.Format(returnMsg, "", "001", "发送失败：" + e.Message, "", "", "", "", "");
+            }
+            b = true;
+            return xml;
+        }
+        [WebMethod]
+        public string Zip(string xml)
+        {
+            //压缩
+            string compressStr = "";
+            byte[] compressBeforeByte = Encoding.GetEncoding("UTF-8").GetBytes(xml);
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                GZipStream zip = new GZipStream(ms, CompressionMode.Compress, true);
+                zip.Write(compressBeforeByte, 0, compressBeforeByte.Length);
+                zip.Close();
+                byte[] buffer = new byte[ms.Length];
+                ms.Position = 0;
+                ms.Read(buffer, 0, buffer.Length);
+                ms.Close();
+                compressStr = Convert.ToBase64String(buffer);
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
-            byte[] compressAfterByte = buffer;
-            xml = Encoding.GetEncoding("UTF-8").GetString(compressAfterByte);
+
+            //base64编码
+            byte[] encData_byte = new byte[compressStr.Length];
+            encData_byte = System.Text.Encoding.UTF8.GetBytes(compressStr);
+            xml = Convert.ToBase64String(encData_byte);
             return xml;
         }
     }

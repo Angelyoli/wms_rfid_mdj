@@ -1,8 +1,12 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var cellCode = null;
+        var cellCode = null, stockInPositionID = null, stockOutPositionID = null;
         if ($('#CellCode').val() == null) { cellCode = ""; } else { cellCode = $('#CellCode').val() }
+        if ($('#StockInPositionID').val() == null) { stockInPositionID = ""; } else { stockInPositionID = $('#StockInPositionID').val() }
+        if ($('#StockOutPositionID').val() == null) { stockOutPositionID = ""; } else { stockOutPositionID = $('#StockOutPositionID').val() }
         window.location.href = "/CellPosition/CreateExcelToClient/"
-                                + "?cellCode=" + cellCode;
+                                + "?cellCode=" + cellCode
+                                + "&stockInPositionID=" + stockInPositionID
+                                + "&stockOutPositionID=" + stockOutPositionID; ;
     }
 </script>

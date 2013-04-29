@@ -14,7 +14,9 @@ namespace THOK.Wms.Bll.Interfaces
 
          object GetRegion(int page, int rows, string queryString, string value);
 
-         System.Data.DataTable GetRegion(int page, int rows, string regionName, string state, string t);
+         //System.Data.DataTable GetRegion(int page, int rows, string regionName, string state, string t);
 
+
+         System.Data.DataTable GetRegion(int page, int rows, Region region);
     }
 }

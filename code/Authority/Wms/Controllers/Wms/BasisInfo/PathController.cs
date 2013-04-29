@@ -49,13 +49,21 @@ namespace Wms.Controllers.Wms.BasisInfo
 
             public ActionResult Details(int page, int rows, FormCollection collection)
             {
-               
+                Path path = new Path();
                 string PathName = collection["PathName"] ?? "";
                 string State = collection["State"] ?? "";
-                string OriginRegion = collection["OriginID"] ?? "";
-                string TargetRegion = collection["TargetID"] ?? "";
-                var systems = PathService.GetDetails(page, rows, OriginRegion, PathName, TargetRegion, State);
-                return Json(systems, "text", JsonRequestBehavior.AllowGet);
+                string OriginRegionID = collection["OriginRegionID"] ?? "";
+                string TargetRegionID = collection["TargetRegionID"] ?? "";
+                if (OriginRegionID != "" && OriginRegionID != null)
+                {
+                    path.OriginRegionID = Convert.ToInt32(OriginRegionID);
+                }
+                if (TargetRegionID!=""&&TargetRegionID!=null)
+                {
+                    path.TargetRegionID = Convert.ToInt32(TargetRegionID);
+                }
+                var pathDetail = PathService.GetDetails(page, rows, path);
+                return Json(pathDetail, "text", JsonRequestBehavior.AllowGet);
             }
 
 
@@ -66,7 +74,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             public ActionResult Create(Path path)
             {
                 string strResult = string.Empty;
-                bool bResult = PathService.Add(path, out strResult);
+                bool bResult = PathService.Add(path);
                 string msg = bResult ? "新增成功" : "新增失败";
                 return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
             }
@@ -79,7 +87,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             public ActionResult Edit(Path path)
             {
                 string strResult = string.Empty;
-                bool bResult = PathService.Save(path, out strResult);
+                bool bResult = PathService.Save(path);
                 string msg = bResult ? "修改成功" : "修改失败";
                 return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
             }
@@ -94,7 +102,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = PathService.Delete(pathId, out strResult);
+            bResult = PathService.Delete(pathId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -122,15 +130,18 @@ namespace Wms.Controllers.Wms.BasisInfo
             public FileStreamResult CreateExcelToClient()
             {
                 int page = 0, rows = 0;
-                string Id = Request.QueryString["Id"];
-                string pathName = Request.QueryString["pathName"];
-                string originId = Request.QueryString["originId"];
-                string targetId = Request.QueryString["targetId"];
-                
-                string state = Request.QueryString["state"];
+                string PathName = Request.QueryString["PathName"];
+                int OriginRegionID = Convert.ToInt32( Request.QueryString["OriginRegionID"]);
+                int TargetRegionID = Convert.ToInt32(Request.QueryString["TargetRegionID"]);
+                string State = Request.QueryString["State"];
+                Path path = new Path();
+                path.PathName = PathName;
+                path.OriginRegionID = OriginRegionID;
+                path.TargetRegionID = TargetRegionID;
+                path.State = State;
 
                 THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-                ep.DT1 = PathService.GetPath(page, rows, Id, pathName, originId, targetId, state);
+                ep.DT1 = PathService.GetPath(page, rows, path);
                 ep.HeadTitle1 = "路径信息";
                 System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
                 return new FileStreamResult(ms, "application/ms-excel");
