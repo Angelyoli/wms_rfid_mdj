@@ -32,16 +32,16 @@ namespace THOK.WMS.DownloadWms.Bll
                    //查询仓库7天内的订单号
                    DataTable orderdt = this.GetOrderId(orderDate);
                    string orderlist = UtinString.MakeString(orderdt, "order_id");
-                   string orderlistDate = "ORDER_DATE ='" + orderDate + "' AND ORDER_ID NOT IN(" + orderlist + ")";
-                   DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询订单信息
-
-                   string ordermasterlist = UtinString.MakeString(masterdt, "ORDER_ID");//取得根据时间查询的订单号
-                   ordermasterlist = "ORDER_ID IN (" + ordermasterlist + ")";
-                   DataTable detaildt = this.GetSortingOrderDetail(ordermasterlist);//根据订单号查询明细
-                   if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                   string orderlistDate = "ORDER_DATE ='" + orderDate + "'";
+                   DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询主表数据
+                   DataRow[] masterdr = masterdt.Select("ORDER_ID NOT IN(" + orderlist + ")");//排除已经下载的数据
+                   string ordermasterlist = UtinString.MakeString(masterdr, "ORDER_ID");//获取未下载主表单据的数据字符
+                   DataTable detaildt = this.GetSortingOrderDetail(orderlistDate);//根据时间查询细表数据
+                   DataRow[] detaildr = detaildt.Select("ORDER_ID IN (" + ordermasterlist + ")");//查询未下载的细单数据
+                   if (masterdr.Length > 0 && detaildr.Length > 0)
                    {
-                       DataSet masterds = this.SaveSortingOrder(masterdt);
-                       DataSet detailds = this.SaveSortingOrderDetail(detaildt);
+                       DataSet masterds = this.SaveSortingOrder(masterdr);
+                       DataSet detailds = this.SaveSortingOrderDetail(detaildr);
                        this.Insert(masterds, detailds);
                        //上报分拣订单
                        //upload.uploadSort(masterds, detailds);
@@ -171,10 +171,10 @@ namespace THOK.WMS.DownloadWms.Bll
        /// </summary>
        /// <param name="dr"></param>
        /// <returns></returns>
-       public DataSet SaveSortingOrder(DataTable masterdt)
+       public DataSet SaveSortingOrder(DataRow[] masterdt)
        {
            DataSet ds = this.GenerateEmptyTables();
-           foreach (DataRow row in masterdt.Rows)
+           foreach (DataRow row in masterdt)
            {
                DataRow masterrow = ds.Tables["DWV_OUT_ORDER"].NewRow();
                masterrow["order_id"] = row["ORDER_ID"].ToString().Trim();//订单编号
@@ -236,7 +236,7 @@ namespace THOK.WMS.DownloadWms.Bll
        /// </summary>
        /// <param name="dr"></param>
        /// <returns></returns>
-       public DataSet SaveSortingOrderDetail(DataTable detaildt)
+       public DataSet SaveSortingOrderDetail(DataRow[] detaildt)
        {
            DownSortingOrderDao dao = new DownSortingOrderDao();
            DataTable unitList = dao.GetUnitProduct();
@@ -244,7 +244,7 @@ namespace THOK.WMS.DownloadWms.Bll
            try
            {
                int i = 0;
-               foreach (DataRow row in detaildt.Rows)
+               foreach (DataRow row in detaildt)
                {
                    DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
                    DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();

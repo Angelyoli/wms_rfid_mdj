@@ -103,7 +103,8 @@ namespace THOK.WES.Interface
             }
             catch (Exception e)
             {
-                throw new Exception("操作串口错误：" + e.Message + "," + errString);
+                errString += e.Message;
+                throw new Exception("操作串口错误：" + errString);
             }
         }
 

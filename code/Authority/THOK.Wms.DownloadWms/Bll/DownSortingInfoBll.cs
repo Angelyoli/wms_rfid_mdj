@@ -32,16 +32,17 @@ namespace THOK.Wms.DownloadWms.Bll
                     DataTable orderdt = this.GetOrderId(startDate, endDate);
                     string orderlist = UtinString.MakeString(orderdt, "order_id");
                     string orderlistDate = "ORDERDATE >='" + startDate + "' AND ORDERDATE <='" + endDate + "'" + sort;
-                    DataTable masterdt = this.GetSortingOrder(orderlistDate);
-                    DataRow[] masterdr = masterdt.Select("ORDERID NOT IN(" + orderlist + ")");
+                    DataTable masterdt = this.GetSortingOrder(orderlistDate);//下载主表
+                    DataRow[] masterdr = masterdt.Select("ORDERID NOT IN(" + orderlist + ")");//排除已经下载的
 
-                    string ordermasterlist = UtinString.MakeString(masterdr, "OrderID");                
+                    string ordermasterlist = UtinString.MakeString(masterdr, "OrderID");          
                     ordermasterlist = "OrderID IN (" + ordermasterlist + ")";
-                    DataTable detaildt = this.GetSortingOrderDetail(ordermasterlist);
-                    if (masterdr.Count() > 0 && detaildt.Rows.Count > 0)
+                    DataTable detaildt = this.GetSortingOrderDetail(orderlistDate);
+                    DataRow[] detaildr = detaildt.Select("OrderID IN (" + ordermasterlist + ")");
+                    if (masterdr.Length > 0 && detaildr.Length > 0)
                     {
                         DataSet masterds = this.SaveSortingOrder(masterdr);
-                        DataSet detailds = this.SaveSortingOrderDetail(detaildt);
+                        DataSet detailds = this.SaveSortingOrderDetail(detaildr);
                         this.Insert(masterds, detailds);
                         //上报分拣订单
                         //upload.uploadSort(masterds, detailds);
@@ -146,12 +147,12 @@ namespace THOK.Wms.DownloadWms.Bll
         }
 
         //保存细表信息
-        public DataSet SaveSortingOrderDetail(DataTable detaildt)
+        public DataSet SaveSortingOrderDetail(DataRow[] detaildt)
         {
             DataSet ds = this.GenerateEmptyTables();
             try
             {
-                foreach (DataRow row in detaildt.Rows)
+                foreach (DataRow row in detaildt.ToArray())
                 {
                     DataRow detailrow = ds.Tables["WMS_SORT_ORDER_DETAIL"].NewRow();
                     detailrow["order_detail_id"] = row["OrderDetailID"].ToString().Trim();

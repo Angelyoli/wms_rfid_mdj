@@ -27,7 +27,8 @@ namespace THOK.WMS.DownloadWms.Dao
        public DataTable GetSortingOrderDetail(string orderid)
        {
            string sql = string.Format(@"SELECT A.* , B.BRAND_N FROM V_WMS_SORT_ORDER_DETAIL A
-                                        LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", orderid);
+                                        LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE
+                                        LEFT JOIN V_WMS_SORT_ORDER C ON A.ORDER_ID=C.ORDER_ID WHERE {0} ", orderid);
            return this.ExecuteQuery(sql).Tables[0];
        }
        /// <summary>
