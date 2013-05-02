@@ -34,7 +34,6 @@
     //添加
     function nodeAddClick() {
         $('#nodeAdmin').dialog('open').dialog('setTitle', '节点新增');
-//        $('#PathID').val(pathId);
         $("input[type=text]").attr("value", "");
         $("input[type=text]").removeAttr("disabled");
         isAdd = 1;
@@ -64,10 +63,11 @@
     }
 
     function current(Parameter) {
-        var row = $('#nodeAdmin').datagrid('getSelected');
-        $('#PathID').val(pathId);
-        $('#PositionName').val(row.PositionName);
-        $('#PathNodeOrder').val(row.PathNodeOrder);
+        var row = $('#nodedatagrid').datagrid('getSelected');
+        $('#inputID').val(row.ID);
+        $('#inputPositionName').val(row.PositionName);
+        $('#inputPositionID').val(row.PositionID);
+        $('#inputPathNodeOrder').val(row.PathNodeOrder);
         $("input[type=text]").removeAttr("disabled");
         isAdd = Parameter;
         $('#nodedatagrid').datagrid('clearSelections'); //清空所有选择项
