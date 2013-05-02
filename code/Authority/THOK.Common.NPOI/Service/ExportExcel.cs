@@ -27,7 +27,7 @@ namespace THOK.Common.NPOI.Service
             double columnWidth = ep.ColHeadSize - 9;
             short printHeight = 0;
             short printWidth = 10;
-            int sheetCount = 65535; //一个Sheet中最多存65536行数据
+            int sheetCount = 65535; //Max 65536 rows data in one Sheet
             int page = 0;
             byte[] error1 = Encoding.ASCII.GetBytes("Error : Data Table or Array is null!");
             byte[] error2 = Encoding.ASCII.GetBytes("Error : Return MemoryStream Failed!");
