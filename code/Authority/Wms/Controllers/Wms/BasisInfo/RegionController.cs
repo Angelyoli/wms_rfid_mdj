@@ -103,15 +103,23 @@ namespace Wms.Controllers.Wms.BasisInfo
         //  /SRM/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
-            int page = 0, rows = 0;
-            string regionName = Request.QueryString["regionName"];
-            string state = Request.QueryString["state"];
+             int page = 0, rows = 0;
+             int RegionID = Convert.ToInt32(Request.QueryString["ID"]);
+             string RegionName = Request.QueryString["RegionName"];
+             string Description = Request.QueryString["Description"];
+             string State = Request.QueryString["State"];
+             Region region = new Region();
+             region.ID = RegionID;
+             region.RegionName = RegionName;
+             region.Description = Description;
+             region.State = State;
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-            ep.DT1 = RegionService.GetRegion(page, rows, regionName, state, null);
-            ep.HeadTitle1 = "区域信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+             ep.DT1 = RegionService.GetRegion(page, rows, region);
+             ep.HeadTitle1 = "区域信息";
+             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
+             return new FileStreamResult(ms, "application/ms-excel");
+          
         }  
     }
 }

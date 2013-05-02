@@ -87,6 +87,22 @@ namespace Authority.Controllers.ProductInfo
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 
+        // GET: /Product/GetProductBy/
+        public ActionResult GetProductBy(int page, int rows, string QueryString, string Value)
+        {
+            if (QueryString == null)
+            {
+                QueryString = "ProductCode";
+            }
+            if (Value == null)
+            {
+                Value = "";
+            }
+            var product = ProductService.GetProductBy(page,rows,QueryString, Value);
+            return Json(product, "text", JsonRequestBehavior.AllowGet); 
+         }
+
+
         #region /Product/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {

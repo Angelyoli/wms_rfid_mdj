@@ -1,17 +1,10 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var Id = null
-          , pathName = null
-          , originId = null
-          , targetId = null
-         
-          , state = null;
-
+        var Id = null , pathName = null , originId = null , targetId = null , state = null;
         if ($('#inputID').val() == null) { Id = ""; } else { Id = $('#inputID').val(); }
         if ($('#PathName').val() == null) { pathName = ""; } else { pathName = $('#PathName').val(); }
         if ($('#origin-id').val() == null) { originId = ""; } else { originId = $('#origin-id').val(); }
         if ($('#target-id').val() == null) { targetId = ""; } else { targetId = $('#target-id').val(); }
-
         if (document.getElementById("state") == null) { state = ""; } else { state = $('#state').combo('getValue'); }
 
         window.location.href = "/Path/CreateExcelToClient/"

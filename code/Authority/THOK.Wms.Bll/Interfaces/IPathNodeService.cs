@@ -4,16 +4,18 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface IPathNodeService : IService<PathNode>
     {
-        bool Add(PathNode pathNode, string strResult);
+        object GetDetails(int page, int rows, PathNode pathNode);
 
-        bool Save(PathNode pathNode, string strResult);
+        bool Add(PathNode pathNode);
 
-        bool Delete(PathNode pathNode, string strResult);
+        bool Save(PathNode pathNode);
+
+        bool Delete(PathNode pathNode);
 
         object GetPathNode(int page, int rows, string queryString, string value);
 
         System.Data.DataTable GetPathNode(int page, int rows, string id);
 
-        object GetDetails(int page, int rows, string PathName, string PositionName, string PathNodeOrder);
+         object GetDetails(string PathID);
     }
 }

@@ -35,10 +35,11 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /CellPosition/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
+           
             string CellCode = collection["CellCode"] ?? "";
             string StockInPosition = collection["StockInPosition"] ?? "";
             string StockOutPosition = collection["StockOutPosition"] ?? "";
-            var productSize = CellPositionService.GetDetails(page, rows,CellCode, StockInPosition, StockOutPosition);
+            var productSize = CellPositionService.GetDetails(page, rows,CellCode,StockInPosition,StockOutPosition);
             return Json(productSize, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -58,7 +59,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult Create(CellPosition cellPosition)
         {
             string strResult = string.Empty;
-            bool bResult = CellPositionService.Add(cellPosition, out strResult);
+            bool bResult = CellPositionService.Add(cellPosition);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
@@ -71,6 +72,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             bool bResult = CellPositionService.Save(cellPosition, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+
         }
 
 
@@ -81,7 +83,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
             string strResult = string.Empty;
             bool bResult = false;
-            bResult = CellPositionService.Delete(cellPositionId, out strResult);
+            bResult = CellPositionService.Delete(cellPositionId);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -89,14 +91,18 @@ namespace Wms.Controllers.Wms.BasisInfo
         #region /CellPosition/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
-            int page = 0, rows = 0;
-            string cellCode = Request.QueryString["cellCode"];
-
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-            ep.DT1 = CellPositionService.GetCellPosition(page, rows, cellCode);
-            ep.HeadTitle1 = "货位位置信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+             int page = 0, rows = 0;
+             int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
+             string CellCode = Request.QueryString["CellCode"];
+             CellPosition cp= new CellPosition();
+             cp.ID = CellPositionID;
+             cp.CellCode = CellCode;
+             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+             ep.DT1 = CellPositionService.GetCellPosition(page, rows, cp);
+             ep.HeadTitle1 = "货位位置信息";
+             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
+             return new FileStreamResult(ms, "application/ms-excel");
+           
         }
         #endregion
     }

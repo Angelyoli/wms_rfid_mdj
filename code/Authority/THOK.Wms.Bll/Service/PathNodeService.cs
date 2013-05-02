@@ -21,14 +21,14 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows, string PathName, string PositionName, string PathNodeOrder)
+        public object GetDetails(int page, int rows,PathNode pathNode)
         {
             //引入表
             IQueryable<PathNode> pathNodeQuery = PathNodeRepository.GetQueryable();
             IQueryable<Path> pathQuery = PathRepository.GetQueryable();
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
             //关联表
-            var pathNode = pathNodeQuery.Join(pathQuery,
+            var pathNodeDetail = pathNodeQuery.Join(pathQuery,
                              pn => pn.PathID,
                              p => p.ID,
                              (pn, p) => new { pn.ID, pn.PathID, pn.PositionID, pn.PathNodeOrder, p.PathName })
@@ -36,9 +36,11 @@ namespace THOK.Wms.Bll.Service
                              pn => pn.PositionID,
                              p => p.ID,
                              (pn, p) => new { pn.ID, pn.PathID, pn.PositionID, pn.PathNodeOrder, pn.PathName,p.PositionName })
-                .Where(p => p.PathName.Contains(PathName) && p.PositionName.Contains(PositionName))
-                .OrderBy(p => p.ID).AsEnumerable()
-                .Select(p => new
+                //.Where(p => p.PathName.Contains(PathName) && p.PositionName.Contains(PositionName))
+                .OrderBy(p => p.ID);
+            int total = pathNodeDetail.Count();
+            var pathNodeDetails = pathNodeDetail.Skip((page - 1) * rows).Take(rows);
+            var pathNode_Detail = pathNodeDetails.ToArray().Select(p => new
                 {
                     p.ID,
                     p.PathID,
@@ -47,110 +49,7 @@ namespace THOK.Wms.Bll.Service
                     p.PositionName,
                     p.PathNodeOrder,
                 });
-            int Order = -1;
-            if (PathNodeOrder != "" && PathNodeOrder != null)
-            {
-                try { Order = Convert.ToInt32(PathNodeOrder); }
-                catch { Order = -1; }
-                finally { 
-                    pathNode=pathNode.Where(p =>p.PathNodeOrder==Order)
-                            .OrderBy(p => p.ID).AsEnumerable()
-                            .Select(p => new
-                            {
-                                p.ID,
-                                p.PathID,
-                                p.PathName,
-                                p.PositionID,
-                                p.PositionName,
-                                p.PathNodeOrder,
-                            });
-                }
-            }
-            int total = pathNode.Count();
-            pathNode = pathNode.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = pathNode.ToArray() };
-        }
-
-        public bool Add(PathNode pathNode, string strResult)
-        {
-            strResult = string.Empty;
-            bool result = false;
-            var p = new PathNode();
-            if (p != null)
-            {
-                try
-                {
-                    p.PathID = pathNode.PathID;
-                    p.PositionID = pathNode.PositionID;
-                    p.PathNodeOrder = pathNode.PathNodeOrder;
-
-                    PathNodeRepository.Add(p);
-                    PathNodeRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
-            }
-            return result;
-        }
-
-        public bool Save(PathNode pathNode, string strResult)
-        {
-            strResult = string.Empty;
-            bool result = false;
-            var p = PathNodeRepository.GetQueryable().FirstOrDefault(pn => pn.ID == pathNode.ID);
-            if (p != null)
-            {
-                try
-                {
-                    p.PathID = pathNode.PathID;
-                    p.PositionID = pathNode.PositionID;
-                    p.PathNodeOrder = pathNode.PathNodeOrder;
-
-                    PathNodeRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要修改的数据！";
-            }
-            return result;
-        }
-
-        public bool Delete(PathNode pathNode, string strResult)
-        {
-            strResult = string.Empty;
-            bool result = false;
-            var p = PathNodeRepository.GetQueryable().FirstOrDefault(pn => pn.ID == pathNode.ID);
-            if (p != null)
-            {
-                try
-                {
-                    PathNodeRepository.Delete(p);
-                    PathNodeRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    strResult = "原因：已在使用";
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要删除的数据！";
-            }
-            return result;
+            return new { total, rows = pathNode_Detail.ToArray() };
         }
 
         public object GetPathNode(int page, int rows, string queryString, string value)
@@ -183,7 +82,7 @@ namespace THOK.Wms.Bll.Service
 
         public System.Data.DataTable GetPathNode(int page, int rows, string id)
         {
-            int t=-1;
+            int t = -1;
 
             IQueryable<PathNode> pathNodeQuery = PathNodeRepository.GetQueryable();
             IQueryable<Path> pathQuery = PathRepository.GetQueryable();
@@ -198,7 +97,7 @@ namespace THOK.Wms.Bll.Service
                              p => p.ID,
                              (pn, p) => new { pn.ID, pn.PathID, pn.PositionID, pn.PathNodeOrder, pn.PathName, PositionName = p.PositionName })
                 //.Where(p => p.ID == PathID)
-              //  .Where(p => p.ID == t)
+                //  .Where(p => p.ID == t)
                 .OrderBy(p => p.ID).AsEnumerable()
                 .Select(p => new
                 {
@@ -238,5 +137,70 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
+        #region 路径节点变成按钮
+
+        public object GetDetails(string PathId)
+        {
+            IQueryable<PathNode> PathNodeQuery = PathNodeRepository.GetQueryable();
+            int Path_ID = Convert.ToInt32(PathId);
+            var PathNode = PathNodeQuery.Where(p => p.PathID == Path_ID)
+               .OrderBy(p => p.PathNodeOrder).
+               Select(p => new
+               {
+                   p.ID,
+                   p.PathID,
+                   p.Path.PathName,
+                   p.PositionID,
+                   p.Position.PositionName,
+                   p.PathNodeOrder
+               });
+            return PathNode.ToArray();
+        }
+
+        public bool Add(PathNode pathNode)
+        {
+            IQueryable<Path> PathQuery = PathRepository.GetQueryable();
+            var Path = PathQuery.FirstOrDefault(p => p.ID == pathNode.PathID);
+            IQueryable<Position> PositionQuery = PositionRepository.GetQueryable();
+            var Position = PositionQuery.FirstOrDefault(p => p.ID == pathNode.PositionID);
+            var Path_Node = new PathNode();
+            Path_Node.PathID = pathNode.PathID;
+            Path_Node.Path = Path;
+            Path_Node.PositionID = pathNode.PositionID;
+            Path_Node.Position = Position;
+            Path_Node.PathNodeOrder = pathNode.PathNodeOrder;
+            PathNodeRepository.Add(Path_Node);
+            PathNodeRepository.SaveChanges();
+            return true;
+        }
+
+        public bool Save(PathNode pathNode)
+        {
+            IQueryable<Position> PositionQuery = PositionRepository.GetQueryable();
+            var Position = PositionQuery.FirstOrDefault(p => p.ID == pathNode.PositionID);
+            var PathNode = PathNodeRepository.GetQueryable().FirstOrDefault(pn => pn.ID == pathNode.ID);
+            PathNode.PositionID = pathNode.PositionID;
+            PathNode.Position = Position;
+            PathNode.PathNodeOrder = pathNode.PathNodeOrder;
+            PathNodeRepository.Add(PathNode);
+            PathNodeRepository.SaveChanges();
+            return true;
+        }
+
+        public bool Delete(PathNode pathNode)
+        {
+            var p = PathNodeRepository.GetQueryable().FirstOrDefault(pn => pn.ID == pathNode.ID);
+            if (p != null)
+            {
+                PathNodeRepository.Delete(p);
+                PathNodeRepository.SaveChanges();
+            }
+            else
+                return false;
+            return true;
+        }
+
+        #endregion
     }
 }

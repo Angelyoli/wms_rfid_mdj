@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.IO.Ports;
+using System.Threading;
 
 namespace THOK.WES.Interface
 {
@@ -11,21 +12,20 @@ namespace THOK.WES.Interface
     public class ReadRfid
     {
         public AnalyDataCallback AnalyCallback;
-        private SerialPort iSerialPort;
-        private byte g_RAddr = 0xFF;   //读写器地址
-        private string g_IP = "";   //读写器地址
-        private int errnone = 0;
-        List<string> listRfid = new List<string>();
+        private SerialPort iSerialPort;      
+        List<string> listRfid;
         int m_nLenth = 0;
         byte[] m_btAryBuffer = new byte[4096];
         public ReadRfid()
         {
-            iSerialPort = new SerialPort();
+            iSerialPort = new SerialPort();          
         }
 
         //关闭串口
         public void CloseCom()
         {
+            string con = iSerialPort.PortName;
+            iSerialPort.Dispose();
             if (iSerialPort.IsOpen)
             {
                 iSerialPort.Close();
@@ -68,28 +68,43 @@ namespace THOK.WES.Interface
         /// 读取数据
         /// </summary>
         /// <returns></returns>
-        public List<string> ReadTrayRfid()
+        public List<string> ReadTrayRfid(string strPort, int nBaudrate)
         {
-            DateTime now = DateTime.Now;
-            byte btReadId = 0xFF;
-            byte btCmd = 0xb0;
-            MessageTran msgTran = new MessageTran(btReadId, btCmd);
-            iSerialPort.Write(msgTran.AryTranData, 0, msgTran.AryTranData.Length);//给串口发送盘存命令
-            //读取二秒就返回信息
-            do
+            string strException = string.Empty;
+            try
             {
-                int nCount = iSerialPort.BytesToRead;
-                if (nCount == 0)
+                int nType = this.OpenCom(strPort, nBaudrate, out strException);
+                if (nType == 0)
                 {
-                    return null;
+                    DateTime now = DateTime.Now;
+                    byte btReadId = 0xFF;
+                    byte btCmd = 0xb0;
+                    listRfid = new List<string>();
+                    MessageTran msgTran = new MessageTran(btReadId, btCmd);
+                    iSerialPort.Write(msgTran.AryTranData, 0, msgTran.AryTranData.Length);//给串口发送盘存命令
+                    //读取二秒就返回信息
+                    do
+                    {
+                        Thread.Sleep(500);
+                        int nCount = iSerialPort.BytesToRead;
+                        if (nCount == 0)
+                        {
+                            return null;
+                        }
+
+                        byte[] btAryBuffer = new byte[nCount];
+                        int nRead = iSerialPort.Read(btAryBuffer, 0, nCount);//读取串口缓存区数据
+                        RunReceiveDataCallback(btAryBuffer);
+
+                    } while (iSerialPort.BytesToRead != 0);
                 }
-
-                byte[] btAryBuffer = new byte[nCount];
-                int nRead = iSerialPort.Read(btAryBuffer, 0, nCount);//读取串口缓存区数据
-                RunReceiveDataCallback(btAryBuffer);
-
-            } while (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 2);
-            return listRfid;
+                this.CloseCom();
+                return listRfid;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("操作串口错误：" + e.Message +","+strException);
+            }
         }
 
         private void RunReceiveDataCallback(byte[] btAryReceiveData)

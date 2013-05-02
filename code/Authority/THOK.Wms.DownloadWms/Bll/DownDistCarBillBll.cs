@@ -11,6 +11,11 @@ namespace THOK.Wms.DownloadWms.Bll
 {
    public class DownDistCarBillBll
     {
+       /// <summary>
+       /// 下载配车单表
+       /// </summary>
+       /// <param name="orderDate"></param>
+       /// <returns></returns>
        public bool DownDistCarBillInfo(string orderDate)
        {
            bool tag = true;

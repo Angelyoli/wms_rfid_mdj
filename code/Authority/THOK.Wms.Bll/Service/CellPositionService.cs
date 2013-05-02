@@ -48,33 +48,16 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = cellPosition.ToArray() };
         }
 
-        public bool Add(CellPosition cellPosition, out string strResult)
+        public bool Add(CellPosition cellPosition)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var c = new CellPosition();
-            if (c != null)
-            {
-                try
-                {
-                    c.CellCode = cellPosition.CellCode;
-                    c.StockInPositionID = cellPosition.StockInPositionID;
-                    c.StockOutPositionID = cellPosition.StockOutPositionID;
-
-                    CellPositionRepository.Add(c);
-                    CellPositionRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：找不到当前登陆用户！请重新登陆！";
-            }
-            return result;
+            var cp = new CellPosition();
+            cp.ID = cellPosition.ID;
+            cp.CellCode = cellPosition.CellCode;
+            cp.StockInPositionID = cellPosition.StockInPositionID;
+            cp.StockOutPositionID = cellPosition.StockOutPositionID;
+            CellPositionRepository.Add(cp);
+            CellPositionRepository.SaveChanges();
+            return true;
         }
 
         public bool Save(CellPosition CellPosition, out string strResult)
@@ -106,35 +89,26 @@ namespace THOK.Wms.Bll.Service
             return result;
         }
 
-        public bool Delete(int cellPositionId, out string strResult)
+
+
+        public bool Delete(int cellPositionId)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var c = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == cellPositionId);
-            if (c != null)
+             var cp = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == cellPositionId);
+            if (cp != null)
             {
-                try
-                {
-                    CellPositionRepository.Delete(c);
-                    CellPositionRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    strResult = "原因：已在使用";
-                }
+                CellPositionRepository.Delete(cp);
+                CellPositionRepository.SaveChanges();
             }
             else
-            {
-                strResult = "原因：未找到当前需要删除的数据！";
-            }
-            return result;
+                return false;
+            return true;
         }
 
-        public System.Data.DataTable GetCellPosition(int page, int rows, string cellCode)
+        public System.Data.DataTable GetCellPosition(int page, int rows, CellPosition cp)
         {
             IQueryable<CellPosition> cellPositionQuery = CellPositionRepository.GetQueryable();
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+
             var cellPosition = cellPositionQuery.Join(positionQuery,
                                          c => c.StockInPositionID,
                                          p1 => p1.ID,
@@ -143,7 +117,7 @@ namespace THOK.Wms.Bll.Service
                                          c => c.StockOutPositionID,
                                          p2 => p2.ID,
                                          (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName = p2.PositionName })
-                                         .Where(p => p.CellCode.Contains(cellCode))
+                                         .Where(p => p.CellCode.Contains(cp.CellCode))
                                          .OrderBy(p => p.ID).AsEnumerable()
                                          .Select(p => new
                                          {
@@ -169,5 +143,6 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
+
     }
 }

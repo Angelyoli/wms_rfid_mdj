@@ -36,10 +36,15 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /Size/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-            string SizeName = collection["SizeName"] ?? "";
+            Size size = new Size();
+            size.SizeName = collection["SizeName"] ?? "";
             string SizeNo = collection["SizeNo"] ?? "";
-            var srm = SizeService.GetDetails(page, rows, SizeName, SizeNo);
-            return Json(srm, "text", JsonRequestBehavior.AllowGet);
+            if (SizeNo != "" &&  SizeNo != null)
+            {
+                size.SizeNo = Convert.ToInt32(SizeNo);
+            }
+            var sizeDetail = SizeService.GetDetails(page, rows, size);
+            return Json(sizeDetail, "text", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SearchPage()
@@ -104,15 +109,18 @@ namespace Wms.Controllers.Wms.BasisInfo
        //  /Size/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
-            int page = 0, rows = 0;
-            string sizeName = Request.QueryString["sizeName"];
-            //string state = Request.QueryString["state"];
-
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-            ep.DT1 = SizeService.GetSize(page, rows, sizeName);
-            ep.HeadTitle1 = "件烟尺寸信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+             int page = 0, rows = 0;
+             int SizeID = Convert.ToInt32(Request.QueryString["ID"]);
+             string SizeName = Request.QueryString["SizeName"];
+             Size size = new Size();
+             size.ID = SizeID;
+             size.SizeName = SizeName;
+             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+             ep.DT1 = SizeService.GetSize(page, rows, size);
+             ep.HeadTitle1 = "件烟尺寸信息";
+             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
+             return new FileStreamResult(ms, "application/ms-excel");
+           
         }  
 
     }

@@ -1,12 +1,14 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        var regionName = null, state = null;
+        var regionName = null, state = null, description = null;
         // if ($('#ID').val() == null) { id = ""; } else { id=$('#ID').val()}
         if ($('#RegionName').val() == null) { regionName = ""; } else { regionName = $('#RegionName').val() }
+        if ($('#Description').val() == null) { description = ""; } else { description = $('#Description').val() }
         if (document.getElementById('#State') == null) { state = ""; } else { state = $('#State').combo('getValue') }
 
         window.location.href = "/Region/CreateExcelToClient/"
                                 + "?regionName=" + regionName
+                                + "&description=" + description
                                 + "&state=" + state;
     }
 </script>
