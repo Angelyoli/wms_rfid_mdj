@@ -7,16 +7,12 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
 using THOK.Wms.DbModel;
-#region
-using NPOI.HSSF.UserModel;
-using NPOI.HPSF;
-using NPOI.SS.UserModel;
 using System.IO;
 using System.Data;
 using THOK.Common;
-using THOK.Security; 
-
-#endregion
+using THOK.Security;
+using THOK.Common.NPOI.Service;
+using THOK.Common.NPOI.Models;
 
 namespace Authority.Controllers.Organization
 {
@@ -120,14 +116,13 @@ namespace Authority.Controllers.Organization
             string companyType = Request.QueryString["companyType"] ?? "";
             string isActive = Request.QueryString["isActive"] ?? "";
             
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
             ep.HeadTitle1 = "公司信息";
             ep.BigHeadColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
             ep.ColHeadColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
             ep.ContentColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

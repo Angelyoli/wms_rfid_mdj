@@ -277,19 +277,33 @@ namespace THOK.Common.NPOI.Service
             #endregion
 
             #region 页眉 页脚
-            sheet.Header.Left = ep.HeaderFooter.ToString();
-            sheet.Header.Center = ep.HeaderFooter[1].ToString();
-            sheet.Header.Right = ep.HeaderFooter[2].ToString();
-            sheet.Footer.Left = ep.HeaderFooter[3].ToString();
-            sheet.Footer.Center = ep.HeaderFooter[4].ToString();
-            sheet.Footer.Right = ep.HeaderFooter[5].ToString();
+            try
+            {
+                sheet.Header.Left = ep.HeaderFooter[0].ToString();
+                sheet.Header.Center = ep.HeaderFooter[1].ToString();
+                sheet.Header.Right = ep.HeaderFooter[2].ToString();
+                sheet.Footer.Left = ep.HeaderFooter[3].ToString();
+                sheet.Footer.Center = ep.HeaderFooter[4].ToString();
+                sheet.Footer.Right = ep.HeaderFooter[5].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;   //原因：DT或者数组为空。
+            }
             #endregion
 
             #region 返回内存流
             MemoryStream ms = new MemoryStream();
-            workbook.Write(ms);
-            ms.Flush();
-            ms.Position = 0;
+            try
+            {
+                workbook.Write(ms);
+                ms.Flush();
+                ms.Position = 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return ms;
             #endregion
         }
@@ -345,7 +359,7 @@ namespace THOK.Common.NPOI.Service
             return cellStyle;
         }
         #endregion
-        
+
         #region 取得列宽
         static void GetColumnWidth(DataTable dt, int[] arrColWidth)
         {
@@ -364,7 +378,7 @@ namespace THOK.Common.NPOI.Service
                         if (intTemp > 250)
                         {
                             arrColWidth[j] = 50;
-                        } 
+                        }
                         #endregion
                         else
                         {
