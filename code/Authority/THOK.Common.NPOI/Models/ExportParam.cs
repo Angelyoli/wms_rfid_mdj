@@ -22,7 +22,8 @@ namespace THOK.Common.NPOI.Models
                                     ,"……"  //脚中
                                     ,"&P"    //脚右 Page
                                 };
-        string streamType = "application/ms-excel"; 
+        string streamType = "application/ms-excel";
+        //Color sample: NPOI.HSSF.Util.HSSFColor.BLACK.index;
         #endregion
 
         #region Method

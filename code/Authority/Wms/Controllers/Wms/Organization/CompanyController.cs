@@ -119,9 +119,6 @@ namespace Authority.Controllers.Organization
             ExportParam ep = new ExportParam();
             ep.DT1 = CompanyService.GetCompany(page, rows, companyCode, companyName, companyType, isActive);
             ep.HeadTitle1 = "公司信息";
-            ep.BigHeadColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            ep.ColHeadColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            ep.ContentColor=NPOI.HSSF.Util.HSSFColor.BLACK.index;
             return PrintService.Print(ep);
         }
         #endregion

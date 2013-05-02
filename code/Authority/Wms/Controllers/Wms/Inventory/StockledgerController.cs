@@ -1,6 +1,8 @@
 ﻿using System.Web.Mvc;
 using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.Inventory
 {
@@ -42,7 +44,6 @@ namespace Authority.Controllers.Wms.Inventory
             return Json(StockledgerDetails, "text", JsonRequestBehavior.AllowGet);
         }
 
-        #region
         // GET: /Stockledger/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
@@ -51,12 +52,10 @@ namespace Authority.Controllers.Wms.Inventory
             string productCode = Request.QueryString["productCode"];
             string settleDate = Request.QueryString["settleDate"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = StockledgerService.GetInfoDetail(page, rows, warehouseCode, productCode, settleDate);
             ep.HeadTitle1 = "库存历史总账明细";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
-        #endregion
     }
 }
