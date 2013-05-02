@@ -10,6 +10,8 @@ using THOK.WMS.DownloadWms.Bll;
 using THOK.Wms.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -144,11 +146,10 @@ namespace Authority.Controllers.Wms.SortingInfo
             int page = 0, rows = 0;
             string orderId = Request.QueryString["orderId"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = SortOrderDetailService.GetSortOrderDetail(page, rows, orderId);
             ep.HeadTitle1 = "分拣订单管理";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }
