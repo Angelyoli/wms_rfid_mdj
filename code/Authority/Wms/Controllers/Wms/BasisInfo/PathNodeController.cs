@@ -141,10 +141,10 @@ namespace Wms.Controllers.Wms.BasisInfo
         }
         // POST: /PathNode/PathEdit/
         [HttpPost]
-        public ActionResult PathEdit(string ID, string PositionID, string PathNodeOrder)
+        public ActionResult PathEdit(string pathID, string PositionID, string PathNodeOrder)
         {
             PathNode pathNode = new PathNode();
-            pathNode.ID = Convert.ToInt32(ID);
+            pathNode.ID = Convert.ToInt32(pathID);
             pathNode.PositionID = Convert.ToInt32(PositionID);
             pathNode.PathNodeOrder = Convert.ToInt32(PathNodeOrder);
             bool bResult = PathNodeService.Save(pathNode);
@@ -157,9 +157,7 @@ namespace Wms.Controllers.Wms.BasisInfo
         public ActionResult PathDelete(string pathID, string PositionID, string PathNodeOrder)
         {
             PathNode pathNode = new PathNode();
-            pathNode.PathID = Convert.ToInt32(pathID);
-            pathNode.PositionID = Convert.ToInt32(PositionID);
-            pathNode.PathNodeOrder = Convert.ToInt32(PathNodeOrder);
+            pathNode.ID = Convert.ToInt32(pathID);
             bool bResult = PathNodeService.Delete(pathNode);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
