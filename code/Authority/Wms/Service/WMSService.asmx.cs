@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Services;
-using System.Web.Services.Protocols;
 using System.Xml.Linq;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Security;
 using System.Transactions;
-using System.Xml;
-using THOK.Authority.Bll.Interfaces;
-using System.Transactions;
-using System.Xml;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace Wms.Service
 {
@@ -111,7 +104,7 @@ namespace Wms.Service
                                          BillCompanyCode = data.Element("bb_commerce_code").Value,
                                          SupplierCode = data.Element("bb_flow_code").Value,
                                          SupplierType = data.Element("bb_flow_type").Value,
-                                         State = data.Element("BB_STATE").Value,
+                                         State = data.Element("bb_state").Value,
                                          BillDetail = from data_1 in doc.Descendants("data_1")
                                                       select new
                                                       {
@@ -119,49 +112,49 @@ namespace Wms.Service
                                                           BoxCigarCode = data_1.Element("bd_bcig_code").Value,
                                                           BillQuantity = data_1.Element("bd_bill_all_num1").Value,
                                                           FixedQuantity = data_1.Element("bd_bill_fixed_all_num1").Value,
-                                                          RealQuantity = data_1.Element("BD_BILL_ALL_SCAN_NUM1").Value
+                                                          RealQuantity = data_1.Element("bd_bill_all_scan_num1").Value
                                                       }
                                      };
                     #endregion
 
                     #region var contract
-                    var contract = from cb1 in doc.Descendants("CONTRACT_BASE_1")
+                    var contract = from cb1 in doc.Descendants("contract_base_1")
                                    select new
                                    {
-                                       ContractCode = cb1.Element("CONTRACT_NO").Value,
-                                       SupplySideCode = cb1.Element("A_NO").Value,
-                                       DemandSideCode = cb1.Element("B_NO").Value,
-                                       ContractDate = cb1.Element("CONTRACT_DATE").Value,
-                                       StartDade = cb1.Element("START_DATE").Value,
-                                       EndDate = cb1.Element("END_DATE").Value,
-                                       SendPlaceCode = cb1.Element("SEND_CODE").Value,
-                                       SendAddress = cb1.Element("SEND_ADD").Value,
-                                       ReceivePlaceCode = cb1.Element("RECEIVE_CODE").Value,
-                                       ReceiveAddress = cb1.Element("RECEIVE_ADD").Value,
-                                       SaleDate = cb1.Element("SALE_DATE").Value,
-                                       State = cb1.Element("USE_STATE").Value,
-                                       ContractDetail = from cd1 in doc.Descendants("CONTRACT_DETAIL_1")
+                                       ContractCode = cb1.Element("contract_no").Value,
+                                       SupplySideCode = cb1.Element("a_no").Value,
+                                       DemandSideCode = cb1.Element("b_no").Value,
+                                       ContractDate = cb1.Element("contract_date").Value,
+                                       StartDade = cb1.Element("start_date").Value,
+                                       EndDate = cb1.Element("end_date").Value,
+                                       SendPlaceCode = cb1.Element("send_code").Value,
+                                       SendAddress = cb1.Element("send_add").Value,
+                                       ReceivePlaceCode = cb1.Element("receive_code").Value,
+                                       ReceiveAddress = cb1.Element("receive_add").Value,
+                                       SaleDate = cb1.Element("sale_date").Value,
+                                       State = cb1.Element("use_state").Value,
+                                       ContractDetail = from cd1 in doc.Descendants("contract_detail_1")
                                                         select new
                                                         {
-                                                            ContractCode = cd1.Element("CONTRACT_NO").Value,
-                                                            BrandCode = cd1.Element("BRAND_CODE").Value,
-                                                            Quantity = cd1.Element("NUM").Value,
-                                                            Price = cd1.Element("PRICE").Value,
-                                                            Amount = cd1.Element("SUM").Value,
-                                                            TaxAmount = cd1.Element("SUM_TAX").Value
+                                                            ContractCode = cd1.Element("contract_no").Value,
+                                                            BrandCode = cd1.Element("brand_code").Value,
+                                                            Quantity = cd1.Element("num").Value,
+                                                            Price = cd1.Element("price").Value,
+                                                            Amount = cd1.Element("sum").Value,
+                                                            TaxAmount = cd1.Element("sum_tax").Value
                                                         }
                                    };
                     #endregion
 
                     #region var navicert
-                    var navicert = from zb1 in doc.Descendants("ZYZ_BASE_1")
+                    var navicert = from zb1 in doc.Descendants("zyz_base_1")
                                    select new
                                    {
-                                       NavicertCode = zb1.Element("PERM_ID").Value,
-                                       NavicertDate = zb1.Element("PERM_DATE").Value,
-                                       TruckPlateNo = zb1.Element("TRUCK_NO").Value
+                                       NavicertCode = zb1.Element("perm_id").Value,
+                                       NavicertDate = zb1.Element("perm_date").Value,
+                                       TruckPlateNo = zb1.Element("truck_no").Value
                                    };
-                    var contractCodes = from nc1 in doc.Descendants("CONTRACT_CODE")
+                    var contractCodes = from nc1 in doc.Descendants("contract_code")
                                         select new
                                         {
                                             ContractCode = nc1.Value
@@ -302,7 +295,7 @@ namespace Wms.Service
                                         }
                                         else
                                         {
-                                            #region 
+                                            #region
                                             Navicert na = new Navicert();
 
                                             for (int m = 0; m < contractCodes.Count(); m++)
@@ -335,7 +328,7 @@ namespace Wms.Service
                                                         break;
                                                     }
                                                 }
-                                                
+
                                             }
                                             #endregion
                                         }
@@ -363,6 +356,7 @@ namespace Wms.Service
             {
                 result = string.Format(returnMsg, "", "", "XML参数是空的！", "", "", timeNow, "");
             }
+            result = ZipBase64(result);
             return result;
         }
 
@@ -372,7 +366,7 @@ namespace Wms.Service
         {
             try
             {
-                return WMSBillService(Unzip(xml));
+                return WMSBillService(UpZipBase64(xml));
             }
             catch (Exception)
             {
@@ -473,19 +467,19 @@ namespace Wms.Service
             }
             if (result == "")
             {
-                return string.Format(returnMsg, head.msg_id.ToString(), "000", "发送成功", head.ws_mark.ToString(), head.ws_method.ToString(), head.ws_param.ToString(), head.curr_time.ToString(), head.curr_user.ToString());
+                return ZipBase64(string.Format(returnMsg, head.msg_id.ToString(), "000", "发送成功", head.ws_mark.ToString(), head.ws_method.ToString(), head.ws_param.ToString(), head.curr_time.ToString(), head.curr_user.ToString()));
             }
             else
             {
-                return string.Format(returnMsg, head.msg_id, "001", result, head.ws_mark, head.ws_method, head.ws_param, head.curr_time, head.curr_user);
+                return ZipBase64(string.Format(returnMsg, head.msg_id, "001", result, head.ws_mark, head.ws_method, head.ws_param, head.curr_time, head.curr_user));
             }
         }
 
         [WebMethod]
         public string WMSPalletInfo_ZipBase64(string xml)
         {
-            string resultUnzip = Unzip(xml);
-            if (b==true)
+            string resultUnzip = UpZipBase64(xml);
+            if (b == true)
             {
                 try
                 {
@@ -496,92 +490,98 @@ namespace Wms.Service
                     return returnMsg;
                 }
             }
-            else 
+            else
             {
                 return resultUnzip;
             }
         }
 
-        public string Unzip(string xml)
+        public static string ZipBase64(string strSource)
         {
-            string decoded = "";
-            //base64解码
             try
             {
-                System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-                System.Text.Decoder utf8Decode = encoder.GetDecoder();
-                byte[] todecode_byte = Convert.FromBase64String(xml);
-                int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
-                char[] decoded_char = new char[charCount];
-                utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
-                decoded = new String(decoded_char);
+                //将明文字符串STRA转化为字节数组BYTEA。
+                byte[] bytesDecode = Encoding.UTF8.GetBytes(strSource);
+                //将字节数组BYTEA压缩成BYTEB。
+                bytesDecode = ZipBytes(bytesDecode);
+                //对BYTEB采用BASE64编码，形成密文字符串STRB。
+                return Convert.ToBase64String(bytesDecode);
             }
-            catch (Exception e)
+            catch (Exception er)
             {
-                b = false;
-                return string.Format(returnMsg, "", "001", "发送失败：" + e.Message, "", "", "", "", "");
+                throw er;
             }
-            //解压缩
+
+        }
+
+        public static byte[] ZipBytes(byte[] bytesZip)
+        {
             try
             {
-                byte[] compressBeforeByte = Convert.FromBase64String(decoded);
-                byte[] buffer = new byte[0x1000];
-                MemoryStream ms = new MemoryStream(compressBeforeByte);
-                GZipStream zip = new GZipStream(ms, CompressionMode.Decompress, true);
-                MemoryStream msreader = new MemoryStream();
+                MemoryStream mMemory = new MemoryStream();
+                ZipOutputStream mStream = new ZipOutputStream(mMemory);
+                ZipEntry ze = new ZipEntry("zipEntry");
+                mStream.PutNextEntry(ze);
+
+                mStream.Write(bytesZip, 0, bytesZip.Length);
+                mStream.Close();
+                byte[] bytesUnzip = mMemory.ToArray();
+                return bytesUnzip;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static string UpZipBase64(string strSource)
+        {
+            try
+            {
+                //Base64解码
+                byte[] bytesEncode = Convert.FromBase64String(strSource);
+                //对字节数组BTYEB进行Zip解压，得到BYTEA
+                bytesEncode = UnzipBytes(bytesEncode);
+                //将字节数组BYTEA转换为字符串，得到明文STRA
+                return Encoding.UTF8.GetString(bytesEncode);
+            }
+            catch (Exception er)
+            {
+                throw er;
+            }
+        }
+
+        public static byte[] UnzipBytes(byte[] bytesUnzip)
+        {
+            try
+            {
+                ZipInputStream mStream = new ZipInputStream(new MemoryStream(bytesUnzip));
+                mStream.GetNextEntry();
+                MemoryStream mMemory = new MemoryStream();
+                Int32 mSize;
+                byte[] mWriteData = new byte[4096];
                 while (true)
                 {
-                    int reader = zip.Read(buffer, 0, buffer.Length);
-                    if (reader <= 0)
+                    mSize = mStream.Read(mWriteData, 0, mWriteData.Length);
+                    if (mSize > 0)
+                    {
+                        mMemory.Write(mWriteData, 0, mSize);
+                    }
+                    else
                     {
                         break;
                     }
-                    msreader.Write(buffer, 0, reader);
                 }
-                zip.Close();
-                ms.Close();
-                msreader.Position = 0;
-                buffer = msreader.ToArray();
-                msreader.Close();
-                byte[] compressAfterByte = buffer;
-                xml = Encoding.GetEncoding("UTF-8").GetString(compressAfterByte);
-            }
-            catch (Exception e)
-            {
-                b = false;
-                return string.Format(returnMsg, "", "001", "发送失败：" + e.Message, "", "", "", "", "");
-            }
-            b = true;
-            return xml;
-        }
-        [WebMethod]
-        public string Zip(string xml)
-        {
-            //压缩
-            string compressStr = "";
-            byte[] compressBeforeByte = Encoding.GetEncoding("UTF-8").GetBytes(xml);
-            try
-            {
-                MemoryStream ms = new MemoryStream();
-                GZipStream zip = new GZipStream(ms, CompressionMode.Compress, true);
-                zip.Write(compressBeforeByte, 0, compressBeforeByte.Length);
-                zip.Close();
-                byte[] buffer = new byte[ms.Length];
-                ms.Position = 0;
-                ms.Read(buffer, 0, buffer.Length);
-                ms.Close();
-                compressStr = Convert.ToBase64String(buffer);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+                mStream.Close();
 
-            //base64编码
-            byte[] encData_byte = new byte[compressStr.Length];
-            encData_byte = System.Text.Encoding.UTF8.GetBytes(compressStr);
-            xml = Convert.ToBase64String(encData_byte);
-            return xml;
+                byte[] bytesZip = mMemory.ToArray();
+
+                return bytesZip;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
