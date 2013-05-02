@@ -527,7 +527,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             bool Result = true;
             errorInfo = string.Empty;
 
-            var sortLowerlimit = sortingLowerlimitQuery.Where(s => s.Quantity > 0)
+            var sortLowerlimit = sortingLowerlimitQuery.Where(s => s.Quantity > 0 && s.IsActive=="1")
                                                        .GroupBy(s => new { s.SortingLine, s.Product, s.UnitCode })
                                                        .Select(l => new { l.Key.SortingLine, l.Key.Product, l.Key.UnitCode, SumQuantity = l.Sum(p => p.Quantity) })
                                                        .GroupBy(o => new { o.SortingLine })
