@@ -36,8 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\packages\npoi.1.2.5\.net 4.0\Ionic.Zip.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\THOK.Common.Highcharts\ThirdParty\itextsharp.dll</HintPath>
