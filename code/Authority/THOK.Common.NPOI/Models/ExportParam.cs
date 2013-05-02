@@ -7,6 +7,7 @@ namespace THOK.Common.NPOI.Models
 {
     public class ExportParam
     {
+        #region Variable
         string bigHeadFont = "微软雅黑";
         short bigHeadSize = 20;
         bool bigHeadBorder = true;
@@ -21,8 +22,10 @@ namespace THOK.Common.NPOI.Models
                                     ,"……"  //脚中
                                     ,"&P"    //脚右 Page
                                 };
-        string streamType = "application/ms-excel";
+        string streamType = "application/ms-excel"; 
+        #endregion
 
+        #region Method
         /// <summary>First excel table sheet1's title</summary>
         public string HeadTitle1 { get; set; }
         /// <summary>First excel table sheet2's title</summary>
@@ -63,6 +66,7 @@ namespace THOK.Common.NPOI.Models
         public string[] HeaderFooter { get { return headerFooder; } set { headerFooder = value; } }
 
         /// <summary>MemoryStream type</summary>
-        public string StreamType { get { return streamType; } set { streamType = value; } }
+        public string StreamType { get { return streamType; } set { streamType = value; } } 
+        #endregion
     }
 }
