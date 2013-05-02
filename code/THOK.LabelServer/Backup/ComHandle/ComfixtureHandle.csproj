@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E4AF8963-1316-4335-8BCD-F3D4B75E24FF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>THOK.Zeng.ComfixtureHandle</RootNamespace>
+    <AssemblyName>ComHandle</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="base［不得修改］\Com.cs" />
+    <Compile Include="base［不得修改］\ComfixtureConfig.cs" />
+    <Compile Include="base［不得修改］\ComfixtureHandle.cs" />
+    <Compile Include="base［不得修改］\ComfixtureHandleFactory.cs" />
+    <Compile Include="el100汉显\CmdData.cs" />
+    <Compile Include="el100汉显\CmdType.cs" />
+    <Compile Include="el100汉显\ELabelOperator.cs" />
+    <Compile Include="el100汉显\Encoder.cs" />
+    <Compile Include="base［不得修改］\IELabelOperator.cs" />
+    <Compile Include="el100汉显\PacketRecv.cs" />
+    <Compile Include="el100汉显\Protocal.cs" />
+    <Compile Include="el100汉显\RecvType.cs" />
+    <Compile Include="el101未用\ComOperator.cs" />
+    <Compile Include="el101未用\Encoder.cs" />
+    <Compile Include="el101未用\InData.cs" />
+    <Compile Include="el101未用\InDataType.cs" />
+    <Compile Include="el101未用\OutData.cs" />
+    <Compile Include="el101未用\OutDataType.cs" />
+    <Compile Include="base［不得修改］\IEncoder.cs" />
+    <Compile Include="el102联控未完成\CmdData.cs" />
+    <Compile Include="el102联控未完成\CmdType.cs" />
+    <Compile Include="el102联控未完成\ELabelOperator.cs" />
+    <Compile Include="el102联控未完成\Encoder.cs" />
+    <Compile Include="el102联控未完成\PacketRecv.cs" />
+    <Compile Include="el102联控未完成\Protocal.cs" />
+    <Compile Include="el102联控未完成\RecvType.cs" />
+    <Compile Include="el103数显\CmdData.cs" />
+    <Compile Include="el103数显\ELabelOperator.cs" />
+    <Compile Include="el103数显\Encoder.cs" />
+    <Compile Include="el103数显\PacketRecv.cs" />
+    <Compile Include="el103数显\ParamSet.cs" />
+    <Compile Include="el103数显\Protocal.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="base［不得修改］\ClassDiagram.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

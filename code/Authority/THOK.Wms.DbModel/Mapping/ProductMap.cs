@@ -27,7 +27,7 @@ namespace THOK.Wms.DbModel.Mapping
                 .HasMaxLength(20);
 
             this.Property(t => t.CustomCode)
-                .HasMaxLength(20);
+                .HasMaxLength(30);
 
             this.Property(t => t.ShortCode)
                 .HasMaxLength(10);

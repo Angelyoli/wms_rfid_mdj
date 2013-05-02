@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="GB2312"?>
+<Bill>
+  <billInfo masteId="1109260005E2" billType="1" billTypeName="入库单">
+    <detailInfo DETAILID="10516" STORAGEID="ZK1-A-02-01" MOVESTORAGE="" OPERATENAME="入库" TOBACCONAME="人民大会堂                              " OPERATEPIECE="10" OPERATEITEM="0" OPERATECODE="1" STATENAME="已dd" OPERATOR="" MASTER="1109260005E2" BILLCODE="1" BILLNAME="入库单" CONFIRMSTATE="3" />
+  </billInfo>
+</Bill>

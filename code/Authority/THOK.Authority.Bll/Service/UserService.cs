@@ -162,11 +162,10 @@ namespace THOK.Authority.Bll.Service
 
         public bool ChangePassword(string userName, string password, string newPassword)
         {
-            var Passward = EncryptPassword(password);
-            var pwd=UserRepository.GetQueryable().FirstOrDefault(u=>u.UserName==userName);
-            if (Passward == pwd.Pwd)
+            var user = UserRepository.GetQueryable().FirstOrDefault(u => u.UserName == userName);
+            if (ComparePassword(password, user.Pwd))
             {
-                pwd.Pwd = EncryptPassword(newPassword);
+                user.Pwd = EncryptPassword(newPassword);
                 UserRepository.SaveChanges();
                 return true;
             }

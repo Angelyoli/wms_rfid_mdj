@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <DataConfig>
+    <IP>.</IP>
+    <DbName>Elinterface</DbName>
+    <User>sa</User>
+    <Pwd>123456</Pwd>
+  </DataConfig>
+</Root>
