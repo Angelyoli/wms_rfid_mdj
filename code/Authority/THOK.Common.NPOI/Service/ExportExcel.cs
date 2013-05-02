@@ -17,299 +17,300 @@ namespace THOK.Common.NPOI.Service
     {
         static HSSFWorkbook workbook;
 
-        #region 导出EXCEL单表双表
-        /// <summary>导出EXCEL单表双表</summary>
+        /// <summary>Export excle Single table Double table</summary>
         public static MemoryStream ExportDT(THOK.Common.NPOI.Models.ExportParam ep)
         {
-            #region 变量
+            MemoryStream ms = new MemoryStream();
+
+            #region Variable
             string exportDate = "导出时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             double columnWidth = ep.ColHeadSize - 9;
             short printHeight = 0;
             short printWidth = 10;
             int sheetCount = 65500; //一个Sheet中最多存65536行数据
             int page = 0;
+            byte[] error1 = Encoding.ASCII.GetBytes("Error : Data or Array is null!");
+            byte[] error2 = Encoding.ASCII.GetBytes("Error : Return MemoryStream Failed!");
             #endregion
 
-            #region 浏览器下载
-            THOK.Common.NPOI.Common.ExportExcelHeper.BrowserLoad(ep.HeadTitle1);
-            #endregion
-
-            #region 创建工作表
-            workbook = new HSSFWorkbook();
-            HSSFSheet sheet = null;
-            #endregion
-
-            #region 创建样式
-            HSSFCellStyle contentDateStyle = workbook.CreateCellStyle() as HSSFCellStyle;           //内容时间 单元格
-            HSSFCellStyle styleHead = workbook.CreateCellStyle() as HSSFCellStyle;                  //大标题   单元格
-            HSSFFont fontHead = workbook.CreateFont() as HSSFFont;                                  //大标题   字体
-            HSSFCellStyle styleDate = workbook.CreateCellStyle() as HSSFCellStyle;                  //导出时间 单元格
-            HSSFCellStyle styleColHead = workbook.CreateCellStyle() as HSSFCellStyle;               //列头     单元格
-            HSSFFont fontColHead = workbook.CreateFont() as HSSFFont;                               //列头     字体
-            HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;               //内容     单元格
-            HSSFFont fontContent = workbook.CreateFont() as HSSFFont;                               //内容     字体
-            contentStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00");                      //内容     设置所有列整型格式，也可以通过数据访问层来改变内容格式
-            HSSFCellStyle contentStyleDailyBalance = workbook.CreateCellStyle() as HSSFCellStyle;   //特殊模块 单元格
-            HSSFFont fontDailyBalance = workbook.CreateFont() as HSSFFont;                          //特殊模块 字体
-            #endregion
-
-            #region 全局样式
-            HSSFCellStyle headStyle = GetTitleStyle(ep.BigHeadFont, ep.BigHeadSize, ep.BigHeadColor, styleHead, fontHead);
-            HSSFCellStyle dateStyle = GetExportDate(styleDate);
-            HSSFCellStyle colHeadStyle = GetColumnStyle(ep.ColHeadFont, ep.ColHeadSize, ep.ColHeadColor, ep.ColHeadBorder, styleColHead, fontColHead);
-            #endregion
-
-            #region 取得列宽
-            int[] arrColWidth1 = new int[0];
-            int[] arrColWidth2 = new int[0];
-            if (ep.DT1 != null && ep.HeadTitle1 != null)
+            try
             {
-                arrColWidth1 = new int[ep.DT1.Columns.Count];
-                GetColumnWidth(ep.DT1, arrColWidth1);
-            }
-            if (ep.DT2 != null && ep.HeadTitle2 != null)
-            {
-                arrColWidth2 = new int[ep.DT2.Columns.Count];
-                GetColumnWidth(ep.DT2, arrColWidth2);
-            }
-            #endregion
+                #region HttpResponse
+                THOK.Common.NPOI.Common.ExportExcelHelper.BrowserLoad(ep.HeadTitle1);
+                #endregion
 
-            #region 创建EXCEL 表一
-            if (ep.DT1 != null && ep.HeadTitle1 != null)
-            {
-                int dt1count = ep.DT1.Rows.Count;
+                #region Init
+                workbook = new HSSFWorkbook();
+                HSSFSheet sheet = null;
+                #endregion
 
-                #region 判断多少页
-                if (dt1count % sheetCount == 0)
+                #region Create cell style
+                HSSFCellStyle contentDateStyle = workbook.CreateCellStyle() as HSSFCellStyle;           //内容时间 单元格
+                HSSFCellStyle styleHead = workbook.CreateCellStyle() as HSSFCellStyle;                  //大标题   单元格
+                HSSFFont fontHead = workbook.CreateFont() as HSSFFont;                                  //大标题   字体
+                HSSFCellStyle styleDate = workbook.CreateCellStyle() as HSSFCellStyle;                  //导出时间 单元格
+                HSSFCellStyle styleColHead = workbook.CreateCellStyle() as HSSFCellStyle;               //列头     单元格
+                HSSFFont fontColHead = workbook.CreateFont() as HSSFFont;                               //列头     字体
+                HSSFCellStyle contentStyle = workbook.CreateCellStyle() as HSSFCellStyle;               //内容     单元格
+                HSSFFont fontContent = workbook.CreateFont() as HSSFFont;                               //内容     字体
+                contentStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00");                      //内容     设置所有列整型格式，也可以通过数据访问层来改变内容格式
+                HSSFCellStyle contentStyleDailyBalance = workbook.CreateCellStyle() as HSSFCellStyle;   //特殊模块 单元格
+                HSSFFont fontDailyBalance = workbook.CreateFont() as HSSFFont;                          //特殊模块 字体
+                #endregion
+
+                #region Global style
+                HSSFCellStyle headStyle = GetTitleStyle(ep.BigHeadFont, ep.BigHeadSize, ep.BigHeadColor, styleHead, fontHead);
+                HSSFCellStyle dateStyle = GetExportDate(styleDate);
+                HSSFCellStyle colHeadStyle = GetColumnStyle(ep.ColHeadFont, ep.ColHeadSize, ep.ColHeadColor, ep.ColHeadBorder, styleColHead, fontColHead);
+                #endregion
+
+                #region Get column width
+                int[] arrColWidth1 = new int[0];
+                int[] arrColWidth2 = new int[0];
+                if (ep.DT1 != null && ep.HeadTitle1 != null)
                 {
-                    page = dt1count / sheetCount;
+                    arrColWidth1 = new int[ep.DT1.Columns.Count];
+                    GetColumnWidth(ep.DT1, arrColWidth1);
                 }
-                else
+                if (ep.DT2 != null && ep.HeadTitle2 != null)
                 {
-                    page = dt1count / sheetCount + 1;
+                    arrColWidth2 = new int[ep.DT2.Columns.Count];
+                    GetColumnWidth(ep.DT2, arrColWidth2);
                 }
                 #endregion
 
-                for (int a = 0; a < page; a++)
+                #region Create excel table one
+                if (ep.DT1 != null && ep.HeadTitle1 != null)
                 {
-                    #region SHEET分页标题
-                    string sheetNum = a.ToString();
-                    if (a == 0)
+                    int dt1count = ep.DT1.Rows.Count;
+
+                    #region 判断多少页
+                    if (dt1count % sheetCount == 0)
                     {
-                        sheetNum = sheetNum.Substring(0, a.ToString().Length - 1);
+                        page = dt1count / sheetCount;
                     }
-                    string headTitle1_sheetNum = ep.HeadTitle1 + sheetNum;
-                    sheet = workbook.CreateSheet(headTitle1_sheetNum) as HSSFSheet;
-                    #endregion
-
-                    #region SHEET打印设置
-                    sheet.PrintSetup.FitHeight = printHeight;
-                    sheet.PrintSetup.FitWidth = printWidth;
-                    #endregion
-
-                    int rowIndex1 = 0;
-
-                    #region 内容分页
-                    DataTable newdt1 = THOK.Common.NPOI.Common.ExportExcelHeper.SetPage(ep.DT1, a + 1, sheetCount);
-                    #endregion
-
-                    #region 填充数据
-                    foreach (DataRow row in newdt1.Rows)
+                    else
                     {
-                        if (rowIndex1 == 0)
+                        page = dt1count / sheetCount + 1;
+                    }
+                    #endregion
+
+                    for (int a = 0; a < page; a++)
+                    {
+                        #region SHEET分页标题
+                        string sheetNum = a.ToString();
+                        if (a == 0)
                         {
-                            if (rowIndex1 != 0)
-                            {
-                                sheet = workbook.CreateSheet() as HSSFSheet;
-                                sheet.PrintSetup.FitHeight = printHeight;
-                                sheet.PrintSetup.FitWidth = printWidth;
-                            }
-                            #region 填充“表头”和它的样式
-                            {
-                                HSSFRow headerRow = sheet.CreateRow(0) as HSSFRow;
-                                headerRow.HeightInPoints = Convert.ToInt16(ep.BigHeadSize * 1.4);
-                                headerRow.CreateCell(0).SetCellValue(ep.HeadTitle1);
-                                headerRow.GetCell(0).CellStyle = headStyle;
-                                CellRangeAddress region = new CellRangeAddress(0, 0, 0, newdt1.Columns.Count - 1);
-                                sheet.AddMergedRegion(region);
-                                if (ep.BigHeadBorder == true)
-                                {
-                                    sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);//给合并的画线
-                                }
-                            }
-                            #endregion
-                            #region 填充“导出时间”和它的样式
-                            {
-                                HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
-                                headerRow.CreateCell(0).SetCellValue(exportDate);
-                                headerRow.GetCell(0).CellStyle = dateStyle;
-                                CellRangeAddress region = new CellRangeAddress(1, 1, 0, newdt1.Columns.Count - 1);
-                                sheet.AddMergedRegion(region);
-                                if (ep.ColHeadBorder == true)
-                                {
-                                    sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
-                                }
-                            }
-                            #endregion
-                            #region 填充“列头”和它的样式
-                            {
-                                HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
-                                headerRow.HeightInPoints = Convert.ToInt16(ep.ColHeadSize * 1.4);
-                                foreach (DataColumn column in newdt1.Columns)
-                                {
-                                    headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-                                    headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
-                                    sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth1[column.Ordinal] + columnWidth) * 256));//设置列宽
-                                }
-                            }
-                            #endregion
-                            rowIndex1 = 3;
+                            sheetNum = sheetNum.Substring(0, a.ToString().Length - 1);
                         }
-                        #region 填充内容
-                        HSSFRow dataRow = sheet.CreateRow(rowIndex1) as HSSFRow;
-                        foreach (DataColumn column in newdt1.Columns)
+                        string headTitle1_sheetNum = ep.HeadTitle1 + sheetNum;
+                        sheet = workbook.CreateSheet(headTitle1_sheetNum) as HSSFSheet;
+                        #endregion
+
+                        #region SHEET打印设置
+                        sheet.PrintSetup.FitHeight = printHeight;
+                        sheet.PrintSetup.FitWidth = printWidth;
+                        #endregion
+
+                        int rowIndex1 = 0;
+
+                        #region 内容分页
+                        DataTable newdt1 = THOK.Common.NPOI.Common.ExportExcelHelper.SetPage(ep.DT1, a + 1, sheetCount);
+                        #endregion
+
+                        #region 填充数据
+                        foreach (DataRow row in newdt1.Rows)
                         {
-                            FillContent(dataRow, column, row, contentStyle, fontContent
-                                , contentDateStyle
-                                , contentStyleDailyBalance, fontDailyBalance
-                                , ep
-                                , sheet, headTitle1_sheetNum);
+                            if (rowIndex1 == 0)
+                            {
+                                if (rowIndex1 != 0)
+                                {
+                                    sheet = workbook.CreateSheet() as HSSFSheet;
+                                    sheet.PrintSetup.FitHeight = printHeight;
+                                    sheet.PrintSetup.FitWidth = printWidth;
+                                }
+                                #region 填充“表头”和它的样式
+                                {
+                                    HSSFRow headerRow = sheet.CreateRow(0) as HSSFRow;
+                                    headerRow.HeightInPoints = Convert.ToInt16(ep.BigHeadSize * 1.4);
+                                    headerRow.CreateCell(0).SetCellValue(ep.HeadTitle1);
+                                    headerRow.GetCell(0).CellStyle = headStyle;
+                                    CellRangeAddress region = new CellRangeAddress(0, 0, 0, newdt1.Columns.Count - 1);
+                                    sheet.AddMergedRegion(region);
+                                    if (ep.BigHeadBorder == true)
+                                    {
+                                        sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);//给合并的画线
+                                    }
+                                }
+                                #endregion
+                                #region 填充“导出时间”和它的样式
+                                {
+                                    HSSFRow headerRow = sheet.CreateRow(1) as HSSFRow;
+                                    headerRow.CreateCell(0).SetCellValue(exportDate);
+                                    headerRow.GetCell(0).CellStyle = dateStyle;
+                                    CellRangeAddress region = new CellRangeAddress(1, 1, 0, newdt1.Columns.Count - 1);
+                                    sheet.AddMergedRegion(region);
+                                    if (ep.ColHeadBorder == true)
+                                    {
+                                        sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
+                                    }
+                                }
+                                #endregion
+                                #region 填充“列头”和它的样式
+                                {
+                                    HSSFRow headerRow = sheet.CreateRow(2) as HSSFRow;
+                                    headerRow.HeightInPoints = Convert.ToInt16(ep.ColHeadSize * 1.4);
+                                    foreach (DataColumn column in newdt1.Columns)
+                                    {
+                                        headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
+                                        headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
+                                        sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth1[column.Ordinal] + columnWidth) * 256));//设置列宽
+                                    }
+                                }
+                                #endregion
+                                rowIndex1 = 3;
+                            }
+                            #region 填充内容
+                            HSSFRow dataRow = sheet.CreateRow(rowIndex1) as HSSFRow;
+                            foreach (DataColumn column in newdt1.Columns)
+                            {
+                                FillContent(dataRow, column, row, contentStyle, fontContent
+                                    , contentDateStyle
+                                    , contentStyleDailyBalance, fontDailyBalance
+                                    , ep
+                                    , sheet, headTitle1_sheetNum);
+                            }
+                            rowIndex1++;
+                            #endregion
                         }
-                        rowIndex1++;
                         #endregion
                     }
-                    #endregion
                 }
-            }
-            #endregion
+                #endregion
 
-            #region 创建EXCEL 表二
-            if (ep.DT2 != null && ep.HeadTitle2 != null)
-            {
-                int dt2count = ep.DT2.Rows.Count;
-                if (dt2count % sheetCount == 0)
+                #region Create excel table two
+                if (ep.DT2 != null && ep.HeadTitle2 != null)
                 {
-                    page = dt2count / sheetCount;
-                }
-                else
-                {
-                    page = dt2count / sheetCount + 1;
-                }
-                for (int a = 0; a < page; a++)
-                {
-                    int rowIndex2 = 0;
-                    DataTable newdt2 = THOK.Common.NPOI.Common.ExportExcelHeper.SetPage(ep.DT2, a + 1, sheetCount);
-                    string strA = a.ToString();
-                    if (a == 0)
+                    int dt2count = ep.DT2.Rows.Count;
+                    if (dt2count % sheetCount == 0)
                     {
-                        strA = strA.Substring(0, a.ToString().Length - 1);
+                        page = dt2count / sheetCount;
                     }
-                    string headText2strA = ep.HeadTitle2 + strA;
-
-                    #region 填充数据
-                    foreach (DataRow row in newdt2.Rows)
+                    else
                     {
-                        if (rowIndex2 == 0)
+                        page = dt2count / sheetCount + 1;
+                    }
+                    for (int a = 0; a < page; a++)
+                    {
+                        int rowIndex2 = 0;
+                        DataTable newdt2 = THOK.Common.NPOI.Common.ExportExcelHelper.SetPage(ep.DT2, a + 1, sheetCount);
+                        string strA = a.ToString();
+                        if (a == 0)
                         {
-                            HSSFRow headerRow;
-                            if (rowIndex2 != 1)
+                            strA = strA.Substring(0, a.ToString().Length - 1);
+                        }
+                        string headText2strA = ep.HeadTitle2 + strA;
+
+                        #region 填充数据
+                        foreach (DataRow row in newdt2.Rows)
+                        {
+                            if (rowIndex2 == 0)
                             {
-                                sheet = workbook.CreateSheet(headText2strA) as HSSFSheet;
-                                sheet.PrintSetup.FitHeight = printHeight;
-                                sheet.PrintSetup.FitWidth = printWidth;
-                            }
-                            #region 填充表头、样式
-                            {
-                                headerRow = sheet.CreateRow(0) as HSSFRow;
-                                headerRow.HeightInPoints = Convert.ToInt16(ep.BigHeadSize * 1.4);
-                                headerRow.CreateCell(0).SetCellValue(ep.HeadTitle2);
-                                headerRow.GetCell(0).CellStyle = headStyle;
-                                CellRangeAddress region = new CellRangeAddress(0, 0, 0, newdt2.Columns.Count - 1);
-                                sheet.AddMergedRegion(region);
-                                if (ep.BigHeadBorder == true)
+                                HSSFRow headerRow;
+                                if (rowIndex2 != 1)
                                 {
-                                    sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
+                                    sheet = workbook.CreateSheet(headText2strA) as HSSFSheet;
+                                    sheet.PrintSetup.FitHeight = printHeight;
+                                    sheet.PrintSetup.FitWidth = printWidth;
                                 }
-                            }
-                            #endregion
-                            #region 导出时间、样式
-                            {
-                                headerRow = sheet.CreateRow(1) as HSSFRow;
-                                headerRow.CreateCell(0).SetCellValue(exportDate);
-                                headerRow.GetCell(0).CellStyle = dateStyle;
-                                CellRangeAddress region = new CellRangeAddress(1, 1, 0, newdt2.Columns.Count - 1);
-                                sheet.AddMergedRegion(region);
-                                if (ep.ColHeadBorder == true)
+                                #region 填充表头、样式
                                 {
-                                    sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
+                                    headerRow = sheet.CreateRow(0) as HSSFRow;
+                                    headerRow.HeightInPoints = Convert.ToInt16(ep.BigHeadSize * 1.4);
+                                    headerRow.CreateCell(0).SetCellValue(ep.HeadTitle2);
+                                    headerRow.GetCell(0).CellStyle = headStyle;
+                                    CellRangeAddress region = new CellRangeAddress(0, 0, 0, newdt2.Columns.Count - 1);
+                                    sheet.AddMergedRegion(region);
+                                    if (ep.BigHeadBorder == true)
+                                    {
+                                        sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
+                                    }
                                 }
-                            }
-                            #endregion
-                            #region 填充列头、样式
-                            {
-                                headerRow = sheet.CreateRow(2) as HSSFRow;
-                                foreach (DataColumn column in newdt2.Columns)
+                                #endregion
+                                #region 导出时间、样式
                                 {
-                                    headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
-                                    headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
-                                    sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth2[column.Ordinal] + columnWidth) * 256));
+                                    headerRow = sheet.CreateRow(1) as HSSFRow;
+                                    headerRow.CreateCell(0).SetCellValue(exportDate);
+                                    headerRow.GetCell(0).CellStyle = dateStyle;
+                                    CellRangeAddress region = new CellRangeAddress(1, 1, 0, newdt2.Columns.Count - 1);
+                                    sheet.AddMergedRegion(region);
+                                    if (ep.ColHeadBorder == true)
+                                    {
+                                        sheet.SetEnclosedBorderOfRegion(region, BorderStyle.THIN, HSSFColor.BLACK.index);
+                                    }
                                 }
+                                #endregion
+                                #region 填充列头、样式
+                                {
+                                    headerRow = sheet.CreateRow(2) as HSSFRow;
+                                    foreach (DataColumn column in newdt2.Columns)
+                                    {
+                                        headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
+                                        headerRow.GetCell(column.Ordinal).CellStyle = colHeadStyle;
+                                        sheet.SetColumnWidth(column.Ordinal, Convert.ToInt32((arrColWidth2[column.Ordinal] + columnWidth) * 256));
+                                    }
+                                }
+                                rowIndex2 = 3;
+                                #endregion
                             }
-                            rowIndex2 = 3;
+                            #region 填充内容
+                            HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
+                            foreach (DataColumn column in newdt2.Columns)
+                            {
+                                FillContent(dataRow, column, row, contentStyle, fontContent
+                                    , contentDateStyle
+                                    , contentStyleDailyBalance, fontDailyBalance
+                                    , ep
+                                    , sheet, headText2strA);
+                            }
+                            rowIndex2++;
                             #endregion
                         }
-                        #region 填充内容
-                        HSSFRow dataRow = sheet.CreateRow(rowIndex2) as HSSFRow;
-                        foreach (DataColumn column in newdt2.Columns)
-                        {
-                            FillContent(dataRow, column, row, contentStyle, fontContent
-                                , contentDateStyle
-                                , contentStyleDailyBalance, fontDailyBalance
-                                , ep
-                                , sheet, headText2strA);
-                        }
-                        rowIndex2++;
                         #endregion
                     }
-                    #endregion
                 }
-            }
-            #endregion
+                #endregion
 
-            #region 页眉 页脚
-            try
-            {
-                sheet.Header.Left = ep.HeaderFooter[0].ToString();
-                sheet.Header.Center = ep.HeaderFooter[1].ToString();
-                sheet.Header.Right = ep.HeaderFooter[2].ToString();
-                sheet.Footer.Left = ep.HeaderFooter[3].ToString();
-                sheet.Footer.Center = ep.HeaderFooter[4].ToString();
-                sheet.Footer.Right = ep.HeaderFooter[5].ToString();
-            }
-            catch (Exception ex)
-            {
-                throw ex;   //原因：DT或者数组为空。
-            }
-            #endregion
+                #region Set the header footer
+                try
+                {
+                    sheet.Header.Left = ep.HeaderFooter[0].ToString();
+                    sheet.Header.Center = ep.HeaderFooter[1].ToString();
+                    sheet.Header.Right = ep.HeaderFooter[2].ToString();
+                    sheet.Footer.Left = ep.HeaderFooter[3].ToString();
+                    sheet.Footer.Center = ep.HeaderFooter[4].ToString();
+                    sheet.Footer.Right = ep.HeaderFooter[5].ToString();
+                }
+                catch (Exception)
+                {
+                    return new MemoryStream(error1);
+                }
+                #endregion
 
-            #region 返回内存流
-            MemoryStream ms = new MemoryStream();
-            try
-            {
+                #region Return MemoryStream
                 workbook.Write(ms);
                 ms.Flush();
                 ms.Position = 0;
+                return ms;
+                #endregion
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return new MemoryStream(error2);
             }
-            return ms;
-            #endregion
         }
-        #endregion
 
-        #region 样式 大标题
+        #region HSSFCellStyle big headline
         static HSSFCellStyle GetTitleStyle(string headFont, short headSize, short headColor
             , HSSFCellStyle cellStyle, HSSFFont font)
         {
@@ -325,7 +326,7 @@ namespace THOK.Common.NPOI.Service
         }
         #endregion
 
-        #region 样式 导出时间
+        #region HSSFCellStyle date time
         static HSSFCellStyle GetExportDate(HSSFCellStyle cellStyle)
         {
             cellStyle = workbook.CreateCellStyle() as HSSFCellStyle;
@@ -334,7 +335,7 @@ namespace THOK.Common.NPOI.Service
         }
         #endregion
 
-        #region 样式 列头
+        #region HSSFCellStyle column
         static HSSFCellStyle GetColumnStyle(string colHeadFont, short colHeadSize, short colHeadColor, bool colHeadBorder
             , HSSFCellStyle cellStyle, HSSFFont font)
         {
@@ -360,7 +361,7 @@ namespace THOK.Common.NPOI.Service
         }
         #endregion
 
-        #region 取得列宽
+        #region Get column width
         static void GetColumnWidth(DataTable dt, int[] arrColWidth)
         {
             foreach (DataColumn item in dt.Columns)
@@ -390,7 +391,7 @@ namespace THOK.Common.NPOI.Service
         }
         #endregion
 
-        #region 填充内容
+        #region Fill content
         /// <summary>填充内容</summary>
         static void FillContent(HSSFRow hssfRow
             , DataColumn column, DataRow row
@@ -452,9 +453,8 @@ namespace THOK.Common.NPOI.Service
                 hssfRow.GetCell(column.Ordinal).CellStyle = contentStyle;
             }
             string drValue = row[column].ToString();
-            THOK.Common.NPOI.Common.ExportExcelHeper.ChangeFormat(column, drValue, newCell, contentDateStyle);
+            THOK.Common.NPOI.Common.ExportExcelHelper.ChangeFormat(column, drValue, newCell, contentDateStyle);
         }
         #endregion
-
     }
 }
