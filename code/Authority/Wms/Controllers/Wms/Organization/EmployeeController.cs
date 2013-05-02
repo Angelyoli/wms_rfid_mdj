@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
 using THOK.Wms.DbModel;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Organization
 {
@@ -121,11 +123,10 @@ namespace Authority.Controllers.Organization
             string status = Request.QueryString["status"];
             string isActive = Request.QueryString["isActive"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = EmployeeService.GetEmployee(page, rows, employeeCode, employeeName, departmentId, jobId, status, isActive);
             ep.HeadTitle1 = "员工信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         } 
         #endregion
     }

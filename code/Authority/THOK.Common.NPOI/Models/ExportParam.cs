@@ -21,6 +21,7 @@ namespace THOK.Common.NPOI.Models
                                     ,"……"  //脚中
                                     ,"&P"    //脚右 页码
                                 };
+        string streamType = "application/ms-excel";
 
         /// <summary>第一张Excel表Sheet1的标题</summary>
         public string HeadTitle1 { get; set; }
@@ -61,5 +62,6 @@ namespace THOK.Common.NPOI.Models
         /// <summary>页眉页脚:[0]左上角[1]上中间[2]右上角[3]左下角[4]下中间[5]右下角</summary>
         public string[] HeaderFooter { get { return headerFooder; } set { headerFooder = value; } }
 
+        public string StreamType { get { return streamType; } set { streamType = value; } }
     }
 }
