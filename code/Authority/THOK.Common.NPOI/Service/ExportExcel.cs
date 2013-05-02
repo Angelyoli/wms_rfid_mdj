@@ -29,7 +29,7 @@ namespace THOK.Common.NPOI.Service
             short printWidth = 10;
             int sheetCount = 65500; //一个Sheet中最多存65536行数据
             int page = 0;
-            byte[] error1 = Encoding.ASCII.GetBytes("Error : Data or Array is null!");
+            byte[] error1 = Encoding.ASCII.GetBytes("Error : Data Table or Array is null!");
             byte[] error2 = Encoding.ASCII.GetBytes("Error : Return MemoryStream Failed!");
             #endregion
 
