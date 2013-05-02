@@ -38,7 +38,6 @@ namespace THOK.WMS.DownloadWms
             string list = "''";
             if (dt.Rows.Count > 0)
             {
-
                 foreach (DataRow row in dt.Rows)
                 {
                     list += ",'" + row["" + field + ""].ToString() + "'";

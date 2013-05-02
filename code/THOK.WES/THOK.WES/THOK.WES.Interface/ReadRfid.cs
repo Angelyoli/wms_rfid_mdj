@@ -68,12 +68,12 @@ namespace THOK.WES.Interface
         /// 读取数据
         /// </summary>
         /// <returns></returns>
-        public List<string> ReadTrayRfid(string strPort, int nBaudrate)
+        public List<string> ReadTrayRfid(string strPort, int nBaudrate,out string errString)
         {
-            string strException = string.Empty;
+            errString = string.Empty;
             try
             {
-                int nType = this.OpenCom(strPort, nBaudrate, out strException);
+                int nType = this.OpenCom(strPort, nBaudrate, out errString);
                 if (nType == 0)
                 {
                     DateTime now = DateTime.Now;
@@ -85,7 +85,7 @@ namespace THOK.WES.Interface
                     //读取二秒就返回信息
                     do
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                         int nCount = iSerialPort.BytesToRead;
                         if (nCount == 0)
                         {
@@ -103,7 +103,8 @@ namespace THOK.WES.Interface
             }
             catch (Exception e)
             {
-                throw new Exception("操作串口错误：" + e.Message +","+strException);
+                errString += e.Message;
+                throw new Exception("操作串口错误：" + errString);
             }
         }
 

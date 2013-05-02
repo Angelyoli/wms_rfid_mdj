@@ -79,7 +79,7 @@ namespace Wms.Service
                 }
                 catch (Exception ex)
                 {
-                    result = string.Format(returnMsg, "", "", "XML的数据格式不正确！", ex.Message, "", timeNow, "");
+                    result = string.Format(returnMsg, "", "001", "XML的数据格式不正确！："+ ex.Message,"","", "", timeNow, "");
                 }
                 try
                 {
@@ -234,7 +234,7 @@ namespace Wms.Service
                                 #endregion
                                 if (b == false)
                                 {
-                                    result = string.Format(returnMsg, "", "", "出入库单无数据！", "", "", timeNow, "");
+                                    result = string.Format(returnMsg, "", "001", "出入库单无数据！","", "", "", timeNow, "");
                                     break;
                                 }
                                 else
@@ -297,7 +297,7 @@ namespace Wms.Service
                                         #endregion
                                         if (b == false)
                                         {
-                                            result = string.Format(returnMsg, "", "", "合同表单无数据！", "", "", timeNow, "");
+                                            result = string.Format(returnMsg, "", "001", "合同表单无数据！", "", "","", timeNow, "");
                                             break;
                                         }
                                         else
@@ -331,7 +331,7 @@ namespace Wms.Service
                                                     }
                                                     if (b == false)
                                                     {
-                                                        result = string.Format(returnMsg, "", "", "准运证表无数据！", "", "", timeNow, "");
+                                                        result = string.Format(returnMsg, "", "001", "准运证表无数据！","", "", "", timeNow, "");
                                                         break;
                                                     }
                                                 }
@@ -356,12 +356,12 @@ namespace Wms.Service
                 }
                 catch (Exception ex)
                 {
-                    result = string.Format(returnMsg, "", "", "有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！", ex.Message, "", timeNow, "");
+                    result = string.Format(returnMsg, "", "001", "有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！"+ ex.Message,"","", "", timeNow, "");
                 }
             }
             else
             {
-                result = string.Format(returnMsg, "", "", "XML参数是空的！", "", "", timeNow, "");
+                result = string.Format(returnMsg, "", "001", "XML参数是空的！","", "", "", timeNow, "");
             }
             return result;
         }
