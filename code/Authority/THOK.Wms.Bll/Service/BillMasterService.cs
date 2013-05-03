@@ -122,41 +122,30 @@ namespace THOK.Wms.Bll.Service
 
             try
             {
-                using (var scope = new TransactionScope())
+                if (navicert != null)
                 {
-                    if (navicert != null)
+                    foreach (var item1 in navicert.ToList())
                     {
-                        foreach (var item1 in navicert.ToList())
-                        {
-                            NavicertRepository.Delete(item1);
-                            result = true;
-                        }
+                        NavicertRepository.Delete(item1);
+                        result = true;
                     }
-                    if (contract != null)
+                }
+                if (contract != null)
+                {
+                    foreach (var item2 in contract.ToList())
                     {
-                        foreach (var item2 in contract.ToList())
-                        {
-                            Del(ContractDetailRepository, item2.ContractDetails);
-                            ContractRepository.Delete(item2);
-                            result = true;
-                        }
+                        Del(ContractDetailRepository, item2.ContractDetails);
+                        ContractRepository.Delete(item2);
+                        result = true;
                     }
-                    if (billMaster != null)
+                }
+                if (billMaster != null)
+                {
+                    foreach (var item3 in billMaster.ToList())
                     {
-                        foreach (var item3 in billMaster.ToList())
-                        {
-                            Del(BillDetailRepository, item3.BillDetails);
-                            BillMasterRepository.Delete(item3);
-                            result = true;
-                            if (result == true)
-                            {
-                                scope.Complete();
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
+                        Del(BillDetailRepository, item3.BillDetails);
+                        BillMasterRepository.Delete(item3);
+                        result = true;
                     }
                 }
                 BillMasterRepository.SaveChanges();
