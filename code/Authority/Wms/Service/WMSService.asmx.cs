@@ -76,9 +76,10 @@ namespace Wms.Service
                 {
                     doc = XElement.Parse(xml);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    result = string.Format(returnMsg, MessageInfo("XML的数据格式不正确！"));
+                    result = ZipBase64(string.Format(returnMsg, MessageInfo("XML的数据格式不正确！")));
+                    return result;
                 }
                 try
                 {
@@ -244,12 +245,14 @@ namespace Wms.Service
                                     }
                                     else
                                     {
-                                        return string.Format(returnMsg, MessageInfo("操作出入库单失败！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作出入库单失败！")));
+                                        return result;
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    return string.Format(returnMsg, MessageInfo("出入库单节点不匹配！"));
+                                    result = ZipBase64(string.Format(returnMsg, MessageInfo("出入库单节点不匹配！")));
+                                    return result;
                                 }
                             }
                             #endregion
@@ -318,12 +321,14 @@ namespace Wms.Service
                                     }
                                     else
                                     {
-                                        return string.Format(returnMsg, MessageInfo("操作合同表单失败！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作合同表单失败！")));
+                                        return result;
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    return string.Format(returnMsg, MessageInfo("合同表单节点不匹配！"));
+                                    result = ZipBase64(string.Format(returnMsg, MessageInfo("合同表单节点不匹配！")));
+                                    return result;
                                 }
                             }
                             #endregion
@@ -365,12 +370,14 @@ namespace Wms.Service
                                     }
                                     else
                                     {
-                                        return string.Format(returnMsg, MessageInfo("操作准运证失败！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作准运证失败！")));
+                                        return result;
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    return string.Format(returnMsg, MessageInfo("准运证节点不匹配！"));
+                                    result = ZipBase64(string.Format(returnMsg, MessageInfo("准运证节点不匹配！")));
+                                    return result;
                                 }
                             }
                             #endregion
@@ -387,14 +394,16 @@ namespace Wms.Service
                             }
                             else
                             {
-                                return string.Format(returnMsg, MessageInfo("最后一步失败！"));
+                                result = ZipBase64(string.Format(returnMsg, MessageInfo("最后一步失败！")));
+                                return result;
                             }
                             #endregion
                         }
                     }
                     else
                     {
-                        return string.Format(returnMsg, MessageInfo("<ws_method></ws_method>标签内字段不正确！"));
+                        result = ZipBase64(string.Format(returnMsg, MessageInfo("<ws_method></ws_method>标签内字段不匹配！")));
+                        return result;
                     }
                     if (headList.WsMethod == "PalletInfo")
                     {
@@ -403,7 +412,8 @@ namespace Wms.Service
                 }
                 catch (Exception)
                 {
-                    return string.Format(returnMsg, MessageInfo("有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！"));
+                    result = ZipBase64(string.Format(returnMsg, MessageInfo("有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！")));
+                    return result;
                 }
             }
             else
