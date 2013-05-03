@@ -8,6 +8,8 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Wms.Controllers.Wms.SortingInfo
 {
@@ -82,11 +84,10 @@ namespace Wms.Controllers.Wms.SortingInfo
             string orderDate = Request.QueryString["orderDate"];
             string sortingLineCode = Request.QueryString["sortingLineCode"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = SortOrderDispatchService.GetSortOrderDispatch(page, rows, orderDate, sortingLineCode);
             ep.HeadTitle1 = "分拣线路调度";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

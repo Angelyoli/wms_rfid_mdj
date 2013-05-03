@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Wms.Controllers.Wms.BasisInfo
 {
@@ -114,12 +116,10 @@ namespace Wms.Controllers.Wms.BasisInfo
              region.Description = Description;
              region.State = State;
 
-             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+             ExportParam ep = new ExportParam();
              ep.DT1 = RegionService.GetRegion(page, rows, region);
              ep.HeadTitle1 = "区域信息";
-             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-             return new FileStreamResult(ms, "application/ms-excel");
-          
+             return PrintService.Print(ep);
         }  
     }
 }

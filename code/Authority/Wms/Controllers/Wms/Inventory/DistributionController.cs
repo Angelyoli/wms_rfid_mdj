@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.Inventory
 {
@@ -64,11 +66,10 @@ namespace Authority.Controllers.Wms.Inventory
             string unitType = Request.QueryString["unitType"];
             string productCode = Request.QueryString["productCode"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = DistributionService.GetDistribution(page, rows, type, id, unitType, productCode);
             ep.HeadTitle1 = "库存分布查询";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

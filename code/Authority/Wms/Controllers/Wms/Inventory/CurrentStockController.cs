@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.Inventory
 {
@@ -50,15 +52,14 @@ namespace Authority.Controllers.Wms.Inventory
             bool isAbnormity =Convert.ToBoolean(Request.QueryString["isAbnormity"]);
             string areaName;
             
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = CurrentStockService.GetCurrentStock(page, rows, productCode, ware, area, unitType, out areaName, isAbnormity);
             ep.DT2 = null;
             ep.HeadTitle1 = "当前库存" + areaName;
             ep.HeadTitle2 = "";
             ep.ContentModule = null;
             ep.ContentModuleColor = 0;
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
     }
 }

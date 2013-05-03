@@ -8,6 +8,8 @@ using THOK.Common.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Security;
+using THOK.Common.NPOI.Service;
+using THOK.Common.NPOI.Models;
 
 namespace Wms.Controllers.Wms.WarehouseInfo
 {
@@ -128,11 +130,10 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             string queryString = Request.QueryString["queryString"];
             string value = Request.QueryString["value"];
             
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = CellService.GetCellByE(page, rows, queryString, value);
             ep.HeadTitle1 = "储位卷烟预设";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         } 
         #endregion
     }

@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
+using THOK.Common.NPOI.Service;
+using THOK.Common.NPOI.Models;
 
 
 namespace Wms.Controllers.Wms.Inventory
@@ -37,7 +39,6 @@ namespace Wms.Controllers.Wms.Inventory
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
 
-        #region
         // GET: /CellHistorical/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
@@ -47,12 +48,10 @@ namespace Wms.Controllers.Wms.Inventory
             string type = Request.QueryString["type"];
             string id = Request.QueryString["id"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = CellHistoricalService.GetCellHistory(page, rows, beginDate, endDate, type, id);
             ep.HeadTitle1 = "货位历史明细";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
-        #endregion
     }
 }

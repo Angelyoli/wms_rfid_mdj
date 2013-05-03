@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Wms.Controllers.Wms.BasisInfo
 {
@@ -35,11 +37,11 @@ namespace Wms.Controllers.Wms.BasisInfo
         // GET: /CellPosition/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
-           
+
             string CellCode = collection["CellCode"] ?? "";
             string StockInPosition = collection["StockInPosition"] ?? "";
             string StockOutPosition = collection["StockOutPosition"] ?? "";
-            var productSize = CellPositionService.GetDetails(page, rows,CellCode,StockInPosition,StockOutPosition);
+            var productSize = CellPositionService.GetDetails(page, rows, CellCode, StockInPosition, StockOutPosition);
             return Json(productSize, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -91,18 +93,17 @@ namespace Wms.Controllers.Wms.BasisInfo
         #region /CellPosition/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
-             int page = 0, rows = 0;
-             int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
-             string CellCode = Request.QueryString["CellCode"];
-             CellPosition cp= new CellPosition();
-             cp.ID = CellPositionID;
-             cp.CellCode = CellCode;
-             THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-             ep.DT1 = CellPositionService.GetCellPosition(page, rows, cp);
-             ep.HeadTitle1 = "货位位置信息";
-             System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-             return new FileStreamResult(ms, "application/ms-excel");
-           
+            int page = 0, rows = 0;
+            int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
+            string CellCode = Request.QueryString["CellCode"];
+            CellPosition cp = new CellPosition();
+            cp.ID = CellPositionID;
+            cp.CellCode = CellCode;
+
+            ExportParam ep = new ExportParam();
+            ep.DT1 = CellPositionService.GetCellPosition(page, rows, cp);
+            ep.HeadTitle1 = "货位位置信息";
+            return PrintService.Print(ep);
         }
         #endregion
     }

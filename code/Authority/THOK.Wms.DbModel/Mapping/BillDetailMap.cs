@@ -26,11 +26,14 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .HasMaxLength(13);
             this.Property(t => t.BillQuantity)
-                .IsRequired();
+                .IsRequired()
+                .HasPrecision(16, 4);
             this.Property(t => t.FixedQuantity)
-                .IsRequired();
+                .IsRequired()
+                .HasPrecision(16, 4);
             this.Property(t => t.RealQuantity)
-                .IsRequired();
+                .IsRequired()
+                .HasPrecision(16, 4);
 
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));

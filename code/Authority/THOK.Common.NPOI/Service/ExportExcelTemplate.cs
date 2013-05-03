@@ -26,7 +26,7 @@ namespace THOK.Common.NPOI.Service
             , string excelTemplatePath
             , string sheetName1, string sheetName2)
         {
-             THOK.Common.NPOI.Common.ExportExcelHeper.BrowserLoad(sheetName1);
+             THOK.Common.NPOI.Common.ExportExcelHelper.BrowserLoad(sheetName1);
             FileStream file = new FileStream(excelTemplatePath, FileMode.Open, FileAccess.Read);//读入excel模板
             HSSFWorkbook hssfworkbook = new HSSFWorkbook(file);
             HSSFSheet sheet1 = (HSSFSheet)hssfworkbook.GetSheet(sheetName1);
