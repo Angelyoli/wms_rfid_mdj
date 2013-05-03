@@ -449,7 +449,7 @@ namespace Wms.Service
             }
             catch
             {
-                return string.Format(returnMsg, "", "001", "发送失败：不是有效的XML格式字符串", "", "", "", "", "");
+                return ZipBase64(string.Format(returnMsg, "", "001", "发送失败：不是有效的XML格式字符串", "", "", "", "", ""));
             }
             var queryHead = from d in doc.Descendants("head")
                             select new
@@ -516,7 +516,7 @@ namespace Wms.Service
                     }
                     catch
                     {
-                        return string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", "");
+                        return ZipBase64( string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", ""));
                     }
                     result = factory.GetService<IPalletService>().Add(palletAdd);
                     if (result != "")
@@ -551,12 +551,12 @@ namespace Wms.Service
                 }
                 catch
                 {
-                    return returnMsg;
+                    return ZipBase64(returnMsg);
                 }
             }
             else
             {
-                return resultUnzip;
+                return ZipBase64(string.Format(returnMsg, "", "001", resultUnzip, "", "", "", "", ""));
             }
         }
 
@@ -611,7 +611,7 @@ namespace Wms.Service
             }
             catch (Exception er)
             {
-                throw er;
+                return er.Message;
             }
         }
 
@@ -647,39 +647,5 @@ namespace Wms.Service
                 throw ex;
             }
         }
-
-        #region Get XML Elements
-        private List<XElement> getElements(string sXml, string sReadToFollowingXmlNode, string sXmlNode)
-        {
-            List<XElement> dlist = new List<XElement>();
-            StringReader StrStream = new StringReader(sXml);
-
-            XmlReaderSettings xmlSettings = new XmlReaderSettings();
-            xmlSettings.IgnoreWhitespace = true;
-
-            using (System.Xml.XmlReader xmlRead = System.Xml.XmlReader.Create(StrStream, xmlSettings))
-            {
-                bool flg = true;
-                xmlRead.MoveToContent();
-                xmlRead.ReadToFollowing(sReadToFollowingXmlNode);//ReadToDescendant，ReadToFollowing  
-                while (flg)
-                {
-
-                    if (xmlRead.NodeType == XmlNodeType.Element && sXmlNode.Trim().ToUpper() == xmlRead.LocalName.Trim().ToUpper())
-                    {
-                        XElement e = XElement.ReadFrom(xmlRead) as XElement;
-                        dlist.Add(e);
-
-                    }
-                    else
-                    {
-                        flg = xmlRead.Read();
-                    }
-                }//end while  
-            }//end using 
-
-            return dlist;
-        }
-        #endregion
     }
 }
