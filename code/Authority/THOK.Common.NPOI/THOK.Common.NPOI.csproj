@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\ExportExcelHeper.cs" />
+    <Compile Include="Common\ExportExcelHelper.cs" />
     <Compile Include="Service\ExportExcel.cs" />
     <Compile Include="Service\ExportExcelTemplate.cs" />
     <Compile Include="Models\ExportParam.cs" />

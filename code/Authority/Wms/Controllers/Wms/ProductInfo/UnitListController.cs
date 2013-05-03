@@ -9,6 +9,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.ProductInfo
 {
@@ -105,11 +107,10 @@ namespace Authority.Controllers.Wms.ProductInfo
             unitlist.UnitCode04 = unitCode4;
             unitlist.IsActive = isActive;
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = UnitListService.GetUnitList(page, rows, unitlist);
             ep.HeadTitle1 = "单位系列";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

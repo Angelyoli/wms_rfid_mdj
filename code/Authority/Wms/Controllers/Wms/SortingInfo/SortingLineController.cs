@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -86,11 +88,10 @@ namespace Authority.Controllers.Wms.SortingInfo
             string sortingLineType = Request.QueryString["SortingLineType"];
             string isActive = Request.QueryString["IsActive"];
             
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = SortingLineService.GetSortingLine(page, rows, sortingLineCode, sortingLineName, sortingLineType, isActive);
             ep.HeadTitle1 = "分拣线信息设置";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

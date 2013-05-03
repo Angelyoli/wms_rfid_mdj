@@ -9,6 +9,8 @@ using THOK.Common.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 namespace Authority.Controllers.ProductInfo
 {
     [TokenAclAuthorize]
@@ -117,11 +119,10 @@ namespace Authority.Controllers.ProductInfo
             string priceLevelCode = Request.QueryString["priceLevelCode"];
             string supplierCode = Request.QueryString["supplierCode"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = ProductService.GetProduct(page, rows, productName, productCode, customCode, brandCode, uniformCode, abcTypeCode, shortCode, priceLevelCode, supplierCode);
             ep.HeadTitle1 = "卷烟信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

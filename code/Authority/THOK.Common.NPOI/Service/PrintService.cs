@@ -18,10 +18,9 @@ namespace THOK.Common.NPOI.Service
                 MemoryStream ms = ExportExcel.ExportDT(ep);
                 return new FileStreamResult(ms, ep.StreamType);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                
-                throw ex;
+                return new FileStreamResult(new MemoryStream(), ep.StreamType);
             }
         }
     }

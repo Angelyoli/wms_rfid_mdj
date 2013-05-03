@@ -8,23 +8,30 @@ using NPOI.HSSF.UserModel;
 
 namespace THOK.Common.NPOI.Common
 {
-    public class ExportExcelHeper
+    public class ExportExcelHelper
     {
-        #region 浏览器下载
-        /// <summary>浏览器下载</summary>
+        #region Http Response
+        /// <summary>Http Response</summary>
         public static void BrowserLoad(string headText1)
         {
-            string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
-            HttpResponse response = System.Web.HttpContext.Current.Response;
-            response.Clear();
-            response.BufferOutput = false;
-            response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
-            response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
-            response.ContentType = "application/ms-excel";
+            try
+            {
+                string filename = headText1 + DateTime.Now.ToString("yyMMdd-HHmm-ss");
+                HttpResponse response = System.Web.HttpContext.Current.Response;
+                response.Clear();
+                response.BufferOutput = false;
+                response.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+                response.AddHeader("Content-Disposition", "attachment;filename=" + Uri.EscapeDataString(filename) + ".xls");
+                response.ContentType = "application/ms-excel";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         #endregion
 
-        #region SHEET分页
+        #region Sheet paging
         public static DataTable SetPage(DataTable dt, int currentPageIndex, int pageSize)
         {
             if (currentPageIndex == 0)
@@ -52,7 +59,7 @@ namespace THOK.Common.NPOI.Common
         }
         #endregion
 
-        #region 转换格式
+        #region Convert format
         public static void ChangeFormat(DataColumn column, string drValue, HSSFCell newCell, HSSFCellStyle contentDateStyle)
         {
             switch (column.DataType.ToString())

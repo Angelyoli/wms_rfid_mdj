@@ -7,6 +7,7 @@ namespace THOK.Common.NPOI.Models
 {
     public class ExportParam
     {
+        #region Variable
         string bigHeadFont = "微软雅黑";
         short bigHeadSize = 20;
         bool bigHeadBorder = true;
@@ -17,51 +18,56 @@ namespace THOK.Common.NPOI.Models
                                      "……"  //眉左
                                     ,"……"  //眉中
                                     ,"……"  //眉右
-                                    ,"&D"    //脚左 日期
+                                    ,"&D"    //脚左 Datetime
                                     ,"……"  //脚中
-                                    ,"&P"    //脚右 页码
+                                    ,"&P"    //脚右 Page
                                 };
         string streamType = "application/ms-excel";
+        //Color sample: NPOI.HSSF.Util.HSSFColor.BLACK.index;
+        #endregion
 
-        /// <summary>第一张Excel表Sheet1的标题</summary>
+        #region Method
+        /// <summary>First excel table sheet1's title</summary>
         public string HeadTitle1 { get; set; }
-        /// <summary>第二张Excel表Sheet2的标题</summary>
+        /// <summary>First excel table sheet2's title</summary>
         public string HeadTitle2 { get; set; }
 
-        /// <summary>第一个DataTable</summary>
+        /// <summary>First DataTable</summary>
         public System.Data.DataTable DT1 { get; set; }
-        /// <summary>第二个DataTable，如果没有就给NULL</summary>
+        /// <summary>Second DataTable，if you do not give null</summary>
         public System.Data.DataTable DT2 { get; set; }
 
-        /// <summary>大标题字体</summary>
+        /// <summary>Big headline font</summary>
         public string BigHeadFont { get { return bigHeadFont; } set { bigHeadFont = value; } }
-        /// <summary>大标题字体大小</summary>
+        /// <summary>Big headline font size</summary>
         public short BigHeadSize { get { return bigHeadSize; } set { bigHeadSize = value; } }
-        /// <summary>大标题字体颜色</summary>
+        /// <summary>Big headline font color</summary>
         public short BigHeadColor { get; set; }
-        /// <summary>大标题是否有边框</summary>
+        /// <summary>Big headline whether has border</summary>
         public bool BigHeadBorder { get { return bigHeadBorder; } set { bigHeadBorder = value; } }
 
-        /// <summary>列标题和内容字体</summary>
+        /// <summary>column headline and content font</summary>
         public string ColHeadFont { get { return colHeadFont; } set { colHeadFont = value; } }
-        /// <summary>列标题和内容字体大小</summary>
+        /// <summary>column headline and content font size</summary>
         public short ColHeadSize { get { return colHeadSize; } set { colHeadSize = value; } }
-        /// <summary>列标题和内容字体颜色</summary>
+        /// <summary>column headline and content font color</summary>
         public short ColHeadColor { get; set; }
-        /// <summary>列标题和内容是否有边框</summary>
+        /// <summary>column headline and content whether have border</summary>
         public bool ColHeadBorder { get { return colHeadBorder; } set { colHeadBorder = value; } }
 
-        /// <summary>内容字体颜色</summary>
+        /// <summary>content font color</summary>
         public short ContentColor { get; set; }
 
-        /// <summary>特殊的模块内容</summary>
+        /// <summary>Special module content</summary>
         public string ContentModule { get; set; }
-        /// <summary>特殊的模块内容的颜色</summary>
+        /// <summary>Special module content color</summary>
         public short ContentModuleColor { get; set; }
 
-        /// <summary>页眉页脚:[0]左上角[1]上中间[2]右上角[3]左下角[4]下中间[5]右下角</summary>
+        /// <summary>header footer:[0]Top left[1]Top middle[2]Top right[3]Bottom left[4]Bottom middle[5]Bottom right</summary>
         public string[] HeaderFooter { get { return headerFooder; } set { headerFooder = value; } }
 
-        public string StreamType { get { return streamType; } set { streamType = value; } }
+        /// <summary>MemoryStream type</summary>
+        public string StreamType { get { return streamType; } set { streamType = value; } } 
+        #endregion
     }
 }
