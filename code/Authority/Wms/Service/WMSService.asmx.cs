@@ -36,7 +36,7 @@ namespace Wms.Service
 
         #region 常量
         ServiceFactory factory = new ServiceFactory();
-        private const string returnMsg = @"<?xml version='1.0' encoding='GBK'>\n
+        private const string returnMsg = @"<?xml version='1.0' encoding='GBK'>
                                             <dataset>
 	                                            <head>
 	                                                <msg_id>{0}</msg_id>
@@ -53,6 +53,13 @@ namespace Wms.Service
 
         bool b = false;
 
+        public string[] MessageInfo(string message)
+        {
+            DateTime timeNow = System.DateTime.Now;
+            string[] info = { "", "", message, "", "", "", timeNow.ToShortTimeString(), "" };
+            return info;
+        }
+
         [WebMethod]
         public string WMSBillService(string xml)
         {
@@ -61,7 +68,6 @@ namespace Wms.Service
             string result = null;
             string strResult = string.Empty;
             bool b = false;
-            DateTime timeNow = System.DateTime.Now;
 
             Guid billMasterID = Guid.NewGuid();
 
@@ -74,7 +80,7 @@ namespace Wms.Service
                 }
                 catch (Exception ex)
                 {
-                    result = string.Format(returnMsg, "", "", "XML的数据格式不正确！", ex.Message, "", timeNow, "", "");
+                    result = string.Format(returnMsg, MessageInfo("XML的数据格式不正确！"));
                 }
                 try
                 {
@@ -176,68 +182,71 @@ namespace Wms.Service
                             Navicert na = new Navicert();
 
                             #region BillMaster and BillDetail
-                            try
+                            if (doc.Descendants("data") != null)
                             {
-                                for (int i = 0; i < billMaster.Count(); i++)
+                                try
                                 {
-                                    var bmArray = billMaster.ToArray()[i];
-                                    bm.ID = billMasterID;
-                                    bm.BillType = bmArray.BillType;
-                                    bm.UUID = bmArray.UUID;
-                                    bm.BillDate = Convert.ToDateTime(bmArray.BillDate);
-                                    bm.MakerName = bmArray.MakerName;
-                                    bm.OperateDate = Convert.ToDateTime(bmArray.OperateDate == "" ? null : bmArray.OperateDate);
-                                    bm.CigaretteType = bmArray.CigaretteType;
-                                    bm.BillCompanyCode = bmArray.BillCompanyCode;
-                                    bm.SupplierCode = bmArray.SupplierCode;
-                                    bm.SupplierType = bmArray.SupplierType;
-                                    bm.State = bmArray.State;
-                                    if (headList.WsMethod == "BillCreate")
+                                    for (int i = 0; i < billMaster.Count(); i++)
                                     {
-                                        b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
-                                    }
-                                    if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                    {
-                                        b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
-                                    }
-                                    if (headList.WsMethod == "BillDelete")
-                                    {
-                                        b = true;
-                                    }
-                                    #region BillDetail
-                                    for (int j = 0; j < bmArray.BillDetail.Count(); j++)
-                                    {
-                                        var bdArray = bmArray.BillDetail.ToArray()[j];
-                                        bd.MasterID = bm.ID;
-                                        bd.PieceCigarCode = bdArray.PieceCigarCode;
-                                        bd.BoxCigarCode = bdArray.BoxCigarCode;
-                                        bd.BillQuantity = Convert.ToInt32(bdArray.BillQuantity);
-                                        bd.FixedQuantity = Convert.ToInt32(bdArray.FixedQuantity);
-                                        bd.RealQuantity = Convert.ToInt32(bdArray.RealQuantity);
-                                        bd.BillMaster = bm;
+                                        var bmArray = billMaster.ToArray()[i];
+                                        bm.ID = billMasterID;
+                                        bm.BillType = bmArray.BillType;
+                                        bm.UUID = bmArray.UUID;
+                                        bm.BillDate = Convert.ToDateTime(bmArray.BillDate);
+                                        bm.MakerName = bmArray.MakerName;
+                                        bm.OperateDate = Convert.ToDateTime(bmArray.OperateDate == "" ? null : bmArray.OperateDate);
+                                        bm.CigaretteType = bmArray.CigaretteType;
+                                        bm.BillCompanyCode = bmArray.BillCompanyCode;
+                                        bm.SupplierCode = bmArray.SupplierCode;
+                                        bm.SupplierType = bmArray.SupplierType;
+                                        bm.State = bmArray.State;
                                         if (headList.WsMethod == "BillCreate")
                                         {
-                                            b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
+                                            b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
                                         }
-                                        if (headList.WsMethod == "BillModify")
+                                        if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                         {
-                                            b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
+                                            b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
                                         }
-                                        if (headList.WsMethod == "BillDelete")
+                                        #region BillDetail
+                                        if (doc.Descendants("data_1") != null)
                                         {
-                                            b = true;
+                                            for (int j = 0; j < bmArray.BillDetail.Count(); j++)
+                                            {
+                                                var bdArray = bmArray.BillDetail.ToArray()[j];
+                                                bd.ID = Guid.NewGuid();
+                                                bd.MasterID = bm.ID;
+                                                bd.PieceCigarCode = bdArray.PieceCigarCode;
+                                                bd.BoxCigarCode = bdArray.BoxCigarCode;
+                                                bd.BillQuantity = Convert.ToDecimal(bdArray.BillQuantity);
+                                                bd.FixedQuantity = Convert.ToDecimal(bdArray.FixedQuantity);
+                                                bd.RealQuantity = Convert.ToDecimal(bdArray.RealQuantity);
+                                                bd.BillMaster = bm;
+                                                if (headList.WsMethod == "BillCreate")
+                                                {
+                                                    b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
+                                                }
+                                                if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                                {
+                                                    b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
+                                                }
+                                            }
                                         }
+                                        #endregion
                                     }
-                                    #endregion
-                                    if (b == false)
+                                    if (b == true)
                                     {
-                                        return string.Format(returnMsg, "", "", "出入库单无数据！", "", "", timeNow, "", "");
+                                        result = string.Format(returnMsg, MessageInfo("操作出入库单成功！"));
+                                    }
+                                    else
+                                    {
+                                        return string.Format(returnMsg, MessageInfo("操作出入库单失败！"));
                                     }
                                 }
-                            }
-                            catch (Exception)
-                            {
-                                return string.Format(returnMsg, "", "", "出入库单节点不匹配！", "", "", timeNow, "", "");
+                                catch (Exception)
+                                {
+                                    return string.Format(returnMsg, MessageInfo("出入库单节点不匹配！"));
+                                }
                             }
                             #endregion
 
@@ -266,96 +275,106 @@ namespace Wms.Service
                                         {
                                             b = factory.GetService<IContractService>().Add(con, out strResult);
                                         }
-                                        if (headList.WsMethod == "BillModify")
+                                        if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                         {
                                             b = factory.GetService<IContractService>().Save(con, out strResult);
                                         }
-                                        if (headList.WsMethod == "BillDelete")
-                                        {
-                                            b = true;
-                                        }
                                         #region ContractDetail
-                                        for (int l = 0; l < cArray.ContractDetail.Count(); l++)
+                                        if (doc.Descendants("contract_detail_1") != null)
                                         {
-                                            var cdArray = cArray.ContractDetail.ToArray()[l];
-                                            cd.ContractCode = cdArray.ContractCode;
-                                            cd.BrandCode = cdArray.BrandCode;
-                                            cd.Quantity = Convert.ToDecimal(cdArray.Quantity);
-                                            cd.Price = Convert.ToDecimal(cdArray.Price);
-                                            cd.Amount = Convert.ToInt32(cdArray.Amount);
-                                            cd.TaxAmount = Convert.ToInt32(cdArray.TaxAmount);
-                                            cd.Contract = con;
-                                            if (headList.WsMethod == "BillCreate")
+                                            for (int l = 0; l < cArray.ContractDetail.Count(); l++)
                                             {
-                                                b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
-                                            }
-                                            if (headList.WsMethod == "BillModify")
-                                            {
-                                                b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
-                                            }
-                                            if (headList.WsMethod == "BillDelete")
-                                            {
-                                                b = true;
+                                                var cdArray = cArray.ContractDetail.ToArray()[l];
+                                                cd.ContractCode = cdArray.ContractCode;
+                                                cd.BrandCode = cdArray.BrandCode;
+                                                cd.Quantity = Convert.ToDecimal(cdArray.Quantity);
+                                                cd.Price = Convert.ToDecimal(cdArray.Price);
+                                                cd.Amount = Convert.ToInt32(cdArray.Amount);
+                                                cd.TaxAmount = Convert.ToInt32(cdArray.TaxAmount);
+                                                cd.Contract = con;
+                                                if (headList.WsMethod == "BillCreate")
+                                                {
+                                                    b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
+                                                }
+                                                if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                                {
+                                                    b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
+                                                }
                                             }
                                         }
                                         #endregion
-                                        if (b == false)
-                                        {
-                                            return string.Format(returnMsg, "", "", "合同表单无数据！", "", "", timeNow, "", "");
-                                        }
+                                    }
+                                    if (b == true)
+                                    {
+                                        result = string.Format(returnMsg, MessageInfo("操作合同表单成功！"));
+                                    }
+                                    else
+                                    {
+                                        return string.Format(returnMsg, MessageInfo("操作合同表单失败！"));
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    return string.Format(returnMsg, "", "", "合同表单节点不匹配！", "", "", timeNow, "", "");
+                                    return string.Format(returnMsg, MessageInfo("合同表单节点不匹配！"));
                                 }
                             }
                             #endregion
 
                             #region Navicert for contractCode
-                            try
+                            if (doc.Descendants("zyz_base_1") != null && doc.Descendants("contract_code") != null)
                             {
-                                for (int m = 0; m < contractCodes.Count(); m++)
+                                try
                                 {
-                                    var nArray = navicert.ToArray()[m];
-                                    foreach (var item in contractCodes)
+                                    for (int m = 0; m < contractCodes.Count(); m++)
                                     {
-                                        na.ContractCode = item.ContractCode;
-                                        na.ID = Guid.NewGuid();
-                                        na.MasterID = bm.ID;
-                                        na.NavicertCode = nArray.NavicertCode;
-                                        na.NavicertDate = Convert.ToDateTime(nArray.NavicertDate);
-                                        na.TruckPlateNo = nArray.TruckPlateNo;
-                                        na.Contract = con;
-                                        if (headList.WsMethod == "BillCreate")
+                                        var nArray = navicert.ToArray()[m];
+                                        foreach (var item in contractCodes)
                                         {
-                                            b = factory.GetService<INavicertService>().Add(na, out strResult);
-                                        }
-                                        if (headList.WsMethod == "BillModify")
-                                        {
-                                            b = factory.GetService<INavicertService>().Save(na, out strResult);
-                                        }
-                                        if (headList.WsMethod == "BillDelete")
-                                        {
-                                            b = factory.GetService<IBillMasterService>().Delete(con.ContractCode, bm.UUID, out strResult);
-                                        }
-                                        if (b == false)
-                                        {
-                                            return string.Format(returnMsg, "", "", "准运证表无数据！", "", "", timeNow, "", "");
+                                            na.ContractCode = item.ContractCode;
+                                            na.ID = Guid.NewGuid();
+                                            na.MasterID = bm.ID;
+                                            na.NavicertCode = nArray.NavicertCode;
+                                            na.NavicertDate = Convert.ToDateTime(nArray.NavicertDate);
+                                            na.TruckPlateNo = nArray.TruckPlateNo;
+                                            na.Contract = con;
+                                            if (headList.WsMethod == "BillCreate")
+                                            {
+                                                b = factory.GetService<INavicertService>().Add(na, out strResult);
+                                            }
+                                            if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                            {
+                                                b = factory.GetService<INavicertService>().Save(na, out strResult);
+                                            }
                                         }
                                     }
+                                    if (b == true)
+                                    {
+                                        result = string.Format(returnMsg, MessageInfo("操作准运证成功！"));
+                                    }
+                                    else
+                                    {
+                                        return string.Format(returnMsg, MessageInfo("操作准运证失败！"));
+                                    }
                                 }
-                            }
-                            catch (Exception)
-                            {
-                                return string.Format(returnMsg, "", "", "准运证节点不匹配！", "", "", timeNow, "", "");
+                                catch (Exception)
+                                {
+                                    return string.Format(returnMsg, MessageInfo("准运证节点不匹配！"));
+                                }
                             }
                             #endregion
 
+                            if (headList.WsMethod == "BillDelete")
+                            {
+                                b = factory.GetService<IBillMasterService>().Delete(con.ContractCode, bm.UUID, out strResult);
+                            }
                             if (b == true)
                             {
                                 scope.Complete();
                                 result = string.Format(returnMsg, headList.MsgId, headList.StateCode, headList.StateDesc, headList.WsMark, headList.WsMethod, headList.WsParam, headList.CurrTime, headList.CurrUser);
+                            }
+                            else
+                            {
+                                return string.Format(returnMsg, MessageInfo("最后一步失败！"));
                             }
                         }
                     }
@@ -364,16 +383,15 @@ namespace Wms.Service
                         WMSPalletInfo(xml);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return string.Format(returnMsg, "", "", "有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！", ex.Message, "", timeNow, "", "");
+                    return string.Format(returnMsg, MessageInfo("有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！"));
                 }
             }
             else
             {
-                return string.Format(returnMsg, "", "", "XML参数是空的！", "", "", timeNow, "", "");
+                return string.Format(returnMsg, MessageInfo("XML参数是空的！"));
             }
-            result = ZipBase64(result);
             return result;
         }
 

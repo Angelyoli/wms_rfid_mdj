@@ -45,7 +45,10 @@ namespace THOK.Wms.Bll.Service
                     b.BillType = billMaster.BillType;
                     b.BillDate = billMaster.BillDate;
                     b.MakerName = billMaster.MakerName;
-                    b.OperateDate = billMaster.OperateDate;
+                    if (b.OperateDate > Convert.ToDateTime("0002-1-1"))
+                    {
+                        b.OperateDate = billMaster.OperateDate;
+                    }
                     b.CigaretteType = billMaster.CigaretteType;
                     b.BillCompanyCode = billMaster.BillCompanyCode;
                     b.SupplierCode = billMaster.SupplierCode;
@@ -88,7 +91,10 @@ namespace THOK.Wms.Bll.Service
                     b.BillType = billMaster.BillType;
                     b.BillDate = billMaster.BillDate;
                     b.MakerName = billMaster.MakerName;
-                    b.OperateDate = billMaster.OperateDate;
+                    if (b.OperateDate > Convert.ToDateTime("0002-1-1"))
+                    {
+                        b.OperateDate = billMaster.OperateDate;
+                    }
                     b.CigaretteType = billMaster.CigaretteType;
                     b.BillCompanyCode = billMaster.BillCompanyCode;
                     b.SupplierCode = billMaster.SupplierCode;
