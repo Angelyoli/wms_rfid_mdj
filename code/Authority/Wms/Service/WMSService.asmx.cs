@@ -56,7 +56,7 @@ namespace Wms.Service
         public string[] MessageInfo(string message)
         {
             DateTime timeNow = System.DateTime.Now;
-            string[] info = { "", "", message, "", "", "", timeNow.ToShortTimeString(), "" };
+            string[] info = { "", "001", message, "", "", "", timeNow.ToShortTimeString(), "" };
             return info;
         }
 
@@ -68,8 +68,6 @@ namespace Wms.Service
             string result = null;
             string strResult = string.Empty;
             bool b = false;
-
-            Guid billMasterID = Guid.NewGuid();
 
             if (!string.IsNullOrEmpty(xml))
             {
@@ -181,6 +179,8 @@ namespace Wms.Service
                             ContractDetail cd = new ContractDetail();
                             Navicert na = new Navicert();
 
+                            Guid billMasterID = Guid.NewGuid();
+
                             #region BillMaster and BillDetail
                             if (doc.Descendants("data") != null)
                             {
@@ -229,6 +229,10 @@ namespace Wms.Service
                                                 if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                                 {
                                                     b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
+                                                }
+                                                if (headList.WsMethod == "BillDelete")
+                                                {
+                                                    b = true;
                                                 }
                                             }
                                         }
@@ -300,6 +304,10 @@ namespace Wms.Service
                                                 {
                                                     b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
                                                 }
+                                                if (headList.WsMethod == "BillDelete")
+                                                {
+                                                    b = true;
+                                                }
                                             }
                                         }
                                         #endregion
@@ -345,6 +353,10 @@ namespace Wms.Service
                                             {
                                                 b = factory.GetService<INavicertService>().Save(na, out strResult);
                                             }
+                                            if (headList.WsMethod == "BillDelete")
+                                            {
+                                                b = true;
+                                            }
                                         }
                                     }
                                     if (b == true)
@@ -363,6 +375,7 @@ namespace Wms.Service
                             }
                             #endregion
 
+                            #region Delete
                             if (headList.WsMethod == "BillDelete")
                             {
                                 b = factory.GetService<IBillMasterService>().Delete(con.ContractCode, bm.UUID, out strResult);
@@ -376,7 +389,12 @@ namespace Wms.Service
                             {
                                 return string.Format(returnMsg, MessageInfo("最后一步失败！"));
                             }
+                            #endregion
                         }
+                    }
+                    else
+                    {
+                        return string.Format(returnMsg, MessageInfo("<ws_method></ws_method>标签内字段不正确！"));
                     }
                     if (headList.WsMethod == "PalletInfo")
                     {
@@ -392,6 +410,7 @@ namespace Wms.Service
             {
                 return string.Format(returnMsg, MessageInfo("XML参数是空的！"));
             }
+            result = ZipBase64(result);
             return result;
         }
 
@@ -405,7 +424,7 @@ namespace Wms.Service
             }
             catch (Exception)
             {
-                return string.Format(returnMsg);
+                return string.Format(returnMsg, MessageInfo("解压失败！"));
             }
         }
 
