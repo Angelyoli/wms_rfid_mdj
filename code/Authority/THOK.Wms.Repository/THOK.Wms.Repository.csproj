@@ -325,6 +325,10 @@
     <Compile Include="Migrations\201304270622002_modify_InterTable.Designer.cs">
       <DependentUpon>201304270622002_modify_InterTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201305030247575_modify_InterTable1.cs" />
+    <Compile Include="Migrations\201305030247575_modify_InterTable1.Designer.cs">
+      <DependentUpon>201305030247575_modify_InterTable1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

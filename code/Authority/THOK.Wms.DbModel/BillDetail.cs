@@ -11,9 +11,9 @@ namespace THOK.Wms.DbModel
         public Guid MasterID { get; set; }
         public string PieceCigarCode { get; set; }
         public string BoxCigarCode { get; set; }
-        public int BillQuantity { get; set; }
-        public int FixedQuantity { get; set; }
-        public int RealQuantity { get; set; }
+        public decimal BillQuantity { get; set; }
+        public decimal FixedQuantity { get; set; }
+        public decimal RealQuantity { get; set; }
 
         public virtual BillMaster BillMaster { get; set; }
 
