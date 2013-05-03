@@ -143,19 +143,19 @@ namespace THOK.Wms.Bll.Service
                 var cells = cellQuery.Where(s => s.MaxPalletQuantity == 0);
                 if (type == "ware")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity==0);
+                    cells = cellQuery.Where(c => c.Shelf.Area.Warehouse.WarehouseCode == id && c.MaxPalletQuantity==0 && c.IsActive!="0");
                 }
                 else if (type == "area")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0);
+                    cells = cellQuery.Where(c => c.Shelf.Area.AreaCode == id && c.MaxPalletQuantity == 0 && c.IsActive != "0");
                 }
                 else if (type == "shelf")
                 {
-                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0);
+                    cells = cellQuery.Where(c => c.Shelf.ShelfCode == id && c.MaxPalletQuantity == 0 && c.IsActive != "0");
                 }
                 else if (type == "cell")
                 {
-                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0);
+                    cells = cellQuery.Where(c => c.CellCode == id && c.MaxPalletQuantity == 0 && c.IsActive != "0");
                 }
                 var sCells = cells.Join(storages, c => c.CellCode, s => s.CellCode, (c, s) => new { cells = c, storages = s }).ToArray();
                 if (sCells.Count() > 0)

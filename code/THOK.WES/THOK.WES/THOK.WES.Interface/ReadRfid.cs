@@ -81,22 +81,26 @@ namespace THOK.WES.Interface
                     byte btCmd = 0xb0;
                     listRfid = new List<string>();
                     MessageTran msgTran = new MessageTran(btReadId, btCmd);
-                    iSerialPort.Write(msgTran.AryTranData, 0, msgTran.AryTranData.Length);//给串口发送盘存命令
-                    //读取二秒就返回信息
+                    iSerialPort.Write(msgTran.AryTranData, 0, msgTran.AryTranData.Length);//给串口发送盘存命令                    
+                    //读取到数据就返回信息
                     do
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(300);
                         int nCount = iSerialPort.BytesToRead;
                         if (nCount == 0)
                         {
-                            return null;
+                            return listRfid;
                         }
 
                         byte[] btAryBuffer = new byte[nCount];
                         int nRead = iSerialPort.Read(btAryBuffer, 0, nCount);//读取串口缓存区数据
                         RunReceiveDataCallback(btAryBuffer);
+                        if (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 5)//5秒后无数据就返回
+                        {
+                            return listRfid;
+                        }
 
-                    } while (iSerialPort.BytesToRead != 0);
+                    } while (listRfid.Count == 0 || listRfid == null);//如果集合没有数据就继续运行
                 }
                 this.CloseCom();
                 return listRfid;
