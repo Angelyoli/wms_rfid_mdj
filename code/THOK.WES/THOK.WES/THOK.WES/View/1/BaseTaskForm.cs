@@ -209,8 +209,9 @@ namespace THOK.WES.View
         //申请
         private void btnApply_Click(object sender, EventArgs e)
         {
-            List<string> listRfid = new List<string>();            
-            string productRfid="";
+            string errString = string.Empty;
+            List<string> listRfid = new List<string>();
+            string productRfid = "";
             decimal quantityRfid = 0;
             try
             {
@@ -225,7 +226,7 @@ namespace THOK.WES.View
                         while (RfidCode.Equals(""))
                         {
                             DisplayPlWailt();
-                            listRfid = rRfid.ReadTrayRfid(port, 115200);
+                            listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
                             RfidCode = listRfid[0].ToString();
                             Application.DoEvents();
                         }
@@ -249,7 +250,7 @@ namespace THOK.WES.View
             }
             catch (Exception ex)
             {
-                MessageBox.Show("申请错误：" + ex.Message);
+                MessageBox.Show("申请错误：" + ex.Message + " ,其它:" + errString);
                 RefreshData();
             }
         }
@@ -297,7 +298,7 @@ namespace THOK.WES.View
         //确认
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            ConfirmPubliceMethod(UseRfid);
+            ConfirmPubliceMethod();
         }
 
         //批量确认
@@ -560,7 +561,7 @@ namespace THOK.WES.View
             try
             {
                 string storageRfide = "";
-                if (dgvMain.SelectedRows.Count > 1 && UseRfid!="0")
+                if (dgvMain.SelectedRows.Count > 1 && !UseRfid.Equals("0"))
                 {
                     MessageBox.Show("当前操作只允许操作一个任务！", "提示",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -589,7 +590,7 @@ namespace THOK.WES.View
                         billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
                         billDetail.Operator = Environment.MachineName;
                         billDetails.Add(billDetail);
-                        if (UseRfid != "0")
+                        if (!UseRfid.Equals("0"))
                         {
                             storageRfide = row.Cells["StorageRfid"].Value.ToString();
                         }
@@ -620,20 +621,24 @@ namespace THOK.WES.View
             }
         }
 
-        private void ConfirmPubliceMethod(string Rfid)
+        private void ConfirmPubliceMethod()
         {
+            string errString = string.Empty;
             try
             {
-                bool isRfid = true;               
+                bool isRfid = true;
                 List<string> listRfid = new List<string>();
-                listRfid = rRfid.ReadTrayRfid(port,115200);
+                if (UseRfid != "0")
+                {
+                    listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
+                }
                 if (dgvMain.SelectedRows.Count > 1)
                 {
                     MessageBox.Show("当前操作只允许操作一个任务！", "提示",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                if (listRfid.Count==0)
+                if (listRfid.Count == 0 && !UseRfid.Equals("0"))
                 {
                     MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
                           MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -642,7 +647,7 @@ namespace THOK.WES.View
                 }
                 IList<BillDetail> billDetails = new List<BillDetail>();
                 BillDetail billDetail = new BillDetail();
-                switch (Rfid)
+                switch (UseRfid)
                 {
                     case "0":
                         if (dgvMain.SelectedRows.Count == 1)
@@ -709,13 +714,13 @@ namespace THOK.WES.View
                         break;
                 }
                 if (isRfid)
-                    MessageBox.Show("完成确认失败，原因：找不到与货位RFID相等的数据！其他错误：" + errInfo);
+                    MessageBox.Show("完成确认失败，原因：找不到与货位RFID相等的数据！其他错误：" + errInfo + " ," + errString);
                 else
                     RfidCode = "";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("执行失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("执行失败，原因：" + ex.Message + "," + errString, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

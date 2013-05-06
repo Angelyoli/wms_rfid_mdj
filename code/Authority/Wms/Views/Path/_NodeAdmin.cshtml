@@ -4,12 +4,12 @@
             var url = "/PathNode/PathCreate";
             nodeAddSave(url, pathId)
         } else if (isAdd == 2) {
-            var url = "/PathNode/Edit";
-            var field = $('#ID').val();
+            var url = "/PathNode/PathEdit";
+            var field = $('#inputID').val();
             nodeAddSave(url, field);
         } else if (isAdd == 3) {
-            var url = "/PathNode/Delete";
-            var field = $('#ID').val();
+            var url = "/PathNode/PathDelete";
+            var field = $('#inputID').val();
             nodeAddSave(url, field);
         }
     }
@@ -60,7 +60,7 @@
                     <td width="75" align="right">路径节点顺序：</td>
                     <td width="168">
                     <input name="PathNodeOrder" id="inputPathNodeOrder" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="请输入（必须为数字）"/>
-                    <input name="PathNodeOrder"  style="display:none" /></td>	                
+                    </td>	                
                     </tr>
                     </table>
             </div>

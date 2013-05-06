@@ -23,7 +23,8 @@ namespace THOK.Wms.DownloadWms.Dao
             string sql = string.Format(@"SELECT S.*,P.TRADE_PRICE,(P.TRADE_PRICE*REALQUANTITY) AS AMOUNT_PRICE,
                                                     U.UNIT_CODE02,U.QUANTITY01 FROM SORTORDERDETAIL S
                                                     LEFT JOIN WMS_PRODUCT P ON S.PRODUCTCODE=P.PRODUCT_CODE
-                                                    LEFT JOIN WMS_UNIT_LIST U ON P.UNIT_LIST_CODE=U.UNIT_LIST_CODE WHERE {0}", parameter);
+                                                    LEFT JOIN WMS_UNIT_LIST U ON P.UNIT_LIST_CODE=U.UNIT_LIST_CODE
+                                                    LEFT JOIN SORTORDER A ON A.ORDERID =S.ORDERID WHERE {0}", parameter);
             return this.ExecuteQuery(sql).Tables[0];
         }
 

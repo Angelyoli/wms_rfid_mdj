@@ -1623,7 +1623,9 @@
     <Content Include="Content\themes\base\images\son_Warehouse.png" />
     <Content Include="Content\themes\base\images\tabs_close.gif" />
     <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Common.dll" />
-    <Content Include="DB.xml" />
+    <Content Include="DB.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
