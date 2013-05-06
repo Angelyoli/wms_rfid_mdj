@@ -152,13 +152,13 @@ namespace Wms
 
         void Application_AuthenticateRequest(object sender, EventArgs e)
         {
-            bool enableGzip = this.Request.Headers["Accept-Encoding"] != null ?
-                this.Request.Headers["Accept-Encoding"].Contains("gzip") : false;
-            if (enableGzip)
-            {
-                this.Response.Filter = new GZipStream(this.Response.Filter, CompressionMode.Compress);
-                this.Response.AppendHeader("Content-Encoding", "gzip");
-            }
+            //bool enableGzip = this.Request.Headers["Accept-Encoding"] != null ?
+            //    this.Request.Headers["Accept-Encoding"].Contains("gzip") : false;
+            //if (enableGzip)
+            //{
+            //    this.Response.Filter = new GZipStream(this.Response.Filter, CompressionMode.Compress);
+            //    this.Response.AppendHeader("Content-Encoding", "gzip");
+            //}
 
             if (Context.User == null)
             {
