@@ -542,21 +542,13 @@ namespace Wms.Service
         [WebMethod]
         public string WMSPalletInfo_ZipBase64(string xml)
         {
-            string resultUnzip = UpZipBase64(xml);
-            if (b == true)
+            try
             {
-                try
-                {
-                    return WMSPalletInfo(resultUnzip);
-                }
-                catch
-                {
-                    return ZipBase64(returnMsg);
-                }
+                return WMSPalletInfo(UpZipBase64(xml));
             }
-            else
+            catch (Exception)
             {
-                return ZipBase64(string.Format(returnMsg, "", "001", resultUnzip, "", "", "", "", ""));
+                return string.Format(returnMsg, MessageInfo("解压失败！"));
             }
         }
 
