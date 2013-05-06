@@ -56,7 +56,7 @@ namespace Wms.Service
         public string[] MessageInfo(string message)
         {
             DateTime timeNow = System.DateTime.Now;
-            string[] info = { "", "", message, "", "", "", timeNow.ToShortTimeString(), "" };
+            string[] info = { "", "001", message, "", "", "", timeNow.ToShortTimeString(), "" };
             return info;
         }
 
@@ -69,8 +69,6 @@ namespace Wms.Service
             string strResult = string.Empty;
             bool b = false;
 
-            Guid billMasterID = Guid.NewGuid();
-
             if (!string.IsNullOrEmpty(xml))
             {
                 XElement doc = null;
@@ -78,9 +76,10 @@ namespace Wms.Service
                 {
                     doc = XElement.Parse(xml);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    result = string.Format(returnMsg, MessageInfo("XML的数据格式不正确！"));
+                    result = ZipBase64(string.Format(returnMsg, MessageInfo("XML的数据格式不正确！")));
+                    return result;
                 }
                 try
                 {
@@ -181,6 +180,8 @@ namespace Wms.Service
                             ContractDetail cd = new ContractDetail();
                             Navicert na = new Navicert();
 
+                            Guid billMasterID = Guid.NewGuid();
+
                             #region BillMaster and BillDetail
                             if (doc.Descendants("data") != null)
                             {
@@ -230,6 +231,10 @@ namespace Wms.Service
                                                 {
                                                     b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
                                                 }
+                                                if (headList.WsMethod == "BillDelete")
+                                                {
+                                                    b = true;
+                                                }
                                             }
                                         }
                                         #endregion
@@ -240,12 +245,14 @@ namespace Wms.Service
                                     }
                                     else
                                     {
-                                        return string.Format(returnMsg, MessageInfo("操作出入库单失败！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作出入库单失败！")));
+                                        return result;
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    return string.Format(returnMsg, MessageInfo("出入库单节点不匹配！"));
+                                    result = ZipBase64(string.Format(returnMsg, MessageInfo("出入库单节点不匹配！")));
+                                    return result;
                                 }
                             }
                             #endregion
@@ -300,6 +307,10 @@ namespace Wms.Service
                                                 {
                                                     b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
                                                 }
+                                                if (headList.WsMethod == "BillDelete")
+                                                {
+                                                    b = true;
+                                                }
                                             }
                                         }
                                         #endregion
@@ -310,12 +321,14 @@ namespace Wms.Service
                                     }
                                     else
                                     {
-                                        return string.Format(returnMsg, MessageInfo("操作合同表单失败！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作合同表单失败！")));
+                                        return result;
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    return string.Format(returnMsg, MessageInfo("合同表单节点不匹配！"));
+                                    result = ZipBase64(string.Format(returnMsg, MessageInfo("合同表单节点不匹配！")));
+                                    return result;
                                 }
                             }
                             #endregion
@@ -345,6 +358,10 @@ namespace Wms.Service
                                             {
                                                 b = factory.GetService<INavicertService>().Save(na, out strResult);
                                             }
+                                            if (headList.WsMethod == "BillDelete")
+                                            {
+                                                b = true;
+                                            }
                                         }
                                     }
                                     if (b == true)
@@ -353,16 +370,19 @@ namespace Wms.Service
                                     }
                                     else
                                     {
-                                        return string.Format(returnMsg, MessageInfo("操作准运证失败！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作准运证失败！")));
+                                        return result;
                                     }
                                 }
                                 catch (Exception)
                                 {
-                                    return string.Format(returnMsg, MessageInfo("准运证节点不匹配！"));
+                                    result = ZipBase64(string.Format(returnMsg, MessageInfo("准运证节点不匹配！")));
+                                    return result;
                                 }
                             }
                             #endregion
 
+                            #region Delete
                             if (headList.WsMethod == "BillDelete")
                             {
                                 b = factory.GetService<IBillMasterService>().Delete(con.ContractCode, bm.UUID, out strResult);
@@ -374,9 +394,16 @@ namespace Wms.Service
                             }
                             else
                             {
-                                return string.Format(returnMsg, MessageInfo("最后一步失败！"));
+                                result = ZipBase64(string.Format(returnMsg, MessageInfo("最后一步失败！")));
+                                return result;
                             }
+                            #endregion
                         }
+                    }
+                    else
+                    {
+                        result = ZipBase64(string.Format(returnMsg, MessageInfo("<ws_method></ws_method>标签内字段不匹配！")));
+                        return result;
                     }
                     if (headList.WsMethod == "PalletInfo")
                     {
@@ -385,13 +412,15 @@ namespace Wms.Service
                 }
                 catch (Exception)
                 {
-                    return string.Format(returnMsg, MessageInfo("有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！"));
+                    result = ZipBase64(string.Format(returnMsg, MessageInfo("有几种可能性：1.XML标签不正确;2.MSDTC服务未开启;3.Hosts配置错误！")));
+                    return result;
                 }
             }
             else
             {
                 return string.Format(returnMsg, MessageInfo("XML参数是空的！"));
             }
+            result = ZipBase64(result);
             return result;
         }
 
@@ -405,7 +434,7 @@ namespace Wms.Service
             }
             catch (Exception)
             {
-                return string.Format(returnMsg);
+                return string.Format(returnMsg, MessageInfo("解压失败！"));
             }
         }
 
@@ -420,7 +449,7 @@ namespace Wms.Service
             }
             catch
             {
-                return string.Format(returnMsg, "", "001", "发送失败：不是有效的XML格式字符串", "", "", "", "", "");
+                return ZipBase64(string.Format(returnMsg, "", "001", "发送失败：不是有效的XML格式字符串", "", "", "", "", ""));
             }
             var queryHead = from d in doc.Descendants("head")
                             select new
@@ -487,7 +516,7 @@ namespace Wms.Service
                     }
                     catch
                     {
-                        return string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", "");
+                        return ZipBase64( string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", ""));
                     }
                     result = factory.GetService<IPalletService>().Add(palletAdd);
                     if (result != "")
@@ -522,12 +551,12 @@ namespace Wms.Service
                 }
                 catch
                 {
-                    return returnMsg;
+                    return ZipBase64(returnMsg);
                 }
             }
             else
             {
-                return resultUnzip;
+                return ZipBase64(string.Format(returnMsg, "", "001", resultUnzip, "", "", "", "", ""));
             }
         }
 
@@ -582,7 +611,7 @@ namespace Wms.Service
             }
             catch (Exception er)
             {
-                throw er;
+                return er.Message;
             }
         }
 
@@ -618,39 +647,5 @@ namespace Wms.Service
                 throw ex;
             }
         }
-
-        #region Get XML Elements
-        private List<XElement> getElements(string sXml, string sReadToFollowingXmlNode, string sXmlNode)
-        {
-            List<XElement> dlist = new List<XElement>();
-            StringReader StrStream = new StringReader(sXml);
-
-            XmlReaderSettings xmlSettings = new XmlReaderSettings();
-            xmlSettings.IgnoreWhitespace = true;
-
-            using (System.Xml.XmlReader xmlRead = System.Xml.XmlReader.Create(StrStream, xmlSettings))
-            {
-                bool flg = true;
-                xmlRead.MoveToContent();
-                xmlRead.ReadToFollowing(sReadToFollowingXmlNode);//ReadToDescendant，ReadToFollowing  
-                while (flg)
-                {
-
-                    if (xmlRead.NodeType == XmlNodeType.Element && sXmlNode.Trim().ToUpper() == xmlRead.LocalName.Trim().ToUpper())
-                    {
-                        XElement e = XElement.ReadFrom(xmlRead) as XElement;
-                        dlist.Add(e);
-
-                    }
-                    else
-                    {
-                        flg = xmlRead.Read();
-                    }
-                }//end while  
-            }//end using 
-
-            return dlist;
-        }
-        #endregion
     }
 }
