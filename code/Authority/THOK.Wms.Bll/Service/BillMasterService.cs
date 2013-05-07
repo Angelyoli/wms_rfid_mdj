@@ -43,7 +43,7 @@ namespace THOK.Wms.Bll.Service
                     b.BillType = billMaster.BillType;
                     b.BillDate = billMaster.BillDate;
                     b.MakerName = billMaster.MakerName;
-                    if (b.OperateDate > Convert.ToDateTime("0002-1-1"))
+                    if (billMaster.OperateDate > Convert.ToDateTime("0002-1-1"))
                     {
                         b.OperateDate = billMaster.OperateDate;
                     }
