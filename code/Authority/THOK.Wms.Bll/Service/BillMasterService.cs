@@ -32,10 +32,8 @@ namespace THOK.Wms.Bll.Service
         {
             strResult = string.Empty;
             bool result = false;
-            //var billMasters = BillMasterRepository.GetQueryable().FirstOrDefault(c => c.UUID == billMaster.UUID);
             var b = new BillMaster();
-            //if (billMasters == null)
-            //{
+            
             if (b != null)
             {
                 try
@@ -64,12 +62,6 @@ namespace THOK.Wms.Bll.Service
                     strResult = "原因：" + ex.ToString();
                     result = false;
                 }
-                //}
-                //else
-                //{
-                //    strResult = "原因：找不到当前登陆用户！请重新登陆！"; 
-                //    result = false;
-                //}
             }
             else
             {
