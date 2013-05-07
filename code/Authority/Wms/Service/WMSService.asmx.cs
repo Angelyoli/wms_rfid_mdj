@@ -202,14 +202,18 @@ namespace Wms.Service
                                         bm.SupplierCode = bmArray.SupplierCode;
                                         bm.SupplierType = bmArray.SupplierType;
                                         bm.State = bmArray.State;
-                                        if (headList.WsMethod == "BillCreate")
+                                        if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                        {
+                                            b = factory.GetService<IBillMasterService>().Delete(con.ContractCode, bm.UUID, out strResult);
+                                        }
+                                        if (headList.WsMethod == "BillCreate" || b == true)
                                         {
                                             b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
                                         }
-                                        if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                        {
-                                            b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
-                                        }
+                                        //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                        //{
+                                        //    b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
+                                        //}
                                         #region BillDetail
                                         if (doc.Descendants("data_1") != null)
                                         {
@@ -224,14 +228,14 @@ namespace Wms.Service
                                                 bd.FixedQuantity = Convert.ToDecimal(bdArray.FixedQuantity);
                                                 bd.RealQuantity = Convert.ToDecimal(bdArray.RealQuantity);
                                                 bd.BillMaster = bm;
-                                                if (headList.WsMethod == "BillCreate")
+                                                if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                                 {
                                                     b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
                                                 }
-                                                if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                                {
-                                                    b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
-                                                }
+                                                //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                                //{
+                                                //    b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
+                                                //}
                                                 if (headList.WsMethod == "BillDelete")
                                                 {
                                                     b = true;
@@ -279,14 +283,14 @@ namespace Wms.Service
                                         con.ReceiveAddress = cArray.ReceiveAddress;
                                         con.SaleDate = cArray.SaleDate;
                                         con.State = cArray.State;
-                                        if (headList.WsMethod == "BillCreate")
+                                        if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                         {
                                             b = factory.GetService<IContractService>().Add(con, out strResult);
                                         }
-                                        if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                        {
-                                            b = factory.GetService<IContractService>().Save(con, out strResult);
-                                        }
+                                        //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                        //{
+                                        //    b = factory.GetService<IContractService>().Save(con, out strResult);
+                                        //}
                                         #region ContractDetail
                                         if (doc.Descendants("contract_detail_1") != null)
                                         {
@@ -300,14 +304,14 @@ namespace Wms.Service
                                                 cd.Amount = Convert.ToInt32(cdArray.Amount);
                                                 cd.TaxAmount = Convert.ToInt32(cdArray.TaxAmount);
                                                 cd.Contract = con;
-                                                if (headList.WsMethod == "BillCreate")
+                                                if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                                 {
                                                     b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
                                                 }
-                                                if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                                {
-                                                    b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
-                                                }
+                                                //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                                //{
+                                                //    b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
+                                                //}
                                                 if (headList.WsMethod == "BillDelete")
                                                 {
                                                     b = true;
@@ -351,14 +355,14 @@ namespace Wms.Service
                                             na.NavicertDate = Convert.ToDateTime(nArray.NavicertDate);
                                             na.TruckPlateNo = nArray.TruckPlateNo;
                                             na.Contract = con;
-                                            if (headList.WsMethod == "BillCreate")
+                                            if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                             {
                                                 b = factory.GetService<INavicertService>().Add(na, out strResult);
                                             }
-                                            if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                            {
-                                                b = factory.GetService<INavicertService>().Save(na, out strResult);
-                                            }
+                                            //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
+                                            //{
+                                            //    b = factory.GetService<INavicertService>().Save(na, out strResult);
+                                            //}
                                             if (headList.WsMethod == "BillDelete")
                                             {
                                                 b = true;
