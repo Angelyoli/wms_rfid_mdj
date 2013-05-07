@@ -210,10 +210,6 @@ namespace Wms.Service
                                         {
                                             b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
                                         }
-                                        //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                        //{
-                                        //    b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
-                                        //}
                                         #region BillDetail
                                         if (doc.Descendants("data_1") != null)
                                         {
@@ -232,10 +228,6 @@ namespace Wms.Service
                                                 {
                                                     b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
                                                 }
-                                                //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                                //{
-                                                //    b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
-                                                //}
                                                 if (headList.WsMethod == "BillDelete")
                                                 {
                                                     b = true;
@@ -287,10 +279,6 @@ namespace Wms.Service
                                         {
                                             b = factory.GetService<IContractService>().Add(con, out strResult);
                                         }
-                                        //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                        //{
-                                        //    b = factory.GetService<IContractService>().Save(con, out strResult);
-                                        //}
                                         #region ContractDetail
                                         if (doc.Descendants("contract_detail_1") != null)
                                         {
@@ -308,10 +296,6 @@ namespace Wms.Service
                                                 {
                                                     b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
                                                 }
-                                                //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                                //{
-                                                //    b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
-                                                //}
                                                 if (headList.WsMethod == "BillDelete")
                                                 {
                                                     b = true;
@@ -359,10 +343,6 @@ namespace Wms.Service
                                             {
                                                 b = factory.GetService<INavicertService>().Add(na, out strResult);
                                             }
-                                            //if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                            //{
-                                            //    b = factory.GetService<INavicertService>().Save(na, out strResult);
-                                            //}
                                             if (headList.WsMethod == "BillDelete")
                                             {
                                                 b = true;
