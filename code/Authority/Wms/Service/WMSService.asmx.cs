@@ -242,7 +242,7 @@ namespace Wms.Service
                                     }
                                     if (b == true)
                                     {
-                                        result = string.Format(returnMsg, MessageInfo("操作出入库单成功！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作出入库单成功！")));
                                     }
                                     else
                                     {
@@ -318,7 +318,7 @@ namespace Wms.Service
                                     }
                                     if (b == true)
                                     {
-                                        result = string.Format(returnMsg, MessageInfo("操作合同表单成功！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作合同表单成功！")));
                                     }
                                     else
                                     {
@@ -367,7 +367,7 @@ namespace Wms.Service
                                     }
                                     if (b == true)
                                     {
-                                        result = string.Format(returnMsg, MessageInfo("操作准运证成功！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作准运证成功！")));
                                     }
                                     else
                                     {
@@ -391,11 +391,11 @@ namespace Wms.Service
                             if (b == true)
                             {
                                 scope.Complete();
-                                result = string.Format(returnMsg, headList.MsgId, headList.StateCode, headList.StateDesc, headList.WsMark, headList.WsMethod, headList.WsParam, headList.CurrTime, headList.CurrUser);
+                                result = ZipBase64(string.Format(returnMsg, headList.MsgId, headList.StateCode, headList.StateDesc, headList.WsMark, headList.WsMethod, headList.WsParam, headList.CurrTime, headList.CurrUser));
                             }
                             else
                             {
-                                result = ZipBase64(string.Format(returnMsg, MessageInfo("最后一步失败！")));
+                                result = ZipBase64(string.Format(returnMsg, MessageInfo("删除失败！")));
                                 return result;
                             }
                             #endregion
@@ -419,7 +419,7 @@ namespace Wms.Service
             }
             else
             {
-                return string.Format(returnMsg, MessageInfo("XML参数是空的！"));
+                return ZipBase64(string.Format(returnMsg, MessageInfo("XML参数是空的！")));
             }
             
             return result;
@@ -433,9 +433,9 @@ namespace Wms.Service
             {
                 return WMSBillService(UpZipBase64(xml));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return string.Format(returnMsg, MessageInfo("解压失败！"));
+                return ZipBase64(string.Format(returnMsg, MessageInfo("解压失败！错误消息："+ex.Message)));
             }
         }
 
@@ -529,7 +529,7 @@ namespace Wms.Service
                     }
                     catch
                     {
-                        return ZipBase64( string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", ""));
+                        return ZipBase64(string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", ""));
                     }
                     result = factory.GetService<IPalletService>().Add(palletAdd);
                     if (result != "")
@@ -559,9 +559,9 @@ namespace Wms.Service
             {
                 return WMSPalletInfo(UpZipBase64(xml));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return string.Format(returnMsg, MessageInfo("解压失败！"));
+                return ZipBase64(string.Format(returnMsg, MessageInfo("解压失败！错误消息:" + ex.Message)));
             }
         }
 
