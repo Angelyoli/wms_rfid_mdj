@@ -18,10 +18,9 @@ namespace THOK.WMS.DownloadWms.Bll
        {
            bool tag = true;
            DataTable reachCodeDt = this.QueryReachCode();
-           string reachCodeList = UtinString.StringMake(reachCodeDt, "DIST_STA_CODE");
-           string reachCode = UtinString.StringMake(reachCodeList);
-           reachCode = "DIST_STA_CODE NOT IN(" + reachCode + ")";
-           DataTable reachDt = this.GetReachInfo(reachCode);
+           string reachCodeList = UtinString.MakeString(reachCodeDt, "DIST_STA_CODE");
+           reachCodeList = "DIST_STA_CODE NOT IN(" + reachCodeList + ")";
+           DataTable reachDt = this.GetReachInfo(reachCodeList);
            if (reachDt.Rows.Count > 0)
                this.Insert(reachDt);
            else

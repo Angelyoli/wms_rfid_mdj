@@ -21,8 +21,7 @@ namespace THOK.WMS.DownloadWms.Bll
             try
             {
                 DataTable RouteCodeDt = this.GetRouteCode();
-                string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
-                routeCodeList = UtinString.StringMake(routeCodeList);
+                string routeCodeList = UtinString.MakeString(RouteCodeDt, "deliver_line_code");
                 DataTable RouteDt = this.GetRouteInfo("");
 
                 if (RouteDt.Rows.Count > 0)
@@ -53,8 +52,8 @@ namespace THOK.WMS.DownloadWms.Bll
         {
             bool tag = true;
             DataTable RouteCodeDt = this.GetRouteCode();
-            string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
-            routeCodeList = UtinString.StringMake(routeCodeList);
+            string routeCodeList = UtinString.MakeString(RouteCodeDt, "deliver_line_code");
+            //routeCodeList = UtinString.StringMake(routeCodeList);
             DataTable RouteDt = this.GetRouteInfos("");
 
             if (RouteDt.Rows.Count > 0)
@@ -229,8 +228,8 @@ namespace THOK.WMS.DownloadWms.Bll
             try
             {
                 DataTable RouteCodeDt = this.GetRouteCode();
-                string routeCodeList = UtinString.StringMake(RouteCodeDt, "deliver_line_code");
-                routeCodeList = UtinString.StringMake(routeCodeList);
+                string routeCodeList = UtinString.MakeString(RouteCodeDt, "deliver_line_code");
+                //routeCodeList = UtinString.StringMake(routeCodeList);
                 DataTable RouteDt = this.GetSortRouteInfo("");
 
                 if (RouteDt.Rows.Count > 0)
