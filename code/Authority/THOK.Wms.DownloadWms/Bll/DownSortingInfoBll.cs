@@ -38,7 +38,7 @@ namespace THOK.Wms.DownloadWms.Bll
                     string ordermasterlist = UtinString.MakeString(masterdr, "OrderID");          
                     ordermasterlist = "OrderID IN (" + ordermasterlist + ")";
                     DataTable detaildt = this.GetSortingOrderDetail(orderlistDate);
-                    DataRow[] detaildr = detaildt.Select("OrderID IN (" + ordermasterlist + ")");
+                    DataRow[] detaildr = detaildt.Select(ordermasterlist);
                     if (masterdr.Length > 0 && detaildr.Length > 0)
                     {
                         DataSet masterds = this.SaveSortingOrder(masterdr);

@@ -12,6 +12,7 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.Generic;
 using System.Xml;
+using THOK.Wms.DownloadWms.Bll;
 
 namespace Wms.Service
 {
@@ -33,10 +34,10 @@ namespace Wms.Service
         public IContractService ContractService { get; set; }
         [Dependency]
         public INavicertService NavicertService { get; set; }
-
+        
         #region 常量
         ServiceFactory factory = new ServiceFactory();
-        private const string returnMsg = @"<?xml version='1.0' encoding='GBK'>
+        private const string returnMsg = @"<?xml version='1.0' encoding='GBK'?>
                                             <dataset>
 	                                            <head>
 	                                                <msg_id>{0}</msg_id>
@@ -201,13 +202,13 @@ namespace Wms.Service
                                         bm.SupplierCode = bmArray.SupplierCode;
                                         bm.SupplierType = bmArray.SupplierType;
                                         bm.State = bmArray.State;
-                                        if (headList.WsMethod == "BillCreate")
-                                        {
-                                            b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
-                                        }
                                         if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                         {
-                                            b = factory.GetService<IBillMasterService>().Save(bm, out strResult);
+                                            b = factory.GetService<IBillMasterService>().Delete(con.ContractCode, bm.UUID, out strResult);
+                                        }
+                                        if (headList.WsMethod == "BillCreate" || b == true)
+                                        {
+                                            b = factory.GetService<IBillMasterService>().Add(bm, out strResult);
                                         }
                                         #region BillDetail
                                         if (doc.Descendants("data_1") != null)
@@ -223,13 +224,9 @@ namespace Wms.Service
                                                 bd.FixedQuantity = Convert.ToDecimal(bdArray.FixedQuantity);
                                                 bd.RealQuantity = Convert.ToDecimal(bdArray.RealQuantity);
                                                 bd.BillMaster = bm;
-                                                if (headList.WsMethod == "BillCreate")
+                                                if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                                 {
                                                     b = factory.GetService<IBillDetailService>().Add(bd, out strResult);
-                                                }
-                                                if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                                {
-                                                    b = factory.GetService<IBillDetailService>().Save(bd, out strResult);
                                                 }
                                                 if (headList.WsMethod == "BillDelete")
                                                 {
@@ -241,7 +238,7 @@ namespace Wms.Service
                                     }
                                     if (b == true)
                                     {
-                                        result = string.Format(returnMsg, MessageInfo("操作出入库单成功！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作出入库单成功！")));
                                     }
                                     else
                                     {
@@ -278,13 +275,9 @@ namespace Wms.Service
                                         con.ReceiveAddress = cArray.ReceiveAddress;
                                         con.SaleDate = cArray.SaleDate;
                                         con.State = cArray.State;
-                                        if (headList.WsMethod == "BillCreate")
+                                        if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                         {
                                             b = factory.GetService<IContractService>().Add(con, out strResult);
-                                        }
-                                        if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                        {
-                                            b = factory.GetService<IContractService>().Save(con, out strResult);
                                         }
                                         #region ContractDetail
                                         if (doc.Descendants("contract_detail_1") != null)
@@ -299,13 +292,9 @@ namespace Wms.Service
                                                 cd.Amount = Convert.ToInt32(cdArray.Amount);
                                                 cd.TaxAmount = Convert.ToInt32(cdArray.TaxAmount);
                                                 cd.Contract = con;
-                                                if (headList.WsMethod == "BillCreate")
+                                                if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                                 {
                                                     b = factory.GetService<IContractDetailService>().Add(cd, out strResult);
-                                                }
-                                                if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                                {
-                                                    b = factory.GetService<IContractDetailService>().Save(cd, out strResult);
                                                 }
                                                 if (headList.WsMethod == "BillDelete")
                                                 {
@@ -317,7 +306,7 @@ namespace Wms.Service
                                     }
                                     if (b == true)
                                     {
-                                        result = string.Format(returnMsg, MessageInfo("操作合同表单成功！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作合同表单成功！")));
                                     }
                                     else
                                     {
@@ -350,13 +339,9 @@ namespace Wms.Service
                                             na.NavicertDate = Convert.ToDateTime(nArray.NavicertDate);
                                             na.TruckPlateNo = nArray.TruckPlateNo;
                                             na.Contract = con;
-                                            if (headList.WsMethod == "BillCreate")
+                                            if (headList.WsMethod == "BillCreate" || headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
                                             {
                                                 b = factory.GetService<INavicertService>().Add(na, out strResult);
-                                            }
-                                            if (headList.WsMethod == "BillModify" || headList.WsMethod == "BillStart" || headList.WsMethod == "BillScan" || headList.WsMethod == "BillConfirm")
-                                            {
-                                                b = factory.GetService<INavicertService>().Save(na, out strResult);
                                             }
                                             if (headList.WsMethod == "BillDelete")
                                             {
@@ -366,7 +351,7 @@ namespace Wms.Service
                                     }
                                     if (b == true)
                                     {
-                                        result = string.Format(returnMsg, MessageInfo("操作准运证成功！"));
+                                        result = ZipBase64(string.Format(returnMsg, MessageInfo("操作准运证成功！")));
                                     }
                                     else
                                     {
@@ -390,24 +375,24 @@ namespace Wms.Service
                             if (b == true)
                             {
                                 scope.Complete();
-                                result = string.Format(returnMsg, headList.MsgId, headList.StateCode, headList.StateDesc, headList.WsMark, headList.WsMethod, headList.WsParam, headList.CurrTime, headList.CurrUser);
+                                result = ZipBase64(string.Format(returnMsg, headList.MsgId, headList.StateCode, headList.StateDesc, headList.WsMark, headList.WsMethod, headList.WsParam, headList.CurrTime, headList.CurrUser));
                             }
                             else
                             {
-                                result = ZipBase64(string.Format(returnMsg, MessageInfo("最后一步失败！")));
+                                result = ZipBase64(string.Format(returnMsg, MessageInfo("删除失败！")));
                                 return result;
                             }
                             #endregion
                         }
                     }
+                    else if (headList.WsMethod == "PalletInfo")
+                    {
+                        result = WMSPalletInfo(xml);
+                    }
                     else
                     {
                         result = ZipBase64(string.Format(returnMsg, MessageInfo("<ws_method></ws_method>标签内字段不匹配！")));
                         return result;
-                    }
-                    if (headList.WsMethod == "PalletInfo")
-                    {
-                        WMSPalletInfo(xml);
                     }
                 }
                 catch (Exception)
@@ -418,9 +403,9 @@ namespace Wms.Service
             }
             else
             {
-                return string.Format(returnMsg, MessageInfo("XML参数是空的！"));
+                return ZipBase64(string.Format(returnMsg, MessageInfo("XML参数是空的！")));
             }
-            result = ZipBase64(result);
+            
             return result;
         }
 
@@ -432,9 +417,9 @@ namespace Wms.Service
             {
                 return WMSBillService(UpZipBase64(xml));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return string.Format(returnMsg, MessageInfo("解压失败！"));
+                return ZipBase64(string.Format(returnMsg, MessageInfo("解压失败！错误消息："+ex.Message)));
             }
         }
 
@@ -473,40 +458,52 @@ namespace Wms.Service
                                 bb_oper_date = (d.Element("bb_oper_date") ?? null) == null ? null : d.Element("bb_oper_date").Value,
                                 barcode_type = (d.Element("barcode_type") ?? null) == null ? null : d.Element("barcode_type").Value,
                                 pallet_id = (d.Element("pallet_id") ?? null) == null ? null : d.Element("pallet_id").Value,
-                                pallet_ID = (d.Element("pallet_ID") ?? null) == null ? null : d.Element("pallet_ID").Value,
                                 brand_info = (d.Element("brand_info") ?? null) == null ? null : d.Element("brand_info").Value,
-                                RFIDAntCode = (d.Element("RFIDAntCode") ?? null) == null ? null : d.Element("RFIDAntCode").Value,
+                                ok_brand_info = (d.Element("ok_brand_info") ?? null) == null ? null : d.Element("ok_brand_info").Value,
+                                RFIDAntCode = (d.Element("rfidantcode") ?? null) == null ? null : d.Element("rfidantcode").Value,
                                 scan_time = (d.Element("scan_time") ?? null) == null ? null : d.Element("scan_time").Value
                             };
             using (var scope = new TransactionScope())
             {
                 for (int i = 0; i < queryData.Count(); i++)
                 {
-                    string palletid = "";
+                    string palletid = string.Empty;
+                    string barcodetype = string.Empty;
+                    string bbtickedo = string.Empty;
+                    string bbcontactno = string.Empty;
+                    string bboperdate = DateTime.Now.ToString();
+                    var qhead = queryHead.ToArray()[0];
                     var data = queryData.ToArray()[i];
+                    string[] brandInfo = null;
+                    //brandInfo = (data.ok_brand_info).ToString().Split(';');
+                    if (qhead.ws_mark == "WMSPalletInfo")
+                    {
+                        brandInfo = (data.brand_info).ToString().Split(';');
+                        barcodetype = data.barcode_type;
+                    }
+                    else
+                    {
+                        brandInfo = (data.ok_brand_info).ToString().Split(';');
+                        bbtickedo = data.bb_ticket_no;
+                        bbcontactno = data.bb_contact_no;
+                        bboperdate = data.bb_oper_date;
+                    }                   
                     Pallet palletAdd = new Pallet();
-                    string[] brandInfo = (data.brand_info).ToString().Split(';');
+
                     if (brandInfo.Length < 4)
                     {
                         brandInfo = (data.brand_info).ToString().Split('；');
                     }
-                    if (data.pallet_id != null)
-                    {
-                        palletid = data.pallet_id;
-                    }
-                    else
-                    {
-                        palletid = data.pallet_ID;
-                    }
+                                      
                     try
                     {
-                        palletAdd.PalletID = palletid;
+                        palletAdd.PalletID = data.pallet_id;
                         palletAdd.WmsUUID = "";//
                         palletAdd.UUID = data.bb_uuid;
-                        palletAdd.TicketNo = data.bb_ticket_no;
-                        palletAdd.OperateDate = Convert.ToDateTime(data.bb_oper_date);
+                        palletAdd.TicketNo = bbtickedo;
+                        palletAdd.OperateDate = Convert.ToDateTime(bboperdate);
                         palletAdd.OperateType = data.bb_type;
-                        palletAdd.BarCodeType = data.barcode_type;
+                        palletAdd.BarCodeType = barcodetype;
                         palletAdd.RfidAntCode = (data.RFIDAntCode).ToString();
                         palletAdd.PieceCigarCode = brandInfo[0];
                         palletAdd.BoxCigarCode = brandInfo[3];
@@ -516,7 +513,7 @@ namespace Wms.Service
                     }
                     catch
                     {
-                        return ZipBase64( string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", ""));
+                        return ZipBase64(string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", ""));
                     }
                     result = factory.GetService<IPalletService>().Add(palletAdd);
                     if (result != "")
@@ -546,9 +543,9 @@ namespace Wms.Service
             {
                 return WMSPalletInfo(UpZipBase64(xml));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return string.Format(returnMsg, MessageInfo("解压失败！"));
+                return ZipBase64(string.Format(returnMsg, MessageInfo("解压失败！错误消息:" + ex.Message)));
             }
         }
 
@@ -592,14 +589,18 @@ namespace Wms.Service
 
         public static string UpZipBase64(string strSource)
         {
+            AddXmlValueBll bll = new AddXmlValueBll();
+            bll.insert(strSource);
             try
             {
                 //Base64解码
                 byte[] bytesEncode = Convert.FromBase64String(strSource);
                 //对字节数组BTYEB进行Zip解压，得到BYTEA
                 bytesEncode = UnzipBytes(bytesEncode);
-                //将字节数组BYTEA转换为字符串，得到明文STRA
-                return Encoding.UTF8.GetString(bytesEncode);
+                //将字节数组BYTEA转换为字符串，得到明文STRA                
+                string xml = Encoding.UTF8.GetString(bytesEncode);
+                bll.insert(xml);
+                return xml;
             }
             catch (Exception er)
             {
