@@ -799,7 +799,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                .Where(t => t.PalletID == rfid)
                                .Select(t => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                 {
-                                    ProductCode = t.PieceCigarCode,
+                                    ProductCode = t.BoxCigarCode.Substring(7,5),
                                     PieceQuantity = t.Quantity
                                 }).ToArray();
                 billDetails = billDetails.Concat(PalletInfo).ToArray();

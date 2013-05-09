@@ -34,7 +34,9 @@ namespace Wms.Service
         public IContractService ContractService { get; set; }
         [Dependency]
         public INavicertService NavicertService { get; set; }
-        
+
+        public AddXmlValueBll bll = new AddXmlValueBll();
+
         #region 常量
         ServiceFactory factory = new ServiceFactory();
         private const string returnMsg = @"<?xml version='1.0' encoding='GBK'?>
@@ -69,13 +71,14 @@ namespace Wms.Service
             string result = null;
             string strResult = string.Empty;
             bool b = false;
-
+            
             if (!string.IsNullOrEmpty(xml))
             {
                 XElement doc = null;
                 try
                 {
                     doc = XElement.Parse(xml);
+                    bll.insert("Bill", xml);
                 }
                 catch (Exception)
                 {
@@ -431,6 +434,7 @@ namespace Wms.Service
             try
             {
                 doc = XElement.Parse(xml);
+                bll.insert("Pallet", xml);
             }
             catch
             {
@@ -511,9 +515,9 @@ namespace Wms.Service
                         palletAdd.Quantity = Convert.ToDecimal(brandInfo[2]);
                         palletAdd.ScanTime = Convert.ToDateTime(data.scan_time);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        return ZipBase64(string.Format(returnMsg, "", "001", "发送失败：数据不符合要求", "", "", "", "", ""));
+                        return ZipBase64(string.Format(returnMsg, "", "001", "发送失败：数据不符合要求"+ex.Message, "", "", "", "", ""));
                     }
                     result = factory.GetService<IPalletService>().Add(palletAdd);
                     if (result != "")
@@ -564,7 +568,6 @@ namespace Wms.Service
             {
                 throw er;
             }
-
         }
 
         public static byte[] ZipBytes(byte[] bytesZip)
@@ -587,10 +590,9 @@ namespace Wms.Service
             }
         }
 
-        public static string UpZipBase64(string strSource)
+        public string UpZipBase64(string strSource)
         {
-            AddXmlValueBll bll = new AddXmlValueBll();
-            bll.insert(strSource);
+            bll.insert("str", strSource);
             try
             {
                 //Base64解码
@@ -598,8 +600,7 @@ namespace Wms.Service
                 //对字节数组BTYEB进行Zip解压，得到BYTEA
                 bytesEncode = UnzipBytes(bytesEncode);
                 //将字节数组BYTEA转换为字符串，得到明文STRA                
-                string xml = Encoding.UTF8.GetString(bytesEncode);
-                bll.insert(xml);
+                string xml = Encoding.UTF8.GetString(bytesEncode);         
                 return xml;
             }
             catch (Exception er)
