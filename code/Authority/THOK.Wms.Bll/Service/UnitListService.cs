@@ -52,7 +52,7 @@ namespace THOK.Wms.Bll.Service
                 Quantity01 = Convert.ToInt32(ul.Quantity01).ToString(),
                 Quantity02 = Convert.ToInt32(ul.Quantity02).ToString(),
                 Quantity03 = Convert.ToInt32(ul.Quantity03).ToString(),
-                ul.IsActive,
+                IsActive=ul.IsActive=="1" ? "可用":"不可用",
                 UpdateTime = ul.UpdateTime.ToString("yyyy-MM-dd")
             });
             return new { total, rows = unit_List.ToArray() };

@@ -5,17 +5,57 @@
         $("#unitDetail1").datagrid('reload');
     };
 
+    //查询页面selected（1-4），新增、编辑、删除selected（5-8）
     function unitSave1() {
         var unitRow = $('#unitDetail1').datagrid('getSelected');
         if (unitRow) {
-            $('#unitCode01').val(unitRow.UnitCode);
-            $('#unitName01').val(unitRow.UnitName);
-            $('#unitCode1').val(unitRow.UnitCode);
-            $('#unitName1').val(unitRow.UnitName);
-            count1 = unitRow.COUNT;
-            if (count2 != null) {
-                $('#quantity01').val(count1 / count2);
+            if (selected == 1) {
+                $('#unitCode1').val(unitRow.UnitCode);
             }
+           else if (selected == 2) {
+                $('#unitCode2').val(unitRow.UnitCode);
+            }
+           else if (selected == 3) {
+                $('#unitCode3').val(unitRow.UnitCode);
+            }
+           else if (selected == 4) {
+                $('#unitCode4').val(unitRow.UnitCode);
+            }
+            else if (selected == 5) {
+                $('#UnitCode01').val(unitRow.UnitCode);
+                count1 = unitRow.COUNT;
+                if (count2 != null) {
+                    $('#quantity01').val(count1 / count2);
+                }
+            }
+            else if (selected == 6) {
+                $('#UnitCode02').val(unitRow.UnitCode);
+                count2 = unitRow.COUNT;
+                if (count1 != null) {
+                    $('#quantity01').val(count1 / count2);
+                }
+                if (count3 != null) {
+                    $('#quantity02').val(count2 / count3);
+                }
+            }
+            else if (selected == 7) {
+                $('#UnitCode03').val(unitRow.UnitCode);
+                count3 = unitRow.COUNT;
+                if (count2 != null) {
+                    $('#quantity02').val(count2 / count3);
+                }
+                if (count4 != null) {
+                    $('#quantity03').val(count3 / count4);
+                }
+            }
+            else if (selected == 8) {
+                $('#UnitCode04').val(unitRow.UnitCode);
+                count4 = unitRow.COUNT;
+                if (count3 != null) {
+                    $('#quantity03').val(count3 / count4);
+                }
+            }
+            
             $('#unitData1').dialog('close');
         }
     }
