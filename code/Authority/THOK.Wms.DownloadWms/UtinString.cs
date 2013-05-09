@@ -21,7 +21,7 @@ namespace THOK.WMS.DownloadWms
             {
                 foreach (DataRow row in dt.Rows)
                 {
-                    list += row["" + field + ""].ToString() + ",";
+                    list += "'" + row["" + field + ""].ToString() + "',";
                 }
                 list = list.Substring(0, list.Length - 1);
             }
@@ -78,7 +78,7 @@ namespace THOK.WMS.DownloadWms
             {
                 foreach (DataRow row in dr)
                 {
-                    list += row["" + field + ""].ToString() + ",";
+                    list += "'" + row["" + field + ""].ToString() + "',";
                 }
                 list = list.Substring(0, list.Length - 1);
             }

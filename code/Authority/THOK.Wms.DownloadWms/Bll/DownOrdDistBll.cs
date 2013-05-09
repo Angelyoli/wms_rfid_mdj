@@ -18,8 +18,7 @@ namespace THOK.WMS.DownloadWms.Bll
         {
             bool tag = true;
             DataTable orgTable = this.QueryOrgDistCode();
-            string distCodeList = UtinString.StringMake(orgTable, "DIST_BILL_ID");
-            distCodeList = UtinString.StringMake(distCodeList);
+            string distCodeList = UtinString.MakeString(orgTable, "DIST_BILL_ID");
             distCodeList = "DIST_BILL_ID NOT IN (" + distCodeList + ")";
             DataTable bistBillMasterTable = this.GetDistBillMaster(distCodeList);
             if (bistBillMasterTable.Rows.Count > 0)

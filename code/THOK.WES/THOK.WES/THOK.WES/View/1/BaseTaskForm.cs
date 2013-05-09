@@ -99,7 +99,7 @@ namespace THOK.WES.View
                 this.dgvMain.RowTemplate.Height = 40;
                 this.dgvMain.DefaultCellStyle.Font = new Font("ËÎÌו", 16);
                 this.dgvMain.ColumnHeadersDefaultCellStyle.Font = new Font("ËÎÌו", 13);
-                this.btnBatConfirm.Visible = false;
+                //this.btnBatConfirm.Visible = false;
                 UseTag = "1";
             }
             else

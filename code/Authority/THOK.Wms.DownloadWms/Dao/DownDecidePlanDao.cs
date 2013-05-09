@@ -15,7 +15,7 @@ namespace THOK.Wms.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetMiddleInBillMaster(string inBillNoList)
         {
-            string sql = string.Format(@"SELECT BB_UUID AS BILL_NO,BB_INPUT_DATE AS BILL_DATE FROM S_BILL_BASE WHERE {0}", inBillNoList);
+            string sql = string.Format(@"SELECT ID AS BILL_NO,BILL_DATE AS BILL_DATE FROM INTER_BILL_MASTER WHERE {0}", inBillNoList);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
@@ -25,11 +25,7 @@ namespace THOK.Wms.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetMiddleInBillDetail(string inBillNoList)
         {
-            string sql = string.Format(@"SELECT BD_BB_UUID AS BILL_NO,
-                                        SUBSTRING(BD_BCIG_CODE,8,5) AS PRODUCT_CODE,
-                                        BD_BCIG_NAME AS PRODUCT_NAME,BD_BILL_PNUM AS QUANTITY,
-                                        BD_BILL_ALL_BNUM AS BARQUANTITY,BD_BILL_ALL_NUM1 AS BILL_QUANTITY                                       
-                                        FROM S_BILL_DETAIL WHERE {0}", inBillNoList);
+            string sql = string.Format(@"SELECT MASTER_ID AS BILL_NO,SUBSTRING(BOX_CIGAR_CODE,8,5) AS PRODUCT_CODE,BILL_QUANTITY AS QUANTITY FROM INTER_BILL_DETAIL WHERE 1=1 {0}",inBillNoList);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
@@ -83,7 +79,14 @@ namespace THOK.Wms.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetMiddleBillNo()
         {
-            string sql = "SELECT BILL_NO FROM WMS_MIDDLE_IN_BILL WHERE BILL_DATE>=DATEADD(DAY, -4, CONVERT(VARCHAR(14), GETDATE(), 112)) ORDER BY BILL_DATE";
+            string sql = "SELECT * FROM WMS_MIDDLE_IN_BILL WHERE BILL_DATE>=DATEADD(DAY, -4, CONVERT(VARCHAR(14), GETDATE(), 112)) ORDER BY BILL_DATE";
+            return this.ExecuteQuery(sql).Tables[0];
+        }
+
+
+        public DataTable GetMiddleBillNo(string billNo)
+        {
+            string sql = string.Format("SELECT * FROM WMS_MIDDLE_IN_BILL WHERE BILL_NO='{0}'", billNo);
             return this.ExecuteQuery(sql).Tables[0];
         }
 

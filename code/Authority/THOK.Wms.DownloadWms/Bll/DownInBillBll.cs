@@ -35,13 +35,11 @@ namespace THOK.WMS.DownloadWms.Bll
                     DownInBillDao dao = new DownInBillDao();
                     DataTable emply = dao.FindEmployee(EmployeeCode);
                     DataTable inMasterBillNo = this.GetInBillNo();
-                    string billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
-                    billnolist = UtinString.StringMake(billnolist);
+                    string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
                     billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
                     DataTable masterdt = this.InBillMaster(billnolist);
 
-                    string inDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
-                    inDetailList = UtinString.StringMake(inDetailList);
+                    string inDetailList = UtinString.MakeString(masterdt, "ORDER_ID");
                     inDetailList = "ORDER_ID IN(" + inDetailList + ")";
                     DataTable detaildt = this.InBillDetail(inDetailList);
 
@@ -85,13 +83,11 @@ namespace THOK.WMS.DownloadWms.Bll
                     DownInBillDao dao = new DownInBillDao();
                     DataTable emply = dao.FindEmployee(EmployeeCode);
                     DataTable inMasterBillNo = this.GetInBillNo();
-                    string billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
-                    billnolist = UtinString.StringMake(billnolist);
+                    string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
                     billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
                     DataTable masterdt = this.InBillMasters(billnolist);
 
-                    string inDetailList = UtinString.StringMake(masterdt, "ORDER_ID");
-                    inDetailList = UtinString.StringMake(inDetailList);
+                    string inDetailList = UtinString.MakeString(masterdt, "ORDER_ID");
                     inDetailList = "ORDER_ID IN(" + inDetailList + ")";
                     DataTable detaildt = this.InBillDetail(inDetailList);
 

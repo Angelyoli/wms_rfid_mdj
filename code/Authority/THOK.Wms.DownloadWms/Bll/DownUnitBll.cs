@@ -355,8 +355,7 @@ namespace THOK.WMS.DownloadWms.Bll
             bool tag = true;
             //下载单位信息
             DataTable unitCodeTable = this.GetUnitCode();
-            string unitCodeList = UtinString.StringMake(unitCodeTable, "unit_code");
-            unitCodeList = UtinString.StringMake(unitCodeList);
+            string unitCodeList = UtinString.MakeString(unitCodeTable, "unit_code");
             unitCodeList = "BRAND_UNIT_CODE NOT IN (" + unitCodeList + ")";
             DataTable brandUnitCodeTable = this.GetUnitInfos(unitCodeList);
             if (brandUnitCodeTable.Rows.Count > 0)
@@ -369,8 +368,7 @@ namespace THOK.WMS.DownloadWms.Bll
 
             //下载计量单位系列数据
             DataTable ulistCodeTable = this.GetUlistCode();
-            string ulistCodeList = UtinString.StringMake(ulistCodeTable, "unit_list_code");
-            ulistCodeList = UtinString.StringMake(ulistCodeList);
+            string ulistCodeList = UtinString.MakeString(ulistCodeTable, "unit_list_code");
             ulistCodeList = "BRAND_ULIST_CODE NOT IN (" + ulistCodeList + ")";
             DataTable brandUlistCodeTable = this.GetBrandUlist(ulistCodeList);
             if (brandUlistCodeTable.Rows.Count > 0)
