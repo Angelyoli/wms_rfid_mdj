@@ -100,6 +100,7 @@
     <Compile Include="Dal\ConfigUtil.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GridUtil.cs" />
     <Compile Include="Parameter.cs">
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
