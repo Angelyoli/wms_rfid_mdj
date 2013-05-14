@@ -11,22 +11,31 @@ namespace THOK.WES.View
 {
     public partial class SelectDialog : Form
     {
+        ListBox lst = new ListBox();
+        private string selectedBillID;
         public string SelectedBillID
         {
-            get { return cbBillID.SelectedValue.ToString(); }
+            get { return selectedBillID; }
+            set { selectedBillID = value; }
         }
 
         public SelectDialog(BillMaster [] billMasters)
         {
             InitializeComponent();
-            cbBillID.DataSource = billMasters;
-            cbBillID.DisplayMember = "BillNo";
-            cbBillID.ValueMember = "BillNo";
-            cbBillID.SelectedIndex = 0;
+            //cbBillID.DataSource = billMasters;
+            foreach (var row in billMasters)
+            {
+                cbBillIDCheck.Items.Add(row.BillNo);
+            }          
+            //cbBillIDCheck.Size.Height = 59;
+            cbBillIDCheck.DisplayMember = "BillNo";
+            cbBillIDCheck.ValueMember = "BillNo";
+            cbBillIDCheck.SelectedIndex = 0;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+            this.SelectedBillID = this.cbBillIDCheck.Text;
             DialogResult = DialogResult.OK;
         }
 

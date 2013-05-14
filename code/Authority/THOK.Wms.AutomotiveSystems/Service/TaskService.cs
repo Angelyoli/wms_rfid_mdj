@@ -258,9 +258,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
                                     PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
                                     BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    OperateBarQuantity = (i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit01.Count,
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                    OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-
+                                    //OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
                                     Status = i.Status,
@@ -268,6 +269,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 })
                                 .ToArray();
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
+
                             break;
                         #endregion
                         #region 读盘点单细单
@@ -309,6 +311,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     }
                 }
                 result.IsSuccess = true;
+                billDetails = this.SelectGroup(billDetails);
                 result.BillDetails = billDetails.OrderByDescending(i => i.Status)
                     .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
             }
@@ -1047,6 +1050,25 @@ namespace THOK.Wms.AutomotiveSystems.Service
         private void Notify()
         {
             AutomotiveSystemsNotify.Notify();
+        }
+
+        private THOK.Wms.AutomotiveSystems.Models.BillDetail[] SelectGroup(THOK.Wms.AutomotiveSystems.Models.BillDetail[] details)
+        {
+            THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
+            var bills = details.Where(s => s.TargetStorageName.Contains("分拣线"))//条件为零时条件                           
+                              .GroupBy(r => new { r.ProductCode, r.ProductName, r.Status, r.Operator, r.StorageName, r.StorageRfid })
+                              .Select(r => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
+                              {
+                                  BillType = "3",
+                                  ProductCode = r.Key.ProductCode,
+                                  ProductName = r.Key.ProductName,
+                                  Status = r.Key.Status,
+                                  Operator = r.Key.Operator,
+                                  StorageName = r.Key.StorageName,
+                                  PieceQuantity = r.Sum(s => s.PieceQuantity + s.OperateBarQuantity)
+                              })
+                              .ToArray();            
+            return billDetails.Concat(bills).ToArray();
         }
     }
 }

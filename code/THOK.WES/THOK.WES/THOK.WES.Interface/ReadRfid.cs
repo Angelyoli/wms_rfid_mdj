@@ -25,11 +25,10 @@ namespace THOK.WES.Interface
         public void CloseCom()
         {
             string con = iSerialPort.PortName;
-            iSerialPort.Dispose();
             if (iSerialPort.IsOpen)
             {
                 iSerialPort.Close();
-            }
+            }         
         }
 
         /// <summary>
