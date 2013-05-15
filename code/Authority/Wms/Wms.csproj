@@ -2177,9 +2177,6 @@
     <Content Include="Views\StockMoveBill\_SearchPartial.cshtml" />
     <Content Include="Views\StockMoveBill\_SettlePartial.cshtml" />
     <Content Include="Views\UnitList\_UnitPartial1.cshtml" />
-    <Content Include="Views\UnitList\_UnitPartial2.cshtml" />
-    <Content Include="Views\UnitList\_UnitPartial3.cshtml" />
-    <Content Include="Views\UnitList\_UnitPartial4.cshtml" />
     <Content Include="Views\CurrentStock\_ProductPartial.cshtml" />
     <Content Include="Views\Distribution\_ProductPartial.cshtml" />
     <Content Include="Views\Stockledger\_ProductPartial.cshtml" />

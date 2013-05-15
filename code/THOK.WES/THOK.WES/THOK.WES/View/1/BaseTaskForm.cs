@@ -74,10 +74,11 @@ namespace THOK.WES.View
         private string port;
 
         private Connection connection = null;
+        private GridUtil gridUtil = null;
         public BaseTaskForm()
         {
             InitializeComponent();
-
+            gridUtil = new GridUtil(dgvMain);
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
@@ -111,7 +112,7 @@ namespace THOK.WES.View
                 this.dgvMain.ColumnHeadersDefaultCellStyle.Font = new Font("宋体", 10);
                 UseTag = "1";
             }
-            port = configUtil.GetConfig("RFID")["PORT"];
+            port = configUtil.GetConfig("RFID")["PORT"];            
         }
 
         //查询
@@ -178,7 +179,7 @@ namespace THOK.WES.View
                 dgvMain.DataSource = null;
                 return;
             }
-            sslBillID.Text = "单据号：" + BillMaster.BillNo + "                              ";
+            //sslBillID.Text = "单据号：" + BillMaster.BillNo + "                              ";
             sslOperator.Text = "操作员：" + Environment.MachineName;
 
             Task task = new Task(url);
