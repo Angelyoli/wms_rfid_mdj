@@ -426,9 +426,11 @@ namespace THOK.WES.View
             // 
             // 总数
             // 
+            this.总数.DataPropertyName = "SumQuantity";
             this.总数.HeaderText = "总数";
             this.总数.Name = "总数";
             this.总数.ReadOnly = true;
+            this.总数.Visible = false;
             // 
             // CellRfid
             // 

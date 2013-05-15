@@ -78,7 +78,7 @@ namespace THOK.WES.View
         public BaseTaskForm()
         {
             InitializeComponent();
-            gridUtil = new GridUtil(dgvMain);
+            //gridUtil = new GridUtil(dgvMain);
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
@@ -693,7 +693,7 @@ namespace THOK.WES.View
                                 string cellRfid = row.Cells["CellRfid"].Value.ToString();
                                 if (BillTypes == "3")
                                 {
-                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))//移出的库存(托盘)的rfid
+                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString())&& quantity==30)//移出的库存(托盘)的rfid
                                     {
                                         MessageBox.Show("读取RFID信息与数据不一致！请检查托盘卷烟与数据是否符合！", "提示",
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -701,7 +701,7 @@ namespace THOK.WES.View
                                     }
                                     cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();//移入的货位rfid
                                 }
-                                if (listRfid.Contains(cellRfid))
+                                if (listRfid.Contains(cellRfid) || listRfid.Count==0)
                                 {
                                     ConfirmMethod(row, billDetail, billDetails, RfidCode);
                                     isRfid = false;
@@ -717,7 +717,7 @@ namespace THOK.WES.View
                             string cellRfid = row.Cells["CellRfid"].Value.ToString();
                             if (BillTypes == "3")
                             {
-                                if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))
+                                if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()) && quantity == 30)
                                 {
                                     MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -822,14 +822,16 @@ namespace THOK.WES.View
             }
         }
 
-        int piece = 0;
+        private decimal sumQuantity = 0;
         int f = 0;
+        private int y = 0;
         private void dgvMain_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if ((e.ColumnIndex == 0 && e.RowIndex != -1))
+            if ((e.ColumnIndex == this.dgvMain.Columns["Storage"].Index && e.RowIndex >= 0))
             {
                 Brush datagridBrush = new SolidBrush(dgvMain.GridColor);
                 SolidBrush groupLineBrush = new SolidBrush(e.CellStyle.BackColor);
+
                 using (Pen datagridLinePen = new Pen(datagridBrush))
                 {
                     // 清除单元格
@@ -840,54 +842,79 @@ namespace THOK.WES.View
                         e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
                         // 画右边线
                         e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
+
+                        if (e.Value != null)
+                        {
+                            var cell = this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index];
+                            sumQuantity = sumQuantity + Convert.ToDecimal(this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index].Value.ToString());
+                            if (y != 0)
+                            {
+                                y = (y + e.CellBounds.Y + 10) / 2;
+                            }
+                            else
+                            {
+                                y = e.CellBounds.Y + 2;
+                            }
+                            if (cell.Tag == null)
+                            {
+                                cell.Tag = new object[] { sumQuantity, y };
+                            }
+                            object[] tag = (object[])cell.Tag;
+                            dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["总数"].Index].Value = tag[0].ToString();
+                            sumQuantity = 0;
+                            y = 0;
+                        }
                     }
                     else
                     {
+                        sumQuantity = sumQuantity + Convert.ToDecimal(this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index].Value.ToString());
+                        if (y == 0)
+                        {
+                            y = e.CellBounds.Y;
+                        }
                         // 画右边线
                         e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
                     }
+
                     //对最后一条记录只画底边线
                     if (e.RowIndex == dgvMain.Rows.Count - 1)
                     {
+                        if (e.Value != null)
+                        {
+                            if (dgvMain.Rows[e.RowIndex - 1].Cells[e.ColumnIndex].Value.ToString() != e.Value.ToString())
+                            {
+                                sumQuantity = 0;
+                            }
+                            var cell = this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index];
+                            sumQuantity = sumQuantity + Convert.ToDecimal(this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index].Value.ToString());
+                            if (y != 0)
+                            {
+                                y = (y + e.CellBounds.Y + 10) / 2;
+                            }
+                            else
+                            {
+                                y = e.CellBounds.Y + 2;
+                            }
+                            if (cell.Tag == null)
+                            {
+                                cell.Tag = new object[] { sumQuantity, y };
+                            }
+                            object[] tag = (object[])cell.Tag;
+                            dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["总数"].Index].Value = sumQuantity;//tag[0].ToString();
+                            sumQuantity = 0;
+                            y = 0;
+                        }
                         //绘制底边线
                         e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
                     }
                     // 填写单元格内容，相同的内容的单元格只填写第一个                        
                     if (e.Value != null)
                     {
-                        int index = e.RowIndex + 1;
-                        if (e.RowIndex == dgvMain.Rows.Count - 1)
-                        {
-                            index = index - 1;
-                        }                        
                         if (e.RowIndex > 0 && dgvMain.Rows[e.RowIndex - 1].Cells[e.ColumnIndex].Value.ToString() == e.Value.ToString())
                         {
-                            f++;
-                            if (e.RowIndex > 0 && dgvMain.Rows[index].Cells[0].Value.ToString() != e.Value.ToString())
-                            {
-                                for (int i = 0; i <= f; i++)
-                                {
-                                    if (f <= e.RowIndex)
-                                    {
-                                        piece = piece + Convert.ToInt32(dgvMain.Rows[e.RowIndex - i].Cells[3].Value.ToString());
-                                    }
-                                }
-                                dgvMain.Rows[e.RowIndex].Cells[9].Value = piece.ToString();
-                                f = 0;
-                                piece = 0;
-                            }
                         }
                         else
                         {
-                            //绘制单元格内容
-                            if (e.RowIndex > 0 && dgvMain.Rows[index].Cells[0].Value.ToString() == e.Value.ToString())
-                            {
-
-                            }
-                            else
-                            {
-                                dgvMain.Rows[e.RowIndex].Cells[9].Value = dgvMain.Rows[e.RowIndex].Cells[3].Value;
-                            }
                             e.Graphics.DrawString(e.Value.ToString(), e.CellStyle.Font, Brushes.Black, e.CellBounds.X + 2, e.CellBounds.Y + 5, StringFormat.GenericDefault);
                         }
                     }

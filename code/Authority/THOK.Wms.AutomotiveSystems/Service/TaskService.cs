@@ -256,7 +256,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
-                                    PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    PieceQuantity = i.RealQuantity / i.Product.UnitList.Unit01.Count,
                                     BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperateBarQuantity = (i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit01.Count,
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
@@ -1055,17 +1055,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
         private THOK.Wms.AutomotiveSystems.Models.BillDetail[] SelectGroup(THOK.Wms.AutomotiveSystems.Models.BillDetail[] details)
         {
             THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
-            var bills = details.Where(s => s.TargetStorageName.Contains("分拣线"))//条件为零时条件                           
-                              .GroupBy(r => new { r.ProductCode, r.ProductName, r.Status, r.Operator, r.StorageName, r.StorageRfid })
-                              .Select(r => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
+            var bills = details.Select(r => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                               {
-                                  BillType = "3",
-                                  ProductCode = r.Key.ProductCode,
-                                  ProductName = r.Key.ProductName,
-                                  Status = r.Key.Status,
-                                  Operator = r.Key.Operator,
-                                  StorageName = r.Key.StorageName,
-                                  PieceQuantity = r.Sum(s => s.PieceQuantity + s.OperateBarQuantity)
+                                  PieceQuantity = r.PieceQuantity+r.OperatePieceQuantity
                               })
                               .ToArray();            
             return billDetails.Concat(bills).ToArray();
