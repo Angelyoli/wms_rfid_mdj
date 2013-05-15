@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            PresentationControls.CheckBoxProperties checkBoxProperties1 = new PresentationControls.CheckBoxProperties();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.cbBillID = new System.Windows.Forms.ComboBox();
             this.lblCaption = new System.Windows.Forms.Label();
+            this.cbBillIDCheck = new PresentationControls.CheckBoxComboBox();
             this.SuspendLayout();
             // 
             // btnOK
@@ -58,16 +59,6 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // cbBillID
-            // 
-            this.cbBillID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbBillID.Font = new System.Drawing.Font("宋体", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.cbBillID.FormattingEnabled = true;
-            this.cbBillID.Location = new System.Drawing.Point(12, 46);
-            this.cbBillID.Name = "cbBillID";
-            this.cbBillID.Size = new System.Drawing.Size(350, 48);
-            this.cbBillID.TabIndex = 2;
-            // 
             // lblCaption
             // 
             this.lblCaption.AutoSize = true;
@@ -78,13 +69,25 @@
             this.lblCaption.TabIndex = 3;
             this.lblCaption.Text = "请选择要进行作业的单据";
             // 
+            // cbBillIDCheck
+            // 
+            checkBoxProperties1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cbBillIDCheck.CheckBoxProperties = checkBoxProperties1;
+            this.cbBillIDCheck.DisplayMemberSingleItem = "";
+            this.cbBillIDCheck.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.cbBillIDCheck.FormattingEnabled = true;
+            this.cbBillIDCheck.Location = new System.Drawing.Point(12, 45);
+            this.cbBillIDCheck.Name = "cbBillIDCheck";
+            this.cbBillIDCheck.Size = new System.Drawing.Size(350, 27);
+            this.cbBillIDCheck.TabIndex = 4;
+            // 
             // SelectDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(374, 179);
+            this.Controls.Add(this.cbBillIDCheck);
             this.Controls.Add(this.lblCaption);
-            this.Controls.Add(this.cbBillID);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -103,7 +106,7 @@
 
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        public System.Windows.Forms.ComboBox cbBillID;
         private System.Windows.Forms.Label lblCaption;
+        private PresentationControls.CheckBoxComboBox cbBillIDCheck;
     }
 }

@@ -34,6 +34,7 @@ namespace THOK.WES.View
 
         //选择的主单；
         BillMaster BillMaster = null;
+        BillMaster[] BillMasters = null;
 
         private string RfidReadProductCode = "";
 
@@ -73,10 +74,11 @@ namespace THOK.WES.View
         private string port;
 
         private Connection connection = null;
+        private GridUtil gridUtil = null;
         public BaseTaskForm()
         {
             InitializeComponent();
-
+            gridUtil = new GridUtil(dgvMain);
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
@@ -110,7 +112,7 @@ namespace THOK.WES.View
                 this.dgvMain.ColumnHeadersDefaultCellStyle.Font = new Font("宋体", 10);
                 UseTag = "1";
             }
-            port = configUtil.GetConfig("RFID")["PORT"];
+            port = configUtil.GetConfig("RFID")["PORT"];            
         }
 
         //查询
@@ -141,13 +143,20 @@ namespace THOK.WES.View
                                 }
                                 break;
                         }
-                        foreach (BillMaster billMaster in billMasters)
+
+                        List<BillMaster> listBill =new List<Interface.Model.BillMaster>();
+                        int f = 0;
+                        for (int i = 0; i < billMasters.Length; i++)
                         {
-                            if (billNo == billMaster.BillNo)
+                            if (billNo.Contains(billMasters[i].BillNo))
                             {
-                                this.BillMaster = billMaster;
+                                f++;
+                                listBill.Add(billMasters[i]);
+                                this.BillMaster = billMasters[i];
                             }
                         }
+                        BillMasters = new BillMaster[f];
+                        listBill.CopyTo(BillMasters, 0);
                     }
                     if (!isSuccess)
                         MessageBox.Show(msg);
@@ -165,12 +174,12 @@ namespace THOK.WES.View
         //刷新数据
         private void RefreshData()
         {
-            if (BillMaster == null)
+            if (BillMasters == null)
             {
                 dgvMain.DataSource = null;
                 return;
             }
-            sslBillID.Text = "单据号：" + BillMaster.BillNo + "                              ";
+            //sslBillID.Text = "单据号：" + BillMaster.BillNo + "                              ";
             sslOperator.Text = "操作员：" + Environment.MachineName;
 
             Task task = new Task(url);
@@ -202,7 +211,7 @@ namespace THOK.WES.View
                 }
                 ClosePlWailt();
             });
-            task.SearchBillDetail(new BillMaster[] { this.BillMaster }, RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);
+            task.SearchBillDetail(BillMasters , RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);
             DisplayPlWailt();
         }
 
@@ -223,13 +232,13 @@ namespace THOK.WES.View
                 {
                     if (BillTypes == "1")
                     {
-                        while (RfidCode.Equals(""))
+                        while (listRfid.Count == 0 || listRfid == null)
                         {
                             DisplayPlWailt();
                             listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
-                            RfidCode = listRfid[0].ToString();
                             Application.DoEvents();
                         }
+                        RfidCode = RfidCode = listRfid[0].ToString();
                         Task task = new Task(url);
                         task.SearchRfidInfo(RfidCode);
                         task.GetRfidInfoCompleted += new Task.GetRfidInfoCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
@@ -263,6 +272,7 @@ namespace THOK.WES.View
                 if (dgvMain.SelectedRows.Count != 0)
                 {
                     DisplayPlWailt();
+                    rRfid.CloseCom();
                     IList<BillDetail> billDetails = new List<BillDetail>();
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
@@ -299,6 +309,7 @@ namespace THOK.WES.View
         private void btnConfirm_Click(object sender, EventArgs e)
         {
             ConfirmPubliceMethod();
+            RefreshData();
         }
 
         //批量确认
@@ -426,7 +437,7 @@ namespace THOK.WES.View
         private void btnBcCompose_Click(object sender, EventArgs e)
         {
             btnBcCompose.Enabled = false;
-            if (!isBcCompose && BillTypes == "3" && BillMaster != null)
+            if (!isBcCompose && BillTypes == "3" && BillMasters != null)
             {
                 Task task = new Task(url.Replace("Task", "StockMoveBill/GeneratePalletTag"));
                 task.BcComposeCompleted += new Task.BcComposeEventHandler(delegate(bool isSuccess, string msg)
@@ -467,9 +478,9 @@ namespace THOK.WES.View
                             return;
                         }
                     }
-                    DisplayPlWailt();                    
+                    DisplayPlWailt();
                     IList<BillDetail> billDetails = new List<BillDetail>();
-                    
+
                     switch (uRfid)
                     {
                         case "0":
@@ -630,7 +641,12 @@ namespace THOK.WES.View
                 List<string> listRfid = new List<string>();
                 if (UseRfid != "0")
                 {
-                    listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
+                    while (listRfid.Count == 0 || listRfid == null)
+                    {
+                        DisplayPlWailt();
+                        listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
+                        Application.DoEvents();
+                    }
                 }
                 if (dgvMain.SelectedRows.Count > 1)
                 {
@@ -669,13 +685,13 @@ namespace THOK.WES.View
                                 string cellRfid = row.Cells["CellRfid"].Value.ToString();
                                 if (BillTypes == "3")
                                 {
-                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))
+                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))//移出的库存(托盘)的rfid
                                     {
                                         MessageBox.Show("读取RFID信息与数据不一致！请检查托盘卷烟与数据是否符合！", "提示",
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         return;
                                     }
-                                    cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();
+                                    cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();//移入的货位rfid
                                 }
                                 if (listRfid.Contains(cellRfid))
                                 {
@@ -792,10 +808,118 @@ namespace THOK.WES.View
 
         private void CyleTimer_Tick(object sender, EventArgs e)
         {
-            if (BillMaster != null)
+            if (BillMasters != null)
             {
                 this.ReadRfidCycle();
             }
+        }
+
+       
+        private void dgvMain_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            //if ((e.ColumnIndex == 3 && e.RowIndex != -1))
+            //{
+            //    Brush datagridBrush1 = new SolidBrush(dgvMain.GridColor);
+            //    SolidBrush groupLineBrush1 = new SolidBrush(e.CellStyle.BackColor);
+            //    using (Pen datagridLinePen1 = new Pen(datagridBrush1))
+            //    {
+            //        // 清除单元格
+            //        e.Graphics.FillRectangle(groupLineBrush1, e.CellBounds);
+            //        if (e.RowIndex < dgvMain.Rows.Count - 1 && dgvMain.Rows[e.RowIndex + 1].Cells[0].Value != null && dgvMain.Rows[e.RowIndex + 1].Cells[0].Value.ToString() != dgvMain.Rows[e.RowIndex].Cells[0].Value.ToString())
+            //        {
+            //            //绘制底边线
+            //            e.Graphics.DrawLine(datagridLinePen1, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
+            //            // 画右边线
+            //            e.Graphics.DrawLine(datagridLinePen1, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
+            //        }
+            //        else
+            //        {
+            //            // 画右边线
+            //            e.Graphics.DrawLine(datagridLinePen1, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
+            //        }
+            //        //对最后一条记录只画底边线
+            //        if (e.RowIndex == dgvMain.Rows.Count - 1)
+            //        {
+            //            //绘制底边线
+            //            e.Graphics.DrawLine(datagridLinePen1, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
+            //        }
+            //        // 填写单元格内容，相同的内容的单元格只填写第一个                        
+            //        if (e.Value != null)
+            //        {
+            //            int f = 0;
+            //            int index = e.RowIndex + 1;
+            //            if (e.RowIndex == dgvMain.Rows.Count - 1)
+            //            {
+            //                index = index - 1;
+            //            }
+            //            if (e.RowIndex > 0 && dgvMain.Rows[e.RowIndex - 1].Cells[0].Value.ToString() == dgvMain.Rows[e.RowIndex].Cells[0].Value.ToString())
+            //            {
+            //                f++;
+            //                if (e.RowIndex > 0 && dgvMain.Rows[index].Cells[0].Value.ToString() != dgvMain.Rows[e.RowIndex].Cells[0].Value.ToString())
+            //                {
+            //                    for (int i = 0; i <= f; i++)
+            //                    {
+            //                        piece = piece + Convert.ToInt32(dgvMain.Rows[e.RowIndex - i].Cells[e.ColumnIndex].Value.ToString());
+            //                    }
+            //                    e.Graphics.DrawString(piece.ToString(), e.CellStyle.Font, Brushes.Black, e.CellBounds.X + 2, e.CellBounds.Y + 5, StringFormat.GenericDefault);
+            //                }
+            //            }
+            //            else if (e.RowIndex > 0 && dgvMain.Rows[index].Cells[0].Value.ToString() == dgvMain.Rows[e.RowIndex].Cells[0].Value.ToString())
+            //            {
+
+            //            }
+            //            else
+            //            {
+            //                //绘制单元格内容
+            //                e.Graphics.DrawString(e.Value.ToString(), e.CellStyle.Font, Brushes.Black, e.CellBounds.X + 2, e.CellBounds.Y + 5, StringFormat.GenericDefault);
+            //            }
+            //        }
+            //        e.Handled = true;
+            //    }
+            //}
+
+            //if ((e.ColumnIndex == 0 && e.RowIndex != -1))
+            //{
+            //    Brush datagridBrush = new SolidBrush(dgvMain.GridColor);
+            //    SolidBrush groupLineBrush = new SolidBrush(e.CellStyle.BackColor);
+            //    using (Pen datagridLinePen = new Pen(datagridBrush))
+            //    {
+            //        // 清除单元格
+            //        e.Graphics.FillRectangle(groupLineBrush, e.CellBounds);
+            //        if (e.RowIndex < dgvMain.Rows.Count - 1 && dgvMain.Rows[e.RowIndex + 1].Cells[e.ColumnIndex].Value != null && dgvMain.Rows[e.RowIndex + 1].Cells[e.ColumnIndex].Value.ToString() != e.Value.ToString())
+            //        {
+            //            //绘制底边线
+            //            e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
+            //            // 画右边线
+            //            e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
+            //        }
+            //        else
+            //        {
+            //            // 画右边线
+            //            e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
+            //        }
+            //        //对最后一条记录只画底边线
+            //        if (e.RowIndex == dgvMain.Rows.Count - 1)
+            //        {
+            //            //绘制底边线
+            //            e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
+            //        }
+            //        // 填写单元格内容，相同的内容的单元格只填写第一个                        
+            //        if (e.Value != null)
+            //        {
+            //            if (e.RowIndex > 0 && dgvMain.Rows[e.RowIndex - 1].Cells[e.ColumnIndex].Value.ToString() == e.Value.ToString())
+            //            {
+                            
+            //            }
+            //            else
+            //            {
+            //                //绘制单元格内容
+            //                e.Graphics.DrawString(e.Value.ToString(), e.CellStyle.Font, Brushes.Black, e.CellBounds.X + 2, e.CellBounds.Y + 5, StringFormat.GenericDefault);
+            //            }
+            //        }
+            //        e.Handled = true;
+            //    }
+            //}
         }
     }
 }

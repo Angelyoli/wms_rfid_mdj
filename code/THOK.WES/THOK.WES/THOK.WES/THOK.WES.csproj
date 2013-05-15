@@ -52,6 +52,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CheckBoxComboBox">
+      <HintPath>..\@Debug\CheckBoxComboBox.dll</HintPath>
+    </Reference>
     <Reference Include="DataGridViewAutoFilter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DataGridViewAutoFilter.dll</HintPath>
@@ -97,6 +100,7 @@
     <Compile Include="Dal\ConfigUtil.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GridUtil.cs" />
     <Compile Include="Parameter.cs">
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -200,6 +204,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Resources\accept.png" />
   </ItemGroup>
