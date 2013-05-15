@@ -311,7 +311,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     }
                 }
                 result.IsSuccess = true;
-                billDetails = this.SelectGroup(billDetails);
+                //billDetails = this.SelectGroup(billDetails);
                 result.BillDetails = billDetails.OrderByDescending(i => i.Status)
                     .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
             }

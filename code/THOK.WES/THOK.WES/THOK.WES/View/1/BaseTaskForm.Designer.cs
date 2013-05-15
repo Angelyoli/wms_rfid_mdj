@@ -60,6 +60,7 @@ namespace THOK.WES.View
             this.TargetStorage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Operator = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.总数 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CellRfid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DetailID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.@BillType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -219,6 +220,7 @@ namespace THOK.WES.View
             this.TargetStorage,
             this.BillNo,
             this.Operator,
+            this.总数,
             this.CellRfid,
             this.DetailID,
             this.@BillType,
@@ -422,6 +424,12 @@ namespace THOK.WES.View
             this.Operator.ReadOnly = true;
             this.Operator.Width = 70;
             // 
+            // 总数
+            // 
+            this.总数.HeaderText = "总数";
+            this.总数.Name = "总数";
+            this.总数.ReadOnly = true;
+            // 
             // CellRfid
             // 
             this.CellRfid.DataPropertyName = "CellRfid";
@@ -537,6 +545,7 @@ namespace THOK.WES.View
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetStorage;
         private System.Windows.Forms.DataGridViewTextBoxColumn BillNo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Operator;
+        private System.Windows.Forms.DataGridViewTextBoxColumn 总数;
         private System.Windows.Forms.DataGridViewTextBoxColumn CellRfid;
         private System.Windows.Forms.DataGridViewTextBoxColumn DetailID;
         private System.Windows.Forms.DataGridViewTextBoxColumn StorageRfid;
