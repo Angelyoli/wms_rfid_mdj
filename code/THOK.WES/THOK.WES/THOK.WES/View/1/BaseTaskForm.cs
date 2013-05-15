@@ -78,7 +78,7 @@ namespace THOK.WES.View
         public BaseTaskForm()
         {
             InitializeComponent();
-            //gridUtil = new GridUtil(dgvMain);
+            gridUtil = new GridUtil(dgvMain);
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
@@ -210,6 +210,7 @@ namespace THOK.WES.View
                     dgvMain.DataSource = null;
                 }
                 ClosePlWailt();
+                dgvMain.ClearSelection();
             });
             task.SearchBillDetail(BillMasters, RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);
             DisplayPlWailt();
@@ -825,7 +826,7 @@ namespace THOK.WES.View
         private decimal sumQuantity = 0;
         int f = 0;
         private int y = 0;
-        private void dgvMain_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        private void dgvMain_CellPaintinga(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if ((e.ColumnIndex == this.dgvMain.Columns["Storage"].Index && e.RowIndex >= 0))
             {

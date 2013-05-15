@@ -44,13 +44,6 @@ namespace THOK.WES.View
             this.sslOperator = new System.Windows.Forms.ToolStripStatusLabel();
             this.CyleTimer = new System.Windows.Forms.Timer(this.components);
             this.dgvMain = new System.Windows.Forms.DataGridView();
-            this.btnBatConfirm = new System.Windows.Forms.Button();
-            this.btnOpType = new System.Windows.Forms.Button();
-            this.plWailt = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnBcCompose = new System.Windows.Forms.Button();
-            this.btnExit = new System.Windows.Forms.Button();
             this.Storage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BillTypeName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProductName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,7 +53,7 @@ namespace THOK.WES.View
             this.TargetStorage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Operator = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.总数 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CellRfid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DetailID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.@BillType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,6 +62,13 @@ namespace THOK.WES.View
             this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TargetStorageRfid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PalletTag = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnBatConfirm = new System.Windows.Forms.Button();
+            this.btnOpType = new System.Windows.Forms.Button();
+            this.plWailt = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnBcCompose = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             this.pnlTool.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.pnlMain.SuspendLayout();
@@ -220,7 +220,7 @@ namespace THOK.WES.View
             this.TargetStorage,
             this.BillNo,
             this.Operator,
-            this.总数,
+            this.Total,
             this.CellRfid,
             this.DetailID,
             this.@BillType,
@@ -230,7 +230,7 @@ namespace THOK.WES.View
             this.TargetStorageRfid,
             this.PalletTag});
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("宋体", 9F);
             dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
@@ -247,7 +247,167 @@ namespace THOK.WES.View
             this.dgvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMain.Size = new System.Drawing.Size(804, 140);
             this.dgvMain.TabIndex = 1;
-            this.dgvMain.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvMain_CellPainting);
+            // 
+            // Storage
+            // 
+            this.Storage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Storage.DataPropertyName = "StorageName";
+            this.Storage.HeaderText = "作业储位";
+            this.Storage.Name = "Storage";
+            this.Storage.ReadOnly = true;
+            this.Storage.Width = 135;
+            // 
+            // BillTypeName
+            // 
+            this.BillTypeName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.BillTypeName.DataPropertyName = "BillTypeName";
+            this.BillTypeName.HeaderText = "类型";
+            this.BillTypeName.Name = "BillTypeName";
+            this.BillTypeName.ReadOnly = true;
+            this.BillTypeName.Width = 60;
+            // 
+            // ProductName
+            // 
+            this.ProductName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ProductName.DataPropertyName = "ProductName";
+            this.ProductName.HeaderText = "卷烟名称";
+            this.ProductName.Name = "ProductName";
+            this.ProductName.ReadOnly = true;
+            this.ProductName.Width = 210;
+            // 
+            // PieceQuantity
+            // 
+            this.PieceQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.PieceQuantity.DataPropertyName = "PieceQuantity";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.PieceQuantity.DefaultCellStyle = dataGridViewCellStyle3;
+            this.PieceQuantity.HeaderText = "件数";
+            this.PieceQuantity.Name = "PieceQuantity";
+            this.PieceQuantity.ReadOnly = true;
+            this.PieceQuantity.Width = 60;
+            // 
+            // BarQuantity
+            // 
+            this.BarQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.BarQuantity.DataPropertyName = "BarQuantity";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.BarQuantity.DefaultCellStyle = dataGridViewCellStyle4;
+            this.BarQuantity.HeaderText = "条数";
+            this.BarQuantity.Name = "BarQuantity";
+            this.BarQuantity.ReadOnly = true;
+            this.BarQuantity.Width = 60;
+            // 
+            // StatusName
+            // 
+            this.StatusName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.StatusName.DataPropertyName = "StatusName";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.StatusName.DefaultCellStyle = dataGridViewCellStyle5;
+            this.StatusName.HeaderText = "状态";
+            this.StatusName.Name = "StatusName";
+            this.StatusName.ReadOnly = true;
+            this.StatusName.Width = 80;
+            // 
+            // TargetStorage
+            // 
+            this.TargetStorage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TargetStorage.DataPropertyName = "TargetStorageName";
+            this.TargetStorage.HeaderText = "目标储位";
+            this.TargetStorage.Name = "TargetStorage";
+            this.TargetStorage.ReadOnly = true;
+            this.TargetStorage.Visible = false;
+            // 
+            // BillNo
+            // 
+            this.BillNo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.BillNo.DataPropertyName = "BillNo";
+            this.BillNo.HeaderText = "订单编号";
+            this.BillNo.Name = "BillNo";
+            this.BillNo.ReadOnly = true;
+            this.BillNo.Visible = false;
+            // 
+            // Operator
+            // 
+            this.Operator.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Operator.DataPropertyName = "Operator";
+            this.Operator.HeaderText = "操作员";
+            this.Operator.Name = "Operator";
+            this.Operator.ReadOnly = true;
+            this.Operator.Width = 70;
+            // 
+            // Total
+            // 
+            this.Total.DataPropertyName = "SumQuantity";
+            this.Total.HeaderText = "总数";
+            this.Total.Name = "Total";
+            this.Total.ReadOnly = true;
+            this.Total.Visible = false;
+            // 
+            // CellRfid
+            // 
+            this.CellRfid.DataPropertyName = "CellRfid";
+            this.CellRfid.HeaderText = "CellRfid";
+            this.CellRfid.Name = "CellRfid";
+            this.CellRfid.ReadOnly = true;
+            this.CellRfid.Visible = false;
+            // 
+            // DetailID
+            // 
+            this.DetailID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.DetailID.DataPropertyName = "DetailID";
+            this.DetailID.HeaderText = "明细编号";
+            this.DetailID.Name = "DetailID";
+            this.DetailID.ReadOnly = true;
+            this.DetailID.Visible = false;
+            this.DetailID.Width = 80;
+            // 
+            // @BillType
+            // 
+            this.@BillType.DataPropertyName = "BillType";
+            this.@BillType.HeaderText = "BillType";
+            this.@BillType.Name = "@BillType";
+            this.@BillType.ReadOnly = true;
+            this.@BillType.Visible = false;
+            // 
+            // StorageRfid
+            // 
+            this.StorageRfid.DataPropertyName = "StorageRfid";
+            this.StorageRfid.HeaderText = "StorageRfid";
+            this.StorageRfid.Name = "StorageRfid";
+            this.StorageRfid.ReadOnly = true;
+            this.StorageRfid.Visible = false;
+            // 
+            // ProductCode
+            // 
+            this.ProductCode.DataPropertyName = "ProductCode";
+            this.ProductCode.HeaderText = "ProductCode";
+            this.ProductCode.Name = "ProductCode";
+            this.ProductCode.ReadOnly = true;
+            this.ProductCode.Visible = false;
+            // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "Status";
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            this.Status.Visible = false;
+            // 
+            // TargetStorageRfid
+            // 
+            this.TargetStorageRfid.DataPropertyName = "TargetStorageRfid";
+            this.TargetStorageRfid.HeaderText = "TargetStorageRfid";
+            this.TargetStorageRfid.Name = "TargetStorageRfid";
+            this.TargetStorageRfid.ReadOnly = true;
+            this.TargetStorageRfid.Visible = false;
+            // 
+            // PalletTag
+            // 
+            this.PalletTag.DataPropertyName = "PalletTag";
+            this.PalletTag.HeaderText = "盘号";
+            this.PalletTag.Name = "PalletTag";
+            this.PalletTag.ReadOnly = true;
+            this.PalletTag.Visible = false;
             // 
             // btnBatConfirm
             // 
@@ -337,167 +497,6 @@ namespace THOK.WES.View
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
-            // Storage
-            // 
-            this.Storage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Storage.DataPropertyName = "StorageName";
-            this.Storage.HeaderText = "作业储位";
-            this.Storage.Name = "Storage";
-            this.Storage.ReadOnly = true;
-            this.Storage.Width = 135;
-            // 
-            // BillTypeName
-            // 
-            this.BillTypeName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.BillTypeName.DataPropertyName = "BillTypeName";
-            this.BillTypeName.HeaderText = "类型";
-            this.BillTypeName.Name = "BillTypeName";
-            this.BillTypeName.ReadOnly = true;
-            this.BillTypeName.Width = 60;
-            // 
-            // ProductName
-            // 
-            this.ProductName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ProductName.DataPropertyName = "ProductName";
-            this.ProductName.HeaderText = "卷烟名称";
-            this.ProductName.Name = "ProductName";
-            this.ProductName.ReadOnly = true;
-            this.ProductName.Width = 210;
-            // 
-            // PieceQuantity
-            // 
-            this.PieceQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.PieceQuantity.DataPropertyName = "PieceQuantity";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.PieceQuantity.DefaultCellStyle = dataGridViewCellStyle3;
-            this.PieceQuantity.HeaderText = "件数";
-            this.PieceQuantity.Name = "PieceQuantity";
-            this.PieceQuantity.ReadOnly = true;
-            this.PieceQuantity.Width = 60;
-            // 
-            // BarQuantity
-            // 
-            this.BarQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.BarQuantity.DataPropertyName = "BarQuantity";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.BarQuantity.DefaultCellStyle = dataGridViewCellStyle4;
-            this.BarQuantity.HeaderText = "条数";
-            this.BarQuantity.Name = "BarQuantity";
-            this.BarQuantity.ReadOnly = true;
-            this.BarQuantity.Width = 60;
-            // 
-            // StatusName
-            // 
-            this.StatusName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.StatusName.DataPropertyName = "StatusName";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.StatusName.DefaultCellStyle = dataGridViewCellStyle5;
-            this.StatusName.HeaderText = "状态";
-            this.StatusName.Name = "StatusName";
-            this.StatusName.ReadOnly = true;
-            this.StatusName.Width = 80;
-            // 
-            // TargetStorage
-            // 
-            this.TargetStorage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.TargetStorage.DataPropertyName = "TargetStorageName";
-            this.TargetStorage.HeaderText = "目标储位";
-            this.TargetStorage.Name = "TargetStorage";
-            this.TargetStorage.ReadOnly = true;
-            this.TargetStorage.Visible = false;
-            // 
-            // BillNo
-            // 
-            this.BillNo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.BillNo.DataPropertyName = "BillNo";
-            this.BillNo.HeaderText = "订单编号";
-            this.BillNo.Name = "BillNo";
-            this.BillNo.ReadOnly = true;
-            this.BillNo.Visible = false;
-            // 
-            // Operator
-            // 
-            this.Operator.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Operator.DataPropertyName = "Operator";
-            this.Operator.HeaderText = "操作员";
-            this.Operator.Name = "Operator";
-            this.Operator.ReadOnly = true;
-            this.Operator.Width = 70;
-            // 
-            // 总数
-            // 
-            this.总数.DataPropertyName = "SumQuantity";
-            this.总数.HeaderText = "总数";
-            this.总数.Name = "总数";
-            this.总数.ReadOnly = true;
-            this.总数.Visible = false;
-            // 
-            // CellRfid
-            // 
-            this.CellRfid.DataPropertyName = "CellRfid";
-            this.CellRfid.HeaderText = "CellRfid";
-            this.CellRfid.Name = "CellRfid";
-            this.CellRfid.ReadOnly = true;
-            this.CellRfid.Visible = false;
-            // 
-            // DetailID
-            // 
-            this.DetailID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.DetailID.DataPropertyName = "DetailID";
-            this.DetailID.HeaderText = "明细编号";
-            this.DetailID.Name = "DetailID";
-            this.DetailID.ReadOnly = true;
-            this.DetailID.Visible = false;
-            this.DetailID.Width = 80;
-            // 
-            // @BillType
-            // 
-            this.@BillType.DataPropertyName = "BillType";
-            this.@BillType.HeaderText = "BillType";
-            this.@BillType.Name = "@BillType";
-            this.@BillType.ReadOnly = true;
-            this.@BillType.Visible = false;
-            // 
-            // StorageRfid
-            // 
-            this.StorageRfid.DataPropertyName = "StorageRfid";
-            this.StorageRfid.HeaderText = "StorageRfid";
-            this.StorageRfid.Name = "StorageRfid";
-            this.StorageRfid.ReadOnly = true;
-            this.StorageRfid.Visible = false;
-            // 
-            // ProductCode
-            // 
-            this.ProductCode.DataPropertyName = "ProductCode";
-            this.ProductCode.HeaderText = "ProductCode";
-            this.ProductCode.Name = "ProductCode";
-            this.ProductCode.ReadOnly = true;
-            this.ProductCode.Visible = false;
-            // 
-            // Status
-            // 
-            this.Status.DataPropertyName = "Status";
-            this.Status.HeaderText = "Status";
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            this.Status.Visible = false;
-            // 
-            // TargetStorageRfid
-            // 
-            this.TargetStorageRfid.DataPropertyName = "TargetStorageRfid";
-            this.TargetStorageRfid.HeaderText = "TargetStorageRfid";
-            this.TargetStorageRfid.Name = "TargetStorageRfid";
-            this.TargetStorageRfid.ReadOnly = true;
-            this.TargetStorageRfid.Visible = false;
-            // 
-            // PalletTag
-            // 
-            this.PalletTag.DataPropertyName = "PalletTag";
-            this.PalletTag.HeaderText = "盘号";
-            this.PalletTag.Name = "PalletTag";
-            this.PalletTag.ReadOnly = true;
-            this.PalletTag.Visible = false;
-            // 
             // BaseTaskForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -547,7 +546,7 @@ namespace THOK.WES.View
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetStorage;
         private System.Windows.Forms.DataGridViewTextBoxColumn BillNo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Operator;
-        private System.Windows.Forms.DataGridViewTextBoxColumn 总数;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Total;
         private System.Windows.Forms.DataGridViewTextBoxColumn CellRfid;
         private System.Windows.Forms.DataGridViewTextBoxColumn DetailID;
         private System.Windows.Forms.DataGridViewTextBoxColumn StorageRfid;
