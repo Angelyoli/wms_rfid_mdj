@@ -33,7 +33,7 @@ namespace THOK.WES.View
         protected string BillTypes = "";
 
         //选择的主单；
-        BillMaster BillMaster = null;
+        string billNo = string.Empty;
         BillMaster[] BillMasters = null;
 
         private string RfidReadProductCode = "";
@@ -119,8 +119,7 @@ namespace THOK.WES.View
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
-            {
-                string billNo = string.Empty;
+            {                
                 Task task = new Task(url);
                 task.GetBillMasterCompleted += new Task.GetBillMasterCompletedEventHandler(delegate(bool isSuccess, string msg, BillMaster[] billMasters)
                 {
@@ -152,7 +151,6 @@ namespace THOK.WES.View
                             {
                                 f++;
                                 listBill.Add(billMasters[i]);
-                                this.BillMaster = billMasters[i];
                             }
                         }
                         BillMasters = new BillMaster[f];
@@ -179,7 +177,7 @@ namespace THOK.WES.View
                 dgvMain.DataSource = null;
                 return;
             }
-            //sslBillID.Text = "单据号：" + BillMaster.BillNo + "                              ";
+            sslBillID.Text = "单据号：" + billNo + "                              ";
             sslOperator.Text = "操作员：" + Environment.MachineName;
 
             Task task = new Task(url);
@@ -450,7 +448,7 @@ namespace THOK.WES.View
                     btnBcCompose.Enabled = true;
                     isBcCompose = true;
                 });
-                task.BcCompose(BillMaster.BillNo);
+                task.BcCompose(billNo);
             }
             else
             {

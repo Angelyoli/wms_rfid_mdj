@@ -44,6 +44,13 @@ namespace THOK.WES.View
             this.sslOperator = new System.Windows.Forms.ToolStripStatusLabel();
             this.CyleTimer = new System.Windows.Forms.Timer(this.components);
             this.dgvMain = new System.Windows.Forms.DataGridView();
+            this.btnBatConfirm = new System.Windows.Forms.Button();
+            this.btnOpType = new System.Windows.Forms.Button();
+            this.plWailt = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnBcCompose = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             this.Storage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BillTypeName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProductName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -62,13 +69,6 @@ namespace THOK.WES.View
             this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TargetStorageRfid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PalletTag = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnBatConfirm = new System.Windows.Forms.Button();
-            this.btnOpType = new System.Windows.Forms.Button();
-            this.plWailt = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnBcCompose = new System.Windows.Forms.Button();
-            this.btnExit = new System.Windows.Forms.Button();
             this.pnlTool.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.pnlMain.SuspendLayout();
@@ -248,6 +248,94 @@ namespace THOK.WES.View
             this.dgvMain.Size = new System.Drawing.Size(804, 140);
             this.dgvMain.TabIndex = 1;
             // 
+            // btnBatConfirm
+            // 
+            this.btnBatConfirm.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnBatConfirm.Enabled = false;
+            this.btnBatConfirm.Image = global::THOK.WES.Properties.Resources.accept;
+            this.btnBatConfirm.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnBatConfirm.Location = new System.Drawing.Point(192, 0);
+            this.btnBatConfirm.Name = "btnBatConfirm";
+            this.btnBatConfirm.Size = new System.Drawing.Size(48, 44);
+            this.btnBatConfirm.TabIndex = 10;
+            this.btnBatConfirm.Text = "批量";
+            this.btnBatConfirm.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnBatConfirm.UseVisualStyleBackColor = true;
+            this.btnBatConfirm.Click += new System.EventHandler(this.btnBatConfirm_Click);
+            // 
+            // btnOpType
+            // 
+            this.btnOpType.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnOpType.Image = global::THOK.WES.Properties.Resources.onebit_10;
+            this.btnOpType.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnOpType.Location = new System.Drawing.Point(240, 0);
+            this.btnOpType.Name = "btnOpType";
+            this.btnOpType.Size = new System.Drawing.Size(48, 44);
+            this.btnOpType.TabIndex = 12;
+            this.btnOpType.Text = "正常";
+            this.btnOpType.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnOpType.UseVisualStyleBackColor = true;
+            this.btnOpType.Visible = false;
+            this.btnOpType.Click += new System.EventHandler(this.btnOpType_Click);
+            // 
+            // plWailt
+            // 
+            this.plWailt.Controls.Add(this.label1);
+            this.plWailt.Controls.Add(this.pictureBox1);
+            this.plWailt.Location = new System.Drawing.Point(273, 39);
+            this.plWailt.Name = "plWailt";
+            this.plWailt.Size = new System.Drawing.Size(258, 85);
+            this.plWailt.TabIndex = 2;
+            this.plWailt.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(125, 12);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "正在处理数据，请稍等";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::THOK.WES.Properties.Resources.loading;
+            this.pictureBox1.Location = new System.Drawing.Point(158, 25);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(43, 38);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
+            // btnBcCompose
+            // 
+            this.btnBcCompose.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnBcCompose.Image = global::THOK.WES.Properties.Resources.process;
+            this.btnBcCompose.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnBcCompose.Location = new System.Drawing.Point(288, 0);
+            this.btnBcCompose.Name = "btnBcCompose";
+            this.btnBcCompose.Size = new System.Drawing.Size(48, 44);
+            this.btnBcCompose.TabIndex = 14;
+            this.btnBcCompose.Text = "组盘";
+            this.btnBcCompose.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnBcCompose.UseVisualStyleBackColor = true;
+            this.btnBcCompose.Visible = false;
+            this.btnBcCompose.Click += new System.EventHandler(this.btnBcCompose_Click);
+            // 
+            // btnExit
+            // 
+            this.btnExit.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnExit.Image = global::THOK.WES.Properties.Resources.shut_down;
+            this.btnExit.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnExit.Location = new System.Drawing.Point(336, 0);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(48, 44);
+            this.btnExit.TabIndex = 15;
+            this.btnExit.Text = "退出";
+            this.btnExit.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
             // Storage
             // 
             this.Storage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
@@ -337,7 +425,7 @@ namespace THOK.WES.View
             // 
             // Total
             // 
-            this.Total.DataPropertyName = "SumQuantity";
+            this.Total.DataPropertyName = "Total";
             this.Total.HeaderText = "总数";
             this.Total.Name = "Total";
             this.Total.ReadOnly = true;
@@ -408,94 +496,6 @@ namespace THOK.WES.View
             this.PalletTag.Name = "PalletTag";
             this.PalletTag.ReadOnly = true;
             this.PalletTag.Visible = false;
-            // 
-            // btnBatConfirm
-            // 
-            this.btnBatConfirm.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnBatConfirm.Enabled = false;
-            this.btnBatConfirm.Image = global::THOK.WES.Properties.Resources.accept;
-            this.btnBatConfirm.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnBatConfirm.Location = new System.Drawing.Point(192, 0);
-            this.btnBatConfirm.Name = "btnBatConfirm";
-            this.btnBatConfirm.Size = new System.Drawing.Size(48, 44);
-            this.btnBatConfirm.TabIndex = 10;
-            this.btnBatConfirm.Text = "批量";
-            this.btnBatConfirm.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnBatConfirm.UseVisualStyleBackColor = true;
-            this.btnBatConfirm.Click += new System.EventHandler(this.btnBatConfirm_Click);
-            // 
-            // btnOpType
-            // 
-            this.btnOpType.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnOpType.Image = global::THOK.WES.Properties.Resources.onebit_10;
-            this.btnOpType.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnOpType.Location = new System.Drawing.Point(240, 0);
-            this.btnOpType.Name = "btnOpType";
-            this.btnOpType.Size = new System.Drawing.Size(48, 44);
-            this.btnOpType.TabIndex = 12;
-            this.btnOpType.Text = "正常";
-            this.btnOpType.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnOpType.UseVisualStyleBackColor = true;
-            this.btnOpType.Visible = false;
-            this.btnOpType.Click += new System.EventHandler(this.btnOpType_Click);
-            // 
-            // plWailt
-            // 
-            this.plWailt.Controls.Add(this.label1);
-            this.plWailt.Controls.Add(this.pictureBox1);
-            this.plWailt.Location = new System.Drawing.Point(273, 39);
-            this.plWailt.Name = "plWailt";
-            this.plWailt.Size = new System.Drawing.Size(258, 85);
-            this.plWailt.TabIndex = 2;
-            this.plWailt.Visible = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 38);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(125, 12);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "正在处理数据，请稍等";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::THOK.WES.Properties.Resources.loading;
-            this.pictureBox1.Location = new System.Drawing.Point(158, 25);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(43, 38);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // btnBcCompose
-            // 
-            this.btnBcCompose.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnBcCompose.Image = global::THOK.WES.Properties.Resources.process;
-            this.btnBcCompose.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnBcCompose.Location = new System.Drawing.Point(288, 0);
-            this.btnBcCompose.Name = "btnBcCompose";
-            this.btnBcCompose.Size = new System.Drawing.Size(48, 44);
-            this.btnBcCompose.TabIndex = 14;
-            this.btnBcCompose.Text = "组盘";
-            this.btnBcCompose.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnBcCompose.UseVisualStyleBackColor = true;
-            this.btnBcCompose.Visible = false;
-            this.btnBcCompose.Click += new System.EventHandler(this.btnBcCompose_Click);
-            // 
-            // btnExit
-            // 
-            this.btnExit.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnExit.Image = global::THOK.WES.Properties.Resources.shut_down;
-            this.btnExit.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnExit.Location = new System.Drawing.Point(336, 0);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(48, 44);
-            this.btnExit.TabIndex = 15;
-            this.btnExit.Text = "退出";
-            this.btnExit.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // BaseTaskForm
             // 

@@ -26,8 +26,6 @@ namespace THOK.WES
         private int productCodeColumnIndex = 0;
         private int billTypeNameColumnIndex = 0;
         private int targetStorageColumnIndex = 0;
-        private int pieceQuantityColumnIndex = 0;
-        private int barQuantityColumnIndex = 0;
         private int totalColumnIndex = 0;
 
         public GridUtil(DataGridView dataGridView)
@@ -38,8 +36,6 @@ namespace THOK.WES
             productCodeColumnIndex = this.gridView.Columns["ProductCode"].Index;
             billTypeNameColumnIndex = this.gridView.Columns["BillTypeName"].Index;
             targetStorageColumnIndex = this.gridView.Columns["TargetStorage"].Index;
-            pieceQuantityColumnIndex = this.gridView.Columns["PieceQuantity"].Index;
-            barQuantityColumnIndex = this.gridView.Columns["BarQuantity"].Index;
             totalColumnIndex = this.gridView.Columns["Total"].Index;
             gridView.CellFormatting += new DataGridViewCellFormattingEventHandler(gridView_CellFormatting1);
             gridView.CellFormatting += new DataGridViewCellFormattingEventHandler(gridView_CellFormatting2);
@@ -202,7 +198,7 @@ namespace THOK.WES
                 Pen gridLinePen = new Pen(gridBrush);
                 string curValue = e.Value == null ? "" : e.Value.ToString().Trim();
                 decimal value = 0;
-                if (string.IsNullOrEmpty(curValue))
+                if (!string.IsNullOrEmpty(curValue))
                 {
                     #region 获取下面的行数
                     for (int i = e.RowIndex; i < this.gridView.Rows.Count; i++)
@@ -218,7 +214,7 @@ namespace THOK.WES
                             )
                         {
                             DownRows++;
-                            value += Convert.ToDecimal(this.gridView.Rows[i].Cells[pieceQuantityColumnIndex].Value);
+                            value += Convert.ToDecimal(this.gridView.Rows[i].Cells[totalColumnIndex].Value);
                             if (e.RowIndex != i)
                             {
                                 cellwidth = cellwidth < this.gridView.Rows[i].Cells[e.ColumnIndex].Size.Width ? cellwidth : this.gridView.Rows[i].Cells[e.ColumnIndex].Size.Width;
@@ -246,7 +242,7 @@ namespace THOK.WES
                             UpRows++;                            
                             if (e.RowIndex != i)
                             {
-                                value += Convert.ToDecimal(this.gridView.Rows[i].Cells[pieceQuantityColumnIndex].Value);
+                                value += Convert.ToDecimal(this.gridView.Rows[i].Cells[totalColumnIndex].Value);
                                 cellwidth = cellwidth < this.gridView.Rows[i].Cells[e.ColumnIndex].Size.Width ? cellwidth : this.gridView.Rows[i].Cells[e.ColumnIndex].Size.Width;
                             }
                         }
