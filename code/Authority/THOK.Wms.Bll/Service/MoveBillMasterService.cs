@@ -107,6 +107,7 @@ namespace THOK.Wms.Bll.Service
                 OperatePersonName = i.OperatePerson.EmployeeName,
                 VerifyPersonID = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeCode,
                 VerifyPersonName = i.VerifyPersonID == null ? string.Empty : i.VerifyPerson.EmployeeName,
+                SumQuantity = i.MoveBillDetails.Sum(s => s.RealQuantity / s.Product.Unit.Count),
                 VerifyDate = (i.VerifyDate == null ? "" : ((DateTime)i.VerifyDate).ToString("yyyy-MM-dd HH:mm:ss")),
                 Status = WhatStatus(i.Status),
                 IsActive = i.IsActive == "1" ? "可用" : "不可用",
