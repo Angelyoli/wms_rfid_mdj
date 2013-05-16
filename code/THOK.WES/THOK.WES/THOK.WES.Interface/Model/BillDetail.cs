@@ -156,6 +156,14 @@ namespace THOK.WES.Interface.Model
             set { total = value; }
         }
 
+        private bool ableMerge = false;
+
+        public bool AbleMerge
+        {
+            get { return ableMerge; }
+            set { ableMerge = value; }
+        }
+
         private string operatorCode = string.Empty;
 
         public string OperatorCode
