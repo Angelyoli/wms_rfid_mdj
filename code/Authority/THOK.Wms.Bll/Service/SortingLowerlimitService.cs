@@ -54,9 +54,10 @@ namespace THOK.Wms.Bll.Service
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
             int total = lowerLimit.Count();
+            lowerLimit = lowerLimit.OrderBy(r => r.SortingLineCode).ThenBy(r=>r.SortOrder);
             lowerLimit = lowerLimit.Skip((page - 1) * rows).Take(rows);
 
-            var temp1 = lowerLimit.Join(storageQuery,
+            var temp1 = lowerLimit.GroupJoin(storageQuery,
                             l => new { l.SortingLine.CellCode, l.ProductCode },
                             s => new { s.CellCode, s.ProductCode },
                             (l, s) => new
@@ -70,43 +71,11 @@ namespace THOK.Wms.Bll.Service
                                 l.Unit.UnitName,
                                 l.Unit,
                                 l.Quantity,
-                                StorageQuantity = s.Quantity,
+                                StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
                                 l.SortOrder,
                                 l.IsActive,
                                 l.UpdateTime
-                            })
-                            .GroupBy(r => new
-                            {
-                                r.ID,
-                                r.SortingLineCode,
-                                r.SortingLineName,
-                                r.ProductCode,
-                                r.ProductName,
-                                r.UnitCode,
-                                r.UnitName,
-                                r.Unit,
-                                r.Quantity,
-                                r.SortOrder,
-                                r.IsActive,
-                                r.UpdateTime
-                            })
-                            .Select(r => new
-                            {
-                                r.Key.ID,
-                                r.Key.SortingLineCode,
-                                r.Key.SortingLineName,
-                                r.Key.ProductCode,
-                                r.Key.ProductName,
-                                r.Key.UnitCode,
-                                r.Key.UnitName,
-                                r.Key.Unit,
-                                r.Key.Quantity,
-                                r.Key.SortOrder,
-                                StorageQuantity = r.Sum(r1=>r1.StorageQuantity),
-                                r.Key.IsActive,
-                                r.Key.UpdateTime
-                            })
-                            .OrderBy(r => r.SortOrder); 
+                            });
 
             var temp2 = temp1.ToArray().AsEnumerable().Select(b => new
             {
@@ -215,8 +184,8 @@ namespace THOK.Wms.Bll.Service
             {
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
-
-            var temp1 = lowerLimit.Join(storageQuery,
+            lowerLimit = lowerLimit.OrderBy(r => r.SortingLineCode).ThenBy(r => r.SortOrder);
+            var temp1 = lowerLimit.GroupJoin(storageQuery,
                             l => new { l.SortingLine.CellCode, l.ProductCode },
                             s => new { s.CellCode, s.ProductCode },
                             (l, s) => new
@@ -230,43 +199,11 @@ namespace THOK.Wms.Bll.Service
                                 l.Unit.UnitName,
                                 l.Unit,
                                 l.Quantity,
-                                StorageQuantity = s.Quantity,
+                                StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
                                 l.SortOrder,
                                 l.IsActive,
                                 l.UpdateTime
-                            })
-                            .GroupBy(r => new
-                            {
-                                r.ID,
-                                r.SortingLineCode,
-                                r.SortingLineName,
-                                r.ProductCode,
-                                r.ProductName,
-                                r.UnitCode,
-                                r.UnitName,
-                                r.Unit,
-                                r.Quantity,
-                                r.SortOrder,
-                                r.IsActive,
-                                r.UpdateTime
-                            })
-                            .Select(r => new
-                            {
-                                r.Key.ID,
-                                r.Key.SortingLineCode,
-                                r.Key.SortingLineName,
-                                r.Key.ProductCode,
-                                r.Key.ProductName,
-                                r.Key.UnitCode,
-                                r.Key.UnitName,
-                                r.Key.Unit,
-                                r.Key.Quantity,
-                                r.Key.SortOrder,
-                                StorageQuantity = r.Sum(r1 => r1.StorageQuantity),
-                                r.Key.IsActive,
-                                r.Key.UpdateTime
-                            })
-                            .OrderBy(r=>r.SortOrder);
+                            });
 
             var temp2 = temp1.ToArray().AsEnumerable().Select(b => new
             {
