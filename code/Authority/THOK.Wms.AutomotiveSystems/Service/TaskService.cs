@@ -150,6 +150,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperatePieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -185,6 +186,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperatePieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -256,12 +258,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
-                                    PieceQuantity = i.RealQuantity / i.Product.UnitList.Unit01.Count,
+                                    PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
                                     BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    OperateBarQuantity = (i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit01.Count,
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                    //OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    
+                                    OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
+
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
                                     Status = i.Status,
@@ -297,6 +299,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,

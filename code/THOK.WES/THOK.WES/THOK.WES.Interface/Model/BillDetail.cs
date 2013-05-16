@@ -148,6 +148,14 @@ namespace THOK.WES.Interface.Model
             set { operateBarQuantity = value; }
         }
 
+        private decimal total = 0;
+
+        public decimal Total
+        {
+            get { return total; }
+            set { total = value; }
+        }
+
         private string operatorCode = string.Empty;
 
         public string OperatorCode

@@ -463,59 +463,49 @@ namespace THOK.Wms.Bll.Service
         }
 
 
-        public bool GeneratePalletTag(string billNo,ref string strResult)
+        public bool GeneratePalletTag(string billNo, ref string strResult)
         {
             bool result = false;
-            var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(p => p.BillNo == billNo);
-            if (mbm != null)
+            var mbms = MoveBillMasterRepository.GetQueryable().Where(p => billNo.Contains(p.BillNo));
+            IEnumerable<MoveBillDetail> tempDetails = new MoveBillDetail[] { };
+            foreach (var mbm in mbms)
             {
-                if (string.IsNullOrEmpty(mbm.LockTag))
+                tempDetails = tempDetails.Concat(mbm.MoveBillDetails);
+            }
+
+            decimal i = 0;
+            int j = 1;
+
+            var details = tempDetails.Where(d => (d.Product.AbcTypeCode == "2" || d.Product.AbcTypeCode == "3")
+                                                    && d.RealQuantity != (d.InCell.MaxQuantity * d.Unit.Count)
+                                                    && d.InCell.Area.AreaType != "3")
+                                    .OrderBy(d => d.OutCellCode)
+                                    .ToArray();
+
+            foreach (var detail in details)
+            {
+                if (detail.PalletTag == null)
                 {
-                    decimal i = 0;
-                    int j = 1;
-
-                    var details = mbm.MoveBillDetails.Where(d => (d.Product.AbcTypeCode == "2" || d.Product.AbcTypeCode == "3")
-                                                            && d.RealQuantity != (d.InCell.MaxQuantity * d.Unit.Count) 
-                                                            && d.InCell.Area.AreaType != "3")
-                        .OrderBy(d => d.OutCellCode)
-                        .ToArray();
-                    
-                    foreach (var detail in details)
+                    if (detail.RealQuantity + i < 300000)
                     {
-                        if (detail.PalletTag == null)
-                        {
-                            if (detail.RealQuantity + i < 300000)
-                            {
-                                detail.PalletTag = j;
-                                i += detail.RealQuantity;
-                            }
-                            else
-                            {
-                                detail.PalletTag = ++j;
-                                i = detail.RealQuantity;
-                            }
-                        }
-                        else
-                        {
-                            strResult = "当前订单已组盘！";
-                            return true;
-                        }
+                        detail.PalletTag = j;
+                        i += detail.RealQuantity;
                     }
-
-                    MoveBillMasterRepository.SaveChanges();
-                    result = true;
+                    else
+                    {
+                        detail.PalletTag = ++j;
+                        i = detail.RealQuantity;
+                    }
                 }
                 else
                 {
-                    strResult = "当前订单其他人正在操作，请稍候重试！";
-                    result = false;
+                    strResult = "当前订单已组盘！";
+                    return true;
                 }
             }
-            else
-            {
-                strResult = "当前单据的状态不是已录入状态或者该单据已被删除无法组盘！";
-                result = false;
-            }
+
+            MoveBillMasterRepository.SaveChanges();
+            result = true;
             return result;
         }
     }
