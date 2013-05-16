@@ -54,6 +54,7 @@ namespace THOK.Wms.Bll.Service
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
             int total = lowerLimit.Count();
+            lowerLimit = lowerLimit.OrderBy(r => r.SortingLineCode).ThenBy(r=>r.SortOrder);
             lowerLimit = lowerLimit.Skip((page - 1) * rows).Take(rows);
 
             var temp1 = lowerLimit.GroupJoin(storageQuery,
@@ -70,12 +71,11 @@ namespace THOK.Wms.Bll.Service
                                 l.Unit.UnitName,
                                 l.Unit,
                                 l.Quantity,
-                                StorageQuantity = (decimal?)s.Sum(r=>(decimal?)r.Quantity??0)??0,
+                                StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
                                 l.SortOrder,
                                 l.IsActive,
                                 l.UpdateTime
-                            })
-                            .OrderBy(r => r.SortOrder); 
+                            });
 
             var temp2 = temp1.ToArray().AsEnumerable().Select(b => new
             {
@@ -184,7 +184,7 @@ namespace THOK.Wms.Bll.Service
             {
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
-
+            lowerLimit = lowerLimit.OrderBy(r => r.SortingLineCode).ThenBy(r => r.SortOrder);
             var temp1 = lowerLimit.GroupJoin(storageQuery,
                             l => new { l.SortingLine.CellCode, l.ProductCode },
                             s => new { s.CellCode, s.ProductCode },
@@ -203,8 +203,7 @@ namespace THOK.Wms.Bll.Service
                                 l.SortOrder,
                                 l.IsActive,
                                 l.UpdateTime
-                            })
-                            .OrderBy(r => r.SortOrder); 
+                            });
 
             var temp2 = temp1.ToArray().AsEnumerable().Select(b => new
             {
