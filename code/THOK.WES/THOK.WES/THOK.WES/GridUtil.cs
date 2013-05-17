@@ -27,6 +27,7 @@ namespace THOK.WES
         private int billTypeNameColumnIndex = 0;
         private int targetStorageColumnIndex = 0;
         private int totalColumnIndex = 0;
+        private int ableMergeColumnIndex = 0;
 
         public GridUtil(DataGridView dataGridView)
         {
@@ -37,6 +38,7 @@ namespace THOK.WES
             billTypeNameColumnIndex = this.gridView.Columns["BillTypeName"].Index;
             targetStorageColumnIndex = this.gridView.Columns["TargetStorage"].Index;
             totalColumnIndex = this.gridView.Columns["Total"].Index;
+            ableMergeColumnIndex = this.gridView.Columns["AbleMerge"].Index;
             gridView.CellFormatting += new DataGridViewCellFormattingEventHandler(gridView_CellFormatting1);
             gridView.CellFormatting += new DataGridViewCellFormattingEventHandler(gridView_CellFormatting2);
             gridView.CellPainting += new DataGridViewCellPaintingEventHandler(gridView_CellPainting);
@@ -70,7 +72,8 @@ namespace THOK.WES
                                 && this.gridView.Rows[e.RowIndex].Cells[billTypeNameColumnIndex].Value.ToString() ==
                                        this.gridView.Rows[e.RowIndex + 1].Cells[billTypeNameColumnIndex].Value.ToString()
                                 && this.gridView.Rows[e.RowIndex].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
-                                && this.gridView.Rows[e.RowIndex + 1].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
+                                && this.gridView.Rows[ + 1].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
+                                && Convert.ToBoolean(this.gridView.Rows[e.RowIndex].Cells[ableMergeColumnIndex].Value) == true
                         )
                     {
                         e.CellStyle.BackColor = Color.LightPink;
@@ -132,6 +135,7 @@ namespace THOK.WES
                                this.gridView.Rows[i].Cells[billTypeNameColumnIndex].Value.ToString()
                         && this.gridView.Rows[currentRowIndex].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
                         && this.gridView.Rows[i].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
+                        && Convert.ToBoolean(this.gridView.Rows[e.RowIndex].Cells[ableMergeColumnIndex].Value) == true
                     )
                 {
 
@@ -157,6 +161,7 @@ namespace THOK.WES
                                this.gridView.Rows[i].Cells[billTypeNameColumnIndex].Value.ToString()
                         && this.gridView.Rows[currentRowIndex].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
                         && this.gridView.Rows[i].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
+                        && Convert.ToBoolean(this.gridView.Rows[e.RowIndex].Cells[ableMergeColumnIndex].Value) == true
                     )
                 {
                     if (currentRowIndex != i)
@@ -211,6 +216,7 @@ namespace THOK.WES
                                        this.gridView.Rows[i].Cells[billTypeNameColumnIndex].Value.ToString()
                                 && this.gridView.Rows[e.RowIndex].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
                                 && this.gridView.Rows[i].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
+                                && Convert.ToBoolean(this.gridView.Rows[i].Cells[ableMergeColumnIndex].Value) == true
                             )
                         {
                             DownRows++;
@@ -237,6 +243,7 @@ namespace THOK.WES
                                        this.gridView.Rows[i].Cells[billTypeNameColumnIndex].Value.ToString()
                                 && this.gridView.Rows[e.RowIndex].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
                                 && this.gridView.Rows[i].Cells[targetStorageColumnIndex].Value.ToString().Contains("分拣线")
+                                && Convert.ToBoolean(this.gridView.Rows[i].Cells[ableMergeColumnIndex].Value) == true
                             )
                         {
                             UpRows++;                            

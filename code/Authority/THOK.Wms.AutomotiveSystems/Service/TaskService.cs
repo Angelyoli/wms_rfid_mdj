@@ -265,6 +265,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
+                                    AbleMerge = i.Product.IsAbnormity !="1" | "012".Contains(i.Product.IsRounding) | "123".Contains(i.Product.AbcTypeCode),
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
