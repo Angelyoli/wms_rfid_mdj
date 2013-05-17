@@ -215,7 +215,7 @@ namespace THOK.Wms.Bll.Service
                 b.ProductName,
                 b.Unit.UnitCode,
                 b.UnitName,
-                Quantity = Math.Floor((b.Quantity) / b.Unit.Count) + "件" + Math.Floor(((b.Quantity) % b.Unit.Count) / b.Product.UnitList.Unit02.Count) + "条",
+                Quantity = Math.Floor(b.Quantity / b.Unit.Count) + "件" + Math.Floor(((b.Quantity) % b.Unit.Count) / b.Product.UnitList.Unit02.Count) + "条",
                 StorageQuantity = Math.Floor(b.StorageQuantity / b.Unit.Count) + "件" + Math.Floor((b.StorageQuantity % b.Unit.Count) / b.Product.UnitList.Unit02.Count) + "条",
                 b.SortOrder,
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
