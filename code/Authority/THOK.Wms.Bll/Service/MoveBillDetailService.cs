@@ -446,23 +446,38 @@ namespace THOK.Wms.Bll.Service
                 }
                 else
                 {
+                    dt.Columns.Add("移出储位名称", typeof(string));
+                    //dt.Columns.Add("移出存储编码", typeof(string));
+                    dt.Columns.Add("移入储位名称", typeof(string));
+                    //dt.Columns.Add("移入存储编码", typeof(string));
                     dt.Columns.Add("产品代码", typeof(string));
                     dt.Columns.Add("产品名称", typeof(string));
+                    dt.Columns.Add("单位编码", typeof(string));
                     dt.Columns.Add("单位名称", typeof(string));
                     dt.Columns.Add("数量", typeof(decimal));
+                    //dt.Columns.Add("作业人员", typeof(string));
+                    //dt.Columns.Add("作业状态", typeof(string));
+
                     foreach (var m in moveBillDetail)
                     {
                         dt.Rows.Add
-                            (
-                                  m.ProductCode
-                                , m.ProductName
-                                , m.UnitName
-                                , m.RealQuantity
-                            );
+                        (
+                              m.OutCellName
+                            //, m.OutStorageCode
+                            , m.InCellName
+                            //, m.InStorageCode
+                            , m.ProductCode
+                            , m.ProductName
+                            , m.UnitCode
+                            , m.UnitName
+                            , m.RealQuantity
+                            //, m.OperatePersonName
+                            //, m.Status
+                        );
                     }
                     if (moveBillDetail.Count() > 0)
                     {
-                        dt.Rows.Add( null, null, null, "总数：",moveBillDetail.Sum(m => m.RealQuantity));
+                        dt.Rows.Add(null, null, null, null, null, "总数：",moveBillDetail.Sum(m => m.RealQuantity));
                     }
                 }
             }
