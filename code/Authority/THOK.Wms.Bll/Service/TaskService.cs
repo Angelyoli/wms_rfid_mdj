@@ -7,8 +7,9 @@ using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.Bll.Models;
+using THOK.Authority.Dal.Interfaces;
 
-using THOK.Authority.Dal.Interfaces;namespace THOK.Wms.Bll.Service
+namespace THOK.Wms.Bll.Service
 {
     public class TaskService : ServiceBase<Task>, ITaskService
     {
@@ -31,7 +32,7 @@ using THOK.Authority.Dal.Interfaces;namespace THOK.Wms.Bll.Service
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
 
         [Dependency]
-        public ISystemParameterRepository SystemParameterRepository { get; set; }        
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -44,49 +45,74 @@ using THOK.Authority.Dal.Interfaces;namespace THOK.Wms.Bll.Service
         /// <param name="billNo">单据号</param>
         /// <param name="errInfo">错误消息</param>
         /// <returns></returns>
-        public bool InBIllTask(string billNo,out string errInfo)
+        public bool InBIllTask(string billNo, out string errInfo)
         {
-            bool result=true;
+            bool result = true;
             errInfo = string.Empty;
-            var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");//入库查询其实位置ID
-            var allotQuery = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
             try
             {
+                var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");//入库查询其实位置ID
+                var allotQuery = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
+                int param = Convert.ToInt32(originPositionSystem.ParameterValue);
                 if (allotQuery.Any())
                 {
                     foreach (var inItem in allotQuery.ToArray())
                     {
                         //根据入库货位去找货位位置信息
                         var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inItem.CellCode);
-                        //根据入库位置ID去找目标区域ID信息
-                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
-                        //根据起始位置ID去找起始区域ID信息
-                        var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == Convert.ToInt32(originPositionSystem.ParameterValue));
-                        //根据入库的目标区域和起始位置区域去找路径信息
-                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
-                        var inTask = new Task();
-                        inTask.TaskType = "01";
-                        inTask.TaskLevel = 0;
-                        inTask.PathID = path.ID;
-                        inTask.ProductCode = inItem.Product.ProductCode;
-                        inTask.ProductName = inItem.Product.ProductName;
-                        inTask.OriginStorageCode = "";
-                        inTask.TargetStorageCode = inItem.CellCode;
-                        inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
-                        inTask.TargetPositionID = targetPosition.ID;
-                        inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
-                        inTask.CurrentPositionState = "01";
-                        inTask.State = "01";
-                        inTask.TagState = "01";
-                        inTask.Quantity = Convert.ToInt32(inItem.RealQuantity);
-                        inTask.TaskQuantity = Convert.ToInt32(inItem.RealQuantity);
-                        inTask.OperateQuantity = Convert.ToInt32(inItem.AllotQuantity);
-                        inTask.OrderID = inItem.BillNo;
-                        inTask.OrderType = "01";
-                        inTask.AllotID = inItem.ID;
-                        TaskRepository.Add(inTask);
+                        if (targetCellPosition != null)
+                        {
+                            //根据入库位置ID去找目标区域ID信息
+                            var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
+                            //根据起始位置ID去找起始区域ID信息
+                            var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == param);
+                            if (targetPosition != null && originPosition != null)
+                            {
+                                //根据入库的目标区域和起始位置区域去找路径信息
+                                var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
+                                if (path != null)
+                                {
+                                    var inTask = new Task();
+                                    inTask.TaskType = "01";
+                                    inTask.TaskLevel = 0;
+                                    inTask.PathID = path.ID;
+                                    inTask.ProductCode = inItem.Product.ProductCode;
+                                    inTask.ProductName = inItem.Product.ProductName;
+                                    inTask.OriginStorageCode = "";
+                                    inTask.TargetStorageCode = inItem.CellCode;
+                                    inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
+                                    inTask.TargetPositionID = targetPosition.ID;
+                                    inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
+                                    inTask.CurrentPositionState = "01";
+                                    inTask.State = "01";
+                                    inTask.TagState = "01";
+                                    inTask.Quantity = Convert.ToInt32(inItem.RealQuantity);
+                                    inTask.TaskQuantity = Convert.ToInt32(inItem.RealQuantity);
+                                    inTask.OperateQuantity = Convert.ToInt32(inItem.AllotQuantity);
+                                    inTask.OrderID = inItem.BillNo;
+                                    inTask.OrderType = "01";
+                                    inTask.AllotID = inItem.ID;
+                                    TaskRepository.Add(inTask);
+                                }
+                                else
+                                {
+                                    errInfo = "未找到路径信息！";
+                                    result = false;
+                                }
+                            }
+                            else
+                            {
+                                errInfo = "未找到入库位置或位置信息！";
+                                result = false;
+                            }
+                            TaskRepository.SaveChanges();
+                        }
+                        else
+                        {
+                            errInfo = "未找到货位位置信息！";
+                            result = false;
+                        }
                     }
-                    TaskRepository.SaveChanges();
                 }
                 else
                     errInfo = "当前选择订单没有分配数据，请重新选择！";

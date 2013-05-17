@@ -398,16 +398,16 @@ namespace THOK.Wms.Bll.Service
 
         #region IMoveBillDetail 成员
         /// <summary>获得移库细单信息</summary>
-        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo,bool isAbnormity)
+        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo, bool isAbnormity, bool isGroup)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
             if (BillNo != "" && BillNo != null)
             {
                 IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
-                var moves = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo));
-                if(isAbnormity==false)
+                var moves = MoveBillDetailQuery.Where(i => BillNo.Contains(i.BillNo));
+                if (isAbnormity == false)
                     moves = moves.Where(i => i.Product.IsAbnormity != "1");
-                var moveBillDetail = moves.OrderBy(i => new {i.OutCell.CellName,i.ProductCode })
+                var moveBillDetail = moves.OrderBy(i => new { i.OutCell.CellName, i.ProductCode })
                                                         .Select(i => new
                 {
                     OutCellName = i.OutCell.CellName,
@@ -422,41 +422,48 @@ namespace THOK.Wms.Bll.Service
                     OperatePersonName = i.OperatePerson == null ? string.Empty : i.OperatePerson.EmployeeName,
                     Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空",
                 });
-                dt.Columns.Add("移出储位名称", typeof(string));
-                //dt.Columns.Add("移出存储编码", typeof(string));
-                dt.Columns.Add("移入储位名称", typeof(string));
-                //dt.Columns.Add("移入存储编码", typeof(string));
-                dt.Columns.Add("产品代码", typeof(string));
-                dt.Columns.Add("产品名称", typeof(string));
-                dt.Columns.Add("单位编码", typeof(string));
-                dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("数量", typeof(decimal));
-                //dt.Columns.Add("作业人员", typeof(string));
-                //dt.Columns.Add("作业状态", typeof(string));
-
-                //dt.Columns.Add("Description", typeof(string));
-                foreach (var m in moveBillDetail)
+                if (isGroup)
                 {
-                    dt.Rows.Add
-                        (
-                              m.OutCellName
-                        //, m.OutStorageCode
-                            , m.InCellName
-                        //, m.InStorageCode
-                            , m.ProductCode
-                            , m.ProductName
-                            , m.UnitCode
-                            , m.UnitName
-                            , m.RealQuantity
-                            //, m.OperatePersonName
-                            //, m.Status
-                        );
+                    var temp = moveBillDetail.GroupBy(m => m.ProductCode);
+                    dt.Columns.Add("产品代码", typeof(string));
+                    dt.Columns.Add("产品名称", typeof(string));
+                    dt.Columns.Add("单位名称", typeof(string));
+                    dt.Columns.Add("数量", typeof(decimal));
+                    foreach (var m in moveBillDetail)
+                    {
+                        dt.Rows.Add
+                            (
+                                  m.ProductCode
+                                , m.ProductName
+                                , m.UnitName
+                                , m.RealQuantity
+                            );
+                    }
+                    if (moveBillDetail.Count() > 0)
+                    {
+                        dt.Rows.Add(null, null, "总数：", moveBillDetail.Sum(m => m.RealQuantity));
+                    }
                 }
-                if (moveBillDetail.Count() > 0)
+                else
                 {
-                    dt.Rows.Add(
-                        null, null, null, null, null, "总数：",
-                        moveBillDetail.Sum(m => m.RealQuantity));
+                    dt.Columns.Add("产品代码", typeof(string));
+                    dt.Columns.Add("产品名称", typeof(string));
+                    dt.Columns.Add("单位名称", typeof(string));
+                    dt.Columns.Add("数量", typeof(decimal));
+                    foreach (var m in moveBillDetail)
+                    {
+                        dt.Rows.Add
+                            (
+                                  m.ProductCode
+                                , m.ProductName
+                                , m.UnitName
+                                , m.RealQuantity
+                            );
+                    }
+                    if (moveBillDetail.Count() > 0)
+                    {
+                        dt.Rows.Add( null, null, null, "总数：",moveBillDetail.Sum(m => m.RealQuantity));
+                    }
                 }
             }
             return dt;
