@@ -156,6 +156,14 @@ namespace THOK.WES.Interface.Model
             set { total = value; }
         }
 
+        private string isRounding = string.Empty;
+
+        public string IsRounding
+        {
+            get { return isRounding; }
+            set { isRounding = value; }
+        }
+
         private string operatorCode = string.Empty;
 
         public string OperatorCode
