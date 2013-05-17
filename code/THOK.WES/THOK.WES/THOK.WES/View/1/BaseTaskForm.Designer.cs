@@ -52,14 +52,15 @@ namespace THOK.WES.View
             this.btnBcCompose = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
             this.Storage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AbleMerge = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BillTypeName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProductName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PieceQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BarQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StatusName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TargetStorage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Operator = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CellRfid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DetailID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.@BillType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -211,14 +212,15 @@ namespace THOK.WES.View
             this.dgvMain.ColumnHeadersHeight = 22;
             this.dgvMain.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Storage,
+            this.AbleMerge,
             this.BillTypeName,
             this.ProductName,
             this.PieceQuantity,
             this.BarQuantity,
             this.StatusName,
             this.TargetStorage,
-            this.BillNo,
             this.Operator,
+            this.Total,
             this.CellRfid,
             this.DetailID,
             this.@BillType,
@@ -228,7 +230,7 @@ namespace THOK.WES.View
             this.TargetStorageRfid,
             this.PalletTag});
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle6.Font = new System.Drawing.Font("宋体", 9F);
             dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
@@ -245,7 +247,6 @@ namespace THOK.WES.View
             this.dgvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMain.Size = new System.Drawing.Size(804, 140);
             this.dgvMain.TabIndex = 1;
-            this.dgvMain.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvMain_CellPainting);
             // 
             // btnBatConfirm
             // 
@@ -344,6 +345,14 @@ namespace THOK.WES.View
             this.Storage.ReadOnly = true;
             this.Storage.Width = 135;
             // 
+            // AbleMerge
+            // 
+            this.AbleMerge.DataPropertyName = "AbleMerge";
+            this.AbleMerge.HeaderText = "AbleMerge";
+            this.AbleMerge.Name = "AbleMerge";
+            this.AbleMerge.ReadOnly = true;
+            this.AbleMerge.Visible = false;
+            // 
             // BillTypeName
             // 
             this.BillTypeName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
@@ -404,15 +413,6 @@ namespace THOK.WES.View
             this.TargetStorage.ReadOnly = true;
             this.TargetStorage.Visible = false;
             // 
-            // BillNo
-            // 
-            this.BillNo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.BillNo.DataPropertyName = "BillNo";
-            this.BillNo.HeaderText = "订单编号";
-            this.BillNo.Name = "BillNo";
-            this.BillNo.ReadOnly = true;
-            this.BillNo.Visible = false;
-            // 
             // Operator
             // 
             this.Operator.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
@@ -421,6 +421,14 @@ namespace THOK.WES.View
             this.Operator.Name = "Operator";
             this.Operator.ReadOnly = true;
             this.Operator.Width = 70;
+            // 
+            // Total
+            // 
+            this.Total.DataPropertyName = "Total";
+            this.Total.HeaderText = "总数";
+            this.Total.Name = "Total";
+            this.Total.ReadOnly = true;
+            this.Total.Visible = false;
             // 
             // CellRfid
             // 
@@ -529,14 +537,15 @@ namespace THOK.WES.View
         private System.Windows.Forms.Button btnExit;
         protected System.Windows.Forms.Button btnBcCompose;
         private System.Windows.Forms.DataGridViewTextBoxColumn Storage;
+        private System.Windows.Forms.DataGridViewTextBoxColumn AbleMerge;
         private System.Windows.Forms.DataGridViewTextBoxColumn BillTypeName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProductName;
         private System.Windows.Forms.DataGridViewTextBoxColumn PieceQuantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn BarQuantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn StatusName;
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetStorage;
-        private System.Windows.Forms.DataGridViewTextBoxColumn BillNo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Operator;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Total;
         private System.Windows.Forms.DataGridViewTextBoxColumn CellRfid;
         private System.Windows.Forms.DataGridViewTextBoxColumn DetailID;
         private System.Windows.Forms.DataGridViewTextBoxColumn StorageRfid;

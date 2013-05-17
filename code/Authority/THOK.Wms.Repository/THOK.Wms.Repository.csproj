@@ -329,6 +329,10 @@
     <Compile Include="Migrations\201305030247575_modify_InterTable1.Designer.cs">
       <DependentUpon>201305030247575_modify_InterTable1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201305160520435_modify_sorting_lowerlimit_add_sort_order.cs" />
+    <Compile Include="Migrations\201305160520435_modify_sorting_lowerlimit_add_sort_order.Designer.cs">
+      <DependentUpon>201305160520435_modify_sorting_lowerlimit_add_sort_order.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

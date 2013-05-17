@@ -120,6 +120,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             
             try
             {
+                string billType = string.Empty;
                 foreach (var billMaster in billMasters)
                 {
                     string billNo = billMaster.BillNo;
@@ -150,6 +151,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperatePieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -185,6 +187,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperatePieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -236,6 +239,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                         #endregion
                         #region 读移库单细单
                         case "3"://移库单
+                            billType = billMaster.BillType;
                             var moveBillDetails = MoveBillDetailRepository.GetQueryable()
                                 .WhereIn(m => m.InCell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
@@ -252,16 +256,17 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     CellRfid = i.OutCell.Rfid,
                                     TargetStorageName = i.InCell.CellName,
                                     TargetStorageRfid = i.InCell.Rfid,
-
+                                    IsRounding =i.Product.IsRounding,
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
                                     PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
                                     BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    OperateBarQuantity = (i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit01.Count,
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                    //OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                    
+                                    OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
+                                    AbleMerge = i.Product.IsAbnormity !="1" | "012".Contains(i.Product.IsRounding) | "123".Contains(i.Product.AbcTypeCode),
+
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
                                     Status = i.Status,
@@ -269,7 +274,6 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 })
                                 .ToArray();
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
-
                             break;
                         #endregion
                         #region 读盘点单细单
@@ -297,6 +301,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
@@ -311,7 +316,14 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     }
                 }
                 result.IsSuccess = true;
-                billDetails = this.SelectGroup(billDetails);
+                if (billMasters.Count() >= 2 && billType=="3")//选择的是2条以上并且是移库的数据
+                {//不取整和出库量最大的5个卷烟品牌数据查询出来。其它的不查询
+                    var billProductDetail = billDetails.GroupBy(s => new { s.ProductCode })
+                                                  .Select(s => new {s.Key.ProductCode, sumQuanti=s.Sum(p=>p.Total) })
+                                                  .OrderByDescending(s => s.sumQuanti).Take(5)
+                                                  .Select(s=>new{s.ProductCode});
+                    billDetails = billDetails.Where(s => s.IsRounding == "0" || billProductDetail.Any(p => p.ProductCode == s.ProductCode)).ToArray();                  
+                }
                 result.BillDetails = billDetails.OrderByDescending(i => i.Status)
                     .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
             }
@@ -1055,17 +1067,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
         private THOK.Wms.AutomotiveSystems.Models.BillDetail[] SelectGroup(THOK.Wms.AutomotiveSystems.Models.BillDetail[] details)
         {
             THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
-            var bills = details.Where(s => s.TargetStorageName.Contains("分拣线"))//条件为零时条件                           
-                              .GroupBy(r => new { r.ProductCode, r.ProductName, r.Status, r.Operator, r.StorageName, r.StorageRfid })
-                              .Select(r => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
+            var bills = details.Select(r => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                               {
-                                  BillType = "3",
-                                  ProductCode = r.Key.ProductCode,
-                                  ProductName = r.Key.ProductName,
-                                  Status = r.Key.Status,
-                                  Operator = r.Key.Operator,
-                                  StorageName = r.Key.StorageName,
-                                  PieceQuantity = r.Sum(s => s.PieceQuantity + s.OperateBarQuantity)
+                                  PieceQuantity = r.PieceQuantity+r.OperatePieceQuantity
                               })
                               .ToArray();            
             return billDetails.Concat(bills).ToArray();
