@@ -643,7 +643,7 @@ namespace THOK.WES.View
                 {
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
-                        quantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
+                        quantity = Convert.ToDecimal(row.Cells["PieceQuantity"].Value);
                     }
                     if (quantity == 30)
                     {
@@ -668,6 +668,14 @@ namespace THOK.WES.View
                     return;
 
                 }
+
+                if (dgvMain.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("当前操作失败！原因：没有选择数据，请选择！", "提示",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 IList<BillDetail> billDetails = new List<BillDetail>();
                 BillDetail billDetail = new BillDetail();
                 switch (UseRfid)
@@ -680,9 +688,7 @@ namespace THOK.WES.View
                                 ConfirmMethod(row, billDetail, billDetails, RfidCode);
                                 isRfid = false;
                             }
-                        }
-                        else
-                            errInfo = "请选择一条数据确认！";
+                        }                        
                         break;
                     case "1":
                         if (dgvMain.SelectedRows.Count == 1)
@@ -707,8 +713,6 @@ namespace THOK.WES.View
                                 }
                             }
                         }
-                        else
-                            errInfo = "请选择一条数据确认！";
                         break;
                     case "2":
                         foreach (DataGridViewRow row in dgvMain.Rows)
@@ -820,107 +824,7 @@ namespace THOK.WES.View
                 this.ReadRfidCycle();
             }
         }
-
-        private decimal sumQuantity = 0;
-        int f = 0;
-        private int y = 0;
-        private void dgvMain_CellPaintinga(object sender, DataGridViewCellPaintingEventArgs e)
-        {
-            if ((e.ColumnIndex == this.dgvMain.Columns["Storage"].Index && e.RowIndex >= 0))
-            {
-                Brush datagridBrush = new SolidBrush(dgvMain.GridColor);
-                SolidBrush groupLineBrush = new SolidBrush(e.CellStyle.BackColor);
-
-                using (Pen datagridLinePen = new Pen(datagridBrush))
-                {
-                    // 清除单元格
-                    e.Graphics.FillRectangle(groupLineBrush, e.CellBounds);
-                    if (e.RowIndex < dgvMain.Rows.Count - 1 && dgvMain.Rows[e.RowIndex + 1].Cells[e.ColumnIndex].Value != null && dgvMain.Rows[e.RowIndex + 1].Cells[e.ColumnIndex].Value.ToString() != e.Value.ToString())
-                    {
-                        //绘制底边线
-                        e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
-                        // 画右边线
-                        e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
-
-                        if (e.Value != null)
-                        {
-                            var cell = this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index];
-                            sumQuantity = sumQuantity + Convert.ToDecimal(this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index].Value.ToString());
-                            if (y != 0)
-                            {
-                                y = (y + e.CellBounds.Y + 10) / 2;
-                            }
-                            else
-                            {
-                                y = e.CellBounds.Y + 2;
-                            }
-                            if (cell.Tag == null)
-                            {
-                                cell.Tag = new object[] { sumQuantity, y };
-                            }
-                            object[] tag = (object[])cell.Tag;
-                            dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["总数"].Index].Value = tag[0].ToString();
-                            sumQuantity = 0;
-                            y = 0;
-                        }
-                    }
-                    else
-                    {
-                        sumQuantity = sumQuantity + Convert.ToDecimal(this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index].Value.ToString());
-                        if (y == 0)
-                        {
-                            y = e.CellBounds.Y;
-                        }
-                        // 画右边线
-                        e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom);
-                    }
-
-                    //对最后一条记录只画底边线
-                    if (e.RowIndex == dgvMain.Rows.Count - 1)
-                    {
-                        if (e.Value != null)
-                        {
-                            if (dgvMain.Rows[e.RowIndex - 1].Cells[e.ColumnIndex].Value.ToString() != e.Value.ToString())
-                            {
-                                sumQuantity = 0;
-                            }
-                            var cell = this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index];
-                            sumQuantity = sumQuantity + Convert.ToDecimal(this.dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["PieceQuantity"].Index].Value.ToString());
-                            if (y != 0)
-                            {
-                                y = (y + e.CellBounds.Y + 10) / 2;
-                            }
-                            else
-                            {
-                                y = e.CellBounds.Y + 2;
-                            }
-                            if (cell.Tag == null)
-                            {
-                                cell.Tag = new object[] { sumQuantity, y };
-                            }
-                            object[] tag = (object[])cell.Tag;
-                            dgvMain.Rows[e.RowIndex].Cells[this.dgvMain.Columns["总数"].Index].Value = sumQuantity;//tag[0].ToString();
-                            sumQuantity = 0;
-                            y = 0;
-                        }
-                        //绘制底边线
-                        e.Graphics.DrawLine(datagridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right, e.CellBounds.Bottom - 1);
-                    }
-                    // 填写单元格内容，相同的内容的单元格只填写第一个                        
-                    if (e.Value != null)
-                    {
-                        if (e.RowIndex > 0 && dgvMain.Rows[e.RowIndex - 1].Cells[e.ColumnIndex].Value.ToString() == e.Value.ToString())
-                        {
-                        }
-                        else
-                        {
-                            e.Graphics.DrawString(e.Value.ToString(), e.CellStyle.Font, Brushes.Black, e.CellBounds.X + 2, e.CellBounds.Y + 5, StringFormat.GenericDefault);
-                        }
-                    }
-                    e.Handled = true;
-                }
-            }
-        }
+     
     }
 }
 

@@ -120,6 +120,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             
             try
             {
+                string billType = string.Empty;
                 foreach (var billMaster in billMasters)
                 {
                     string billNo = billMaster.BillNo;
@@ -238,6 +239,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                         #endregion
                         #region 读移库单细单
                         case "3"://移库单
+                            billType = billMaster.BillType;
                             var moveBillDetails = MoveBillDetailRepository.GetQueryable()
                                 .WhereIn(m => m.InCell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
@@ -254,7 +256,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     CellRfid = i.OutCell.Rfid,
                                     TargetStorageName = i.InCell.CellName,
                                     TargetStorageRfid = i.InCell.Rfid,
-
+                                    IsRounding =i.Product.IsRounding,
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
@@ -272,7 +274,6 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 })
                                 .ToArray();
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
-
                             break;
                         #endregion
                         #region 读盘点单细单
@@ -315,7 +316,14 @@ namespace THOK.Wms.AutomotiveSystems.Service
                     }
                 }
                 result.IsSuccess = true;
-                //billDetails = this.SelectGroup(billDetails);
+                if (billMasters.Count() >= 2 && billType=="3")//选择的是2条以上并且是移库的数据
+                {//不取整和出库量最大的5个卷烟品牌数据查询出来。其它的不查询
+                    var billProductDetail = billDetails.GroupBy(s => new { s.ProductCode })
+                                                  .Select(s => new {s.Key.ProductCode, sumQuanti=s.Sum(p=>p.Total) })
+                                                  .OrderByDescending(s => s.sumQuanti).Take(5)
+                                                  .Select(s=>new{s.ProductCode});
+                    billDetails = billDetails.Where(s => s.IsRounding == "0" || billProductDetail.Any(p => p.ProductCode == s.ProductCode)).ToArray();                  
+                }
                 result.BillDetails = billDetails.OrderByDescending(i => i.Status)
                     .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
             }

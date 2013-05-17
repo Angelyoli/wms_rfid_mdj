@@ -24,7 +24,11 @@ namespace THOK.Wms.AutomotiveSystems.Models
         public decimal OperatePieceQuantity = 0;
         public decimal OperateBarQuantity = 0;
         public decimal Total = 0;
+
+        public string IsRounding = string.Empty;
+
         public bool AbleMerge = false;
+
 
         public string OperatorCode = string.Empty;
         public string Operator = string.Empty;
