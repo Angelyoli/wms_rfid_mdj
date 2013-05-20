@@ -276,7 +276,7 @@ namespace THOK.WES.View
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         BillDetail billDetail = new BillDetail();
-                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                        billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.Operator = Environment.MachineName;
@@ -333,7 +333,7 @@ namespace THOK.WES.View
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         BillDetail billDetail = new BillDetail();
-                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                        billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.Operator = Environment.MachineName;
@@ -486,7 +486,7 @@ namespace THOK.WES.View
                             foreach (DataGridViewRow row in dgvMain.SelectedRows)
                             {
                                 BillDetail billDetail = new BillDetail();
-                                billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                                 billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                                 billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                                 billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
@@ -504,7 +504,7 @@ namespace THOK.WES.View
                                 && row.Cells["Status"].Value.ToString().Equals("0"))
                                 {
                                     BillDetail billDetail = new BillDetail();
-                                    billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                    billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                                     billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                                     billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                                     billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
@@ -525,7 +525,7 @@ namespace THOK.WES.View
                                     && row.Cells["Status"].Value.ToString().Equals("0"))
                                 {
                                     BillDetail billDetail = new BillDetail();
-                                    billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                    billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                                     billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                                     billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                                     billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
@@ -593,7 +593,7 @@ namespace THOK.WES.View
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         BillDetail billDetail = new BillDetail();
-                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                        billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
@@ -728,7 +728,7 @@ namespace THOK.WES.View
                                 }
                                 cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();
                             }
-                            if (listRfid.Contains(cellRfid))
+                            if (listRfid.Contains(cellRfid) || listRfid.Count == 0)
                             {
                                 ConfirmMethod(row, billDetail, billDetails, RfidCode);
                                 isRfid = false;
@@ -755,7 +755,7 @@ namespace THOK.WES.View
         {
             if (row.Cells["StatusName"].Value.ToString() == "“—…Í«Î")
             {
-                billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                 billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                 billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                 billDetail.Operator = Environment.MachineName;

@@ -23,7 +23,7 @@ namespace Authority.Controllers.Wms.StockMove
         public IMoveBillDetailService MoveBillDetailService { get; set; }
         [Dependency]
         public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
-	 	[Dependency]
+        [Dependency]
         public IMoveBillMasterHistoryService MoveBillMasterHistoryService { get; set; }
         //
         // GET: /StockMoveBill/
@@ -205,12 +205,13 @@ namespace Authority.Controllers.Wms.StockMove
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
             bool isAbnormity = Convert.ToBoolean(Request.QueryString["isAbnormity"]);
-            
+            bool isGroup = Convert.ToBoolean(Request.QueryString["isGroup"]);
+
             ExportParam ep = new ExportParam();
-            ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo,isAbnormity);
+            ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo, isAbnormity, isGroup);
             ep.HeadTitle1 = "移库单明细";
             return PrintService.Print(ep);
-        } 
+        }
         #endregion
 
         public ActionResult MoveBillMasterHistory(DateTime datetime)
