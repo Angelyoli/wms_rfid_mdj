@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityRepository\AlarmInfoRepository.cs" />
     <Compile Include="EntityRepository\AreaRepository.cs" />
     <Compile Include="EntityRepository\BillDetailRepository.cs" />
     <Compile Include="EntityRepository\BillMasterRepository.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="EntityRepository\UnitListRepository.cs" />
     <Compile Include="EntityRepository\UnitRepository.cs" />
     <Compile Include="EntityRepository\WarehouseRepository.cs" />
+    <Compile Include="Interfaces\IAlarmInfoRepository.cs" />
     <Compile Include="Interfaces\IAreaRepository.cs" />
     <Compile Include="Interfaces\IBillDetailRepository.cs" />
     <Compile Include="Interfaces\IBillMasterRepository.cs" />

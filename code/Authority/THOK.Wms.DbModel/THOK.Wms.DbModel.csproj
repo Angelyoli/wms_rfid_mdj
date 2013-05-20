@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlarmInfo.cs" />
     <Compile Include="Area.cs" />
     <Compile Include="BillDetail.cs" />
     <Compile Include="BillType.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="InBillMasterHistory.cs" />
     <Compile Include="BillMaster.cs" />
     <Compile Include="Job.cs" />
+    <Compile Include="Mapping\AlarmInfoMap.cs" />
     <Compile Include="Mapping\AreaMap.cs" />
     <Compile Include="Mapping\BillDetailMap.cs" />
     <Compile Include="Mapping\BillTypeMap.cs" />

@@ -135,6 +135,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\AlarmInfoController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\CellPositionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PathNodeController.cs">
@@ -1953,6 +1954,14 @@
     <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
     <Content Include="Views\ExceptionalLog\_PrintPartial.cshtml" />
     <Content Include="Views\ExceptionalLog\_SearchPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\Index.cshtml" />
+    <Content Include="Views\AlarmInfo\AddPage.cshtml" />
+    <Content Include="Views\AlarmInfo\SearchPage.cshtml" />
+    <Content Include="Views\AlarmInfo\_AddPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_SearchPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_EditPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_PrintPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_DeletePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
