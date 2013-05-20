@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity.Core.Objects;
 namespace THOK.Common.Ef.Interfaces
 {
     public interface IRepository<T>
@@ -16,9 +17,9 @@ namespace THOK.Common.Ef.Interfaces
         System.Collections.Generic.IList<T> GetAll(System.Linq.Expressions.Expression<Func<T, bool>> whereCondition);
         System.Linq.IQueryable<T> GetQueryable();
         System.Linq.ParallelQuery<T> GetParallelQuery();
-        System.Data.Objects.ObjectSet<T> GetObjectSet();
-        System.Data.Objects.ObjectQuery<T> GetObjectQuery();
-        System.Data.Objects.ObjectContext GetObjectContext();
+        ObjectSet<T> GetObjectSet();
+        ObjectQuery<T> GetObjectQuery();
+        ObjectContext GetObjectContext();
         T GetSingle();
         T GetSingle(System.Linq.Expressions.Expression<Func<T, bool>> whereCondition);
         THOK.Common.Ef.Interfaces.IRepositoryContext RepositoryContext { get; set; }

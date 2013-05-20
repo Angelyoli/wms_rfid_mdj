@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Data.Objects;
 using System.Reflection;
-using System.Data.Metadata.Edm;
 using System.Collections;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
 
 namespace THOK.Common.Entity
 {
