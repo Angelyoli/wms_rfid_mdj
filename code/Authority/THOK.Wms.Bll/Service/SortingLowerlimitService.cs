@@ -194,13 +194,13 @@ namespace THOK.Wms.Bll.Service
                                 l.SortingLineCode,
                                 l.SortingLine.SortingLineName,
                                 l.ProductCode,
-                                l.Product,
                                 l.Product.ProductName,
                                 l.UnitCode,
                                 l.Unit.UnitName,
                                 l.Unit,
-                                l.Quantity,
-                                StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
+                                l.Product.UnitList,
+                                l.Quantity,                               
+                                StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,                                
                                 l.SortOrder,
                                 l.IsActive,
                                 l.UpdateTime
@@ -213,40 +213,46 @@ namespace THOK.Wms.Bll.Service
                 b.SortingLineName,
                 b.ProductCode,
                 b.ProductName,
-                b.Unit.UnitCode,
+                b.UnitCode,
                 b.UnitName,
-                Quantity = Math.Floor((b.Quantity) / b.Unit.Count) + "件" + Math.Floor(((b.Quantity) % b.Unit.Count) / b.Product.UnitList.Unit02.Count) + "条",
-                StorageQuantity = Math.Floor(b.StorageQuantity / b.Unit.Count) + "件" + Math.Floor((b.StorageQuantity % b.Unit.Count) / b.Product.UnitList.Unit02.Count) + "条",
+                Quantity = b.Quantity / b.Unit.Count,
+                StorageQuantity = b.StorageQuantity / b.Unit.Count,
+                StorageBarQuantity = b.StorageQuantity / (b.UnitList.Quantity02*b.UnitList.Quantity03),
                 b.SortOrder,
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
 
             System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("分拣线编码", typeof(string));
+            //dt.Columns.Add("分拣线编码", typeof(string));
             dt.Columns.Add("分拣线名称", typeof(string));
-            dt.Columns.Add("卷烟编码", typeof(string));
+            //dt.Columns.Add("卷烟编码", typeof(string));
+            dt.Columns.Add("仓位顺序", typeof(string));
             dt.Columns.Add("卷烟名称", typeof(string));
-            dt.Columns.Add("单位编码", typeof(string));
-            dt.Columns.Add("单位名称", typeof(string));
-            dt.Columns.Add("下限数量", typeof(string));
-            dt.Columns.Add("库存数量", typeof(string));
-            dt.Columns.Add("是否可用", typeof(string));
-            dt.Columns.Add("修改时间", typeof(string));
+            //dt.Columns.Add("单位编码", typeof(string));
+            //dt.Columns.Add("单位名称", typeof(string));
+            dt.Columns.Add("数量(件)", typeof(decimal));
+            dt.Columns.Add("数量(条)", typeof(decimal));
+            dt.Columns.Add("下限数量", typeof(decimal));            
+            //dt.Columns.Add("是否可用", typeof(string));
+            //dt.Columns.Add("修改时间", typeof(string));
             foreach (var t in temp2)
             {
                 dt.Rows.Add
                     (
-                        t.SortingLineCode,
+                        //t.SortingLineCode,
                         t.SortingLineName,
-                        t.ProductCode,
+                        //t.ProductCode,
+                        t.SortOrder,
                         t.ProductName,
-                        t.UnitCode,
-                        t.UnitName,
-                        t.Quantity,
+                        //t.UnitCode,
+                        //t.UnitName,
                         t.StorageQuantity,
-                        t.IsActive,
-                        t.UpdateTime
+                        t.StorageBarQuantity,
+                        t.Quantity
+                       
+                        //t.IsActive,
+                        //t.UpdateTime
                     );
             }
             return dt;

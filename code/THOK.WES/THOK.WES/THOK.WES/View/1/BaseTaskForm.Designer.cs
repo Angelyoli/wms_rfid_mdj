@@ -63,6 +63,7 @@ namespace THOK.WES.View
             this.Total = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CellRfid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DetailID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.@BillNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.@BillType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StorageRfid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProductCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -223,6 +224,7 @@ namespace THOK.WES.View
             this.Total,
             this.CellRfid,
             this.DetailID,
+            this.@BillNo,
             this.@BillType,
             this.StorageRfid,
             this.ProductCode,
@@ -448,6 +450,14 @@ namespace THOK.WES.View
             this.DetailID.Visible = false;
             this.DetailID.Width = 80;
             // 
+            // @BillNo
+            // 
+            this.@BillNo.DataPropertyName = "BillNo";
+            this.@BillNo.HeaderText = "BillNo";
+            this.@BillNo.Name = "@BillNo";
+            this.@BillNo.ReadOnly = true;
+            this.@BillNo.Visible = false;
+            // 
             // @BillType
             // 
             this.@BillType.DataPropertyName = "BillType";
@@ -536,6 +546,7 @@ namespace THOK.WES.View
         private System.Windows.Forms.DataGridViewTextBoxColumn @BillType;
         private System.Windows.Forms.Button btnExit;
         protected System.Windows.Forms.Button btnBcCompose;
+        private System.Windows.Forms.DataGridViewTextBoxColumn @BillNo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Storage;
         private System.Windows.Forms.DataGridViewTextBoxColumn AbleMerge;
         private System.Windows.Forms.DataGridViewTextBoxColumn BillTypeName;
