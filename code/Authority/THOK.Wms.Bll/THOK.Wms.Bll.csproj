@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IAlarmInfoService.cs" />
     <Compile Include="Interfaces\IBillDetailService.cs" />
     <Compile Include="Interfaces\IBillMasterService.cs" />
     <Compile Include="Interfaces\IBillTypeService.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\WareTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\AlarmInfoService.cs" />
     <Compile Include="Service\BillDetailService.cs" />
     <Compile Include="Service\BillMasterService.cs" />
     <Compile Include="Service\BillTypeService.cs" />
