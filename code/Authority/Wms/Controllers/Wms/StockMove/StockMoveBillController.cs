@@ -206,10 +206,10 @@ namespace Authority.Controllers.Wms.StockMove
             string billNo = Request.QueryString["billNo"];
             bool isAbnormity = Convert.ToBoolean(Request.QueryString["isAbnormity"]);
             bool isGroup = Convert.ToBoolean(Request.QueryString["isGroup"]);
-
+            string sortingName = string.Empty;
             ExportParam ep = new ExportParam();
-            ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo, isAbnormity, isGroup);
-            ep.HeadTitle1 = "移库单明细";
+            ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo, isAbnormity, isGroup, out sortingName);
+            ep.HeadTitle1 = sortingName + "移库单明细";
             return PrintService.Print(ep);
         }
         #endregion
