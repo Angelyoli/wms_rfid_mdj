@@ -184,7 +184,7 @@ namespace THOK.Wms.Bll.Service
             {
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
-            lowerLimit = lowerLimit.OrderBy(r => r.SortingLineCode).ThenBy(r => r.SortOrder);
+            //lowerLimit = lowerLimit
             var temp1 = lowerLimit.GroupJoin(storageQuery,
                             l => new { l.SortingLine.CellCode, l.ProductCode },
                             s => new { s.CellCode, s.ProductCode },
@@ -221,7 +221,7 @@ namespace THOK.Wms.Bll.Service
                 b.SortOrder,
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-            });
+            }).OrderBy(r => r.SortingLineCode).ThenBy(r => r.SortOrder); 
 
             System.Data.DataTable dt = new System.Data.DataTable();
             //dt.Columns.Add("分拣线编码", typeof(string));
