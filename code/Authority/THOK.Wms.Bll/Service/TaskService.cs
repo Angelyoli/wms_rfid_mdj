@@ -27,6 +27,9 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IInBillAllotRepository InBillAllotRepository { get; set; }
+        
+        [Dependency]
+        public IOutBillAllotRepository OutBillAllotRepository { get; set; }
 
         [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
@@ -45,7 +48,7 @@ namespace THOK.Wms.Bll.Service
         /// <param name="billNo">单据号</param>
         /// <param name="errInfo">错误消息</param>
         /// <returns></returns>
-        public bool InBIllTask(string billNo, out string errInfo)
+        public bool InBillTask(string billNo, out string errInfo)
         {
             bool result = true;
             errInfo = string.Empty;
@@ -53,7 +56,7 @@ namespace THOK.Wms.Bll.Service
             {
                 var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");//入库查询其实位置ID
                 var allotQuery = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
-                int param = Convert.ToInt32(originPositionSystem.ParameterValue);
+                int param = Convert.ToInt32(originPositionSystem.Id);
                 if (allotQuery.Any())
                 {
                     foreach (var inItem in allotQuery.ToArray())
@@ -78,11 +81,11 @@ namespace THOK.Wms.Bll.Service
                                     inTask.PathID = path.ID;
                                     inTask.ProductCode = inItem.Product.ProductCode;
                                     inTask.ProductName = inItem.Product.ProductName;
-                                    inTask.OriginStorageCode = "";
+                                    inTask.OriginStorageCode = inItem.CellCode;
                                     inTask.TargetStorageCode = inItem.CellCode;
-                                    inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
+                                    inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.Id);
                                     inTask.TargetPositionID = targetPosition.ID;
-                                    inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
+                                    inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.Id);
                                     inTask.CurrentPositionState = "01";
                                     inTask.State = "01";
                                     inTask.TagState = "01";
@@ -92,6 +95,7 @@ namespace THOK.Wms.Bll.Service
                                     inTask.OrderID = inItem.BillNo;
                                     inTask.OrderType = "01";
                                     inTask.AllotID = inItem.ID;
+                                    inTask.DownloadState = "0";
                                     TaskRepository.Add(inTask);
                                 }
                                 else
@@ -126,12 +130,99 @@ namespace THOK.Wms.Bll.Service
         }
 
         /// <summary>
+        /// 出库单据作业
+        /// </summary>
+        /// <param name="billNo">单据号</param>
+        /// <param name="errInfo">错误消息</param>
+        /// <returns></returns>
+        public bool OutBillTask(string billNo, out string errInfo) 
+        {
+            bool result = true;
+            errInfo = string.Empty;
+            try
+            {
+                var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");//出库查询起始位置ID
+                var allotQuery = OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
+                int param = Convert.ToInt32(originPositionSystem.Id);
+                if (allotQuery.Any())
+                {
+                    foreach (var outItem in allotQuery.ToArray())
+                    {
+                        //根据 出库货位 去找 货位位置信息
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == outItem.CellCode);
+                        if (targetCellPosition != null)
+                        {
+                            //根据 出库位置ID 去找 目标区域ID 信息
+                            var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
+                            //根据 起始位置ID 去找 起始区域ID 信息
+                            var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == param);
+                            if (targetPosition != null && originPosition != null)
+                            {
+                                //根据 出库的目标区域 和 起始位置区域 去找 路径信息
+                                var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
+                                if (path != null)
+                                {
+                                    var outTask = new Task();
+                                    outTask.TaskType = "01";
+                                    outTask.TaskLevel = 0;
+                                    outTask.PathID = path.ID;
+                                    outTask.ProductCode = outItem.Product.ProductCode;
+                                    outTask.ProductName = outItem.Product.ProductName;
+                                    outTask.OriginStorageCode = outItem.CellCode;
+                                    outTask.TargetStorageCode = outItem.CellCode;
+                                    outTask.OriginPositionID = Convert.ToInt32(originPositionSystem.Id);
+                                    outTask.TargetPositionID = targetPosition.ID;
+                                    outTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.Id);
+                                    outTask.CurrentPositionState = "01";
+                                    outTask.State = "01";
+                                    outTask.TagState = "01";
+                                    outTask.Quantity = Convert.ToInt32(outItem.RealQuantity);
+                                    outTask.TaskQuantity = Convert.ToInt32(outItem.RealQuantity);
+                                    outTask.OperateQuantity = Convert.ToInt32(outItem.AllotQuantity);
+                                    outTask.OrderID = outItem.BillNo;
+                                    outTask.OrderType = "01";
+                                    outTask.AllotID = outItem.ID;
+                                    outTask.DownloadState = "0";
+                                    TaskRepository.Add(outTask);
+                                }
+                                else
+                                {
+                                    errInfo = "未找到路径信息！";
+                                    result = false;
+                                }
+                            }
+                            else
+                            {
+                                errInfo = "未找到出库位置或位置信息！";
+                                result = false;
+                            }
+                            TaskRepository.SaveChanges();
+                        }
+                        else
+                        {
+                            errInfo = "未找到货位位置信息！";
+                            result = false;
+                        }
+                    }
+                }
+                else
+                    errInfo = "当前选择订单没有分配数据，请重新选择！";
+            }
+            catch (Exception e)
+            {
+                result = false;
+                errInfo = e.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 移库单据作业
         /// </summary>
         /// <param name="billNo">单据号</param>
         /// <param name="errInfo">错误消息</param>
         /// <returns></returns>
-        public bool MoveBIllTask(string billNo, out string errInfo)
+        public bool MoveBillTask(string billNo, out string errInfo)
         {
             bool result = true;
             errInfo = string.Empty;

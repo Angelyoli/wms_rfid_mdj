@@ -2381,6 +2381,7 @@
     <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
     <Content Include="Views\ProductSize\_SizePartial.cshtml" />
     <Content Include="Views\Path\_PositionPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_TaskPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
