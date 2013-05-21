@@ -1,0 +1,23 @@
+﻿@{
+    Layout = null;
+}
+<div class="easyui-layout" fit="true" border="false">
+	<div region="center" border="false"> 
+      <form id="fm" method="post" style="padding:10px 10px">  
+        <table align="left" width="250">
+            <tr>
+                <td width="60" align="right">报警编码：</td>
+                <td width="160">
+                    <input name="AlarmCode" id="inputAlarmCode" class="easyui-validatebox" required="true" type="text"/>
+                </td>
+            </tr> 
+            <tr>
+                <td width="60" align="right">描 &nbsp&nbsp 述：</td>
+                <td width="160">
+                    <textarea name="Description" id="inputDescription" class="easyui-validatebox" style="width: 128px; height: 80px" required="true"></textarea>
+                </td>
+            </tr>                
+         </table>
+      </form>
+    </div>
+</div>

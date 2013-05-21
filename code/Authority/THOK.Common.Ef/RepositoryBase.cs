@@ -5,9 +5,8 @@ using System.Linq.Expressions;
 using System.Data.Entity;
 using THOK.Common.Ef.Interfaces;
 using Microsoft.Practices.Unity;
-using System.Data;
 using System.Data.Entity.Infrastructure;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 
 namespace THOK.Common.Ef.EntityRepository
 {
