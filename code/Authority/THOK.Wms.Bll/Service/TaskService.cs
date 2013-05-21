@@ -53,7 +53,7 @@ namespace THOK.Wms.Bll.Service
             {
                 var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");//入库查询其实位置ID
                 var allotQuery = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
-                int param = Convert.ToInt32(originPositionSystem.ParameterValue);
+                int param = Convert.ToInt32(originPositionSystem.Id);
                 if (allotQuery.Any())
                 {
                     foreach (var inItem in allotQuery.ToArray())
@@ -78,11 +78,11 @@ namespace THOK.Wms.Bll.Service
                                     inTask.PathID = path.ID;
                                     inTask.ProductCode = inItem.Product.ProductCode;
                                     inTask.ProductName = inItem.Product.ProductName;
-                                    inTask.OriginStorageCode = "";
+                                    inTask.OriginStorageCode = inItem.CellCode;
                                     inTask.TargetStorageCode = inItem.CellCode;
-                                    inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
+                                    inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.Id);
                                     inTask.TargetPositionID = targetPosition.ID;
-                                    inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
+                                    inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.Id);
                                     inTask.CurrentPositionState = "01";
                                     inTask.State = "01";
                                     inTask.TagState = "01";
@@ -92,6 +92,7 @@ namespace THOK.Wms.Bll.Service
                                     inTask.OrderID = inItem.BillNo;
                                     inTask.OrderType = "01";
                                     inTask.AllotID = inItem.ID;
+                                    inTask.DownloadState = "0";
                                     TaskRepository.Add(inTask);
                                 }
                                 else
