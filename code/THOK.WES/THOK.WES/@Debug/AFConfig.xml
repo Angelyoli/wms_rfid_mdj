@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="gb2312"?>
 <Config>
   <URL>
-    <URL name="URL" value="http://59.61.87.212:8090/Task/" />
+    <URL name="URL" value="http://localhost:3535/Task/" />
   </URL>
   <UDP>
     <IP name="IP" value="192.168.0.200" />
@@ -9,12 +9,15 @@
   </UDP>
   <RFID>
     <PORT name="USEDRFID" value="0" />
-    <PORT name="PORT" value="com2" />
+    <PORT name="PORT" value="COM1" />
   </RFID>
   <Layers>
-    <Number name="Number" value="1,2,3" />
+    <Number name="Number" value="0,1,2,3" />
   </Layers>
   <DeviceType>
-    <Device name="Device" value="2" />
+    <Device name="Device" value="1" />
   </DeviceType>
+  <MusicName>
+    <Music name="Music" value="G:\Music\Music ringtones\123.wav" />
+  </MusicName>
 </Config>
