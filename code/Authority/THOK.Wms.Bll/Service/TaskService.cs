@@ -31,6 +31,8 @@ namespace THOK.Wms.Bll.Service
         public ISystemParameterRepository SystemParameterRepository { get; set; }
         [Dependency]
         public IRegionRepository RegionRepository { get; set; }
+        [Dependency]
+        public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -198,7 +200,7 @@ namespace THOK.Wms.Bll.Service
                                         outTask.TaskQuantity = Convert.ToInt32(outItem.RealQuantity);
                                         outTask.OperateQuantity = Convert.ToInt32(outItem.AllotQuantity);
                                         outTask.OrderID = outItem.BillNo;
-                                        outTask.OrderType = "01";
+                                        outTask.OrderType = "02";
                                         outTask.AllotID = outItem.ID;
                                         outTask.DownloadState = "0";
                                         TaskRepository.Add(outTask);
@@ -299,7 +301,7 @@ namespace THOK.Wms.Bll.Service
                                             moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity);
                                             moveTask.OperateQuantity = Convert.ToInt32(moveItem.RealQuantity);
                                             moveTask.OrderID = moveItem.BillNo;
-                                            moveTask.OrderType = "02";
+                                            moveTask.OrderType = "03";
                                             moveTask.AllotID = moveItem.ID;
                                             moveTask.DownloadState = "0";
                                             TaskRepository.Add(moveTask);
@@ -347,10 +349,36 @@ namespace THOK.Wms.Bll.Service
                 errorInfo = e.Message;
             }
             return result;
-        } 
+        }
         #endregion
 
+        public bool SortWorkDispatchTask(Guid id, out string errerInfo)
+        {
+            bool result = true;
+            errerInfo = string.Empty;
 
+            var sortWorkDispatch = SortWorkDispatchRepository.GetQueryable().Where(i => i.ID == id);
+            if (sortWorkDispatch.Any())
+            {
+                foreach (var item in sortWorkDispatch.ToArray())
+                {
+                    //取 PathID 必先取得 起始区域 和 目标区域
+
+                    ////根据移出货位查找起始位置信息
+                    //var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == item.OutCellCode);
+                    ////根据移入货位查找目标位置信息
+                    //var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == item.InCellCode);
+                    ////根据移出位置ID去找起始区域ID信息
+                    //var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
+                    ////根据移入位置ID去找目标区域ID信息
+                    //var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
+                    ////根据入库的目标区域和起始位置区域去找路径信息
+                    //var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
+                }
+            }
+
+            return false;
+        }
 
         #region 原版
         /// <summary>
