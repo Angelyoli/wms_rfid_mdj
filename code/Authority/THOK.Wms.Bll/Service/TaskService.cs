@@ -52,30 +52,28 @@ namespace THOK.Wms.Bll.Service
             errorInfo = string.Empty;
             try
             {
-                //入库查询起始位置ID
+                //查询起始位置“参数”
                 var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");
                 int paramterValue = Convert.ToInt32(originPositionSystem.ParameterValue);
-
                 //入库分配信息
                 var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
-
                 if (inBillAllot.Any())
                 {
                     foreach (var inItem in inBillAllot.ToArray())
                     {
-                        //根据"入库货位"查找"货位位置ID"
+                        //根据“入库货位编码”查找“货位位置”
                         var cellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inItem.CellCode);
                         if (cellPosition != null)
                         {
-                            //根据"起始位置ID"查找"起始区域ID"
+                            //根据起始位置“参数”查找起始“位置信息”
                             var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramterValue);
                             if (originPosition != null)
                             {
-                                //根据"入库位置ID"查找"目标区域ID"
+                                //根据“货位位置”中的“入库位置ID”查找目标“位置信息”
                                 var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == cellPosition.StockInPositionID);
                                 if (targetPosition != null)
                                 {
-                                    //根据"入库目标区域"和"起始位置区域"查找"路径ID"
+                                    //根据入库（目标和起始）“位置信息”信息的“区域ID”查找“路径信息”
                                     var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
                                     if (path != null)
                                     {
@@ -104,25 +102,25 @@ namespace THOK.Wms.Bll.Service
                                     }
                                     else
                                     {
-                                        errorInfo = "未找到路径信息！";
+                                        errorInfo = "未找到【路径信息】！";
                                         result = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorInfo = "未找到入库位置或位置信息！";
+                                    errorInfo = "未找到【位置信息】！";
                                     result = false;
                                 }
                             }
                             else
                             {
-                                errorInfo = "系统参数设置为：不可以放入预设卷烟其他烟！";
+                                errorInfo = "请检查【系统参数】设置！";
                                 result = false;
                             }
                         }
                         else
                         {
-                            errorInfo = "未找货位位置信息！";
+                            errorInfo = "未找到【货位位置】！";
                             result = false;
                         }
                     }
@@ -155,30 +153,28 @@ namespace THOK.Wms.Bll.Service
             errorInfo = string.Empty;
             try
             {
-                //出库查询起始位置ID
+                //查询起始位置的“参数”
                 var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");
                 int paramterValue = Convert.ToInt32(originPositionSystem.ParameterValue);
-
                 //出库分配信息
                 var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
-
                 if (outBillAllot.Any())
                 {
                     foreach (var outItem in outBillAllot.ToArray())
                     {
-                        //根据"入库货位"查找"货位位置ID"
+                        //根据“出库货位编码”查找“货位位置”
                         var cellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == outItem.CellCode);
                         if (cellPosition != null)
                         {
-                            //根据"起始位置ID"查找"起始区域ID"
+                            //根据起始位置“参数”查找起始的“位置信息”
                             var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramterValue);
                             if (originPosition != null)
                             {
-                                //根据"出库位置ID"查找"目标区域ID"
+                                //根据“货位位置”中的“出库位置ID”查找目标“位置信息”
                                 var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == cellPosition.StockOutPositionID);
                                 if (targetPosition != null)
                                 {
-                                    //根据"出库目标区域"和"起始位置区域"查找"路径ID"
+                                    //根据出库（目标和起始）“位置信息”信息的“区域ID”查找“路径信息”
                                     var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
                                     if (path != null)
                                     {
@@ -207,25 +203,25 @@ namespace THOK.Wms.Bll.Service
                                     }
                                     else
                                     {
-                                        errorInfo = "未找到路径信息！";
+                                        errorInfo = "未找到【路径信息】！";
                                         result = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorInfo = "未找到入库位置或位置信息！";
+                                    errorInfo = "未找到【位置信息】！";
                                     result = false;
                                 }
                             }
                             else
                             {
-                                errorInfo = "系统参数设置为：不可以放入预设卷烟其他烟！";
+                                errorInfo = "请检查【系统参数】设置！";
                                 result = false;
                             }
                         }
                         else
                         {
-                            errorInfo = "未找货位位置信息！";
+                            errorInfo = "未找到【货位位置】！";
                             result = false;
                         }
                     }
@@ -308,31 +304,31 @@ namespace THOK.Wms.Bll.Service
                                         }
                                         else
                                         {
-                                            errorInfo = "未找到路径信息！";
+                                            errorInfo = "未找到【路径信息】！";
                                             result = false;
                                         }
                                     }
                                     else
                                     {
-                                        errorInfo = "目标位置的区域ID！";
+                                        errorInfo = "未找到目标【位置信息】！";
                                         result = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorInfo = "未找到起始区域ID";
+                                    errorInfo = "未找到起始【位置信息】！";
                                     result = false;
                                 }
                             }
                             else
                             {
-                                errorInfo = "未找到目标位置信息！";
+                                errorInfo = "未找到目标【货位位置】！";
                                 result = false;
                             }
                         }
                         else
                         {
-                            errorInfo = "未找到起始位置信息！";
+                            errorInfo = "未找到起始【货位位置】！";
                             result = false;
                         }
                     }
