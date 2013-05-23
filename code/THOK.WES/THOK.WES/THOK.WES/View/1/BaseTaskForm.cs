@@ -27,7 +27,8 @@ namespace THOK.WES.View
         private int operateBarQuantity = 0;
         private string url = @"http://59.61.87.212:8090/Task";
         private System.Media.SoundPlayer sp;
-        private string musicName = "";
+        private string musicName = "";//音乐地址
+        private string isMusicName = "";//是否使用音乐提醒
         /// <summary>
         /// 1：入库单；2：出库单；3：移库单；4：盘点单
         /// </summary>
@@ -85,10 +86,10 @@ namespace THOK.WES.View
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
             musicName = configUtil.GetConfig("MusicName")["Music"];
+            isMusicName = configUtil.GetConfig("MusicName")["IsMusic"];
             connection = new Connection(url + @"/automotiveSystems");
             connection.Received += new Action<string>(connection_Received);
-            connection.Closed += new Action(connection_Closed);
-            string name = @"G:\Music\Music ringtones\" + musicName + ".wav";
+            connection.Closed += new Action(connection_Closed);            
             sp = new System.Media.SoundPlayer(musicName);            
             if (configUtil.GetConfig("DeviceType")["Device"] == "0")
             {
@@ -194,7 +195,7 @@ namespace THOK.WES.View
                 {
                     dgvMain.AutoGenerateColumns = false;
                     dgvMain.DataSource = billDetails;
-                    //Play();
+                    Play();
                     foreach (BillDetail billDetail in billDetails)
                     {
                         if (billDetail.Status == "1")
@@ -857,7 +858,7 @@ namespace THOK.WES.View
             {
                 isAppyInt = 0;
             }
-            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("3") && isApply && OperateType.Equals("Real") && isAppyInt == 0)
+            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("3") && isApply && OperateType.Equals("Real") && isAppyInt == 0 && isMusicName.Equals("1"))
             {
                 try
                 {
