@@ -189,6 +189,7 @@ namespace THOK.WES.View
             task.GetBillDetailCompleted += new Task.GetBillDetailCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
             {
                 InTask = false;
+               
                 if (billDetails != null && billDetails.Length != 0)
                 {
                     dgvMain.AutoGenerateColumns = false;
@@ -212,6 +213,7 @@ namespace THOK.WES.View
                 else
                 {
                     dgvMain.DataSource = null;
+                    isAppyInt = 0;
                 }
                 ClosePlWailt();
                 dgvMain.ClearSelection();
@@ -847,7 +849,7 @@ namespace THOK.WES.View
             {
                 isAppyInt = 0;
             }
-            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("1") && isApply && OperateType.Equals("Real") && isAppyInt == 0)
+            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("3") && isApply && OperateType.Equals("Real") && isAppyInt == 0)
             {
                 try
                 {

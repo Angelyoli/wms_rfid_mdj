@@ -79,7 +79,7 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
         public ActionResult SendSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId)
         {
             AddXmlValueBll bll = new AddXmlValueBll();
-            string text = orderId + " - " + sortingLineCode + " - " + orderdate + " - " + batchId;
+            string text = "订单号："+orderId + ",分拣编码：" + sortingLineCode + ",订单日期：" + orderdate + ",分拣批次：" + batchId;
             bll.insert("sortInfo", text);
             string msg = @"<?xml version='1.0' encoding='GB2312' ?>
                             <message>
