@@ -16,6 +16,10 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IUnitRepository UnitRepository { get; set; }
+
+        [Dependency]
+        public IStorageRepository StorageRepository { get; set; }
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
@@ -26,6 +30,8 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
         {
             IQueryable<SortingLowerlimit> lowerLimitQuery = SortingLowerlimitRepository.GetQueryable();
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+
             var lowerLimit = lowerLimitQuery.OrderBy(b => new { b.SortingLineCode,b.ProductCode }).Where(s => s.SortingLineCode == s.SortingLineCode);
             if (sortingLineCode != string.Empty && sortingLineCode != null)
             {
@@ -48,23 +54,46 @@ namespace THOK.Wms.Bll.Service
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
             int total = lowerLimit.Count();
+            lowerLimit = lowerLimit.OrderBy(r => r.SortingLineCode).ThenBy(r=>r.SortOrder);
             lowerLimit = lowerLimit.Skip((page - 1) * rows).Take(rows);
 
-            var temp = lowerLimit.ToArray().AsEnumerable().Select(b => new
+            var temp1 = lowerLimit.GroupJoin(storageQuery,
+                            l => new { l.SortingLine.CellCode, l.ProductCode },
+                            s => new { s.CellCode, s.ProductCode },
+                            (l, s) => new
+                            {
+                                l.ID,
+                                l.SortingLineCode,
+                                l.SortingLine.SortingLineName,
+                                l.ProductCode,
+                                l.Product.ProductName,
+                                l.UnitCode,
+                                l.Unit.UnitName,
+                                l.Unit,
+                                l.Quantity,
+                                StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
+                                l.SortOrder,
+                                l.IsActive,
+                                l.UpdateTime
+                            });
+
+            var temp2 = temp1.ToArray().AsEnumerable().Select(b => new
             {
                 b.ID,
                 b.SortingLineCode,
-                b.SortingLine.SortingLineName,
+                b.SortingLineName,
                 b.ProductCode,
-                b.Product.ProductName,
+                b.ProductName,
                 b.UnitCode,
-                b.Unit.UnitName,
+                b.UnitName,
                 Quantity = b.Quantity / b.Unit.Count,
+                StorageQuantity = b.StorageQuantity / b.Unit.Count,
+                b.SortOrder,
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
 
-            return new { total, rows = temp.ToArray() };
+            return new { total, rows = temp2.ToArray() };
         }
 
         public new bool Add(SortingLowerlimit sortLowerLimit)
@@ -78,6 +107,7 @@ namespace THOK.Wms.Bll.Service
                 lowerLimit.ProductCode = sortLowerLimit.ProductCode;
                 lowerLimit.UnitCode = sortLowerLimit.UnitCode;
                 lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;
+                lowerLimit.SortOrder = sortLowerLimit.SortOrder;
                 lowerLimit.IsActive = sortLowerLimit.IsActive;
                 lowerLimit.UpdateTime = DateTime.Now;
 
@@ -87,6 +117,7 @@ namespace THOK.Wms.Bll.Service
             else
             {
                 lowerLimitList.Quantity = lowerLimitList.Quantity + (sortLowerLimit.Quantity * unit.Count);
+                lowerLimitList.SortOrder = sortLowerLimit.SortOrder;
                 lowerLimitList.UpdateTime = DateTime.Now;
                 SortingLowerlimitRepository.SaveChanges();
             }
@@ -117,6 +148,7 @@ namespace THOK.Wms.Bll.Service
             lowerLimitSave.ProductCode = sortLowerLimit.ProductCode;
             lowerLimitSave.UnitCode = sortLowerLimit.UnitCode;
             lowerLimitSave.Quantity = sortLowerLimit.Quantity * unit.Count;
+            lowerLimitSave.SortOrder = sortLowerLimit.SortOrder;
             lowerLimitSave.IsActive = sortLowerLimit.IsActive;
             lowerLimitSave.UpdateTime = DateTime.Now;
 
@@ -129,6 +161,8 @@ namespace THOK.Wms.Bll.Service
         public System.Data.DataTable GetSortingLowerlimit(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
         {
             IQueryable<SortingLowerlimit> lowerLimitQuery = SortingLowerlimitRepository.GetQueryable();
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
+
             var lowerLimit = lowerLimitQuery.OrderBy(b => new { b.SortingLineCode, b.ProductCode }).Where(s => s.SortingLineCode == s.SortingLineCode);
             if (sortingLineCode != string.Empty && sortingLineCode != null)
             {
@@ -150,42 +184,75 @@ namespace THOK.Wms.Bll.Service
             {
                 lowerLimit = lowerLimit.Where(l => l.IsActive == IsActive);
             }
-            var temp = lowerLimit.ToArray().AsEnumerable().Select(b => new
+            //lowerLimit = lowerLimit
+            var temp1 = lowerLimit.GroupJoin(storageQuery,
+                            l => new { l.SortingLine.CellCode, l.ProductCode },
+                            s => new { s.CellCode, s.ProductCode },
+                            (l, s) => new
+                            {
+                                l.ID,
+                                l.SortingLineCode,
+                                l.SortingLine.SortingLineName,
+                                l.ProductCode,
+                                l.Product.ProductName,
+                                l.UnitCode,
+                                l.Unit.UnitName,
+                                l.Unit,
+                                l.Product.UnitList,
+                                l.Quantity,                               
+                                StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,                                
+                                l.SortOrder,
+                                l.IsActive,
+                                l.UpdateTime
+                            });
+
+            var temp2 = temp1.ToArray().AsEnumerable().Select(b => new
             {
                 b.ID,
                 b.SortingLineCode,
-                b.SortingLine.SortingLineName,
+                b.SortingLineName,
                 b.ProductCode,
-                b.Product.ProductName,
+                b.ProductName,
                 b.UnitCode,
-                b.Unit.UnitName,
+                b.UnitName,
                 Quantity = b.Quantity / b.Unit.Count,
+                StorageQuantity = b.StorageQuantity / b.Unit.Count,
+                StorageBarQuantity = b.StorageQuantity / (b.UnitList.Quantity02*b.UnitList.Quantity03),
+                b.SortOrder,
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-            });
+            }).OrderBy(r => r.SortingLineCode).ThenBy(r => r.SortOrder); 
+
             System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("分拣线编码", typeof(string));
+            //dt.Columns.Add("分拣线编码", typeof(string));
             dt.Columns.Add("分拣线名称", typeof(string));
-            dt.Columns.Add("卷烟编码", typeof(string));
+            //dt.Columns.Add("卷烟编码", typeof(string));
+            dt.Columns.Add("仓位顺序", typeof(string));
             dt.Columns.Add("卷烟名称", typeof(string));
-            dt.Columns.Add("单位编码", typeof(string));
-            dt.Columns.Add("单位名称", typeof(string));
-            dt.Columns.Add("下限数量", typeof(decimal));
-            dt.Columns.Add("是否可用", typeof(string));
-            dt.Columns.Add("修改时间", typeof(string));
-            foreach (var t in temp)
+            //dt.Columns.Add("单位编码", typeof(string));
+            //dt.Columns.Add("单位名称", typeof(string));
+            dt.Columns.Add("数量(件)", typeof(decimal));
+            dt.Columns.Add("数量(条)", typeof(decimal));
+            dt.Columns.Add("下限数量", typeof(decimal));            
+            //dt.Columns.Add("是否可用", typeof(string));
+            //dt.Columns.Add("修改时间", typeof(string));
+            foreach (var t in temp2)
             {
                 dt.Rows.Add
                     (
-                        t.SortingLineCode,
+                        //t.SortingLineCode,
                         t.SortingLineName,
-                        t.ProductCode,
+                        //t.ProductCode,
+                        t.SortOrder,
                         t.ProductName,
-                        t.UnitCode,
-                        t.UnitName,
-                        t.Quantity,
-                        t.IsActive,
-                        t.UpdateTime
+                        //t.UnitCode,
+                        //t.UnitName,
+                        t.StorageQuantity,
+                        t.StorageBarQuantity,
+                        t.Quantity
+                       
+                        //t.IsActive,
+                        //t.UpdateTime
                     );
             }
             return dt;

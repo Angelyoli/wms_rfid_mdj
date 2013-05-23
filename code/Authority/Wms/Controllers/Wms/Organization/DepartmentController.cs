@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
 using THOK.Wms.DbModel;
 using THOK.Security;
+using THOK.Common.NPOI.Service;
+using THOK.Common.NPOI.Models;
 
 namespace Authority.Controllers.Organization
 {
@@ -117,11 +119,10 @@ namespace Authority.Controllers.Organization
             string departmentLeaderId = Request.QueryString["departmentLeaderId"];
             string companyId = Request.QueryString["companyId"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = DepartmentService.GetDepartment(page, rows, departmentCode, departmentName, departmentLeaderId, companyId);
             ep.HeadTitle1 = "部门信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

@@ -13,6 +13,7 @@ namespace THOK.WES.View
         public CheckTaskForm()
         {
             InitializeComponent();
+            btnOpType.Visible = true;
             BillTypes = "4";
         }
     }

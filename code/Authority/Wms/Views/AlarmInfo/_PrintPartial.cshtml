@@ -1,0 +1,12 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var alarmCode = null, description=null;
+
+        if ($('#AlarmCode').val() == null) { alarmCode = ""; } else { alarmCode = $('#AlarmCode').val(); }
+        if ($('#Description').val() == null) { description = ""; } else { description = $('#Description').val(); }
+
+        window.location.href = "/AlarmInfo/CreateExcelToClient/"
+                                + "?alarmCode=" + alarmCode
+                                + "&description=" + description;
+    }
+</script>

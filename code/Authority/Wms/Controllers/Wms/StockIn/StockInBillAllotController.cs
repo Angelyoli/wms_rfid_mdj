@@ -8,6 +8,8 @@ using Microsoft.Practices.Unity;
 using THOK.Common.WebUtil;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.StockIn
 {
@@ -86,13 +88,12 @@ namespace Authority.Controllers.Wms.StockIn
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
             
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = InBillDetailService.GetInBillDetail(page, rows, billNo);
             ep.DT2 = InBillAllotService.AllotSearch(page, rows, billNo);;
             ep.HeadTitle1 = "入库单据分配";
             ep.HeadTitle2 = "入库单据分配明细";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

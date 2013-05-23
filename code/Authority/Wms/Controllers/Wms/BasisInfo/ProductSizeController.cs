@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Wms.Controllers.Wms.BasisInfo
 {
@@ -131,11 +133,10 @@ namespace Wms.Controllers.Wms.BasisInfo
             productSize.SizeNo = SizeNo;
             productSize.AreaNo = AreaNo;
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = ProductSizeService.GetProductSize(page, rows, productSize);
             ep.HeadTitle1 = "卷烟件烟尺寸信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }  
     }
 }

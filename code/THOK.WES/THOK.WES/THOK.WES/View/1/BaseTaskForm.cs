@@ -26,14 +26,16 @@ namespace THOK.WES.View
         private int operatePieceQuantity = 0;
         private int operateBarQuantity = 0;
         private string url = @"http://59.61.87.212:8090/Task";
-
+        private System.Media.SoundPlayer sp;
+        private string musicName = "";
         /// <summary>
         /// 1：入库单；2：出库单；3：移库单；4：盘点单
         /// </summary>
         protected string BillTypes = "";
 
         //选择的主单；
-        BillMaster BillMaster = null;
+        string billNo = string.Empty;
+        BillMaster[] BillMasters = null;
 
         private string RfidReadProductCode = "";
 
@@ -73,17 +75,20 @@ namespace THOK.WES.View
         private string port;
 
         private Connection connection = null;
+        private GridUtil gridUtil = null;
         public BaseTaskForm()
         {
-            InitializeComponent();
-
+            InitializeComponent();            
+            gridUtil = new GridUtil(dgvMain);
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
+            musicName = configUtil.GetConfig("MusicName")["Music"];
             connection = new Connection(url + @"/automotiveSystems");
             connection.Received += new Action<string>(connection_Received);
             connection.Closed += new Action(connection_Closed);
-
+            string name = @"G:\Music\Music ringtones\" + musicName + ".wav";
+            sp = new System.Media.SoundPlayer(musicName);            
             if (configUtil.GetConfig("DeviceType")["Device"] == "0")
             {
                 this.dgvMain.ColumnHeadersHeight = 40;
@@ -99,7 +104,7 @@ namespace THOK.WES.View
                 this.dgvMain.RowTemplate.Height = 40;
                 this.dgvMain.DefaultCellStyle.Font = new Font("宋体", 16);
                 this.dgvMain.ColumnHeadersDefaultCellStyle.Font = new Font("宋体", 13);
-                this.btnBatConfirm.Visible = false;
+                //this.btnBatConfirm.Visible = false;
                 UseTag = "1";
             }
             else
@@ -110,7 +115,7 @@ namespace THOK.WES.View
                 this.dgvMain.ColumnHeadersDefaultCellStyle.Font = new Font("宋体", 10);
                 UseTag = "1";
             }
-            port = configUtil.GetConfig("RFID")["PORT"];
+            port = configUtil.GetConfig("RFID")["PORT"];            
         }
 
         //查询
@@ -118,7 +123,6 @@ namespace THOK.WES.View
         {
             try
             {
-                string billNo = string.Empty;
                 Task task = new Task(url);
                 task.GetBillMasterCompleted += new Task.GetBillMasterCompletedEventHandler(delegate(bool isSuccess, string msg, BillMaster[] billMasters)
                 {
@@ -141,18 +145,25 @@ namespace THOK.WES.View
                                 }
                                 break;
                         }
-                        foreach (BillMaster billMaster in billMasters)
+
+                        List<BillMaster> listBill = new List<Interface.Model.BillMaster>();
+                        int f = 0;
+                        for (int i = 0; i < billMasters.Length; i++)
                         {
-                            if (billNo == billMaster.BillNo)
+                            if (billNo.Contains(billMasters[i].BillNo))
                             {
-                                this.BillMaster = billMaster;
+                                f++;
+                                listBill.Add(billMasters[i]);
                             }
                         }
+                        BillMasters = new BillMaster[f];
+                        listBill.CopyTo(BillMasters, 0);
                     }
                     if (!isSuccess)
                         MessageBox.Show(msg);
                     RefreshData();
                 });
+
                 task.SearchBillMaster(BillTypes);
                 DisplayPlWailt();
             }
@@ -165,12 +176,12 @@ namespace THOK.WES.View
         //刷新数据
         private void RefreshData()
         {
-            if (BillMaster == null)
+            if (BillMasters == null)
             {
                 dgvMain.DataSource = null;
                 return;
             }
-            sslBillID.Text = "单据号：" + BillMaster.BillNo + "                              ";
+            sslBillID.Text = "单据号：" + billNo + "                              ";
             sslOperator.Text = "操作员：" + Environment.MachineName;
 
             Task task = new Task(url);
@@ -181,6 +192,7 @@ namespace THOK.WES.View
                 {
                     dgvMain.AutoGenerateColumns = false;
                     dgvMain.DataSource = billDetails;
+                    //Play();
                     foreach (BillDetail billDetail in billDetails)
                     {
                         if (billDetail.Status == "1")
@@ -201,16 +213,19 @@ namespace THOK.WES.View
                     dgvMain.DataSource = null;
                 }
                 ClosePlWailt();
+                dgvMain.ClearSelection();
             });
-            task.SearchBillDetail(new BillMaster[] { this.BillMaster }, RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);
-            DisplayPlWailt();
+            task.SearchBillDetail(BillMasters, RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);           
+            DisplayPlWailt();           
         }
 
         //申请
         private void btnApply_Click(object sender, EventArgs e)
         {
-            List<string> listRfid = new List<string>();            
-            string productRfid="";
+            sp.Stop();
+            string errString = string.Empty;
+            List<string> listRfid = new List<string>();
+            string productRfid = "";
             decimal quantityRfid = 0;
             try
             {
@@ -222,13 +237,13 @@ namespace THOK.WES.View
                 {
                     if (BillTypes == "1")
                     {
-                        while (RfidCode.Equals(""))
+                        while (listRfid.Count == 0 || listRfid == null)
                         {
                             DisplayPlWailt();
-                            listRfid = rRfid.ReadTrayRfid(port, 115200);
-                            RfidCode = listRfid[0].ToString();
+                            listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
                             Application.DoEvents();
                         }
+                        RfidCode = RfidCode = listRfid[0].ToString();
                         Task task = new Task(url);
                         task.SearchRfidInfo(RfidCode);
                         task.GetRfidInfoCompleted += new Task.GetRfidInfoCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
@@ -249,7 +264,7 @@ namespace THOK.WES.View
             }
             catch (Exception ex)
             {
-                MessageBox.Show("申请错误：" + ex.Message);
+                MessageBox.Show("申请错误：" + ex.Message + " ,其它:" + errString);
                 RefreshData();
             }
         }
@@ -262,11 +277,12 @@ namespace THOK.WES.View
                 if (dgvMain.SelectedRows.Count != 0)
                 {
                     DisplayPlWailt();
+                    rRfid.CloseCom();
                     IList<BillDetail> billDetails = new List<BillDetail>();
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         BillDetail billDetail = new BillDetail();
-                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                        billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.Operator = Environment.MachineName;
@@ -297,7 +313,8 @@ namespace THOK.WES.View
         //确认
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            ConfirmPubliceMethod(UseRfid);
+            ConfirmPubliceMethod();
+            RefreshData();
         }
 
         //批量确认
@@ -322,7 +339,7 @@ namespace THOK.WES.View
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         BillDetail billDetail = new BillDetail();
-                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                        billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.Operator = Environment.MachineName;
@@ -409,6 +426,14 @@ namespace THOK.WES.View
         {
             if (data == "TaskStart")
             {
+                try
+                {
+                    sp.Play();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("播放音乐出错，原因：" + e.Message);
+                }
                 Application.OpenForms[0].Invoke(new RefreshTask(RefreshData));
             }
         }
@@ -425,7 +450,7 @@ namespace THOK.WES.View
         private void btnBcCompose_Click(object sender, EventArgs e)
         {
             btnBcCompose.Enabled = false;
-            if (!isBcCompose && BillTypes == "3" && BillMaster != null)
+            if (!isBcCompose && BillTypes == "3" && BillMasters != null)
             {
                 Task task = new Task(url.Replace("Task", "StockMoveBill/GeneratePalletTag"));
                 task.BcComposeCompleted += new Task.BcComposeEventHandler(delegate(bool isSuccess, string msg)
@@ -437,7 +462,7 @@ namespace THOK.WES.View
                     btnBcCompose.Enabled = true;
                     isBcCompose = true;
                 });
-                task.BcCompose(BillMaster.BillNo);
+                task.BcCompose(billNo);
             }
             else
             {
@@ -466,16 +491,16 @@ namespace THOK.WES.View
                             return;
                         }
                     }
-                    DisplayPlWailt();                    
+                    DisplayPlWailt();
                     IList<BillDetail> billDetails = new List<BillDetail>();
-                    
+
                     switch (uRfid)
                     {
                         case "0":
                             foreach (DataGridViewRow row in dgvMain.SelectedRows)
                             {
                                 BillDetail billDetail = new BillDetail();
-                                billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                                 billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                                 billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                                 billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
@@ -493,7 +518,7 @@ namespace THOK.WES.View
                                 && row.Cells["Status"].Value.ToString().Equals("0"))
                                 {
                                     BillDetail billDetail = new BillDetail();
-                                    billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                    billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                                     billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                                     billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                                     billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
@@ -514,7 +539,7 @@ namespace THOK.WES.View
                                     && row.Cells["Status"].Value.ToString().Equals("0"))
                                 {
                                     BillDetail billDetail = new BillDetail();
-                                    billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                                    billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                                     billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                                     billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                                     billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
@@ -560,7 +585,7 @@ namespace THOK.WES.View
             try
             {
                 string storageRfide = "";
-                if (dgvMain.SelectedRows.Count > 1 && UseRfid!="0")
+                if (dgvMain.SelectedRows.Count > 1 && !UseRfid.Equals("0"))
                 {
                     MessageBox.Show("当前操作只允许操作一个任务！", "提示",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -582,14 +607,14 @@ namespace THOK.WES.View
                     foreach (DataGridViewRow row in dgvMain.SelectedRows)
                     {
                         BillDetail billDetail = new BillDetail();
-                        billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                        billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                         billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                         billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                         billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
                         billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
                         billDetail.Operator = Environment.MachineName;
                         billDetails.Add(billDetail);
-                        if (UseRfid != "0")
+                        if (!UseRfid.Equals("0"))
                         {
                             storageRfide = row.Cells["StorageRfid"].Value.ToString();
                         }
@@ -620,29 +645,54 @@ namespace THOK.WES.View
             }
         }
 
-        private void ConfirmPubliceMethod(string Rfid)
+        private void ConfirmPubliceMethod()
         {
+            string errString = string.Empty;
             try
             {
-                bool isRfid = true;               
+                bool isRfid = true;
+                decimal quantity = 0;
                 List<string> listRfid = new List<string>();
-                listRfid = rRfid.ReadTrayRfid(port,115200);
+                if (UseRfid != "0")
+                {
+                    foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                    {
+                        quantity = Convert.ToDecimal(row.Cells["PieceQuantity"].Value);
+                    }
+                    if (quantity == 30)
+                    {
+                        while (listRfid.Count == 0 || listRfid == null)
+                        {
+                            DisplayPlWailt();
+                            listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
+                            Application.DoEvents();
+                        }
+                    }
+                }
                 if (dgvMain.SelectedRows.Count > 1)
                 {
                     MessageBox.Show("当前操作只允许操作一个任务！", "提示",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                if (listRfid.Count==0)
+                if (listRfid.Count == 0 && !UseRfid.Equals("0") && quantity==30)
                 {
                     MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
                           MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
 
                 }
+
+                if (dgvMain.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("当前操作失败！原因：没有选择数据，请选择！", "提示",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 IList<BillDetail> billDetails = new List<BillDetail>();
                 BillDetail billDetail = new BillDetail();
-                switch (Rfid)
+                switch (UseRfid)
                 {
                     case "0":
                         if (dgvMain.SelectedRows.Count == 1)
@@ -652,9 +702,7 @@ namespace THOK.WES.View
                                 ConfirmMethod(row, billDetail, billDetails, RfidCode);
                                 isRfid = false;
                             }
-                        }
-                        else
-                            errInfo = "请选择一条数据确认！";
+                        }                        
                         break;
                     case "1":
                         if (dgvMain.SelectedRows.Count == 1)
@@ -664,23 +712,21 @@ namespace THOK.WES.View
                                 string cellRfid = row.Cells["CellRfid"].Value.ToString();
                                 if (BillTypes == "3")
                                 {
-                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))
+                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString())&& quantity==30)//移出的库存(托盘)的rfid
                                     {
                                         MessageBox.Show("读取RFID信息与数据不一致！请检查托盘卷烟与数据是否符合！", "提示",
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         return;
                                     }
-                                    cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();
+                                    cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();//移入的货位rfid
                                 }
-                                if (listRfid.Contains(cellRfid))
+                                if (listRfid.Contains(cellRfid) || listRfid.Count==0)
                                 {
                                     ConfirmMethod(row, billDetail, billDetails, RfidCode);
                                     isRfid = false;
                                 }
                             }
                         }
-                        else
-                            errInfo = "请选择一条数据确认！";
                         break;
                     case "2":
                         foreach (DataGridViewRow row in dgvMain.Rows)
@@ -688,7 +734,7 @@ namespace THOK.WES.View
                             string cellRfid = row.Cells["CellRfid"].Value.ToString();
                             if (BillTypes == "3")
                             {
-                                if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()))
+                                if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()) && quantity == 30)
                                 {
                                     MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -696,7 +742,7 @@ namespace THOK.WES.View
                                 }
                                 cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();
                             }
-                            if (listRfid.Contains(cellRfid))
+                            if (listRfid.Contains(cellRfid) || listRfid.Count == 0)
                             {
                                 ConfirmMethod(row, billDetail, billDetails, RfidCode);
                                 isRfid = false;
@@ -709,13 +755,13 @@ namespace THOK.WES.View
                         break;
                 }
                 if (isRfid)
-                    MessageBox.Show("完成确认失败，原因：找不到与货位RFID相等的数据！其他错误：" + errInfo);
+                    MessageBox.Show("完成确认失败，原因：找不到与货位RFID相等的数据！其他错误：" + errInfo + " ," + errString);
                 else
                     RfidCode = "";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("执行失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("执行失败，原因：" + ex.Message + "," + errString, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -723,7 +769,7 @@ namespace THOK.WES.View
         {
             if (row.Cells["StatusName"].Value.ToString() == "已申请")
             {
-                billDetail.BillNo = row.Cells["BillNo"].Value.ToString();
+                billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
                 billDetail.BillType = row.Cells["@BillType"].Value.ToString();
                 billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
                 billDetail.Operator = Environment.MachineName;
@@ -787,9 +833,33 @@ namespace THOK.WES.View
 
         private void CyleTimer_Tick(object sender, EventArgs e)
         {
-            if (BillMaster != null)
+            if (BillMasters != null)
             {
                 this.ReadRfidCycle();
+            }
+        }
+
+        private void Play()
+        {
+            bool isApply = true;
+            foreach (DataGridViewRow row in dgvMain.Rows)
+            {
+                if (row.Cells["Status"].Value.ToString().Equals("1"))
+                {
+                    isApply = false;
+                    return;
+                }
+            }
+            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("1") && isApply && OperateType.Equals("Real"))
+            {
+                try
+                {
+                    sp.Play();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("播放音乐出错，原因：" + e.Message);
+                }
             }
         }
     }

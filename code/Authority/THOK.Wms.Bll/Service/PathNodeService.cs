@@ -183,7 +183,6 @@ namespace THOK.Wms.Bll.Service
             PathNode.PositionID = pathNode.PositionID;
             PathNode.Position = Position;
             PathNode.PathNodeOrder = pathNode.PathNodeOrder;
-            PathNodeRepository.Add(PathNode);
             PathNodeRepository.SaveChanges();
             return true;
         }

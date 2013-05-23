@@ -466,7 +466,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                 if (cancellationToken.IsCancellationRequested) return;
                 if (quantity > 0)
                 {
-                    decimal allotQuantity = s.Quantity - s.OutFrozenQuantity;
+                    decimal allotQuantity = Math.Floor((s.Quantity - s.OutFrozenQuantity) / s.Product.Unit.Count) * s.Product.Unit.Count;
                     decimal billQuantity = Math.Floor(quantity / s.Product.Unit.Count)
                                             * s.Product.Unit.Count;
                     allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
@@ -496,16 +496,17 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                 if (cancellationToken.IsCancellationRequested) return;
                 if (quantity > 0)
                 {
-                    decimal allotQuantity = s.Quantity - s.OutFrozenQuantity;
+                    decimal maxCellQuantity = Convert.ToDecimal(s.Cell.MaxQuantity * s.Product.Unit.Count);
+                    decimal allotQuantity = Math.Floor((s.Quantity - s.OutFrozenQuantity) / s.Product.Unit.Count) * s.Product.Unit.Count;
                     decimal billQuantity = Math.Floor(quantity / s.Product.Unit.Count)
                                             * s.Product.Unit.Count;
-                    if (billQuantity >= allotQuantity)
+                    if (billQuantity >= allotQuantity && allotQuantity==maxCellQuantity)
                     {
                         var sourceStorage = Locker.LockNoEmptyStorage(s, s.Product);
                         var targetStorage = Locker.LockStorage(cell);
                         if (sourceStorage != null && targetStorage != null
                             && targetStorage.Quantity == 0
-                            && targetStorage.InFrozenQuantity ==0)
+                            && targetStorage.InFrozenQuantity == 0)
                         {
                             MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity);
                             quantity -= allotQuantity;
@@ -527,7 +528,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             bool Result = true;
             errorInfo = string.Empty;
 
-            var sortLowerlimit = sortingLowerlimitQuery.Where(s => s.Quantity > 0)
+            var sortLowerlimit = sortingLowerlimitQuery.Where(s => s.Quantity > 0 && s.IsActive=="1")
                                                        .GroupBy(s => new { s.SortingLine, s.Product, s.UnitCode })
                                                        .Select(l => new { l.Key.SortingLine, l.Key.Product, l.Key.UnitCode, SumQuantity = l.Sum(p => p.Quantity) })
                                                        .GroupBy(o => new { o.SortingLine })

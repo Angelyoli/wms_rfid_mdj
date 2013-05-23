@@ -20,7 +20,7 @@
     function nodeClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            $('#path_node').window('open');
+            $('#path_node').dialog('open').dialog('setTitle', '节点路径');
             $('#nodedatagrid').datagrid('clearSelections'); //清空所有选择项
             pathId = row.ID;
             $('#nodedatagrid').datagrid({ url: '/PathNode/PathDetails/?PathId=' + row.ID });
@@ -34,7 +34,6 @@
     //添加
     function nodeAddClick() {
         $('#nodeAdmin').dialog('open').dialog('setTitle', '节点新增');
-//        $('#PathID').val(pathId);
         $("input[type=text]").attr("value", "");
         $("input[type=text]").removeAttr("disabled");
         isAdd = 1;
@@ -64,10 +63,11 @@
     }
 
     function current(Parameter) {
-        var row = $('#nodeAdmin').datagrid('getSelected');
-        $('#PathID').val(pathId);
-        $('#PositionName').val(row.PositionName);
-        $('#PathNodeOrder').val(row.PathNodeOrder);
+        var row = $('#nodedatagrid').datagrid('getSelected');
+        $('#inputID').val(row.ID);
+        $('#inputPositionName').val(row.PositionName);
+        $('#inputPositionID').val(row.PositionID);
+        $('#inputPathNodeOrder').val(row.PathNodeOrder);
         $("input[type=text]").removeAttr("disabled");
         isAdd = Parameter;
         $('#nodedatagrid').datagrid('clearSelections'); //清空所有选择项
@@ -77,17 +77,17 @@
 
 <div id="path_node"  split="true">   
     <table id="nodedatagrid" class="easyui-datagrid"  rownumbers="true" singleSelect="true" border="0px"
-			idField="ID" treeField="PathName" toolbar="#tb" >
+			idField="PathName" treeField="PositionName" toolbar="#tb1" >
         <thead >
             <tr>
                 <th field="ID" width="50" >ID</th>
-                <th field="PathName" width="110" >路径名称</th>
-                <th field="PositionName" width="110" >位置名称</th>
-                <th field="PathNodeOrder" width="130">路径节点顺序</th>
+                <th field="PathName" width="100" >路径名称</th>
+                <th field="PositionName" width="100" >位置名称</th>
+                <th field="PathNodeOrder" width="110">路径节点顺序</th>
             </tr>
         </thead>
     </table>
-    <div id="tb">
+    <div id="tb1">
 		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="nodeAddClick()" id="nodeAdd">新增</a>
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="nodeEditClick()" id="nodeEdit">编辑</a>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="nodeDeleteClick()" id="nodeDelete">删除</a>

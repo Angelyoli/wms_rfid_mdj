@@ -25,7 +25,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 this.DeleteCustomer();
                 DataTable customerCodeDt = this.GetCustomerCode();
                 string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
-                //CusromerList = UtinString.StringMake(CusromerList);
                 CusromerList = " CUST_CODE NOT IN (" + CusromerList + ")";
                 DataTable customerDt = this.GetCustomerInfo(CusromerList);
                 if (customerDt.Rows.Count > 0)
@@ -51,7 +50,6 @@ namespace THOK.WMS.DownloadWms.Bll
             bool tag = true;
             DataTable customerCodeDt = this.GetCustomerCode();
             string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
-            //CusromerList = UtinString.StringMake(CusromerList);
             CusromerList = " CUST_CODE NOT IN (" + CusromerList + ")";
             DataTable customerDt = this.GetCustomerInfo(CusromerList);
             if (customerDt.Rows.Count > 0)
@@ -128,7 +126,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();
                 inbrddr["deliver_order"] = row["DELIVER_ORDER"];
                 inbrddr["address"] = row["DIST_ADDRESS"].ToString().Trim();
-                inbrddr["phone"] = row["DIST_PHONE"].ToString().Trim() == "" ? "1" : row["DIST_PHONE"].ToString().Trim();
+                inbrddr["phone"] = "";// row["DIST_PHONE"].ToString().Trim() == "" ? "1" : row["DIST_PHONE"].ToString().Trim();
                 inbrddr["license_type"] = row["LICENSE_TYPE"].ToString().Trim();
                 inbrddr["license_code"] = row["LICENSE_CODE"].ToString().Trim();
                 inbrddr["principal_name"] = row["PRINCIPAL_NAME"].ToString().Trim();

@@ -9,6 +9,8 @@ using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Wms.AutomotiveSystems.Models;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.StockMove
 {
@@ -21,7 +23,7 @@ namespace Authority.Controllers.Wms.StockMove
         public IMoveBillDetailService MoveBillDetailService { get; set; }
         [Dependency]
         public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
-	 	[Dependency]
+        [Dependency]
         public IMoveBillMasterHistoryService MoveBillMasterHistoryService { get; set; }
         //
         // GET: /StockMoveBill/
@@ -192,7 +194,7 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult MoveBillTask(string moveBillNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.MoveBIllTask(moveBillNo, out strResult);
+            bool bResult = TaskService.MoveBillTask(moveBillNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -203,13 +205,13 @@ namespace Authority.Controllers.Wms.StockMove
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
             bool isAbnormity = Convert.ToBoolean(Request.QueryString["isAbnormity"]);
-            
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
-            ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo,isAbnormity);
-            ep.HeadTitle1 = "移库单明细";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
-        } 
+            bool isGroup = Convert.ToBoolean(Request.QueryString["isGroup"]);
+            string sortingName = string.Empty;
+            ExportParam ep = new ExportParam();
+            ep.DT1 = MoveBillDetailService.GetMoveBillDetail(page, rows, billNo, isAbnormity, isGroup, out sortingName);
+            ep.HeadTitle1 = sortingName + "移库单明细";
+            return PrintService.Print(ep);
+        }
         #endregion
 
         public ActionResult MoveBillMasterHistory(DateTime datetime)

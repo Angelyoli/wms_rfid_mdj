@@ -6,6 +6,8 @@ using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Wms.Bll.Service;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 namespace Wms.Controllers.Wms.WarehouseInfo
 {
     [TokenAclAuthorize]
@@ -93,11 +95,10 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             string type = Request.QueryString["type"];
             string id = Request.QueryString["id"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = CellService.GetCell(page, rows, type, id);
             ep.HeadTitle1 = "仓库信息";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

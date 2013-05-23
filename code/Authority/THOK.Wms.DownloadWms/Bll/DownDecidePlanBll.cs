@@ -16,7 +16,7 @@ namespace THOK.Wms.DownloadWms.Bll
         #region 选择日期从决策系统下载入库数据
 
         /// <summary>
-        /// 根据日期下载入库数据 zxl   2012-09-14 
+        /// 根据日期下载入库数据 zxl   2013-05-08 更新修改  RFID项目决策系统可使用，广西无RFID项目不可用
         /// </summary>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
@@ -30,25 +30,32 @@ namespace THOK.Wms.DownloadWms.Bll
             {
                 try
                 {
+                    string billnolist = string.Empty;
+                    string inDetailList = string.Empty;
                     DownDecidePlanDao dao = new DownDecidePlanDao();
                     DataTable emply = dao.FindEmployee(EmployeeCode);
                     DataTable inMasterBillNo = this.GetMiddleBillNo();
-                    string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
-                    billnolist = string.Format("BB_INPUT_DATE >='{0}' AND BB_UUID NOT IN({1})", startDate, billnolist);
-                    DataTable masterdt = this.GetMiddleInBillMaster(billnolist);
-
-                    string inDetailList = UtinString.MakeString(masterdt, "BILL_NO");
-                    inDetailList = "BD_BB_UUID IN(" + inDetailList + ")";
+                    if (inMasterBillNo.Rows.Count != 0)
+                    {
+                        billnolist = UtinString.StringMake(inMasterBillNo, "bill_no");
+                        billnolist = string.Format(" AND ID NOT IN({0})", billnolist);
+                    }
+                    DataTable masterdt = this.GetMiddleInBillMaster(string.Format("BILL_DATE >='{0}' {1}", startDate,billnolist));
+                    if (masterdt.Rows.Count != 0)
+                    {
+                        inDetailList = UtinString.StringMake(masterdt, "BILL_NO");
+                        inDetailList = " AND MASTER_ID IN(" + inDetailList + ")";
+                    }
                     DataTable detaildt = this.GetMiddleInBillDetail(inDetailList);
-
                     if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
                     {
                         try
                         {
                             DataSet middleds = this.MiddleTable(masterdt);
+                            this.Insert(middleds);
                             DataSet masterds = this.MiddleInBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
                             DataSet detailds = this.MiddleInBillDetail(detaildt);
-                            this.Insert(masterds, detailds, middleds);
+                            this.Insert(masterds, detailds);
                             tag = true;
                         }
                         catch (Exception e)
@@ -73,10 +80,9 @@ namespace THOK.Wms.DownloadWms.Bll
         /// <returns></returns>
         public DataTable GetMiddleInBillMaster(string inBillNoList)
         {
-            using (PersistentManager dbpm = new PersistentManager("ZYJCConnection"))
+            using (PersistentManager dbpm = new PersistentManager())
             {
                 DownDecidePlanDao dao = new DownDecidePlanDao();
-                dao.SetPersistentManager(dbpm);
                 return dao.GetMiddleInBillMaster(inBillNoList);
             }
         }
@@ -87,10 +93,9 @@ namespace THOK.Wms.DownloadWms.Bll
         /// <returns></returns>
         public DataTable GetMiddleInBillDetail(string inBillNoList)
         {
-            using (PersistentManager dbpm = new PersistentManager("ZYJCConnection"))
+            using (PersistentManager dbpm = new PersistentManager())
             {
                 DownDecidePlanDao dao = new DownDecidePlanDao();
-                dao.SetPersistentManager(dbpm);
                 return dao.GetMiddleInBillDetail(inBillNoList);
             }
         }
@@ -103,13 +108,13 @@ namespace THOK.Wms.DownloadWms.Bll
         public DataSet MiddleInBillMaster(DataTable inBillMasterdr, string employeeId, string wareCode, string billType)
         {
             DataSet ds = this.GenerateEmptyTables();
+            
             foreach (DataRow row in inBillMasterdr.Rows)
             {
                 Guid eid = new Guid(employeeId);
-                string bill = row["BILL_NO"].ToString().Trim();
-                bill = bill.Substring(2, 4) + bill.Substring(11, 4) + bill.Substring(22, 4);
+                DataTable middle = this.GetMiddleByBillNo(row["BILL_NO"].ToString().Trim());
                 DataRow masterrow = ds.Tables["WMS_IN_BILLMASTER"].NewRow();
-                masterrow["bill_no"] = bill;
+                masterrow["bill_no"] = middle.Rows[0]["in_bill_no"].ToString();
                 masterrow["bill_date"] = Convert.ToDateTime(row["BILL_DATE"]);
                 masterrow["bill_type_code"] = billType;//row["ORDER_TYPE"].ToString().Trim();
                 masterrow["warehouse_code"] = wareCode;//row["DIST_CTR_CODE"].ToString().Trim();
@@ -137,14 +142,13 @@ namespace THOK.Wms.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in inBillDetaildr.Rows)
             {
-                string bill = row["BILL_NO"].ToString().Trim();
-                bill = bill.Substring(2, 4) + bill.Substring(11, 4) + bill.Substring(22, 4);
+                DataTable middle = this.GetMiddleByBillNo(row["BILL_NO"].ToString().Trim());
                 DataTable prodt = FindUnitListCode(row["PRODUCT_CODE"].ToString());//                
                 DataRow detailrow = ds.Tables["WMS_IN_BILLDETAIL"].NewRow();
-                detailrow["bill_no"] = bill;
+                detailrow["bill_no"] = middle.Rows[0]["in_bill_no"].ToString();
                 detailrow["product_code"] = row["PRODUCT_CODE"].ToString();
                 detailrow["price"] = prodt.Rows[0]["TRADE_PRICE"];
-                detailrow["bill_quantity"] = Convert.ToDecimal(Convert.ToDecimal(row["BARQUANTITY"]) * Convert.ToDecimal(prodt.Rows[0]["quantity02"]) * Convert.ToDecimal(prodt.Rows[0]["quantity03"]));
+                detailrow["bill_quantity"] = Convert.ToDecimal(Convert.ToDecimal(row["QUANTITY"]) * Convert.ToDecimal(prodt.Rows[0]["quantity01"]) * Convert.ToDecimal(prodt.Rows[0]["quantity02"]) * Convert.ToDecimal(prodt.Rows[0]["quantity03"]));
                 detailrow["allot_quantity"] = 0;
                 detailrow["unit_code"] = prodt.Rows[0]["UNIT_CODE"];
                 detailrow["description"] = "";
@@ -163,10 +167,16 @@ namespace THOK.Wms.DownloadWms.Bll
         public DataSet MiddleTable(DataTable inBillMaster)
         {
             DataSet ds = this.GenerateEmptyTables();
+            int i = 0;
             foreach (DataRow row in inBillMaster.Rows)
             {
-                string bill = row["BILL_NO"].ToString().Trim();
-                bill = bill.Substring(2, 4) + bill.Substring(11, 4) + bill.Substring(22, 4);
+                i++;
+                string newcode = i.ToString();
+                for (int j = 0; j < 5 - i.ToString().Length; j++)
+                {
+                    newcode = "0" + newcode;
+                }
+                string bill = DateTime.Now.ToString("yyMMdd") + newcode + "IN";                
                 DataRow detailrow = ds.Tables["WMS_MIDDLE_IN_BILLDETAIL"].NewRow();
                 detailrow["bill_no"] = row["bill_no"];
                 detailrow["bill_date"] = row["bill_date"];
@@ -211,7 +221,7 @@ namespace THOK.Wms.DownloadWms.Bll
         /// </summary>
         /// <param name="masterds"></param>
         /// <param name="detailds"></param>
-        public void Insert(DataSet masterds, DataSet detailds, DataSet middleds)
+        public void Insert(DataSet masterds, DataSet detailds)
         {
             try
             {
@@ -226,6 +236,27 @@ namespace THOK.Wms.DownloadWms.Bll
                     {
                         dao.InsertInBillDetail(detailds);
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// 把查询的数据添加到仓储数据库
+        /// </summary>
+        /// <param name="masterds"></param>
+        /// <param name="detailds"></param>
+        public void Insert(DataSet middleds)
+        {
+            try
+            {
+                using (PersistentManager pm = new PersistentManager())
+                {
+                    DownDecidePlanDao dao = new DownDecidePlanDao();                   
                     if (middleds.Tables["WMS_MIDDLE_IN_BILLDETAIL"].Rows.Count > 0)
                     {
                         dao.InsertMiddle(middleds);
@@ -236,8 +267,9 @@ namespace THOK.Wms.DownloadWms.Bll
             {
                 throw new Exception(e.Message);
             }
-            
         }
+
+
 
         /// <summary>
         /// 把查询的数据添加到仓储数据库
@@ -279,6 +311,20 @@ namespace THOK.Wms.DownloadWms.Bll
             }
         }
 
+        /// <summary>
+        /// 根据billno查询中间表数据
+        /// </summary>
+        /// <param name="billNo"></param>
+        /// <returns></returns>
+        public DataTable GetMiddleByBillNo(string billNo)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownDecidePlanDao dao = new DownDecidePlanDao();
+                return dao.GetMiddleBillNo(billNo);
+            }
+        }
+      
         /// <summary>
         /// 构建入库虚拟表
         /// </summary>

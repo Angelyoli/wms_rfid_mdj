@@ -9,6 +9,8 @@ using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Wms.SignalR.Dispatch.Interfaces;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -94,11 +96,10 @@ namespace Authority.Controllers.Wms.SortingInfo
             string productCode = Request.QueryString["productCode"];
             string isActive = Request.QueryString["IsActive"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 =  SortingLowerlimitService.GetSortingLowerlimit(page, rows, sortingLineCode, sortingLineName, productName,productCode, isActive);
             ep.HeadTitle1 = "备货区下限设置";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

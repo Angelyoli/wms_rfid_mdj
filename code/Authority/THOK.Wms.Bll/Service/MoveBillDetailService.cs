@@ -18,6 +18,8 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
         [Dependency]
+        public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
+        [Dependency]
         public IEmployeeRepository EmployeeRepository { get; set; }
         [Dependency]
         public ICellRepository CellRepository { get; set; }
@@ -398,65 +400,99 @@ namespace THOK.Wms.Bll.Service
 
         #region IMoveBillDetail 成员
         /// <summary>获得移库细单信息</summary>
-        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo,bool isAbnormity)
+        public System.Data.DataTable GetMoveBillDetail(int page, int rows, string BillNo, bool isAbnormity, bool isGroup,out string sortingName)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
-            if (BillNo != "" && BillNo != null)
+            BillNo = BillNo.Substring(0, BillNo.Length - 1);
+            string[] BillNos = BillNo.Split(',');
+            sortingName = "合单";
+            if (BillNos.Count()>0)
             {
                 IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
-                var moves = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo));
-                if(isAbnormity==false)
-                    moves = moves.Where(i => i.Product.IsAbnormity != "1");
-                var moveBillDetail = moves.OrderBy(i => new {i.OutCell.CellName,i.ProductCode })
-                                                        .Select(i => new
+                if(BillNos.Count()==1){
+                    string billnoStr = BillNos[0].ToString();
+                    var sortWork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(i => i.MoveBillNo == billnoStr);
+                    sortingName = sortWork.SortingLine.SortingLineName;
+                }
+                var moves = MoveBillDetailQuery.Where(i => BillNos.Any(b => b == i.BillNo));
+                if (isAbnormity == false)
+                    moves = moves.Where(i => i.Product.IsAbnormity != "1");                
+                if (isGroup)
                 {
-                    OutCellName = i.OutCell.CellName,
-                    OutStorageCode = i.OutStorageCode,
-                    InCellName = i.InCell.CellName,
-                    InStorageCode = i.InStorageCode,
-                    ProductCode = i.ProductCode,
-                    ProductName = i.Product.ProductName,
-                    UnitCode = i.UnitCode,
-                    UnitName = i.Unit.UnitName,
-                    RealQuantity = i.RealQuantity / i.Unit.Count,
-                    OperatePersonName = i.OperatePerson == null ? string.Empty : i.OperatePerson.EmployeeName,
-                    Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空",
-                });
-                dt.Columns.Add("移出储位名称", typeof(string));
-                //dt.Columns.Add("移出存储编码", typeof(string));
-                dt.Columns.Add("移入储位名称", typeof(string));
-                //dt.Columns.Add("移入存储编码", typeof(string));
-                dt.Columns.Add("产品代码", typeof(string));
-                dt.Columns.Add("产品名称", typeof(string));
-                dt.Columns.Add("单位编码", typeof(string));
-                dt.Columns.Add("单位名称", typeof(string));
-                dt.Columns.Add("数量", typeof(decimal));
-                //dt.Columns.Add("作业人员", typeof(string));
-                //dt.Columns.Add("作业状态", typeof(string));
+                    var moveBillDetail = moves.GroupBy(m => new { m.ProductCode, m.Product.ProductName, m.Product })
+                        .Select(r => new { r.Key.ProductCode, r.Key.ProductName, r.Key.Product, RealQuantity = r.Sum(p => p.RealQuantity) }).AsEnumerable()
+                        .Select(r => new { r.Product, isAbnormity = r.Product.IsAbnormity=="1" ? "*" : " ", r.ProductCode, r.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
+                        .OrderBy(r => r.Product.BelongRegion);
 
-                //dt.Columns.Add("Description", typeof(string));
-                foreach (var m in moveBillDetail)
+                    dt.Columns.Add("产品代码", typeof(string));
+                    dt.Columns.Add("产品名称", typeof(string));
+                    dt.Columns.Add("数量(件)", typeof(string));
+                    dt.Columns.Add("数量(条)", typeof(string));
+                    dt.Columns.Add("异形烟(*)", typeof(string));
+                    foreach (var m in moveBillDetail)
+                    {
+                        dt.Rows.Add
+                            (
+                                  m.ProductCode
+                                , m.ProductName
+                                , m.RealQuantity
+                                , m.strRealQuantity
+                                ,m.isAbnormity
+                            );
+                    }
+                    if (moveBillDetail.Count() > 0)
+                    {
+                        dt.Rows.Add(null, "总数：", moveBillDetail.Sum(m => m.RealQuantity));
+                        dt.Rows.Add("出库：",null,"验收：", null);
+                    }
+                }
+                else
                 {
-                    dt.Rows.Add
+                    var moveBillDetail = moves.AsEnumerable().Select(i => new
+                                        {
+                                            OutCellName = i.OutCell.CellName,
+                                            OutStorageCode = i.OutStorageCode,
+                                            InCellName = i.InCell.CellName,
+                                            InStorageCode = i.InStorageCode,
+                                            ProductCode = i.ProductCode,
+                                            ProductName = i.Product.ProductName,
+                                            UnitCode = i.UnitCode,
+                                            UnitName = i.Unit.UnitName,
+                                            RealQuantity = i.RealQuantity / i.Unit.Count,
+                                            strRealQuantity = i.RealQuantity /i.Product.UnitList.Unit02.Count,
+                                            OperatePersonName = i.OperatePerson == null ? string.Empty : i.OperatePerson.EmployeeName,
+                                            Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "空",
+                                            isAbnormity = i.Product.IsAbnormity == "1" ? "*" : "",
+                                        }).OrderBy(i => i.OutCellName).ThenBy(i => i.ProductCode);
+
+                    dt.Columns.Add("移出储位名称", typeof(string));
+                    dt.Columns.Add("移入储位名称", typeof(string));
+                    dt.Columns.Add("产品代码", typeof(string));
+                    dt.Columns.Add("产品名称", typeof(string));
+                    //dt.Columns.Add("单位编码", typeof(string));
+                    //dt.Columns.Add("单位名称", typeof(string));
+                    dt.Columns.Add("数量(件)", typeof(string));
+                    dt.Columns.Add("数量(条)", typeof(string));
+                    dt.Columns.Add("异形烟(*)", typeof(string));
+                    foreach (var m in moveBillDetail)
+                    {
+                        dt.Rows.Add
                         (
                               m.OutCellName
-                        //, m.OutStorageCode
                             , m.InCellName
-                        //, m.InStorageCode
                             , m.ProductCode
                             , m.ProductName
-                            , m.UnitCode
-                            , m.UnitName
+                            //, m.UnitCode
+                            //, m.UnitName
                             , m.RealQuantity
-                            //, m.OperatePersonName
-                            //, m.Status
+                            , m.strRealQuantity
+                            , m.isAbnormity
                         );
-                }
-                if (moveBillDetail.Count() > 0)
-                {
-                    dt.Rows.Add(
-                        null, null, null, null, null, "总数：",
-                        moveBillDetail.Sum(m => m.RealQuantity));
+                    }
+                    if (moveBillDetail.Count() > 0)
+                    {
+                        dt.Rows.Add(null, null, null, null, "总数：", moveBillDetail.Sum(m => m.RealQuantity));
+                    }
                 }
             }
             return dt;

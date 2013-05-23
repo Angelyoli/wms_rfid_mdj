@@ -31,13 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0-rc\lib\net40\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.0.0-alpha3\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.0.0-alpha3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -47,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityRepository\AlarmInfoRepository.cs" />
     <Compile Include="EntityRepository\AreaRepository.cs" />
     <Compile Include="EntityRepository\BillDetailRepository.cs" />
     <Compile Include="EntityRepository\BillMasterRepository.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="EntityRepository\UnitListRepository.cs" />
     <Compile Include="EntityRepository\UnitRepository.cs" />
     <Compile Include="EntityRepository\WarehouseRepository.cs" />
+    <Compile Include="Interfaces\IAlarmInfoRepository.cs" />
     <Compile Include="Interfaces\IAreaRepository.cs" />
     <Compile Include="Interfaces\IBillDetailRepository.cs" />
     <Compile Include="Interfaces\IBillMasterRepository.cs" />
@@ -220,6 +225,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

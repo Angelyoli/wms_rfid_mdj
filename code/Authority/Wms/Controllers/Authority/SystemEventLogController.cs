@@ -7,6 +7,8 @@ using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using System;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Authority
 {
@@ -73,14 +75,10 @@ namespace Authority.Controllers.Authority
             string operateUser = Request.QueryString["operateUser"];
             string targetSystem = Request.QueryString["targetSystem"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = SystemEventLogService.GetSystemEventLog(page, rows, eventLogTime, eventName, fromPC, operateUser, targetSystem);
             ep.HeadTitle1 = "业务日志信息";
-            ep.BigHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            ep.ColHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            ep.ContentColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }  
     }
 }

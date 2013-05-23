@@ -7,6 +7,8 @@ using Microsoft.Practices.Unity;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
 using THOK.Common.WebUtil;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Authority
 {
@@ -74,14 +76,10 @@ namespace Authority.Controllers.Authority
             string moduleName = Request.QueryString["moduleName"];
             string functionName = Request.QueryString["functionName"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = ExceptionalLogService.GetExceptionalLog(page, rows, catchTime, moduleName, functionName);
             ep.HeadTitle1 = "错误日志信息";
-            ep.BigHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            ep.ColHeadColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            ep.ContentColor = NPOI.HSSF.Util.HSSFColor.BLACK.index;
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         } 
     }
 }

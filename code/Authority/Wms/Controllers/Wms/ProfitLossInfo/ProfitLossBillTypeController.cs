@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.ProfitLossInfo
 {
@@ -67,11 +69,10 @@ namespace Authority.Controllers.Wms.ProfitLossInfo
             string billClass = "0005";
             string isActive = Request.QueryString["isActive"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = BillTypeService.GetBillType(page, rows, billTypeCode, billTypeName, billClass, isActive);
             ep.HeadTitle1 = "损益类型设置";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

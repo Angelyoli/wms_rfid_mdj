@@ -20,8 +20,7 @@ namespace THOK.WMS.DownloadWms.Bll
         {
             bool tag = true;
             DataTable deptCodeDt = this.GetDeptCode();
-            string deptCodeList = UtinString.StringMake(deptCodeDt, "DEPTCODE");
-            deptCodeList = UtinString.StringMake(deptCodeList);
+            string deptCodeList = UtinString.MakeString(deptCodeDt, "DEPTCODE");
             deptCodeList = "DEPT_CODE NOT IN (" + deptCodeList + ")";
             DataTable deptDt = this.GetDeptInfo(deptCodeList);
             if (deptDt.Rows.Count > 0)

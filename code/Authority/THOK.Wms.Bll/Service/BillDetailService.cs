@@ -29,7 +29,7 @@ namespace THOK.Wms.Bll.Service
             {
                 try
                 {
-                    b.ID = Guid.NewGuid();
+                    b.ID = billDetail.ID;
                     b.MasterID = billDetail.MasterID;
                     b.PieceCigarCode = billDetail.PieceCigarCode;
                     b.BoxCigarCode = billDetail.BoxCigarCode;

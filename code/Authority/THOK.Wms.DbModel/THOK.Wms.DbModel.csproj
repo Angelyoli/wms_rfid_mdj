@@ -31,13 +31,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0-rc\lib\net40\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.0.0-alpha3\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.0.0-alpha3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlarmInfo.cs" />
     <Compile Include="Area.cs" />
     <Compile Include="BillDetail.cs" />
     <Compile Include="BillType.cs" />
@@ -73,6 +77,7 @@
     <Compile Include="InBillMasterHistory.cs" />
     <Compile Include="BillMaster.cs" />
     <Compile Include="Job.cs" />
+    <Compile Include="Mapping\AlarmInfoMap.cs" />
     <Compile Include="Mapping\AreaMap.cs" />
     <Compile Include="Mapping\BillDetailMap.cs" />
     <Compile Include="Mapping\BillTypeMap.cs" />
@@ -184,6 +189,7 @@
     <Compile Include="BusinessSystemsDailyBalance.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

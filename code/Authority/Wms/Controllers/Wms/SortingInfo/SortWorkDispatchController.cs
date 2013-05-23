@@ -8,6 +8,8 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Wms.SignalR.Dispatch.Interfaces;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Wms.SortingInfo
 {
@@ -100,7 +102,7 @@ namespace Authority.Controllers.Wms.SortingInfo
         public ActionResult Task(string moveBillNo)
         {
             string errorInfo = string.Empty;
-            bool bResult = TaskService.MoveBIllTask(moveBillNo, out errorInfo);
+            bool bResult = TaskService.MoveBillTask(moveBillNo, out errorInfo);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
@@ -113,11 +115,10 @@ namespace Authority.Controllers.Wms.SortingInfo
             string sortingLineCode = Request.QueryString["sortingLineCode"];
             string dispatchStatus = Request.QueryString["dispatchStatus"];
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = SortWorkDispatchService.GetSortWorkDispatch(page, rows, orderDate, sortingLineCode, dispatchStatus);
             ep.HeadTitle1 = "分拣作业调度";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

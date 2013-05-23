@@ -20,6 +20,7 @@ namespace THOK.WES.View
         private Dictionary<string, string> rfid = null;
         private Dictionary<string, string> layers = null;
         private Dictionary<string, string> deviceType = null;
+        private Dictionary<string, string> musicName = null;
 
         public ParameterForm()
         {
@@ -41,10 +42,15 @@ namespace THOK.WES.View
             parameter.UsedRFID = rfid["USEDRFID"];
 
             layers = configUtil.GetConfig("Layers");
-            parameter.LayersNumber = layers["Number"];          
+            parameter.LayersNumber = layers["Number"];
+
+            musicName = configUtil.GetConfig("MusicName");
+            parameter.MusicName = musicName["Music"];
 
             deviceType = configUtil.GetConfig("DeviceType");
             parameter.SelectItem = Convert.ToInt32( deviceType["Device"]);
+
+            
             propertyGrid.SelectedObject = parameter;
             
         }
@@ -66,6 +72,9 @@ namespace THOK.WES.View
 
                 layers["Number"] = parameter.LayersNumber;
                 configUtil.SaveConfig("Layers", layers);
+
+                musicName["Music"] = parameter.MusicName;
+                configUtil.SaveConfig("MusicName", musicName);
 
                 deviceType["Device"] = parameter.SelectItem.ToString();
                 configUtil.SaveConfig("DeviceType", deviceType);        

@@ -32,10 +32,8 @@ namespace THOK.Wms.Bll.Service
         {
             strResult = string.Empty;
             bool result = false;
-            //var billMasters = BillMasterRepository.GetQueryable().FirstOrDefault(c => c.UUID == billMaster.UUID);
             var b = new BillMaster();
-            //if (billMasters == null)
-            //{
+            
             if (b != null)
             {
                 try
@@ -45,7 +43,10 @@ namespace THOK.Wms.Bll.Service
                     b.BillType = billMaster.BillType;
                     b.BillDate = billMaster.BillDate;
                     b.MakerName = billMaster.MakerName;
-                    b.OperateDate = billMaster.OperateDate;
+                    if (billMaster.OperateDate > Convert.ToDateTime("0002-1-1"))
+                    {
+                        b.OperateDate = billMaster.OperateDate;
+                    }
                     b.CigaretteType = billMaster.CigaretteType;
                     b.BillCompanyCode = billMaster.BillCompanyCode;
                     b.SupplierCode = billMaster.SupplierCode;
@@ -61,12 +62,6 @@ namespace THOK.Wms.Bll.Service
                     strResult = "原因：" + ex.ToString();
                     result = false;
                 }
-                //}
-                //else
-                //{
-                //    strResult = "原因：找不到当前登陆用户！请重新登陆！"; 
-                //    result = false;
-                //}
             }
             else
             {
@@ -88,7 +83,10 @@ namespace THOK.Wms.Bll.Service
                     b.BillType = billMaster.BillType;
                     b.BillDate = billMaster.BillDate;
                     b.MakerName = billMaster.MakerName;
-                    b.OperateDate = billMaster.OperateDate;
+                    if (b.OperateDate > Convert.ToDateTime("0002-1-1"))
+                    {
+                        b.OperateDate = billMaster.OperateDate;
+                    }
                     b.CigaretteType = billMaster.CigaretteType;
                     b.BillCompanyCode = billMaster.BillCompanyCode;
                     b.SupplierCode = billMaster.SupplierCode;
@@ -114,56 +112,40 @@ namespace THOK.Wms.Bll.Service
             var contract = ContractRepository.GetQueryable().Where(i => i.ContractCode == contractCode);
             var billMaster = BillMasterRepository.GetQueryable().Where(i => i.UUID == uuid);
 
-            if (navicert != null && contract != null && billMaster != null)
+            try
             {
-                try
+                if (navicert != null)
                 {
-                    using (var scope = new TransactionScope())
+                    foreach (var item1 in navicert.ToList())
                     {
-
-                        foreach (var item1 in navicert.ToList())
-                        {
-                            NavicertRepository.Delete(item1);
-                            result = true;
-                        }
-                        if (result == true)
-                        {
-                            foreach (var item2 in contract.ToList())
-                            {
-                                Del(ContractDetailRepository, item2.ContractDetails);
-                                ContractRepository.Delete(item2);
-                                result = true;
-                            }
-                            if (result == true)
-                            {
-                                foreach (var item3 in billMaster.ToList())
-                                {
-                                    Del(BillDetailRepository, item3.BillDetails);
-                                    BillMasterRepository.Delete(item3);
-                                    result = true;
-                                    if (result == true)
-                                    {
-                                        scope.Complete();
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                        }
+                        NavicertRepository.Delete(item1);
+                        result = true;
                     }
-                    BillMasterRepository.SaveChanges();
                 }
-                catch (Exception ex)
+                if (contract != null)
                 {
-                    strResult = "原因：" + ex.Message;
-                    result = false;
+                    foreach (var item2 in contract.ToList())
+                    {
+                        Del(ContractDetailRepository, item2.ContractDetails);
+                        ContractRepository.Delete(item2);
+                        result = true;
+                    }
                 }
+                if (billMaster != null)
+                {
+                    foreach (var item3 in billMaster.ToList())
+                    {
+                        Del(BillDetailRepository, item3.BillDetails);
+                        BillMasterRepository.Delete(item3);
+                        result = true;
+                    }
+                }
+                BillMasterRepository.SaveChanges();
             }
-            else
+            catch (Exception ex)
             {
-                strResult = "原因：数据不存在！";
+                strResult = "原因：" + ex.Message;
+                result = false;
             }
             return result;
         }

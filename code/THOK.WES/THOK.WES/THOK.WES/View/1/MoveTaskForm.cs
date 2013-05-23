@@ -17,6 +17,7 @@ namespace THOK.WES.View
             btnOpType.Visible = true;
             btnBcCompose.Visible = true;
             dgvMain.Columns["TARGETSTORAGE"].Visible = true;
+            dgvMain.Columns["Total"].Visible = true;
         }
     }
 }

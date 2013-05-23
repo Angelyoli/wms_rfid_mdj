@@ -9,6 +9,8 @@ using Microsoft.Practices.Unity;
 using System.Web.Routing;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Service;
+using THOK.Common.NPOI.Models;
 
 namespace Wms.Controllers.Wms.ProductQuality
 {
@@ -51,15 +53,14 @@ namespace Wms.Controllers.Wms.ProductQuality
                 assemblyTime = decimal.Parse(Request.QueryString["assemblyTime"]);
             }
             
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = ProductWarningService.GetProductTimeOut(page, rows, productCode, assemblyTime);
             ep.DT2 = null;
             ep.HeadTitle1 = "产品预警信息设置";
             ep.HeadTitle2 = "";
             ep.ContentModule = null;
             ep.ContentModuleColor = 0;
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

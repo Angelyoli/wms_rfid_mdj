@@ -4,7 +4,8 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface ITaskService : IService<Task>
     {
-        bool InBIllTask(string billNo, out string errInfo);
-        bool MoveBIllTask(string billNo, out string errInfo);
+        bool InBillTask(string billNo, out string errInfo);
+        bool OutBillTask(string billNo, out string errInfo);
+        bool MoveBillTask(string billNo, out string errInfo);
     }
 }

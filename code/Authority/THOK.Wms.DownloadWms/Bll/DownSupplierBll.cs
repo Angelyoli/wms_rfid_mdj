@@ -19,8 +19,7 @@ namespace THOK.WMS.DownloadWms.Bll
         {
             bool tag = true;
             DataTable suppliercodedt = this.GetSupplierCode();
-            string codeList = UtinString.StringMake(suppliercodedt, "SUPPLIERCODE");
-            codeList = UtinString.StringMake(codeList);
+            string codeList = UtinString.MakeString(suppliercodedt, "SUPPLIERCODE");
             codeList = "FACTORY_CODE NOT IN (" + codeList + ")";
             DataTable spplierTable = this.GetSpplierInfo(codeList);
             if (spplierTable.Rows.Count > 0)

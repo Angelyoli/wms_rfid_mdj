@@ -9,6 +9,8 @@ using Microsoft.Practices.Unity;
 using System.Web.Routing;
 using THOK.Common.WebUtil;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Wms.Controllers.Wms.ProductQuality
 {
@@ -58,11 +60,10 @@ namespace Wms.Controllers.Wms.ProductQuality
             decimal minLimited = 100000;
             decimal maxLimited = 100000;
 
-            THOK.Common.NPOI.Models.ExportParam ep = new THOK.Common.NPOI.Models.ExportParam();
+            ExportParam ep = new ExportParam();
             ep.DT1 = ProductWarningService.GetQuantityLimitsDetail(page, rows, productCode, minLimited, maxLimited,unitCode);
             ep.HeadTitle1 = "产品超储短缺查询";
-            System.IO.MemoryStream ms = THOK.Common.NPOI.Service.ExportExcel.ExportDT(ep);
-            return new FileStreamResult(ms, "application/ms-excel");
+            return PrintService.Print(ep);
         }
         #endregion
     }

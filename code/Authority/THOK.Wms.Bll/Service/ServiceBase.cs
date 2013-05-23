@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using THOK.Common;
 using THOK.Wms.Bll.Interfaces;
-using THOK.Wms.Dal.Interfaces;
-using System.Data.Objects.DataClasses;
 using THOK.Common.Ef.Interfaces;
 
 namespace THOK.Wms.Bll.Service

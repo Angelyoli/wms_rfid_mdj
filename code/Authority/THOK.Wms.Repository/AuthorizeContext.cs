@@ -125,6 +125,7 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new SizeMap());
             modelBuilder.Configurations.Add(new ProductSizeMap());
             modelBuilder.Configurations.Add(new TaskMap());
+            modelBuilder.Configurations.Add(new AlarmInfoMap());
 
             #endregion
 
