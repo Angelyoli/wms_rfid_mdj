@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using System.Data.Objects.DataClasses;
-using System.Data.Objects;
 using System.Reflection;
+using System.Data.Entity.Core.Objects;
 
 namespace THOK.Common.Entity
 {

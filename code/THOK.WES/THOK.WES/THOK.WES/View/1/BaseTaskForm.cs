@@ -194,7 +194,7 @@ namespace THOK.WES.View
                 {
                     dgvMain.AutoGenerateColumns = false;
                     dgvMain.DataSource = billDetails;
-                    Play();
+                    //Play();
                     foreach (BillDetail billDetail in billDetails)
                     {
                         if (billDetail.Status == "1")
@@ -429,6 +429,14 @@ namespace THOK.WES.View
         {
             if (data == "TaskStart")
             {
+                try
+                {
+                    sp.Play();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("播放音乐出错，原因：" + e.Message);
+                }
                 Application.OpenForms[0].Invoke(new RefreshTask(RefreshData));
             }
         }

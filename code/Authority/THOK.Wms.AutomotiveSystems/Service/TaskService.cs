@@ -982,7 +982,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 {
                     throw new Exception("当前订单不存在请确认！");
                 }
-
+                //计算已出库量
                 var tmp1 = sortOrderQuery.Join(sortOrderDetailQuery,
                                 m => m.OrderID,
                                 d => d.OrderID,
@@ -1003,6 +1003,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             ).GroupBy(r => new { r.ProductCode, r.ProductName })
                             .Select(r => new { r.Key.ProductCode,r.Key.ProductName,Quantity = - r.Sum(q=>q.Quantity)});
                 
+                //计算库存数量
                 var tmp2 = sortingLineQuery
                              .Join(storageQuery,
                                 l => l.CellCode,
@@ -1012,16 +1013,18 @@ namespace THOK.Wms.AutomotiveSystems.Service
                              .GroupBy(r => new { r.ProductCode, r.ProductName })
                              .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) });
 
+                //计算计划移库量
                 var tmp3 = sortingLineQuery
                              .Join(moveBillDetailQuery,
                                 l => l.CellCode,
                                 m => m.InCellCode,
-                                (l, m) => new { l.SortingLineCode, m.InCellCode, m.ProductCode, m.Product.ProductName, m.RealQuantity, m.CanRealOperate }
+                                (l, m) => new { l.SortingLineCode, m.InCellCode, m.ProductCode, m.Product.ProductName, m.RealQuantity, m.Status,m.CanRealOperate,m }
                              ).Where(r => r.SortingLineCode == sortingLineCode
-                                && r.CanRealOperate == "1")
+                                && r.CanRealOperate == "1" && r.Status != "2" && r.m.MoveBillMaster.Status != "1" && r.m.MoveBillMaster.Status != "4") //todo : 少状态判断
                              .GroupBy(r => new { r.ProductCode,r.ProductName,r.RealQuantity})
                              .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.RealQuantity) });
 
+                //合计，求库存量小于30标准件的；
                 var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
                                .GroupBy(r => new { r.ProductCode, r.ProductName })
                                .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
@@ -1033,7 +1036,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 m => m.InCellCode,
                                 (l, m) => new { l.SortingLineCode, m}
                              ).Where(r => r.SortingLineCode == sortingLineCode
-                                && r.m.CanRealOperate != "1")
+                                && r.m.CanRealOperate != "1" && r.m.Status == "0" && r.m.MoveBillMaster.Status != "1" && r.m.MoveBillMaster.Status != "4") //todo : 少状态判断
                              .Select(r => r.m);
                 var tmp6 = tmp5.ToArray().OrderBy(m => m.RealQuantity);
 

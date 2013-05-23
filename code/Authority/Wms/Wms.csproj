@@ -36,6 +36,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Devart.Data.Oracle.Entity, Version=7.7.224.6, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Program Files\Devart\dotConnect\Oracle\Entity\EF6\Devart.Data.Oracle.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0-alpha3\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0-alpha3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -88,7 +98,6 @@
     <Reference Include="Svg">
       <HintPath>..\THOK.Common.Highcharts\ThirdParty\Svg.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages" />
@@ -135,6 +144,7 @@
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\Wms\BasisInfo\AlarmInfoController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\CellPositionController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
     <Compile Include="Controllers\Wms\BasisInfo\PathNodeController.cs">
@@ -1953,6 +1963,14 @@
     <Content Include="Views\ExceptionalLog\_EmptyPartial.cshtml" />
     <Content Include="Views\ExceptionalLog\_PrintPartial.cshtml" />
     <Content Include="Views\ExceptionalLog\_SearchPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\Index.cshtml" />
+    <Content Include="Views\AlarmInfo\AddPage.cshtml" />
+    <Content Include="Views\AlarmInfo\SearchPage.cshtml" />
+    <Content Include="Views\AlarmInfo\_AddPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_SearchPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_EditPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_PrintPartial.cshtml" />
+    <Content Include="Views\AlarmInfo\_DeletePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2369,6 +2387,7 @@
     <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
     <Content Include="Views\ProductSize\_SizePartial.cshtml" />
     <Content Include="Views\Path\_PositionPartial.cshtml" />
+    <Content Include="Views\StockOutBill\_TaskPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
