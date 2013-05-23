@@ -12,6 +12,8 @@ namespace THOK.Authority.Bll.Service
     public class HelpContentService : ServiceBase<HelpContent>, IHelpContentService
     {
         [Dependency]
+        public IHelpContentRepository HelpContenRepository { get; set; }
+        [Dependency]
         public ISystemRepository SystemRepository { get; set; }
         [Dependency]
         public IModuleRepository ModuleRepository { get; set; }
@@ -337,6 +339,96 @@ namespace THOK.Authority.Bll.Service
                 help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.Module.System_SystemID == newId);
             }
             return new { help.ContentText};
+        }
+
+
+        public System.Data.DataTable GetHelpConten(int page, int rows, string contentCode, string contentName, string nodeType, string fatherNodeID, string moduleID, string isActive)
+        {
+            IQueryable<HelpContent> contenQuery = HelpContenRepository.GetQueryable();
+            var conten = contenQuery.Where(c => c.ContentCode.Contains(contentCode)
+                && c.ContentName.Contains(contentName)
+                && c.NodeType.Contains(nodeType));
+                if(!fatherNodeID.Equals(string.Empty))
+                {
+                    Guid fID=new Guid (fatherNodeID);
+                    conten = conten.Where(c => c.FatherNode.ID == fID);
+                }
+                if(!moduleID.Equals(string.Empty))
+                {
+                    Guid mID=new Guid(moduleID);
+                    conten = conten.Where(c => c.Module.ModuleID == mID);
+                }
+                var temp = conten.AsEnumerable().OrderByDescending(c => c.UpdateTime).AsEnumerable()
+                .Select(c => new
+                {
+                    c.ContentCode,
+                    c.ContentName,
+                    c.ContentPath,
+                    NodeType = c.NodeType == "1" ? "第一节点" : c.NodeType == "2" ? "中间节点" : "末级节点",
+                    FatherNodeID = c.FatherNode.ContentName,
+                    ModuleID=c.Module.ModuleID,
+                    c.Module.ModuleName,
+                    c.NodeOrder,
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            if (!isActive.Equals(""))
+            {
+                conten = contenQuery.Where(c => c.ContentCode.Contains(contentCode)
+                && c.ContentName.Contains(contentName)
+                && c.NodeType.Contains(nodeType));
+                if (!fatherNodeID.Equals(string.Empty))
+                {
+                    Guid fID = new Guid(fatherNodeID);
+                    conten = conten.Where(d => d.FatherNode.ID == fID);
+                }
+                if (!moduleID.Equals(string.Empty))
+                {
+                    Guid mID = new Guid(moduleID);
+                    conten = conten.Where(d => d.Module.ModuleID == mID);
+                }
+                temp = conten.AsEnumerable().OrderByDescending(c => c.UpdateTime).AsEnumerable()
+                .Select(c => new
+                {
+                    c.ContentCode,
+                    c.ContentName,
+                    c.ContentPath,
+                    NodeType = c.NodeType == "1" ? "第一节点" : c.NodeType == "2" ? "中间节点" : "末级节点",
+                    FatherNodeID = c.FatherNode.ContentName,
+                    ModuleID = c.Module.ModuleID,
+                    c.Module.ModuleName,
+                    c.NodeOrder,
+                    IsActive = c.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = c.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                });
+            }
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("目录编码", typeof(string));
+            dt.Columns.Add("目录名称", typeof(string));
+            dt.Columns.Add("目录路径", typeof(string));
+            dt.Columns.Add("节点类型", typeof(string));
+            dt.Columns.Add("父节点", typeof(string));
+            dt.Columns.Add("模块ID", typeof(string));
+            dt.Columns.Add("节点顺序", typeof(string));
+            dt.Columns.Add("状态", typeof(string));
+            dt.Columns.Add("更新时间", typeof(string));
+            foreach (var item in temp)
+            {
+                dt.Rows.Add
+                    (
+                        item.ContentCode,
+                        item.ContentName,
+                        item.ContentPath,
+                        item.NodeType,
+                        item.FatherNodeID,
+                        item.ModuleName,
+                        item.NodeOrder,
+                        item.IsActive,
+                        item.UpdateTime
+                    );
+
+            }
+            return dt;
         }
     }
 }

@@ -7,6 +7,10 @@ using THOK.Common.WebUtil;
 using THOK.Wms.DbModel;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using System;
+using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Authority
 {
@@ -149,6 +153,21 @@ namespace Authority.Controllers.Authority
             bool bResult = UserService.CheckAdress(userName, localip);
             return  Json(bResult, "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /User/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string userName = Request.QueryString["userName"] ?? "";
+            string chineseName = Request.QueryString["chineseName"] ?? "";
+            string meMo = Request.QueryString["meMo"] ?? "";
+
+            ExportParam ep = new ExportParam();
+            ep.DT1 = UserService.GetUserConten(page, rows, userName, chineseName, meMo);
+            ep.HeadTitle1 = "用户信息";
+            return PrintService.Print(ep);
+        }
+        #endregion
 
     }
 }

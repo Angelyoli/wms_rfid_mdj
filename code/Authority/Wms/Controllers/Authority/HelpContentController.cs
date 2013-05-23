@@ -9,6 +9,8 @@ using THOK.Authority.DbModel;
 using THOK.Authority.Bll.Interfaces;
 using System;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Authority
 {
@@ -99,5 +101,23 @@ namespace Authority.Controllers.Authority
             var help = HelpContentService.Help(helpId);
             return Json(help, "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /Help/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string contentCode = Request.QueryString["contentCode"] ?? "";
+            string contentName = Request.QueryString["contentName"] ?? "";
+            string nodeType = Request.QueryString["nodeType"] ?? "";
+            string fatherNodeID = Request.QueryString["fatherNodeID"] ?? "";
+            string moduleID = Request.QueryString["moduleID"] ?? "";
+            string isActive = Request.QueryString["isActive"] ?? "";
+
+            ExportParam ep = new ExportParam();
+            ep.DT1 = HelpContentService.GetHelpConten(page, rows, contentCode, contentName, nodeType, fatherNodeID, moduleID, isActive);
+            ep.HeadTitle1 = "帮助目录";
+            return PrintService.Print(ep);
+        }
+        #endregion
     }
 }

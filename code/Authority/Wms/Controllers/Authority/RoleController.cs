@@ -10,6 +10,10 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using System;
+using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Authority
 {
@@ -104,5 +108,20 @@ namespace Authority.Controllers.Authority
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
+        #region /Role/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            string roleName = Request.QueryString["roleName"] ?? "";
+            string meMo = Request.QueryString["meMo"] ?? "";
+            string isLock = Request.QueryString["isLock"] ?? "";
+
+            ExportParam ep = new ExportParam();
+            ep.DT1 = RoleService.GetRoleConten(page, rows, roleName, meMo, isLock);
+            ep.HeadTitle1 = "角色信息";
+            return PrintService.Print(ep);
+        }
+        #endregion
     }
 }
