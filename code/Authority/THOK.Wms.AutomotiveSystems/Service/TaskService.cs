@@ -58,6 +58,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         [Dependency]
         public IStorageLocker Locker { get; set; }
+
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
  
         public void GetBillMaster(string[] BillTypes, Result result)
         {
@@ -787,6 +790,42 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
+        public void GetShelf(Result result)
+        {
+            THOK.Wms.AutomotiveSystems.Models.ShelfInfo[] shelfInfo = new THOK.Wms.AutomotiveSystems.Models.ShelfInfo[] { };
+            try
+            {
+                var cellInfo = CellRepository.GetQueryable().Join(StorageRepository.GetQueryable(),
+                                c => c.CellCode, s => s.CellCode, (c, s) => new { cellInfos = c, storage = s })
+                               .Where(c => c.cellInfos.CellType == "1").AsEnumerable()
+                               .Select(c => new THOK.Wms.AutomotiveSystems.Models.ShelfInfo()
+                                {
+                                    ShelfCode=c.cellInfos.Shelf.ShelfCode,
+                                    ShelfName = c.cellInfos.Shelf.ShelfName,
+                                    CellCode = c.cellInfos.CellCode,
+                                    CellName = c.cellInfos.CellName,
+                                    ProductCode =c.storage.Product == null? "": c.storage.Product.ProductCode,
+                                    ProductName =c.storage.Product== null ? "" : c.storage.Product.ProductName,
+                                    QuantityJian = c.storage.Quantity==0 ? 0 : (c.storage.Quantity / (c.storage.Product.UnitList.Quantity01 * c.storage.Product.UnitList.Quantity02 * c.storage.Product.UnitList.Quantity03)),
+                                    QuantityTiao = c.storage.Quantity==0 ? 0 : (c.storage.Quantity / (c.storage.Product.UnitList.Quantity02 * c.storage.Product.UnitList.Quantity03)),
+                                    WareCode = c.cellInfos.WarehouseCode,
+                                    WareName = c.cellInfos.Warehouse.WarehouseName,
+                                    IsActive = c.cellInfos.IsActive,
+                                    ColNum=c.cellInfos.Col,
+                                    RowNum=c.cellInfos.Layer,
+                                    Shelf = c.cellInfos.ShelfCode.Substring(8,2).Trim()
+                                    //UpdateDate=c.storage.UpdateTime==null?DateTime.Now:c.storage.UpdateTime
+                                }).ToArray();
+                shelfInfo = shelfInfo.Concat(cellInfo).ToArray();
+                result.IsSuccess = true;
+                result.ShelfInfo = shelfInfo;
+            }
+            catch (Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = "调用服务器服务查询托盘信息失败！，详情：" + e.InnerException.Message + "  其他错误" + e.Message;
+            }
+        }
         public void SearchRfidInfo(string rfid, Result result)
         {
             THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };

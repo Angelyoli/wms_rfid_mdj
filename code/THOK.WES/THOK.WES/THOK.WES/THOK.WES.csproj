@@ -135,6 +135,18 @@
     <Compile Include="View\1\MoveTaskForm.Designer.cs">
       <DependentUpon>MoveTaskForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\2\CellDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\2\CellDialog.designer.cs">
+      <DependentUpon>CellDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\2\CellQueryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\2\CellQueryForm.designer.cs">
+      <DependentUpon>CellQueryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\3\ParameterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -159,6 +171,7 @@
     <Compile Include="View\SelectDialog.Designer.cs">
       <DependentUpon>SelectDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="THOKUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -180,6 +193,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\1\MoveTaskForm.resx">
       <DependentUpon>MoveTaskForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\2\CellDialog.resx">
+      <DependentUpon>CellDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\2\CellQueryForm.resx">
+      <DependentUpon>CellQueryForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="View\3\ParameterForm.resx">
@@ -254,9 +274,7 @@
       <Name>THOK.WES.Interface</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="View\2\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
