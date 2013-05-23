@@ -7,6 +7,7 @@ using THOK.Wms.AutomotiveSystems.Interfaces;
 using System.Text;
 using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
+using THOK.Wms.DownloadWms.Bll;
 
 namespace Wms.Controllers.Wms.AutomotiveSystems
 {
@@ -77,6 +78,9 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
 
         public ActionResult SendSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId)
         {
+            AddXmlValueBll bll = new AddXmlValueBll();
+            string text = orderId + " - " + sortingLineCode + " - " + orderdate + " - " + batchId;
+            bll.insert("sortInfo", text);
             string msg = @"<?xml version='1.0' encoding='GB2312' ?>
                             <message>
 			                    <!--** 操作是否成功 true/false **-->
@@ -91,7 +95,8 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
             }
             else
             {
-                msg = string.Format(msg, "false", "2", error);
+                bll.insert("sortErr", error);
+                msg = string.Format(msg, "true", "1", error);
             }
             return new ContentResult() { Content = msg, ContentEncoding = Encoding.GetEncoding("GB2312"), ContentType = "text" };
         }

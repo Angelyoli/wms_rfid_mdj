@@ -32,6 +32,7 @@ namespace THOK.WES.View
         /// 1：入库单；2：出库单；3：移库单；4：盘点单
         /// </summary>
         protected string BillTypes = "";
+        private int isAppyInt = 0;
 
         //选择的主单；
         string billNo = string.Empty;
@@ -842,11 +843,16 @@ namespace THOK.WES.View
                     return;
                 }
             }
-            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("1") && isApply && OperateType.Equals("Real"))
+            if (this.dgvMain.Rows.Count == 0)
+            {
+                isAppyInt = 0;
+            }
+            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("1") && isApply && OperateType.Equals("Real") && isAppyInt == 0)
             {
                 try
                 {
                     sp.Play();
+                    isAppyInt++;
                 }
                 catch (Exception e)
                 {
