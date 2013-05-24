@@ -97,5 +97,39 @@ namespace THOK.Authority.Bll.Service
             var usersystems = UserSystemRepository.GetQueryable().Where(us => !userSystem.Any(uid => uid == us.UserSystemID) && us.User_UserID == user.UserID && us.System_SystemID == systemid).Select(us => new { us.City.CityID, us.City.CityName, us.City.Description, Status = us.City.IsActive ? "启用" : "禁用" });
             return usersystems.ToArray();
         }
+
+        public System.Data.DataTable GetCity(int page, int rows, City city, bool activeIsNull)
+        {
+            IQueryable<City> cityQuery = CityRepository.GetQueryable();
+
+            var cityDetail = cityQuery.Where(c=>c.CityName.Contains(city.CityName)&& c.Description.Contains(city.Description));
+            if (activeIsNull == false)
+            {
+                cityDetail = cityDetail.Where(c => c.IsActive == city.IsActive);
+            }
+            cityDetail = cityDetail.OrderBy(c => c.CityName);
+            var city_Detail = cityDetail.ToArray().Select(c => new
+            {
+                c.CityName,
+                c.Description,
+                IsActive = c.IsActive == true ? "启用" : "禁用"
+            });
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            dt.Columns.Add("地市名称", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("状态", typeof(string));
+            foreach (var c in city_Detail)
+            {
+                dt.Rows.Add
+                    (
+                        c.CityName,
+                        c.Description,
+                        c.IsActive
+                    );
+            }
+            return dt;
+        }
     }
 }

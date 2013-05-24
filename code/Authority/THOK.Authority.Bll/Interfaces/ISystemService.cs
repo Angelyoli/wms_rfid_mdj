@@ -15,5 +15,7 @@ namespace THOK.Authority.Bll.Interfaces
         object GetSystemById(string systemID);
 
         object GetDetails(string userName, string systemID, string cityID);
+
+        System.Data.DataTable GetSystem(int page, int rows, DbModel.System system,bool isactiveIsNull);
     }
 }

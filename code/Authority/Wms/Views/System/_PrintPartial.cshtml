@@ -1,0 +1,14 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var systemName = null, description = null, isactive=null;
+
+        if ($('#systemname').val() == null) { systemName = ""; } else { systemName = $('#systemname').val(); }
+        if ($('#description').val() == null) { description = ""; } else { description = $('#description').val(); }
+        if (document.getElementById("status") == null) { isactive = ""; } else { isactive = $('#status').combo('getValue'); }
+
+        window.location.href = "/System/CreateExcelToClient/"
+                                + "?systemName=" + systemName
+                                + "&description=" + description
+                                + "&isactive=" + isactive;
+    }
+</script>
