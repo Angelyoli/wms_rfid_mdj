@@ -106,10 +106,9 @@ namespace THOK.Authority.Bll.Service
             var user = UserRepository.GetQueryable().FirstOrDefault(u => u.UserName == userName);
             var userSystemId = UserSystemRepository.GetQueryable().Where(us => us.User_UserID == user.UserID 
                 && us.System.SystemID == systemid && us.City_CityID == cityid).Select(us => us.UserSystemID);
-            var userSystems = UserSystemRepository.GetQueryable().Where(us => !userSystemId.Any(uid => uid == us.UserSystemID)
+            var userSystems = UserSystemRepository.GetQueryable().Where(us => !userSystemId.Contains(us.UserSystemID)
                 && us.User_UserID == user.UserID && us.City.CityID == cityid);
-            var userSystem = userSystems.Where(u => userSystems.Any(us => us.UserModules.Any(um => um.UserFunctions.Any(uf => 
-                uf.UserModule_UserModuleID == um.UserModuleID && uf.IsActive == true) || um.IsActive == true) || us.IsActive == true))
+            var userSystem = userSystems.Where(us => us.UserModules.Any(um => um.UserFunctions.Any(uf => uf.IsActive == true)))
                 .Select(us => new {us.System.SystemID, us.System.SystemName, us.System.Description, Status = us.City.IsActive ? "启用" : "禁用" });
             return userSystem.ToArray();
         }

@@ -428,7 +428,7 @@ namespace THOK.Wms.Bll.Service
                     dt.Columns.Add("产品名称", typeof(string));
                     dt.Columns.Add("数量(件)", typeof(string));
                     dt.Columns.Add("数量(条)", typeof(string));
-                    dt.Columns.Add("异性烟(*)", typeof(string));
+                    dt.Columns.Add("异形烟(*)", typeof(string));
                     foreach (var m in moveBillDetail)
                     {
                         dt.Rows.Add
@@ -442,7 +442,8 @@ namespace THOK.Wms.Bll.Service
                     }
                     if (moveBillDetail.Count() > 0)
                     {
-                        dt.Rows.Add(null, "总数：", moveBillDetail.Sum(m => m.RealQuantity));                        
+                        dt.Rows.Add(null, "总数：", moveBillDetail.Sum(m => m.RealQuantity));
+                        dt.Rows.Add("出库：",null,"验收：", null);
                     }
                 }
                 else
@@ -472,7 +473,7 @@ namespace THOK.Wms.Bll.Service
                     //dt.Columns.Add("单位名称", typeof(string));
                     dt.Columns.Add("数量(件)", typeof(string));
                     dt.Columns.Add("数量(条)", typeof(string));
-                    dt.Columns.Add("异性烟(*)", typeof(string));
+                    dt.Columns.Add("异形烟(*)", typeof(string));
                     foreach (var m in moveBillDetail)
                     {
                         dt.Rows.Add

@@ -26,11 +26,14 @@ namespace THOK.WES.View
         private int operatePieceQuantity = 0;
         private int operateBarQuantity = 0;
         private string url = @"http://59.61.87.212:8090/Task";
-
+        private System.Media.SoundPlayer sp;
+        private string musicName = "";//音乐地址
+        private string isMusicName = "";//是否使用音乐提醒
         /// <summary>
         /// 1：入库单；2：出库单；3：移库单；4：盘点单
         /// </summary>
         protected string BillTypes = "";
+        private int isAppyInt = 0;
 
         //选择的主单；
         string billNo = string.Empty;
@@ -77,15 +80,17 @@ namespace THOK.WES.View
         private GridUtil gridUtil = null;
         public BaseTaskForm()
         {
-            InitializeComponent();
+            InitializeComponent();            
             gridUtil = new GridUtil(dgvMain);
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
+            musicName = configUtil.GetConfig("MusicName")["Music"];
+            isMusicName = configUtil.GetConfig("MusicName")["IsMusic"];
             connection = new Connection(url + @"/automotiveSystems");
             connection.Received += new Action<string>(connection_Received);
-            connection.Closed += new Action(connection_Closed);
-
+            connection.Closed += new Action(connection_Closed);            
+            sp = new System.Media.SoundPlayer(musicName);            
             if (configUtil.GetConfig("DeviceType")["Device"] == "0")
             {
                 this.dgvMain.ColumnHeadersHeight = 40;
@@ -119,7 +124,7 @@ namespace THOK.WES.View
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
-            {                
+            {
                 Task task = new Task(url);
                 task.GetBillMasterCompleted += new Task.GetBillMasterCompletedEventHandler(delegate(bool isSuccess, string msg, BillMaster[] billMasters)
                 {
@@ -160,6 +165,7 @@ namespace THOK.WES.View
                         MessageBox.Show(msg);
                     RefreshData();
                 });
+
                 task.SearchBillMaster(BillTypes);
                 DisplayPlWailt();
             }
@@ -184,10 +190,12 @@ namespace THOK.WES.View
             task.GetBillDetailCompleted += new Task.GetBillDetailCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
             {
                 InTask = false;
+               
                 if (billDetails != null && billDetails.Length != 0)
                 {
                     dgvMain.AutoGenerateColumns = false;
                     dgvMain.DataSource = billDetails;
+                    Play();
                     foreach (BillDetail billDetail in billDetails)
                     {
                         if (billDetail.Status == "1")
@@ -206,17 +214,19 @@ namespace THOK.WES.View
                 else
                 {
                     dgvMain.DataSource = null;
+                    isAppyInt = 0;
                 }
                 ClosePlWailt();
                 dgvMain.ClearSelection();
             });
-            task.SearchBillDetail(BillMasters, RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);
-            DisplayPlWailt();
+            task.SearchBillDetail(BillMasters, RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);           
+            DisplayPlWailt();           
         }
 
         //申请
         private void btnApply_Click(object sender, EventArgs e)
         {
+            sp.Stop();
             string errString = string.Empty;
             List<string> listRfid = new List<string>();
             string productRfid = "";
@@ -420,6 +430,14 @@ namespace THOK.WES.View
         {
             if (data == "TaskStart")
             {
+                try
+                {
+                    sp.Play();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("播放音乐出错，原因：" + e.Message);
+                }
                 Application.OpenForms[0].Invoke(new RefreshTask(RefreshData));
             }
         }
@@ -824,7 +842,35 @@ namespace THOK.WES.View
                 this.ReadRfidCycle();
             }
         }
-     
+
+        private void Play()
+        {
+            bool isApply = true;
+            foreach (DataGridViewRow row in dgvMain.Rows)
+            {
+                if (row.Cells["Status"].Value.ToString().Equals("1"))
+                {
+                    isApply = false;
+                    return;
+                }
+            }
+            if (this.dgvMain.Rows.Count == 0)
+            {
+                isAppyInt = 0;
+            }
+            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("3") && isApply && OperateType.Equals("Real") && isAppyInt == 0 && isMusicName.Equals("1"))
+            {
+                try
+                {
+                    sp.Play();
+                    isAppyInt++;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("播放音乐出错，原因：" + e.Message);
+                }
+            }
+        }
     }
 }
 

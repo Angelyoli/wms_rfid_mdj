@@ -15,7 +15,7 @@ namespace THOK.WMS.DownloadWms.Dao
        /// <returns></returns>
        public DataTable GetSortingOrder(string orderid)
        {
-           string sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME FROM V_WMS_SORT_ORDER A
+           string sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,SUBSTR(A.ORDER_ID,3,8) AS ORDERID FROM V_WMS_SORT_ORDER A
                                         LEFT JOIN V_WMS_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
            return this.ExecuteQuery(sql).Tables[0];
        }
@@ -26,7 +26,7 @@ namespace THOK.WMS.DownloadWms.Dao
        /// <returns></returns>
        public DataTable GetSortingOrderDetail(string orderid)
        {
-           string sql = string.Format(@"SELECT A.* , B.BRAND_N FROM V_WMS_SORT_ORDER_DETAIL A
+           string sql = string.Format(@"SELECT A.* ,SUBSTR(A.ORDER_ID,3,8) AS ORDERID,B.BRAND_N FROM V_WMS_SORT_ORDER_DETAIL A
                                         LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE
                                         LEFT JOIN V_WMS_SORT_ORDER C ON A.ORDER_ID=C.ORDER_ID WHERE {0} ", orderid);
            return this.ExecuteQuery(sql).Tables[0];

@@ -24,6 +24,8 @@ namespace Authority.Controllers.Wms.StockOut
         [Dependency]
         public ISystemParameterService SystemParameterService { get; set; }
         [Dependency]
+        public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
+        [Dependency]
         public IOutBillMasterHistoryService OutBillMasterHistoryService { get; set; }
         //
         // GET: /StockOutBill/
@@ -216,6 +218,16 @@ namespace Authority.Controllers.Wms.StockOut
             string msg = bResult ? "迁移成功" : "迁移失败";
             if (msg != "迁移成功") result = "原因：" + strResult;
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        // 出库订单作业
+        // POST: /StockOutBill/OutBillTask/
+        public ActionResult OutBillTask(string BillNo)
+        {
+            string strResult = string.Empty;
+            bool bResult = TaskService.OutBillTask(BillNo, out strResult);
+            string msg = bResult ? "作业成功" : "作业失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

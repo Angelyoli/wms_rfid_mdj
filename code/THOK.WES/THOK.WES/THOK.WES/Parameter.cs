@@ -64,7 +64,23 @@ namespace THOK.WES
         {
             get { return layersNumber; }
             set { layersNumber = value; }
-        }  
+        }
+
+        private string isMusicName;
+        [CategoryAttribute("[06] 音乐参数"), DescriptionAttribute("是否启用"), Chinese("是否提示(0：不提示，1：提示)")]
+        public string IsMusicName
+        {
+            get { return isMusicName; }
+            set { isMusicName = value; }
+        } 
+
+        private string musicName;
+        [CategoryAttribute("[06] 音乐参数"), DescriptionAttribute("音乐文件"), Chinese("文件地址")]
+        public string MusicName
+        {
+            get { return musicName; }
+            set { musicName = value; }
+        } 
     }
 
     public class wareHouse : BaseObject
