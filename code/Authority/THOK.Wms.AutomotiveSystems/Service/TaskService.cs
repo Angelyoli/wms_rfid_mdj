@@ -117,7 +117,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
         {
             THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
             var ops = OperateAreas.Split(',').Select(a => Convert.ToInt32(a)).ToArray();
-            
+
             try
             {
                 string billType = string.Empty;
@@ -131,11 +131,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                             var inBillDetails = InBillAllotRepository.GetQueryable()
                                 .WhereIn(m => m.Cell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
-                                    && (i.ProductCode == productCode || productCode == string.Empty)                                    
+                                    && (i.ProductCode == productCode || productCode == string.Empty)
                                     && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
-                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail() { 
-                                    BillNo = i.BillNo, 
-                                    BillType = "1" ,
+                                .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
+                                {
+                                    BillNo = i.BillNo,
+                                    BillType = "1",
 
                                     DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
@@ -147,7 +148,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
-                                    PieceQuantity =Math.Floor(i.AllotQuantity/i.Product.UnitList.Unit01.Count),
+                                    PieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
                                     BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     OperatePieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
@@ -160,7 +161,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .ToArray();
                             billDetails = billDetails.Concat(inBillDetails).ToArray();
                             break;
-                            #endregion
+                        #endregion
                         #region 读出库单细单
                         case "2"://出库单
                             var outBillDetails = OutBillAllotRepository.GetQueryable()
@@ -176,7 +177,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     DetailID = i.ID,
                                     StorageName = i.Cell.CellName,
                                     StorageRfid = i.Storage.Rfid,
-                                    CellRfid =i.Cell.Rfid,
+                                    CellRfid = i.Cell.Rfid,
                                     TargetStorageName = "",
                                     TargetStorageRfid = "",
 
@@ -207,7 +208,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         .WhereIn(m => m.InCell.Layer, ops)
                                         .Where(i => i.BillNo == billNo
                                             && (i.CanRealOperate == "1" || OperateType != "Real")
-                                            && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                                        
+                                            && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                         .ToArray()
                                         .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                         {
@@ -244,7 +245,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                 .WhereIn(m => m.InCell.Layer, ops)
                                 .Where(i => i.BillNo == billNo
                                     && (i.CanRealOperate == "1" || OperateType != "Real")
-                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))                               
+                                    && (i.Status == "0" || (i.Status == "1" && i.Operator == Operator)))
                                 .Select(i => new THOK.Wms.AutomotiveSystems.Models.BillDetail()
                                 {
                                     BillNo = i.BillNo,
@@ -256,7 +257,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     CellRfid = i.OutCell.Rfid,
                                     TargetStorageName = i.InCell.CellName,
                                     TargetStorageRfid = i.InCell.Rfid,
-                                    IsRounding =i.Product.IsRounding,
+                                    IsRounding = i.Product.IsRounding,
                                     ProductCode = i.ProductCode,
                                     ProductName = i.Product.ProductName,
 
@@ -265,12 +266,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     OperatePieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
                                     OperateBarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     Total = i.RealQuantity / i.Product.UnitList.Unit01.Count,
-                                    AbleMerge = i.Product.IsAbnormity !="1" | "012".Contains(i.Product.IsRounding) | "123".Contains(i.Product.AbcTypeCode),
+                                    AbleMerge = i.Product.IsAbnormity != "1" | "012".Contains(i.Product.IsRounding) | "123".Contains(i.Product.AbcTypeCode),
 
                                     OperatorCode = string.Empty,
                                     Operator = i.Operator,
                                     Status = i.Status,
-                                    PalletTag = i.PalletTag??0
+                                    PalletTag = i.PalletTag ?? 0
                                 })
                                 .ToArray();
                             billDetails = billDetails.Concat(moveBillDetails).ToArray();
@@ -315,17 +316,19 @@ namespace THOK.Wms.AutomotiveSystems.Service
                         #endregion
                     }
                 }
+               
+                THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails1 = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
+                THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails2 = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
+
+                //查询等于30件的数据
+                billDetails1 = billDetails.Where(s => s.Total == 30).OrderByDescending(i => i.Status)
+                                                .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
+                //查询小于30件的数据
+                billDetails2 = billDetails.Where(s => s.Total < 30).OrderByDescending(i => i.Status)
+                                                .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
+                //合并显示
                 result.IsSuccess = true;
-                if (billMasters.Count() >= 2 && billType=="3")//选择的是2条以上并且是移库的数据
-                {//不取整和出库量最大的5个卷烟品牌数据查询出来。其它的不查询
-                    var billProductDetail = billDetails.GroupBy(s => new { s.ProductCode })
-                                                  .Select(s => new {s.Key.ProductCode, sumQuanti=s.Sum(p=>p.Total) })
-                                                  .OrderByDescending(s => s.sumQuanti).Take(5)
-                                                  .Select(s=>new{s.ProductCode});
-                    billDetails = billDetails.Where(s => s.IsRounding == "0" || billProductDetail.Any(p => p.ProductCode == s.ProductCode)).ToArray();                  
-                }
-                result.BillDetails = billDetails.OrderByDescending(i => i.Status)
-                    .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
+                result.BillDetails = billDetails2.Concat(billDetails1).ToArray();
             }
             catch (Exception e)
             {
