@@ -106,9 +106,32 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                              .AsParallel()
                                              .GroupBy(r => new { r.OrderDate, r.SortingLine })
                                              .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
+                                             .OrderBy(s=>s.SortingLine.SortingLineCode)//如果取整托盘多余的量是1号线就倒序排序，目前多余的量放入2号线，所以先调度一号线
                                              .ToArray();
-           
-            
+
+            var temp1 = sortingLowerlimitQuery.Where(s => s.SortType == "2")
+                                              .GroupBy(r => new { r.ProductCode })
+                                              .Select(s => s.Key.ProductCode).ToArray();
+
+            var temp2 = sortOrderDispatchQuery.Join(sortOrderQuery,
+                                                dp => new { dp.OrderDate, dp.DeliverLineCode },
+                                                om => new { om.OrderDate, om.DeliverLineCode },
+                                                (dp, om) => new { dp.ID, dp.WorkStatus, dp.OrderDate, dp.SortingLine, dp.DeliverLineCode, om.OrderID }
+                                           ).Join(sortOrderDetailQuery,
+                                                dm => new { dm.OrderID },
+                                                od => new { od.OrderID },
+                                                (dm, od) => new { dm.ID, dm.WorkStatus, dm.OrderDate, dm.SortingLine, od.Product, od.UnitCode, od.Price, od.RealQuantity }
+                                           ).Join(sortingLowerlimitQuery,
+                                                 sd => new { sd.Product },
+                                                 sl => new { sl.Product },
+                                                 (sd, sl) => new { sd.ID, sd.WorkStatus, sl.Product, sd.RealQuantity,sl.SortType }
+                                           ).WhereIn(s => s.ID, work)
+                                            .Where(s => s.WorkStatus == "1" && s.SortType=="1")
+                                            .GroupBy(r => new { r.Product })
+                                            .Select(s => new { s.Key.Product, Quantity = s.Sum(q => q.RealQuantity * q.Product.UnitList.Unit02.Count) });
+                                            //.Where(s => s.Quantity > 200000).ToArray();
+
+            Dictionary<string, decimal> proQuan = new Dictionary<string, decimal>();
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
             if (employee == null)
@@ -134,8 +157,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     ps.Messages.Add("开始调度" + item.SortingLine.SortingLineName);
                     NotifyConnection(ps.Clone());
 
-                    using (var scope = new TransactionScope())
-                    {
+                    //using (var scope = new TransactionScope())
+                    //{
                         if (item.Products.Count() > 0)
                         {
                             if (cancellationToken.IsCancellationRequested) return;
@@ -222,9 +245,36 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
                                                    * product.Product.Unit.Count;
 
+                                    //立式机大于20件的取整托盘
+                                    var SumlowerlimitQuantity = temp2.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode);
+                                    if (SumlowerlimitQuantity != null && SumlowerlimitQuantity.Quantity > 200000 && quantity>0)
+                                    {
+                                        decimal WholeCare = 0;//托盘数
+                                        decimal SumSortingQuantiy = 0;//整托盘的数量
+                                        //取2条线数量总和取整托盘
+                                        WholeCare = Math.Ceiling(SumlowerlimitQuantity.Quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                        SumSortingQuantiy = Convert.ToDecimal(WholeCare * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
+
+                                        //大于20件取整托盘后，多余的量放入2号线就
+                                        if (item.SortingLine.SortingLineCode == "1")
+                                        {
+                                            proQuan.Add(product.Product.ProductCode, SumSortingQuantiy - quantity);
+                                        }
+                                        else
+                                        {
+                                            if (proQuan.Count() > 0)
+                                            {
+                                                if (proQuan[product.Product.ProductCode] >= quantity)
+                                                {
+                                                    quantity = proQuan[product.Product.ProductCode];
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     //取整托盘
                                     decimal wholeTray = 0;
-                                    if (product.Product.IsRounding == "2")
+                                    if (product.Product.IsRounding == "2" || temp1.Any(s => s == product.Product.ProductCode))
                                     {
                                         wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
                                         quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
@@ -299,7 +349,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 }
                                 if (cancellationToken.IsCancellationRequested) return;
                                 SortWorkDispatchRepository.SaveChanges();
-                                scope.Complete();
+                               // scope.Complete();
                                 ps.Messages.Add(item.SortingLine.SortingLineName + " 调度成功！");
                             }
                             else
@@ -310,7 +360,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 return;
                             }
                         }
-                    }
+                   // }
                 }
                 catch (Exception e)
                 {
