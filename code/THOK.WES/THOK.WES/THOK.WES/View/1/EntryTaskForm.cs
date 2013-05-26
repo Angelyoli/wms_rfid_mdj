@@ -14,6 +14,7 @@ namespace THOK.WES.View
         {
             InitializeComponent();
             BillTypes = "1";
+            btnOpType.Visible = true;
         }
     }
 }
