@@ -134,8 +134,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     ps.Messages.Add("开始调度" + item.SortingLine.SortingLineName);
                     NotifyConnection(ps.Clone());
 
-                    using (var scope = new TransactionScope())
-                    {
+                    //using (var scope = new TransactionScope())
+                    //{
                         if (item.Products.Count() > 0)
                         {
                             if (cancellationToken.IsCancellationRequested) return;
@@ -299,7 +299,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 }
                                 if (cancellationToken.IsCancellationRequested) return;
                                 SortWorkDispatchRepository.SaveChanges();
-                                scope.Complete();
+                                //scope.Complete();
                                 ps.Messages.Add(item.SortingLine.SortingLineName + " 调度成功！");
                             }
                             else
@@ -310,7 +310,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 return;
                             }
                         }
-                    }
+                    //}
                 }
                 catch (Exception e)
                 {
