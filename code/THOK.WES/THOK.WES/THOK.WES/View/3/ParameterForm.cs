@@ -45,6 +45,7 @@ namespace THOK.WES.View
             parameter.LayersNumber = layers["Number"];
 
             musicName = configUtil.GetConfig("MusicName");
+            parameter.IsMusicName = musicName["IsMusic"];
             parameter.MusicName = musicName["Music"];
 
             deviceType = configUtil.GetConfig("DeviceType");
@@ -73,7 +74,8 @@ namespace THOK.WES.View
                 layers["Number"] = parameter.LayersNumber;
                 configUtil.SaveConfig("Layers", layers);
 
-                musicName["Music"] = parameter.MusicName;
+                musicName["IsMusic"] = parameter.IsMusicName;
+                musicName["Music"] = parameter.MusicName;                
                 configUtil.SaveConfig("MusicName", musicName);
 
                 deviceType["Device"] = parameter.SelectItem.ToString();

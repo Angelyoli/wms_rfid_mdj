@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="gb2312"?>
 <Config>
   <URL>
-    <URL name="URL" value="http://localhost:3535/Task/" />
+    <URL name="URL" value="http://10.82.72.145:8090/Task/" />
   </URL>
   <UDP>
     <IP name="IP" value="192.168.0.200" />
@@ -18,6 +18,7 @@
     <Device name="Device" value="1" />
   </DeviceType>
   <MusicName>
+    <Music name="IsMusic" value="0" />
     <Music name="Music" value="G:\Music\Music ringtones\123.wav" />
   </MusicName>
 </Config>
