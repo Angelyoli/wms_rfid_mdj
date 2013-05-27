@@ -13,6 +13,15 @@ function editClick() {
         } else {
             $('#IsActiveCc').combo('setValue', 0).combo('setText', row.IsActive);
         }
+        if (row.SortType == '立式机') {
+            $('#isSortType').combo('setValue', 1).combo('setText', row.SortType);
+        }
+        if (row.SortType == '通道机') {
+            $('#isSortType').combo('setValue', 2).combo('setText', row.SortType);
+        }
+        if (row.SortType == '混合烟道') {
+            $('#isSortType').combo('setValue', 0).combo('setText', row.SortType);
+        }
         $('#IsActiveCc').combo({
             hasDownArrow: true
         });

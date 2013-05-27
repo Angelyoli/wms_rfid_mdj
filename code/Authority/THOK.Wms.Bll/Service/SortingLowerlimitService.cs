@@ -27,6 +27,24 @@ namespace THOK.Wms.Bll.Service
 
         #region ISortingLowerlimitService 成员
 
+        public string GetSortType(string type)
+        {
+            string typeStr = "";
+            switch (type)
+            {
+                case "0":
+                    typeStr = "混合烟道";
+                    break;
+                case "1":
+                    typeStr = "立式机";
+                    break;
+                case "2":
+                    typeStr = "通道机";
+                    break;
+            }
+            return typeStr;
+        }
+
         public object GetDetails(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
         {
             IQueryable<SortingLowerlimit> lowerLimitQuery = SortingLowerlimitRepository.GetQueryable();
@@ -73,6 +91,7 @@ namespace THOK.Wms.Bll.Service
                                 l.Quantity,
                                 StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
                                 l.SortOrder,
+                                l.SortType,
                                 l.IsActive,
                                 l.UpdateTime
                             });
@@ -89,6 +108,7 @@ namespace THOK.Wms.Bll.Service
                 Quantity = b.Quantity / b.Unit.Count,
                 StorageQuantity = b.StorageQuantity / b.Unit.Count,
                 b.SortOrder,
+                SortType = GetSortType(b.SortType),
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
@@ -108,6 +128,7 @@ namespace THOK.Wms.Bll.Service
                 lowerLimit.UnitCode = sortLowerLimit.UnitCode;
                 lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;
                 lowerLimit.SortOrder = sortLowerLimit.SortOrder;
+                lowerLimit.SortType = sortLowerLimit.SortType;
                 lowerLimit.IsActive = sortLowerLimit.IsActive;
                 lowerLimit.UpdateTime = DateTime.Now;
 
@@ -149,6 +170,7 @@ namespace THOK.Wms.Bll.Service
             lowerLimitSave.UnitCode = sortLowerLimit.UnitCode;
             lowerLimitSave.Quantity = sortLowerLimit.Quantity * unit.Count;
             lowerLimitSave.SortOrder = sortLowerLimit.SortOrder;
+            lowerLimitSave.SortType = sortLowerLimit.SortType;
             lowerLimitSave.IsActive = sortLowerLimit.IsActive;
             lowerLimitSave.UpdateTime = DateTime.Now;
 
