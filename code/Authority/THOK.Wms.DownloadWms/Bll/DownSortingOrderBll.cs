@@ -34,10 +34,10 @@ namespace THOK.WMS.DownloadWms.Bll
                    string orderlist = UtinString.MakeString(orderdt, "order_id");
                    string orderlistDate = "ORDER_DATE ='" + orderDate + "'";
                    DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询主表数据
-                   DataRow[] masterdr = masterdt.Select("ORDER_ID NOT IN(" + orderlist + ")");//排除已经下载的数据
-                   string ordermasterlist = UtinString.MakeString(masterdr, "ORDER_ID");//获取未下载主表单据的数据字符
+                   DataRow[] masterdr = masterdt.Select("ORDERID NOT IN(" + orderlist + ")");//排除已经下载的数据
+                   string ordermasterlist = UtinString.MakeString(masterdr, "ORDERID");//获取未下载主表单据的数据字符
                    DataTable detaildt = this.GetSortingOrderDetail(orderlistDate);//根据时间查询细表数据
-                   DataRow[] detaildr = detaildt.Select("ORDER_ID IN (" + ordermasterlist + ")");//查询未下载的细单数据
+                   DataRow[] detaildr = detaildt.Select("ORDERID IN (" + ordermasterlist + ")");//查询未下载的细单数据
                    if (masterdr.Length > 0 && detaildr.Length > 0)
                    {
                        DataSet masterds = this.SaveSortingOrder(masterdr);
@@ -177,7 +177,7 @@ namespace THOK.WMS.DownloadWms.Bll
            foreach (DataRow row in masterdt)
            {
                DataRow masterrow = ds.Tables["DWV_OUT_ORDER"].NewRow();
-               masterrow["order_id"] = row["ORDER_ID"].ToString().Trim();//订单编号
+               masterrow["order_id"] = row["ORDERID"].ToString().Trim();//订单编号
                masterrow["company_code"] = row["ORG_CODE"].ToString().Trim();//所属单位编号
                masterrow["sale_region_code"] = row["SALE_REG_CODE"].ToString().Trim();//营销部编号
                masterrow["order_date"] = row["ORDER_DATE"].ToString().Trim();//订单日期
@@ -255,7 +255,7 @@ namespace THOK.WMS.DownloadWms.Bll
                        newcode = "0" + newcode;
                    }
                    detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim() + newcode;
-                   detailrow["order_id"] = row["ORDER_ID"].ToString().Trim();
+                   detailrow["order_id"] = row["ORDERID"].ToString().Trim();
                    detailrow["product_code"] = row["BRAND_N"].ToString().Trim();
                    detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
                    detailrow["unit_code"] = list[0]["unit_code02"].ToString();
