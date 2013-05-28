@@ -17,7 +17,7 @@ namespace THOK.WES.View
         private bool needDraw = false;
         private bool filtered = false;
 
-        private int columns = 21;
+        private int columns = 12;
         private int rows = 3;
         private int cellWidth = 0;
         private int cellHeight = 0;
@@ -190,7 +190,7 @@ namespace THOK.WES.View
                 size = e.Graphics.MeasureString("13", font);
                 float adjustWidth = (cellWidth - size.Width) / 2;
 
-                int qu = 3000;
+                int qu = 30000;
 
                 if (qu >= 34680)
                 {
@@ -310,10 +310,10 @@ namespace THOK.WES.View
             else if (quantity <= 0)
                 g.FillRectangle(Brushes.White, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画空货位
 
-            //TimeSpan timeSpan = DateTime.Now - outDate;
-            //int day =timeSpan.Days;
-            //if (day > 180)
-                //g.FillRectangle(Brushes.Red, new Rectangle(x + 2, y , cellWidth - 3, cellHeight - 4));//画预警信息
+            TimeSpan timeSpan = DateTime.Now - DateTime.Now;
+            int day = timeSpan.Days;
+            if (day > 180)
+                g.FillRectangle(Brushes.Red, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画预警信息
         }
 
         private void pnlChart_Resize(object sender, EventArgs e)

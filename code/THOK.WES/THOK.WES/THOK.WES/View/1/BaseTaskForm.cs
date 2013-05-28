@@ -16,6 +16,9 @@ namespace THOK.WES.View
 {
     public partial class BaseTaskForm : THOK.AF.View.ToolbarForm
     {
+        private Dictionary<int, DataRow[]> shelf = new Dictionary<int, DataRow[]>();
+        private DataTable cellTable = null;
+        ShelfInfo ShelfInfo = null;
         public delegate string TimerStateInMainThread();
         private ConfigUtil configUtil = new ConfigUtil();
         private ReadRfid rRfid = new ReadRfid();
@@ -28,6 +31,16 @@ namespace THOK.WES.View
         private string url = @"http://59.61.87.212:8090/Task";
         private System.Media.SoundPlayer sp;
         private string musicName = "";
+        private bool needDraw = false;
+        private bool filtered = false;
+
+        private int columns = 12;
+        private int rows = 3;
+        private int cellWidth = 0;
+        private int cellHeight = 0;
+        private int currentPage = 1;
+        private int[] top = new int[8];
+        private int left = 5;
         /// <summary>
         /// 1：入库单；2：出库单；3：移库单；4：盘点单
         /// </summary>
@@ -36,6 +49,8 @@ namespace THOK.WES.View
         //选择的主单；
         string billNo = string.Empty;
         BillMaster[] BillMasters = null;
+
+        string storageName="";
 
         private string RfidReadProductCode = "";
 
@@ -78,7 +93,14 @@ namespace THOK.WES.View
         private GridUtil gridUtil = null;
         public BaseTaskForm()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            pnlData.Visible = true;
+            pnlData.Dock = DockStyle.Fill;
+
+            pnlChart.Visible = false;
+            pnlChart.Dock = DockStyle.Fill;
+            pnlChart.MouseWheel += new MouseEventHandler(pnlChart_MouseWheel);
+
             gridUtil = new GridUtil(dgvMain);
             url = configUtil.GetConfig("URL")["URL"];
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
@@ -195,6 +217,8 @@ namespace THOK.WES.View
                     //Play();
                     foreach (BillDetail billDetail in billDetails)
                     {
+                        storageName = billDetail.StorageName;
+                        targetStorageName = billDetail.TargetStorageName;
                         if (billDetail.Status == "1")
                         {
                             InTask = true;
@@ -214,6 +238,48 @@ namespace THOK.WES.View
                 }
                 ClosePlWailt();
                 dgvMain.ClearSelection();
+                task.Getshelf();
+                task.GetShelf += new Task.GetShelfEventHandler(delegate(bool isSuccesss, string msgs, ShelfInfo[] shelfInfo)
+                {
+                    if (shelfInfo != null)
+                    {
+                        cellTable = new DataTable();
+                        cellTable.Columns.Add("ShelfCode");
+                        cellTable.Columns.Add("ShelfName");
+                        cellTable.Columns.Add("CellCode");
+                        cellTable.Columns.Add("CellName");
+                        cellTable.Columns.Add("ProductCode");
+                        cellTable.Columns.Add("ProductName");
+                        cellTable.Columns.Add("QuantityTiao");
+                        cellTable.Columns.Add("QuantityJian");
+                        cellTable.Columns.Add("WareCode");
+                        cellTable.Columns.Add("WareName");
+                        cellTable.Columns.Add("IsActive");
+                        cellTable.Columns.Add("RowNum");
+                        cellTable.Columns.Add("ColNum");
+                        cellTable.Columns.Add("Shelf");
+                        foreach (ShelfInfo shelf in shelfInfo)
+                        {
+                            this.ShelfInfo = shelf;
+                            DataRow dr = cellTable.NewRow();
+                            dr["ShelfCode"] = shelf.ShelfCode;
+                            dr["ShelfName"] = shelf.ShelfName;
+                            dr["CellCode"] = shelf.CellCode;
+                            dr["CellName"] = shelf.CellName;
+                            dr["ProductCode"] = shelf.ProductCode;
+                            dr["ProductName"] = shelf.ProductName;
+                            dr["QuantityTiao"] = shelf.QuantityTiao;
+                            dr["QuantityJian"] = shelf.QuantityJian;
+                            dr["WareCode"] = shelf.WareCode;
+                            dr["WareName"] = shelf.WareName;
+                            dr["IsActive"] = shelf.IsActive;
+                            dr["RowNum"] = shelf.RowNum;
+                            dr["ColNum"] = shelf.ColNum;
+                            dr["Shelf"] = shelf.Shelf;
+                            cellTable.Rows.Add(dr);
+                        }
+                    }
+                });
             });
             task.SearchBillDetail(BillMasters, RfidReadProductCode, OperateType, OperateAreas, Environment.MachineName);           
             DisplayPlWailt();           
@@ -861,6 +927,179 @@ namespace THOK.WES.View
                     MessageBox.Show("播放音乐出错，原因：" + e.Message);
                 }
             }
+        }
+
+        private void btnChart_Click(object sender, EventArgs e)
+        {
+            if (cellTable != null && cellTable.Rows.Count != 0)
+            {
+                if (dgvMain.SelectedRows.Count != 0 && pnlData.Visible)
+                {
+                    filtered = true;
+                    needDraw = true;
+                    pnlData.Visible = false;
+                    btnSearch.Enabled = false;
+                    pnlChart.Visible = true;
+                    btnChart.Text = "列表";
+                    btnApply.Visible = false;
+                    btnCancel.Visible = false;
+                    btnConfirm.Visible = false;
+                    btnBatConfirm.Visible = false;
+                    btnOpType.Visible = false;
+                    btnBcCompose.Visible = false;
+                }
+
+                else
+                {
+                    needDraw = false;
+                    pnlData.Visible = true;
+                    btnSearch.Enabled = true;
+                    pnlChart.Visible = false;
+                    btnChart.Text = "图示";
+                    btnApply.Visible = true;
+                    btnCancel.Visible = true;
+                    btnConfirm.Visible = true;
+                    btnBatConfirm.Visible = true;
+                    btnOpType.Visible = true;
+                    btnBcCompose.Visible = true;
+
+                }
+            }
+        }
+
+        private void sbShelf_ValueChanged(object sender, EventArgs e)
+        {
+            int pos = sbShelf.Value / 30 + 1;
+            if (pos != currentPage)
+            {
+                currentPage = pos;
+                pnlChart.Invalidate();
+            }
+        }
+
+        private void pnlChart_Paint(object sender, PaintEventArgs e)
+        {
+            if (needDraw)
+            {
+                Font font = new Font("宋体", 9);
+                SizeF size = e.Graphics.MeasureString("第1排", font);
+                float adjustHeight = Math.Abs(size.Height - cellHeight) / 2;
+                size = e.Graphics.MeasureString("13", font);
+                float adjustWidth = (cellWidth - size.Width) / 2;
+                for (int i = 0; i <= 7; i++)
+                {
+                    string keys = "";
+                    int key = currentPage * 8 - (top.Length - (i + 1));
+                    if (key < 10)
+                    {
+                        keys = "0" + key.ToString();
+                    }
+                    else
+                    {
+                        keys = key.ToString();
+                    }
+                    if (!shelf.ContainsKey(key))
+                    {
+                        DataRow[] rows = cellTable.Select(string.Format("Shelf= {0}", keys), "CellCode");
+                        shelf.Add(key, rows);
+                    }
+
+                    DrawShelf(shelf[key], e.Graphics, top[i], font, adjustWidth, e);
+                    int tmpLeft = left + columns * cellWidth + 5 + cellWidth;
+                    for (int j = 0; j < rows; j++)
+                    {
+                        string s = string.Format("第{0}排第{1}层", shelf[key][i]["ShelfName"], Convert.ToString(j + 1).PadLeft(2, '0'));
+                        e.Graphics.DrawString(s, font, Brushes.DarkCyan, tmpLeft, top[i] - 12 + (j + 1) * cellHeight + adjustHeight);//画右边的字体
+                    }
+                }
+
+                if (filtered)
+                {
+                    int i = currentPage * top.Length;
+                    foreach (DataGridViewRow gridRow in dgvMain.Rows)
+                    {
+                        DataRowView cellRow = (DataRowView)gridRow.DataBoundItem;
+                        int shelf = Convert.ToInt32(cellRow["Shelf"]);
+                        int column = Convert.ToInt32(cellRow["ColNum"]) - 1;
+                        int row = Convert.ToInt32(cellRow["RowNum"]);
+                        int quantity = Convert.ToInt32(cellRow["QuantityJian"]);
+                        string storagenamein =storageName;
+                        string storagenameout = targetStorageName;
+                        string billType = BillTypes;
+                        int topa = 0;
+                        if (shelf <= i)
+                        {
+                            if (currentPage == 1)
+                            {
+                                topa = top[shelf - 1];
+                                FillCell(e.Graphics, topa, row, column, quantity, storagenamein, storagenameout, billType, e);
+                            }
+                            else if (currentPage == 2)
+                            {
+                                if (shelf >= 9)
+                                {
+                                    topa = top[shelf - 9];
+                                    FillCell(e.Graphics, topa, row, column, quantity, storagenamein, storagenameout, billType, e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DrawShelf(DataRow[] cellRows, Graphics g, int top, Font font, float adjustWidth, PaintEventArgs e)
+        {
+            int z = 0;
+            for (int j = 0; j < columns; j++)
+            {
+                if (j + 1 == 19)
+                {
+                    z = cellWidth;//空出过道或者走廊
+                }
+                g.DrawString(Convert.ToString(j + 1), font, Brushes.DarkCyan, left + j * cellWidth + adjustWidth + z, top);//画上面的数字
+            }
+            foreach (DataRow cellRow in cellRows)
+            {
+                int column = Convert.ToInt32(cellRow["ColNum"]) - 1;
+                int row = Convert.ToInt32(cellRow["RowNum"]);
+                int quantity = Convert.ToInt32(cellRow["QuantityJian"]);
+                string storagenamein =storageName;
+                string storagenameout = targetStorageName;
+                string billType = BillTypes;
+                int x = left + column * cellWidth;
+                int y = top + row * cellHeight - 7;
+                if (column >= 18)
+                    x = x + cellWidth;//空出过道或者走廊
+                g.DrawRectangle(Pens.Blue, new Rectangle(x, y, cellWidth, cellHeight));//画货位边框,y 这个可调整边框
+
+                if (!filtered)
+                    FillCell(g, top, row, column, quantity, storagenamein,storagenameout,billType, e);
+            }
+        }
+
+        private void FillCell(Graphics g, int top, int row, int column, int quantity, string storageNameIn,string storageNameOut,string billType, PaintEventArgs e)
+        {
+            int x = left + column * cellWidth;
+            int y = top + row * cellHeight - 5;
+
+            if (column >= 18 )
+                x = x + cellWidth;
+            if (storageNameIn != "" && billType != "4")
+                g.FillRectangle(Brushes.Green, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画入库货位绿色
+            else if (storageNameOut != "" && billType != "4")
+                g.FillRectangle(Brushes.Blue, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画出库货位蓝色
+            else if (billType=="4")
+                g.FillRectangle(Brushes.Red, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画盘点单货位信息，红色
+            else
+                g.FillRectangle(Brushes.White, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画与单据无关的货位，白色
+        }
+        private void pnlChart_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta < 0 && currentPage + 1 <= 3)
+                sbShelf.Value = (currentPage) * 30;
+            else if (e.Delta > 0 && currentPage - 1 >= 1)
+                sbShelf.Value = (currentPage - 2) * 30;
         }
     }
 }

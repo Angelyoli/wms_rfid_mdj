@@ -43,6 +43,15 @@
             this.pnlProgress = new System.Windows.Forms.Panel();
             this.lblInfo = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
+            this.ShelfName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CellCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CellName = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
+            this.ProductCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ProductName = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
+            this.QUANTITY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.WareCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.WareName = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
+            this.IsActive = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bsMain = new System.Windows.Forms.BindingSource(this.components);
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
@@ -53,15 +62,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.SHELFNAME = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CELLCODE = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CELLNAME = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
-            this.CURRENTPRODUCT = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRODUCTNAME = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
-            this.QUANTITY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.WH_CODE = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.WH_NAME = new DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn();
-            this.ISACTIVE = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlTool.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.pnlMain.SuspendLayout();
@@ -213,15 +213,15 @@
             this.dgvMain.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvMain.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.SHELFNAME,
-            this.CELLCODE,
-            this.CELLNAME,
-            this.CURRENTPRODUCT,
-            this.PRODUCTNAME,
+            this.ShelfName,
+            this.CellCode,
+            this.CellName,
+            this.ProductCode,
+            this.ProductName,
             this.QUANTITY,
-            this.WH_CODE,
-            this.WH_NAME,
-            this.ISACTIVE});
+            this.WareCode,
+            this.WareName,
+            this.IsActive});
             this.dgvMain.DataSource = this.bsMain;
             this.dgvMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvMain.Location = new System.Drawing.Point(0, 0);
@@ -241,6 +241,94 @@
             this.dgvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMain.Size = new System.Drawing.Size(1020, 132);
             this.dgvMain.TabIndex = 10;
+            // 
+            // ShelfName
+            // 
+            this.ShelfName.DataPropertyName = "ShelfName";
+            this.ShelfName.HeaderText = "货架名称";
+            this.ShelfName.Name = "ShelfName";
+            this.ShelfName.ReadOnly = true;
+            this.ShelfName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ShelfName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ShelfName.Width = 80;
+            // 
+            // CellCode
+            // 
+            this.CellCode.DataPropertyName = "CellCode";
+            this.CellCode.HeaderText = "货位编码";
+            this.CellCode.Name = "CellCode";
+            this.CellCode.ReadOnly = true;
+            this.CellCode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.CellCode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.CellCode.Width = 88;
+            // 
+            // CellName
+            // 
+            this.CellName.DataPropertyName = "CellName";
+            this.CellName.FilteringEnabled = false;
+            this.CellName.HeaderText = "货位名称";
+            this.CellName.Name = "CellName";
+            this.CellName.ReadOnly = true;
+            this.CellName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // ProductCode
+            // 
+            this.ProductCode.DataPropertyName = "ProductCode";
+            this.ProductCode.HeaderText = "卷烟代码";
+            this.ProductCode.Name = "ProductCode";
+            this.ProductCode.ReadOnly = true;
+            this.ProductCode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ProductCode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.ProductCode.Width = 80;
+            // 
+            // ProductName
+            // 
+            this.ProductName.DataPropertyName = "ProductName";
+            this.ProductName.FilteringEnabled = false;
+            this.ProductName.HeaderText = "卷烟名称";
+            this.ProductName.Name = "ProductName";
+            this.ProductName.ReadOnly = true;
+            this.ProductName.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ProductName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // QUANTITY
+            // 
+            this.QUANTITY.DataPropertyName = "QuantityJian";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.QUANTITY.DefaultCellStyle = dataGridViewCellStyle3;
+            this.QUANTITY.HeaderText = "卷烟数量";
+            this.QUANTITY.Name = "QUANTITY";
+            this.QUANTITY.ReadOnly = true;
+            this.QUANTITY.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.QUANTITY.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.QUANTITY.Width = 95;
+            // 
+            // WareCode
+            // 
+            this.WareCode.DataPropertyName = "WareCode";
+            this.WareCode.HeaderText = "仓库编码";
+            this.WareCode.Name = "WareCode";
+            this.WareCode.ReadOnly = true;
+            this.WareCode.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.WareCode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.WareCode.Width = 80;
+            // 
+            // WareName
+            // 
+            this.WareName.DataPropertyName = "WareName";
+            this.WareName.FilteringEnabled = false;
+            this.WareName.HeaderText = "仓库名称";
+            this.WareName.Name = "WareName";
+            this.WareName.ReadOnly = true;
+            this.WareName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // IsActive
+            // 
+            this.IsActive.DataPropertyName = "IsActive";
+            this.IsActive.HeaderText = "是否可用";
+            this.IsActive.Name = "IsActive";
+            this.IsActive.ReadOnly = true;
+            this.IsActive.Width = 80;
             // 
             // progressBar1
             // 
@@ -349,94 +437,6 @@
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label3.Visible = false;
             // 
-            // SHELFNAME
-            // 
-            this.SHELFNAME.DataPropertyName = "ShelfName";
-            this.SHELFNAME.HeaderText = "货架名称";
-            this.SHELFNAME.Name = "ShelfName";
-            this.SHELFNAME.ReadOnly = true;
-            this.SHELFNAME.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.SHELFNAME.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.SHELFNAME.Width = 80;
-            // 
-            // CELLCODE
-            // 
-            this.CELLCODE.DataPropertyName = "CellCode";
-            this.CELLCODE.HeaderText = "货位编码";
-            this.CELLCODE.Name = "CellCode";
-            this.CELLCODE.ReadOnly = true;
-            this.CELLCODE.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CELLCODE.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.CELLCODE.Width = 88;
-            // 
-            // CELLNAME
-            // 
-            this.CELLNAME.DataPropertyName = "CellName";
-            this.CELLNAME.FilteringEnabled = false;
-            this.CELLNAME.HeaderText = "货位名称";
-            this.CELLNAME.Name = "CellName";
-            this.CELLNAME.ReadOnly = true;
-            this.CELLNAME.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // CURRENTPRODUCT
-            // 
-            this.CURRENTPRODUCT.DataPropertyName = "ProductCode";
-            this.CURRENTPRODUCT.HeaderText = "卷烟代码";
-            this.CURRENTPRODUCT.Name = "ProductCode";
-            this.CURRENTPRODUCT.ReadOnly = true;
-            this.CURRENTPRODUCT.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CURRENTPRODUCT.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.CURRENTPRODUCT.Width = 80;
-            // 
-            // PRODUCTNAME
-            // 
-            this.PRODUCTNAME.DataPropertyName = "ProductName";
-            this.PRODUCTNAME.FilteringEnabled = false;
-            this.PRODUCTNAME.HeaderText = "卷烟名称";
-            this.PRODUCTNAME.Name = "ProductName";
-            this.PRODUCTNAME.ReadOnly = true;
-            this.PRODUCTNAME.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.PRODUCTNAME.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // QUANTITY
-            // 
-            this.QUANTITY.DataPropertyName = "QuantityJian";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.QUANTITY.DefaultCellStyle = dataGridViewCellStyle3;
-            this.QUANTITY.HeaderText = "卷烟数量";
-            this.QUANTITY.Name = "QUANTITY";
-            this.QUANTITY.ReadOnly = true;
-            this.QUANTITY.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.QUANTITY.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.QUANTITY.Width = 95;
-            // 
-            // WH_CODE
-            // 
-            this.WH_CODE.DataPropertyName = "WareCode";
-            this.WH_CODE.HeaderText = "仓库编码";
-            this.WH_CODE.Name = "WareCode";
-            this.WH_CODE.ReadOnly = true;
-            this.WH_CODE.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.WH_CODE.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.WH_CODE.Width = 80;
-            // 
-            // WH_NAME
-            // 
-            this.WH_NAME.DataPropertyName = "WareName";
-            this.WH_NAME.FilteringEnabled = false;
-            this.WH_NAME.HeaderText = "仓库名称";
-            this.WH_NAME.Name = "WareName";
-            this.WH_NAME.ReadOnly = true;
-            this.WH_NAME.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // ISACTIVE
-            // 
-            this.ISACTIVE.DataPropertyName = "IsActive";
-            this.ISACTIVE.HeaderText = "是否可用";
-            this.ISACTIVE.Name = "IsActive";
-            this.ISACTIVE.ReadOnly = true;
-            this.ISACTIVE.Width = 80;
-            // 
             // CellQueryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -488,6 +488,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn WH_CODE;
         private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn WH_NAME;
         private System.Windows.Forms.DataGridViewTextBoxColumn ISACTIVE;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ShelfName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CellCode;
+        private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn CellName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ProductCode;
+        private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn ProductName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn WareCode;
+        private DataGridViewAutoFilter.DataGridViewAutoFilterTextBoxColumn WareName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IsActive;
 
     }
 }

@@ -818,7 +818,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
             {
                 var cellInfo = CellRepository.GetQueryable().Join(StorageRepository.GetQueryable(),
                                 c => c.CellCode, s => s.CellCode, (c, s) => new { cellInfos = c, storage = s })
-                               .Where(c => c.cellInfos.CellType == "1").AsEnumerable()
+                               .Where(c => (c.cellInfos.CellType == "1" || c.cellInfos.CellType == "2") && c.cellInfos.IsActive=="1").AsEnumerable()
                                .Select(c => new THOK.Wms.AutomotiveSystems.Models.ShelfInfo()
                                 {
                                     ShelfCode=c.cellInfos.Shelf.ShelfCode,
