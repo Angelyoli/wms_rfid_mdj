@@ -12,13 +12,8 @@
                 if (r) {
                     isAbnormity = true;
                 }
-//                $.messager.confirm('打印', '是否汇总打印？', function (s) {
-//                    var isGroup = false;
-//                    if (s) {
-                        isGroup = true;
-//                    }
-                    window.location.href = '/StockMoveBill/CreateExcelToClient/?billNo=' + rowBill + '&isAbnormity=' + isAbnormity + '&isGroup=' + isGroup;
-//                });
+                var isGroup = true;
+                window.location.href = '/StockMoveBill/CreateExcelToClient/?billNo=' + rowBill + '&isAbnormity=' + isAbnormity + '&isGroup=' + isGroup;
             });
         } else {
             $.messager.alert('系统提示', '未选中行', "info");

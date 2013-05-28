@@ -7,6 +7,13 @@
         });
     })
 
+    $(function () {
+        $('#isSortType').combo({
+            editable: false,
+            panelHeight: 75
+        });
+    })
+
     function addClick() {
         $('#dlg').dialog('open').dialog('setTitle', '新增');
         addKey = true;
@@ -106,7 +113,16 @@
                       <tr>
                         <td width="60" style="text-align:right">排序：</td>
                         <td width="168"><input name="SortOrder" class="easyui-validatebox" /></td>
-                      </tr>              
+                      </tr>   
+                      <tr>
+                        <td style="text-align:right">机型：</td>
+                        <td><select id="isSortType" name="SortType" class="easyui-combobox" style="width:80px" required="true">
+		                        <option value="1">立式机</option>
+		                        <option value="2">通道机</option>
+                                <option value="0">混合烟道</option>
+	                        </select>
+	                    </td>
+                      </tr>            
                       <tr>
                         <td style="text-align:right">是否可用：</td>
                         <td><select id="IsActiveCc" name="IsActive" class="easyui-combobox" style="width:80px" required="true">

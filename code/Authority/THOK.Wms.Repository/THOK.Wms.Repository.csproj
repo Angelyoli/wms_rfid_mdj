@@ -340,6 +340,10 @@
     <Compile Include="Migrations\201305170719037_add_alarmInfo.Designer.cs">
       <DependentUpon>201305170719037_add_alarmInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201305240709279_add_SortingLowerLimit_SortType.cs" />
+    <Compile Include="Migrations\201305240709279_add_SortingLowerLimit_SortType.Designer.cs">
+      <DependentUpon>201305240709279_add_SortingLowerLimit_SortType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -368,6 +372,11 @@
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
       <Name>THOK.Wms.DbModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201305240709279_add_SortingLowerLimit_SortType.resx">
+      <DependentUpon>201305240709279_add_SortingLowerLimit_SortType.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
