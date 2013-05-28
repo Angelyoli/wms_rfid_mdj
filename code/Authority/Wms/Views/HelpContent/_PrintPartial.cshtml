@@ -1,0 +1,20 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var contentCode = null, contentName = null, nodeType = null, fatherNodeID = null, moduleID = null, isActive = null;
+
+        if ($('#contentCode').val() == null) { contentCode = ""; } else { contentCode = $('#contentCode').val(); }
+        if ($('#contentName').val() == null) { contentName = ""; } else { contentName = $('#contentName').val(); }
+        if (document.getElementById("nodeType") == null) { nodeType = ""; } else { nodeType = $('#nodeType').combo('getValue'); }
+        if ($('#fatherNodeID').val() == null) { fatherNodeID = ""; } else { fatherNodeID = $('#fatherNodeID').val(); }
+        if ($('#moduleID').val() == null) { moduleID = ""; } else { moduleID = $('#moduleID').val(); }
+        if (document.getElementById("isActive") == null) { isActive = ""; } else { isActive = $('#isActive').combo('getValue'); }
+
+        window.location.href = "/HelpContent/CreateExcelToClient/"
+                                + "?contentCode=" + contentCode
+                                + "&contentName=" + contentName
+                                + "&nodeType=" + nodeType
+                                + "&fatherNodeID=" + fatherNodeID
+                                + "&moduleID=" + moduleID
+                                + "&isActive=" + isActive;
+    }
+</script>
