@@ -134,8 +134,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     ps.Messages.Add("开始调度" + item.SortingLine.SortingLineName);
                     NotifyConnection(ps.Clone());
 
-                    using (var scope = new TransactionScope())
-                    {
+                    //using (var scope = new TransactionScope())
+                    //{
                         if (item.Products.Count() > 0)
                         {
                             if (cancellationToken.IsCancellationRequested) return;
@@ -299,7 +299,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 }
                                 if (cancellationToken.IsCancellationRequested) return;
                                 SortWorkDispatchRepository.SaveChanges();
-                                scope.Complete();
+                                //scope.Complete();
                                 ps.Messages.Add(item.SortingLine.SortingLineName + " 调度成功！");
                             }
                             else
@@ -310,7 +310,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 return;
                             }
                         }
-                    }
+                    //}
                 }
                 catch (Exception e)
                 {
@@ -428,6 +428,17 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         && s.Cell.Layer != 1)
                               .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder });
             if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
+
+            while(moveBillMaster.MoveBillDetails.Where(d=>d.ProductCode == product.ProductCode && d.CanRealOperate == "1").Select(d=>d.RealQuantity).Sum() < 150000)
+            {
+                var tmp = moveBillMaster.MoveBillDetails.Where(d => d.ProductCode == product.ProductCode && d.CanRealOperate == "0").OrderBy(d => d.RealQuantity);
+                if (tmp.Count() >= 1)
+                {
+                    tmp.FirstOrDefault().CanRealOperate = "1";
+                }
+                else
+                    break;
+            }
         }
 
         private void AllotBar(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> ss, Cell cell, ref decimal quantity, CancellationToken cancellationToken, ProgressState ps)
@@ -448,7 +459,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             && targetStorage.Quantity == 0
                             && targetStorage.InFrozenQuantity == 0)
                         {
-                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity);
+                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity,"1");
                             quantity -= allotQuantity;
                         }
                         else ps.Errors.Add("可用的移入目标库存记录不足！");                       
@@ -478,7 +489,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             && targetStorage.Quantity == 0
                             && targetStorage.InFrozenQuantity == 0)
                         {
-                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity);
+                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity,"1");
                             quantity -= allotQuantity;
                         }
                         else ps.Errors.Add("可用的移入目标库存记录不足！");  
@@ -508,7 +519,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             && targetStorage.Quantity == 0
                             && targetStorage.InFrozenQuantity == 0)
                         {
-                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity);
+                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity,"0");
                             quantity -= allotQuantity;
                         }
                         else ps.Errors.Add("可用的移入目标库存记录不足！");

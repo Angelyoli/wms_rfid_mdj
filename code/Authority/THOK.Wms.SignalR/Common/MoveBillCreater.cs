@@ -165,7 +165,7 @@ namespace THOK.Wms.SignalR.Common
                                 && targetStorage.InFrozenQuantity == 0)))
                     {
                         decimal moveQuantity = (sourceStorage.Quantity - sourceStorage.OutFrozenQuantity) % sourceStorage.Product.Unit.Count;
-                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity);
+                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity,"1");
                     }
 
                     if (targetStorage != null)
@@ -189,7 +189,7 @@ namespace THOK.Wms.SignalR.Common
                                 && targetStorage.InFrozenQuantity == 0)))
                     {
                         decimal moveQuantity = (sourceStorage.Quantity - sourceStorage.OutFrozenQuantity) % sourceStorage.Product.Unit.Count;
-                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity);
+                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity,"1");
                     }
                     if (targetStorage != null)
                     {
@@ -226,7 +226,7 @@ namespace THOK.Wms.SignalR.Common
                                                         + targetStorage.OutFrozenQuantity) / sourceStorage.Product.Unit.Count)
                                                         * sourceStorage.Product.Unit.Count;
                         moveQuantity = moveQuantity <= targetAbleQuantity ? moveQuantity : targetAbleQuantity;
-                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity);
+                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity,"1");
                     }
 
                     if (targetStorage != null)
@@ -260,7 +260,7 @@ namespace THOK.Wms.SignalR.Common
                                                         + targetStorage.OutFrozenQuantity)/sourceStorage.Product.Unit.Count)
                                                         * sourceStorage.Product.Unit.Count;
                         moveQuantity = moveQuantity <= targetAbleQuantity ? moveQuantity : targetAbleQuantity;
-                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity);
+                        AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, moveQuantity,"1");
                     }
                     if (targetStorage != null)
                     {
@@ -342,7 +342,7 @@ namespace THOK.Wms.SignalR.Common
             }
         }
 
-        public void AddToMoveBillDetail(MoveBillMaster moveBillMaster, Storage sourceStorage, Storage targetStorage, decimal moveQuantity)
+        public void AddToMoveBillDetail(MoveBillMaster moveBillMaster, Storage sourceStorage, Storage targetStorage, decimal moveQuantity,string canRealOperate)
         {
             if (moveQuantity > 0)
             {
@@ -357,7 +357,7 @@ namespace THOK.Wms.SignalR.Common
                 detail.UnitCode = sourceStorage.Product.UnitCode;
                 detail.RealQuantity = moveQuantity;
                 detail.Status = "0";
-                detail.CanRealOperate = moveQuantity > 300000 ? "0" : "1";
+                detail.CanRealOperate = canRealOperate;
                 moveBillMaster.MoveBillDetails.Add(detail);
                 sourceStorage.OutFrozenQuantity += moveQuantity;
                 targetStorage.ProductCode = sourceStorage.ProductCode;

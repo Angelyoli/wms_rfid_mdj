@@ -30,7 +30,7 @@ namespace THOK.WES.View
         private int operateBarQuantity = 0;
         private string url = @"http://59.61.87.212:8090/Task";
         private System.Media.SoundPlayer sp;
-        private string musicName = "";
+
         private bool needDraw = false;
         private bool filtered = false;
 
@@ -41,10 +41,15 @@ namespace THOK.WES.View
         private int currentPage = 1;
         private int[] top = new int[8];
         private int left = 5;
+
+        private string musicName = "";//音乐地址
+        private string isMusicName = "";//是否使用音乐提醒
+
         /// <summary>
         /// 1：入库单；2：出库单；3：移库单；4：盘点单
         /// </summary>
         protected string BillTypes = "";
+        private int isAppyInt = 0;
 
         //选择的主单；
         string billNo = string.Empty;
@@ -106,10 +111,10 @@ namespace THOK.WES.View
             OperateAreas = configUtil.GetConfig("Layers")["Number"];
             UseRfid = configUtil.GetConfig("RFID")["USEDRFID"];
             musicName = configUtil.GetConfig("MusicName")["Music"];
+            isMusicName = configUtil.GetConfig("MusicName")["IsMusic"];
             connection = new Connection(url + @"/automotiveSystems");
             connection.Received += new Action<string>(connection_Received);
-            connection.Closed += new Action(connection_Closed);
-            string name = @"G:\Music\Music ringtones\" + musicName + ".wav";
+            connection.Closed += new Action(connection_Closed);            
             sp = new System.Media.SoundPlayer(musicName);            
             if (configUtil.GetConfig("DeviceType")["Device"] == "0")
             {
@@ -210,11 +215,12 @@ namespace THOK.WES.View
             task.GetBillDetailCompleted += new Task.GetBillDetailCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
             {
                 InTask = false;
+               
                 if (billDetails != null && billDetails.Length != 0)
                 {
                     dgvMain.AutoGenerateColumns = false;
                     dgvMain.DataSource = billDetails;
-                    //Play();
+                    Play();
                     foreach (BillDetail billDetail in billDetails)
                     {
                         storageName = billDetail.StorageName;
@@ -235,6 +241,7 @@ namespace THOK.WES.View
                 else
                 {
                     dgvMain.DataSource = null;
+                    isAppyInt = 0;
                 }
                 ClosePlWailt();
                 dgvMain.ClearSelection();
@@ -916,11 +923,16 @@ namespace THOK.WES.View
                     return;
                 }
             }
-            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("1") && isApply && OperateType.Equals("Real"))
+            if (this.dgvMain.Rows.Count == 0)
+            {
+                isAppyInt = 0;
+            }
+            if (this.dgvMain.Rows.Count > 0 && BillTypes.Equals("3") && isApply && OperateType.Equals("Real") && isAppyInt == 0 && isMusicName.Equals("1"))
             {
                 try
                 {
                     sp.Play();
+                    isAppyInt++;
                 }
                 catch (Exception e)
                 {
