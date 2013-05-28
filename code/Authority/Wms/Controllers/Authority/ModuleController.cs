@@ -7,6 +7,10 @@ using Microsoft.Practices.Unity;
 using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using THOK.Authority.DbModel;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
+using System;
 
 namespace Authority.Controllers.Authority
 {
@@ -122,5 +126,23 @@ namespace Authority.Controllers.Authority
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+
+        //  /Module/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            bool systemIdIsNull = true;
+            Module module = new Module();
+            if (Request.QueryString["systemId"] != null && Request.QueryString["systemId"] != "")
+            {
+                systemIdIsNull = false;
+                module.System_SystemID = Guid.Parse(Request.QueryString["systemId"]);
+            }
+
+            ExportParam ep = new ExportParam();
+            ep.DT1 = ModuleService.GetModules(page, rows, module,systemIdIsNull);
+            ep.HeadTitle1 = "模块信息";
+            return PrintService.Print(ep);
+        }  
     }
 }

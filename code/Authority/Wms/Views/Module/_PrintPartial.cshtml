@@ -1,0 +1,10 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var systemId = "";
+
+        if (document.getElementById("cg-search") == null) { systemId = ""; } else { systemId = $('#cg-search').combo('getValue'); }
+        window.location.href = "/Module/CreateExcelToClient/"
+                                + "?systemId=" + systemId;
+    }
+</script>
+

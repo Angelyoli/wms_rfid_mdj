@@ -3,7 +3,7 @@
     function searchClick() {
         $('#isactive').combo({
             editable: false,
-            panelHeight: 45
+            panelHeight: 65
         });
         $('#dlg-search').dialog('open').dialog('setTitle', '查询');
     };
@@ -45,7 +45,8 @@
               <tr>
                 <td>状态</td>
                 <td align="left">      
-		            <select id="isactive" required="true" class="easyui-combobox" style="width: 50px">
+		            <select id="isactive" required="true" class="easyui-combobox" style="width: 130px">
+                        <option value="">请选择</option>
 		                <option value="true">启用</option>
 		                <option value="false">禁用</option>
 	                </select>
