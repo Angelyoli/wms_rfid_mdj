@@ -338,7 +338,7 @@ namespace THOK.Authority.Bll.Service
             {
                 help = HelpContentRepository.GetQueryable().FirstOrDefault(i => i.Module.System_SystemID == newId);
             }
-            return new { help.ContentText};
+            return help != null ? new { help.ContentText } : new { ContentText = "" };
         }
 
 
