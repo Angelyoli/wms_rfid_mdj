@@ -364,7 +364,7 @@ namespace THOK.Authority.Bll.Service
             return new { total, rows = users.ToArray() };
         }
 
-        public System.Data.DataTable GetUserConten(int page, int rows, string userName, string chineseName, string meMo)
+        public System.Data.DataTable GetUser(int page, int rows, string userName, string chineseName, string meMo)
         {
             IQueryable<User> userQuery = UserRepository.GetQueryable();
             var userc = userQuery.Where(c => c.UserName.Contains(userName)

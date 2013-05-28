@@ -42,7 +42,7 @@ namespace THOK.Authority.Bll.Interfaces
 
         bool Check(string userName);
 
-        System.Data.DataTable GetUserConten(int page, int rows, string userName, string chineseName, string meMo);
+        System.Data.DataTable GetUser(int page, int rows, string userName, string chineseName, string meMo);
 
     }
 }
