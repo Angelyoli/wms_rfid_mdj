@@ -328,7 +328,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                                 .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
                 //合并显示
                 result.IsSuccess = true;
-                result.BillDetails = billDetails2.Concat(billDetails1).ToArray();
+                result.BillDetails = billDetails2.Concat(billDetails1).OrderByDescending(i=>i.Status).ToArray();
             }
             catch (Exception e)
             {
@@ -1028,7 +1028,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
                                .GroupBy(r => new { r.ProductCode, r.ProductName })
                                .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
-                               .Where(r=>r.Quantity <300000).ToArray();
+                               .Where(r=>r.Quantity <60000).ToArray();
 
                 var tmp5 = sortingLineQuery
                              .Join(moveBillDetailQuery,

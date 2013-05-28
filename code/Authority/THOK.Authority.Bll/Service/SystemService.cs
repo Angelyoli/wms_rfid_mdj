@@ -113,5 +113,41 @@ namespace THOK.Authority.Bll.Service
             return userSystem.ToArray();
         }
 
+        public System.Data.DataTable GetSystem(int page, int rows, DbModel.System system, bool isactiveIsNull)
+        {
+            IQueryable<THOK.Authority.DbModel.System> systemQuery = SystemRepository.GetQueryable();
+
+            var systemDetail = systemQuery.Where(s =>
+                s.SystemName.Contains(system.SystemName)
+                && s.Description.Contains(system.Description));
+            if (isactiveIsNull == false)
+            {
+                systemDetail = systemDetail.Where(s => s.Status == system.Status);
+            }
+            systemDetail = systemDetail.OrderBy(s => s.SystemName);
+            var system_Detail = systemDetail.ToArray().Select(s => new
+            {
+                s.SystemName,
+                s.Description,
+                Status = s.Status == true ? "启用" : "禁用"
+            });
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            dt.Columns.Add("系统名称", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("状态", typeof(string));
+            foreach (var s in system_Detail)
+            {
+                dt.Rows.Add
+                    (
+                        s.SystemName,
+                        s.Description,
+                        s.Status
+                    );
+            }
+            return dt;
+        }
+
     }
 }

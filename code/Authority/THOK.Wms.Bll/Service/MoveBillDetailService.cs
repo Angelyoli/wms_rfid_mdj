@@ -419,16 +419,22 @@ namespace THOK.Wms.Bll.Service
                     moves = moves.Where(i => i.Product.IsAbnormity != "1");                
                 if (isGroup)
                 {
-                    var moveBillDetail = moves.GroupBy(m => new { m.ProductCode, m.Product.ProductName, m.Product })
-                        .Select(r => new { r.Key.ProductCode, r.Key.ProductName, r.Key.Product, RealQuantity = r.Sum(p => p.RealQuantity) }).AsEnumerable()
-                        .Select(r => new { r.Product, isAbnormity = r.Product.IsAbnormity=="1" ? "*" : " ", r.ProductCode, r.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
-                        .OrderBy(r => r.Product.BelongRegion);
+                    var moveBillDetail = moves.Where(s => s.OutCell.Area.AreaType != "5")
+                                            .GroupBy(m => new { m.ProductCode, m.Product.ProductName, m.Product })
+                                            .Select(r => new { r.Key.ProductCode, r.Key.ProductName, r.Key.Product, RealQuantity = r.Sum(p => p.RealQuantity) }).AsEnumerable()
+                                            .Select(r => new { r.Product, isAbnormity = r.Product.IsAbnormity == "1" ? "*" : " ", r.ProductCode, r.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
+                                            .OrderBy(r => r.Product.BelongRegion);
 
+                    var moveBillDetail1 = moves.Where(s => s.OutCell.Area.AreaType == "5").AsEnumerable()
+                                            .Select(r => new { OutCellName = r.OutCell.CellName, InCellName = r.InCell.CellName, r.Product, isAbnormity = r.Product.IsAbnormity == "1" ? "*" : " ", r.ProductCode, r.Product.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
+                                            .OrderBy(r => r.Product.BelongRegion);
+                   
                     dt.Columns.Add("产品代码", typeof(string));
                     dt.Columns.Add("产品名称", typeof(string));
                     dt.Columns.Add("数量(件)", typeof(string));
                     dt.Columns.Add("数量(条)", typeof(string));
                     dt.Columns.Add("异形烟(*)", typeof(string));
+                    dt.Columns.Add("分拣互移", typeof(string));
                     foreach (var m in moveBillDetail)
                     {
                         dt.Rows.Add
@@ -438,6 +444,18 @@ namespace THOK.Wms.Bll.Service
                                 , m.RealQuantity
                                 , m.strRealQuantity
                                 ,m.isAbnormity
+                            );
+                    }
+                    foreach (var m in moveBillDetail1)
+                    {
+                        dt.Rows.Add
+                            (
+                                  m.ProductCode
+                                , m.ProductName
+                                , Convert.ToDecimal(m.RealQuantity)
+                                , Convert.ToDecimal(m.strRealQuantity)
+                                , m.isAbnormity
+                               , m.OutCellName + "移入" + m.InCellName
                             );
                     }
                     if (moveBillDetail.Count() > 0)

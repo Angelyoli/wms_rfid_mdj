@@ -1,0 +1,14 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var cityName = null, description = null, isactive = null;
+
+        if ($('#cityname').val() == null) { cityName = ""; } else { cityName = $('#cityname').val(); }
+        if ($('#description').val() == null) { description = ""; } else { description = $('#description').val(); }
+        if (document.getElementById("isactive") == null) { isactive = ""; } else { isactive = $('#isactive').combo('getValue'); }
+
+        window.location.href = "/City/CreateExcelToClient/"
+                                + "?cityName=" + cityName
+                                + "&description=" + description
+                                + "&isactive=" + isactive;
+    }
+</script>

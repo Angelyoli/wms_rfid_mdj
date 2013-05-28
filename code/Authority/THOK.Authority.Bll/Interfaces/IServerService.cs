@@ -15,5 +15,7 @@ namespace THOK.Authority.Bll.Interfaces
         object GetServerById(string serverID);
 
         object GetDetails(string cityID,string serverID);
+
+        System.Data.DataTable GetServer(int page, int rows, Server server, bool isactiveIsNull);
     }
 }

@@ -1,0 +1,16 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var serverName = null, description = null, url = null, isactive=null;
+
+        if ($('#servername').val() == null) { serverName = ""; } else { serverName = $('#servername').val(); }
+        if ($('#description').val() == null) { description = ""; } else { description = $('#description').val(); }
+        if ($('#url').val() == null) { url = ""; } else { url = $('#url').val(); }
+        if (document.getElementById("isactive") == null) { isactive = ""; } else { isactive = $('#isactive').combo('getValue'); }
+
+        window.location.href = "/Server/CreateExcelToClient/"
+                                + "?serverName=" + serverName
+                                + "&description=" + description
+                                + "&url=" + url
+                                + "&isactive=" + isactive;
+    }
+</script>

@@ -897,5 +897,101 @@ namespace THOK.Authority.Bll.Service
         }
 
         #endregion
+
+        public System.Data.DataTable GetModules(int page, int rows, Module module, bool systemIdIsNull)
+        {
+            IQueryable<Module> moduleQuery = ModuleRepository.GetQueryable();
+
+            var moduleDetail = moduleQuery;
+            if (systemIdIsNull == false)
+            {
+                moduleDetail = moduleDetail.Where(m => m.System_SystemID == module.System_SystemID);
+            }
+
+            var system = moduleDetail.ToArray().OrderBy(s=>s.ShowOrder).Select(s => new {
+                ModuleName=s.System.SystemName,
+                IndicateImage="",
+                ModuleURL="",
+                ShowOrder=""
+            }).Distinct();
+
+            //var ParentModule = moduleDetail.Where(s => s.ParentModule_ModuleID == s.ModuleID).ToArray()
+            //    .OrderBy(s => s.ShowOrder)
+            //    .Select(p => new
+            //    {
+            //        ModuleName = "    |---" + p.ModuleName,
+            //        p.IndicateImage,
+            //        p.ModuleURL,
+            //        p.ShowOrder,
+            //        p.ModuleID
+            //    });
+
+            //var module_Detail = moduleDetail.Where(s => s.ParentModule_ModuleID != s.ModuleID).ToArray()
+            //    .OrderBy(s => s.ShowOrder)
+            //    .Select(m => new
+            //    {
+            //        ModuleName ="        |---"+m.ModuleName,
+            //        IndicateImage="        |---"+m.IndicateImage,
+            //        ModuleURL="        |---"+m.ModuleURL,
+            //        ShowOrder = "        |---" + m.ShowOrder
+            //    });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("模块名称", typeof(string));
+            dt.Columns.Add("图标", typeof(string));
+            dt.Columns.Add("路径", typeof(string));
+            dt.Columns.Add("显标顺序", typeof(string));
+            foreach (var sys in system)
+            {
+                dt.Rows.Add
+                    (
+                        sys.ModuleName,
+                        sys.IndicateImage,
+                        sys.ModuleURL,
+                        sys.ShowOrder
+                    );
+                var ParentModule = moduleDetail.Where(s => s.ParentModule_ModuleID == s.ModuleID 
+                    && s.System.SystemName==sys.ModuleName).ToArray()
+                    .OrderBy(s => s.ShowOrder)
+                    .Select(p => new
+                    {
+                        ModuleName = "    |---" + p.ModuleName,
+                        p.IndicateImage,
+                        p.ModuleURL,
+                        p.ShowOrder,
+                        p.ModuleID
+                    });
+                foreach (var pm in ParentModule)
+                {
+                    dt.Rows.Add
+                    (
+                        pm.ModuleName,
+                        pm.IndicateImage,
+                        pm.ModuleURL,
+                        pm.ShowOrder
+                    );
+                    var module_Detail = moduleDetail.Where(s => s.ParentModule_ModuleID != s.ModuleID
+                        && s.ParentModule_ModuleID == pm.ModuleID).ToArray()
+                        .OrderBy(s => s.ShowOrder)
+                        .Select(m => new
+                        {
+                            ModuleName = "    |---------" + m.ModuleName,
+                            m.IndicateImage,
+                            m.ModuleURL,
+                            m.ShowOrder
+                        });
+                    foreach (var m in module_Detail)
+                    {
+                        dt.Rows.Add
+                        (
+                            m.ModuleName,
+                            m.IndicateImage,
+                            m.ModuleURL,
+                            m.ShowOrder
+                        );
+                    }
+                }
+            }
+            return dt;
+        }
     }
 }
