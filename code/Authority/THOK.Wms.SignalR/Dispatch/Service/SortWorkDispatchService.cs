@@ -106,9 +106,9 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                              .AsParallel()
                                              .GroupBy(r => new { r.OrderDate, r.SortingLine })
                                              .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
-                                             .OrderBy(s=>s.SortingLine.SortingLineCode)//如果取整托盘多余的量是1号线就倒序排序，目前多余的量放入2号线，所以先调度一号线
+                                             .OrderBy(s => s.SortingLine.SortingLineCode)//如果取整托盘多余的量是1号线就倒序排序，目前多余的量放入2号线，所以先调度一号线
                                              .ToArray();
-
+           
             var temp1 = sortingLowerlimitQuery.GroupBy(r => new { r.Product,r.SortType })
                                               .Select(s => new { s.Key.Product,s.Key.SortType}).ToArray();
 
@@ -120,11 +120,13 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                                 dm => new { dm.OrderID },
                                                 od => new { od.OrderID },
                                                 (dm, od) => new { dm.ID, dm.WorkStatus, od.Product, od.RealQuantity }
-                                           ).WhereIn(s => s.ID, work)
+                                          ).WhereIn(s => s.ID, work)
                                             .GroupBy(r => new { r.Product})                                            
                                             .Select(s => new { s.Key.Product, Quantity = s.Sum(p => p.RealQuantity * s.Key.Product.UnitList.Unit02.Count) })
                                             .ToArray();
+
             Dictionary<string, decimal> proQuan = new Dictionary<string, decimal>();
+            
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
             if (employee == null)
@@ -250,11 +252,11 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                             decimal WholeCare = 0;//托盘数
                                             decimal SumSortingQuantity = 0;//整托盘的数量
                                             decimal Quantity1 = 0;
-                                            decimal Quantity2 = 0; 
+                                            decimal Quantity2 = 0;
                                             //取2条线数量总和取整托盘
                                             WholeCare = Math.Ceiling(SumlowerlimitQuantity.Quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
                                             SumSortingQuantity = Convert.ToDecimal(WholeCare * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
-                                           
+
                                             if (item.SortingLine.SortingLineCode == "1")
                                             {
                                                 //总订单量减去当前分拣线订单量，这里是另一条线的量
@@ -285,10 +287,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         }
                                     }
 
-                                    //取整托盘,查询这个卷烟是否是通道机的卷烟
+                                    //取整托盘,查询这个卷烟是否是通道机的卷烟                                   
                                     decimal wholeTray = 0;
                                     var temp4 = temp1.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode && s.SortType == "2");
-                                    if (product.Product.IsRounding == "2" || temp4!=null)
+                                    if (product.Product.IsRounding == "2" || temp4 != null)
                                     {
                                         wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
                                         quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
@@ -363,7 +365,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 }
                                 if (cancellationToken.IsCancellationRequested) return;
                                 SortWorkDispatchRepository.SaveChanges();
-                               // scope.Complete();
+                                //scope.Complete();
                                 ps.Messages.Add(item.SortingLine.SortingLineName + " 调度成功！");
                             }
                             else
@@ -374,7 +376,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 return;
                             }
                         }
-                   // }
+                    //}
                 }
                 catch (Exception e)
                 {
