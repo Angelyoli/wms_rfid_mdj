@@ -1,11 +1,17 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        var rowBill = '';
+        var rows = $('#details').datagrid('getSelected');
+        var row = $('#details').datagrid('getSelections');
+       
+        for (var i = 0; i < row.length; i++) {
+            rowBill += row[i].BillNo + ",";
+        }
+        alert(rowBill);
 
-        var row = $('#details').datagrid('getSelected');
         if (row) {
-            var rowBill = null;
-            if (row.BillNo == null) { rowBill = ""; } else { rowBill = row.BillNo; }
-            window.location.href = '/StockMoveBill/CreateExcelToClient/?billNo=' + rowBill;
+            var isGroup = true;
+            window.location.href = '/StockMoveBill/CreateExcelToClient/?billNo=' + rowBill + '&isGroup=' + isGroup;
         } else {
             $.messager.alert('系统提示', '未选中行', "info");
         }
