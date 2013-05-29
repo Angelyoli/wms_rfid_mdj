@@ -242,11 +242,19 @@ namespace THOK.WES.View
                 {
                     if (BillTypes == "1")
                     {
+                        DateTime now = DateTime.Now;
                         while (listRfid.Count == 0 || listRfid == null)
                         {
                             DisplayPlWailt();
                             listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
                             Application.DoEvents();
+                            DateTime newTiem =DateTime.Now;
+                            if (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 10000 && (listRfid.Count==0 ||listRfid==null))
+                            {
+                                MessageBox.Show("申请失败，读取不到RFID数据！" );
+                                RefreshData();
+                                return;
+                            }
                         }
                         RfidCode = RfidCode = listRfid[0].ToString();
                         Task task = new Task(url);
@@ -675,6 +683,13 @@ namespace THOK.WES.View
                             DisplayPlWailt();
                             listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
                             Application.DoEvents();
+                            DateTime now = DateTime.Now;
+                            if (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 10000 && (listRfid.Count == 0 || listRfid == null))
+                            {
+                                MessageBox.Show("申请失败，读取不到RFID数据！");
+                                RefreshData();
+                                return;
+                            }
                         }
                     }
                 }

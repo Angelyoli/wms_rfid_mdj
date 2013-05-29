@@ -441,6 +441,8 @@ namespace THOK.Wms.Bll.Service
                     dt.Columns.Add("数量(条)", typeof(string));
                     dt.Columns.Add("异形烟(*)", typeof(string));
                     dt.Columns.Add("分拣互移", typeof(string));
+                    dt.Columns.Add("01线签字", typeof(string));
+                    dt.Columns.Add("02线签字", typeof(string));
                     foreach (var m in moveBillDetail)//异形烟
                     {
                         dt.Rows.Add
@@ -452,8 +454,8 @@ namespace THOK.Wms.Bll.Service
                                 ,m.isAbnormity
                             );
                     }
-
-                    foreach (var m in moveBillDetail1)//不是整托的烟
+                    
+                    foreach (var m in moveBillDetail1)//不是整托的烟和整托的烟排序
                     {
                         dt.Rows.Add
                             (
