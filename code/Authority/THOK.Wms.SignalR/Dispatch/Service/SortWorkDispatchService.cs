@@ -86,7 +86,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
 
             var IsUselowerlimit = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsUselowerlimit");//查询调度是否使用下限 0 否 1是
- 
+            var isRoundingTray = systemParQuery.FirstOrDefault(s => s.ParameterName == "isRoundingTray");//查询立式机总量大于20件的是否取整托盘 0表示不取整托盘。其它任意数字表示大于的总数
+
             workDispatchId = workDispatchId.Substring(0, workDispatchId.Length - 1);
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
             
@@ -242,45 +243,48 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
                                     //立式机大于20件的取整托盘
                                     //查询这个卷烟是否是立式机的卷烟
-                                    var temp3 = temp1.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode && s.SortType == "1");
-                                    if (temp3 != null && temp.Count() >= 2 && quantity > 0)
+                                    if (isRoundingTray != null && Convert.ToInt32(isRoundingTray.ParameterValue) > 0)
                                     {
-                                        //查询这个订单在分拣当中是否存在.大于20件取整托盘,
-                                        var SumlowerlimitQuantity = temp2.FirstOrDefault(s => s.Product.ProductCode == temp3.Product.ProductCode);
-                                        if (SumlowerlimitQuantity != null && SumlowerlimitQuantity.Quantity > 200000)
+                                        var temp3 = temp1.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode && s.SortType == "1");
+                                        if (temp3 != null && temp.Count() >= 2 && quantity > 0)
                                         {
-                                            decimal WholeCare = 0;//托盘数
-                                            decimal SumSortingQuantity = 0;//整托盘的数量
-                                            decimal Quantity1 = 0;
-                                            decimal Quantity2 = 0;
-                                            //取2条线数量总和取整托盘
-                                            WholeCare = Math.Ceiling(SumlowerlimitQuantity.Quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
-                                            SumSortingQuantity = Convert.ToDecimal(WholeCare * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
-
-                                            if (item.SortingLine.SortingLineCode == "1")
+                                            //查询这个订单在分拣当中是否存在.大于20件取整托盘,
+                                            var SumlowerlimitQuantity = temp2.FirstOrDefault(s => s.Product.ProductCode == temp3.Product.ProductCode);
+                                            if (SumlowerlimitQuantity != null && SumlowerlimitQuantity.Quantity > (Convert.ToInt32(isRoundingTray.ParameterValue) * product.Product.Unit.Count))
                                             {
-                                                //总订单量减去当前分拣线订单量，这里是另一条线的量
-                                                Quantity1 = SumlowerlimitQuantity.Quantity - product.SumQuantity;
-                                                if (Quantity1 > 0)
-                                                {
-                                                    //整托盘数量减去另一条线的量，
-                                                    Quantity1 = Math.Ceiling(Quantity1 / product.Product.Unit.Count) * product.Product.Unit.Count;
-                                                    Quantity2 = SumSortingQuantity - Quantity1;
+                                                decimal WholeCare = 0;//托盘数
+                                                decimal SumSortingQuantity = 0;//整托盘的数量
+                                                decimal Quantity1 = 0;
+                                                decimal Quantity2 = 0;
+                                                //取2条线数量总和取整托盘
+                                                WholeCare = Math.Ceiling(SumlowerlimitQuantity.Quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                                SumSortingQuantity = Convert.ToDecimal(WholeCare * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
 
-                                                    if (Quantity2 >= quantity)
+                                                if (item.SortingLine.SortingLineCode == "1")
+                                                {
+                                                    //总订单量减去当前分拣线订单量，这里是另一条线的量
+                                                    Quantity1 = SumlowerlimitQuantity.Quantity - product.SumQuantity;
+                                                    if (Quantity1 > 0)
                                                     {
-                                                        quantity = Quantity2;
-                                                        proQuan.Add(product.Product.ProductCode, SumSortingQuantity - quantity);
+                                                        //整托盘数量减去另一条线的量，
+                                                        Quantity1 = Math.Ceiling(Quantity1 / product.Product.Unit.Count) * product.Product.Unit.Count;
+                                                        Quantity2 = SumSortingQuantity - Quantity1;
+
+                                                        if (Quantity2 >= quantity)
+                                                        {
+                                                            quantity = Quantity2;
+                                                            proQuan.Add(product.Product.ProductCode, SumSortingQuantity - quantity);
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                if (proQuan.Keys.Contains(product.Product.ProductCode))
+                                                else
                                                 {
-                                                    if (proQuan[product.Product.ProductCode] >= quantity)
+                                                    if (proQuan.Keys.Contains(product.Product.ProductCode))
                                                     {
-                                                        quantity = proQuan[product.Product.ProductCode];
+                                                        if (proQuan[product.Product.ProductCode] >= quantity)
+                                                        {
+                                                            quantity = proQuan[product.Product.ProductCode];
+                                                        }
                                                     }
                                                 }
                                             }
