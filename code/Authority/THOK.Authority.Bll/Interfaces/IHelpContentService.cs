@@ -24,5 +24,7 @@ namespace THOK.Authority.Bll.Interfaces
 
 
         object GetSingleContentTxt(string helpId);
+
+        System.Data.DataTable GetHelpConten(int page, int rows, string contentCode, string contentName, string nodeType, string fatherNodeID, string moduleID, string isActive);
     }
 }

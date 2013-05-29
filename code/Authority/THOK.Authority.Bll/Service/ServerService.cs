@@ -98,5 +98,47 @@ namespace THOK.Authority.Bll.Service
             return servers.ToArray();
         }
 
+        public System.Data.DataTable GetServer(int page, int rows, Server server, bool isactiveIsNull)
+        {
+            IQueryable<Server> serverQuery = ServerRepository.GetQueryable();
+
+            var serverDetail = serverQuery.Where(s =>
+                s.ServerName.Contains(server.ServerName)
+                && s.Description.Contains(server.Description)
+                && s.Url.Contains(server.Url));
+            if (isactiveIsNull == false)
+            {
+                serverDetail = serverDetail.Where(s => s.IsActive == server.IsActive);
+            }
+            serverDetail = serverDetail.OrderBy(s => s.ServerName);
+            var server_Detail = serverDetail.ToArray().Select(s => new
+            {
+                s.ServerName,
+                s.City.CityName,
+                s.Url,
+                s.Description,
+                IsActive = s.IsActive == true ? "启用" : "禁用"
+            });
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            dt.Columns.Add("服务器名称", typeof(string));
+            dt.Columns.Add("地市名称", typeof(string));
+            dt.Columns.Add("URL", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("状态", typeof(string));
+            foreach (var s in server_Detail)
+            {
+                dt.Rows.Add
+                    (
+                        s.ServerName,
+                        s.CityName,
+                        s.Url,
+                        s.Description,
+                        s.IsActive
+                    );
+            }
+            return dt;
+        }
     }
 }

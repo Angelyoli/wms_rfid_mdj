@@ -6,6 +6,8 @@ using Microsoft.Practices.Unity;
 using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.Authority
 {
@@ -73,5 +75,29 @@ namespace Authority.Controllers.Authority
             var systems = SystemService.GetDetails(userName, systemId, cityId);
             return Json(systems, "text", JsonRequestBehavior.AllowGet);
         }
+
+        //  /System/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            bool isactiveIsNull=true;
+            string systemName = Request.QueryString["systemName"] ?? "";
+            string description = Request.QueryString["description"] ?? "";
+            bool isactive=true;
+            if(Request.QueryString["isactive"]!=null && Request.QueryString["isactive"]!="")
+            {
+                isactiveIsNull=false;
+                isactive = bool.Parse(Request.QueryString["isactive"]);
+            }
+            THOK.Authority.DbModel.System system = new THOK.Authority.DbModel.System();
+            system.SystemName = systemName;
+            system.Description = description;
+            system.Status = isactive;
+
+            ExportParam ep = new ExportParam();
+            ep.DT1 = SystemService.GetSystem(page, rows, system,isactiveIsNull);
+            ep.HeadTitle1 = "系统信息";
+            return PrintService.Print(ep);
+        }  
     }
 }
