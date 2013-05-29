@@ -34,7 +34,7 @@ namespace THOK.WES.View
         private bool needDraw = false;
         private bool filtered = false;
 
-        private int columns = 12;
+        private int columns = 38;
         private int rows = 3;
         private int cellWidth = 0;
         private int cellHeight = 0;
@@ -257,8 +257,8 @@ namespace THOK.WES.View
                         cellTable.Columns.Add("CellName");
                         cellTable.Columns.Add("ProductCode");
                         cellTable.Columns.Add("ProductName");
-                        cellTable.Columns.Add("QuantityTiao");
-                        cellTable.Columns.Add("QuantityJian");
+                        cellTable.Columns.Add("QuantityTiao", typeof(decimal));
+                        cellTable.Columns.Add("QuantityJian", typeof(decimal));
                         cellTable.Columns.Add("WareCode");
                         cellTable.Columns.Add("WareName");
                         cellTable.Columns.Add("IsActive");
@@ -945,7 +945,7 @@ namespace THOK.WES.View
         {
             if (cellTable != null && cellTable.Rows.Count != 0)
             {
-                if (dgvMain.SelectedRows.Count != 0 && pnlData.Visible)
+                if (pnlData.Visible)
                 {
                     filtered = true;
                     needDraw = true;
@@ -959,6 +959,10 @@ namespace THOK.WES.View
                     btnBatConfirm.Visible = false;
                     btnOpType.Visible = false;
                     btnBcCompose.Visible = false;
+                    button1.Visible = true;
+                    button2.Visible = true;
+                    button3.Visible = true;
+                    button4.Visible = true;
                 }
 
                 else
@@ -974,6 +978,10 @@ namespace THOK.WES.View
                     btnBatConfirm.Visible = true;
                     btnOpType.Visible = true;
                     btnBcCompose.Visible = true;
+                    button1.Visible = false;
+                    button2.Visible = false;
+                    button3.Visible = false;
+                    button4.Visible = false;
 
                 }
             }
@@ -1024,34 +1032,59 @@ namespace THOK.WES.View
                         e.Graphics.DrawString(s, font, Brushes.DarkCyan, tmpLeft, top[i] - 12 + (j + 1) * cellHeight + adjustHeight);//画右边的字体
                     }
                 }
-
                 if (filtered)
                 {
                     int i = currentPage * top.Length;
-                    foreach (DataGridViewRow gridRow in dgvMain.Rows)
+                    for (int j = 0; j < cellTable.Rows.Count; j++)
                     {
-                        DataRowView cellRow = (DataRowView)gridRow.DataBoundItem;
-                        int shelf = Convert.ToInt32(cellRow["Shelf"]);
-                        int column = Convert.ToInt32(cellRow["ColNum"]) - 1;
-                        int row = Convert.ToInt32(cellRow["RowNum"]);
-                        int quantity = Convert.ToInt32(cellRow["QuantityJian"]);
-                        string storagenamein =storageName;
-                        string storagenameout = targetStorageName;
-                        string billType = BillTypes;
+                        int shelf = Convert.ToInt32(cellTable.Rows[j]["Shelf"]);
+                        int column = Convert.ToInt32(cellTable.Rows[j]["ColNum"]) - 1;
+                        int row = Convert.ToInt32(cellTable.Rows[j]["RowNum"]);
+                        int quantity = Convert.ToInt32(cellTable.Rows[j]["QuantityJian"]);
+                        string storagename = cellTable.Rows[j]["CellName"].ToString();
+                        string storagenamein = "";
+                        string storagenameout = "";
+                        string billType = "";
+                        foreach (DataGridViewRow gridRow in dgvMain.Rows)
+                        {
+                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).StorageName)
+                            {
+                                storagenamein = ((BillDetail)(gridRow.DataBoundItem)).StorageName;
+                            }
+                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).TargetStorageName)
+                            {
+                                storagenameout = ((BillDetail)(gridRow.DataBoundItem)).TargetStorageName;
+                            }
+                            billType = BillTypes;
+                        }
                         int topa = 0;
                         if (shelf <= i)
                         {
                             if (currentPage == 1)
                             {
                                 topa = top[shelf - 1];
-                                FillCell(e.Graphics, topa, row, column, quantity, storagenamein, storagenameout, billType, e);
+                                if (storagenamein == storagename || storagename == storagenameout)
+                                {
+                                    FillCell(e.Graphics, topa, row, column, quantity, storagename, storagenamein, storagenameout, billType, e);
+                                }
+                                else
+                                {
+                                    FillCell(e.Graphics, topa, row, column, quantity, storagename, e);
+                                }
                             }
                             else if (currentPage == 2)
                             {
                                 if (shelf >= 9)
                                 {
                                     topa = top[shelf - 9];
-                                    FillCell(e.Graphics, topa, row, column, quantity, storagenamein, storagenameout, billType, e);
+                                    if (storagenamein == storagename || storagename == storagenameout)
+                                    {
+                                        FillCell(e.Graphics, topa, row, column, quantity, storagename, storagenamein, storagenameout, billType, e);
+                                    }
+                                    else
+                                    {
+                                        FillCell(e.Graphics, topa, row, column, quantity, storagename, e);
+                                    }
                                 }
                             }
                         }
@@ -1076,6 +1109,7 @@ namespace THOK.WES.View
                 int column = Convert.ToInt32(cellRow["ColNum"]) - 1;
                 int row = Convert.ToInt32(cellRow["RowNum"]);
                 int quantity = Convert.ToInt32(cellRow["QuantityJian"]);
+                string storagename =cellRow["CellName"].ToString();
                 string storagenamein =storageName;
                 string storagenameout = targetStorageName;
                 string billType = BillTypes;
@@ -1086,25 +1120,34 @@ namespace THOK.WES.View
                 g.DrawRectangle(Pens.Blue, new Rectangle(x, y, cellWidth, cellHeight));//画货位边框,y 这个可调整边框
 
                 if (!filtered)
-                    FillCell(g, top, row, column, quantity, storagenamein,storagenameout,billType, e);
+                    FillCell(g, top, row, column, quantity,storagename, storagenamein,storagenameout,billType, e);
             }
         }
 
-        private void FillCell(Graphics g, int top, int row, int column, int quantity, string storageNameIn,string storageNameOut,string billType, PaintEventArgs e)
+        private void FillCell(Graphics g, int top, int row, int column, int quantity,string storagename, string storageNameIn,string storageNameOut,string billType, PaintEventArgs e)
+        {
+            int x = left + column * cellWidth;
+            int y = top + row * cellHeight - 5;
+            if (column >= 18 )
+                x = x + cellWidth;
+            if (quantity > 0 && storageNameOut == storagename && billType != "4")
+                g.FillRectangle(Brushes.RoyalBlue, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画出库货位蓝色
+            else if (storageNameIn == storagename &&  billType != "4")
+                g.FillRectangle(Brushes.Green, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画入库货位绿色
+            else if (billType == "4" && storageNameIn == storagename)
+                g.FillRectangle(Brushes.Red, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画盘点单货位信息，红色
+            else
+                g.FillRectangle(Brushes.White, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画与单据无关的货位，白色
+        }
+        private void FillCell(Graphics g, int top, int row, int column, int quantity, string storAgeName, PaintEventArgs e)
         {
             int x = left + column * cellWidth;
             int y = top + row * cellHeight - 5;
 
-            if (column >= 18 )
+            if (column >= 18)
                 x = x + cellWidth;
-            if (storageNameIn != "" && billType != "4")
-                g.FillRectangle(Brushes.Green, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画入库货位绿色
-            else if (storageNameOut != "" && billType != "4")
-                g.FillRectangle(Brushes.Blue, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画出库货位蓝色
-            else if (billType=="4")
-                g.FillRectangle(Brushes.Red, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画盘点单货位信息，红色
-            else
-                g.FillRectangle(Brushes.White, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画与单据无关的货位，白色
+                g.FillRectangle(Brushes.White, new Rectangle(x + 2, y, cellWidth - 3, cellHeight - 4));//画空货位
+
         }
         private void pnlChart_MouseWheel(object sender, MouseEventArgs e)
         {
@@ -1112,6 +1155,17 @@ namespace THOK.WES.View
                 sbShelf.Value = (currentPage) * 30;
             else if (e.Delta > 0 && currentPage - 1 >= 1)
                 sbShelf.Value = (currentPage - 2) * 30;
+        }
+        private void pnlChart_Resize(object sender, EventArgs e)
+        {
+            cellWidth = (pnlContent.Width - 90 - sbShelf.Width - 20) / columns;
+            cellHeight = ((pnlContent.Height / 8) / rows) - 7;
+
+            top[0] = 0;
+            for (int i = 1; i < top.Length; i++)
+            {
+                top[i] = pnlContent.Height / top.Length * i;
+            }
         }
     }
 }

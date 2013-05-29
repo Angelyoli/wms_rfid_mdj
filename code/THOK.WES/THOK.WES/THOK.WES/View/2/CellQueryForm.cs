@@ -17,7 +17,7 @@ namespace THOK.WES.View
         private bool needDraw = false;
         private bool filtered = false;
 
-        private int columns = 12;
+        private int columns =38;
         private int rows = 3;
         private int cellWidth = 0;
         private int cellHeight = 0;
@@ -81,7 +81,7 @@ namespace THOK.WES.View
                     {
                         if (shelfInfo != null)
                         {
-                            bsMain.DataSource = shelfInfo;
+                            //bsMain.DataSource = shelfInfo;
                             cellTable = new DataTable();
                             cellTable.Columns.Add("ShelfCode");
                             cellTable.Columns.Add("ShelfName");
@@ -89,8 +89,8 @@ namespace THOK.WES.View
                             cellTable.Columns.Add("CellName");
                             cellTable.Columns.Add("ProductCode");
                             cellTable.Columns.Add("ProductName");
-                            cellTable.Columns.Add("QuantityTiao");
-                            cellTable.Columns.Add("QuantityJian");
+                            cellTable.Columns.Add("QuantityTiao", typeof(decimal));
+                            cellTable.Columns.Add("QuantityJian",typeof(decimal));
                             cellTable.Columns.Add("WareCode");
                             cellTable.Columns.Add("WareName");
                             cellTable.Columns.Add("IsActive");
@@ -117,6 +117,7 @@ namespace THOK.WES.View
                                 dr["Shelf"] = shelf.Shelf;
                                 cellTable.Rows.Add(dr);
                             }
+                            bsMain.DataSource = cellTable;
                         }
                         else
                         {
@@ -207,7 +208,7 @@ namespace THOK.WES.View
                 label2.Text = "¿â´æ£º" + qu + "¼þ";
                 for (int i = 0; i <= 7; i++)
                 {
-                    string keys="";
+                    string keys = "";
                     int key = currentPage * 8 - (top.Length - (i + 1));
                     if (key < 10)
                     {
@@ -223,12 +224,12 @@ namespace THOK.WES.View
                         shelf.Add(key, rows);
                     }
 
-                    DrawShelf(shelf[key], e.Graphics, top[i], font, adjustWidth,e);
+                    DrawShelf(shelf[key], e.Graphics, top[i], font, adjustWidth, e);
                     int tmpLeft = left + columns * cellWidth + 5 + cellWidth;
                     for (int j = 0; j < rows; j++)
                     {
                         string s = string.Format("µÚ{0}ÅÅµÚ{1}²ã", shelf[key][i]["ShelfName"], Convert.ToString(j + 1).PadLeft(2, '0'));
-                        e.Graphics.DrawString(s, font, Brushes.DarkCyan, tmpLeft, top[i]-12 + (j + 1) * cellHeight + adjustHeight);//»­ÓÒ±ßµÄ×ÖÌå
+                        e.Graphics.DrawString(s, font, Brushes.DarkCyan, tmpLeft, top[i] - 12 + (j + 1) * cellHeight + adjustHeight);//»­ÓÒ±ßµÄ×ÖÌå
                     }
                 }
 
