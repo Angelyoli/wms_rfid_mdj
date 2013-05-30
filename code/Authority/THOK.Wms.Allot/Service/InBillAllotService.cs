@@ -466,7 +466,7 @@ namespace THOK.Wms.Allot.Service
             var storages0 = StorageRepository.GetQueryable();
             var cellstorage = cell0.Join(storages0, c => c.CellCode, s => s.CellCode, (c, s) => new { cell0 = c, storages0 = s });
             var cellstorages = cellstorage.Where(c => c.cell0.CellCode == cellCode).Select(c => new {product=c.storages0.Product.ProductName }).ToArray();
-            var storages = StorageRepository.GetQueryable().Single(s => s.CellCode == cellCode);
+            var storages = StorageRepository.GetQueryable().FirstOrDefault(s => s.CellCode == cellCode);
             if (storages != null)
             {
                 quantity = storages.Quantity;
