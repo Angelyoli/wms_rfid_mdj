@@ -1,0 +1,14 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var userName = null, chineseName = null, meMo = null;
+
+        if ($('#userName').val() == null) { userName = ""; } else { userName = $('#userName').val(); }
+        if ($('#chineseName').val() == null) { chineseName = ""; } else { chineseName = $('#chineseName').val(); }
+        if ($('#meMo').val() == null) { meMo = ""; } else { meMo = $('#meMo').val(); }
+
+        window.location.href = "/User/CreateExcelToClient/"
+                                + "?userName=" + userName
+                                + "&chineseName=" + chineseName
+                                + "&meMo=" + meMo;
+    }
+</script>

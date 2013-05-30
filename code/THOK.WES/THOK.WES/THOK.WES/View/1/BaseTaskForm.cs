@@ -150,6 +150,7 @@ namespace THOK.WES.View
         {
             try
             {
+                sp.Stop();
                 Task task = new Task(url);
                 task.GetBillMasterCompleted += new Task.GetBillMasterCompletedEventHandler(delegate(bool isSuccess, string msg, BillMaster[] billMasters)
                 {
@@ -220,7 +221,7 @@ namespace THOK.WES.View
                 {
                     dgvMain.AutoGenerateColumns = false;
                     dgvMain.DataSource = billDetails;
-                    Play();
+                    
                     foreach (BillDetail billDetail in billDetails)
                     {
                         storageName = billDetail.StorageName;
@@ -347,6 +348,7 @@ namespace THOK.WES.View
         {
             try
             {
+                sp.Stop();
                 if (dgvMain.SelectedRows.Count != 0)
                 {
                     DisplayPlWailt();
@@ -386,6 +388,7 @@ namespace THOK.WES.View
         //确认
         private void btnConfirm_Click(object sender, EventArgs e)
         {
+            sp.Stop();
             ConfirmPubliceMethod();
             RefreshData();
         }
@@ -393,6 +396,7 @@ namespace THOK.WES.View
         //批量确认
         private void btnBatConfirm_Click(object sender, EventArgs e)
         {
+            sp.Stop();
             if (!UseRfid.Equals("0"))
             {
                 MessageBox.Show("使用RFID无法批量完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -465,6 +469,7 @@ namespace THOK.WES.View
 
         private void btnExit_Click(object sender, EventArgs e)
         {
+            sp.Stop();
             Exit();
         }
 

@@ -13,6 +13,7 @@ namespace THOK.Wms.DbModel
         public string UnitCode { get; set; }
         public decimal Quantity { get; set; }
         public int? SortOrder { get; set; }
+        public string SortType { get; set; }
         public string IsActive { get; set; }
         public DateTime UpdateTime { get; set; }
 

@@ -106,8 +106,26 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                              .AsParallel()
                                              .GroupBy(r => new { r.OrderDate, r.SortingLine })
                                              .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
+                                             .OrderBy(s => s.SortingLine.SortingLineCode)//如果取整托盘多余的量是1号线就倒序排序，目前多余的量放入2号线，所以先调度一号线
                                              .ToArray();
            
+            var temp1 = sortingLowerlimitQuery.GroupBy(r => new { r.Product,r.SortType })
+                                              .Select(s => new { s.Key.Product,s.Key.SortType}).ToArray();
+
+            var temp2 = sortOrderDispatchQuery.Join(sortOrderQuery,
+                                                dp => new { dp.OrderDate, dp.DeliverLineCode },
+                                                om => new { om.OrderDate, om.DeliverLineCode },
+                                                (dp, om) => new { dp.ID, dp.WorkStatus, dp.OrderDate, om.OrderID }
+                                           ).Join(sortOrderDetailQuery,
+                                                dm => new { dm.OrderID },
+                                                od => new { od.OrderID },
+                                                (dm, od) => new { dm.ID, dm.WorkStatus, od.Product, od.RealQuantity }
+                                          ).WhereIn(s => s.ID, work)
+                                            .GroupBy(r => new { r.Product})                                            
+                                            .Select(s => new { s.Key.Product, Quantity = s.Sum(p => p.RealQuantity * s.Key.Product.UnitList.Unit02.Count) })
+                                            .ToArray();
+
+            Dictionary<string, decimal> proQuan = new Dictionary<string, decimal>();
             
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
@@ -222,9 +240,57 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
                                                    * product.Product.Unit.Count;
 
-                                    //取整托盘
+                                    //立式机大于20件的取整托盘
+                                    //查询这个卷烟是否是立式机的卷烟
+                                    var temp3 = temp1.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode && s.SortType == "1");
+                                    if (temp3 != null && temp.Count() >= 2 && quantity > 0)
+                                    {
+                                        //查询这个订单在分拣当中是否存在.大于20件取整托盘,
+                                        var SumlowerlimitQuantity = temp2.FirstOrDefault(s => s.Product.ProductCode == temp3.Product.ProductCode);
+                                        if (SumlowerlimitQuantity != null && SumlowerlimitQuantity.Quantity > 200000)
+                                        {
+                                            decimal WholeCare = 0;//托盘数
+                                            decimal SumSortingQuantity = 0;//整托盘的数量
+                                            decimal Quantity1 = 0;
+                                            decimal Quantity2 = 0;
+                                            //取2条线数量总和取整托盘
+                                            WholeCare = Math.Ceiling(SumlowerlimitQuantity.Quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                            SumSortingQuantity = Convert.ToDecimal(WholeCare * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
+
+                                            if (item.SortingLine.SortingLineCode == "1")
+                                            {
+                                                //总订单量减去当前分拣线订单量，这里是另一条线的量
+                                                Quantity1 = SumlowerlimitQuantity.Quantity - product.SumQuantity;
+                                                if (Quantity1 > 0)
+                                                {
+                                                    //整托盘数量减去另一条线的量，
+                                                    Quantity1 = Math.Ceiling(Quantity1 / product.Product.Unit.Count) * product.Product.Unit.Count;
+                                                    Quantity2 = SumSortingQuantity - Quantity1;
+
+                                                    if (Quantity2 >= quantity)
+                                                    {
+                                                        quantity = Quantity2;
+                                                        proQuan.Add(product.Product.ProductCode, SumSortingQuantity - quantity);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (proQuan.Keys.Contains(product.Product.ProductCode))
+                                                {
+                                                    if (proQuan[product.Product.ProductCode] >= quantity)
+                                                    {
+                                                        quantity = proQuan[product.Product.ProductCode];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    //取整托盘,查询这个卷烟是否是通道机的卷烟                                   
                                     decimal wholeTray = 0;
-                                    if (product.Product.IsRounding == "2")
+                                    var temp4 = temp1.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode && s.SortType == "2");
+                                    if (product.Product.IsRounding == "2" || temp4 != null)
                                     {
                                         wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
                                         quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
