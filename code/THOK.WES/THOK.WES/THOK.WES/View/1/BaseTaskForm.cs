@@ -1047,15 +1047,23 @@ namespace THOK.WES.View
                         string billType = "";
                         foreach (DataGridViewRow gridRow in dgvMain.Rows)
                         {
-                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).StorageName)
+                            billType = BillTypes;
+                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).StorageName && (billType == "1" || billType == "4"))
                             {
                                 storagenamein = ((BillDetail)(gridRow.DataBoundItem)).StorageName;
                             }
-                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).TargetStorageName)
+                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).StorageName && billType == "2")
                             {
-                                storagenameout = ((BillDetail)(gridRow.DataBoundItem)).TargetStorageName;
+                                storagenameout = ((BillDetail)(gridRow.DataBoundItem)).StorageName;
                             }
-                            billType = BillTypes;
+                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).TargetStorageName && billType == "3")
+                            {
+                                storagenamein = ((BillDetail)(gridRow.DataBoundItem)).TargetStorageName;
+                            }
+                            if (storagename == ((BillDetail)(gridRow.DataBoundItem)).StorageName && billType == "3")
+                            {
+                                storagenameout = ((BillDetail)(gridRow.DataBoundItem)).StorageName;
+                            }
                         }
                         int topa = 0;
                         if (shelf <= i)
