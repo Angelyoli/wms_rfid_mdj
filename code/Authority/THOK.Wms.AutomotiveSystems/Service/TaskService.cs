@@ -813,7 +813,6 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         public void GetShelf(Result result)
         {
-            THOK.Wms.AutomotiveSystems.Models.ShelfInfo[] shelfInfo = new THOK.Wms.AutomotiveSystems.Models.ShelfInfo[] { };
             try
             {
                 var cellInfo = CellRepository.GetQueryable().Join(StorageRepository.GetQueryable(),
@@ -837,9 +836,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     Shelf = c.cellInfos.ShelfCode.Substring(8,2).Trim()
                                     //UpdateDate=c.storage.UpdateTime==null?DateTime.Now:c.storage.UpdateTime
                                 }).ToArray();
-                shelfInfo = shelfInfo.Concat(cellInfo).ToArray();
                 result.IsSuccess = true;
-                result.ShelfInfo = shelfInfo;
+                result.ShelfInfo = cellInfo.ToArray();
             }
             catch (Exception e)
             {
