@@ -116,14 +116,13 @@
          div.appendChild(table);
          $('.itemdiv').droppable({
              onDrop: function (e, source) {
-                 row = $('#details').datagrid('getSelected');
                  id = $(this).attr('id');
                  var s = document.getElementById(id);
                  var cellname = s.innerHTML.substring(0, 11);
                  unitName = document.getElementById(id).class;
                  $.ajaxSender.send('/StockInBillAllot/AllotAdds/',
                                                                    {
-                                                                       billNo: row.BillNo,
+                                                                       billNo: billNo,
                                                                        id: detailId,
                                                                        cellCode: id,
                                                                        productname: productnames

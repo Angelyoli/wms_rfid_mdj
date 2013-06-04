@@ -18,6 +18,7 @@
     var productNames;
     var rowOut;
     var unitName;
+    var billNo = "";
     function onclick(event, treeId, treeNode) {
         createTable(treeNode.type, treeNode.id);
     }
@@ -103,11 +104,10 @@
                 onStopDrag: function () {
                     id = $(this).attr('id');
                     var cellname = document.getElementById(id).innerHTML.substring(0, 11);
-                    row = $('#details').datagrid('getSelected');
                     unitName = document.getElementById(id).class;
                     $.ajaxSender.send('/StockOutBillAllot/AllotAdds/',
                                          {
-                                             billNo: row.BillNo,
+                                             billNo: billNo,
                                              id: detailId,
                                              cellCode: id,
                                              productName: productNames
@@ -146,7 +146,6 @@
             $.messager.confirm('错误', '没有选择行！');
         }
     }
-    var billNo = "";    
     function allotClick() {
         row = $('#details').datagrid('getSelected');
         if (row) {
