@@ -61,6 +61,9 @@ namespace THOK.Wms.AutomotiveSystems.Service
 
         [Dependency]
         public IStorageLocker Locker { get; set; }
+
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
  
         public void GetBillMaster(string[] BillTypes, Result result)
         {
@@ -328,7 +331,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                                 .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
                 //合并显示
                 result.IsSuccess = true;
-                result.BillDetails = billDetails2.Concat(billDetails1).ToArray();
+                result.BillDetails = billDetails2.Concat(billDetails1).OrderByDescending(i=>i.Status).ToArray();
             }
             catch (Exception e)
             {
@@ -808,6 +811,40 @@ namespace THOK.Wms.AutomotiveSystems.Service
             }
         }
 
+        public void GetShelf(Result result)
+        {
+            try
+            {
+                var cellInfo = CellRepository.GetQueryable().Join(StorageRepository.GetQueryable(),
+                                c => c.CellCode, s => s.CellCode, (c, s) => new { cellInfos = c, storage = s })
+                               .Where(c => (c.cellInfos.CellType == "1" || c.cellInfos.CellType == "2") && c.cellInfos.IsActive=="1").AsEnumerable()
+                               .Select(c => new THOK.Wms.AutomotiveSystems.Models.ShelfInfo()
+                                {
+                                    ShelfCode=c.cellInfos.Shelf.ShelfCode,
+                                    ShelfName = c.cellInfos.Shelf.ShelfName,
+                                    CellCode = c.cellInfos.CellCode,
+                                    CellName = c.cellInfos.CellName,
+                                    ProductCode =c.storage.Product == null? "": c.storage.Product.ProductCode,
+                                    ProductName =c.storage.Product== null ? "" : c.storage.Product.ProductName,
+                                    QuantityJian = c.storage.Quantity==0 ? 0 : (c.storage.Quantity / (c.storage.Product.UnitList.Quantity01 * c.storage.Product.UnitList.Quantity02 * c.storage.Product.UnitList.Quantity03)),
+                                    QuantityTiao = c.storage.Quantity==0 ? 0 : (c.storage.Quantity / (c.storage.Product.UnitList.Quantity02 * c.storage.Product.UnitList.Quantity03)),
+                                    WareCode = c.cellInfos.WarehouseCode,
+                                    WareName = c.cellInfos.Warehouse.WarehouseName,
+                                    IsActive = c.cellInfos.IsActive,
+                                    ColNum=c.cellInfos.Col,
+                                    RowNum=c.cellInfos.Layer,
+                                    Shelf = c.cellInfos.ShelfCode.Substring(8,2).Trim()
+                                    //UpdateDate=c.storage.UpdateTime==null?DateTime.Now:c.storage.UpdateTime
+                                }).ToArray();
+                result.IsSuccess = true;
+                result.ShelfInfo = cellInfo.ToArray();
+            }
+            catch (Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = "调用服务器服务查询托盘信息失败！，详情：" + e.InnerException.Message + "  其他错误" + e.Message;
+            }
+        }
         public void SearchRfidInfo(string rfid, Result result)
         {
             THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
@@ -1028,7 +1065,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
                                .GroupBy(r => new { r.ProductCode, r.ProductName })
                                .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
-                               .Where(r=>r.Quantity <300000).ToArray();
+                               .Where(r=>r.Quantity <60000).ToArray();
 
                 var tmp5 = sortingLineQuery
                              .Join(moveBillDetailQuery,

@@ -22,7 +22,7 @@ namespace THOK.Wms.Allot.Interfaces
 
         bool AllotAdd(string billNo, long id, string cellCode, decimal allotQuantity, out string strResult);
 
-        bool AllotAdd(string billNo, long id, string cellCode, decimal allotQuantity,string productname, out string strResult);
+        bool AllotAdd(string billNo, long id, string cellCode, string productname, out string strResult, out decimal allotQuantity);
 
         System.Data.DataTable AllotSearch(int page, int rows, string billNo);
 

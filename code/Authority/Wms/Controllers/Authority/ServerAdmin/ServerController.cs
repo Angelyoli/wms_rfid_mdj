@@ -8,6 +8,9 @@ using THOK.Wms.Bll.Interfaces;
 using THOK.Common.WebUtil;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using THOK.Authority.DbModel;
+using THOK.Common.NPOI.Models;
+using THOK.Common.NPOI.Service;
 
 namespace Authority.Controllers.ServerAdmin
 {
@@ -75,5 +78,31 @@ namespace Authority.Controllers.ServerAdmin
             var server = ServerService.GetDetails(cityID, serverID);
             return Json(server, "text", JsonRequestBehavior.AllowGet);
         }
+
+        //  /Server/CreateExcelToClient/
+        public FileStreamResult CreateExcelToClient()
+        {
+            int page = 0, rows = 0;
+            bool isactiveIsNull = true;
+            string serverName = Request.QueryString["serverName"] ?? "";
+            string description = Request.QueryString["description"] ?? "";
+            string url = Request.QueryString["url"];
+            bool isactive=true;
+            if (Request.QueryString["isactive"] != null && Request.QueryString["isactive"] != "")
+            {
+                isactiveIsNull = false;
+                isactive = bool.Parse(Request.QueryString["isactive"]);
+            }
+            Server server = new Server();
+            server.ServerName = serverName;
+            server.Description = description;
+            server.Url = url;
+            server.IsActive = isactive;
+
+            ExportParam ep = new ExportParam();
+            ep.DT1 = ServerService.GetServer(page, rows, server,isactiveIsNull);
+            ep.HeadTitle1 = "服务器信息";
+            return PrintService.Print(ep);
+        }  
     }
 }

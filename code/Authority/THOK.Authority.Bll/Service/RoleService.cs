@@ -160,5 +160,34 @@ namespace THOK.Authority.Bll.Service
         }
 
         #endregion
+
+        public System.Data.DataTable GetRoleConten(int page, int rows, string roleName, string meMo, string isLock)
+        {
+            IQueryable<Role> RoleQuery = RoleRepository.GetQueryable();
+            var roles = RoleQuery.Where(c => c.RoleName.Contains(roleName)
+                && c.Memo.Contains(meMo))
+                .OrderByDescending(c => c.RoleName).AsEnumerable()
+                .Select(c => new
+                {
+                    c.RoleName,
+                    c.Memo,
+                    IsLock = c.IsLock ? "启用" : "禁用",
+                });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("角色名称", typeof(string));
+            dt.Columns.Add("描述", typeof(string));
+            dt.Columns.Add("状态", typeof(string));
+            foreach (var item in roles)
+            {
+                dt.Rows.Add
+                    (
+                        item.RoleName,
+                        item.Memo,
+                        item.IsLock
+                    );
+
+            }
+            return dt;
+        }
     }
 }

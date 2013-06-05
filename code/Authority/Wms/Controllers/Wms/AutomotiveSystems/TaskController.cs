@@ -58,6 +58,9 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
                     case "execute":
                         TaskService.Execute(taskParameter.BillDetails, taskParameter.UseTag, result);
                         break;
+                    case "getShelf":
+                        TaskService.GetShelf(result);
+                        break;
                     case "getRfidInfo":
                         TaskService.SearchRfidInfo(taskParameter.RfidId, result);
                         break;

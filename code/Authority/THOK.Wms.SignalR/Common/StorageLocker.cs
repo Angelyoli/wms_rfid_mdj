@@ -279,18 +279,11 @@ namespace THOK.Wms.SignalR.Common
 
         public bool Lock(Storage[] storages)
         {
-            if (storages.All(s => string.IsNullOrEmpty(s.LockTag)))
+            if (storages.All(s => string.IsNullOrEmpty(s.LockTag) || s.LockTag == this.LockKey))
             {
-                try
-                {
-                    storages.AsParallel().ForAll(s => s.LockTag = this.LockKey);
-                    StorageRepository.SaveChanges();
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
+                storages.AsParallel().ForAll(s => s.LockTag = this.LockKey);
+                StorageRepository.SaveChanges();
+                return true;
             }
             else
             {

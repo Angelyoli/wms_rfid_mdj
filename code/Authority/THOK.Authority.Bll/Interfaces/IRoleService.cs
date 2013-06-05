@@ -21,5 +21,7 @@ namespace THOK.Authority.Bll.Interfaces
         bool DeleteRoleUser(string roleUserIdStr);
 
         bool AddRoleUser(string roleID, string userIDStr);
+
+        System.Data.DataTable GetRoleConten(int page, int rows, string roleName, string meMo, string isLock);
     }
 }

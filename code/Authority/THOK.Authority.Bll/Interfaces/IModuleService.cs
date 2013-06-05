@@ -29,5 +29,7 @@ namespace THOK.Authority.Bll.Interfaces
         bool ProcessUserPermissionStr(string userPermissionStr);
 
         object GetDetails2(int page, int rows, string QueryString, string Value);
+
+        System.Data.DataTable GetModules(int page, int rows, Module module, bool systemIdIsNull);
     }
 }
