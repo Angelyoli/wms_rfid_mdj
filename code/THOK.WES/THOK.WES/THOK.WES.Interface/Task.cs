@@ -2,6 +2,7 @@ using System;
 using THOK.WES.Interface.Model;
 using System.Net;
 using LitJson;
+using System.Data;
 
 namespace THOK.WES.Interface
 {
@@ -38,6 +39,10 @@ namespace THOK.WES.Interface
         public delegate void BcComposeEventHandler(bool isSuccess, string msg);
 
         public event BcComposeEventHandler BcComposeCompleted;
+
+        public delegate void GetShelfEventHandler(bool isSuccess, string msg, ShelfInfo[] shelfInfo);
+
+        public event GetShelfEventHandler GetShelf;
 
         public Task(string url)
         {
@@ -117,6 +122,15 @@ namespace THOK.WES.Interface
             WebClient client = new WebClient();
             client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
             client.UploadStringAsync(url, "post", @"billNo=" + billNo);
+            client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
+        }
+        //查询shelf的信息
+        public void Getshelf()
+        {
+            taskType = "getShelf";
+            WebClient client = new WebClient();
+            client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getShelf'}");
             client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
         }
 
@@ -301,6 +315,36 @@ namespace THOK.WES.Interface
                         if (GetRfidInfoCompleted != null)
                         {
                             GetRfidInfoCompleted(false, e.Message, null);
+                        }
+                    }
+                    break;
+                #endregion
+                #region 货架
+                case "getShelf":
+                    try
+                    {
+                        string result = ex.Result;
+                        Result r = JsonMapper.ToObject<Result>(result);
+                        if (r.IsSuccess)
+                        {
+                            if (GetShelf != null)
+                            {
+                                GetShelf(true, r.Message,r.ShelfInfo);
+                            }
+                        }
+                        else
+                        {
+                            if (GetShelf != null)
+                            {
+                                GetShelf(false, r.Message,null);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        if (GetShelf != null)
+                        {
+                            GetShelf(false, e.Message,null);
                         }
                     }
                     break;

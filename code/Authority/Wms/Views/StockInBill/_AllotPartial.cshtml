@@ -16,13 +16,14 @@
         createTable(treeNode.type, treeNode.id);
     }
     function productName(val, row) {
-        var s = '<div class="item" id="' + row.ID + '"><p style="color:red;">' + row.ProductName + '</p><p style="color:White;width:0px;height:0px">' + row.BillQuantity + '</p><p style="color:White;width:0px;height:0px">' + row.AllotQuantity + '</p></div>';
+        var s = '<div class="item" id="' + row.ID + '"><p style="color:red;">' + row.ProductName + '</p><p style="color:White;width:0px;height:0px">' + row.BillQuantity + '</p><p style="color:White;width:0px;height:0px">' + row.AllotQuantity + '</p><p style="color:White;width:0px;height:0px">' + row.UnitName + '</p></div>';
      return s;
  }
  var detailId;
  var productnames;
  var allotQuantity;
  var row;
+ var UnitName;
  $(function () {
      $('#inAllotBillDetail').datagrid('options').onLoadSuccess = function () {
          $('.item').draggable({
@@ -38,6 +39,7 @@
                  var ProductName = $(this).find('p:eq(0)').html();
                  var BillQuantity = $(this).find('p:eq(1)').html();
                  var AllotQuantity = $(this).find('p:eq(2)').html();
+                 UnitName = $(this).find('p:eq(3)').html();
                  detailId = id;
                  productnames = ProductName;
                  allotQuantity = BillQuantity - AllotQuantity;
@@ -72,38 +74,38 @@
                      var mydiv = document.createElement("div");
                      mydiv.setAttribute("class", "itemdiv");
                      mydiv.id = data[s].cellCode;
-                     mydiv.class = data[s].EmptyQuantity;
+                     mydiv.class = data[s].unitName;
                      var cell = row1.insertCell(); //创建一个单元
                      mydiv.style.width = "100px";
                      mydiv.style.height = "100px";
                      mydiv.style.backgroundColor = "#40e0d0";
                      cell.appendChild(mydiv);
-                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + data[s].unitName;
                  }
                  if (data[s].asdd3 == '2') {
                      var mydiv = document.createElement("div");
                      mydiv.setAttribute("class", "itemdiv");
                      mydiv.id = data[s].cellCode;
-                     mydiv.class = data[s].EmptyQuantity;
+                     mydiv.class = data[s].unitName;
                      var cell = row2.insertCell(); //创建一个单元
                      mydiv.style.width = "100px";
                      mydiv.style.height = "100px";
                      mydiv.style.backgroundColor = "#40e0d0";
                      cell.appendChild(mydiv);
-                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + data[s].unitName;
 
                  }
                  if (data[s].asdd3 == '3') {
                      var mydiv = document.createElement("div");
                      mydiv.setAttribute("class", "itemdiv");
                      mydiv.id = data[s].cellCode;
-                     mydiv.class = data[s].EmptyQuantity;
+                     mydiv.class = data[s].unitName;
                      var cell = row3.insertCell(); //创建一个单元
                      mydiv.style.width = "100px";
                      mydiv.style.height = "100px";
                      mydiv.style.backgroundColor = "#40e0d0";
                      cell.appendChild(mydiv);
-                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                     mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + data[s].unitName;
                  }
              }
          }
@@ -114,27 +116,19 @@
          div.appendChild(table);
          $('.itemdiv').droppable({
              onDrop: function (e, source) {
-                 row = $('#details').datagrid('getSelected');
                  id = $(this).attr('id');
-                 emptyQuantity = document.getElementById(id).class;
-                 if (allotQuantity > emptyQuantity) {
-                     quantity = emptyQuantity;
-                 }
-                 else {
-                     quantity = allotQuantity;
-                 };
                  var s = document.getElementById(id);
                  var cellname = s.innerHTML.substring(0, 11);
+                 unitName = document.getElementById(id).class;
                  $.ajaxSender.send('/StockInBillAllot/AllotAdds/',
                                                                    {
-                                                                       billNo: row.BillNo,
+                                                                       billNo: billNo,
                                                                        id: detailId,
                                                                        cellCode: id,
-                                                                       allotQuantity: quantity,
                                                                        productname: productnames
                                                                    },
                                                                    function (data) {
-                                                                       s.innerHTML = cellname + '<br />' + productnames + '<br />' + quantity + '件';
+                                                                       s.innerHTML = cellname + '<br />' + productnames + '<br />' + data + UnitName;
                                                                        s.style.backgroundColor = "red";
                                                                    });
                  $('#inAllotBillDetail').datagrid('reload');
