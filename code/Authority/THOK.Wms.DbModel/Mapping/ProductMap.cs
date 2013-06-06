@@ -149,7 +149,7 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired();
 
             this.Property(t => t.PointAreaCodes)
-                .HasMaxLength(50);
+                .HasMaxLength(200);
 
             // Table & Column Mappings
             this.Property(t => t.ProductCode).HasColumnName(ColumnMap.Value.To("ProductCode"));
