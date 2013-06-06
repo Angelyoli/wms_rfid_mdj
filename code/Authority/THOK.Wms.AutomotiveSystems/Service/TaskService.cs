@@ -817,7 +817,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
             {
                 var cellInfo = CellRepository.GetQueryable().Join(StorageRepository.GetQueryable(),
                                 c => c.CellCode, s => s.CellCode, (c, s) => new { cellInfos = c, storage = s })
-                               .Where(c => (c.cellInfos.CellType == "1" || c.cellInfos.CellType == "2") && c.cellInfos.IsActive=="1").AsEnumerable()
+                               .Where(c => (c.cellInfos.CellType == "1" || c.cellInfos.CellType == "2") && c.cellInfos.IsActive=="1")
+                               .AsEnumerable()
                                .Select(c => new THOK.Wms.AutomotiveSystems.Models.ShelfInfo()
                                 {
                                     ShelfCode=c.cellInfos.Shelf.ShelfCode,
@@ -834,8 +835,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                     ColNum=c.cellInfos.Col,
                                     RowNum=c.cellInfos.Layer,
                                     Shelf = c.cellInfos.ShelfCode.Substring(8,2).Trim()
-                                    //UpdateDate=c.storage.UpdateTime==null?DateTime.Now:c.storage.UpdateTime
-                                }).ToArray();
+                                });
                 result.IsSuccess = true;
                 result.ShelfInfo = cellInfo.ToArray();
             }
