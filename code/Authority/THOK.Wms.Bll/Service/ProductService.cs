@@ -157,6 +157,7 @@ namespace THOK.Wms.Bll.Service
             prod.UnitListCode = product.UnitListCode;
             prod.UpdateTime = DateTime.Now;
             prod.IsRounding = product.IsRounding;
+            prod.PointAreaCodes = product.PointAreaCodes;
 
             ProductRepository.Add(prod);
             ProductRepository.SaveChanges();
@@ -215,6 +216,8 @@ namespace THOK.Wms.Bll.Service
             prod.UnitListCode = product.UnitListCode;
             prod.UpdateTime = DateTime.Now;
             prod.IsRounding = product.IsRounding;
+            prod.PointAreaCodes = product.PointAreaCodes;
+
             ProductRepository.SaveChanges();
             //产品信息上报
             //DataSet ds = this.Insert(prod);

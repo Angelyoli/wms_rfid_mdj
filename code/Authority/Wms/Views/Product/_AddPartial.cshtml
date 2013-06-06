@@ -12,17 +12,17 @@
         $('form textarea').removeAttr("disabled");
 
         url = '/Product/Create/';
-        
+
         $('#area').combotree({
             url: '/Area/GetDetailsTree/',
-            multiple: true,
-            width: 129
+            multiple: true
         });
     };
 
     function save() {
+        var areas = $('#area').combotree('getValues');
         $('#Productfm').form('submit', {
-            url: url,
+            url: url + "?pointAreaCodes=" + areas,
             onSubmit: function () {
                 return $(this).form('validate');
             },
@@ -371,15 +371,8 @@
                         指定区域
                     </td>
                     <td>
-                        <select class="easyui-combotree"
-                                name="language"
-                                url=""
-                                valueField="id"
-                                textField="text"
-                                multiple="true"
-                                panelHeight="auto"
-                                panelWidth="160px"
-                                id="area">
+                        <select id="area" name="language" class="easyui-combotree" style="width: 129px;"
+                            url="" valuefield="id" textfield="text" multiple="true" panelheight="auto" panelwidth="160px">
                         </select>
                     </td>
                 </tr>
