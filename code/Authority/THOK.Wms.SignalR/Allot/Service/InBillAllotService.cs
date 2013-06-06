@@ -151,8 +151,8 @@ namespace THOK.Wms.SignalR.Allot.Service
                 AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
 
                 //指定区域
-                cs = cellQueryFromList1.Where(i => billDetail.Product.PointAreaCodes.Contains(i.AreaCode));
-                AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
+                //cs = cellQueryFromList1.Where(i => billDetail.Product.PointAreaCodes.Contains(i.AreaCode));
+                //AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
 
                 //分配没预设卷烟的货位；
                 cs = cellQueryFromList1.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
