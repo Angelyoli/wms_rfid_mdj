@@ -157,6 +157,7 @@ namespace THOK.Wms.Bll.Service
             prod.UnitListCode = product.UnitListCode;
             prod.UpdateTime = DateTime.Now;
             prod.IsRounding = product.IsRounding;
+            prod.CellMaxProductQuantity = product.CellMaxProductQuantity;
             prod.PointAreaCodes = product.PointAreaCodes;
 
             ProductRepository.Add(prod);
@@ -216,6 +217,7 @@ namespace THOK.Wms.Bll.Service
             prod.UnitListCode = product.UnitListCode;
             prod.UpdateTime = DateTime.Now;
             prod.IsRounding = product.IsRounding;
+            prod.CellMaxProductQuantity = product.CellMaxProductQuantity;
             prod.PointAreaCodes = product.PointAreaCodes;
 
             ProductRepository.SaveChanges();
