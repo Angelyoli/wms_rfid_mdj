@@ -149,6 +149,11 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配预设当前卷烟的货位；
                 var cs = cellQueryFromList1.Where(c => c.DefaultProductCode == billDetail.ProductCode);
                 AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
+
+                //指定区域
+                cs = cellQueryFromList1.Where(i => billDetail.Product.PointAreaCodes.Contains(i.AreaCode));
+                AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);
+
                 //分配没预设卷烟的货位；
                 cs = cellQueryFromList1.Where(c => string.IsNullOrEmpty(c.DefaultProductCode));
                 AllotPallet(billMaster, billDetail, cs, cancellationToken, ps);

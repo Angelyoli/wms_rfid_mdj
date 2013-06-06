@@ -35,6 +35,8 @@
             $('#cc').combo({
                 hasDownArrow: true
             });
+            $('#area').combotree({ url: '/Area/GetDetailsTree/', multiple: true });
+            
             url = '/Product/Edit/';
         } else {
             $.messager.confirm('错误', '没有选择行！');
