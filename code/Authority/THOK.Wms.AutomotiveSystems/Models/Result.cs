@@ -10,5 +10,6 @@ namespace THOK.Wms.AutomotiveSystems.Models
         public string Message = string.Empty;
         public BillMaster[] BillMasters = new BillMaster[] { };
         public BillDetail[] BillDetails = new BillDetail[] { };
+        public ShelfInfo[] ShelfInfo = new ShelfInfo[] { };
     }
 }

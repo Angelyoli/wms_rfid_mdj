@@ -96,7 +96,7 @@ namespace THOK.WES.Interface
                         RunReceiveDataCallback(btAryBuffer);
                         if (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 5)//5秒后无数据就返回
                         {
-                            return listRfid;
+                            break;
                         }
 
                     } while (listRfid.Count == 0 || listRfid == null);//如果集合没有数据就继续运行

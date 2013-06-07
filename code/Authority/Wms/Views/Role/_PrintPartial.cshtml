@@ -1,0 +1,14 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var roleName = null, meMo = null, isLock = null;
+
+        if ($('#roleName').val() == null) { roleName = ""; } else { roleName = $('#roleName').val(); }
+        if ($('#meMo').val() == null) { meMo = ""; } else { meMo = $('#meMo').val(); }
+        if (document.getElementById("isLock") == null) { isLock = ""; } else { isLock = $('#isLock').combo('getValue'); }
+
+        window.location.href = "/Role/CreateExcelToClient/"
+                                + "?roleName=" + roleName
+                                + "&meMo=" + meMo
+                                + "&isLock=" + isLock;
+    }
+</script>

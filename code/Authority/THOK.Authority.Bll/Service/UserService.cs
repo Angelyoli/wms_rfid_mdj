@@ -363,6 +363,42 @@ namespace THOK.Authority.Bll.Service
             users = users.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = users.ToArray() };
         }
+
+        public System.Data.DataTable GetUser(int page, int rows, string userName, string chineseName, string meMo)
+        {
+            IQueryable<User> userQuery = UserRepository.GetQueryable();
+            var userc = userQuery.Where(c => c.UserName.Contains(userName)
+                && c.ChineseName.Contains(chineseName)
+                && c.Memo.Contains(meMo))
+                .OrderByDescending(c => c.UserName).AsEnumerable()
+                .Select(c => new
+                {
+                    c.UserName,
+                    c.ChineseName,
+                    IsAdmin=c.IsAdmin?"是":"否",
+                    IsLock=c.IsLock?"是":"否",
+                    c.Memo,
+                });
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("用户名称", typeof(string));
+            dt.Columns.Add("中文名称", typeof(string));
+            dt.Columns.Add("是否是超级管理员", typeof(string));
+            dt.Columns.Add("是否锁定", typeof(string));
+            dt.Columns.Add("备注", typeof(string));
+            foreach (var item in userc)
+            {
+                dt.Rows.Add
+                    (
+                        item.UserName,
+                        item.ChineseName,
+                        item.IsAdmin,
+                        item.IsLock,
+                        item.Memo
+                    );
+
+            }
+            return dt;
+        }
     }
 }
 

@@ -419,17 +419,31 @@ namespace THOK.Wms.Bll.Service
                     moves = moves.Where(i => i.Product.IsAbnormity != "1");                
                 if (isGroup)
                 {
-                    var moveBillDetail = moves.GroupBy(m => new { m.ProductCode, m.Product.ProductName, m.Product })
-                        .Select(r => new { r.Key.ProductCode, r.Key.ProductName, r.Key.Product, RealQuantity = r.Sum(p => p.RealQuantity) }).AsEnumerable()
-                        .Select(r => new { r.Product, isAbnormity = r.Product.IsAbnormity=="1" ? "*" : " ", r.ProductCode, r.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
-                        .OrderBy(r => r.Product.BelongRegion);
+                    var moveBillDetail = moves.Where(s => s.OutCell.Area.AreaType != "5" && s.Product.IsAbnormity == "1")
+                                            .GroupBy(m => new { m.ProductCode, m.Product.ProductName, m.Product })
+                                            .Select(r => new { r.Key.ProductCode, r.Key.ProductName, r.Key.Product, RealQuantity = r.Sum(p => p.RealQuantity) }).AsEnumerable()
+                                            .Select(r => new { r.Product, isAbnormity = r.Product.IsAbnormity == "1" ? "*" : " ", r.ProductCode, r.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
+                                            .OrderBy(r => r.RealQuantity).ThenBy(s => s.Product.BelongRegion);
 
+                    var moveBillDetail1 = moves.Where(s => s.OutCell.Area.AreaType != "5" && s.Product.IsAbnormity != "1")
+                                           .GroupBy(m => new { m.ProductCode, m.Product.ProductName, m.Product })
+                                           .Select(r => new { r.Key.ProductCode, r.Key.ProductName, r.Key.Product, RealQuantity = r.Sum(p => p.RealQuantity) }).AsEnumerable()
+                                           .Select(r => new { r.Product, isAbnormity = r.Product.IsAbnormity == "1" ? "*" : " ", r.ProductCode, r.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
+                                           .OrderBy(r => r.RealQuantity).ThenBy(s => s.Product.BelongRegion);
+
+                    var moveBillDetail2 = moves.Where(s => s.OutCell.Area.AreaType == "5").AsEnumerable()
+                                            .Select(r => new { OutCellName = r.OutCell.CellName, InCellName = r.InCell.CellName, r.Product, isAbnormity = r.Product.IsAbnormity == "1" ? "*" : " ", r.ProductCode, r.Product.ProductName, RealQuantity = r.RealQuantity / r.Product.Unit.Count, strRealQuantity = r.RealQuantity / r.Product.UnitList.Unit02.Count })
+                                            .OrderBy(r => r.RealQuantity).ThenBy(s => s.Product.BelongRegion);
+                   
                     dt.Columns.Add("产品代码", typeof(string));
                     dt.Columns.Add("产品名称", typeof(string));
                     dt.Columns.Add("数量(件)", typeof(string));
                     dt.Columns.Add("数量(条)", typeof(string));
                     dt.Columns.Add("异形烟(*)", typeof(string));
-                    foreach (var m in moveBillDetail)
+                    dt.Columns.Add("分拣互移", typeof(string));
+                    dt.Columns.Add("01线签字", typeof(string));
+                    dt.Columns.Add("02线签字", typeof(string));
+                    foreach (var m in moveBillDetail)//异形烟
                     {
                         dt.Rows.Add
                             (
@@ -440,10 +454,35 @@ namespace THOK.Wms.Bll.Service
                                 ,m.isAbnormity
                             );
                     }
-                    if (moveBillDetail.Count() > 0)
+                    
+                    foreach (var m in moveBillDetail1)//不是整托的烟和整托的烟排序
                     {
-                        dt.Rows.Add(null, "总数：", moveBillDetail.Sum(m => m.RealQuantity));
-                        dt.Rows.Add("出库：",null,"验收：", null);
+                        dt.Rows.Add
+                            (
+                                  m.ProductCode
+                                , m.ProductName
+                                , m.RealQuantity
+                                , m.strRealQuantity
+                                , m.isAbnormity
+                            );
+                    }
+
+                    foreach (var m in moveBillDetail2)//分拣线互移的烟
+                    {
+                        dt.Rows.Add
+                            (
+                                  m.ProductCode
+                                , m.ProductName
+                                , Convert.ToDecimal(m.RealQuantity)
+                                , Convert.ToDecimal(m.strRealQuantity)
+                                , m.isAbnormity
+                               , m.OutCellName + "移入" + m.InCellName
+                            );
+                    }
+                    if (moveBillDetail.Count() > 0 || moveBillDetail1.Count() > 0 || moveBillDetail2.Count() > 0)
+                    {
+                        dt.Rows.Add(null, "总数：", moveBillDetail.Sum(m => m.RealQuantity) + moveBillDetail1.Sum(s => s.RealQuantity) + moveBillDetail2.Sum(b => b.RealQuantity));
+                        dt.Rows.Add("出库：", null, "验收：", null);
                     }
                 }
                 else

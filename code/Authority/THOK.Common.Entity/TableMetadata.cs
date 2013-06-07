@@ -27,19 +27,19 @@ namespace THOK.Common.Entity
                 {
                     return GetTableMetadata<TEntity>();
                 }
-                typeof(ObjectContext).InvokeMember("EnsureMetadata", BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance, null, source.Context, null);
+                
                 var mapContainer = source.Context.MetadataWorkspace.GetItemCollection(DataSpace.CSSpace)[0];
                 var mapSet = mapContainer.GetType().InvokeMember("GetSetMapping", BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Instance, null, mapContainer, new object[] { source.EntitySet.Name });
                 var mapType = (mapSet.GetType().InvokeMember("TypeMappings", BindingFlags.GetProperty | BindingFlags.NonPublic | BindingFlags.Instance, null, mapSet, null) as IList)[0];
                 var map = (mapType.GetType().InvokeMember("MappingFragments", BindingFlags.GetProperty | BindingFlags.NonPublic | BindingFlags.Instance, null, mapType, null) as IList)[0];
                 var tableMetadata = new TableMetadata();
                 tableMetadata.EntitySet = map.GetType().InvokeMember("TableSet", BindingFlags.GetProperty | BindingFlags.NonPublic | BindingFlags.Instance, null, map, null) as EntitySet;
-                tableMetadata.Name = "[" + tableMetadata.EntitySet.GetType().InvokeMember("Schema", BindingFlags.GetProperty | BindingFlags.NonPublic | BindingFlags.Instance, null, tableMetadata.EntitySet, null) as string
-                    + "].[" + tableMetadata.EntitySet.GetType().InvokeMember("Table", BindingFlags.GetProperty | BindingFlags.NonPublic | BindingFlags.Instance, null, tableMetadata.EntitySet, null) as string
+                tableMetadata.Name = "[" + tableMetadata.EntitySet.GetType().InvokeMember("Schema", BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, tableMetadata.EntitySet, null) as string
+                    + "].[" + tableMetadata.EntitySet.GetType().InvokeMember("Table", BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, tableMetadata.EntitySet, null) as string
                     + "]";
                 tableMetadata.Properties = new Dictionary<string, EdmProperty>();
                 PropertyInfo pinfo = null, cpinfo = null;
-                foreach (var item in (map.GetType().InvokeMember("Properties", BindingFlags.GetProperty | BindingFlags.NonPublic | BindingFlags.Instance, null, map, null) as IEnumerable))
+                foreach (var item in (map.GetType().InvokeMember("Properties", BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, map, null) as IEnumerable))
                 {
                     if (pinfo == null)
                     {

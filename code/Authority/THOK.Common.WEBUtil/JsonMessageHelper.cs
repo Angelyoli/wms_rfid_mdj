@@ -16,5 +16,17 @@ namespace THOK.Common.WebUtil
         {
             return getJsonMessage(success, msg, null);
         }
+
+        public static object getJsonMessage(bool success, string msg, object data, decimal datas)
+        {
+            if (success)
+            {
+                return new { success = success, msg = msg, IsSuccess = success, Message = msg, data = datas };
+            }
+            else
+            {
+                return new { success = success, msg = msg, IsSuccess = success, Message = msg, data = data };
+            }
+        }
     }
 }

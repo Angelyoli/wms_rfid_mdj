@@ -30,7 +30,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{47999AD9-AB4
 		..\..\doc\jquery.easyui-1.2.2.chm = ..\..\doc\jquery.easyui-1.2.2.chm
 		..\..\doc\jquery1.7.2_20120420.chm = ..\..\doc\jquery1.7.2_20120420.chm
 		..\..\doc\中烟接口信息表.xls = ..\..\doc\中烟接口信息表.xls
-		..\..\doc\数据结构.doc = ..\..\doc\数据结构.doc
 		..\..\doc\旧仓储数据结构.vsd = ..\..\doc\旧仓储数据结构.vsd
 		..\..\doc\相关技术说明.txt = ..\..\doc\相关技术说明.txt
 		..\..\doc\硬件说明.doc = ..\..\doc\硬件说明.doc
