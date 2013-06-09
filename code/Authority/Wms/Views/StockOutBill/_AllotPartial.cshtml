@@ -14,10 +14,11 @@
     };
     var row;
     var detailId;
-    var allotQuantity;
     var productCode;
     var productNames;
     var rowOut;
+    var unitName;
+    var billNo = "";
     function onclick(event, treeId, treeNode) {
         createTable(treeNode.type, treeNode.id);
     }
@@ -27,7 +28,6 @@
             detailId = rowOut.ID;
             productCode = rowOut.ProductCode;
             productNames = rowOut.ProductName
-            allotQuantity = rowOut.BillQuantity - rowOut.AllotQuantity;
         }
         $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
                             {
@@ -36,13 +36,6 @@
                     function (data) {
                         $.fn.zTree.init($("#warehouseTrees"), setting, data);
                     });
-        //        $('#warehouseTrees').tree({
-        //            onClick: function (node) {
-        //                if (node) {
-        //                    createTable(node.attributes, node.id);
-        //                }
-        //            }
-        //        });
     });
     function createTable(type, id) {
         var div = document.getElementById("drop");
@@ -64,38 +57,38 @@
                         var mydiv = document.createElement("div");
                         mydiv.setAttribute("class", "itemdiv");
                         mydiv.id = data[s].cellCode;
-                        mydiv.class = data[s].Quantity;
+                        mydiv.class = data[s].unitName;
                         var cell = row1.insertCell(); //创建一个单元
                         mydiv.style.width = "100px";
                         mydiv.style.height = "100px";
                         mydiv.style.backgroundColor = "#40e0d0";
                         cell.appendChild(mydiv);
-                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + data[s].unitName;
                     }
                     if (data[s].asdd3 == '2') {
                         var mydiv = document.createElement("div");
                         mydiv.setAttribute("class", "itemdiv");
                         mydiv.id = data[s].cellCode;
-                        mydiv.class = data[s].Quantity;
+                        mydiv.class = data[s].unitName;
                         var cell = row2.insertCell(); //创建一个单元
                         mydiv.style.width = "100px";
                         mydiv.style.height = "100px";
                         mydiv.style.backgroundColor = "#40e0d0";
                         cell.appendChild(mydiv);
-                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + data[s].unitName;
 
                     }
                     if (data[s].asdd3 == '3') {
                         var mydiv = document.createElement("div");
                         mydiv.setAttribute("class", "itemdiv");
                         mydiv.id = data[s].cellCode;
-                        mydiv.class = data[s].Quantity;
+                        mydiv.class = data[s].unitName;
                         var cell = row3.insertCell(); //创建一个单元
                         mydiv.style.width = "100px";
                         mydiv.style.height = "100px";
                         mydiv.style.backgroundColor = "#40e0d0";
                         cell.appendChild(mydiv);
-                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + '件';
+                        mydiv.innerHTML = data[s].cellName + '<br />' + data[s].productName + '<br />' + data[s].Quantity + data[s].unitName;
                     }
                 }
             }
@@ -111,24 +104,15 @@
                 onStopDrag: function () {
                     id = $(this).attr('id');
                     var cellname = document.getElementById(id).innerHTML.substring(0, 11);
-                    row = $('#details').datagrid('getSelected');
-                    emptyQuantity = document.getElementById(id).class;
-                    if (allotQuantity > emptyQuantity) {
-                        quantity = emptyQuantity;
-                    }
-                    else {
-                        quantity = allotQuantity;
-                    };
+                    unitName = document.getElementById(id).class;
                     $.ajaxSender.send('/StockOutBillAllot/AllotAdds/',
                                          {
-                                             billNo: row.BillNo,
+                                             billNo: billNo,
                                              id: detailId,
                                              cellCode: id,
-                                             allotQuantity: quantity,
-                                             productCode: productCode,
                                              productName: productNames
                                          }, function (data) {
-                                             document.getElementById(id).innerHTML = cellname + '<br />' + productNames + '<br />' + (emptyQuantity - quantity) + '件';
+                                             document.getElementById(id).innerHTML = cellname + '<br />' + productNames + '<br />' + data + unitName;
                                              document.getElementById(id).style.backgroundColor = "green";
                                          });
                     $('#outBillDetail').datagrid('reload');
@@ -141,6 +125,7 @@
     }
     function manualAllot() {
         createTable(", ");
+        $('#outBillDetails1').datagrid('reload');
         $.fn.zTree.getZTreeObj("warehouseTrees").refresh();
         if (row) {
             $('#area').combotree({
@@ -161,7 +146,6 @@
             $.messager.confirm('错误', '没有选择行！');
         }
     }
-    var billNo = "";    
     function allotClick() {
         row = $('#details').datagrid('getSelected');
         if (row) {
@@ -245,7 +229,6 @@
                         function (data) {
                             $('#outBillDetails1').datagrid('reload');
                             $('#allotBillDetails').datagrid('reload');
-                            //$('#details').datagrid('reload');
                         }, $('#dlg-allot'));
     }
 

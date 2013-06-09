@@ -236,29 +236,29 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
         #region 手动分配出库
-        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity,string productName, out string strResult)
+        public bool AllotAdd(string billNo, long id, string cellCode, string productName, out string strResult, out decimal allotQuantity)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo);
             var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
             var obm = OutBillDetailRepository.GetQueryable().FirstOrDefault(o => o.ID == id);
             var stor=StorageRepository.GetQueryable().Single(c=>c.CellCode==cellCode);
+            decimal q1 = obm.BillQuantity - obm.AllotQuantity;
+            allotQuantity = 0;
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
                 {
                     Storage storage = Locker.LockNoEmpty(cell, obm.Product);
-                    if (storage != null && allotQuantity > 0)
+                    if (storage != null)
                     {
                         if (stor.Product.ProductName == productName)
                         {
-                            OutBillAllot billAllot = null;
-                            decimal q1 = obm.BillQuantity - obm.AllotQuantity;
-                            decimal q2 = allotQuantity * obm.Unit.Count;
-                            decimal q3 = storage.Quantity - storage.OutFrozenQuantity;
-                            if (q1 >= q2)
+                            if (q1 > 0)
                             {
-                                if (q2 <= q3)
+                                OutBillAllot billAllot = null;
+                                decimal q3 = storage.Quantity - storage.OutFrozenQuantity;
+                                if (q1 <= q3)
                                 {
                                     try
                                     {
@@ -270,12 +270,13 @@ namespace THOK.Wms.Allot.Service
                                             CellCode = storage.CellCode,
                                             StorageCode = storage.StorageCode,
                                             UnitCode = obm.UnitCode,
-                                            AllotQuantity = q2,
+                                            AllotQuantity = q1,
                                             RealQuantity = 0,
                                             Status = "0"
                                         };
-                                        obm.AllotQuantity += q2;
-                                        storage.OutFrozenQuantity += q2;
+                                        allotQuantity = (q3 - q1) / storage.Product.Unit.Count;
+                                        obm.AllotQuantity += q1;
+                                        storage.OutFrozenQuantity += q1;
                                         ibm.OutBillAllots.Add(billAllot);
                                         ibm.Status = "3";
                                         storage.LockTag = string.Empty;
@@ -290,12 +291,38 @@ namespace THOK.Wms.Allot.Service
                                 }
                                 else
                                 {
-                                    strResult = "当前储位库存量不足！";
+                                    try
+                                    {
+                                        billAllot = new OutBillAllot()
+                                        {
+                                            BillNo = billNo,
+                                            OutBillDetailId = obm.ID,
+                                            ProductCode = obm.ProductCode,
+                                            CellCode = storage.CellCode,
+                                            StorageCode = storage.StorageCode,
+                                            UnitCode = obm.UnitCode,
+                                            AllotQuantity = q3,
+                                            RealQuantity = 0,
+                                            Status = "0"
+                                        };
+                                        obm.AllotQuantity += q3;
+                                        storage.OutFrozenQuantity += q3;
+                                        ibm.OutBillAllots.Add(billAllot);
+                                        ibm.Status = "3";
+                                        storage.LockTag = string.Empty;
+                                        StorageRepository.SaveChanges();
+                                        strResult = "保存修改成功！";
+                                        result = true;
+                                    }
+                                    catch (Exception)
+                                    {
+                                        strResult = "保存添加失败，订单或储位其他人正在操作！";
+                                    }
                                 }
                             }
                             else
                             {
-                                strResult = "分配数量超过订单数量！";
+                                strResult = "该产品已无分配任务！";
                             }
                         }
                         else

@@ -75,12 +75,13 @@ namespace Authority.Controllers.Wms.StockIn
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllotAdds(string billNo, long id, string cellCode, decimal allotQuantity, string productname)
+        public ActionResult AllotAdds(string billNo, long id, string cellCode, string productname)
         {
             string strResult = string.Empty;
-            bool bResult = InBillAllotService.AllotAdd(billNo, id, cellCode, allotQuantity, productname, out strResult);
+            decimal allotQuantity = 0;
+            bool bResult = InBillAllotService.AllotAdd(billNo, id, cellCode, productname, out strResult, out allotQuantity);
             string msg = bResult ? "" : "添加分配失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult, allotQuantity), "text", JsonRequestBehavior.AllowGet);
         }
         #region /StockInBillAllot/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()

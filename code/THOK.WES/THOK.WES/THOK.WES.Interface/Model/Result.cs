@@ -12,5 +12,6 @@ namespace THOK.WES.Interface.Model
         public decimal Quantity;
         public BillMaster[] BillMasters = new BillMaster[] { };
         public BillDetail[] BillDetails = new BillDetail[] { };
+        public ShelfInfo[] ShelfInfo = new ShelfInfo[] { };
     }
 }

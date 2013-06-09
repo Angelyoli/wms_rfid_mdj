@@ -24,6 +24,7 @@ namespace THOK.Wms.Repository.RepositoryContext
 
         public int SaveChanges()
         {
+            this.DbContext.ChangeTracker.DetectChanges();
             return this.DbContext.SaveChanges();
         }
 
