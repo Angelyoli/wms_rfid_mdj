@@ -17,5 +17,7 @@ namespace THOK.Wms.Bll.Interfaces
         bool Save(CellPosition cellPosition, out string strResult);
 
         System.Data.DataTable GetCellPosition(int page, int rows, CellPosition cp);
+
+        
     }
 }
