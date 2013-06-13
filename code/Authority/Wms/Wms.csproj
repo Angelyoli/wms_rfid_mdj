@@ -1973,6 +1973,8 @@
     <Content Include="Views\AlarmInfo\_DeletePartial.cshtml" />
     <Content Include="Views\HelpContent\_PrintPartial.cshtml" />
     <Content Include="Views\City\_PrintPartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellCodePartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
