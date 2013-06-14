@@ -22,6 +22,8 @@ namespace THOK.Wms.Bll.Service
         public IOutBillDetailRepository OutBillDetailRepository { get; set; }
         [Dependency]
         public IProfitLossBillDetailRepository ProfitLossBillDetailRepository { get; set; }
+        [Dependency]
+        public IStorageRepository StorageRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -425,38 +427,35 @@ namespace THOK.Wms.Bll.Service
         {
             try
             {
-                //using (var scope = new TransactionScope())
-                //{
-                    var inQuery = InBillDetailRepository.GetQueryable().AsEnumerable();
-                    var outQuery = OutBillDetailRepository.GetQueryable().AsEnumerable();
-                    var profitLossQuery = ProfitLossBillDetailRepository.GetQueryable().AsEnumerable();
-                    var dailyBalanceQuery = DailyBalanceRepository.GetQueryable().AsEnumerable();
+                var inQuery = InBillDetailRepository.GetQueryable();
+                var outQuery = OutBillDetailRepository.GetQueryable();
+                var profitLossQuery = ProfitLossBillDetailRepository.GetQueryable();
+                var dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
+                var storageQuery = StorageRepository.GetQueryable();
 
-                    DateTime dt1 = Convert.ToDateTime(settleDate);
+                DateTime dt1 = Convert.ToDateTime(settleDate);
+                DateTime dt2 = dt1.AddDays(1);
+                if (DateTime.Now < dt1)
+                {
+                    errorInfo = "选择日结日期大于当前日期，不可以进行日结！";
+                    return false;
+                }
+                var dailyBalance = dailyBalanceQuery.Where(d => d.SettleDate < dt1)
+                                           .OrderByDescending(d => d.SettleDate)
+                                           .FirstOrDefault();
+                DateTime? dt3 = null;
+                if (dailyBalance != null) dt3 = dailyBalance.SettleDate;
 
-                    if (DateTime.Now < dt1)
+                var oldDailyBalance = dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                                                 && d.SettleDate == dt1).ToArray();
+                DailyBalanceRepository.Delete(oldDailyBalance);
+                DailyBalanceRepository.SaveChanges();
+
+                var query = inQuery.Where(a => (a.InBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                              && a.InBillMaster.BillDate > dt1 && a.InBillMaster.BillDate < dt2)
+                    .Select(a => new
                     {
-                        errorInfo = "选择日结日期大于当前日期，不可以进行日结！";
-                        return false;
-                    }
-                    var dailyBalance = dailyBalanceQuery.Where(d => d.SettleDate < dt1)
-                                               .OrderByDescending(d => d.SettleDate)
-                                               .FirstOrDefault();
-                    string t = dailyBalance != null ? dailyBalance.SettleDate.ToString("yyyy-MM-dd") : "";
-
-                    var oldDailyBalance = dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode
-                                                                         || string.IsNullOrEmpty(warehouseCode))
-                                                     && d.SettleDate.ToString("yyyy-MM-dd") == settleDate)
-                                           .ToArray();
-                    DailyBalanceRepository.Delete(oldDailyBalance);
-                    DailyBalanceRepository.SaveChanges();
-
-                    var query = inQuery.Where(a => (a.InBillMaster.WarehouseCode == warehouseCode
-                                                     || string.IsNullOrEmpty(warehouseCode))
-                                                  && a.InBillMaster.BillDate.ToString("yyyy-MM-dd") == settleDate
-                                      ).Select(a => new
-                    {
-                        BillDate = a.InBillMaster.BillDate.ToString("yyyy-MM-dd"),
+                        BillDate = settleDate,
                         WarehouseCode = a.InBillMaster.Warehouse.WarehouseCode,
                         ProductCode = a.ProductCode,
                         UnitCode = a.Product.UnitCode,
@@ -466,12 +465,12 @@ namespace THOK.Wms.Bll.Service
                         ProfitAmount = decimal.Zero,
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
-                    }).Concat(outQuery.Where(a => (a.OutBillMaster.WarehouseCode == warehouseCode
-                                                   || string.IsNullOrEmpty(warehouseCode))
-                                                && a.OutBillMaster.BillDate.ToString("yyyy-MM-dd") == settleDate
-                                    ).Select(a => new
+                    })
+                .Concat(outQuery.Where(a => (a.OutBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                            && a.OutBillMaster.BillDate > dt1 && a.OutBillMaster.BillDate < dt2)
+                    .Select(a => new
                     {
-                        BillDate = a.OutBillMaster.BillDate.ToString("yyyy-MM-dd"),
+                        BillDate = settleDate,
                         WarehouseCode = a.OutBillMaster.Warehouse.WarehouseCode,
                         ProductCode = a.ProductCode,
                         UnitCode = a.Product.UnitCode,
@@ -481,12 +480,12 @@ namespace THOK.Wms.Bll.Service
                         ProfitAmount = decimal.Zero,
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
-                    })).Concat(profitLossQuery.Where(a => (a.ProfitLossBillMaster.WarehouseCode == warehouseCode
-                                                           || string.IsNullOrEmpty(warehouseCode))
-                                                        && a.ProfitLossBillMaster.BillDate.ToString("yyyy-MM-dd") == settleDate
-                                            ).Select(a => new
+                    })
+                ).Concat(profitLossQuery.Where(a => (a.ProfitLossBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                                    && a.ProfitLossBillMaster.BillDate > dt1 && a.ProfitLossBillMaster.BillDate < dt2)
+                    .Select(a => new
                     {
-                        BillDate = a.ProfitLossBillMaster.BillDate.ToString("yyyy-MM-dd"),
+                        BillDate = settleDate,
                         WarehouseCode = a.ProfitLossBillMaster.Warehouse.WarehouseCode,
                         ProductCode = a.ProductCode,
                         UnitCode = a.Product.UnitCode,
@@ -496,11 +495,11 @@ namespace THOK.Wms.Bll.Service
                         ProfitAmount = a.Quantity > 0 ? Math.Abs(a.Quantity) : decimal.Zero,
                         LossAmount = a.Quantity < 0 ? Math.Abs(a.Quantity) : decimal.Zero,
                         Ending = decimal.Zero
-                    })).Concat(dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode
-                                                             || string.IsNullOrEmpty(warehouseCode))
-                                                          && d.SettleDate.ToString("yyyy-MM-dd") == t
-                                                          && d.Ending != decimal.Zero
-                                              ).Select(a => new
+                    })
+                ).Concat(dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                                      && dt3 != null && d.SettleDate == dt3
+                                                      && d.Ending != decimal.Zero)
+                    .Select(a => new
                     {
                         BillDate = settleDate,
                         WarehouseCode = a.WarehouseCode,
@@ -513,35 +512,47 @@ namespace THOK.Wms.Bll.Service
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
                     }
-                    ));
-
-                    var newDailyBalance = query.GroupBy(a => new { a.BillDate, a.WarehouseCode, a.ProductCode, a.UnitCode })
-                                        .Select(a => new DailyBalance
+                )).Concat(storageQuery.Where(s => (s.Cell.Area.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                                && s.Product != null && dt3 == null)
+                    .GroupBy(s => new { s.Cell.Area.WarehouseCode, s.ProductCode, s.Product.UnitCode })
+                    .Select(s => new
                     {
-                        SettleDate = Convert.ToDateTime(a.Key.BillDate),
-                        WarehouseCode = a.Key.WarehouseCode,
-                        ProductCode = a.Key.ProductCode,
-                        UnitCode = a.Key.UnitCode,
-                        Beginning = a.Sum(d => d.Beginning),
-                        EntryAmount = a.Sum(d => d.EntryAmount),
-                        DeliveryAmount = a.Sum(d => d.DeliveryAmount),
-                        ProfitAmount = a.Sum(d => d.ProfitAmount),
-                        LossAmount = a.Sum(d => d.LossAmount),
-                        Ending = a.Sum(d => d.Beginning) + a.Sum(d => d.EntryAmount) - a.Sum(d => d.DeliveryAmount) + a.Sum(d => d.ProfitAmount) - a.Sum(d => d.LossAmount),
-                    }).ToArray();
-
-                    newDailyBalance.AsParallel().ForAll(b => b.ID = Guid.NewGuid());
-                    foreach (var item in newDailyBalance)
-                    {
-                        item.ID = Guid.NewGuid();
-                        DailyBalanceRepository.Add(item);
+                        BillDate = settleDate,
+                        WarehouseCode = s.Key.WarehouseCode,
+                        ProductCode = s.Key.ProductCode,
+                        UnitCode = s.Key.UnitCode,
+                        Beginning = s.Sum(p => p.Quantity),
+                        EntryAmount = decimal.Zero,
+                        DeliveryAmount = decimal.Zero,
+                        ProfitAmount = decimal.Zero,
+                        LossAmount = decimal.Zero,
+                        Ending = decimal.Zero
                     }
+                )).ToArray();
 
-                    DailyBalanceRepository.SaveChanges();
-                    //scope.Complete();
+                var newDailyBalance = query.AsParallel().GroupBy(a => new { a.BillDate, a.WarehouseCode, a.ProductCode, a.UnitCode })
+                .Select(a => new DailyBalance
+                {
+                    SettleDate = Convert.ToDateTime(a.Key.BillDate),
+                    WarehouseCode = a.Key.WarehouseCode,
+                    ProductCode = a.Key.ProductCode,
+                    UnitCode = a.Key.UnitCode,
+                    Beginning = a.Sum(d => d.Beginning),
+                    EntryAmount = a.Sum(d => d.EntryAmount),
+                    DeliveryAmount = a.Sum(d => d.DeliveryAmount),
+                    ProfitAmount = a.Sum(d => d.ProfitAmount),
+                    LossAmount = a.Sum(d => d.LossAmount),
+                    Ending = a.Sum(d => d.Beginning) + a.Sum(d => d.EntryAmount) - a.Sum(d => d.DeliveryAmount) + a.Sum(d => d.ProfitAmount) - a.Sum(d => d.LossAmount),
+                }).ToArray();
 
-                    return true;
-               // }
+                foreach (var item in newDailyBalance)
+                {
+                    item.ID = Guid.NewGuid();
+                    DailyBalanceRepository.Add(item);
+                }
+
+                DailyBalanceRepository.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {

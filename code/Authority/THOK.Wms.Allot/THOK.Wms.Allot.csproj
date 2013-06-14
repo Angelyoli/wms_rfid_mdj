@@ -76,13 +76,13 @@
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.Dal\THOK.Wms.Dal.csproj">
+    <ProjectReference Include="..\THOK.Wms.Dal\THOK.WMS.Dal.csproj">
       <Project>{DB6CC091-9BC6-415C-A0D2-E34289669102}</Project>
-      <Name>THOK.Wms.Dal</Name>
+      <Name>THOK.WMS.Dal</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
+      <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>

@@ -71,9 +71,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
+      <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

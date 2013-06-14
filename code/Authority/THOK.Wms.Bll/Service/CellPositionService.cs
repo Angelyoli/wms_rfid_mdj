@@ -51,7 +51,7 @@ namespace THOK.Wms.Bll.Service
         public bool Add(CellPosition cellPosition)
         {
             var cp = new CellPosition();
-            cp.ID = cellPosition.ID;
+           // cp.ID = cellPosition.ID;
             cp.CellCode = cellPosition.CellCode;
             cp.StockInPositionID = cellPosition.StockInPositionID;
             cp.StockOutPositionID = cellPosition.StockOutPositionID;

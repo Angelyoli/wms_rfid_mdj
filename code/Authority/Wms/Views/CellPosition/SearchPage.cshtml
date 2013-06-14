@@ -7,7 +7,9 @@
         <table width="280" border="0" cellspacing="5" cellpadding="5">
                     <tr>
                     <td width="75" align="right">货位代码：</td>
-                    <td width="168"><input id="CellCode" type="text"/>
+                    <td width="168">
+                    <input name="CellCode" readonly="true" id="CellCode">
+                    <a href="#" id="CellSelect" onclick="CellSelectClick()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
                     </td>
                     </tr> 
 
@@ -33,4 +35,7 @@
         </form>
     </div>
 </div>
-@Html.Partial("_CellPositionNamePartial");
+
+@Html.Partial("_CellPartial")
+@Html.Partial("_CellPositionNamePartial")
+
