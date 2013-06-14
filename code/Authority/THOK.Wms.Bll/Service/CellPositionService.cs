@@ -14,24 +14,35 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IPositionRepository PositionRepository { get; set; }
 
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows,string CellCode, string StockInPosition, string StockOutPosition)
+
+        public object GetDetails(int page, int rows, string CellCode, string CellName, string StockInPosition, string StockOutPosition)
         {
             IQueryable<CellPosition> cellPositionQuery = CellPositionRepository.GetQueryable();
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+
             var cellPosition = cellPositionQuery.Join(positionQuery,
                                          c => c.StockInPositionID,
                                          p1 => p1.ID,
-                                         (c, p1) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, InName= p1.PositionName })
+                                         (c, p1) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, InName = p1.PositionName })
                                          .Join(positionQuery,
                                          c => c.StockOutPositionID,
                                          p2 => p2.ID,
-                                         (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName=p2.PositionName })
-                                         .Where(p=>p.CellCode.Contains(CellCode) && p.InName.Contains(StockInPosition)&&p.OutName.Contains(StockOutPosition))
+                                         (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName = p2.PositionName })
+                                         .Join(cellQuery,
+                                         c => c.CellCode,
+                                         cq => cq.CellCode,
+                                         (c, cq) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID,CellName=cq.CellName,c.InName ,c.OutName }
+                                         )
+                                         .Where(p => p.CellCode.Contains(CellCode) && p.CellName.Contains(CellName)&&p.InName.Contains(StockInPosition) && p.OutName.Contains(StockOutPosition))
                                          .OrderBy(p => p.ID).AsEnumerable()
                                          .Select(p => new
                                          {
@@ -40,13 +51,46 @@ namespace THOK.Wms.Bll.Service
                                              p.StockInPositionID,
                                              p.InName,
                                              p.StockOutPositionID,
-                                             p.OutName
+                                             p.OutName,
+                                             p.CellName
                                          });
-            
+
             int total = cellPosition.Count();
             cellPosition = cellPosition.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = cellPosition.ToArray() };
         }
+
+
+        //public object GetDetails(int page, int rows,string CellCode, string StockInPosition, string StockOutPosition)
+        //{
+        //    IQueryable<CellPosition> cellPositionQuery = CellPositionRepository.GetQueryable();
+        //    IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+        //    IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+
+        //    var cellPosition = cellPositionQuery.Join(positionQuery,
+        //                                 c => c.StockInPositionID,
+        //                                 p1 => p1.ID,
+        //                                 (c, p1) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, InName= p1.PositionName })
+        //                                 .Join(positionQuery,
+        //                                 c => c.StockOutPositionID,
+        //                                 p2 => p2.ID,
+        //                                 (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName=p2.PositionName })
+        //                                 .Where(p=>p.CellCode.Contains(CellCode) && p.InName.Contains(StockInPosition)&&p.OutName.Contains(StockOutPosition))
+        //                                 .OrderBy(p => p.ID).AsEnumerable()
+        //                                 .Select(p => new
+        //                                 {
+        //                                     p.ID,
+        //                                     p.CellCode,
+        //                                     p.StockInPositionID,
+        //                                     p.InName,
+        //                                     p.StockOutPositionID,
+        //                                     p.OutName
+        //                                 });
+            
+        //    int total = cellPosition.Count();
+        //    cellPosition = cellPosition.Skip((page - 1) * rows).Take(rows);
+        //    return new { total, rows = cellPosition.ToArray() };
+        //}
 
         public bool Add(CellPosition cellPosition)
         {
@@ -144,5 +188,8 @@ namespace THOK.Wms.Bll.Service
             return dt;
         }
 
+
+
+       
     }
 }
