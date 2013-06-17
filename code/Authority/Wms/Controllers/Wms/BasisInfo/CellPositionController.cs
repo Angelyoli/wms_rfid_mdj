@@ -39,9 +39,10 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
 
             string CellCode = collection["CellCode"] ?? "";
+            string CellName = collection["CellName"] ?? "";
             string StockInPosition = collection["StockInPosition"] ?? "";
             string StockOutPosition = collection["StockOutPosition"] ?? "";
-            var productSize = CellPositionService.GetDetails(page, rows, CellCode, StockInPosition, StockOutPosition);
+            var productSize = CellPositionService.GetDetails(page, rows, CellCode,CellName, StockInPosition, StockOutPosition);
             return Json(productSize, "text", JsonRequestBehavior.AllowGet);
         }
 
