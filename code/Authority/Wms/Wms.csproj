@@ -1975,6 +1975,7 @@
     <Content Include="Views\City\_PrintPartial.cshtml" />
     <Content Include="Views\CellPosition\_CellCodePartial.cshtml" />
     <Content Include="Views\CellPosition\_CellPartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellNamePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2397,6 +2398,7 @@
     <Content Include="Views\Server\_PrintPartial.cshtml" />
     <Content Include="Views\System\_PrintPartial.cshtml" />
     <Content Include="Views\Module\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductSize\_Product1Partial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

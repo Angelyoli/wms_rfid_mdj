@@ -13,8 +13,8 @@
         }
     };
     function onDblClick(event, treeId, treeNode) {
-        $('#CellCode').val(treeNode.id);
-        $('#CellName').val(treeNode.name);
+        $('#inputCellName').val(treeNode.name);
+        $('#CellCode1').val(treeNode.id);
         $('#CellNameData').dialog('close');
     }
 
@@ -29,7 +29,7 @@
                     function (data) {
                         $.fn.zTree.init($("#warehouseTree"), setting, data);
                     });
-                }
+    }
 </script>
 
 <div id="CellNameData" class="easyui-dialog" modal="true"  style="width:240px;height:370px;padding:1px 1px"closed="true">
@@ -37,7 +37,9 @@
             <ul id="warehouseTree" class="ztree"></ul>
         </div>
 </div>
-<div id="dlg-cellCodeDatabuttons">
+<div id="dlg-moveCellDatabuttons">
     <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="CellNameSave()">确定</a>
     <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#CellNameData').dialog('close')">取消</a>
 </div>
+
+
