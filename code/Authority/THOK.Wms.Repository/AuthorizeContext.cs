@@ -15,6 +15,7 @@ namespace THOK.Wms.Repository
 		public AuthorizeContext()
 			: base("Name=AuthorizeContext")
 		{
+            this.Configuration.AutoDetectChangesEnabled = false;
 		}
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

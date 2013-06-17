@@ -8,7 +8,8 @@
                     <tr>
                     <td width="75" align="right">货位代码：</td>
                     <td width="168">
-                    <input name="CellCode" id="CellCode" class="easyui-validatebox" required="true" type="text"/>
+                    <input name="CellCode" readonly="true" id="CellCode1">
+                    <a href="#" id="CellSelect" onclick="CellSelectClick()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
                     </td>
                     </tr>
 
@@ -36,3 +37,5 @@
     </div>
 </div>
 @Html.Partial("_CellPositionNamePartial")
+@Html.Partial("_CellCodePartial")
+

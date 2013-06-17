@@ -344,6 +344,14 @@
     <Compile Include="Migrations\201305240709279_add_SortingLowerLimit_SortType.Designer.cs">
       <DependentUpon>201305240709279_add_SortingLowerLimit_SortType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201306050932363_modify_product_pointareacodes.cs" />
+    <Compile Include="Migrations\201306050932363_modify_product_pointareacodes.Designer.cs">
+      <DependentUpon>201306050932363_modify_product_pointareacodes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201306060218569_modify_product_pointareacodes1.cs" />
+    <Compile Include="Migrations\201306060218569_modify_product_pointareacodes1.Designer.cs">
+      <DependentUpon>201306060218569_modify_product_pointareacodes1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -368,14 +376,20 @@
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
+      <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201305240709279_add_SortingLowerLimit_SortType.resx">
       <DependentUpon>201305240709279_add_SortingLowerLimit_SortType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201306050932363_modify_product_pointareacodes.resx">
+      <DependentUpon>201306050932363_modify_product_pointareacodes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201306060218569_modify_product_pointareacodes1.resx">
+      <DependentUpon>201306060218569_modify_product_pointareacodes1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
