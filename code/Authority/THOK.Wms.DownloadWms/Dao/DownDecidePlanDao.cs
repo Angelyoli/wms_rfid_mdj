@@ -72,6 +72,12 @@ namespace THOK.Wms.DownloadWms.Dao
             string sql = "SELECT * FROM WMS_EMPLOYEE WHERE USER_NAME='" + userName + "'";
             return this.ExecuteQuery(sql).Tables[0];
         }
+        
+        public DataTable GetInBillMasterDateTime(string dateTimeStr)
+        {
+            string sql = "SELECT * FROM WMS_IN_BILL_MASTER WHERE bill_date>='" + dateTimeStr + "' ORDER BY BILL_NO DESC";
+            return this.ExecuteQuery(sql).Tables[0];
+        }
 
         /// <summary>
         /// 查询中间表7天内单据

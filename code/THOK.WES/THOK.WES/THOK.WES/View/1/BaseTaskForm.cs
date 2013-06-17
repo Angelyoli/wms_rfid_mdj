@@ -882,7 +882,7 @@ namespace THOK.WES.View
             {
                 try
                 {
-                    sp.Play();
+                    sp.PlayLooping();
                     isAppyInt++;
                 }
                 catch (Exception e)

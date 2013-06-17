@@ -245,12 +245,13 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     //查询这个卷烟是否是立式机的卷烟
                                     if (isRoundingTray != null && Convert.ToInt32(isRoundingTray.ParameterValue) > 0)
                                     {
-                                        var temp3 = temp1.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode && s.SortType == "1");
-                                        if (temp3 != null && temp.Count() >= 2 && quantity > 0)
+                                        var temp3 = temp1.Where(s => s.Product.ProductCode == product.Product.ProductCode).ToArray();
+                                        if (temp3.Count() == 1 && temp.Count() >= 2 && quantity > 0)
                                         {
+                                            var temp5 = temp3.Where(s => s.SortType == "1").ToArray();
                                             //查询这个订单在分拣当中是否存在.大于20件取整托盘,
-                                            var SumlowerlimitQuantity = temp2.FirstOrDefault(s => s.Product.ProductCode == temp3.Product.ProductCode);
-                                            if (SumlowerlimitQuantity != null && SumlowerlimitQuantity.Quantity > (Convert.ToInt32(isRoundingTray.ParameterValue) * product.Product.Unit.Count))
+                                            var SumlowerlimitQuantity = temp2.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode);
+                                            if (temp5.Count()==1 && SumlowerlimitQuantity != null && SumlowerlimitQuantity.Quantity > (Convert.ToInt32(isRoundingTray.ParameterValue) * product.Product.Unit.Count))
                                             {
                                                 decimal WholeCare = 0;//托盘数
                                                 decimal SumSortingQuantity = 0;//整托盘的数量
