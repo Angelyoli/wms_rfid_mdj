@@ -97,6 +97,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             int page = 0, rows = 0;
             int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
             string CellCode = Request.QueryString["CellCode"];
+            string CellName = Request.QueryString["CellName"];
             CellPosition cp = new CellPosition();
             cp.ID = CellPositionID;
             cp.CellCode = CellCode;

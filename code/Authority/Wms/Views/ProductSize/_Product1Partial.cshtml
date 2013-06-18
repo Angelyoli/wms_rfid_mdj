@@ -1,4 +1,4 @@
-﻿<script type="text/javascript">   
+﻿<script type="text/javascript">
     $(function () {
         $('#productDetail').datagrid({
             //双击赋值
@@ -18,8 +18,8 @@
     function productSave() {
         var productRow = $('#productDetail').datagrid('getSelected');
         if (productRow) {
-            $('#ProductCode').val(productRow.ProductCode);
-            $('#inputProductName').val(productRow.ProductName);
+            $('#ProductCode1').val(productRow.ProductCode);
+            $('#inputProductName1').val(productRow.ProductName);
             $('#productData').dialog('close');
             editKey = true;
         }
@@ -31,10 +31,10 @@
     function productQueryClick() {
         $("#productDetail").datagrid({
             url: '/Product/GetProductBy/?queryString=' + 'ProductName' + '&value=' + $('#productInfo').val()
-//            url: '/Product/GetProductBy/?queryString=' + $('#queryTypeproduct').combogrid('getValue') + '&value=' + $('#productInfo').val()
-//            url: '/Product/GetProductBy/?queryString='
+            //            url: '/Product/GetProductBy/?queryString=' + $('#queryTypeproduct').combogrid('getValue') + '&value=' + $('#productInfo').val()
+            //            url: '/Product/GetProductBy/?queryString='
         });
-       
+
         $("#productDetail").datagrid('reload');
         editKey = true;
     }
