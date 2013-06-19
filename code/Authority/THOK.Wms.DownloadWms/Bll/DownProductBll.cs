@@ -25,10 +25,11 @@ namespace THOK.WMS.DownloadWms.Bll
                 DataTable codedt = this.GetProductCode();
                 string codeList = UtinString.MakeString(codedt, "custom_code");
                 codeList = "BRAND_CODE NOT IN (" + codeList + ")";
-                DataTable bradCodeTable = this.GetProductInfo(codeList);
-                if (bradCodeTable.Rows.Count > 0)
+                DataTable bradCodeTable = this.GetProductInfo("1=1");
+                DataRow[] bradCodeDr = bradCodeTable.Select(codeList);
+                if (bradCodeDr.Length > 0)
                 {
-                    DataSet brandCodeDs = this.Insert(bradCodeTable);
+                    DataSet brandCodeDs = this.Insert(bradCodeDr);
                     this.Insert(brandCodeDs);
                     //上报数据
                     //upload.InsertProduct(brandCodeDs);
@@ -113,11 +114,11 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="brandTable"></param>
         /// <returns></returns>
-        public DataSet Insert(DataTable brandTable)
+        public DataSet Insert(DataRow[] brandTable)
         {
             DownUnitBll bll = new DownUnitBll();
             DataSet ds = this.GenerateEmptyTables();
-            foreach (DataRow row in brandTable.Rows)
+            foreach (DataRow row in brandTable)
             {
                 DataTable ulistCodeTable = this.FindUnitListCode(row["BRAND_N"].ToString().Trim());
                 DataRow inbrddr = ds.Tables["WMS_PRODUCT"].NewRow();
