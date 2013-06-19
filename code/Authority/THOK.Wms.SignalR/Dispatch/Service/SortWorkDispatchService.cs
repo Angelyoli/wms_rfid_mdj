@@ -107,7 +107,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                              .AsParallel()
                                              .GroupBy(r => new { r.OrderDate, r.SortingLine })
                                              .Select(r => new { r.Key.OrderDate, r.Key.SortingLine, Products = r })
-                                             .OrderBy(s => s.SortingLine.SortingLineCode)//如果取整托盘多余的量是1号线就倒序排序，目前多余的量放入2号线，所以先调度一号线
+                                             //.OrderBy(s => s.SortingLine.SortingLineCode)//如果取整托盘多余的量是1号线就倒序排序，目前多余的量放入2号线，所以先调度一号线
                                              .ToArray();
            
             var temp1 = sortingLowerlimitQuery.GroupBy(r => new { r.Product,r.SortType })
