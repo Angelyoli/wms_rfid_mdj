@@ -6,9 +6,10 @@
       <form id ="pfm">
         <table width="280">
                     <tr>
-                    <td width="75" align="right">商品代码：</td>
+                    <td width="75" align="right">商品名称：</td>
                     <td width="168">
-                    <input name="ProductCode" id="ProductCode"readonly="readonly" type="text"/>
+                    <input name="ProductCode" id="ProductCode1"readonly="readonly" type="text" style="display:none"/>
+                    <input name="ProductName" id="inputProductName1" readonly="readonly" type="text"/>
                     <a href="#" id="ProductSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ProductSearchClick()"></a>
                     </td>
                     </tr> 
@@ -31,5 +32,5 @@
         </form>
     </div>
 </div>
- @Html.Partial("_ProductPartial");
+ @Html.Partial("_Product1Partial");
   @Html.Partial("_SizePartial");
