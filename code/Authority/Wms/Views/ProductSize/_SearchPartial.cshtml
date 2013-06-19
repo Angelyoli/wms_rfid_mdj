@@ -40,7 +40,9 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.ProductCode = $('#ProductCode').val();
+        queryParams.ProductCode = $('#ProductCode1').val();
+        queryParams.ProductName = $('#inputProductName1').val();
+
         queryParams.SizeNo = $('#SizeNo').val();
         queryParams.AreaNo = $('#AreaNo').val();
         $('#details').datagrid('options').queryParams = queryParams;
