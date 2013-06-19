@@ -352,6 +352,10 @@
     <Compile Include="Migrations\201306060218569_modify_product_pointareacodes1.Designer.cs">
       <DependentUpon>201306060218569_modify_product_pointareacodes1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201306190157258_modify_dailybalance_areacode.cs" />
+    <Compile Include="Migrations\201306190157258_modify_dailybalance_areacode.Designer.cs">
+      <DependentUpon>201306190157258_modify_dailybalance_areacode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -390,6 +394,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201306060218569_modify_product_pointareacodes1.resx">
       <DependentUpon>201306060218569_modify_product_pointareacodes1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201306190157258_modify_dailybalance_areacode.resx">
+      <DependentUpon>201306190157258_modify_dailybalance_areacode.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

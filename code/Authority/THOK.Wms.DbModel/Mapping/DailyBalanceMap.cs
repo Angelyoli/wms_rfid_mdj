@@ -22,6 +22,10 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .HasMaxLength(20);
 
+            this.Property(t => t.AreaCode)
+                .IsRequired()
+                .HasMaxLength(20);
+
             this.Property(t => t.ProductCode)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -65,6 +69,11 @@ namespace THOK.Wms.DbModel.Mapping
             this.HasRequired(t => t.Warehouse)
                 .WithMany(t => t.DailyBalances)
                 .HasForeignKey(d => d.WarehouseCode)
+                .WillCascadeOnDelete(false);
+
+            this.HasRequired(t => t.Area)
+                .WithMany()
+                .HasForeignKey(d => d.AreaCode)
                 .WillCascadeOnDelete(false);
 
             this.HasRequired(t => t.Product)
