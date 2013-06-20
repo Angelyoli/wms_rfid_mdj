@@ -51,7 +51,7 @@ namespace THOK.Wms.DownloadWms.Bll
                     {
                         try
                         {
-                            DataSet middleds = this.MiddleTable(masterdt);
+                            DataSet middleds = this.MiddleTable(masterdt, startDate);
                             this.Insert(middleds);
                             DataSet masterds = this.MiddleInBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
                             DataSet detailds = this.MiddleInBillDetail(detaildt);
@@ -97,6 +97,16 @@ namespace THOK.Wms.DownloadWms.Bll
             {
                 DownDecidePlanDao dao = new DownDecidePlanDao();
                 return dao.GetMiddleInBillDetail(inBillNoList);
+            }
+        }
+
+
+        public DataTable GetInBillMasterDateTime(string dateTime)
+        {
+            using (PersistentManager dbpm = new PersistentManager())
+            {
+                DownDecidePlanDao dao = new DownDecidePlanDao();
+                return dao.GetInBillMasterDateTime(dateTime);
             }
         }
 
@@ -164,15 +174,20 @@ namespace THOK.Wms.DownloadWms.Bll
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public DataSet MiddleTable(DataTable inBillMaster)
+        public DataSet MiddleTable(DataTable inBillMaster, string startDate)
         {
             DataSet ds = this.GenerateEmptyTables();
+            DataTable dataTimeTable = this.GetInBillMasterDateTime(startDate);
             int i = 0;
+            if (dataTimeTable.Rows.Count > 0)
+            {
+                i = Convert.ToInt32(dataTimeTable.Rows[0]["bill_no"].ToString().Substring(6, 4));
+            }
             foreach (DataRow row in inBillMaster.Rows)
             {
                 i++;
                 string newcode = i.ToString();
-                for (int j = 0; j < 5 - i.ToString().Length; j++)
+                for (int j = 0; j < 4 - i.ToString().Length; j++)
                 {
                     newcode = "0" + newcode;
                 }

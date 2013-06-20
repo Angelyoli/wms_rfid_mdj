@@ -22,6 +22,16 @@ namespace THOK.Wms.Bll.Service
         public IOutBillDetailRepository OutBillDetailRepository { get; set; }
         [Dependency]
         public IProfitLossBillDetailRepository ProfitLossBillDetailRepository { get; set; }
+
+        [Dependency]
+        public IInBillAllotRepository InBillAllotRepository { get; set; }
+
+        [Dependency]
+        public IOutBillAllotRepository OutBillAllotRepository { get; set; }
+
+        [Dependency]
+        public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
+
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
 
@@ -37,34 +47,54 @@ namespace THOK.Wms.Bll.Service
             IQueryable<DailyBalance> dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
 
             var dailyBalance = dailyBalanceQuery.Where(i => 1 == 1);
-            if (!beginDate.Equals(string.Empty))
+            if (!string.IsNullOrWhiteSpace(beginDate))
             {
                 DateTime begin = Convert.ToDateTime(beginDate);
                 dailyBalance = dailyBalance.Where(i => i.SettleDate >= begin);
             }
 
-            if (!endDate.Equals(string.Empty))
+            if (!string.IsNullOrWhiteSpace(endDate))
             {
                 DateTime end = Convert.ToDateTime(endDate);
                 dailyBalance = dailyBalance.Where(i => i.SettleDate <= end);
             }
 
-            var dailyBalances = dailyBalance.Where(c => c.WarehouseCode.Contains(warehouseCode))
-                                       .OrderBy(c => c.SettleDate)
-                                       .GroupBy(c => c.SettleDate)
-                                       .Select(c => new
-                                       {
-                                           SettleDate = c.Key,
-                                           WarehouseCode = warehouseCode == "" ? "" : c.Max(p => p.WarehouseCode),
-                                           WarehouseName = warehouseCode == "" ? "" : c.Max(p => p.Warehouse.WarehouseName),
-                                           Beginning = c.Sum(p => p.Beginning),
-                                           EntryAmount = c.Sum(p => p.EntryAmount),
-                                           DeliveryAmount = c.Sum(p => p.DeliveryAmount),
-                                           ProfitAmount = c.Sum(p => p.ProfitAmount),
-                                           LossAmount = c.Sum(p => p.LossAmount),
-                                           Ending = c.Sum(p => p.Ending)
-                                       });
+            var dailyBalances = dailyBalance.GroupBy(c => new { c.SettleDate, c.WarehouseCode, c.Warehouse.WarehouseName })
+                                            .Select(c => new
+                                            {
+                                                SettleDate = c.Key.SettleDate,
+                                                WarehouseCode = c.Key.WarehouseCode,
+                                                WarehouseName = c.Key.WarehouseName,
+                                                Beginning = c.Sum(p => p.Beginning),
+                                                EntryAmount = c.Sum(p => p.EntryAmount),
+                                                DeliveryAmount = c.Sum(p => p.DeliveryAmount),
+                                                ProfitAmount = c.Sum(p => p.ProfitAmount),
+                                                LossAmount = c.Sum(p => p.LossAmount),
+                                                Ending = c.Sum(p => p.Ending)
+                                            });
 
+            if (!string.IsNullOrEmpty(warehouseCode))
+            {               
+                dailyBalances = dailyBalances.Where(i => i.WarehouseCode == warehouseCode);
+            }
+            else
+            {
+                dailyBalances = dailyBalances.GroupBy(d => new { d.SettleDate })
+                                             .Select(c => new
+                                             {
+                                                 SettleDate = c.Key.SettleDate,
+                                                 WarehouseCode = "",
+                                                 WarehouseName = "全部仓库",
+                                                 Beginning = c.Sum(p => p.Beginning),
+                                                 EntryAmount = c.Sum(p => p.EntryAmount),
+                                                 DeliveryAmount = c.Sum(p => p.DeliveryAmount),
+                                                 ProfitAmount = c.Sum(p => p.ProfitAmount),
+                                                 LossAmount = c.Sum(p => p.LossAmount),
+                                                 Ending = c.Sum(p => p.Ending)
+                                             });
+            }
+
+            dailyBalances = dailyBalances.OrderBy(c => new { c.SettleDate, c.WarehouseCode });
             int total = dailyBalances.Count();
             dailyBalances = dailyBalances.OrderByDescending(s => s.SettleDate).Skip((page - 1) * rows).Take(rows);
 
@@ -92,18 +122,13 @@ namespace THOK.Wms.Bll.Service
             return new { total, rows = temp.ToArray() };
         }
 
-        public object GetInfoDetails(int page, int rows, string warehouseCode, string settleDate, string unitType)
+        public object GetInfoDetails(int page, int rows, string warehouseCode, string settleDate, string unitType, string areas)
         {
             DateTime date = Convert.ToDateTime(settleDate);
-            if (unitType == null || unitType == "")
-            {
-                unitType = "1";
-            }
+            if (string.IsNullOrWhiteSpace(unitType))  unitType = "1";
+            
             IQueryable<DailyBalance> dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
-            var query = dailyBalanceQuery.Where(i => i.WarehouseCode.Contains(warehouseCode) && i.SettleDate == date)
-                                         .OrderByDescending(i => i.SettleDate)
-                                         .OrderBy(i => i.Warehouse.WarehouseName)
-                                         .OrderBy(i => i.ProductCode)
+            var query = dailyBalanceQuery.Where(i => i.SettleDate == date)
                                          .Select(i => new
                                          {
                                              i.SettleDate,
@@ -117,6 +142,8 @@ namespace THOK.Wms.Bll.Service
                                              Count02 = i.Product.UnitList.Unit02.Count,
                                              i.WarehouseCode,
                                              i.Warehouse.WarehouseName,
+                                             i.AreaCode,
+                                             i.Area.AreaName,
                                              Beginning = i.Beginning,
                                              EntryAmount = i.EntryAmount,
                                              DeliveryAmount = i.DeliveryAmount,
@@ -124,6 +151,133 @@ namespace THOK.Wms.Bll.Service
                                              LossAmount = i.LossAmount,
                                              Ending = i.Ending
                                          });
+            if (areas != null)
+            {
+                query = query.GroupBy(q => new
+                {
+                    q.SettleDate,
+                    q.WarehouseCode,
+                    q.WarehouseName,
+                    q.AreaCode,
+                    q.AreaName,
+                    q.ProductCode,
+                    q.ProductName,
+                    q.UnitCode01,
+                    q.UnitName01,
+                    q.UnitCode02,
+                    q.UnitName02,
+                    q.Count01,
+                    q.Count02,
+                })
+                .Select(i => new
+                {
+                    i.Key.SettleDate,
+                    i.Key.ProductCode,
+                    i.Key.ProductName,
+                    i.Key.UnitCode01,
+                    i.Key.UnitName01,
+                    i.Key.UnitCode02,
+                    i.Key.UnitName02,
+                    i.Key.Count01,
+                    i.Key.Count02,
+                    i.Key.WarehouseCode,
+                    i.Key.WarehouseName,
+                    i.Key.AreaCode,
+                    i.Key.AreaName,
+                    Beginning = i.Sum(q => q.Beginning),
+                    EntryAmount = i.Sum(q => q.EntryAmount),
+                    DeliveryAmount = i.Sum(q => q.DeliveryAmount),
+                    ProfitAmount = i.Sum(q => q.ProfitAmount),
+                    LossAmount = i.Sum(q => q.LossAmount),
+                    Ending = i.Sum(q => q.Ending)
+                });
+                if (areas != "*") query = query.Where(i => areas.Contains(i.AreaCode));
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(warehouseCode))
+                {
+                    query = query.GroupBy(q => new
+                    {
+                        q.SettleDate,
+                        q.WarehouseCode,
+                        q.WarehouseName,
+                        q.ProductCode,
+                        q.ProductName,
+                        q.UnitCode01,
+                        q.UnitName01,
+                        q.UnitCode02,
+                        q.UnitName02,
+                        q.Count01,
+                        q.Count02,
+                    })
+                    .Select(i => new
+                    {
+                        i.Key.SettleDate,
+                        i.Key.ProductCode,
+                        i.Key.ProductName,
+                        i.Key.UnitCode01,
+                        i.Key.UnitName01,
+                        i.Key.UnitCode02,
+                        i.Key.UnitName02,
+                        i.Key.Count01,
+                        i.Key.Count02,
+                        i.Key.WarehouseCode,
+                        i.Key.WarehouseName,
+                        AreaCode = "",
+                        AreaName = "",
+                        Beginning = i.Sum(q => q.Beginning),
+                        EntryAmount = i.Sum(q => q.EntryAmount),
+                        DeliveryAmount = i.Sum(q => q.DeliveryAmount),
+                        ProfitAmount = i.Sum(q => q.ProfitAmount),
+                        LossAmount = i.Sum(q => q.LossAmount),
+                        Ending = i.Sum(q => q.Ending)
+                    });
+                    query = query.Where(i => i.WarehouseCode == warehouseCode);
+                }
+                else
+                {
+                    query = query.GroupBy(q => new
+                    {
+                        q.SettleDate,
+                        q.ProductCode,
+                        q.ProductName,
+                        q.UnitCode01,
+                        q.UnitName01,
+                        q.UnitCode02,
+                        q.UnitName02,
+                        q.Count01,
+                        q.Count02,
+                    })
+                    .Select(i => new
+                    {
+                        i.Key.SettleDate,
+                        i.Key.ProductCode,
+                        i.Key.ProductName,
+                        i.Key.UnitCode01,
+                        i.Key.UnitName01,
+                        i.Key.UnitCode02,
+                        i.Key.UnitName02,
+                        i.Key.Count01,
+                        i.Key.Count02,
+                        WarehouseCode = "全部仓库",
+                        WarehouseName = "全部仓库",
+                        AreaCode = "",
+                        AreaName = "",
+                        Beginning = i.Sum(q => q.Beginning),
+                        EntryAmount = i.Sum(q => q.EntryAmount),
+                        DeliveryAmount = i.Sum(q => q.DeliveryAmount),
+                        ProfitAmount = i.Sum(q => q.ProfitAmount),
+                        LossAmount = i.Sum(q => q.LossAmount),
+                        Ending = i.Sum(q => q.Ending)
+                    });
+                }
+            }
+            query = query.OrderByDescending(i => i.SettleDate)
+                         .ThenBy(i => i.WarehouseCode)
+                         .ThenBy(i => i.AreaCode)
+                         .ThenBy(i => i.ProductCode);
+
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -153,6 +307,8 @@ namespace THOK.Wms.Bll.Service
                                              UnitName = unitName,
                                              i.WarehouseCode,
                                              i.WarehouseName,
+                                             i.AreaCode,
+                                             i.AreaName,
                                              Beginning = i.Beginning / count,
                                              EntryAmount = i.EntryAmount / count,
                                              DeliveryAmount = i.DeliveryAmount / count,
@@ -175,6 +331,8 @@ namespace THOK.Wms.Bll.Service
                                              UnitName = unitType == "3" ? i.UnitName01 : i.UnitName02,
                                              i.WarehouseCode,
                                              i.WarehouseName,
+                                             i.AreaCode,
+                                             i.AreaName,
                                              Beginning = i.Beginning / (unitType == "3" ? i.Count01 : i.Count02),
                                              EntryAmount = i.EntryAmount / (unitType == "3" ? i.Count01 : i.Count02),
                                              DeliveryAmount = i.DeliveryAmount / (unitType == "3" ? i.Count01 : i.Count02),
@@ -427,8 +585,9 @@ namespace THOK.Wms.Bll.Service
         {
             try
             {
-                var inQuery = InBillDetailRepository.GetQueryable();
-                var outQuery = OutBillDetailRepository.GetQueryable();
+                var inQuery = InBillAllotRepository.GetQueryable();
+                var outQuery = OutBillAllotRepository.GetQueryable();
+                var moveQuery = MoveBillDetailRepository.GetQueryable();
                 var profitLossQuery = ProfitLossBillDetailRepository.GetQueryable();
                 var dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
                 var storageQuery = StorageRepository.GetQueryable();
@@ -452,11 +611,13 @@ namespace THOK.Wms.Bll.Service
                 DailyBalanceRepository.SaveChanges();
 
                 var query = inQuery.Where(a => (a.InBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
-                                              && a.InBillMaster.BillDate > dt1 && a.InBillMaster.BillDate < dt2)
+                                              && a.InBillMaster.BillDate > dt1 && a.InBillMaster.BillDate < dt2
+                                              && dt3 != null)
                     .Select(a => new
                     {
                         BillDate = settleDate,
                         WarehouseCode = a.InBillMaster.Warehouse.WarehouseCode,
+                        AreaCode = a.Cell.AreaCode,
                         ProductCode = a.ProductCode,
                         UnitCode = a.Product.UnitCode,
                         Beginning = decimal.Zero,
@@ -466,12 +627,15 @@ namespace THOK.Wms.Bll.Service
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
                     })
-                .Concat(outQuery.Where(a => (a.OutBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
-                                            && a.OutBillMaster.BillDate > dt1 && a.OutBillMaster.BillDate < dt2)
+                .Concat(
+                    outQuery.Where(a => (a.OutBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                            && a.OutBillMaster.BillDate > dt1 && a.OutBillMaster.BillDate < dt2
+                                            && dt3 != null)
                     .Select(a => new
                     {
                         BillDate = settleDate,
                         WarehouseCode = a.OutBillMaster.Warehouse.WarehouseCode,
+                        AreaCode = a.Cell.AreaCode,
                         ProductCode = a.ProductCode,
                         UnitCode = a.Product.UnitCode,
                         Beginning = decimal.Zero,
@@ -481,12 +645,54 @@ namespace THOK.Wms.Bll.Service
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
                     })
-                ).Concat(profitLossQuery.Where(a => (a.ProfitLossBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
-                                                    && a.ProfitLossBillMaster.BillDate > dt1 && a.ProfitLossBillMaster.BillDate < dt2)
+                ).Concat(
+                    moveQuery.Where(a => (a.MoveBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                            && a.MoveBillMaster.BillDate > dt1 && a.MoveBillMaster.BillDate < dt2
+                                            && a.Status == "2"
+                                            && dt3 != null)
+                    .Select(a => new
+                    {
+                        BillDate = settleDate,
+                        WarehouseCode = a.MoveBillMaster.Warehouse.WarehouseCode,
+                        AreaCode = a.OutCell.AreaCode,
+                        ProductCode = a.ProductCode,
+                        UnitCode = a.Product.UnitCode,
+                        Beginning = decimal.Zero,
+                        EntryAmount = decimal.Zero,
+                        DeliveryAmount = a.RealQuantity,
+                        ProfitAmount = decimal.Zero,
+                        LossAmount = decimal.Zero,
+                        Ending = decimal.Zero
+                    })
+                )
+                .Concat(
+                    moveQuery.Where(a => (a.MoveBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                            && a.MoveBillMaster.BillDate > dt1 && a.MoveBillMaster.BillDate < dt2
+                                            && a.Status == "2"
+                                            && dt3 != null)
+                    .Select(a => new
+                    {
+                        BillDate = settleDate,
+                        WarehouseCode = a.MoveBillMaster.Warehouse.WarehouseCode,
+                        AreaCode = a.InCell.AreaCode,
+                        ProductCode = a.ProductCode,
+                        UnitCode = a.Product.UnitCode,
+                        Beginning = decimal.Zero,
+                        EntryAmount = a.RealQuantity,
+                        DeliveryAmount = decimal.Zero,
+                        ProfitAmount = decimal.Zero,
+                        LossAmount = decimal.Zero,
+                        Ending = decimal.Zero
+                    })
+                ).Concat(
+                    profitLossQuery.Where(a => (a.ProfitLossBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                                                    && a.ProfitLossBillMaster.BillDate > dt1 && a.ProfitLossBillMaster.BillDate < dt2
+                                                    && dt3 != null)
                     .Select(a => new
                     {
                         BillDate = settleDate,
                         WarehouseCode = a.ProfitLossBillMaster.Warehouse.WarehouseCode,
+                        AreaCode = a.Storage.Cell.AreaCode,
                         ProductCode = a.ProductCode,
                         UnitCode = a.Product.UnitCode,
                         Beginning = decimal.Zero,
@@ -496,13 +702,15 @@ namespace THOK.Wms.Bll.Service
                         LossAmount = a.Quantity < 0 ? Math.Abs(a.Quantity) : decimal.Zero,
                         Ending = decimal.Zero
                     })
-                ).Concat(dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                ).Concat(
+                    dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                                       && dt3 != null && d.SettleDate == dt3
                                                       && d.Ending != decimal.Zero)
                     .Select(a => new
                     {
                         BillDate = settleDate,
                         WarehouseCode = a.WarehouseCode,
+                        AreaCode = a.AreaCode,
                         ProductCode = a.ProductCode,
                         UnitCode = a.Product.UnitCode,
                         Beginning = a.Ending,
@@ -512,13 +720,15 @@ namespace THOK.Wms.Bll.Service
                         LossAmount = decimal.Zero,
                         Ending = decimal.Zero
                     }
-                )).Concat(storageQuery.Where(s => (s.Cell.Area.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
+                )).Concat(
+                    storageQuery.Where(s => (s.Cell.Area.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                                 && s.Product != null && dt3 == null)
-                    .GroupBy(s => new { s.Cell.Area.WarehouseCode, s.ProductCode, s.Product.UnitCode })
+                    .GroupBy(s => new { s.Cell.Area.WarehouseCode,s.Cell.AreaCode, s.ProductCode, s.Product.UnitCode })
                     .Select(s => new
                     {
                         BillDate = settleDate,
                         WarehouseCode = s.Key.WarehouseCode,
+                        AreaCode = s.Key.AreaCode,
                         ProductCode = s.Key.ProductCode,
                         UnitCode = s.Key.UnitCode,
                         Beginning = s.Sum(p => p.Quantity),
@@ -530,11 +740,12 @@ namespace THOK.Wms.Bll.Service
                     }
                 )).ToArray();
 
-                var newDailyBalance = query.AsParallel().GroupBy(a => new { a.BillDate, a.WarehouseCode, a.ProductCode, a.UnitCode })
+                var newDailyBalance = query.AsParallel().GroupBy(a => new { a.BillDate, a.WarehouseCode,a.AreaCode, a.ProductCode, a.UnitCode })
                 .Select(a => new DailyBalance
                 {
                     SettleDate = Convert.ToDateTime(a.Key.BillDate),
                     WarehouseCode = a.Key.WarehouseCode,
+                    AreaCode = a.Key.AreaCode,
                     ProductCode = a.Key.ProductCode,
                     UnitCode = a.Key.UnitCode,
                     Beginning = a.Sum(d => d.Beginning),
@@ -542,7 +753,7 @@ namespace THOK.Wms.Bll.Service
                     DeliveryAmount = a.Sum(d => d.DeliveryAmount),
                     ProfitAmount = a.Sum(d => d.ProfitAmount),
                     LossAmount = a.Sum(d => d.LossAmount),
-                    Ending = a.Sum(d => d.Beginning) + a.Sum(d => d.EntryAmount) - a.Sum(d => d.DeliveryAmount) + a.Sum(d => d.ProfitAmount) - a.Sum(d => d.LossAmount),
+                    Ending = a.Sum(d => d.Beginning) + a.Sum(d => d.EntryAmount) - a.Sum(d => d.DeliveryAmount) + a.Sum(d => d.ProfitAmount) - a.Sum(d => d.LossAmount)
                 }).ToArray();
 
                 foreach (var item in newDailyBalance)
@@ -564,17 +775,14 @@ namespace THOK.Wms.Bll.Service
         #endregion
         
         #region 日结明细
-        public System.Data.DataTable GetInfoDetail(int page, int rows, string warehouseCode, string settleDate, string unitType)
+        public System.Data.DataTable GetInfoDetail(int page, int rows, string warehouseCode, string settleDate, string unitType, string areas = null)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
             DateTime date = Convert.ToDateTime(settleDate);
-            if (unitType == null || unitType == "")
-                unitType = "1";
+            if (string.IsNullOrWhiteSpace(unitType)) unitType = "1";
+
             IQueryable<DailyBalance> dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
-            var query = dailyBalanceQuery.Where(i => i.WarehouseCode.Contains(warehouseCode) && i.SettleDate == date)
-                                         .OrderByDescending(i => i.SettleDate)
-                                         .OrderBy(i => i.Warehouse.WarehouseName)
-                                         .OrderBy(i => i.ProductCode)
+            var query = dailyBalanceQuery.Where(i => i.SettleDate == date)
                                          .Select(i => new
                                          {
                                              i.SettleDate,
@@ -588,6 +796,8 @@ namespace THOK.Wms.Bll.Service
                                              Count02 = i.Product.UnitList.Unit02.Count,
                                              i.WarehouseCode,
                                              i.Warehouse.WarehouseName,
+                                             i.AreaCode,
+                                             i.Area.AreaName,
                                              Beginning = i.Beginning,
                                              EntryAmount = i.EntryAmount,
                                              DeliveryAmount = i.DeliveryAmount,
@@ -595,6 +805,132 @@ namespace THOK.Wms.Bll.Service
                                              LossAmount = i.LossAmount,
                                              Ending = i.Ending
                                          });
+            if (areas != null)
+            {
+                query = query.GroupBy(q => new
+                {
+                    q.SettleDate,
+                    q.WarehouseCode,
+                    q.WarehouseName,
+                    q.AreaCode,
+                    q.AreaName,
+                    q.ProductCode,
+                    q.ProductName,
+                    q.UnitCode01,
+                    q.UnitName01,
+                    q.UnitCode02,
+                    q.UnitName02,
+                    q.Count01,
+                    q.Count02,
+                })
+                .Select(i => new
+                {
+                    i.Key.SettleDate,
+                    i.Key.ProductCode,
+                    i.Key.ProductName,
+                    i.Key.UnitCode01,
+                    i.Key.UnitName01,
+                    i.Key.UnitCode02,
+                    i.Key.UnitName02,
+                    i.Key.Count01,
+                    i.Key.Count02,
+                    i.Key.WarehouseCode,
+                    i.Key.WarehouseName,
+                    i.Key.AreaCode,
+                    i.Key.AreaName,
+                    Beginning = i.Sum(q => q.Beginning),
+                    EntryAmount = i.Sum(q => q.EntryAmount),
+                    DeliveryAmount = i.Sum(q => q.DeliveryAmount),
+                    ProfitAmount = i.Sum(q => q.ProfitAmount),
+                    LossAmount = i.Sum(q => q.LossAmount),
+                    Ending = i.Sum(q => q.Ending)
+                });
+                if (areas != "*") query = query.Where(i => areas.Contains(i.AreaCode));
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(warehouseCode))
+                {
+                    query = query.GroupBy(q => new
+                    {
+                        q.SettleDate,
+                        q.WarehouseCode,
+                        q.WarehouseName,
+                        q.ProductCode,
+                        q.ProductName,
+                        q.UnitCode01,
+                        q.UnitName01,
+                        q.UnitCode02,
+                        q.UnitName02,
+                        q.Count01,
+                        q.Count02,
+                    })
+                    .Select(i => new
+                    {
+                        i.Key.SettleDate,
+                        i.Key.ProductCode,
+                        i.Key.ProductName,
+                        i.Key.UnitCode01,
+                        i.Key.UnitName01,
+                        i.Key.UnitCode02,
+                        i.Key.UnitName02,
+                        i.Key.Count01,
+                        i.Key.Count02,
+                        i.Key.WarehouseCode,
+                        i.Key.WarehouseName,
+                        AreaCode = "",
+                        AreaName = "",
+                        Beginning = i.Sum(q => q.Beginning),
+                        EntryAmount = i.Sum(q => q.EntryAmount),
+                        DeliveryAmount = i.Sum(q => q.DeliveryAmount),
+                        ProfitAmount = i.Sum(q => q.ProfitAmount),
+                        LossAmount = i.Sum(q => q.LossAmount),
+                        Ending = i.Sum(q => q.Ending)
+                    });
+                    query = query.Where(i => i.WarehouseCode == warehouseCode);
+                }
+                else
+                {
+                    query = query.GroupBy(q => new
+                    {
+                        q.SettleDate,
+                        q.ProductCode,
+                        q.ProductName,
+                        q.UnitCode01,
+                        q.UnitName01,
+                        q.UnitCode02,
+                        q.UnitName02,
+                        q.Count01,
+                        q.Count02,
+                    })
+                    .Select(i => new
+                    {
+                        i.Key.SettleDate,
+                        i.Key.ProductCode,
+                        i.Key.ProductName,
+                        i.Key.UnitCode01,
+                        i.Key.UnitName01,
+                        i.Key.UnitCode02,
+                        i.Key.UnitName02,
+                        i.Key.Count01,
+                        i.Key.Count02,
+                        WarehouseCode = "全部仓库",
+                        WarehouseName = "全部仓库",
+                        AreaCode = "",
+                        AreaName = "",
+                        Beginning = i.Sum(q => q.Beginning),
+                        EntryAmount = i.Sum(q => q.EntryAmount),
+                        DeliveryAmount = i.Sum(q => q.DeliveryAmount),
+                        ProfitAmount = i.Sum(q => q.ProfitAmount),
+                        LossAmount = i.Sum(q => q.LossAmount),
+                        Ending = i.Sum(q => q.Ending)
+                    });
+                }
+            }
+            query = query.OrderByDescending(i => i.SettleDate)
+                         .ThenBy(i => i.WarehouseCode)
+                         .ThenBy(i => i.AreaCode)
+                         .ThenBy(i => i.ProductCode);
             string unitName = "";
             decimal count = 1;
             //标准单位（标准件||标准条）
@@ -610,7 +946,7 @@ namespace THOK.Wms.Bll.Service
                     unitName = "标准条";
                     count = 200;
                 }
-                var dailyBalance = query.ToArray().Select(i => new
+                var dailyBalance = query.AsEnumerable().Select(i => new
                 {
                     SettleDate = i.SettleDate.ToString("yyyy-MM-dd"),
                     i.ProductCode,
@@ -619,6 +955,7 @@ namespace THOK.Wms.Bll.Service
                     UnitName = unitName,
                     i.WarehouseCode,
                     i.WarehouseName,
+                    i.AreaName,
                     Beginning = i.Beginning / count,
                     EntryAmount = i.EntryAmount / count,
                     DeliveryAmount = i.DeliveryAmount / count,
@@ -628,21 +965,23 @@ namespace THOK.Wms.Bll.Service
                 });
                 dt.Columns.Add("结算日期", typeof(string));
                 dt.Columns.Add("仓库名称", typeof(string));
+                dt.Columns.Add("库区名称", typeof(string));
                 dt.Columns.Add("商品代码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位", typeof(string));
-                dt.Columns.Add("期初量", typeof(string));
-                dt.Columns.Add("入库量", typeof(string));
-                dt.Columns.Add("出库量", typeof(string));
-                dt.Columns.Add("报损量", typeof(string));
-                dt.Columns.Add("报益量", typeof(string));
-                dt.Columns.Add("结余量", typeof(string));
+                dt.Columns.Add("期初量", typeof(decimal));
+                dt.Columns.Add("入库量", typeof(decimal));
+                dt.Columns.Add("出库量", typeof(decimal));
+                dt.Columns.Add("报损量", typeof(decimal));
+                dt.Columns.Add("报益量", typeof(decimal));
+                dt.Columns.Add("结余量", typeof(decimal));
                 foreach (var item in dailyBalance)
                 {
                     dt.Rows.Add
                         (
                             item.SettleDate,
                             item.WarehouseName,
+                            item.AreaName,
                             item.ProductCode,
                             item.ProductName,
                             item.UnitName,
@@ -668,6 +1007,7 @@ namespace THOK.Wms.Bll.Service
                     UnitName = unitType == "3" ? i.UnitName01 : i.UnitName02,
                     i.WarehouseCode,
                     i.WarehouseName,
+                    i.AreaName,
                     Beginning = i.Beginning / (unitType == "3" ? i.Count01 : i.Count02),
                     EntryAmount = i.EntryAmount / (unitType == "3" ? i.Count01 : i.Count02),
                     DeliveryAmount = i.DeliveryAmount / (unitType == "3" ? i.Count01 : i.Count02),
@@ -677,21 +1017,23 @@ namespace THOK.Wms.Bll.Service
                 });
                 dt.Columns.Add("结算日期", typeof(string));
                 dt.Columns.Add("仓库名称", typeof(string));
+                dt.Columns.Add("库区名称", typeof(string));
                 dt.Columns.Add("商品代码", typeof(string));
                 dt.Columns.Add("商品名称", typeof(string));
                 dt.Columns.Add("单位", typeof(string));
-                dt.Columns.Add("期初量", typeof(string));
-                dt.Columns.Add("入库量", typeof(string));
-                dt.Columns.Add("出库量", typeof(string));
-                dt.Columns.Add("报损量", typeof(string));
-                dt.Columns.Add("报益量", typeof(string));
-                dt.Columns.Add("结余量", typeof(string));
+                dt.Columns.Add("期初量", typeof(decimal));
+                dt.Columns.Add("入库量", typeof(decimal));
+                dt.Columns.Add("出库量", typeof(decimal));
+                dt.Columns.Add("报损量", typeof(decimal));
+                dt.Columns.Add("报益量", typeof(decimal));
+                dt.Columns.Add("结余量", typeof(decimal));
                 foreach (var item in dailyBalance)
                 {
                     dt.Rows.Add
                         (
                             item.SettleDate,
                             item.WarehouseName,
+                            item.AreaName,
                             item.ProductCode,
                             item.ProductName,
                             item.UnitName,
