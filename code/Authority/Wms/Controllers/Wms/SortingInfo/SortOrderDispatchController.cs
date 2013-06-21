@@ -38,7 +38,8 @@ namespace Wms.Controllers.Wms.SortingInfo
         {
             string SortingLineCode = collection["SortingLineCode"] ?? "";
             string OrderDate = collection["OrderDate"] ?? "";
-            var sortOrder = SortOrderDispatchService.GetDetails(page, rows,OrderDate,SortingLineCode);
+            string WorkStatus = collection["WorkStatus"] ?? "";
+            var sortOrder = SortOrderDispatchService.GetDetails(page, rows, OrderDate, WorkStatus,SortingLineCode);
             return Json(sortOrder, "text", JsonRequestBehavior.AllowGet);
         }
 

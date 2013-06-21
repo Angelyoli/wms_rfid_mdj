@@ -8,7 +8,7 @@
     })
 
     $(function () {
-        $('#isSortType').combo({
+        $('#isRounding').combo({
             editable: false,
             panelHeight: 75
         });
@@ -115,11 +115,11 @@
                         <td width="168"><input name="SortOrder" class="easyui-validatebox" /></td>
                       </tr>   
                       <tr>
-                        <td style="text-align:right">机型：</td>
-                        <td><select id="isSortType" name="SortType" class="easyui-combobox" style="width:80px" required="true">
-		                        <option value="1">立式机</option>
-		                        <option value="2">通道机</option>
-                                <option value="0">混合烟道</option>
+                        <td style="text-align:right">描述：</td>
+                        <td><select id="isRounding" name="SortType" class="easyui-combobox" style="width:80px" required="true">
+		                        <option value="1">不取整</option>
+		                        <option value="2">整托盘</option>
+                                <option value="0">取整件</option>
 	                        </select>
 	                    </td>
                       </tr>            

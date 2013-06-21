@@ -8,7 +8,7 @@ namespace THOK.Wms.Bll.Interfaces
 {
     public interface ISortOrderDispatchService : IService<SortOrderDispatch>
     {
-        object GetDetails(int page, int rows, string OrderDate, string SortingLineCode);
+        object GetDetails(int page, int rows, string OrderDate,string WorkStatus, string SortingLineCode);
 
         object GetWorkStatus();
 
