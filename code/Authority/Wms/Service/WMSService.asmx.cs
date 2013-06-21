@@ -185,7 +185,7 @@ namespace Wms.Service
                             Navicert na = new Navicert();
 
                             Guid billMasterID = Guid.NewGuid();
-
+                           
                             #region BillMaster and BillDetail
                             if (doc.Descendants("data") != null)
                             {
@@ -194,7 +194,8 @@ namespace Wms.Service
                                     for (int i = 0; i < billMaster.Count(); i++)
                                     {
                                         var bmArray = billMaster.ToArray()[i];
-                                        bm.ID = billMasterID;
+                                        Guid new_ID = new Guid(bmArray.UUID);
+                                        bm.ID = new_ID;
                                         bm.BillType = bmArray.BillType;
                                         bm.UUID = bmArray.UUID;
                                         bm.BillDate = Convert.ToDateTime(bmArray.BillDate);

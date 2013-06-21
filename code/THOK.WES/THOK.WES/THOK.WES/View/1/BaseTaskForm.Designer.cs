@@ -458,6 +458,55 @@ namespace THOK.WES.View
             this.sbShelf.Value = 1;
             this.sbShelf.ValueChanged += new System.EventHandler(this.sbShelf_ValueChanged);
             // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Green;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button1.Location = new System.Drawing.Point(150, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(51, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "入库位";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Visible = false;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.RoyalBlue;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Location = new System.Drawing.Point(207, 6);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(51, 23);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "出库位";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Visible = false;
+            // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.Red;
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button3.Location = new System.Drawing.Point(264, 6);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(51, 23);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "盘点位";
+            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Visible = false;
+            // 
+            // button4
+            // 
+            this.button4.BackColor = System.Drawing.Color.White;
+            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button4.Location = new System.Drawing.Point(321, 6);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(51, 23);
+            this.button4.TabIndex = 12;
+            this.button4.Text = "无操作";
+            this.button4.UseVisualStyleBackColor = false;
+            this.button4.Visible = false;
+            // 
             // btnBatConfirm
             // 
             this.btnBatConfirm.Dock = System.Windows.Forms.DockStyle.Left;
@@ -537,7 +586,7 @@ namespace THOK.WES.View
             this.btnExit.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnExit.Image = global::THOK.WES.Properties.Resources.shut_down;
             this.btnExit.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnExit.Location = new System.Drawing.Point(432, 0);
+            this.btnExit.Location = new System.Drawing.Point(384, 0);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(48, 44);
             this.btnExit.TabIndex = 15;
@@ -551,7 +600,7 @@ namespace THOK.WES.View
             this.btnChart.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnChart.Image = global::THOK.WES.Properties.Resources.shut_down;
             this.btnChart.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnChart.Location = new System.Drawing.Point(384, 0);
+            this.btnChart.Location = new System.Drawing.Point(0, 0);
             this.btnChart.Name = "btnChart";
             this.btnChart.Size = new System.Drawing.Size(48, 44);
             this.btnChart.TabIndex = 16;
@@ -562,61 +611,12 @@ namespace THOK.WES.View
             // 
             // pnlData
             // 
-            this.pnlData.Controls.Add(this.dgvMain);
             this.pnlData.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlData.Location = new System.Drawing.Point(0, 0);
             this.pnlData.Name = "pnlData";
             this.pnlData.Size = new System.Drawing.Size(804, 132);
             this.pnlData.TabIndex = 3;
             // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.Green;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button1.Location = new System.Drawing.Point(150, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(51, 23);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "入库位";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Visible = false;
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.Color.RoyalBlue;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Location = new System.Drawing.Point(207, 6);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(51, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "出库位";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Visible = false;
-            // 
-            // button3
-            // 
-            this.button3.BackColor = System.Drawing.Color.Red;
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Location = new System.Drawing.Point(264, 6);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(51, 23);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "盘点位";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Visible = false;
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.Color.White;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Location = new System.Drawing.Point(321, 6);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(51, 23);
-            this.button4.TabIndex = 12;
-            this.button4.Text = "无操作";
-            this.button4.UseVisualStyleBackColor = false;
-            this.button4.Visible = false;
             // BaseTaskForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
