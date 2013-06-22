@@ -30,22 +30,30 @@ namespace THOK.Wms.Bll.Service
 
         #region ISortingLowerlimitService 成员
 
-        public string GetSortType(string type)
+        public string GetSortType(string type,string stype)
         {
             string typeStr = "";
-            switch (type)
+            if (stype == "3")
             {
-                case "0":
-                    typeStr = "取整件";
-                    break;
-                case "1":
-                    typeStr = "不取整";
-                    break;
-                case "2":
-                    typeStr = "整托盘";
-                    break;
+                typeStr = "通道机";
+                return typeStr;
             }
-            return typeStr;
+            else
+            {
+                switch (type)
+                {
+                    case "0":
+                        typeStr = "取整件";
+                        break;
+                    case "1":
+                        typeStr = "不取整";
+                        break;
+                    case "2":
+                        typeStr = "整托盘";
+                        break;
+                }
+                return typeStr;
+            }
         }
 
         public object GetDetails(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
@@ -94,6 +102,7 @@ namespace THOK.Wms.Bll.Service
                                 l.Quantity,
                                 StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
                                 l.SortOrder,
+                                l.SortType,
                                 l.Product.IsRounding,
                                 l.IsActive,
                                 l.UpdateTime
@@ -111,7 +120,7 @@ namespace THOK.Wms.Bll.Service
                 Quantity = b.Quantity / b.Unit.Count,
                 StorageQuantity = b.StorageQuantity / b.Unit.Count,
                 b.SortOrder,
-                IsRounding = GetSortType(b.IsRounding),
+                IsRounding = GetSortType(b.IsRounding,b.SortType),
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
@@ -130,9 +139,17 @@ namespace THOK.Wms.Bll.Service
                 lowerLimit.SortingLineCode = sortLowerLimit.SortingLineCode;
                 lowerLimit.ProductCode = sortLowerLimit.ProductCode;
                 lowerLimit.UnitCode = sortLowerLimit.UnitCode;
-                lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;
+                lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;              
                 lowerLimit.SortOrder = sortLowerLimit.SortOrder;
-                productAdd.IsRounding = sortLowerLimit.SortType;
+                if (sortLowerLimit.SortType == "3")
+                {
+                    lowerLimit.SortType = sortLowerLimit.SortType;
+                }
+                else
+                {
+                    productAdd.IsRounding = sortLowerLimit.SortType;
+                    lowerLimit.SortType = "";
+                }
                 lowerLimit.IsActive = sortLowerLimit.IsActive;
                 lowerLimit.UpdateTime = DateTime.Now;
 
@@ -143,7 +160,15 @@ namespace THOK.Wms.Bll.Service
             {
                 lowerLimitList.Quantity = lowerLimitList.Quantity + (sortLowerLimit.Quantity * unit.Count);
                 lowerLimitList.SortOrder = sortLowerLimit.SortOrder;
-                productAdd.IsRounding = sortLowerLimit.SortType;
+                if (sortLowerLimit.SortType == "3")
+                {
+                    lowerLimitList.SortType = sortLowerLimit.SortType;
+                }
+                else
+                {
+                    productAdd.IsRounding = sortLowerLimit.SortType;
+                    lowerLimitList.SortType = "";
+                }
                 lowerLimitList.UpdateTime = DateTime.Now;
                 SortingLowerlimitRepository.SaveChanges();
             }
@@ -176,7 +201,16 @@ namespace THOK.Wms.Bll.Service
             lowerLimitSave.UnitCode = sortLowerLimit.UnitCode;
             lowerLimitSave.Quantity = sortLowerLimit.Quantity * unit.Count;
             lowerLimitSave.SortOrder = sortLowerLimit.SortOrder;
-            productSave.IsRounding = sortLowerLimit.SortType;
+            lowerLimitSave.SortType = sortLowerLimit.SortType;
+            if (lowerLimitSave.SortType == "3")
+            {
+                lowerLimitSave.SortType = sortLowerLimit.SortType;
+                
+            }
+            else
+            {
+                productSave.IsRounding = sortLowerLimit.SortType;
+            }
             lowerLimitSave.IsActive = sortLowerLimit.IsActive;
             lowerLimitSave.UpdateTime = DateTime.Now;
 

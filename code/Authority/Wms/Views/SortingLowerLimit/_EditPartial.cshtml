@@ -13,14 +13,17 @@ function editClick() {
         } else {
             $('#IsActiveCc').combo('setValue', 0).combo('setText', row.IsActive);
         }
-        if (row.SortType == '不取整') {
+        if (row.IsRounding == '不取整') {
             $('#isRounding').combo('setValue', 1).combo('setText', row.IsRounding);
         }
-        if (row.SortType == '整托盘') {
+        if (row.IsRounding == '整托盘') {
             $('#isRounding').combo('setValue', 2).combo('setText', row.IsRounding);
         }
-        if (row.SortType == '取整件') {
+        if (row.IsRounding == '取整件') {
             $('#isRounding').combo('setValue', 0).combo('setText', row.IsRounding);
+        }
+        if (row.IsRounding == '通道机') {
+            $('#isRounding').combo('setValue', 3).combo('setText', row.IsRounding);
         }
         $('#IsActiveCc').combo({
             hasDownArrow: true
