@@ -61,7 +61,12 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string OrderDate, string SortingLineCode, string DispatchStatus)
         {
             IQueryable<SortWorkDispatch> SortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
-            var sortWorkDispatch = SortWorkDispatchQuery.Where(s => s.DispatchStatus != "4");
+            var sortWorkDispatch = SortWorkDispatchQuery.Where(s => s.ID == s.ID);
+            if (DispatchStatus == string.Empty || DispatchStatus == null)
+            {
+                sortWorkDispatch = SortWorkDispatchQuery.Where(s => s.DispatchStatus != "4");
+            }
+           
             if (OrderDate != string.Empty && OrderDate != null)
             {
                 OrderDate = Convert.ToDateTime(OrderDate).ToString("yyyyMMdd");

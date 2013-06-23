@@ -39,9 +39,10 @@ namespace Wms.Controllers.Wms.BasisInfo
         {
 
             string CellCode = collection["CellCode"] ?? "";
+            string CellName = collection["CellName"] ?? "";
             string StockInPosition = collection["StockInPosition"] ?? "";
             string StockOutPosition = collection["StockOutPosition"] ?? "";
-            var productSize = CellPositionService.GetDetails(page, rows, CellCode, StockInPosition, StockOutPosition);
+            var productSize = CellPositionService.GetDetails(page, rows, CellCode,CellName, StockInPosition, StockOutPosition);
             return Json(productSize, "text", JsonRequestBehavior.AllowGet);
         }
 
@@ -96,6 +97,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             int page = 0, rows = 0;
             int CellPositionID = Convert.ToInt32(Request.QueryString["ID"]);
             string CellCode = Request.QueryString["CellCode"];
+            string CellName = Request.QueryString["CellName"];
             CellPosition cp = new CellPosition();
             cp.ID = CellPositionID;
             cp.CellCode = CellCode;

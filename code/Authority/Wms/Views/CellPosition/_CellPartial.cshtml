@@ -14,12 +14,13 @@
     };
     function onDblClick(event, treeId, treeNode) {
         $('#CellCode').val(treeNode.id);
-        $('#CellCodeData').dialog('close');
+        $('#CellName').val(treeNode.name);
+        $('#CellNameData').dialog('close');
     }
 
     //加载树
     function moveInCellSelect(type) {
-        $('#CellCodeData').dialog('open').dialog('setTitle', '选择货位信息');
+        $('#CellNameData').dialog('open').dialog('setTitle', '选择货位信息');
         var productCode = $('#inAllotAddProductCode').val();
         $.ajaxSender.send('/DefaultProductSet/CellCodeSet/',
                             {
@@ -31,12 +32,12 @@
                 }
 </script>
 
-<div id="CellCodeData" class="easyui-dialog" modal="true"  style="width:240px;height:370px;padding:1px 1px"closed="true">
+<div id="CellNameData" class="easyui-dialog" modal="true"  style="width:240px;height:370px;padding:1px 1px"closed="true">
         <div   style="width:220px; height:330px;float:left; margin-bottom:0px; margin:0 0 0 0 0px; border-top-width:0px; border:1px #99BBE8 solid;overflow:auto">
             <ul id="warehouseTree" class="ztree"></ul>
         </div>
 </div>
 <div id="dlg-cellCodeDatabuttons">
-    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="CellCodeSave()">确定</a>
-    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#CellCodeData').dialog('close')">取消</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="CellNameSave()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#CellNameData').dialog('close')">取消</a>
 </div>

@@ -6,12 +6,22 @@
       <form id="fm" method="post" >  
        <table width="280" border="0" cellspacing="7" cellpadding="7">
                     <tr>
-                    <td width="75" align="right">货位代码：</td>
+                    <td width="75" align="right">货位名称：</td>
                     <td width="168">
-                    <input name="CellCode" readonly="true" id="CellCode1">
+                    <input name="CellCode" readonly="true" id="CellCode1" style="display: none;"  />
+                    <input name="CellName" id="inputCellName" class="easyui-validatebox" required="true" readonly="readonly" type="text"/>
                     <a href="#" id="CellSelect" onclick="CellSelectClick()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
                     </td>
                     </tr>
+
+                  @*  <tr>
+                    <td width="75" align="right">货位名称：</td>
+                    <td width="168">
+                    <input name="CellCode" readonly="true" id="CellCode1" style="display: none;"  />
+                    <input name="CellName" id="inputCellName" class="easyui-validatebox" required="true" readonly="readonly" type="text"/>
+                    <a href="#" id="CellSelect" onclick="CellSelectClick()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
+                    </td>
+                    </tr>*@
 
                     <tr>
                     <td width="75" align="right">入库位置：</td>
@@ -37,5 +47,6 @@
     </div>
 </div>
 @Html.Partial("_CellPositionNamePartial")
-@Html.Partial("_CellCodePartial")
+@*@Html.Partial("_CellCodePartial")*@
+@Html.Partial("_CellNamePartial")
 
