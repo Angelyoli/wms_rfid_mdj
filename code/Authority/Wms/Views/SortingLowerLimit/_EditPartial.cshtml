@@ -1,6 +1,6 @@
 <script type="text/javascript">
 function editClick() {
-    var row = $('#details').datagrid('getSelected');
+    var row = $('#details').datagrid('getSelected');    
     if (row) {
         $('#dlg').dialog('open').dialog('setTitle', '编辑');
         editKey = true;
@@ -13,14 +13,14 @@ function editClick() {
         } else {
             $('#IsActiveCc').combo('setValue', 0).combo('setText', row.IsActive);
         }
-        if (row.SortType == '立式机') {
-            $('#isSortType').combo('setValue', 1).combo('setText', row.SortType);
+        if (row.IsRounding == '不取整') {
+            $('#isRounding').combo('setValue', 1).combo('setText', row.IsRounding);
         }
-        if (row.SortType == '通道机') {
-            $('#isSortType').combo('setValue', 2).combo('setText', row.SortType);
+        if (row.IsRounding == '取整件') {
+            $('#isRounding').combo('setValue', 0).combo('setText', row.IsRounding);
         }
-        if (row.SortType == '混合烟道') {
-            $('#isSortType').combo('setValue', 0).combo('setText', row.SortType);
+        if (row.IsRounding == '通道机') {
+            $('#isRounding').combo('setValue', 3).combo('setText', row.IsRounding);
         }
         $('#IsActiveCc').combo({
             hasDownArrow: true
