@@ -611,6 +611,7 @@ namespace THOK.WES.View
             // 
             // pnlData
             // 
+            this.pnlData.Controls.Add(this.dgvMain);
             this.pnlData.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlData.Location = new System.Drawing.Point(0, 0);
             this.pnlData.Name = "pnlData";
