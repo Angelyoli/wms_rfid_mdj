@@ -201,11 +201,9 @@ namespace THOK.Wms.Bll.Service
             lowerLimitSave.UnitCode = sortLowerLimit.UnitCode;
             lowerLimitSave.Quantity = sortLowerLimit.Quantity * unit.Count;
             lowerLimitSave.SortOrder = sortLowerLimit.SortOrder;
-            lowerLimitSave.SortType = sortLowerLimit.SortType;
-            if (lowerLimitSave.SortType == "3")
+            if (sortLowerLimit.SortType == "3")
             {
-                lowerLimitSave.SortType = sortLowerLimit.SortType;
-                
+                lowerLimitSave.SortType = sortLowerLimit.SortType;                
             }
             else
             {
