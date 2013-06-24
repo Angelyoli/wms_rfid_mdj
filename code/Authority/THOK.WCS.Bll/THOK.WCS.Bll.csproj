@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\Libraries\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +49,28 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
+      <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
+      <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.WCS.Dal\THOK.WCS.Dal.csproj">
+      <Project>{03A98CF0-14B1-4FD7-BC27-1F19728C8674}</Project>
+      <Name>THOK.WCS.Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.WCS.DbModel\THOK.WCS.DbModel.csproj">
+      <Project>{B8A298CE-D286-4381-9B61-6527B3677ACA}</Project>
+      <Name>THOK.WCS.DbModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.Dal\THOK.WMS.Dal.csproj">
+      <Project>{DB6CC091-9BC6-415C-A0D2-E34289669102}</Project>
+      <Name>THOK.WMS.Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
+      <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
+      <Name>THOK.WMS.DbModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
