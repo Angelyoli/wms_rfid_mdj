@@ -15,6 +15,11 @@ using THOK.Security;
 using Wms.Security;
 using THOK.Common.Ef.Infrastructure;
 using THOK.Authority.Bll.Interfaces;
+using Quartz;
+using Quartz.Impl;
+using System.Configuration;
+using System.Collections.Specialized;
+using Wms.Quartz;
 namespace Wms
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
@@ -57,8 +62,17 @@ namespace Wms
         {
             RegisterIocUnityControllerFactory();
             AreaRegistration.RegisterAllAreas();
-            RegisterGlobalFilters(GlobalFilters.Filters);           
+            RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+            QuartzStart();
+        }
+
+        void Application_End()
+        {
+            if (sched != null && sched.IsStarted)
+            {
+                sched.Shutdown();
+            }
         }
 
         void Application_Error()
@@ -234,6 +248,44 @@ namespace Wms
         private static void ResetContext()
         {
             ContextManager.SetRepositoryContext(null, @"THOK.Wms.Repository.AuthorizeContext,THOK.Wms.Repository.dll");
+        }
+
+        private IScheduler sched { get; set; }
+        private void QuartzStart()
+        {
+            NameValueCollection properties = new NameValueCollection();
+            properties["quartz.scheduler.instanceName"] = "ConsoleScheduler";
+            properties["quartz.scheduler.instanceId"] = "instance_one";
+            properties["quartz.threadPool.type"] = "Quartz.Simpl.SimpleThreadPool, Quartz";
+            properties["quartz.threadPool.threadCount"] = "10";
+            properties["quartz.threadPool.threadPriority"] = "Normal";
+
+            ISchedulerFactory sf = new StdSchedulerFactory(properties);
+            IScheduler sched = sf.GetScheduler();
+
+            IJobDetail job = JobBuilder.Create<JobDoDailyBalance>()
+                .WithIdentity("HelloJob", "HelloJobGroup")
+                .WithDescription("This is my first job")
+                .RequestRecovery()
+                .Build();
+
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithIdentity("HelloJob", "HelloJobGroup")
+                .WithDescription("This is my first trigger")
+                //.WithCronSchedule("0/10 * * * * ?")//每10秒执行；
+                .WithCronSchedule("0 0 4 1/1 * ? *")//每天4点执行；
+                .StartNow()
+                .Build();
+
+            if (!sched.CheckExists(job.Key))
+            {
+                sched.ScheduleJob(job, trigger);
+            }
+
+            if (!sched.IsStarted)
+            {
+                sched.Start();
+            }
         }
     }
 }
