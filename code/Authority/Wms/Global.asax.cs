@@ -69,10 +69,7 @@ namespace Wms
 
         void Application_End()
         {
-            if (sched != null && sched.IsStarted)
-            {
-                sched.Shutdown();
-            }
+            QuartzShutdown();
         }
 
         void Application_Error()
@@ -285,6 +282,13 @@ namespace Wms
             if (!sched.IsStarted)
             {
                 sched.Start();
+            }
+        }
+        private void QuartzShutdown()
+        {
+            if (sched != null && sched.IsStarted)
+            {
+                sched.Shutdown();
             }
         }
     }
