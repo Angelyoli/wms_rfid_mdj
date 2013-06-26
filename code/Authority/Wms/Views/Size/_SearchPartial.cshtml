@@ -1,4 +1,4 @@
-﻿<script type="text/javascript">
+﻿@*<script type="text/javascript">
     var searchDialog;
     var module = "Size";
     var searchKey = false;
@@ -53,3 +53,57 @@
     }
 </script>
 <script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
+*@
+
+<script type="text/javascript">
+    var searchDialog;
+    var module = "Size";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
+    var parentComNameKey = false;
+
+    function searchClick() {
+         $("input[type=text]").attr("value", "");
+        $('#sifm').form('clear');
+        if (searchDialog == null) {
+            searchDialog = $('<div></div>').dialog({
+                title: '查询',
+                width: 310,
+                height: 150,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/Size/SearchPage/',
+                buttons: [{
+                    text: '查询',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        GetQueryParams();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        searchDialog.dialog('close');
+                    }
+                }]
+            });
+        }
+        searchKey = true;
+        searchDialog.dialog('open');
+    };
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+//        queryParams.ID = $("#ID").val();
+        queryParams.SizeName = $('#SizeName').val();
+        queryParams.SizeNo = $('#SizeNo').val();
+//        queryParams.Length = $('#Length').val();
+//        queryParams.Width = $('#Width').val();
+//        queryParams.Height = $('#Height').val();
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+</script>

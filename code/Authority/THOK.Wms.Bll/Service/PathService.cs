@@ -123,7 +123,13 @@ namespace THOK.Wms.Bll.Service
            
         public bool Save(Path path)
         {
+            IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
+            var region = regionQuery.FirstOrDefault(r => r.ID == path.ID);
             var emp = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == path.ID);
+            if(emp != null)
+
+            {
+
             emp.ID = path.ID;
             emp.PathName = path.PathName;
             emp.Description = path.Description;
@@ -131,6 +137,8 @@ namespace THOK.Wms.Bll.Service
             emp.TargetRegionID = path.TargetRegionID;
             emp.State = path.State;
             PathRepository.SaveChanges();
+
+            }
             return true;
         }
 

@@ -73,39 +73,29 @@ namespace THOK.Wms.Bll.Service
             return true;
         }
 
-        public bool Save(CellPosition CellPosition, out string strResult)
+        public bool Save(CellPosition cellPosition)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var c = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == CellPosition.ID);
+              IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+              IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+              var cell = cellQuery.FirstOrDefault(p => p.CellCode == cellPosition.CellCode);
+              var c = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == cellPosition.ID);
+              //var position = positionQuery.FirstOrDefault(po => po.ID == cellPosition.ID);
+              if (c != null)
+              {
+                  c.ID = cellPosition.ID;
+                  c.CellCode = cellPosition.CellCode;
+                  c.StockInPositionID = cellPosition.StockInPositionID;
+                  c.StockOutPositionID = cellPosition.StockOutPositionID;
+                  CellPositionRepository.SaveChanges();
+              }
+               
+             return true;
+            
+               
            
-            if (c != null)
-            {
-                try
-                {
-                    c.ID = CellPosition.ID;
-                    c.CellCode = CellPosition.CellCode;
-                    c.StockInPositionID = CellPosition.StockInPositionID;
-                    c.StockOutPositionID = CellPosition.StockOutPositionID;
+      }
 
-                    CellPositionRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要修改的数据！";
-            }
-            return result;
-        }
-
-
-
-        public bool Delete(int cellPositionId)
+       public bool Delete(int cellPositionId)
         {
              var cp = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == cellPositionId);
             if (cp != null)
@@ -169,6 +159,9 @@ namespace THOK.Wms.Bll.Service
 
 
 
-       
+
+
+
+        
     }
 }

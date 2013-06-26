@@ -14,8 +14,7 @@
     }
     var searchDialog;
     function searchClick() {
-      
-        SearchLoad();
+    SearchLoad();
         $("input[type=text]").attr("value", "");
         $('#State').combo('setValue', "");
        
@@ -70,17 +69,30 @@
     }
 
     function GetQueryParams() {
+   
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.ID = $('#ID').val();
         queryParams.PathName = $('#PathName').val();
-        queryParams.OriginID = $('#OriginRegionName').val();
-        queryParams.TargetID = $('#TargetRegionName').val();
+        queryParams.OriginRegionName = $('#OriginRegionName').val();
+        queryParams.TargetRegionName = $('#TargetRegionName').val();
 
         queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');
     }
+    function OriginSearchClick() {
+        $('#originData').dialog('open').dialog('setTitle', '选择区域');
+        $('#originDetail').datagrid({ url: '/Region/GetRegion/' });
+        $("#originDetail").datagrid('reload');
+    }
+    function TargetSearchClick() {
+        $('#targetData').dialog('open').dialog('setTitle', '选择区域');
+        $('#targetDetail').datagrid({ url: '/Region/GetRegion/' });
+        $("#targetDetail").datagrid('reload');
+    }
+ 
 </script>
+ 
 <script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>
 

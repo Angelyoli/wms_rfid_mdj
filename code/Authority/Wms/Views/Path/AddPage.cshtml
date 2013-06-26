@@ -6,6 +6,7 @@
         border: 1px solid #ccc;">
         <form id="fm" method="post" novalidate>
         <table width="330">
+
             <tr>
                 <td width="60" align="right">
                     路径名称：
@@ -21,7 +22,7 @@
                 </td>
                 <td width="140">
                    <input name="OriginRegionID" id="OriginRegionID" style="display: none;"  />
-                    <input name="OriginRegionName" id="oriName" readonly="readonly" class="easyui-validatebox" />
+                    <input name="OriginRegionName" id="OriginRegionName" readonly="readonly" class="easyui-validatebox" />
                     <a href="#" id="originNameSearch" class="easyui-linkbutton" iconcls="icon-search"
                         plain="true" onclick="OriginSearchClick()"></a>
                </td>
@@ -32,8 +33,8 @@
                     目标区域名称：
                 </td>
                 <td width="140">
-                    <input name="TargetRegionID" id="targetId" required="true" style="display: none;" />
-                    <input name="TargetRegionName" id="targetName" required="true" readonly="readonly" class="easyui-validatebox" />
+                    <input name="TargetRegionID" id="TargetRegionID" required="true" style="display: none;" />
+                    <input name="TargetRegionName" id="TargetRegionName" required="true" readonly="readonly" class="easyui-validatebox" />
                     <a href="#" id="targetSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                         onclick="TargetSearchClick()"></a>
                 </td>

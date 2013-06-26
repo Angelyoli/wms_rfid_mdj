@@ -16,12 +16,13 @@
     });
     //选中赋值
     function originSave() {
+    alert("333")
         var originRow = $('#originDetail').datagrid('getSelected');
         if (originRow) {
            
 
             $('#OriginRegionID').val(originRow.ID);
-            $('#oriName').val(originRow.RegionName);
+            $('#OriginRegionName').val(originRow.RegionName);
             $('#OriginRegion').val(originRow.ID);
             $('#origin-name').val(originRow.RegionName);
             $('#originData').dialog('close');
