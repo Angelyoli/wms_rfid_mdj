@@ -19,6 +19,9 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IRegionRepository RegionRepository { get; set; }
 
+        [Dependency]
+        public IPathNodeRepository PathNodeRepository { get; set; }
+
         UploadBll Upload = new UploadBll();
 
         protected override Type LogPrefix
@@ -120,26 +123,40 @@ namespace THOK.Wms.Bll.Service
             PathRepository.SaveChanges();             
             return true;
         }
-           
-        public bool Save(Path path)
+
+        public bool Save(Path path, out string strResult)
         {
+            strResult = string.Empty;
+            bool result = false;
             var emp = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == path.ID);
-            emp.ID = path.ID;
-            emp.PathName = path.PathName;
-            emp.Description = path.Description;
-            emp.OriginRegionID = path.OriginRegionID;
-            emp.TargetRegionID = path.TargetRegionID;
-            emp.State = path.State;
-            PathRepository.SaveChanges();
-            return true;
+            if (emp != null)
+            {
+                emp.ID = path.ID;
+                emp.PathName = path.PathName;
+                emp.Description = path.Description;
+                emp.OriginRegionID = path.OriginRegionID;
+                emp.TargetRegionID = path.TargetRegionID;
+                emp.State = path.State;
+                PathRepository.SaveChanges();
+                result = true;
+            }
+            else
+            {
+                strResult = "原因：未找到当前需要修改的数据！"; 
+            }
+            return result;
         }
 
         public bool Delete(int pathId)
         {
-            var path = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == pathId);
-            if (path != null)
+            var pa = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == pathId);
+            var pathnode = PathNodeRepository.GetQueryable().FirstOrDefault(p => p.PathID == pathId);
+            if (pa!= null)
             {
-                PathRepository.Delete(path);
+                PathNodeRepository.Delete(pathnode);
+                PathNodeRepository.SaveChanges();
+
+                PathRepository.Delete(pa);
                 PathRepository.SaveChanges();
             }
             else
@@ -242,7 +259,7 @@ namespace THOK.Wms.Bll.Service
             }
             return dt;
         }
-            
+
     }
 }
 
