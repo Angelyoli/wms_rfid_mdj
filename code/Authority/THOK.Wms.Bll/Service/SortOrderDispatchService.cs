@@ -23,10 +23,14 @@ namespace THOK.Wms.Bll.Service
 
         #region ISortOrderDispatchService 成员
 
-        public object GetDetails(int page, int rows, string OrderDate, string SortingLineCode)
+        public object GetDetails(int page, int rows, string OrderDate,string WorkStatus, string SortingLineCode)
         {
             IQueryable<SortOrderDispatch> sortDispatchQuery = SortOrderDispatchRepository.GetQueryable();
-            var sortDispatch = sortDispatchQuery.Where(s => s.WorkStatus != "2");
+            var sortDispatch = sortDispatchQuery.Where(s => s.ID == s.ID);
+            if (WorkStatus == string.Empty || WorkStatus == null)
+            {
+                sortDispatch = sortDispatchQuery.Where(s => s.WorkStatus != "2");
+            }
             if (OrderDate != string.Empty && OrderDate != null)
             {
                 OrderDate = Convert.ToDateTime(OrderDate).ToString("yyyyMMdd");

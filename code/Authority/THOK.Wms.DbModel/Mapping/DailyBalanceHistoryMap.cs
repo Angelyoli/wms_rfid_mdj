@@ -22,6 +22,10 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .HasMaxLength(20);
 
+            this.Property(t => t.AreaCode)
+                .IsRequired()
+                .HasMaxLength(20);
+
             this.Property(t => t.ProductCode)
                 .IsRequired()
                 .HasMaxLength(20);

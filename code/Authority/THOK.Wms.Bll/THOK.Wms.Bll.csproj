@@ -12,6 +12,8 @@
     <AssemblyName>THOK.Wms.Bll</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -244,24 +246,25 @@
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
       <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DownloadWms\THOK.Wms.DownloadWms.csproj">
+    <ProjectReference Include="..\THOK.Wms.DownloadWms\THOK.WMS.DownloadWms.csproj">
       <Project>{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}</Project>
-      <Name>THOK.Wms.DownloadWms</Name>
+      <Name>THOK.WMS.DownloadWms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.Download\THOK.Wms.Download.csproj">
+    <ProjectReference Include="..\THOK.Wms.Download\THOK.WMS.Download.csproj">
       <Project>{9495DAFA-C32B-445C-B760-341CBE9288C6}</Project>
-      <Name>THOK.Wms.Download</Name>
+      <Name>THOK.WMS.Download</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
+    <ProjectReference Include="..\THOK.Wms.SignalR\THOK.WMS.SignalR.csproj">
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>
-      <Name>THOK.Wms.SignalR</Name>
+      <Name>THOK.WMS.SignalR</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.Upload\THOK.Wms.Upload.csproj">
+    <ProjectReference Include="..\THOK.Wms.Upload\THOK.WMS.Upload.csproj">
       <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
-      <Name>THOK.Wms.Upload</Name>
+      <Name>THOK.WMS.Upload</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

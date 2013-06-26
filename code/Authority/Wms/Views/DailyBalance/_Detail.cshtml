@@ -2,51 +2,114 @@
     function UnitTypeClick() {
         var unit_type = $('#unitType').combo('getValue');
         $('#infos').datagrid({ url: '/DailyBalance/InfoDetails/?WarehouseCode=' + warehouse_Code + '&&SettleDate=' + settle_Date + '&&UnitType=' + unit_type });
-        $('#InfoDetails').dialog('open').dialog('setTitle', '日结明细');
+    }
+    function AreaUnitTypeClick() {
+        var unit_type = $('#area_unitType').combo('getValue');
+        var areas = $('#area').combotree('getValues');
+        $('#area_infos').datagrid({ url: '/DailyBalance/InfoDetails/?WarehouseCode=' + warehouse_Code + '&&SettleDate=' + settle_Date + '&&UnitType=' + unit_type + '&&Areas=' + areas });
+    }
+    function AreaPrintClick() {
+        var unit_type = $('#area_unitType').combo('getValue');
+        var areas = $('#area').combotree('getValues');
+        window.location.href = "/DailyBalance/CreateExcelToClient/"
+                                + "?warehouseCode=" + warehouse_Code
+                                + "&SettleDate=" + settle_Date
+                                + "&unitType=" + unit_type
+                                + '&&Areas=' + areas;
     }
 </script>
 <div id="InfoDetails" class="easyui-dialog" modal="true" style="width: 1000px; height: 500px;
     padding: 2px 2px" closed="true">
-    <table id="infos" class="easyui-datagrid" url="" border="false" singleselect="true" pageSize="50"
-        fit="true" fitcolumns="true" pagination="true" rownumbers="true" toolbar="#chaxun">
-        <thead>
-            <tr>                
-               <th field="SettleDate" width="80">
-                    结算日期
-                </th>
-                <th field="WarehouseName" width="80">
-                    仓库名称
-                </th>
-                <th field="ProductCode" width="80">
-                    商品代码
-                </th>
-                <th field="ProductName" width="120">
-                    商品名称
-                </th>
-                <th field="UnitName" width="80">
-                    单位
-                </th>
-                <th field="Beginning" width="70">
-                    期初量
-                </th>
-                <th field="EntryAmount" width="70">
-                    入库量
-                </th>
-                <th field="DeliveryAmount" width="70">
-                    出库量
-                </th>
-                <th field="LossAmount" width="70">
-                    报损量
-                </th>
-                <th field="ProfitAmount" width="70">
-                    报益量
-                </th>
-                <th field="Ending" width="70">
-                    结余量
-                </th>
-            </tr>
-        </thead>
-    </table>
+    <div id="checkTabs" class="easyui-tabs" fit="true">
+        <div title="仓库日结明细">
+            <table id="infos" class="easyui-datagrid" url="" border="false" singleselect="true" pageSize="50"
+                fit="true" fitcolumns="true" pagination="true" rownumbers="true" toolbar="#chaxun">
+                <thead>
+                    <tr>                
+                       <th field="SettleDate" width="80">
+                            结算日期
+                        </th>
+                        <th field="WarehouseName" width="80">
+                            仓库名称
+                        </th>
+                        <th field="ProductCode" width="80">
+                            商品代码
+                        </th>
+                        <th field="ProductName" width="120">
+                            商品名称
+                        </th>
+                        <th field="UnitName" width="80">
+                            单位
+                        </th>
+                        <th field="Beginning" width="70">
+                            期初量
+                        </th>
+                        <th field="EntryAmount" width="70">
+                            入库量
+                        </th>
+                        <th field="DeliveryAmount" width="70">
+                            出库量
+                        </th>
+                        <th field="LossAmount" width="70">
+                            报损量
+                        </th>
+                        <th field="ProfitAmount" width="70">
+                            报益量
+                        </th>
+                        <th field="Ending" width="70">
+                            结余量
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div title="库区日结明细">
+            <table id="area_infos" class="easyui-datagrid" url="" border="false" singleselect="true" pageSize="50"
+                fit="true" fitcolumns="true" pagination="true" rownumbers="true" toolbar="#area_chaxun">
+                <thead>
+                    <tr>                
+                       <th field="SettleDate" width="80">
+                            结算日期
+                        </th>
+                        <th field="WarehouseName" width="80">
+                            仓库名称
+                        </th>
+                        <th field="AreaName" width="80">
+                            区域名称
+                        </th>
+                        <th field="ProductCode" width="80">
+                            商品代码
+                        </th>
+                        <th field="ProductName" width="120">
+                            商品名称
+                        </th>
+                        <th field="UnitName" width="80">
+                            单位
+                        </th>
+                        <th field="Beginning" width="70">
+                            期初量
+                        </th>
+                        <th field="EntryAmount" width="70">
+                            入库量
+                        </th>
+                        <th field="DeliveryAmount" width="70">
+                            出库量
+                        </th>
+                        <th field="LossAmount" width="70">
+                            报损量
+                        </th>
+                        <th field="ProfitAmount" width="70">
+                            报益量
+                        </th>
+                        <th field="Ending" width="70">
+                            结余量
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    
 </div>
 <div id="chaxun" style="padding: 5px; height: auto">
     转换单位:
@@ -58,4 +121,27 @@
         <option value="4">自然条</option>
     </select>
  <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="UnitTypeClick()">查询</a> 
+</div>
+
+<div id="area_chaxun" style="padding: 5px; height: auto">
+    库区
+    <select class="easyui-combotree"
+            name="language"
+            url=""
+            valueField="id"
+            textField="text"
+            multiple="true"
+            panelHeight="auto"
+            panelWidth="160px"
+            id="area"></select>
+    转换单位:
+    <select id="area_unitType" class="easyui-combobox" style="width: 130px; height: 40px" editable="false">
+        <option value="">请选择</option>                       
+        <option value="1">标准件</option>
+        <option value="2">标准条</option>
+        <option value="3">自然件</option>
+        <option value="4">自然条</option>
+    </select>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="AreaUnitTypeClick()">查询</a> 
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="AreaPrintClick()">打印</a> 
 </div>
