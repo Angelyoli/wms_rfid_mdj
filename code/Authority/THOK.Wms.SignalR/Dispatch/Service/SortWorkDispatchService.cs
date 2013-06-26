@@ -110,6 +110,8 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                              //.OrderBy(s => s.SortingLine.SortingLineCode)//如果取整托盘多余的量是1号线就倒序排序，目前多余的量放入2号线，所以先调度一号线
                                              .ToArray();
            
+            var temp1 = sortingLowerlimitQuery.Select(s => new { s.Product,s.SortingLine,s.SortType}).ToArray();
+
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
             string operatePersonID = employee != null ? employee.ID.ToString() : "";
             if (employee == null)
@@ -217,36 +219,37 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
                                     if (cancellationToken.IsCancellationRequested) return;
 
-                                    //获取移库量（按整件计）出库量加上下限量减去备货区库存量取整
+                                    //获取移库量 出库量加上下限量减去备货区库存量
                                     decimal quantity = 0;
 
-                                    quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
+                                    //不取整
+                                    quantity = product.SumQuantity + lowerlimitQuantity - storQuantity;
+                                    
+                                    //取整件
+                                    if (product.Product.IsRounding == "0")
+                                    {
+                                        quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - storQuantity) / product.Product.Unit.Count)
                                                    * product.Product.Unit.Count;
+                                    }
 
-
-                                    //取整托盘,查询这个卷烟是否是通道机的卷烟                                   
-                                    decimal wholeTray = 0;                                  
-                                    if (product.Product.IsRounding == "2")
+                                    //取整托盘或者是通道机取整的烟                              
+                                    decimal wholeTray = 0;
+                                    var temp2 = temp1.FirstOrDefault(s => s.Product.ProductCode == product.Product.ProductCode && s.SortType == "3" && s.SortingLine.SortingLineCode == product.SortingLine.SortingLineCode);
+                                    if (product.Product.IsRounding == "2" || temp2 != null)
                                     {
                                         wholeTray = Math.Ceiling(quantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
                                         quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
                                     }
 
-                                    if (areaQuantiy < quantity)//判断当前这个卷烟库存是否小于移库量
+                                    //判断当前这个卷烟库存是否小于移库量，取整或者整托盘的数据
+                                    if (areaQuantiy < quantity && product.Product.IsRounding !="1")
                                     {
-                                        //出库量减去备货区库存量取整
                                         quantity = Math.Ceiling((product.SumQuantity - storQuantity) / product.Product.Unit.Count)
-                                                   * product.Product.Unit.Count;
-
-                                        if (areaQuantiy < quantity)
-                                        {
-                                            //出库量减去备货区库存量
-                                            quantity = product.SumQuantity - storQuantity;
-                                        }
+                                                   * product.Product.Unit.Count;                                       
                                     }
 
-                                    //不取整的烟直接出库。
-                                    if (product.Product.IsRounding == "1")
+                                    //出库量减去备货区库存量
+                                    if (areaQuantiy < quantity)
                                     {
                                         quantity = product.SumQuantity - storQuantity;
                                     }
