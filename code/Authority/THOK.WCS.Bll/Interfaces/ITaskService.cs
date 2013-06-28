@@ -19,7 +19,7 @@ namespace THOK.WCS.Bll.Interfaces
 
         bool CreateNewTaskForEmptyPalletSupply(int positionID);
 
-        bool CreateNewTaskForMoveBackRemain(int positionID);
+        bool CreateNewTaskForMoveBackRemain(int taskID);
 
         bool FinishTask(int taskID);        
     }

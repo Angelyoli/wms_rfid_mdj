@@ -41,9 +41,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="THOK.Util, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Packages\THOK.Util.dll</HintPath>
+    <Reference Include="THOK.Util">
+      <HintPath>..\Libraries\THOK.Util.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -99,9 +98,9 @@
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
       <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.Upload\THOK.Wms.Upload.csproj">
+    <ProjectReference Include="..\THOK.Wms.Upload\THOK.WMS.Upload.csproj">
       <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
-      <Name>THOK.Wms.Upload</Name>
+      <Name>THOK.WMS.Upload</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

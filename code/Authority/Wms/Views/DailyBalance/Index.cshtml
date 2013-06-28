@@ -9,8 +9,10 @@
     function DailyDetail(warehouseCode, settleDate) {
             settle_Date = settleDate;
             warehouse_Code = warehouseCode;
-//            $('#infos').datagrid({ url: '/DailyBalance/InfoDetails/?WarehouseCode=' + warehouseCode + '&&SettleDate=' + settleDate });
-//            $('#area_infos').datagrid({ url: '/DailyBalance/InfoDetails/?WarehouseCode=' + warehouseCode + '&&SettleDate=' + settleDate + '&&Areas=' + "*" });
+            $('#infos').datagrid({ url: '' });
+            $('#infos').datagrid('loadData',[]);
+            $('#area_infos').datagrid({ url: ''});
+            $('#area_infos').datagrid('loadData',[]);
             $('#area').combotree({
                 url: '/Area/GetDetailsTree/',
                 multiple: true,
