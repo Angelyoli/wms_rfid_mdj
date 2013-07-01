@@ -18,8 +18,6 @@
     function targetSave() {
         var targetRow = $('#targetDetail').datagrid('getSelected');
         if (targetRow) {
-        alert("333")
-
         $('#TargetRegionID').val(targetRow.ID);
         $('#TargetRegionName').val(targetRow.RegionName);
         $('#TargetRegion').val(targetRow.ID);
