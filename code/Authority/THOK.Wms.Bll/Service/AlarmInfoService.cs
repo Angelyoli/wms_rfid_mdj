@@ -29,6 +29,7 @@ namespace THOK.Wms.Bll.Service
             var alarmInfoRow = alarmInfos.Skip((page - 1) * rows).Take(rows);
             var alarmInfoSelect = alarmInfoRow.ToArray().Select(a => new
             {
+               
                 a.AlarmCode,
                 a.Description
             });

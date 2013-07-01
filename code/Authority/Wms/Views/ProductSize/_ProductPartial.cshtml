@@ -19,6 +19,7 @@
         var productRow = $('#productDetail').datagrid('getSelected');
         if (productRow) {
             $('#ProductCode').val(productRow.ProductCode);
+            $('#inputProductName').val(productRow.ProductName);
             $('#productData').dialog('close');
             editKey = true;
         }

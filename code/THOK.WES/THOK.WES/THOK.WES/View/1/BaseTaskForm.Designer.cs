@@ -76,8 +76,8 @@ namespace THOK.WES.View
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnBcCompose = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.pnlData = new System.Windows.Forms.Panel();
             this.btnChart = new System.Windows.Forms.Button();
+            this.pnlData = new System.Windows.Forms.Panel();
             this.pnlTool.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.pnlMain.SuspendLayout();
@@ -90,7 +90,6 @@ namespace THOK.WES.View
             // 
             // pnlTool
             // 
-            this.pnlTool.Controls.Add(this.btnChart);
             this.pnlTool.Controls.Add(this.button4);
             this.pnlTool.Controls.Add(this.button3);
             this.pnlTool.Controls.Add(this.button1);
@@ -103,6 +102,7 @@ namespace THOK.WES.View
             this.pnlTool.Controls.Add(this.btnCancel);
             this.pnlTool.Controls.Add(this.btnApply);
             this.pnlTool.Controls.Add(this.btnSearch);
+            this.pnlTool.Controls.Add(this.btnChart);
             this.pnlTool.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTool.Size = new System.Drawing.Size(804, 46);
             // 
@@ -128,7 +128,7 @@ namespace THOK.WES.View
             this.btnConfirm.Enabled = false;
             this.btnConfirm.Image = global::THOK.WES.Properties.Resources.accept;
             this.btnConfirm.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnConfirm.Location = new System.Drawing.Point(144, 0);
+            this.btnConfirm.Location = new System.Drawing.Point(192, 0);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(48, 44);
             this.btnConfirm.TabIndex = 5;
@@ -143,7 +143,7 @@ namespace THOK.WES.View
             this.btnCancel.Enabled = false;
             this.btnCancel.Image = global::THOK.WES.Properties.Resources.onebit_24;
             this.btnCancel.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnCancel.Location = new System.Drawing.Point(96, 0);
+            this.btnCancel.Location = new System.Drawing.Point(144, 0);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(48, 44);
             this.btnCancel.TabIndex = 6;
@@ -158,7 +158,7 @@ namespace THOK.WES.View
             this.btnApply.Enabled = false;
             this.btnApply.Image = global::THOK.WES.Properties.Resources.onebit_23;
             this.btnApply.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnApply.Location = new System.Drawing.Point(48, 0);
+            this.btnApply.Location = new System.Drawing.Point(96, 0);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(48, 44);
             this.btnApply.TabIndex = 5;
@@ -172,7 +172,7 @@ namespace THOK.WES.View
             this.btnSearch.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnSearch.Image = global::THOK.WES.Properties.Resources.onebit_02;
             this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnSearch.Location = new System.Drawing.Point(0, 0);
+            this.btnSearch.Location = new System.Drawing.Point(48, 0);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(48, 44);
             this.btnSearch.TabIndex = 4;
@@ -513,7 +513,7 @@ namespace THOK.WES.View
             this.btnBatConfirm.Enabled = false;
             this.btnBatConfirm.Image = global::THOK.WES.Properties.Resources.accept;
             this.btnBatConfirm.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnBatConfirm.Location = new System.Drawing.Point(192, 0);
+            this.btnBatConfirm.Location = new System.Drawing.Point(240, 0);
             this.btnBatConfirm.Name = "btnBatConfirm";
             this.btnBatConfirm.Size = new System.Drawing.Size(48, 44);
             this.btnBatConfirm.TabIndex = 10;
@@ -527,7 +527,7 @@ namespace THOK.WES.View
             this.btnOpType.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnOpType.Image = global::THOK.WES.Properties.Resources.onebit_10;
             this.btnOpType.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnOpType.Location = new System.Drawing.Point(240, 0);
+            this.btnOpType.Location = new System.Drawing.Point(288, 0);
             this.btnOpType.Name = "btnOpType";
             this.btnOpType.Size = new System.Drawing.Size(48, 44);
             this.btnOpType.TabIndex = 12;
@@ -571,7 +571,7 @@ namespace THOK.WES.View
             this.btnBcCompose.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnBcCompose.Image = global::THOK.WES.Properties.Resources.process;
             this.btnBcCompose.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnBcCompose.Location = new System.Drawing.Point(288, 0);
+            this.btnBcCompose.Location = new System.Drawing.Point(336, 0);
             this.btnBcCompose.Name = "btnBcCompose";
             this.btnBcCompose.Size = new System.Drawing.Size(48, 44);
             this.btnBcCompose.TabIndex = 14;
@@ -586,7 +586,7 @@ namespace THOK.WES.View
             this.btnExit.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnExit.Image = global::THOK.WES.Properties.Resources.shut_down;
             this.btnExit.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnExit.Location = new System.Drawing.Point(336, 0);
+            this.btnExit.Location = new System.Drawing.Point(384, 0);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(48, 44);
             this.btnExit.TabIndex = 15;
@@ -595,29 +595,28 @@ namespace THOK.WES.View
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
+            // btnChart
+            // 
+            this.btnChart.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnChart.Image = global::THOK.WES.Properties.Resources.shut_down;
+            this.btnChart.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnChart.Location = new System.Drawing.Point(0, 0);
+            this.btnChart.Name = "btnChart";
+            this.btnChart.Size = new System.Drawing.Size(48, 44);
+            this.btnChart.TabIndex = 16;
+            this.btnChart.Text = "ͼʾ";
+            this.btnChart.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnChart.UseVisualStyleBackColor = true;
+            this.btnChart.Click += new System.EventHandler(this.btnChart_Click);
+            // 
             // pnlData
             // 
-            //            this.pnlData.Controls.Add(this.dgvMain);
             this.pnlData.Controls.Add(this.dgvMain);
             this.pnlData.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlData.Location = new System.Drawing.Point(0, 0);
             this.pnlData.Name = "pnlData";
             this.pnlData.Size = new System.Drawing.Size(804, 132);
             this.pnlData.TabIndex = 3;
-            // 
-            // btnChart
-            // 
-            this.btnChart.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnChart.Image = global::THOK.WES.Properties.Resources.onebit_02;
-            this.btnChart.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnChart.Location = new System.Drawing.Point(384, 0);
-            this.btnChart.Name = "btnChart";
-            this.btnChart.Size = new System.Drawing.Size(48, 44);
-            this.btnChart.TabIndex = 17;
-            this.btnChart.Text = "ͼʾ";
-            this.btnChart.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnChart.UseVisualStyleBackColor = true;
-            this.btnChart.Click += new System.EventHandler(this.btnChart_Click);
             // 
             // BaseTaskForm
             // 
@@ -678,6 +677,7 @@ namespace THOK.WES.View
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetStorageRfid;
         private System.Windows.Forms.DataGridViewTextBoxColumn PalletTag;
+        private System.Windows.Forms.Button btnChart;
         private System.Windows.Forms.Panel pnlChart;
         private System.Windows.Forms.VScrollBar sbShelf;
         private System.Windows.Forms.Panel pnlData;
@@ -685,6 +685,5 @@ namespace THOK.WES.View
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button btnChart;
     }
 }

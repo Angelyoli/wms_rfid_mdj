@@ -10,6 +10,7 @@ using THOK.Wms.DbModel;
 using THOK.Common.Entity;
 using THOK.Wms.Dal.EntityRepository;
 using THOK.Wms.SignalR.Connection;
+using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.AutomotiveSystems.Service
 {
@@ -31,7 +32,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
         public ICheckBillMasterRepository CheckBillMasterRepository { get; set; }
         [Dependency]
         public ICheckBillDetailRepository CheckBillDetailRepository { get; set; }
-
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
         [Dependency]
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
 
@@ -1000,7 +1002,14 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var sortingLineQuery = SortingLineRepository.GetQueryable();
                 var storageQuery = StorageRepository.GetQueryable();
                 var moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
+                IQueryable<THOK.Authority.DbModel.SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+                var IsUselowerlimit = systemParQuery.FirstOrDefault(s => s.ParameterName == "SortingNumber");//查询实时出库，分拣剩余多少提醒仓库补货。
 
+                decimal sortingNumber = 60000;//默认标准6件烟提醒仓库实时补货。
+                if (IsUselowerlimit != null)//判断是否会出错
+                {
+                    sortingNumber = Convert.ToDecimal(IsUselowerlimit.ParameterValue) * 10000;
+                }
                 //todo @条要换成支；加标志以记录分拣订单状态；并用状态查询已分拣订单；
                 var sortOrder = sortOrderQuery.Join(sortOrderDispatchQuery,
                                         o => new { o.OrderDate, o.DeliverLineCode },
@@ -1065,7 +1074,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 var tmp4 = tmp1.Concat(tmp2).Concat(tmp3)
                                .GroupBy(r => new { r.ProductCode, r.ProductName })
                                .Select(r => new { r.Key.ProductCode, r.Key.ProductName, Quantity = r.Sum(q => q.Quantity) })
-                               .Where(r=>r.Quantity <60000).ToArray();
+                               .Where(r => r.Quantity < sortingNumber).ToArray();
 
                 var tmp5 = sortingLineQuery
                              .Join(moveBillDetailQuery,

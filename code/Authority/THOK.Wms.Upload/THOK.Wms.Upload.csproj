@@ -43,7 +43,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="THOK.Util">
-      <HintPath>..\packages\THOK.Util.dll</HintPath>
+      <HintPath>..\Libraries\THOK.Util.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -54,13 +54,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\THOK.Wms.Dal\THOK.Wms.Dal.csproj">
+    <ProjectReference Include="..\THOK.Wms.Dal\THOK.WMS.Dal.csproj">
       <Project>{DB6CC091-9BC6-415C-A0D2-E34289669102}</Project>
-      <Name>THOK.Wms.Dal</Name>
+      <Name>THOK.WMS.Dal</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
+      <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

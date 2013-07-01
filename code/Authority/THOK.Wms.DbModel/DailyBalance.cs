@@ -14,6 +14,7 @@ namespace THOK.Wms.DbModel
         public Guid ID { get; set; }
         public DateTime SettleDate { get; set; }
         public string WarehouseCode { get; set; }
+        public string AreaCode { get; set; }
         public string ProductCode { get; set; }
         public string UnitCode { get; set; }
         public decimal Beginning { get; set; }
@@ -24,6 +25,7 @@ namespace THOK.Wms.DbModel
         public decimal Ending { get; set; }
 
         public virtual Warehouse Warehouse { get; set; }
+        public virtual Area Area { get; set; }
         public virtual Product Product { get; set; }
         public virtual Unit Unit { get; set; }        
     }
