@@ -483,6 +483,7 @@ namespace THOK.WES.View
 
         private void btnOpType_Click(object sender, EventArgs e)
         {
+            sp.Stop();
             if (btnOpType.Text != "正常")
             {
                 btnOpType.Text = "正常";
@@ -514,7 +515,7 @@ namespace THOK.WES.View
             {
                 try
                 {
-                    sp.Play();
+                    sp.PlayLooping();
                 }
                 catch (Exception e)
                 {
@@ -535,6 +536,7 @@ namespace THOK.WES.View
         private bool isBcCompose = false;
         private void btnBcCompose_Click(object sender, EventArgs e)
         {
+            sp.Stop();
             btnBcCompose.Enabled = false;
             if (!isBcCompose && BillTypes == "3" && BillMasters != null)
             {
@@ -963,6 +965,7 @@ namespace THOK.WES.View
 
         private void btnChart_Click(object sender, EventArgs e)
         {
+            sp.Stop();
             if (cellTable != null && cellTable.Rows.Count != 0)
             {
                 if (pnlData.Visible)
