@@ -52,8 +52,8 @@ namespace Wms.Controllers.Wms.BasisInfo
             public ActionResult Details(int page, int rows, FormCollection collection)
             {
                 Path path = new Path();
-                string PathName = collection["PathName"] ?? "";
-                string State = collection["State"] ?? "";
+                path.PathName = collection["PathName"] ?? "";
+                path.State = collection["State"] ?? "";
                 string OriginRegionID = collection["OriginRegionID"] ?? "";
                 string TargetRegionID = collection["TargetRegionID"] ?? "";
                 if (OriginRegionID != "" && OriginRegionID != null)

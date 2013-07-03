@@ -48,12 +48,12 @@ namespace THOK.Wms.Bll.Service
            var pathDetail3 = pathDetail2;
            if (path.PathName != null)
            {
-               pathDetail3 = pathDetail2.Where(p => p.PathName == path.PathName).OrderBy(p => p.ID);
+               pathDetail3 = pathDetail2.Where(p => p.PathName.Contains(path.PathName)).OrderBy(p => p.ID);
            }
            var pathDetail4 = pathDetail3;
            if (path.State != null)
            {
-               pathDetail4 = pathDetail3.Where(p => p.State == path.State).OrderBy(p => p.ID);
+               pathDetail4 = pathDetail3.Where(p => p.State.Contains(path.State)).OrderBy(p => p.ID);
            }
            //int total = pathDetail4.Count();
            //var pathDetails = pathDetail4.Skip((page - 1) * rows).Take(rows);
@@ -128,6 +128,8 @@ namespace THOK.Wms.Bll.Service
         {
             strResult = string.Empty;
             bool result = false;
+            IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
+            var region = regionQuery.FirstOrDefault(r => r.ID == path.ID);
             var emp = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == path.ID);
             if (emp != null)
             {
@@ -142,9 +144,23 @@ namespace THOK.Wms.Bll.Service
             }
             else
             {
-                strResult = "原因：未找到当前需要修改的数据！"; 
+                strResult = "原因：未找到当前需要修改的数据！";
             }
             return result;
+            //IQueryable<Region> regionQuery = RegionRepository.GetQueryable();
+            //var region = regionQuery.FirstOrDefault(r => r.ID == path.ID);
+            //var emp = PathRepository.GetQueryable().FirstOrDefault(p => p.ID == path.ID);
+            //if(emp != null)
+            //{
+            //emp.ID = path.ID;
+            //emp.PathName = path.PathName;
+            //emp.Description = path.Description;
+            //emp.OriginRegionID = path.OriginRegionID;
+            //emp.TargetRegionID = path.TargetRegionID;
+            //emp.State = path.State;
+            //PathRepository.SaveChanges();
+            //}
+            //return true;
         }
 
         public bool Delete(int pathId)

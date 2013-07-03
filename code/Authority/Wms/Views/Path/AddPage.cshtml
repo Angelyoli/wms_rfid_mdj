@@ -27,8 +27,8 @@
                     起始区域名称：
                 </td>
                 <td width="140">
-                   <input name="OriginRegionID" id="OriginRegionID" style="display: none;"  />
-                    <input name="OriginRegionName" id="oriName" readonly="readonly" class="easyui-validatebox" />
+                   <input name="OriginRegionID" id="OriginRegionID1" style="display: none" />
+                    <input name="OriginRegionName" id="OriginRegionName1" readonly="readonly" class="easyui-validatebox" />
                     <a href="#" id="originNameSearch" class="easyui-linkbutton" iconcls="icon-search"
                         plain="true" onclick="OriginSearchClick()"></a>
                </td>
@@ -39,8 +39,8 @@
                     目标区域名称：
                 </td>
                 <td width="140">
-                    <input name="TargetRegionID" id="targetId" required="true" style="display: none;" />
-                    <input name="TargetRegionName" id="targetName" required="true" readonly="readonly" class="easyui-validatebox" />
+                    <input name="TargetRegionID" id="TargetRegionID1" required="true"  style="display: none"/>
+                    <input name="TargetRegionName" id="TargetRegionName1" required="true" readonly="readonly" class="easyui-validatebox" />
                     <a href="#" id="targetSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
                         onclick="TargetSearchClick()"></a>
                 </td>
@@ -71,5 +71,5 @@
         </form>
     </div>
 </div>
-@Html.Partial("_OriginPartial")
-@Html.Partial("_TargetPartial")
+@Html.Partial("_OriginPartial1")
+@Html.Partial("_TargetPartial1")
