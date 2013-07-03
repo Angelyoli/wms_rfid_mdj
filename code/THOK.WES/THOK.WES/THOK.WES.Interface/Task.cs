@@ -49,6 +49,17 @@ namespace THOK.WES.Interface
             this.url = new Uri(url);
         }
 
+        //仓储入库进度反馈
+        public void GetWarehouseInBillProgressFeedback(BillDetail[] billDetails)
+        {
+            taskType = "WarehouseInBillProgressFeedback";
+            WebClient client = new WebClient();
+            client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
+            string parameter = JsonMapper.ToJson(billDetails);
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getWarehouseInBillProgressFeedback'}");
+            client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
+        }
+
         //查询所有可以执行的主单；
         public void SearchBillMaster(string parameter)
         {
