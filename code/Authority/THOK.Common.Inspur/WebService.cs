@@ -96,7 +96,7 @@ namespace THOK.Common.Inspur
             //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
             //lwws.lwmStroeInProgFeedback(result);
         }
-        public void WarehouseInBillFinish(string STORE_OUT_NUM)
+        public void WarehouseOutBillFinish(string STORE_OUT_NUM)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
