@@ -52,7 +52,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             position.PositionType = collection["PositionType"] ?? "";
             position.SRMName = collection["SRMName"] ?? "";
             position.State = collection["State"] ?? "";
-
+           
             var positionDetail = PositionService.GetDetails(page, rows, position);
             return Json(positionDetail, "text", JsonRequestBehavior.AllowGet);
         }

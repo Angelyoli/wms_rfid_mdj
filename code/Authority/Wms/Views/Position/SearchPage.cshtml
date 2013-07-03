@@ -34,8 +34,9 @@
                         堆垛机名称：
                     </td>
                     <td width="168">
+                       <input name="SRMID" id="inputSRMID1" style ="display:none" />
                     @*<input name="SRMName" id="inputSRMName" type="text" />*@
-                       <input name="SRMName" id="inputSRMName" class="easyui-validatebox" required="true" type="text" readonly="readonly"/>
+                       <input name="SRMName" id="inputSRMName1" class="easyui-validatebox" required="true" type="text" readonly="readonly"/>
                        <a href="#" id="SRMNameSearch" class="easyui-linkbutton" iconcls="icon-search"
                        plain="true" onclick="SRMNameSearchClick()"></a>
                     </td>
@@ -56,7 +57,7 @@
         </div>
     </div>
 
-@Html.Partial("_SRMNamePartial");
+@Html.Partial("_SRMName1Partial");
 
 
 

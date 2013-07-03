@@ -1,4 +1,4 @@
-﻿<script type="text/javascript">   
+﻿<script type="text/javascript">
     $(function () {
         $('#sRMDetail').datagrid({
             //双击赋值
@@ -18,8 +18,8 @@
     function sRMSave() {
         var sRMRow = $('#sRMDetail').datagrid('getSelected');
         if (sRMRow) {
-//          $('#inputSRMID').val(sRMRow.ID);
-            $('#inputSRMName').val(sRMRow.SRMName);
+//            $('#inputSRMID1').val(sRMRow.ID);
+            $('#inputSRMName1').val(sRMRow.SRMName);
             $('#sRMData').dialog('close');
             editKey = true;
         }
@@ -69,3 +69,5 @@
             取消</a>
     </div>
 </div>
+
+
