@@ -16,10 +16,10 @@
     });
     //选中赋值
     function originSave() {
-         var originRow = $('#originDetail').datagrid('getSelected');
-         if (originRow) {
-            $('#OriginRegionID').val(originRow.ID);
-            $('#OriginRegionName').val(originRow.RegionName);
+        var originRow = $('#originDetail').datagrid('getSelected');
+        if (originRow) {
+            $('#OriginRegionID1').val(originRow.ID);
+            $('#OriginRegionName1').val(originRow.RegionName);
             $('#originData').dialog('close');
         }
         else {
@@ -74,5 +74,7 @@
             取消</a>
     </div>
 </div>
+
+
 
 

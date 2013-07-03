@@ -18,12 +18,11 @@
     function targetSave() {
         var targetRow = $('#targetDetail').datagrid('getSelected');
         if (targetRow) {
-
-            $('#targetId').val(targetRow.ID);
-            $('#targetName').val(targetRow.RegionName);
-            $('#TargetRegion').val(targetRow.ID);
-            $('#target-name').val(targetRow.RegionName);
-            $('#targetData').dialog('close');
+        $('#TargetRegionID').val(targetRow.ID);
+        $('#TargetRegionName').val(targetRow.RegionName);
+        $('#TargetRegion').val(targetRow.ID);
+        $('#target-name').val(targetRow.RegionName);
+        $('#targetData').dialog('close');
         }
         else {
             $.messager.alert('提示', '没有选择行!', 'info');
