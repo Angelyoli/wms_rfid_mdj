@@ -1128,20 +1128,21 @@ namespace THOK.Wms.AutomotiveSystems.Service
         }
 
         #region 浪潮接口
+        //000---接口交互成功! 生成月计划单据：【CQ00148】---SUPERADMIN---2013-05-20 09:32:00
         string returnMsg = @"<?xml version='1.0' encoding='UTF-8'?>
                             <DATASET>
 	                            <HEAD>
-                                    <STATE_CODE>000</STATE_CODE>
-		                            <STATE_DESC>接口交互成功! 生成月计划单据：【CQ00148】</STATE_DESC>
-		                            <USER>SUPERADMIN</USER>
-		                            <TIME>2013-05-20 09:32:00</TIME>
+                                    <STATE_CODE>{0}</STATE_CODE>
+		                            <STATE_DESC>{1}</STATE_DESC>
+		                            <USER>{2}</USER>
+		                            <TIME>{3}</TIME>
 	                            </HEAD>
                             </DATASET>";
         /// <summary>
         /// 仓储入库进度反馈
         /// </summary>
         /// <param name="billDetails"></param>
-        public void WarehouseInBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        public string WarehouseInBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
@@ -1163,19 +1164,28 @@ namespace THOK.Wms.AutomotiveSystems.Service
 	                                </DATA>
                                 </DATASET>";
             string result = null;
-            foreach (var item in billDetails)
+            string str = null;
+            try
             {
-                //STORE_IN_NUM, ITEM_CODE, QTY_COMPLETE
-                result = string.Format(xml, item.BillNo, item.DetailID, item.OperatePieceQuantity);
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo, item.DetailID, item.OperatePieceQuantity);
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result += string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
             }
-            //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
-            //lwws.lwmStroeInProgFeedback(result);
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
         }
         /// <summary>
         /// 仓储入库完成
         /// </summary>
         /// <param name="billDetails"></param>
-        public void WarehouseInBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        public string WarehouseInBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
@@ -1197,18 +1207,28 @@ namespace THOK.Wms.AutomotiveSystems.Service
 	                                </DATA>
                                 </DATASET>";
             string result = null;
-            foreach (var item in billDetails)
+            string str = null;
+            try
             {
-                result = string.Format(xml, item.BillNo);
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo);
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result += string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
             }
-            //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
-            //lwws.lwmStroeInProgFeedback(result);
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
         }
         /// <summary>
         /// 仓储出库进度反馈
         /// </summary>
         /// <param name="billDetails"></param>
-        public void WarehouseOutBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        public string WarehouseOutBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
@@ -1230,18 +1250,28 @@ namespace THOK.Wms.AutomotiveSystems.Service
 	                                </DATA>
                                 </DATASET>";
             string result = null;
-            foreach (var item in billDetails)
+            string str = null;
+            try
             {
-                result = string.Format(xml, item.BillNo, item.DetailID, item.OperatePieceQuantity);
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo, item.DetailID, item.OperatePieceQuantity);//STORE_IN_NUM, ITEM_CODE, QTY_COMPLETE
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result = string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
             }
-            //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
-            //lwws.lwmStroeInProgFeedback(result);
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
         }
         /// <summary>
         /// 仓储出库完成
         /// </summary>
         /// <param name="billDetails"></param>
-        public void WarehouseOutBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        public string WarehouseOutBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
@@ -1263,12 +1293,22 @@ namespace THOK.Wms.AutomotiveSystems.Service
 	                                </DATA>
                                 </DATASET>";
             string result = null;
-            foreach (var item in billDetails)
+            string str = null;
+            try
             {
-                result = string.Format(xml, item.BillNo);
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo);
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result = string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
             }
-            //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
-            //lwws.lwmStroeInProgFeedback(result);
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
         }
         #endregion
     }
