@@ -49,6 +49,7 @@ namespace THOK.WES.Interface
             this.url = new Uri(url);
         }
 
+        #region 浪潮接口
         //仓储入库进度反馈
         public void GetWarehouseInBillProgressFeedback(BillDetail[] billDetails)
         {
@@ -56,9 +57,40 @@ namespace THOK.WES.Interface
             WebClient client = new WebClient();
             client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
             string parameter = JsonMapper.ToJson(billDetails);
-            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getWarehouseInBillProgressFeedback'}");
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getWarehouseInBillProgressFeedback','BillDetails':" + parameter + "}");
             client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
         }
+        //仓储入库完成
+        public void GetWarehouseInBillFinish(BillDetail[] billDetails)
+        {
+            taskType = "WarehouseInBillFinish";
+            WebClient client = new WebClient();
+            client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
+            string parameter = JsonMapper.ToJson(billDetails);
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getWarehouseInBillFinish','BillDetails':" + parameter + "}");
+            client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
+        }
+        //仓储出库进度反馈
+        public void GetWarehouseOutBillProgressFeedback(BillDetail[] billDetails)
+        {
+            taskType = "WarehouseOutBillProgressFeedback";
+            WebClient client = new WebClient();
+            client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
+            string parameter = JsonMapper.ToJson(billDetails);
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getWarehouseOutBillProgressFeedback','BillDetails':" + parameter + "}");
+            client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
+        }
+        //仓储出库完成
+        public void GetWarehouseOutBillFinish(BillDetail[] billDetails)
+        {
+            taskType = "WarehouseOutBillFinish";
+            WebClient client = new WebClient();
+            client.Headers["Content-Type"] = @"application/x-www-form-urlencoded; charset=UTF-8";
+            string parameter = JsonMapper.ToJson(billDetails);
+            client.UploadStringAsync(url, "post", @"Parameter={'Method':'getWarehouseOutBillFinish','BillDetails':" + parameter + "}");
+            client.UploadStringCompleted += new UploadStringCompletedEventHandler(client_UploadStringCompleted);
+        } 
+        #endregion
 
         //查询所有可以执行的主单；
         public void SearchBillMaster(string parameter)

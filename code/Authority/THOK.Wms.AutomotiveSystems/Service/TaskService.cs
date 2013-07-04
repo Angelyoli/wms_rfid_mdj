@@ -1137,7 +1137,10 @@ namespace THOK.Wms.AutomotiveSystems.Service
 		                            <TIME>2013-05-20 09:32:00</TIME>
 	                            </HEAD>
                             </DATASET>";
-        #region 入库
+        /// <summary>
+        /// 仓储入库进度反馈
+        /// </summary>
+        /// <param name="billDetails"></param>
         public void WarehouseInBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
@@ -1168,7 +1171,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
             //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
             //lwws.lwmStroeInProgFeedback(result);
         }
-        public void WarehouseInBillFinish(string STORE_IN_NUM)
+        /// <summary>
+        /// 仓储入库完成
+        /// </summary>
+        /// <param name="billDetails"></param>
+        public void WarehouseInBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
@@ -1189,14 +1196,19 @@ namespace THOK.Wms.AutomotiveSystems.Service
 		                                </DATA_DETAIL>
 	                                </DATA>
                                 </DATASET>";
-            string result = string.Format(xml, STORE_IN_NUM);
+            string result = null;
+            foreach (var item in billDetails)
+            {
+                result = string.Format(xml, item.BillNo);
+            }
             //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
             //lwws.lwmStroeInProgFeedback(result);
         }
-        #endregion
-
-        #region 出库
-        public void WarehouseOutBillProgressFeedback(string STORE_OUT_NUM, string ITEM_CODE, string QTY_COMPLETE)
+        /// <summary>
+        /// 仓储出库进度反馈
+        /// </summary>
+        /// <param name="billDetails"></param>
+        public void WarehouseOutBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
@@ -1217,11 +1229,19 @@ namespace THOK.Wms.AutomotiveSystems.Service
 		                                </DATA_DETAIL>
 	                                </DATA>
                                 </DATASET>";
-            string result = string.Format(xml, STORE_OUT_NUM, ITEM_CODE, QTY_COMPLETE);
+            string result = null;
+            foreach (var item in billDetails)
+            {
+                result = string.Format(xml, item.BillNo, item.DetailID, item.OperatePieceQuantity);
+            }
             //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
             //lwws.lwmStroeInProgFeedback(result);
         }
-        public void WarehouseOutBillFinish(string STORE_OUT_NUM)
+        /// <summary>
+        /// 仓储出库完成
+        /// </summary>
+        /// <param name="billDetails"></param>
+        public void WarehouseOutBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
         {
             string xml = @"<?xml version='1.0' encoding='UTF-8'?>
                                 <DATASET>
@@ -1242,11 +1262,14 @@ namespace THOK.Wms.AutomotiveSystems.Service
 		                                </DATA_DETAIL>
 	                                </DATA>
                                 </DATASET>";
-            string result = string.Format(xml, STORE_OUT_NUM);
+            string result = null;
+            foreach (var item in billDetails)
+            {
+                result = string.Format(xml, item.BillNo);
+            }
             //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
             //lwws.lwmStroeInProgFeedback(result);
         }
-        #endregion
         #endregion
     }
 }

@@ -907,6 +907,17 @@ namespace THOK.WES.View
                     RefreshData();
                 });
                 task.Execute(tmp, UseTag);
+                //ÀË³±½Ó¿Ú
+                if (BillTypes == "1")
+                {
+                    task.GetWarehouseInBillProgressFeedback(tmp);
+                    task.GetWarehouseInBillFinish(tmp);
+                }
+                if (BillTypes == "2")
+                {
+                    task.GetWarehouseOutBillProgressFeedback(tmp);
+                    task.GetWarehouseOutBillFinish(tmp);
+                }
             }
         }
 

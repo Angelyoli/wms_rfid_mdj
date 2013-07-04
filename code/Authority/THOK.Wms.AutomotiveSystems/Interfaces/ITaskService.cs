@@ -25,5 +25,8 @@ namespace THOK.Wms.AutomotiveSystems.Interfaces
         bool ProcessSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId, ref string error);
 
         void WarehouseInBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
+        void WarehouseInBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
+        void WarehouseOutBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
+        void WarehouseOutBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
     }
 }
