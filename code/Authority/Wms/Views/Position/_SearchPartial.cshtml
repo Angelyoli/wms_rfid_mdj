@@ -57,7 +57,8 @@
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.PositionName = $('#PositionName').val();
         queryParams.PositionType = $('#PositionType').combo('getValue');
-        queryParams.SRMName = $('#inputSRMName').val();
+        queryParams.SRMID = $('#inputSRMID1').val();
+        queryParams.SRMName = $('#inputSRMName1').val();
         queryParams.State = $('#State').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');

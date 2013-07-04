@@ -91,26 +91,31 @@ namespace THOK.Wms.Bll.Service
         public bool Add(Position position)
         {
             var post = new Position();
-                    post.ID = position.ID;
-                    post.PositionName = position.PositionName;
-                    post.PositionType = position.PositionType;
-                    post.RegionID = position.RegionID;
-                    post.SRMName = position.SRMName;
-                    post.TravelPos = position.TravelPos;
-                    post.LiftPos = position.LiftPos;
-                    post.Extension = position.Extension;
-                    post.Description = position.Description;
-                    post.HasGoods = position.HasGoods;
-                    post.AbleStockOut = position.AbleStockOut;
-                    post.AbleStockInPallet = position.AbleStockInPallet;
-                    post.TagAddress = position.TagAddress;
-                    post.CurrentOperateQuantity = position.CurrentOperateQuantity;
-                    post.CurrentTaskID = position.CurrentTaskID;
-                    post.ChannelCode = position.ChannelCode;
-                    post.State = position.State;
+            try
+            {
+                var region = RegionRepository.GetQueryable().FirstOrDefault(r => r.ID == position.RegionID);
+                post.ID = position.ID;
+                post.PositionName = position.PositionName;
+                post.PositionType = position.PositionType;
+                post.RegionID = position.RegionID;
+                post.SRMName = position.SRMName;
+                post.TravelPos = position.TravelPos;
+                post.LiftPos = position.LiftPos;
+                post.Extension = position.Extension;
+                post.Description = position.Description;
+                post.HasGoods = position.HasGoods;
+                post.AbleStockOut = position.AbleStockOut;
+                post.AbleStockInPallet = position.AbleStockInPallet;
+                post.TagAddress = position.TagAddress;
+                post.CurrentOperateQuantity = position.CurrentOperateQuantity;
+                post.CurrentTaskID = position.CurrentTaskID;
+                post.ChannelCode = position.ChannelCode;
+                post.State = position.State;
 
-                    PositionRepository.Add(post);
-                    PositionRepository.SaveChanges();
+                PositionRepository.Add(post);
+                PositionRepository.SaveChanges();
+            }
+            catch (Exception e) { }
     
             return true;
         }
