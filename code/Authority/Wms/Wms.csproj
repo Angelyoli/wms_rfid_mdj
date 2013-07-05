@@ -2412,6 +2412,7 @@
     <Content Include="Views\System\_PrintPartial.cshtml" />
     <Content Include="Views\Module\_PrintPartial.cshtml" />
     <Content Include="Views\ProductSize\_Product1Partial.cshtml" />
+    <Content Include="Views\ProfitLossBill\_UnitPartial.cshtml" />
     <Content Include="Views\Position\_SRMName1Partial.cshtml" />
     <Content Include="Views\Path\_OriginPartial1.cshtml" />
     <Content Include="Views\Path\_TargetPartial1.cshtml" />
