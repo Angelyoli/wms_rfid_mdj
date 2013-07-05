@@ -194,6 +194,7 @@ namespace THOK.WMS.DownloadWms.Bll
                masterrow["update_time"] = DateTime.Now;//送货线路名称               
                masterrow["deliver_line_code"] = row["DIST_BILL_ID"].ToString().Trim(); //row["DELIVER_LINE_CODE"].ToString().Trim();// +"_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
                masterrow["dist_bill_id"] = row["DIST_BILL_ID"].ToString().Trim();//
+               masterrow["status"] = "0";//
                ds.Tables["DWV_OUT_ORDER"].Rows.Add(masterrow);
            }
            return ds;

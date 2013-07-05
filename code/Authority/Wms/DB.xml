@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <Connections>
 	<Connection Name = "DefaultConnection" DatabaseType = "SQLSERVER">
-		<ConnectionString Value = "server=.;database =wms_rfid_db;UID =sa" />
+		<ConnectionString Value = "server=.;database =wms_rfid_db_2;UID =sa" />
 		<Password Name = "PWD" Value = "65CED0851FFD283F"/>
 	</Connection>
 	<Connection Name = "YXConnection" DatabaseType="DB2">
