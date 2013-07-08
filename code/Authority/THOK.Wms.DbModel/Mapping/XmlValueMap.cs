@@ -15,15 +15,15 @@ namespace THOK.Wms.DbModel.Mapping
             this.HasKey(t => t.ID);
 
             // Properties
-            this.Property(t => t.DateTime);               
+            this.Property(t => t.DateTime);
 
-            this.Property(t => t.XmlValue)
+            this.Property(t => t.XmlValueText)
                 .IsMaxLength();
 
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));
             this.Property(t => t.DateTime).HasColumnName(ColumnMap.Value.To("DateTime"));
-            this.Property(t => t.XmlValue).HasColumnName(ColumnMap.Value.To("XmlValue"));
+            this.Property(t => t.XmlValueText).HasColumnName(ColumnMap.Value.To("XmlValueText"));
             
             // Relationships
         }

@@ -362,6 +362,10 @@
     <Compile Include="Migrations\201307030851542_modify_precision.Designer.cs">
       <DependentUpon>201307030851542_modify_precision.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201307080200097_Add_Xml_Value.cs" />
+    <Compile Include="Migrations\201307080200097_Add_Xml_Value.Designer.cs">
+      <DependentUpon>201307080200097_Add_Xml_Value.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -406,6 +410,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201307030851542_modify_precision.resx">
       <DependentUpon>201307030851542_modify_precision.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201307080200097_Add_Xml_Value.resx">
+      <DependentUpon>201307080200097_Add_Xml_Value.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
