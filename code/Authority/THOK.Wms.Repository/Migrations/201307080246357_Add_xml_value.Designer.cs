@@ -7,13 +7,13 @@ namespace THOK.Wms.Repository.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.0.0-alpha3-20222")]
-    public sealed partial class Add_Xml_Value : IMigrationMetadata
+    public sealed partial class Add_xml_value : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Add_Xml_Value));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Add_xml_value));
         
         string IMigrationMetadata.Id
         {
-            get { return "201307080200097_Add_Xml_Value"; }
+            get { return "201307080246357_Add_xml_value"; }
         }
         
         string IMigrationMetadata.Source

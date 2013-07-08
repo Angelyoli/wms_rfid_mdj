@@ -7,7 +7,7 @@ namespace THOK.Wms.DbModel
 {
    public class XmlValue
     {
-        public Guid ID { get; set; }
+        public string ID { get; set; }
         public DateTime DateTime { get; set; }
         public string XmlValueText { get; set; }
     }

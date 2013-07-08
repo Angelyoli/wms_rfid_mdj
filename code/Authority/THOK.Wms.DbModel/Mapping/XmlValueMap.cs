@@ -11,10 +11,11 @@ namespace THOK.Wms.DbModel.Mapping
        public XmlValueMap()
             : base("Wms")
         {
-            // Primary Key
-            this.HasKey(t => t.ID);
-
             // Properties
+            this.Property(t => t.ID)
+                 .IsRequired()
+                 .HasMaxLength(50);
+
             this.Property(t => t.DateTime);
 
             this.Property(t => t.XmlValueText)
