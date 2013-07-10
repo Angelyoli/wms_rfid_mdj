@@ -81,7 +81,8 @@ namespace THOK.Wms.SignalR.Allot.Service
 
             //排除 件烟区,条烟区 货位是单一存储的空货位；
             string [] areaTypes = new string []{"2","3"};
-            var cells1 = cells.Where(c => areaTypes.All(a => a != c.Area.AreaType)
+            var cells1 = cells.Where(c => c.Area.AreaType != "2" && c.Area.AreaType != "3"
+                //areaTypes.All(a => a != c.Area.AreaType)
                                     && c.IsSingle == "1"
                                     && (c.Storages.Count == 0
                                             || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
