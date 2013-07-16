@@ -22,8 +22,8 @@
                 new City()
                 {
                     CityID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471105"),
-                    CityName = "钦州市",
-                    Description = "钦州市",
+                    CityName = "玉林市",
+                    Description = "玉林市",
                     IsActive = true
                 }
             );
@@ -34,8 +34,8 @@
                 new Server()
                 {
                     ServerID = new Guid("F8344F88-08AD-4F9A-8F45-EAD8BB471106"),
-                    ServerName = "钦州主服务器",
-                    Description = "钦州主服务器",
+                    ServerName = "玉林主服务器",
+                    Description = "玉林主服务器",
                     Url = "",
                     IsActive = true,
                     City = city,
