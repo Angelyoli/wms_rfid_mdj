@@ -58,27 +58,22 @@ namespace THOK.Wms.Bll.Service
         {
             var brand = BrandRepository.GetQueryable().FirstOrDefault(b => b.BrandCode == BrandCode);
 
-            var supplier = SupplierRepository.GetQueryable().FirstOrDefault(s => s.SupplierCode == BrandCode);
-
+            //var supplier = SupplierRepository.GetQueryable().FirstOrDefault(s => s.SupplierCode == BrandCode);
 
             if (brand != null)
             {
-                try
-                {
-
-                    if (supplier != null)
-                    {
-                        SupplierRepository.Delete(supplier);
-                        SupplierRepository.SaveChanges();
-                    }
-
-
-
+            //    try
+            //    {
+            //        if (supplier != null)
+            //        {
+            //            SupplierRepository.Delete(supplier);
+            //            SupplierRepository.SaveChanges();
+            //        }
                     BrandRepository.Delete(brand);
                     BrandRepository.SaveChanges();
-                }
-                catch (Exception e)
-                { }
+            //    }
+            //    catch (Exception e)
+            //    { }
             }
             else
                 return false;
