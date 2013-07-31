@@ -3,10 +3,20 @@
         var row = $('#warehouseTree').tree("getSelected");
         if (row) {
             var rowAttribute = null
-              , rowId = null;
+            var rowId = null;
 
-            if (row.attributes == null) { rowAttribute = ""; } else { rowAttribute = row.attributes; }
-            if (row.id == null) { rowId = ""; } else { rowId = row.id; }
+            if (row.attributes == null) {
+                rowAttribute = ""; 
+            }
+            else {
+                rowAttribute = row.attributes; 
+            }
+            if (row.id == null) {
+                rowId = ""; 
+            }
+            else {
+                rowId = row.id; 
+            }
 
             window.location.href = "/Cargospace/CreateExcelToClient/"
                                     + "?type=" + rowAttribute
