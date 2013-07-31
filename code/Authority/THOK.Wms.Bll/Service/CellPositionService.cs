@@ -14,24 +14,35 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IPositionRepository PositionRepository { get; set; }
 
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
 
-        public object GetDetails(int page, int rows,string CellCode, string StockInPosition, string StockOutPosition)
+
+        public object GetDetails(int page, int rows, string CellCode, string CellName, string StockInPosition, string StockOutPosition)
         {
             IQueryable<CellPosition> cellPositionQuery = CellPositionRepository.GetQueryable();
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+
             var cellPosition = cellPositionQuery.Join(positionQuery,
                                          c => c.StockInPositionID,
                                          p1 => p1.ID,
-                                         (c, p1) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, InName= p1.PositionName })
+                                         (c, p1) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, InName = p1.PositionName })
                                          .Join(positionQuery,
                                          c => c.StockOutPositionID,
                                          p2 => p2.ID,
-                                         (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName=p2.PositionName })
-                                         .Where(p=>p.CellCode.Contains(CellCode) && p.InName.Contains(StockInPosition)&&p.OutName.Contains(StockOutPosition))
+                                         (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName = p2.PositionName })
+                                         .Join(cellQuery,
+                                         c => c.CellCode,
+                                         cq => cq.CellCode,
+                                         (c, cq) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID,CellName=cq.CellName,c.InName ,c.OutName }
+                                         )
+                                         .Where(p => p.CellCode.Contains(CellCode) && p.CellName.Contains(CellName)&&p.InName.Contains(StockInPosition) && p.OutName.Contains(StockOutPosition))
                                          .OrderBy(p => p.ID).AsEnumerable()
                                          .Select(p => new
                                          {
@@ -40,9 +51,10 @@ namespace THOK.Wms.Bll.Service
                                              p.StockInPositionID,
                                              p.InName,
                                              p.StockOutPositionID,
-                                             p.OutName
+                                             p.OutName,
+                                             p.CellName
                                          });
-            
+
             int total = cellPosition.Count();
             cellPosition = cellPosition.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = cellPosition.ToArray() };
@@ -51,7 +63,8 @@ namespace THOK.Wms.Bll.Service
         public bool Add(CellPosition cellPosition)
         {
             var cp = new CellPosition();
-            cp.ID = cellPosition.ID;
+           // cp.ID = cellPosition.ID;
+            //cp.CellCode = cellPosition.CellCode;
             cp.CellCode = cellPosition.CellCode;
             cp.StockInPositionID = cellPosition.StockInPositionID;
             cp.StockOutPositionID = cellPosition.StockOutPositionID;
@@ -60,38 +73,29 @@ namespace THOK.Wms.Bll.Service
             return true;
         }
 
-        public bool Save(CellPosition CellPosition, out string strResult)
+        public bool Save(CellPosition cellPosition)
         {
-            strResult = string.Empty;
-            bool result = false;
-            var c = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == CellPosition.ID);
+              IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+              IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+              var cell = cellQuery.FirstOrDefault(p => p.CellCode == cellPosition.CellCode);
+              var c = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == cellPosition.ID);
+              //var position = positionQuery.FirstOrDefault(po => po.ID == cellPosition.ID);
+              if (c != null)
+              {
+                  c.ID = cellPosition.ID;
+                  c.CellCode = cellPosition.CellCode;
+                  c.StockInPositionID = cellPosition.StockInPositionID;
+                  c.StockOutPositionID = cellPosition.StockOutPositionID;
+                  CellPositionRepository.SaveChanges();
+              }
+               
+             return true;
+            
+               
+           
+      }
 
-            if (c != null)
-            {
-                try
-                {
-                    c.CellCode = CellPosition.CellCode;
-                    c.StockInPositionID = CellPosition.StockInPositionID;
-                    c.StockOutPositionID = CellPosition.StockOutPositionID;
-
-                    CellPositionRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    strResult = "原因：" + ex.Message;
-                }
-            }
-            else
-            {
-                strResult = "原因：未找到当前需要修改的数据！";
-            }
-            return result;
-        }
-
-
-
-        public bool Delete(int cellPositionId)
+       public bool Delete(int cellPositionId)
         {
              var cp = CellPositionRepository.GetQueryable().FirstOrDefault(s => s.ID == cellPositionId);
             if (cp != null)
@@ -108,6 +112,7 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<CellPosition> cellPositionQuery = CellPositionRepository.GetQueryable();
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 
             var cellPosition = cellPositionQuery.Join(positionQuery,
                                          c => c.StockInPositionID,
@@ -117,6 +122,11 @@ namespace THOK.Wms.Bll.Service
                                          c => c.StockOutPositionID,
                                          p2 => p2.ID,
                                          (c, p2) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, c.InName, OutName = p2.PositionName })
+                                          .Join(cellQuery,
+                                         c => c.CellCode,
+                                         cq => cq.CellCode,
+                                         (c, cq) => new { c.ID, c.CellCode, c.StockInPositionID, c.StockOutPositionID, CellName = cq.CellName, c.InName, c.OutName }
+                                         )
                                          .Where(p => p.CellCode.Contains(cp.CellCode))
                                          .OrderBy(p => p.ID).AsEnumerable()
                                          .Select(p => new
@@ -124,11 +134,13 @@ namespace THOK.Wms.Bll.Service
                                              p.ID,
                                              p.CellCode,
                                              p.InName,
-                                             p.OutName
+                                             p.OutName,
+                                             p.CellName
                                          });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("货位ID", typeof(string));
             dt.Columns.Add("货位代码", typeof(string));
+            dt.Columns.Add("货位名称",typeof(string));
             dt.Columns.Add("入库位置", typeof(string));
             dt.Columns.Add("出库位置", typeof(string));
             foreach (var item in cellPosition)
@@ -137,6 +149,7 @@ namespace THOK.Wms.Bll.Service
                     (
                         item.ID,
                         item.CellCode,
+                        item.CellName,
                         item.InName,
                         item.OutName
                     );
@@ -144,5 +157,11 @@ namespace THOK.Wms.Bll.Service
             return dt;
         }
 
+
+
+
+
+
+        
     }
 }

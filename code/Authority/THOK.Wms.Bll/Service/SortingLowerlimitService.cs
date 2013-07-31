@@ -18,6 +18,9 @@ namespace THOK.Wms.Bll.Service
         public IUnitRepository UnitRepository { get; set; }
 
         [Dependency]
+        public IProductRepository ProductRepository { get; set; }
+
+        [Dependency]
         public IStorageRepository StorageRepository { get; set; }
 
         protected override Type LogPrefix
@@ -27,22 +30,30 @@ namespace THOK.Wms.Bll.Service
 
         #region ISortingLowerlimitService 成员
 
-        public string GetSortType(string type)
+        public string GetSortType(string type,string stype)
         {
             string typeStr = "";
-            switch (type)
+            if (stype == "3")
             {
-                case "0":
-                    typeStr = "混合烟道";
-                    break;
-                case "1":
-                    typeStr = "立式机";
-                    break;
-                case "2":
-                    typeStr = "通道机";
-                    break;
+                typeStr = "通道机";
+                return typeStr;
             }
-            return typeStr;
+            else
+            {
+                switch (type)
+                {
+                    case "0":
+                        typeStr = "取整件";
+                        break;
+                    case "1":
+                        typeStr = "不取整";
+                        break;
+                    case "2":
+                        typeStr = "整托盘";
+                        break;
+                }
+                return typeStr;
+            }
         }
 
         public object GetDetails(int page, int rows, string sortingLineCode, string sortingLineName, string productName, string productCode, string IsActive)
@@ -92,6 +103,7 @@ namespace THOK.Wms.Bll.Service
                                 StorageQuantity = (decimal?)s.Sum(r => (decimal?)r.Quantity ?? 0) ?? 0,
                                 l.SortOrder,
                                 l.SortType,
+                                l.Product.IsRounding,
                                 l.IsActive,
                                 l.UpdateTime
                             });
@@ -108,7 +120,7 @@ namespace THOK.Wms.Bll.Service
                 Quantity = b.Quantity / b.Unit.Count,
                 StorageQuantity = b.StorageQuantity / b.Unit.Count,
                 b.SortOrder,
-                SortType = GetSortType(b.SortType),
+                IsRounding = GetSortType(b.IsRounding,b.SortType),
                 IsActive = b.IsActive == "1" ? "可用" : "不可用",
                 UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
@@ -120,15 +132,24 @@ namespace THOK.Wms.Bll.Service
         {
             var lowerLimit = new SortingLowerlimit();
             var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == sortLowerLimit.UnitCode);
+            var productAdd = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == sortLowerLimit.ProductCode);
             var lowerLimitList = SortingLowerlimitRepository.GetQueryable().FirstOrDefault(l => l.ProductCode == sortLowerLimit.ProductCode && l.SortingLineCode == sortLowerLimit.SortingLineCode);
             if (lowerLimitList == null)
             {
                 lowerLimit.SortingLineCode = sortLowerLimit.SortingLineCode;
                 lowerLimit.ProductCode = sortLowerLimit.ProductCode;
                 lowerLimit.UnitCode = sortLowerLimit.UnitCode;
-                lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;
+                lowerLimit.Quantity = sortLowerLimit.Quantity * unit.Count;              
                 lowerLimit.SortOrder = sortLowerLimit.SortOrder;
-                lowerLimit.SortType = sortLowerLimit.SortType;
+                if (sortLowerLimit.SortType == "3")
+                {
+                    lowerLimit.SortType = sortLowerLimit.SortType;
+                }
+                else
+                {
+                    productAdd.IsRounding = sortLowerLimit.SortType;
+                    lowerLimit.SortType = "";
+                }
                 lowerLimit.IsActive = sortLowerLimit.IsActive;
                 lowerLimit.UpdateTime = DateTime.Now;
 
@@ -139,6 +160,15 @@ namespace THOK.Wms.Bll.Service
             {
                 lowerLimitList.Quantity = lowerLimitList.Quantity + (sortLowerLimit.Quantity * unit.Count);
                 lowerLimitList.SortOrder = sortLowerLimit.SortOrder;
+                if (sortLowerLimit.SortType == "3")
+                {
+                    lowerLimitList.SortType = sortLowerLimit.SortType;
+                }
+                else
+                {
+                    productAdd.IsRounding = sortLowerLimit.SortType;
+                    lowerLimitList.SortType = "";
+                }
                 lowerLimitList.UpdateTime = DateTime.Now;
                 SortingLowerlimitRepository.SaveChanges();
             }
@@ -165,12 +195,21 @@ namespace THOK.Wms.Bll.Service
         {
             var lowerLimitSave = SortingLowerlimitRepository.GetQueryable().FirstOrDefault(s => s.ID == sortLowerLimit.ID);
             var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == sortLowerLimit.UnitCode);
+            var productSave = ProductRepository.GetQueryable().FirstOrDefault(p => p.ProductCode == sortLowerLimit.ProductCode);
             lowerLimitSave.SortingLineCode = sortLowerLimit.SortingLineCode;
             lowerLimitSave.ProductCode = sortLowerLimit.ProductCode;
             lowerLimitSave.UnitCode = sortLowerLimit.UnitCode;
             lowerLimitSave.Quantity = sortLowerLimit.Quantity * unit.Count;
             lowerLimitSave.SortOrder = sortLowerLimit.SortOrder;
-            lowerLimitSave.SortType = sortLowerLimit.SortType;
+            if (sortLowerLimit.SortType == "3")
+            {
+                lowerLimitSave.SortType = sortLowerLimit.SortType;                
+            }
+            else
+            {
+                productSave.IsRounding = sortLowerLimit.SortType;
+                lowerLimitSave.SortType = "";
+            }
             lowerLimitSave.IsActive = sortLowerLimit.IsActive;
             lowerLimitSave.UpdateTime = DateTime.Now;
 

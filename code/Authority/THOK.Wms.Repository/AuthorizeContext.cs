@@ -15,6 +15,7 @@ namespace THOK.Wms.Repository
 		public AuthorizeContext()
 			: base("Name=AuthorizeContext")
 		{
+            this.Configuration.AutoDetectChangesEnabled = false;
 		}
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -111,6 +112,8 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new ProfitLossBillDetailHistoryMap());
 
             modelBuilder.Configurations.Add(new DailyBalanceHistoryMap());
+
+            modelBuilder.Configurations.Add(new XmlValueMap());
 
             #endregion
 

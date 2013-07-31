@@ -12,6 +12,8 @@
     <AssemblyName>THOK.Wms.Dal</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -131,6 +133,7 @@
     <Compile Include="EntityRepository\UnitListRepository.cs" />
     <Compile Include="EntityRepository\UnitRepository.cs" />
     <Compile Include="EntityRepository\WarehouseRepository.cs" />
+    <Compile Include="EntityRepository\XmlValueRepository.cs" />
     <Compile Include="Interfaces\IAlarmInfoRepository.cs" />
     <Compile Include="Interfaces\IAreaRepository.cs" />
     <Compile Include="Interfaces\IBillDetailRepository.cs" />
@@ -212,6 +215,7 @@
     <Compile Include="Interfaces\IUnitListRepository.cs" />
     <Compile Include="Interfaces\IUnitRepository.cs" />
     <Compile Include="Interfaces\IWarehouseRepository.cs" />
+    <Compile Include="Interfaces\IXmlValueRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -219,9 +223,9 @@
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
+      <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +233,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

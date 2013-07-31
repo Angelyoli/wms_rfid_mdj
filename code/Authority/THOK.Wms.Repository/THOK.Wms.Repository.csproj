@@ -12,6 +12,8 @@
     <AssemblyName>THOK.Wms.Repository</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -352,6 +354,18 @@
     <Compile Include="Migrations\201306060218569_modify_product_pointareacodes1.Designer.cs">
       <DependentUpon>201306060218569_modify_product_pointareacodes1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201306190157258_modify_dailybalance_areacode.cs" />
+    <Compile Include="Migrations\201306190157258_modify_dailybalance_areacode.Designer.cs">
+      <DependentUpon>201306190157258_modify_dailybalance_areacode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201307030851542_modify_precision.cs" />
+    <Compile Include="Migrations\201307030851542_modify_precision.Designer.cs">
+      <DependentUpon>201307030851542_modify_precision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201307080246357_Add_xml_value.cs" />
+    <Compile Include="Migrations\201307080246357_Add_xml_value.Designer.cs">
+      <DependentUpon>201307080246357_Add_xml_value.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -376,9 +390,9 @@
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
+      <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -391,8 +405,18 @@
     <EmbeddedResource Include="Migrations\201306060218569_modify_product_pointareacodes1.resx">
       <DependentUpon>201306060218569_modify_product_pointareacodes1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201306190157258_modify_dailybalance_areacode.resx">
+      <DependentUpon>201306190157258_modify_dailybalance_areacode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201307030851542_modify_precision.resx">
+      <DependentUpon>201307030851542_modify_precision.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201307080246357_Add_xml_value.resx">
+      <DependentUpon>201307080246357_Add_xml_value.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

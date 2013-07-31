@@ -15,6 +15,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,6 +38,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="Devart.Data.Oracle.Entity, Version=7.7.224.6, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Program Files\Devart\dotConnect\Oracle\Entity\EF6\Devart.Data.Oracle.Entity.dll</HintPath>
@@ -48,6 +53,9 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\NPOI.1.2.5\lib\net40\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\THOK.Common.Highcharts\ThirdParty\itextsharp.dll</HintPath>
@@ -81,7 +89,10 @@
       <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NPOI">
-      <HintPath>..\packages\npoi.1.2.5\.net 4.0\NPOI.dll</HintPath>
+      <HintPath>..\packages\NPOI.1.2.5\lib\net40\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.1.2\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="SignalR, Version=0.5.1.10625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SignalR.Server.0.5.2\lib\net40\SignalR.dll</HintPath>
@@ -139,90 +150,91 @@
     <Compile Include="Controllers\Authority\UserController.cs" />
     <Compile Include="Controllers\Authority\UserPermissionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Wms\AutomotiveSystems\StockCheckTaskController.cs" />
-    <Compile Include="Controllers\Wms\AutomotiveSystems\StockInTaskController.cs" />
-    <Compile Include="Controllers\Wms\AutomotiveSystems\StockMoveTaskController.cs" />
-    <Compile Include="Controllers\Wms\AutomotiveSystems\StockOutTaskController.cs" />
-    <Compile Include="Controllers\Wms\AutomotiveSystems\TaskController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\AlarmInfoController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\CellPositionController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\PathController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\PathNodeController.cs">
+    <Compile Include="Controllers\WMS\AutomotiveSystems\StockCheckTaskController.cs" />
+    <Compile Include="Controllers\WMS\AutomotiveSystems\StockInTaskController.cs" />
+    <Compile Include="Controllers\WMS\AutomotiveSystems\StockMoveTaskController.cs" />
+    <Compile Include="Controllers\WMS\AutomotiveSystems\StockOutTaskController.cs" />
+    <Compile Include="Controllers\WMS\AutomotiveSystems\TaskController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\AlarmInfoController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\CellPositionController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\PathController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\PathNodeController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controllers\Wms\BasisInfo\ProductSizeController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\PositionController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\RegionController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\SizeController.cs" />
-    <Compile Include="Controllers\Wms\BasisInfo\SRMController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\OverStockProductSearchController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\SortOrderSearchController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\StockCheckSearchController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\StockDifferSearchController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\StockIntoSearchController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\StockMoveSearchController.cs" />
-    <Compile Include="Controllers\Wms\ComplexSearch\StockOutSearchController.cs" />
-    <Compile Include="Controllers\Wms\DeliveryInfo\CustomerController.cs" />
-    <Compile Include="Controllers\Wms\DeliveryInfo\DeliverDistController.cs" />
-    <Compile Include="Controllers\Wms\InterfaceInfo\BasisDownloadController.cs" />
-    <Compile Include="Controllers\Wms\InterfaceInfo\BasisUploadController.cs" />
-    <Compile Include="Controllers\Wms\DeliveryInfo\DeliverLineController.cs" />
-    <Compile Include="Controllers\Wms\InterfaceInfo\SortingRealTimeController.cs" />
-    <Compile Include="Controllers\Wms\Inventory\CargospaceController.cs" />
-    <Compile Include="Controllers\Wms\Inventory\CellHistoricalController.cs" />
-    <Compile Include="Controllers\Wms\Inventory\CurrentStockController.cs" />
-    <Compile Include="Controllers\Wms\Inventory\DailyBalanceController.cs" />
-    <Compile Include="Controllers\Wms\Inventory\DistributionController.cs" />
-    <Compile Include="Controllers\Wms\Inventory\HistoricalDetailController.cs" />
-    <Compile Include="Controllers\Wms\Inventory\StockledgerController.cs" />
-    <Compile Include="Controllers\Wms\ProductQuality\CellAnalysisController.cs" />
-    <Compile Include="Controllers\Wms\ProductQuality\CellInfoController.cs" />
-    <Compile Include="Controllers\Wms\ProductQuality\ProductTimeOutController.cs" />
-    <Compile Include="Controllers\Wms\ProductQuality\ProductWarningController.cs" />
-    <Compile Include="Controllers\Wms\ProductQuality\QuantityLimitsController.cs" />
-    <Compile Include="Controllers\Wms\ProductQuality\StorageAnalysisController.cs" />
-    <Compile Include="Controllers\Wms\SortingInfo\SortOrderDispatchController.cs" />
-    <Compile Include="Controllers\Wms\SortingInfo\SortWorkDispatchController.cs" />
-    <Compile Include="Controllers\Wms\StockMove\StockMoveBillController.cs" />
-    <Compile Include="Controllers\Wms\StockMove\StockMoveBillTypeController.cs" />
-    <Compile Include="Controllers\Wms\Organization\CompanyController.cs" />
-    <Compile Include="Controllers\Wms\Organization\DepartmentController.cs" />
-    <Compile Include="Controllers\Wms\Organization\EmployeeController.cs" />
-    <Compile Include="Controllers\Wms\Organization\JobController.cs" />
-    <Compile Include="Controllers\Wms\ProductInfo\BrandController.cs" />
-    <Compile Include="Controllers\Wms\ProductInfo\SupplierController.cs" />
-    <Compile Include="Controllers\Wms\ProductInfo\ProductController.cs" />
-    <Compile Include="Controllers\Wms\ProductInfo\UnitListController.cs" />
-    <Compile Include="Controllers\Wms\ProductInfo\UnitController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\ProductSizeController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\PositionController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\RegionController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\SizeController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\SRMController.cs" />
+    <Compile Include="Controllers\WMS\ComplexSearch\OverStockProductSearchController.cs" />
+    <Compile Include="Controllers\WMS\ComplexSearch\SortOrderSearchController.cs" />
+    <Compile Include="Controllers\WMS\ComplexSearch\StockCheckSearchController.cs" />
+    <Compile Include="Controllers\WMS\ComplexSearch\StockDifferSearchController.cs" />
+    <Compile Include="Controllers\WMS\ComplexSearch\StockIntoSearchController.cs" />
+    <Compile Include="Controllers\WMS\ComplexSearch\StockMoveSearchController.cs" />
+    <Compile Include="Controllers\WMS\ComplexSearch\StockOutSearchController.cs" />
+    <Compile Include="Controllers\WMS\DeliveryInfo\CustomerController.cs" />
+    <Compile Include="Controllers\WMS\DeliveryInfo\DeliverDistController.cs" />
+    <Compile Include="Controllers\WMS\InterfaceInfo\BasisDownloadController.cs" />
+    <Compile Include="Controllers\WMS\InterfaceInfo\BasisUploadController.cs" />
+    <Compile Include="Controllers\WMS\DeliveryInfo\DeliverLineController.cs" />
+    <Compile Include="Controllers\WMS\InterfaceInfo\SortingRealTimeController.cs" />
+    <Compile Include="Controllers\WMS\Inventory\CargospaceController.cs" />
+    <Compile Include="Controllers\WMS\Inventory\CellHistoricalController.cs" />
+    <Compile Include="Controllers\WMS\Inventory\CurrentStockController.cs" />
+    <Compile Include="Controllers\WMS\Inventory\DailyBalanceController.cs" />
+    <Compile Include="Controllers\WMS\Inventory\DistributionController.cs" />
+    <Compile Include="Controllers\WMS\Inventory\HistoricalDetailController.cs" />
+    <Compile Include="Controllers\WMS\Inventory\StockledgerController.cs" />
+    <Compile Include="Controllers\WMS\ProductQuality\CellAnalysisController.cs" />
+    <Compile Include="Controllers\WMS\ProductQuality\CellInfoController.cs" />
+    <Compile Include="Controllers\WMS\ProductQuality\ProductTimeOutController.cs" />
+    <Compile Include="Controllers\WMS\ProductQuality\ProductWarningController.cs" />
+    <Compile Include="Controllers\WMS\ProductQuality\QuantityLimitsController.cs" />
+    <Compile Include="Controllers\WMS\ProductQuality\StorageAnalysisController.cs" />
+    <Compile Include="Controllers\WMS\SortingInfo\SortOrderDispatchController.cs" />
+    <Compile Include="Controllers\WMS\SortingInfo\SortWorkDispatchController.cs" />
+    <Compile Include="Controllers\WMS\StockMove\StockMoveBillController.cs" />
+    <Compile Include="Controllers\WMS\StockMove\StockMoveBillTypeController.cs" />
+    <Compile Include="Controllers\WMS\Organization\CompanyController.cs" />
+    <Compile Include="Controllers\WMS\Organization\DepartmentController.cs" />
+    <Compile Include="Controllers\WMS\Organization\EmployeeController.cs" />
+    <Compile Include="Controllers\WMS\Organization\JobController.cs" />
+    <Compile Include="Controllers\WMS\ProductInfo\BrandController.cs" />
+    <Compile Include="Controllers\WMS\ProductInfo\SupplierController.cs" />
+    <Compile Include="Controllers\WMS\ProductInfo\ProductController.cs" />
+    <Compile Include="Controllers\WMS\ProductInfo\UnitListController.cs" />
+    <Compile Include="Controllers\WMS\ProductInfo\UnitController.cs" />
     <Compile Include="Controllers\Authority\ServerAdmin\CityController.cs" />
     <Compile Include="Controllers\Authority\ServerAdmin\ServerController.cs" />
-    <Compile Include="Controllers\Wms\ProfitLossInfo\ProfitLossBillController.cs" />
-    <Compile Include="Controllers\Wms\ProfitLossInfo\ProfitLossBillTypeController.cs" />
-    <Compile Include="Controllers\Wms\SortingInfo\SortingLineController.cs" />
-    <Compile Include="Controllers\Wms\SortingInfo\SortingLowerLimitController.cs" />
-    <Compile Include="Controllers\Wms\SortingInfo\SortingOrderController.cs" />
-    <Compile Include="Controllers\Wms\StockCheckInfo\CheckBillController.cs" />
-    <Compile Include="Controllers\Wms\StockCheckInfo\CheckBillTypeController.cs" />
-    <Compile Include="Controllers\Wms\StockIn\StockInBillAllotController.cs" />
-    <Compile Include="Controllers\Wms\StockIn\StockInBillController.cs" />
-    <Compile Include="Controllers\Wms\StockIn\StockInBillTypeController.cs" />
-    <Compile Include="Controllers\Wms\StockOut\StockOutBillAllotController.cs" />
-    <Compile Include="Controllers\Wms\StockOut\StockOutBillController.cs" />
-    <Compile Include="Controllers\Wms\StockOut\StockOutBillTypeController.cs" />
-    <Compile Include="Controllers\Wms\Upload\UploadController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\AreaController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\CellController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\DefaultProductSetController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcel2Controller.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\ExportExcelController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\ShelfController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\StorageController.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\Warehouse2Controller.cs" />
-    <Compile Include="Controllers\Wms\WarehouseInfo\WarehouseController.cs" />
+    <Compile Include="Controllers\WMS\ProfitLossInfo\ProfitLossBillController.cs" />
+    <Compile Include="Controllers\WMS\ProfitLossInfo\ProfitLossBillTypeController.cs" />
+    <Compile Include="Controllers\WMS\SortingInfo\SortingLineController.cs" />
+    <Compile Include="Controllers\WMS\SortingInfo\SortingLowerLimitController.cs" />
+    <Compile Include="Controllers\WMS\SortingInfo\SortingOrderController.cs" />
+    <Compile Include="Controllers\WMS\StockCheckInfo\CheckBillController.cs" />
+    <Compile Include="Controllers\WMS\StockCheckInfo\CheckBillTypeController.cs" />
+    <Compile Include="Controllers\WMS\StockIn\StockInBillAllotController.cs" />
+    <Compile Include="Controllers\WMS\StockIn\StockInBillController.cs" />
+    <Compile Include="Controllers\WMS\StockIn\StockInBillTypeController.cs" />
+    <Compile Include="Controllers\WMS\StockOut\StockOutBillAllotController.cs" />
+    <Compile Include="Controllers\WMS\StockOut\StockOutBillController.cs" />
+    <Compile Include="Controllers\WMS\StockOut\StockOutBillTypeController.cs" />
+    <Compile Include="Controllers\WMS\Upload\UploadController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\AreaController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\CellController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\DefaultProductSetController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\ExportExcel2Controller.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\ExportExcelController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\ShelfController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\StorageController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\Warehouse2Controller.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quartz\JobDoDailyBalance.cs" />
     <Compile Include="Security\FormsAuthenticationService.cs" />
     <Compile Include="Security\FormsAuthorizeAttribute.cs" />
     <Compile Include="Security\IFormsAuthenticationService.cs" />
@@ -257,20 +269,20 @@
     <Content Include="bin\THOK.Authority.Dal.pdb" />
     <Content Include="bin\THOK.Common.Highcharts.dll" />
     <Content Include="bin\THOK.Common.Highcharts.pdb" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\EntityFramework.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\EntityFramework.xml" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\log4net.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.ServiceLocation.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.Configuration.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\Microsoft.Practices.Unity.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\NPOI.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\SignalR.Hosting.AspNet.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\SignalR.Hosting.Common.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\Tek4.Highcharts.Exporting.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Bll.pdb" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Dal.dll" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Authority.Dal.pdb" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\EntityFramework.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\EntityFramework.xml" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\log4net.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\Microsoft.Practices.ServiceLocation.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\Microsoft.Practices.Unity.Configuration.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\Microsoft.Practices.Unity.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\NPOI.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\SignalR.Hosting.AspNet.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\SignalR.Hosting.Common.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\Tek4.Highcharts.Exporting.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\THOK.Authority.Bll.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\THOK.Authority.Bll.pdb" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\THOK.Authority.Dal.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\THOK.Authority.Dal.pdb" />
     <Content Include="Content\Images\banner.jpg" />
     <Content Include="Content\Images\login_bg.jpg" />
     <Content Include="Content\Images\login_bg02.jpg" />
@@ -1632,7 +1644,7 @@
     <Content Include="Content\themes\base\images\son_StockPlace.png" />
     <Content Include="Content\themes\base\images\son_Warehouse.png" />
     <Content Include="Content\themes\base\images\tabs_close.gif" />
-    <Content Include="Controllers\Wms\ComplexSearch\bin\THOK.Common.dll" />
+    <Content Include="Controllers\WMS\ComplexSearch\bin\THOK.Common.dll" />
     <Content Include="DB.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -1696,6 +1708,7 @@
     <Folder Include="Content\App_Data\" />
     <Folder Include="Content\Scripts\ckfinder\userfiles\files\" />
     <Folder Include="Content\Scripts\ckfinder\userfiles\flash\" />
+    <Folder Include="Controllers\WCS\" />
     <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
@@ -1727,37 +1740,37 @@
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.Allot\THOK.Wms.Allot.csproj">
+    <ProjectReference Include="..\THOK.Wms.Allot\THOK.WMS.Allot.csproj">
       <Project>{330D59D0-3B57-4F12-BB7D-49AF46DCD46D}</Project>
-      <Name>THOK.Wms.Allot</Name>
+      <Name>THOK.WMS.Allot</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.AutomotiveSystems\THOK.Wms.AutomotiveSystems.csproj">
+    <ProjectReference Include="..\THOK.Wms.AutomotiveSystems\THOK.WMS.AutomotiveSystems.csproj">
       <Project>{52A95469-B4A3-43C8-99CA-23A6910EE173}</Project>
-      <Name>THOK.Wms.AutomotiveSystems</Name>
+      <Name>THOK.WMS.AutomotiveSystems</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.Bll\THOK.Wms.Bll.csproj">
+    <ProjectReference Include="..\THOK.Wms.Bll\THOK.WMS.Bll.csproj">
       <Project>{2B8E7C92-13CA-426C-94DA-7D021EBD504C}</Project>
-      <Name>THOK.Wms.Bll</Name>
+      <Name>THOK.WMS.Bll</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.Wms.DbModel.csproj">
+    <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
-      <Name>THOK.Wms.DbModel</Name>
+      <Name>THOK.WMS.DbModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.DownloadWms\THOK.Wms.DownloadWms.csproj">
+    <ProjectReference Include="..\THOK.Wms.DownloadWms\THOK.WMS.DownloadWms.csproj">
       <Project>{70E54BF4-84BD-4F2C-B9E5-93F682A9844D}</Project>
-      <Name>THOK.Wms.DownloadWms</Name>
+      <Name>THOK.WMS.DownloadWms</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.Repository\THOK.Wms.Repository.csproj">
       <Project>{259E5E16-41D8-420F-A11C-72BEE784B5CB}</Project>
       <Name>THOK.Wms.Repository</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.SignalR\THOK.Wms.SignalR.csproj">
+    <ProjectReference Include="..\THOK.Wms.SignalR\THOK.WMS.SignalR.csproj">
       <Project>{04A2C9B1-0F35-42CF-A6A7-4319D7C6E95F}</Project>
-      <Name>THOK.Wms.SignalR</Name>
+      <Name>THOK.WMS.SignalR</Name>
     </ProjectReference>
-    <ProjectReference Include="..\THOK.Wms.Upload\THOK.Wms.Upload.csproj">
+    <ProjectReference Include="..\THOK.Wms.Upload\THOK.WMS.Upload.csproj">
       <Project>{D0A12011-ED6A-4B13-A6C7-2D42D9F3ED67}</Project>
-      <Name>THOK.Wms.Upload</Name>
+      <Name>THOK.WMS.Upload</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -1973,6 +1986,9 @@
     <Content Include="Views\AlarmInfo\_DeletePartial.cshtml" />
     <Content Include="Views\HelpContent\_PrintPartial.cshtml" />
     <Content Include="Views\City\_PrintPartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellCodePartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellPartial.cshtml" />
+    <Content Include="Views\CellPosition\_CellNamePartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2395,6 +2411,11 @@
     <Content Include="Views\Server\_PrintPartial.cshtml" />
     <Content Include="Views\System\_PrintPartial.cshtml" />
     <Content Include="Views\Module\_PrintPartial.cshtml" />
+    <Content Include="Views\ProductSize\_Product1Partial.cshtml" />
+    <Content Include="Views\ProfitLossBill\_UnitPartial.cshtml" />
+    <Content Include="Views\Position\_SRMName1Partial.cshtml" />
+    <Content Include="Views\Path\_OriginPartial1.cshtml" />
+    <Content Include="Views\Path\_TargetPartial1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
@@ -2429,4 +2450,5 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

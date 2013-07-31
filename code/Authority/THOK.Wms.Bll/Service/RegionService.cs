@@ -12,6 +12,15 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IRegionRepository RegionRepository { get; set; }
 
+        [Dependency]
+        public IPositionRepository PositionRepository { get; set; }
+
+        [Dependency]
+        public IPathRepository PathRepository { get; set; }
+
+        [Dependency]
+        public IPathNodeRepository PathNodeRepository { get; set; }
+
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
@@ -61,10 +70,51 @@ namespace THOK.Wms.Bll.Service
         public bool Delete(int regionId)
         {
             var reg = RegionRepository.GetQueryable().FirstOrDefault(s => s.ID == regionId );
+            var position = PositionRepository.GetQueryable().FirstOrDefault(p=> p.RegionID == regionId);
+            var path = PathRepository.GetQueryable().FirstOrDefault(pa => pa.TargetRegionID == regionId);
+            var path1 = PathRepository.GetQueryable().FirstOrDefault(pa => pa.OriginRegionID == regionId);
+
+           
+
             if (reg != null)
             {
-                RegionRepository.Delete(reg);
-                RegionRepository.SaveChanges();
+                try
+                {
+                    if (position != null)
+                    {
+                        PositionRepository.Delete(position);
+                        PositionRepository.SaveChanges();
+                    }
+                    if (path != null)
+                    {
+                        var pathNode = PathNodeRepository.GetQueryable().FirstOrDefault(p => p.PathID == path.ID);
+                        if (pathNode != null)
+                        {
+                            PathNodeRepository.Delete(pathNode);
+                            PathNodeRepository.SaveChanges();
+                        }
+                        PathRepository.Delete(path);
+                        PathRepository.SaveChanges();
+                    }
+                    if (path1 != null)
+                    {
+                        var pathNode1 = PathNodeRepository.GetQueryable().FirstOrDefault(p => p.PathID == path1.ID);
+                        if (pathNode1 != null)
+                        {
+                            PathNodeRepository.Delete(pathNode1);
+                            PathNodeRepository.SaveChanges();
+                        }
+                        PathRepository.Delete(path1);
+                        PathRepository.SaveChanges();
+                    }
+                    RegionRepository.Delete(reg);
+                    RegionRepository.SaveChanges();
+                }
+
+                catch (Exception e) 
+                { 
+                
+                }
             }
             else
                 return false;
