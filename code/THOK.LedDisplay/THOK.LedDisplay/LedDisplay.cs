@@ -75,6 +75,7 @@ namespace THOK.LedDisplay
             menu.Items.Add("出库", null, new EventHandler(OnSwitchClick));
             menu.Items.Add("移库", null, new EventHandler(OnSwitchClick));
             menu.Items.Add("盘点", null, new EventHandler(OnSwitchClick));
+            menu.Items.Add("实时", null, new EventHandler(OnSwitchClick));
             menu.Items.Add("退出", null, new EventHandler(OnCloseClick));
             dgvInfo.EnableHeadersVisualStyles = false;
             dgvInfo.BackgroundColor = Color.Black;
