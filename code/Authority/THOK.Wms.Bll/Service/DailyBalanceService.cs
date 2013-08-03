@@ -593,6 +593,19 @@ namespace THOK.Wms.Bll.Service
                 var storageQuery = StorageRepository.GetQueryable();
 
                 DateTime dt1 = Convert.ToDateTime(settleDate);
+                var maxDailyBalance = dailyBalanceQuery.Where(d => d.SettleDate < dt1)
+                                           .OrderByDescending(d => d.SettleDate)
+                                           .FirstOrDefault();
+                if (maxDailyBalance != null)
+                {
+                    if (maxDailyBalance.SettleDate < DateTime.Now 
+                        && maxDailyBalance.SettleDate.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd"))
+                    {
+                        dt1 = maxDailyBalance.SettleDate.AddDays(1);
+                        settleDate = dt1.ToString("yyyy-MM-dd");
+                    }
+                }
+
                 DateTime dt2 = dt1.AddDays(1);
                 if (DateTime.Now < dt1)
                 {
