@@ -325,8 +325,8 @@ namespace THOK.Wms.AutomotiveSystems.Service
                 THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails1 = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
                 THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails2 = new THOK.Wms.AutomotiveSystems.Models.BillDetail[] { };
 
-                //查询等于30件的数据
-                billDetails1 = billDetails.Where(s => s.Total == 30).OrderByDescending(i => i.Status)
+                //查询大于等于30件的数据
+                billDetails1 = billDetails.Where(s => s.Total >= 30).OrderByDescending(i => i.Status)
                                                 .ThenBy(b => b.StorageName).ThenBy(f => f.ProductCode).ToArray();
                 //查询小于30件的数据
                 billDetails2 = billDetails.Where(s => s.Total < 30).OrderByDescending(i => i.Status)
@@ -912,6 +912,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         UnitCode = o.UnitCode,
                                         AllotQuantity = allotQuantity,
                                         RealQuantity = allotQuantity,
+                                        FinishTime = DateTime.Now,
                                         Status = "2"
                                     };
                                     lock (sortWork.OutBillMaster.OutBillAllots)
