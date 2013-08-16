@@ -53,7 +53,7 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 //查询“起始位置参数”
-                var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");
+                var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "InBillPositionId");
                 int paramterValue = Convert.ToInt32(originPositionSystem.ParameterValue);
                 //入库分配信息
                 var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
@@ -102,25 +102,25 @@ namespace THOK.Wms.Bll.Service
                                     }
                                     else
                                     {
-                                        errorInfo = "未找到【路径信息】起始位置ID：" + originPosition.RegionID + "，目标位置ID：" + targetPosition.RegionID;
+                                        errorInfo = "未找到【路径信息】起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName;
                                         result = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorInfo = "未找到【位置信息】目标货位位置ID：" + targetCellPosition.StockInPositionID;
+                                    errorInfo = "未找到【位置信息】目标货位位置：" + targetCellPosition.StockInPosition.PositionName;
                                     result = false;
                                 }
                             }
                             else
                             {
-                                errorInfo = "请检查【系统参数】设置！";
+                                errorInfo = "请检查【系统参数】起始位置InBillPosition！";
                                 result = false;
                             }
                         }
                         else
                         {
-                            errorInfo = "未找到【货位位置】入库货位编码：" + inItem.CellCode;
+                            errorInfo = "未找到【货位位置】入库货位：" + inItem.Cell.CellName;
                             result = false;
                         }
                     }
@@ -154,7 +154,7 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 //查询“起始位置的参数”
-                var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsDefaultProduct");
+                var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");
                 int paramterValue = Convert.ToInt32(originPositionSystem.ParameterValue);
                 //出库分配信息
                 var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
@@ -203,25 +203,25 @@ namespace THOK.Wms.Bll.Service
                                     }
                                     else
                                     {
-                                        errorInfo = "未找到【路径信息】起始位置ID：" + originPosition.RegionID + "，目标位置ID：" + targetPosition.RegionID;
+                                        errorInfo = "未找到【路径信息】起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName;
                                         result = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorInfo = "未找到【位置信息】目标货位位置ID：" + targetCellPosition.StockOutPositionID;
+                                    errorInfo = "未找到【位置信息】目标货位位置：" + targetCellPosition.StockOutPosition.PositionName;
                                     result = false;
                                 }
                             }
                             else
                             {
-                                errorInfo = "请检查【系统参数】设置！";
+                                errorInfo = "请检查【系统参数】起始位置OutBillPosition！";
                                 result = false;
                             }
                         }
                         else
                         {
-                            errorInfo = "未找到【货位位置】出库货位编码：" + outItem.CellCode;
+                            errorInfo = "未找到【货位位置】出库货位：" + outItem.Cell.CellName;
                             result = false;
                         }
                     }
@@ -304,31 +304,31 @@ namespace THOK.Wms.Bll.Service
                                         }
                                         else
                                         {
-                                            errorInfo = "未找到【路径信息】起始位置ID：" + originPosition.RegionID + "，目标位置ID：" + targetPosition.RegionID;
+                                            errorInfo = "未找到【路径信息】起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName;
                                             result = false;
                                         }
                                     }
                                     else
                                     {
-                                        errorInfo = "未找到目标【位置信息】移入位置ID：" + targetCellPosition.StockInPositionID;
+                                        errorInfo = "未找到目标【位置信息】移入位置：" + targetCellPosition.StockInPosition.PositionName;
                                         result = false;
                                     }
                                 }
                                 else
                                 {
-                                    errorInfo = "未找到起始【位置信息】移出位置ID：" + originCellPosition.StockOutPositionID;
+                                    errorInfo = "未找到起始【位置信息】移出位置：" + originCellPosition.StockOutPosition.PositionName;
                                     result = false;
                                 }
                             }
                             else
                             {
-                                errorInfo = "未找到目标【货位位置】移入货位编码：" + moveItem.InCellCode;
+                                errorInfo = "未找到目标【货位位置】移入货位：" + moveItem.InCell.CellName;
                                 result = false;
                             }
                         }
                         else
                         {
-                            errorInfo = "未找到起始【货位位置】移出货位编码：" + moveItem.OutCellCode;
+                            errorInfo = "未找到起始【货位位置】移出货位：" + moveItem.OutCell.CellName;
                             result = false;
                         }
                     }
