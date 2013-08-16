@@ -210,6 +210,10 @@ namespace THOK.WMS.DownloadWms.Bll
                 detailrow["product_code"] = prodt.Rows[0]["product_code"];
                 detailrow["price"] = Convert.ToDecimal(row["PRICE"]);
                 detailrow["bill_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
+                if (Convert.ToDecimal(row["QUANTITY"]) < 0)
+                    detailrow["bill_quantity"] = -Convert.ToDecimal(row["QUANTITY"]);
+                else
+                    detailrow["bill_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
                 detailrow["allot_quantity"] = 0;
                 detailrow["unit_code"] = prodt.Rows[0]["unit_code"];
                 detailrow["description"] = "";

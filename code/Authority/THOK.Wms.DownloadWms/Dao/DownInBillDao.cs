@@ -15,7 +15,7 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetInBillMaster(string inBillNoList)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_IN_ORDER WHERE {0} AND QUANTITY_SUM>0", inBillNoList);
+            string sql = string.Format("SELECT * FROM V_WMS_IN_ORDER WHERE {0}", inBillNoList);
             return this.ExecuteQuery(sql).Tables[0];
         }
         /// <summary>
@@ -33,7 +33,7 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetInBillDetail(string inBillNoList)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_IN_ORDER_DETAIL WHERE {0} AND QUANTITY>0", inBillNoList);
+            string sql = string.Format("SELECT * FROM V_WMS_IN_ORDER_DETAIL WHERE {0}", inBillNoList);
             return this.ExecuteQuery(sql).Tables[0];
         }
 
