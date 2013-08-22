@@ -87,11 +87,11 @@ namespace THOK.Wms.Bll.Service
                                             inTask.ProductName = inItem.Product.ProductName;
                                             inTask.OriginStorageCode = inItem.CellCode;
                                             inTask.TargetStorageCode = inItem.CellCode;
-                                            inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.Id);
+                                            inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
                                             inTask.TargetPositionID = targetPosition.ID;
-                                            inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.Id);
+                                            inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
                                             inTask.CurrentPositionState = "01";
-                                            inTask.State = "04";
+                                            inTask.State = "01";
                                             inTask.TagState = "01";
                                             inTask.Quantity = Convert.ToInt32(inItem.RealQuantity);
                                             inTask.TaskQuantity = Convert.ToInt32(inItem.RealQuantity);
@@ -196,9 +196,9 @@ namespace THOK.Wms.Bll.Service
                                             outTask.ProductName = outItem.Product.ProductName;
                                             outTask.OriginStorageCode = outItem.CellCode;
                                             outTask.TargetStorageCode = outItem.CellCode;
-                                            outTask.OriginPositionID = Convert.ToInt32(originPositionSystem.Id);
+                                            outTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
                                             outTask.TargetPositionID = targetPosition.ID;
-                                            outTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.Id);
+                                            outTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
                                             outTask.CurrentPositionState = "01";
                                             outTask.State = "01";
                                             outTask.TagState = "01";
