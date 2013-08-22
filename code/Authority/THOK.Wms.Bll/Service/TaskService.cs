@@ -93,9 +93,9 @@ namespace THOK.Wms.Bll.Service
                                             inTask.CurrentPositionState = "01";
                                             inTask.State = "01";
                                             inTask.TagState = "01";
-                                            inTask.Quantity = Convert.ToInt32(inItem.RealQuantity);
-                                            inTask.TaskQuantity = Convert.ToInt32(inItem.RealQuantity);
-                                            inTask.OperateQuantity = Convert.ToInt32(inItem.AllotQuantity);
+                                            inTask.Quantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
+                                            inTask.TaskQuantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
+                                            inTask.OperateQuantity = 0;
                                             inTask.OrderID = inItem.BillNo;
                                             inTask.OrderType = "01";
                                             inTask.AllotID = inItem.ID;
@@ -202,9 +202,9 @@ namespace THOK.Wms.Bll.Service
                                             outTask.CurrentPositionState = "01";
                                             outTask.State = "01";
                                             outTask.TagState = "01";
-                                            outTask.Quantity = Convert.ToInt32(outItem.RealQuantity);
-                                            outTask.TaskQuantity = Convert.ToInt32(outItem.RealQuantity);
-                                            outTask.OperateQuantity = Convert.ToInt32(outItem.AllotQuantity);
+                                            outTask.Quantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
+                                            outTask.TaskQuantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
+                                            outTask.OperateQuantity = 0;
                                             outTask.OrderID = outItem.BillNo;
                                             outTask.OrderType = "02";
                                             outTask.AllotID = outItem.ID;
@@ -309,8 +309,8 @@ namespace THOK.Wms.Bll.Service
                                             moveTask.CurrentPositionState = "01";
                                             moveTask.State = "01";
                                             moveTask.TagState = "01";
-                                            moveTask.Quantity = Convert.ToInt32(moveItem.RealQuantity);
-                                            moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity);
+                                            moveTask.Quantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
+                                            moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
                                             moveTask.OperateQuantity = Convert.ToInt32(moveItem.RealQuantity);
                                             moveTask.OrderID = moveItem.BillNo;
                                             moveTask.OrderType = "03";
