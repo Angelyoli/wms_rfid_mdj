@@ -23,5 +23,10 @@ namespace THOK.Wms.AutomotiveSystems.Interfaces
         void SearchRfidInfo(string rfidId, Result result);
 
         bool ProcessSortInfo(string orderdate, string batchId, string sortingLineCode, string orderId, ref string error);
+
+        string WarehouseInBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
+        string WarehouseInBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
+        string WarehouseOutBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
+        string WarehouseOutBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails);
     }
 }

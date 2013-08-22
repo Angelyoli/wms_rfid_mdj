@@ -912,6 +912,7 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         UnitCode = o.UnitCode,
                                         AllotQuantity = allotQuantity,
                                         RealQuantity = allotQuantity,
+                                        FinishTime = DateTime.Now,
                                         Status = "2"
                                     };
                                     lock (sortWork.OutBillMaster.OutBillAllots)
@@ -1126,5 +1127,190 @@ namespace THOK.Wms.AutomotiveSystems.Service
                               .ToArray();            
             return billDetails.Concat(bills).ToArray();
         }
+
+        #region 浪潮接口
+        //000---接口交互成功! 生成月计划单据：【CQ00148】---SUPERADMIN---2013-05-20 09:32:00
+        string returnMsg = @"<?xml version='1.0' encoding='UTF-8'?>
+                            <DATASET>
+	                            <HEAD>
+                                    <STATE_CODE>{0}</STATE_CODE>
+		                            <STATE_DESC>{1}</STATE_DESC>
+		                            <USER>{2}</USER>
+		                            <TIME>{3}</TIME>
+	                            </HEAD>
+                            </DATASET>";
+        /// <summary>
+        /// 仓储入库进度反馈
+        /// </summary>
+        /// <param name="billDetails"></param>
+        public string WarehouseInBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        {
+            string xml = @"<?xml version='1.0' encoding='UTF-8'?>
+                                <DATASET>
+	                                <HEAD>
+		                                <PARAM></PARAM>
+		                                <USER>0532</USER>
+                                        <TIME>2013-05-20 09:32:00</TIME>
+	                                </HEAD>
+	                                <DATA>
+		                                <OUT_INV_NUM>{0}</OUT_INV_NUM>
+                                        <WHSE_ID>O0002146</WHSE_ID>
+		                                <OWNER_ID>O0004210</OWNER_ID>
+		                                <PLAN_DATE>20130520</PLAN_DATE>
+		                                <DATA_DETAIL>
+			                                <ITEM_ID>{1}</ITEM_ID>
+                                            <BATCH_ID>1234567890</BATCH_ID>
+                                            <QTY>{2}</QTY>
+		                                </DATA_DETAIL>
+	                                </DATA>
+                                </DATASET>";
+            string result = null;
+            string str = null;
+            try
+            {
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo, item.DetailID, item.OperatePieceQuantity);
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result += string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
+            }
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
+        }
+        /// <summary>
+        /// 仓储入库完成
+        /// </summary>
+        /// <param name="billDetails"></param>
+        public string WarehouseInBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        {
+            string xml = @"<?xml version='1.0' encoding='UTF-8'?>
+                                <DATASET>
+	                                <HEAD>
+		                                <PARAM></PARAM>
+		                                <USER>0532</USER>
+                                        <TIME>2013-05-20 09:32:00</TIME>
+	                                </HEAD>
+	                                <DATA>
+		                                <OUT_INV_NUM>{0}</OUT_INV_NUM>
+                                        <WHSE_ID>O0002146</WHSE_ID>
+		                                <OWNER_ID>O0004210</OWNER_ID>
+		                                <PLAN_DATE>20130520</PLAN_DATE>
+		                                <DATA_DETAIL>
+			                                <ITEM_ID>{1}</ITEM_ID>
+                                            <BATCH_ID>1234567890</BATCH_ID>
+                                            <QTY>{2}</QTY>
+		                                </DATA_DETAIL>
+	                                </DATA>
+                                </DATASET>";
+            string result = null;
+            string str = null;
+            try
+            {
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo);
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result += string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
+            }
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
+        }
+        /// <summary>
+        /// 仓储出库进度反馈
+        /// </summary>
+        /// <param name="billDetails"></param>
+        public string WarehouseOutBillProgressFeedback(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        {
+            string xml = @"<?xml version='1.0' encoding='UTF-8'?>
+                                <DATASET>
+	                                <HEAD>
+		                                <PARAM></PARAM>
+		                                <USER>0532</USER>
+                                        <TIME>2013-05-20 09:32:00</TIME>
+	                                </HEAD>
+	                                <DATA>
+		                                <OUT_INV_NUM>{0}</OUT_INV_NUM>
+                                        <WHSE_ID>O0002146</WHSE_ID>
+		                                <OWNER_ID>O0004210</OWNER_ID>
+		                                <PLAN_DATE>20130520</PLAN_DATE>
+		                                <DATA_DETAIL>
+			                                <ITEM_ID>{1}</ITEM_ID>
+                                            <BATCH_ID>1234567890</BATCH_ID>
+                                            <QTY>{2}</QTY>
+		                                </DATA_DETAIL>
+	                                </DATA>
+                                </DATASET>";
+            string result = null;
+            string str = null;
+            try
+            {
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo, item.DetailID, item.OperatePieceQuantity);//STORE_IN_NUM, ITEM_CODE, QTY_COMPLETE
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result = string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
+            }
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
+        }
+        /// <summary>
+        /// 仓储出库完成
+        /// </summary>
+        /// <param name="billDetails"></param>
+        public string WarehouseOutBillFinish(THOK.Wms.AutomotiveSystems.Models.BillDetail[] billDetails)
+        {
+            string xml = @"<?xml version='1.0' encoding='UTF-8'?>
+                                <DATASET>
+	                                <HEAD>
+		                                <PARAM></PARAM>
+		                                <USER>0532</USER>
+                                        <TIME>2013-05-20 09:32:00</TIME>
+	                                </HEAD>
+	                                <DATA>
+		                                <OUT_INV_NUM>{0}</OUT_INV_NUM>
+                                        <WHSE_ID>O0002146</WHSE_ID>
+		                                <OWNER_ID>O0004210</OWNER_ID>
+		                                <PLAN_DATE>20130520</PLAN_DATE>
+		                                <DATA_DETAIL>
+			                                <ITEM_ID>{1}</ITEM_ID>
+                                            <BATCH_ID>1234567890</BATCH_ID>
+                                            <QTY>{2}</QTY>
+		                                </DATA_DETAIL>
+	                                </DATA>
+                                </DATASET>";
+            string result = null;
+            string str = null;
+            try
+            {
+                //LwmWarehouseWorkService lwws = new LwmWarehouseWorkService();
+                foreach (var item in billDetails)
+                {
+                    str = string.Format(xml, item.BillNo);
+                    //lwws.lwmStroeInProgFeedback(result);
+                    result = string.Format(returnMsg, "000", "接口交互成功! 单据：" + item.BillNo, item.Operator, System.DateTime.Now);
+                }
+            }
+            catch (Exception)
+            {
+                return string.Format(returnMsg, "001", "", "", "");
+            }
+            return result;
+        }
+        #endregion
     }
 }
