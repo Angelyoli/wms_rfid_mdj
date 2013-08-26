@@ -11,12 +11,16 @@
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
 
+        //指定库区
+        $('#area').combotree({ url: '/Area/GetDetailsTree/', multiple: true, width: 160 });
+
         url = '/Product/Create/';
     };
 
     function save() {
+        var areas = $('#area').combotree('getValues');
         $('#Productfm').form('submit', {
-            url: url,
+            url: url + "?pointAreaCodes=" + areas,
             onSubmit: function () {
                 return $(this).form('validate');
             },
@@ -63,7 +67,7 @@
 </script>
 
     <div id="dlg" class="easyui-dialog" modal="true" 
-        style="width:800px;height:440px;padding:2px 2px"
+        style="width:800px;height:460px;padding:2px 2px"
         closed="true" buttons="#dlg-buttons">
 		<div class="easyui-layout" fit="true">
 			<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >     
@@ -249,6 +253,18 @@
 		                       <option value="1">不取整</option>
                                <option value="2">取整托盘</option>
 	                        </select></td>
+                            <td>
+                        指定库区
+                    </td>
+                    <td>
+                        <select id="area" name="language" class="easyui-combotree" style="width: 129px;" 
+                                url="" valuefield="id" textfield="text" multiple="true" panelheight="auto" panelwidth="160px">
+                        </select>
+                    </td>
+                    <tr>
+                        <td>产品货位上限:</td>
+                        <td colspan="5"><input name="CellMaxProductQuantity" /></td>
+                    </tr>
                       </tr>
                       <tr>
                         <td>描述:</td>
