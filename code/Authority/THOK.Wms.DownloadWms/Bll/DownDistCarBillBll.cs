@@ -22,9 +22,7 @@ namespace THOK.Wms.DownloadWms.Bll
            try
            {
                this.Delete();
-               //DataTable distCarCodeTable = this.GetOrderInfo(orderDate);
-               //string distList = UtinString.MakeString(distCarCodeTable, "DIST_BILL_ID");
-               DataTable distCarTable = this.GetDistCarInfo("''");
+               DataTable distCarTable = this.GetDistCarInfo("1=1");
                if (distCarTable.Rows.Count > 0)
                {
                    DataSet distCarDs = this.Insert(distCarTable);

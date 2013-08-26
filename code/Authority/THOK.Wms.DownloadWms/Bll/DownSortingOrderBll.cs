@@ -246,17 +246,17 @@ namespace THOK.WMS.DownloadWms.Bll
                int i = 0;
                foreach (DataRow row in detaildt)
                {
-                   DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
+                   DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRANDCODE"].ToString().Trim()));
                    DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();
                    i++;
                    string newcode = i.ToString();
-                   for (int j = 0; j < 6 - i.ToString().Length; j++)
+                   for (int j = 0; j < 5 - i.ToString().Length; j++)
                    {
                        newcode = "0" + newcode;
                    }
                    detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim() + newcode;
                    detailrow["order_id"] = row["ORDERID"].ToString().Trim();
-                   detailrow["product_code"] = row["BRAND_N"].ToString().Trim();
+                   detailrow["product_code"] = row["BRANDCODE"].ToString().Trim();
                    detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
                    detailrow["unit_code"] = list[0]["unit_code02"].ToString();
                    detailrow["unit_name"] = row["BRAND_UNIT_NAME"].ToString().Trim(); ;

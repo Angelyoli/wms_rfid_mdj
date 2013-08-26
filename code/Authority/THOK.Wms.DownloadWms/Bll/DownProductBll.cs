@@ -24,7 +24,7 @@ namespace THOK.WMS.DownloadWms.Bll
             {
                 DataTable codedt = this.GetProductCode();
                 string codeList = UtinString.MakeString(codedt, "custom_code");
-                codeList = "BRAND_CODE NOT IN (" + codeList + ")";
+                codeList = "BRANDCODE NOT IN (" + codeList + ")";
                 DataTable bradCodeTable = this.GetProductInfo("1=1");
                 DataRow[] bradCodeDr = bradCodeTable.Select(codeList);
                 if (bradCodeDr.Length > 0)
@@ -120,9 +120,9 @@ namespace THOK.WMS.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in brandTable)
             {
-                DataTable ulistCodeTable = this.FindUnitListCode(row["BRAND_N"].ToString().Trim());
+                DataTable ulistCodeTable = this.FindUnitListCode(row["BRANDCODE"].ToString().Trim());
                 DataRow inbrddr = ds.Tables["WMS_PRODUCT"].NewRow();
-                inbrddr["product_code"] = row["BRAND_N"];
+                inbrddr["product_code"] = row["BRANDCODE"];
                 inbrddr["product_name"] = row["BRAND_NAME"];
                 inbrddr["uniform_code"] = row["N_UNIFY_CODE"];
                 inbrddr["custom_code"] = row["BRAND_CODE"];
