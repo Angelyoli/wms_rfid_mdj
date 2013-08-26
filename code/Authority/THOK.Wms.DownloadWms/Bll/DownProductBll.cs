@@ -155,6 +155,9 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["description"] = "";
                 inbrddr["is_active"] = row["IsActive"];
                 inbrddr["update_time"] = DateTime.Now;
+                inbrddr["is_rounding"] = "1";
+                inbrddr["cell_max_product_quantity"] = "30";
+                inbrddr["point_area_codes"] = "";
                 ds.Tables["WMS_PRODUCT"].Rows.Add(inbrddr);
             }
             return ds;
@@ -301,7 +304,9 @@ namespace THOK.WMS.DownloadWms.Bll
             inbrtable.Columns.Add("description");
             inbrtable.Columns.Add("is_active");
             inbrtable.Columns.Add("update_time");
-
+            inbrtable.Columns.Add("is_rounding");
+            inbrtable.Columns.Add("cell_max_product_quantity");
+            inbrtable.Columns.Add("point_area_codes");
             return ds;
         }
         /// <summary>
