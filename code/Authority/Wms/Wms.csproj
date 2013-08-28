@@ -176,6 +176,7 @@
     <Compile Include="Controllers\WMS\BasisInfo\RegionController.cs" />
     <Compile Include="Controllers\WMS\BasisInfo\SizeController.cs" />
     <Compile Include="Controllers\WMS\BasisInfo\SRMController.cs" />
+    <Compile Include="Controllers\WMS\BasisInfo\TaskManageController.cs" />
     <Compile Include="Controllers\WMS\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\WMS\ComplexSearch\SortOrderSearchController.cs" />
     <Compile Include="Controllers\WMS\ComplexSearch\StockCheckSearchController.cs" />
@@ -2399,6 +2400,12 @@
     <Content Include="Views\Position\_SRMName1Partial.cshtml" />
     <Content Include="Views\Path\_OriginPartial1.cshtml" />
     <Content Include="Views\Path\_TargetPartial1.cshtml" />
+    <Content Include="Views\TaskManage\Index.cshtml" />
+    <Content Include="Views\TaskManage\_AddPartial.cshtml" />
+    <Content Include="Views\TaskManage\_EditPartial.cshtml" />
+    <Content Include="Views\TaskManage\_SearchPartial.cshtml" />
+    <Content Include="Views\TaskManage\_DeletePartial.cshtml" />
+    <Content Include="Views\TaskManage\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
