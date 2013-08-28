@@ -45,7 +45,8 @@ namespace THOK.Wms.Bll.Service
                 s.PutAllow,
                 s.PutComplete,
                 s.Description,
-                State = s.State == "01" ? "可用" : "不可用"
+                State = s.State == "01" ? "可用" : "不可用",
+                s.CancelTask
             });
             return new { total, rows = sRM_Detail.ToArray() };
         }
@@ -63,6 +64,7 @@ namespace THOK.Wms.Bll.Service
             s.PutAllow = srm.PutAllow;
             s.PutComplete = srm.PutComplete;
             s.State = srm.State;
+            s.CancelTask = srm.CancelTask;
             SRMRepository.Add(s);
             SRMRepository.SaveChanges();
             return true;
@@ -81,6 +83,8 @@ namespace THOK.Wms.Bll.Service
             sr.PutAllow = srm.PutAllow;
             sr.PutComplete = srm.PutComplete;
             sr.State = srm.State;
+            sr.CancelTask = srm.CancelTask;
+
             SRMRepository.SaveChanges();
             return true;
         }
@@ -125,7 +129,8 @@ namespace THOK.Wms.Bll.Service
                     s.PutAllow,
                     s.PutComplete,
                     s.Description,
-                    State = s.State == "01" ? "可用" : "不可用"
+                    State = s.State == "01" ? "可用" : "不可用",
+                    s.CancelTask
                 });
             int total = srm.Count();
             srm = srm.Skip((page - 1) * rows).Take(rows);
@@ -137,7 +142,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<SRM> sRMQuery = SRMRepository.GetQueryable();
 
             var sRMDetail = sRMQuery.Where(s =>
-                s.SRMName.Contains(srms.SRMName)
+                   s.SRMName.Contains(srms.SRMName)
                 && s.OPCServiceName.Contains(srms.OPCServiceName)
                 && s.GetRequest.Contains(srms.GetRequest)
                 && s.GetAllow.Contains(srms.GetAllow)
@@ -145,7 +150,9 @@ namespace THOK.Wms.Bll.Service
                 && s.PutRequest.Contains(srms.PutRequest)
                 && s.PutAllow.Contains(srms.PutAllow)
                 && s.PutComplete.Contains(srms.PutComplete)
-                && s.State.Contains(srms.State)).OrderBy(ul => ul.SRMName);
+                && s.State.Contains(srms.State) 
+                && s.CancelTask.Contains(srms.CancelTask))
+                    .OrderBy(ul => ul.SRMName);
             var sRM_Detail = sRMDetail.ToArray().Select(s => new
             {
                 s.ID,
@@ -158,7 +165,8 @@ namespace THOK.Wms.Bll.Service
                 s.PutAllow,
                 s.PutComplete,
                 s.Description,
-                State = s.State == "01" ? "可用" : "不可用"
+                State = s.State == "01" ? "可用" : "不可用",
+                s.CancelTask
             });
 
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -174,6 +182,7 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("放货完成数据项名", typeof(string));
             dt.Columns.Add("描述", typeof(string));
             dt.Columns.Add("状态", typeof(string));
+            dt.Columns.Add("取消任务", typeof(string));
             foreach (var s in sRM_Detail)
             {
                 dt.Rows.Add
@@ -188,7 +197,8 @@ namespace THOK.Wms.Bll.Service
                         s.PutAllow,
                         s.PutComplete,
                         s.Description,
-                        s.State
+                        s.State,
+                        s.CancelTask
                     );
             }
             return dt;
