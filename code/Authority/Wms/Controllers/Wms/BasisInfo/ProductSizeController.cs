@@ -125,12 +125,18 @@ namespace Wms.Controllers.Wms.BasisInfo
             int page = 0, rows = 0;
             string ProductCode = Request.QueryString["ProductCode"];
             int ProductNo =Convert .ToInt32( Request.QueryString["ProductNo"]);
-            int SizeNo =Convert .ToInt32( Request.QueryString["SizeNo"]);
+            //int SizeNo =Convert .ToInt32( Request.QueryString["SizeNo"]);
+            int Length =Convert .ToInt32( Request.QueryString["Length"]);
+            int Width =Convert .ToInt32( Request.QueryString["Width"]);
+            int Height =Convert .ToInt32( Request.QueryString["Height"]);
             int AreaNo =Convert .ToInt32( Request.QueryString["AreaNo"]);
             ProductSize productSize = new ProductSize();
             productSize.ProductCode = ProductCode;
             productSize.ProductNo = ProductNo;
-            productSize.SizeNo = SizeNo;
+            //productSize.SizeNo = SizeNo;
+            productSize.Length = Length;
+            productSize.Width = Width;
+            productSize.Height = Height;
             productSize.AreaNo = AreaNo;
 
             ExportParam ep = new ExportParam();

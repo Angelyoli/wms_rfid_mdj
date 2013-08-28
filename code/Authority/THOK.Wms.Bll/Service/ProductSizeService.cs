@@ -181,17 +181,20 @@ namespace THOK.Wms.Bll.Service
                     p.ProductName,
                     p.ProductNo,
                     //p.SizeNo,
-                    p.AreaNo,
                     p.Length,
                     p.Width,
-                    p.Height
+                    p.Height,
+                    p.AreaNo
                 });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("商品ID", typeof(string));
             dt.Columns.Add("商品代码", typeof(string));
-            dt.Columns.Add("商品简码", typeof(string));
             dt.Columns.Add("商品名称", typeof(string));
-            dt.Columns.Add("件烟尺寸编号", typeof(string));
+            dt.Columns.Add("商品简码", typeof(string));
+            //dt.Columns.Add("件烟尺寸编号", typeof(string));
+            dt.Columns.Add("长度", typeof(string));
+            dt.Columns.Add("宽度", typeof(string));
+            dt.Columns.Add("高度", typeof(string));
             dt.Columns.Add("存储库区号", typeof(string));
             foreach (var item in productSize_Detail)
             {
@@ -199,8 +202,8 @@ namespace THOK.Wms.Bll.Service
                     (
                         item.ID,
                         item.ProductCode,
-                        item.ProductNo,
                         item.ProductName,
+                        item.ProductNo,
                         //item.SizeNo,
                         item.AreaNo,
                         item.Length,
