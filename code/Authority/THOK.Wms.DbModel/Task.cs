@@ -23,6 +23,11 @@ namespace THOK.Wms.DbModel
         public string OrderID { get; set; }
         public string OrderType { get; set; }
         public int AllotID { get; set; }
-        public string DownloadState { get; set; } 
+        public string DownloadState { get; set; }
+
+        public virtual Path Path { get; set; }
+        public virtual Position OriginPosition { get; set; }
+        public virtual Position TargetPosition { get; set; }
+        public virtual Position CurrentPosition { get; set; }
     }
 }

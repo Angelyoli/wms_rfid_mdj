@@ -374,6 +374,10 @@
     <Compile Include="Migrations\201308280137286_add_srm_canceltask.Designer.cs">
       <DependentUpon>201308280137286_add_srm_canceltask.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201308280736289_modify_task.cs" />
+    <Compile Include="Migrations\201308280736289_modify_task.Designer.cs">
+      <DependentUpon>201308280736289_modify_task.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -427,6 +431,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201308280137286_add_srm_canceltask.resx">
       <DependentUpon>201308280137286_add_srm_canceltask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201308280736289_modify_task.resx">
+      <DependentUpon>201308280736289_modify_task.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
