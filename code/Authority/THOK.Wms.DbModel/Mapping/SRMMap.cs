@@ -43,6 +43,9 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .IsFixedLength()
                 .HasMaxLength(2);
+            this.Property(t => t.CancelTask)
+                .IsRequired()
+                .HasMaxLength(50);
 
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));
@@ -56,6 +59,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.PutAllow).HasColumnName(ColumnMap.Value.To("PutAllow"));
             this.Property(t => t.PutComplete).HasColumnName(ColumnMap.Value.To("PutComplete"));
             this.Property(t => t.State).HasColumnName(ColumnMap.Value.To("State"));
+            this.Property(t => t.CancelTask).HasColumnName(ColumnMap.Value.To("CancelTask"));
         }
     }
 }

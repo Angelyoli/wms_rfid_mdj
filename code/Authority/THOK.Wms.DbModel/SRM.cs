@@ -14,6 +14,7 @@ namespace THOK.Wms.DbModel
         public string PutAllow { get; set; }
         public string PutComplete { get; set; }
         public string State { get; set; }
+        public string CancelTask { get; set; }
     }
 }
 

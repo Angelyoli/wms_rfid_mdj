@@ -370,6 +370,10 @@
     <Compile Include="Migrations\201308280038013_add_product_size.Designer.cs">
       <DependentUpon>201308280038013_add_product_size.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201308280137286_add_srm_canceltask.cs" />
+    <Compile Include="Migrations\201308280137286_add_srm_canceltask.Designer.cs">
+      <DependentUpon>201308280137286_add_srm_canceltask.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -420,6 +424,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201308280038013_add_product_size.resx">
       <DependentUpon>201308280038013_add_product_size.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201308280137286_add_srm_canceltask.resx">
+      <DependentUpon>201308280137286_add_srm_canceltask.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
