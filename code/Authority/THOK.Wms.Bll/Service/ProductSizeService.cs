@@ -26,15 +26,15 @@ namespace THOK.Wms.Bll.Service
 
             IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable();
             IQueryable<Product> productQuery = ProductRepository.GetQueryable();
-            IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
+            //IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
 
             var productSizeDetail = productSizeQuery.Where(p =>
                 p.ProductCode.Contains(productSize.ProductCode)).OrderBy(p => p.ID);
             var productSizeDetail1 = productSizeDetail;
-            if (productSize.SizeNo != null && productSize.SizeNo != 0)
-            {
-                productSizeDetail1 = productSizeDetail.Where(p => p.SizeNo == productSize.SizeNo).OrderBy(p => p.ID);
-            }
+            //if (productSize.SizeNo != null && productSize.SizeNo != 0)
+            //{
+            //    productSizeDetail1 = productSizeDetail.Where(p => p.SizeNo == productSize.SizeNo).OrderBy(p => p.ID);
+            //}
             var productSizeDetail2 = productSizeDetail1;
             if (productSize.ProductNo != null && productSize.ProductNo != 0)
             {
@@ -51,11 +51,11 @@ namespace THOK.Wms.Bll.Service
                     .Join(productQuery
                         , ps => ps.ProductCode
                         , p => p.ProductCode
-                        , (ps, p) => new { ps.ID, ps.ProductCode, ps.ProductNo, ps.SizeNo, ps.AreaNo, p.ProductName })
-                    .Join(sizeQuery
-                        , ps => ps.SizeNo
-                        , s => s.SizeNo
-                        , (ps, s) => new { ps.ID, ps.ProductCode ,ps.ProductNo, ps.SizeNo, ps.AreaNo,ps.ProductName ,s.Length, s.Width, s.Height })
+                        , (ps, p) => new { ps.ID, ps.ProductCode, ps.ProductNo, ps.SizeNo, ps.AreaNo, ps.Length, ps.Width, ps.Height, p.ProductName })
+                    //.Join(sizeQuery
+                    //    , ps => ps.SizeNo
+                    //    , s => s.SizeNo
+                    //    , (ps, s) => new { ps.ID, ps.ProductCode ,ps.ProductNo, ps.SizeNo, ps.AreaNo,ps.ProductName ,s.Length, s.Width, s.Height })
                 .Where(p => p.ProductCode.Contains(productSize.ProductCode))
                 .OrderBy(p => p.ID).AsEnumerable().Select(p => new
             {
@@ -63,7 +63,7 @@ namespace THOK.Wms.Bll.Service
                 p.ProductCode,
                 p.ProductName,
                 p.ProductNo,
-                p.SizeNo,
+                //p.SizeNo,
                 p.AreaNo,
                 p.Length,
                 p.Width,
@@ -76,28 +76,34 @@ namespace THOK.Wms.Bll.Service
         public bool Add(ProductSize productSize)
         {
             var pro = new ProductSize(); 
-                    pro.ID = productSize.ID;
-                    pro.ProductCode = productSize.ProductCode;
-                    pro.ProductNo = productSize.ProductNo;
-                    pro.SizeNo = productSize.SizeNo;
-                    pro.AreaNo = productSize.AreaNo;
+            pro.ID = productSize.ID;
+            pro.ProductCode = productSize.ProductCode;
+            pro.ProductNo = productSize.ProductNo;
+            //pro.SizeNo = productSize.SizeNo;
+            pro.AreaNo = productSize.AreaNo;
+            pro.Length = productSize.Length;
+            pro.Width = productSize.Width;
+            pro.Height = productSize.Height;
 
-                    ProductSizeRepository.Add(pro);
-                    ProductSizeRepository.SaveChanges();
+            ProductSizeRepository.Add(pro);
+            ProductSizeRepository.SaveChanges();
             return true;
         }
 
         public bool Save(ProductSize productSize)
         {
             var pro = ProductSizeRepository.GetQueryable().FirstOrDefault(s => s.ID == productSize.ID);
-                    pro.ID = productSize.ID;
-                    pro.ProductCode = productSize.ProductCode;
-                    pro.ProductNo = productSize.ProductNo;
-                    pro.SizeNo = productSize.SizeNo;
-                    pro.AreaNo = productSize.AreaNo;
+            pro.ID = productSize.ID;
+            pro.ProductCode = productSize.ProductCode;
+            pro.ProductNo = productSize.ProductNo;
+            //pro.SizeNo = productSize.SizeNo;
+            pro.AreaNo = productSize.AreaNo;
+            pro.Length = productSize.Length;
+            pro.Width = productSize.Width;
+            pro.Height = productSize.Height;
 
-                    ProductSizeRepository.SaveChanges();
-                    return true;
+            ProductSizeRepository.SaveChanges();
+            return true;
         }
 
         public bool Delete(int productSizeId)
@@ -135,7 +141,10 @@ namespace THOK.Wms.Bll.Service
                     p.ProductCode,
                     p.ProductNo,
                     p.SizeNo,
-                    p.AreaNo
+                    p.AreaNo,
+                    p.Length,
+                    p.Width,
+                    p.Height
                 });
             int total = productSize.Count();
             productSize = productSize.Skip((page - 1) * rows).Take(rows);
@@ -163,7 +172,7 @@ namespace THOK.Wms.Bll.Service
             var productSize_Detail = productSizeDetail.Join(productQuery,
                 ps => ps.ProductCode,
                 p => p.ProductCode,
-                (ps, p) => new { ps.ID, ps.ProductCode, ps.ProductNo, ps.SizeNo, ps.AreaNo, p.ProductName })
+                (ps, p) => new { ps.ID, ps.ProductCode, ps.ProductNo, ps.SizeNo, ps.AreaNo, ps.Length, ps.Width, ps.Height, p.ProductName })
                 .Where(p => p.ProductCode.Contains(productSize.ProductCode))
                 .OrderBy(p => p.ID).AsEnumerable().Select(p => new
                 {
@@ -171,8 +180,11 @@ namespace THOK.Wms.Bll.Service
                     p.ProductCode,
                     p.ProductName,
                     p.ProductNo,
-                    p.SizeNo,
-                    p.AreaNo
+                    //p.SizeNo,
+                    p.AreaNo,
+                    p.Length,
+                    p.Width,
+                    p.Height
                 });
             System.Data.DataTable dt = new System.Data.DataTable();
             dt.Columns.Add("商品ID", typeof(string));
@@ -189,8 +201,11 @@ namespace THOK.Wms.Bll.Service
                         item.ProductCode,
                         item.ProductNo,
                         item.ProductName,
-                        item.SizeNo,
-                        item.AreaNo
+                        //item.SizeNo,
+                        item.AreaNo,
+                        item.Length,
+                        item.Width,
+                        item.Height
                     );
             }
             return dt;

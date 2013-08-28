@@ -24,6 +24,12 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired();
             this.Property(t => t.AreaNo)
                .IsRequired();
+            this.Property(t => t.Length)
+               .IsRequired();
+            this.Property(t => t.Width)
+               .IsRequired();
+            this.Property(t => t.Height)
+               .IsRequired();
 
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));
@@ -31,6 +37,9 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.ProductNo).HasColumnName(ColumnMap.Value.To("ProductNo"));
             this.Property(t => t.SizeNo).HasColumnName(ColumnMap.Value.To("SizeNo"));
             this.Property(t => t.AreaNo).HasColumnName(ColumnMap.Value.To("AreaNo"));
+            this.Property(t => t.Length).HasColumnName(ColumnMap.Value.To("Length"));
+            this.Property(t => t.Width).HasColumnName(ColumnMap.Value.To("Width"));
+            this.Property(t => t.Height).HasColumnName(ColumnMap.Value.To("Height"));
         }
     }
 }
