@@ -23,7 +23,7 @@ namespace THOK.WMS.DownloadWms.Bll
             try
             {
                 DataTable codedt = this.GetProductCode();
-                string codeList = UtinString.MakeString(codedt, "custom_code");
+                string codeList = UtinString.MakeString(codedt, "product_code");
                 codeList = "BRANDCODE NOT IN (" + codeList + ")";
                 DataTable bradCodeTable = this.GetProductInfo("1=1");
                 DataRow[] bradCodeDr = bradCodeTable.Select(codeList);

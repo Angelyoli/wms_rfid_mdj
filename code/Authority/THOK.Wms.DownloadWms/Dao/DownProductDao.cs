@@ -60,7 +60,7 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetProductCode()
         {
-            string sql = "SELECT CUSTOM_CODE FROM WMS_PRODUCT";
+            string sql = "SELECT * FROM WMS_PRODUCT";
             return this.ExecuteQuery(sql).Tables[0];
         }
 

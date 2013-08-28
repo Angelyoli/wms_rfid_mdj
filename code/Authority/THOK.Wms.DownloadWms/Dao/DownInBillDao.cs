@@ -51,13 +51,13 @@ namespace THOK.WMS.DownloadWms.Dao
             switch (dbTypeName)
             {
                 case "gxyc-db2"://广西烟草db2
-                    sql = string.Format("SELECT A.*,B.BARND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
+                    sql = string.Format("SELECT A.*,B.BRAND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
                     break;
                 case "gzyc-oracle"://贵州烟草oracle
                     sql = string.Format("SELECT V_WMS_IN_ORDER_DETAIL.*,BRAND_CODE AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL WHERE {0} ", inBillNoList);
                     break;
                 default://默认广西烟草
-                    sql = string.Format("SELECT A.*,B.BARND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
+                    sql = string.Format("SELECT A.*,B.BRAND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
                     break;
             }
 
