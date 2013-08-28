@@ -33,11 +33,74 @@ namespace THOK.Wms.Bll.Service
         public IRegionRepository RegionRepository { get; set; }
         [Dependency]
         public ISortWorkDispatchRepository SortWorkDispatchRepository { get; set; }
+        
+        [Dependency]
+        public IInBillMasterRepository InBillMasterRepository { get; set; }
+        [Dependency]
+        public IOutBillMasterRepository OutBillMasterRepository { get; set; }
+        [Dependency]
+        public IMoveBillMasterRepository MoveBillMasterRepository { get; set; }
 
         protected override Type LogPrefix
         {
             get { return this.GetType(); }
         }
+
+        #region 作业任务管理
+        /// <summary>查询</summary>
+        public object GetDetails(int page, int rows)
+        {
+            var task = TaskRepository.GetQueryable().OrderBy(t => t.ID).Select(t => t);
+            int total = task.Count();
+            task = task.Skip((page - 1) * rows).Take(rows);
+            var temp = task.ToArray().Select(t => new
+            {
+                t.ID
+                ,
+                t.TaskType
+                ,
+                t.TaskLevel
+                ,
+                PathName = t.Path.PathName
+                ,
+                t.ProductCode
+                ,
+                t.ProductName
+                ,
+                t.OriginStorageCode
+                ,
+                t.TargetStorageCode
+                ,
+                OriginPositionName = t.OriginPosition.PositionName
+                ,
+                TargetPositionName = t.TargetPosition.PositionName
+                ,
+                CurrentPositionName = t.CurrentPosition.PositionName
+                ,
+                CurrentPositionState = t.CurrentPositionState == "01" ? "未达到" : "已到达"
+                ,
+                State = t.State == "01" ? "等待中" : t.State == "02" ? "执行中" : t.State == "03" ? "拣选中" : t.State == "04" ? "已完成" : "异常"
+                ,
+                TagState = t.TagState == "01" ? "未点亮" : "已点亮"
+                ,
+                t.Quantity
+                ,
+                t.TaskQuantity
+                ,
+                t.OperateQuantity
+                ,
+                t.OrderID
+                ,
+                OrderType = t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : "异常"
+                ,
+                t.AllotID
+                ,
+                DownloadState = t.DownloadState == "0" ? "未下载" : "已下载"
+            });
+            return new { total, rows = temp.ToArray() };
+        } 
+        #endregion
+
 
         #region 入库单据作业
         /// <summary>
@@ -126,7 +189,34 @@ namespace THOK.Wms.Bll.Service
                                 result = false;
                             }
                         }
-                        TaskRepository.SaveChanges();
+                        using (var scope = new System.Transactions.TransactionScope())
+                        {
+                            try
+                            {
+                                /* 作业生成后 修改入库订单状态=5 
+                                 * Status == 1:已录入 2:已审核 3:已分配 4:已确认 5:执行中 6:已结单 */
+                                var inBillMaster = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "4");
+                                if (inBillMaster != null)
+                                {
+                                    inBillMaster.Status = "5";
+                                    InBillMasterRepository.SaveChanges();
+
+                                    TaskRepository.SaveChanges();
+                                }
+                                else
+                                {
+                                    errorInfo = "未获取订单号";
+                                    result = false;
+                                }
+                                if (result == true)
+                                    scope.Complete();
+                            }
+                            catch (Exception ex)
+                            {
+                                errorInfo = "事务异常：" + ex.Message;
+                                result = false;
+                            }
+                        }
                     }
                     else
                     {
@@ -235,7 +325,34 @@ namespace THOK.Wms.Bll.Service
                                 result = false;
                             }
                         }
-                        TaskRepository.SaveChanges();
+                        using (var scope = new System.Transactions.TransactionScope())
+                        {
+                            try
+                            {
+                                /* 作业生成后 修改入库订单状态=5 
+                                 * Status == 1:已录入 2:已审核 3:已分配 4:已确认 5:执行中 6:已结单 */
+                                var outBillMaster = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "4");
+                                if (outBillMaster != null)
+                                {
+                                    outBillMaster.Status = "5";
+                                    OutBillMasterRepository.SaveChanges();
+
+                                    TaskRepository.SaveChanges();
+                                }
+                                else
+                                {
+                                    errorInfo = "未获取订单号";
+                                    result = false;
+                                }
+                                if (result == true)
+                                    scope.Complete();
+                            }
+                            catch (Exception ex)
+                            {
+                                errorInfo = "事务异常：" + ex.Message;
+                                result = false;
+                            }
+                        }
                     }
                     else
                     {
@@ -348,7 +465,34 @@ namespace THOK.Wms.Bll.Service
                             result = false;
                         }
                     }
-                    TaskRepository.SaveChanges();
+                    using (var scope = new System.Transactions.TransactionScope())
+                    {
+                        try
+                        {
+                            /* 作业生成后 修改入库订单状态=5 
+                             * Status == 1:已录入 2:已审核 3:已分配 4:已确认 5:执行中 6:已结单 */
+                            var moveBillMaster = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "4");
+                            if (moveBillMaster != null)
+                            {
+                                moveBillMaster.Status = "5";
+                                MoveBillMasterRepository.SaveChanges();
+
+                                TaskRepository.SaveChanges();
+                            }
+                            else
+                            {
+                                errorInfo = "未获取订单号";
+                                result = false;
+                            }
+                            if (result == true)
+                                scope.Complete();
+                        }
+                        catch (Exception ex)
+                        {
+                            errorInfo = "事务异常：" + ex.Message;
+                            result = false;
+                        }
+                    }
                 }
                 else
                 {
