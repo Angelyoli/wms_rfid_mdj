@@ -1,5 +1,320 @@
-﻿@{
-    ViewBag.Title = "_AddPartial";
-}
+﻿<script type="text/javascript">
+    var Module = "TaskManage";
+    var url;
+    var type;
 
-<h2>_AddPartial</h2>
+    $(function () {
+        addInit();
+    })
+    //初始化
+    function addInit() {
+        $('#originRegionName').attr('disabled', 'disabled');
+        $('#targetRegionName').attr('disabled', 'disabled');
+        $('#originPositionName').attr('disabled', 'disabled');
+        $('#targetPositionName').attr('disabled', 'disabled');
+    }
+    //添加
+    function addClick() {
+        $('#dlg-add').dialog('open').dialog('setTitle', '新增');
+        $('#fm').form('clear');
+        url = '/TaskManage/Create/';
+    };
+    //浏览路径信息
+    function pathQuery() {
+        $('#dlg-path').dialog('open').dialog('setTitle', '选择路径');
+        $('#pathDetail').datagrid({ url: '/Path/Details/' });
+        $("#pathDetail").datagrid('reload');
+    }
+    //浏览商品信息
+    function productQuery() {
+        $('#dlg-product').dialog('open').dialog('setTitle', '选择商品');
+        $('#productDetail').datagrid({ url: '/Product/Details/' });
+        $("#productDetail").datagrid('reload');
+    }
+    //浏览货位信息
+    var celltype = null;
+    function cellQuery(p) {
+        if (p == 1) {
+            $('#dlg-cell').dialog('open').dialog('setTitle', '选择起始货位');
+            type = 1;
+        }
+        else if (p == 2) {
+            $('#dlg-cell').dialog('open').dialog('setTitle', '选择目标货位');
+            type = 2;
+        }
+        $('#cellDetail').datagrid({ url: '/Cell/CellDetails/' });
+        $("#cellDetail").datagrid('reload');
+    }
+    //浏览位置信息
+    var positiontype = null;
+    function positionQuery(p) {
+        if (p == 1) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择起始位置');
+            type = 1;
+        }
+        else if (p == 2) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择目标位置');
+            type = 2
+        }
+        else if (p == 3) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择当前位置');
+            type = 3
+        }
+        $('#positionDetail').datagrid({ url: '/Position/Details/' });
+        $("#positionDetail").datagrid('reload');
+    }
+    //保存
+    function save() {
+        $('#fm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                try {
+                    var result = eval('(' + result + ')');
+                    if (result.success) {
+                        $.messager.show({
+                            title: '成功',
+                            msg: result.msg
+                        });
+                        $('#dlg-add').dialog('close');
+                        $('#details').datagrid('reload');
+                    } else {
+                        $.messager.show({
+                            title: '错误',
+                            msg: result.msg
+                        });
+                        $('#details').datagrid('reload');
+                    }
+                }
+                catch (e) {
+                    $.messager.show({
+                        title: '错误',
+                        msg: result
+                    });
+                }
+            }
+        });
+    }
+</script>
+<style type="text/css">
+    #dlg-add
+    {
+        width: 800px;
+        height: 240px;
+        padding: 2px 2px;
+    }
+    .div1
+    {
+        padding: 10px 10px;
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+    .addtable
+    {
+        width: 780px;
+    }
+</style>
+<div id="dlg-add" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" class="div1">
+            <form id="fm" method="post" novalidate>
+            <table class="addtable">
+                <tr>
+                    <td>
+                        任务类型
+                    </td>
+                    <td style="padding-right: 30px;">
+                        <select name="TaskType" class="easyui-combobox" editable="false" panelheight="70"
+                            style="width: 129px;">
+                            <option value="01">正常任务</option>
+                            <option value="02">叠空托盘</option>
+                        </select>
+                    </td>
+                    <td>
+                        起始区域
+                    </td>
+                    <td>
+                        <input id="originRegionName" name="OriginRegionName" required="true" />
+                        <input id="pathID" name="PathID" required="true" style="display: none;" />
+                        <a href="#" onclick="pathQuery()" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                    <td>
+                        目标区域
+                    </td>
+                    <td>
+                        <input id="targetRegionName" name="TargetRegionName" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        任务优先级
+                    </td>
+                    <td>
+                        <input name="TaskLevel" class="easyui-validatebox" required="true" />
+                    </td>
+                    <td>
+                        商品编码
+                    </td>
+                    <td>
+                        <input id="inputProductCode" name="ProductCode" class="easyui-validatebox" required="true" />
+                        <a href="#" onclick="productQuery()" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                    <td>
+                        商品名称
+                    </td>
+                    <td>
+                        <input id="inputProductName" name="ProductName" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        起始存储位
+                    </td>
+                    <td>
+                        <input id="inputOriginStorage" name="OriginStorageCode" required="true" />
+                        <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                    <td>
+                        目标存储位
+                    </td>
+                    <td>
+                        <input id="inputTargetStorage" name="TargetStorageCode" class="easyui-validatebox" required="true" />
+                        <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                    <td>
+                        起始位置
+                    </td>
+                    <td>
+                        <input id="originPositionName" name="OriginPositionName" required="true" />
+                        <a href="#" onclick="positionQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        目标位置
+                    </td>
+                    <td>
+                        <input id="targetPositionName" name="TargetPositionName" required="true" />
+                        <a href="#" onclick="positionQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                    <td>
+                        当前位置
+                    </td>
+                    <td>
+                        <input id="currentPositionName" name="CurrentPositionName" required="true" />
+                        <a href="#" onclick="positionQuery(3)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                    <td>
+                        当前位置状态
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" editable="false" name="CurrentPositionState"
+                            panelheight="120" style="width: 129px;">
+                            <option value="01">未达到</option>
+                            <option value="02">已达到</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        状态
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" editable="false" name="State"
+                            panelheight="120" style="width: 129px;">
+                            <option value="01">等待中</option>
+                            <option value="02">执行中</option>
+                            <option value="03">拣选中</option>
+                            <option value="04">已完成</option>
+                        </select>
+                    </td>
+                    <td>
+                        标签状态
+                    </td>
+                    <td>
+                        <select class="easyui-combobox" editable="false" name="ProductTypeCode" id="productType"
+                            panelheight="120" style="width: 129px;">
+                            <option value="01">未点亮</option>
+                            <option value="02">已点亮</option>
+                        </select>
+                    </td>
+                    <td>
+                        原数量
+                    </td>
+                    <td>
+                        <input name="Quantity" class="easyui-numberbox" min="0" max="999999999" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        任务数量
+                    </td>
+                    <td>
+                        <input name="TaskQuantity" class="easyui-numberbox" min="0" max="999999999" />
+                    </td>
+                    <td>
+                        已操作数量
+                    </td>
+                    <td>
+                        <input name="OperateQuantity" class="easyui-numberbox" min="0" max="999999999" />
+                    </td>
+                    <td>
+                        原订单号
+                    </td>
+                    <td>
+                        <input name="OrderID" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        原订单类型
+                    </td>
+                    <td>
+                        <select id="priceLevel" name="OrderType" class="easyui-combobox" editable="false"
+                            panelheight="120" style="width: 129px;">
+                            <option value="01">入库单</option>
+                            <option value="02">移库单</option>
+                            <option value="03">出库单</option>
+                            <option value="04">盘点单</option>
+                        </select>
+                    </td>
+                    <td>
+                        原订单分配号
+                    </td>
+                    <td>
+                        <input name="AllotID" />
+                    </td>
+                    <td>
+                        补货下载状态
+                    </td>
+                    <td>
+                        <select id="downloadState" name="DownloadState" class="easyui-combobox" name="IsFamous"
+                            editable="false" panelheight="70" style="width: 129px;" required="true">
+                            <option value="0">未下载</option>
+                            <option value="1">已下载</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-add').dialog('close')">
+        取消</a>
+</div>
+@Html.Partial("_PathPartial")
+@Html.Partial("_ProductPartial")
+@Html.Partial("_CellPartial")
+@Html.Partial("_PositionPartial")

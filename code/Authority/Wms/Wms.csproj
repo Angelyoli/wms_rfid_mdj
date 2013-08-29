@@ -2406,6 +2406,10 @@
     <Content Include="Views\TaskManage\_SearchPartial.cshtml" />
     <Content Include="Views\TaskManage\_DeletePartial.cshtml" />
     <Content Include="Views\TaskManage\_PrintPartial.cshtml" />
+    <Content Include="Views\TaskManage\_PathPartial.cshtml" />
+    <Content Include="Views\TaskManage\_ProductPartial.cshtml" />
+    <Content Include="Views\TaskManage\_CellPartial.cshtml" />
+    <Content Include="Views\TaskManage\_PositionPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

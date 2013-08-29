@@ -1,5 +1,16 @@
-﻿@{
-    ViewBag.Title = "_EditPartial";
-}
+﻿<script type="text/javascript">
+    function editClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg-add').dialog('open').dialog('setTitle', '编辑任务信息');
+            $('#fm').form('load', row);
+            $('#fm .easyui-validatebox').validatebox({
+                required: true
+            });
 
-<h2>_EditPartial</h2>
+            url = '/TaskManage/Edit/';
+        } else {
+            $.messager.alert('错误', '没有选择行！', 'info');
+        }
+    }
+</script>

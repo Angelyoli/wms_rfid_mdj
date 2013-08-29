@@ -1,0 +1,83 @@
+﻿<script type="text/javascript">
+    $(function () {
+        pathInit();
+        pathDoubleClick();
+    })
+    //初始化
+    function pathInit() {
+
+    }
+    //选中赋值
+    function pathSave() {
+        var pathRow = $('#pathDetail').datagrid('getSelected');
+        if (pathRow) {
+            $('#pathID').val(pathRow.ID);
+            $('#originRegionName').val(pathRow.OriginRegionName);
+            $('#targetRegionName').val(pathRow.TargetRegionName);
+            $('#dlg-path').dialog('close');
+        }
+    }
+    //双击赋值
+    function pathDoubleClick() {
+        $('#pathDetail').datagrid({
+            onDblClickRow: function () {
+                pathSave();
+            }
+        })
+    }
+</script>
+<style type="text/css">
+    #dlg-path
+    {
+        width: 500px;
+        height: 500px;
+        padding: 0px 0px;
+    }
+    .divPathDetail
+    {
+        width: 498px;
+        height: 430px;
+        padding: 0px 0px;
+    }
+</style>
+<div id="dlg-path" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-path-buttons">
+    <div split="true" border="false" class="divPathDetail">
+        <table id="pathDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
+            pagesize="50" singleselect="true" fit="true" fitcolumns="true" pagination="true"
+            rownumbers="true">
+            <thead>
+                <tr>
+                    <th field="ID" width="60">
+                        路径编号
+                    </th>
+                    <th field="PathName" width="60">
+                        路径名称
+                    </th>
+                    <th field="OriginRegionID" hidden="true" width="60">
+                        起始区域
+                    </th>
+                    <th field="OriginRegionName" width="110">
+                        起始区域名称
+                    </th>
+                    <th field="TargetRegionID" hidden="true" width="60">
+                        目标区域
+                    </th>
+                    <th field="TargetRegionName" width="110">
+                        目标区域名称
+                    </th>
+                    <th field="State" width="60">
+                        状态
+                    </th>
+                    <th field="Description" width="120">
+                        描述
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="dlg-path-buttons">
+        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="pathSave()">确定</a>
+        <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-path').dialog('close')">
+            取消</a>
+    </div>
+</div>

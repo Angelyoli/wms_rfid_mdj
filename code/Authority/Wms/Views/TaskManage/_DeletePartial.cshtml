@@ -1,5 +1,12 @@
-﻿@{
-    ViewBag.Title = "_DeletePartial";
-}
-
-<h2>_DeletePartial</h2>
+﻿<script type="text/javascript">
+    function deleteClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            url = '/TaskManage/Delete/?taskId=' + row.ID;
+            showDialog('删除');
+            $('#fm').form('load', row);
+        } else {
+            $.messager.alert('错误', '没有选择行！', 'info');
+        }
+    };
+</script>
