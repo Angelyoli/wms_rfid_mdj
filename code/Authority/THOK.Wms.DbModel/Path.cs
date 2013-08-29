@@ -7,7 +7,6 @@ namespace THOK.Wms.DbModel
         public Path()
         {
             this.PathNodes = new List<PathNode>();
-            this.PathTask = new List<Task>();
         }
         public int ID { get; set; }
         public string PathName { get; set; }
@@ -20,6 +19,5 @@ namespace THOK.Wms.DbModel
         public virtual Region TargetRegion { get; set; }
 
         public virtual ICollection<PathNode> PathNodes { get; set; }
-        public virtual ICollection<Task> PathTask { get; set; }
     }
 }

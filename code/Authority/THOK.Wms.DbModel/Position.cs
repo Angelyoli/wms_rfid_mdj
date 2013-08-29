@@ -11,10 +11,6 @@ namespace THOK.Wms.DbModel
             this.PathNodes = new List<PathNode>();
             this.StockInCellPosition = new List<CellPosition>();
             this.StockOutCellPosition = new List<CellPosition>();
-            this.PathTask = new List<Task>();
-            this.OriginPositionTask = new List<Task>();
-            this.TargetPositionTask = new List<Task>();
-            this.CurrentPositionTask = new List<Task>();
         }
         public int ID { get; set; }
         public string PositionName { get; set; }
@@ -39,9 +35,5 @@ namespace THOK.Wms.DbModel
         public virtual ICollection<PathNode> PathNodes { get; set; }
         public virtual ICollection<CellPosition> StockInCellPosition { get; set; }
         public virtual ICollection<CellPosition> StockOutCellPosition { get; set; }
-        public virtual ICollection<Task> PathTask { get; set; }
-        public virtual ICollection<Task> OriginPositionTask { get; set; }
-        public virtual ICollection<Task> TargetPositionTask { get; set; }
-        public virtual ICollection<Task> CurrentPositionTask { get; set; }
     }
 }

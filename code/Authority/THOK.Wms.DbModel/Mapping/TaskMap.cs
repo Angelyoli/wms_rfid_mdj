@@ -65,7 +65,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.DownloadState)
                 .IsRequired()
                 .IsFixedLength()
-                .HasMaxLength(2);
+                .HasMaxLength(1);
             
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));
@@ -89,21 +89,6 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.OrderType).HasColumnName(ColumnMap.Value.To("OrderType"));
             this.Property(t => t.AllotID).HasColumnName(ColumnMap.Value.To("AllotID"));
             this.Property(t => t.DownloadState).HasColumnName(ColumnMap.Value.To("DownloadState"));
-
-            // Relationships
-            this.HasRequired(t => t.Path).WithMany(p => p.PathTask)
-                .HasForeignKey(t => t.PathID)
-                .WillCascadeOnDelete(false);
-
-            this.HasRequired(t => t.OriginPosition).WithMany(p => p.OriginPositionTask)
-                .HasForeignKey(t => t.OriginPositionID)
-                .WillCascadeOnDelete(false);
-            this.HasRequired(t => t.TargetPosition).WithMany(p => p.TargetPositionTask)
-                .HasForeignKey(t => t.TargetPositionID)
-                .WillCascadeOnDelete(false);
-            this.HasRequired(t => t.CurrentPosition).WithMany(p => p.CurrentPositionTask)
-                .HasForeignKey(t => t.CurrentPositionID)
-                .WillCascadeOnDelete(false);
         }
     }
 }
