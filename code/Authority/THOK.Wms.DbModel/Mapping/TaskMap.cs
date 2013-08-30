@@ -65,7 +65,7 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.DownloadState)
                 .IsRequired()
                 .IsFixedLength()
-                .HasMaxLength(2);
+                .HasMaxLength(1);
             
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));

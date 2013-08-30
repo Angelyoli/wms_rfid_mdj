@@ -47,6 +47,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             srm.PutAllow = collection["PutAllow"] ?? "";
             srm.PutComplete = collection["PutComplete"] ?? "";
             srm.State = collection["State"] ?? "";
+            srm.State = collection["CancelTask"] ?? "";
             var srmDetail = SRMService.GetDetails(page, rows,srm);
             return Json(srmDetail, "text", JsonRequestBehavior.AllowGet);
         }
@@ -129,6 +130,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             string PutComplete = Request.QueryString["PutComplete"];
             string Description = Request.QueryString["Description"];
             string State = Request.QueryString["State"];
+            string CancelTask = Request.QueryString["CancelTask"];
             SRM srm = new SRM();
             srm.ID = SRMID;
             srm.SRMName = SRMName;
@@ -141,6 +143,7 @@ namespace Wms.Controllers.Wms.BasisInfo
             srm.PutComplete = PutComplete;
             srm.Description = Description;
             srm.State = State;
+            srm.CancelTask = CancelTask;
 
             ExportParam ep = new ExportParam();
             ep.DT1 = SRMService.GetSRM(page, rows, srm);

@@ -102,7 +102,10 @@ namespace THOK.Wms.Bll.Service
                 {
                     si.ID,
                     si.SizeName,
-                    si.SizeNo
+                    si.SizeNo,
+                    si.Length,
+                    si.Width,
+                    si.Height
                 });
             int total = size.Count();
             size = size.Skip((page - 1) * rows).Take(rows);

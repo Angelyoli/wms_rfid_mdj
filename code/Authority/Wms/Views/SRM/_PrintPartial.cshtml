@@ -15,17 +15,21 @@
         if ($('#PutComplete').val() == null) { putComplete = ""; } else { putComplete = $('#PutComplete').val() }
         if ($('#Description').val() == null) { description = ""; } else { description = $('#Description').val() }
         if (document.getElementById('#State') == null) { state = ""; } else { state = $('#State').combo('getValue') }
+        if ($('#CancelTask').val() == null) { cancelTask = ""; } else { cancelTask = $('#CancelTask').val() }
 
-        window.location.href = "/SRM/CreateExcelToClient/"
-                                + "?srmName=" + srmName
-                                + "&state=" + state
-                                +"&opcserviceName=" + opcserviceName
-                                +"&getRequest=" + getRequest
-                                +"&getAllow=" + getAllow
-                                +"&getComplete=" + getComplete
-                                +"&putRequest=" + putRequest
-                                +"&putAllow=" + putAllow
-                                +"&putComplete=" + putComplete
-                                +"&description=" + description;
+        alert(srmName);
+
+//        window.location.href = "/SRM/CreateExcelToClient/"
+//                                + "?srmName=" + srmName
+//                                + "&state=" + state
+//                                +"&opcserviceName=" + opcserviceName
+//                                +"&getRequest=" + getRequest
+//                                +"&getAllow=" + getAllow
+//                                +"&getComplete=" + getComplete
+//                                +"&putRequest=" + putRequest
+//                                +"&putAllow=" + putAllow
+//                                +"&putComplete=" + putComplete
+//                                + "&description=" + description;
+//                                +"&cancelTask=" + cancelTask;
     }
 </script>

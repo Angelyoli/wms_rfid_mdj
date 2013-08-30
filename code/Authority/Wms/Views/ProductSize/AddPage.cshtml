@@ -2,47 +2,79 @@
     Layout = null;
 }
 <div class="easyui-layout" fit="true" border="false">
-	<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " > 
-      <form id="fm" method="post" >  
-        <table width="280">
-
-                    <tr>
-                    <td width="75" align="right">商品名称：</td>
-                    <td width="168">
-                    <input name="ProductCode" id="ProductCode" class="easyui-validatebox" required="true" type="text"  style="display:none"/>
-                  @*  <input name="ID"/>*@
-                    <input name="ProductName" id="inputProductName" class="easyui-validatebox" required="true" readonly="readonly" type="text"/>
-                    <a href="#" id="ProductSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ProductSearchClick()"></a>
-                    </td>
-                    </tr>
-
-                    <tr>
-                    <td width="75" align="right">商品简码：</td>
-                    <td width="168">
-                    <input name="ProductNo" id="ProductNo" class="easyui-validatebox" required="true" type="text"/>
-                    </td>
-                    </tr>
-
-                    <tr>
-                    <td width="75" align="right">件烟尺寸编号：</td>
-                    <td width="168">
-                    <input name="ID"  style="display:none" />
-                    <input name="SizeNo" id="SizeNo" required="true" readonly="readonly" type="text" class="easyui-validatebox"/>
-                    <a href="#" id="SizeSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="SizeSearchClick()"></a>
-                    </td>    
-                    </tr>
-
-                    <tr>
-                    <td width="75" align="right">存储库区号：</td>
-                    <td width="168">
-                    <input name="AreaNo" id="inputAreaNo" class="easyui-numberbox" min="0" max="999999999" required="true" type="text" missingmessage="必须为数字"/>
-                    <input name="ID"  style="display:none" /></td>    
-                    </tr>
-
-                </table>
-            </form>
+    <div region="center" border="false" style="width: 280; height: 250px; padding: 10px 10px;
+        background: #fff; border: 1px solid #ccc;">
+        <form id="fm" method="post">
+        <table>
+            <tr>
+                <td width="75" align="right">
+                    商品名称：
+                </td>
+                <td width="168">
+                    <input name="ProductCode" id="ProductCode" class="easyui-validatebox" required="true"
+                        type="text" style="display: none" />
+                    @*  <input name="ID"/>*@
+                    <input name="ProductName" id="inputProductName" class="easyui-validatebox" required="true"
+                        readonly="readonly" type="text" />
+                    <a href="#" id="ProductSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                        onclick="ProductSearchClick()"></a>
+                </td>
+            </tr>
+            <tr>
+                <td width="75" align="right">
+                    商品简码：
+                </td>
+                <td width="168">
+                    <input name="ProductNo" id="ProductNo" class="easyui-validatebox" required="true"
+                        type="text" />
+                </td>
+            </tr>
+            <tr>
+                @*<td width="75" align="right">件烟尺寸编号：</td>
+            <td width="168">
+            <input name="ID"  style="display:none" />
+            <input name="SizeNo" id="SizeNo" required="true" readonly="readonly" type="text" class="easyui-validatebox"/>
+            <a href="#" id="SizeSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="SizeSearchClick()"></a>
+            </td>*@
+                <td width="75" align="right">
+                    长度
+                </td>
+                <td>
+                    <input name="Length" id="inputLength" class="easyui-numberbox" min="0" max="999999999"
+                        required="true" type="text" missingmessage="必须为数字" />
+                </td>
+            </tr>
+            <tr>
+                <td width="75" align="right">
+                    宽度
+                </td>
+                <td>
+                    <input name="Width" id="inputWidth" class="easyui-numberbox" min="0" max="999999999"
+                        required="true" type="text" missingmessage="必须为数字" />
+                </td>
+            </tr>
+            <tr>
+                <td width="75" align="right">
+                    高度
+                </td>
+                <td>
+                    <input name="Height" id="inputHeight" class="easyui-numberbox" min="0" max="999999999"
+                        required="true" type="text" missingmessage="必须为数字" />
+                </td>
+            </tr>
+            <tr>
+                <td width="75" align="right">
+                    存储库区号：
+                </td>
+                <td width="168">
+                    <input name="AreaNo" id="inputAreaNo" class="easyui-numberbox" min="0" max="999999999"
+                        required="true" type="text" missingmessage="必须为数字" />
+                    <input name="ID" style="display: none" />
+                </td>
+            </tr>
+        </table>
+        </form>
     </div>
 </div>
-
- @Html.Partial("_ProductPartial");
- @Html.Partial("_SizePartial");
+@Html.Partial("_ProductPartial");
+@Html.Partial("_SizePartial");

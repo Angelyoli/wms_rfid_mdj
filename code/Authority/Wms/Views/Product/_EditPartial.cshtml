@@ -35,7 +35,11 @@
             $('#cc').combo({
                 hasDownArrow: true
             });
+
+            //指定库区
             $('#area').combotree({ url: '/Area/GetDetailsTree/', multiple: true });
+            var aa = row.PointAreaCodes.split(',');
+            $('#area').combotree('setValues', aa);
             
             url = '/Product/Edit/';
         } else {
