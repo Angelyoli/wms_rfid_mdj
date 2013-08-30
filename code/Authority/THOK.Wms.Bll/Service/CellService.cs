@@ -47,6 +47,49 @@ namespace THOK.Wms.Bll.Service
             cell = cell.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = cell.ToArray() };
         }
+        public object GetDetails(int page, int rows, string queryString, string value)
+        {
+            string cellCode = "", cellName = "";
+
+            if (queryString == "CellCode")
+            {
+                cellCode = value;
+            }
+            else
+            {
+                cellName = value;
+            }
+            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
+            var cell = cellQuery.Where(c => c.CellCode.Contains(cellCode) && c.CellName.Contains(cellName))
+                .OrderBy(b => b.CellCode).AsEnumerable()
+                .Select(b => new
+                {
+                    b.CellCode,
+                    b.CellName,
+                    b.CellType,
+                    b.ShortName,
+                    b.Rfid,
+                    b.Layer,
+                    b.Col,
+                    b.ImgX,
+                    b.ImgY,
+                    b.IsSingle,
+                    b.MaxQuantity,
+                    b.Description,
+                    b.Warehouse.WarehouseName,
+                    b.Warehouse.WarehouseCode,
+                    b.Area.AreaCode,
+                    b.Area.AreaName,
+                    b.Shelf.ShelfCode,
+                    b.Shelf.ShelfName,
+                    IsActive = b.IsActive == "1" ? "可用" : "不可用",
+                    UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                });
+            int total = cell.Count();
+            cell = cell.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = cell.ToArray() };
+        }
+
         public object GetDetail(int page, int rows, string type, string id)
         {
             var warehouses = WarehouseRepository.GetQueryable();

@@ -33,6 +33,20 @@ namespace Authority.Controllers.Wms.WarehouseInfo
             var cell = CellService.GetDetails(page, rows, cellCode);
             return Json(cell, "text", JsonRequestBehavior.AllowGet);
         }
+        // GET: /Cell/FindDetails/
+        public ActionResult FindDetails(int page, int rows, string queryString, string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "CellCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var cell = CellService.GetDetails(page, rows, queryString, value);
+            return Json(cell, "text", JsonRequestBehavior.AllowGet);
+        }
 
         //查询货位信息表
         // POST: /Cell/FindCell
