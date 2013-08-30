@@ -24,6 +24,13 @@
     //添加
     function addClick() {
         $('#dlg-add').dialog('open').dialog('setTitle', '新增');
+
+        //恢复Form中的文本的有效验证
+        $('#Productfm .easyui-validatebox').validatebox({ required: true });
+        //恢复Form中禁用的文本
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+
         $('#addFm').form('clear');
         url = '/TaskManage/Create/';
     };
