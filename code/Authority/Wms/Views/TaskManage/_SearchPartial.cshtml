@@ -1,22 +1,28 @@
 ﻿<script type="text/javascript">
     var searchDialog;
-    function searchLoad() {
+    //初始化控件
+    function searchInit() {
         $('#taskType').combo({ editable: false, panelHeight: 50, panelWidth: 130 });
-        $('#status').combo({ editable: false, panelHeight: 100, panelWidth: 130 });
+        $('#currentPositionState').combo({ editable: false, panelHeight: 50, panelWidth: 130 });
+        $('#state').combo({ editable: false, panelHeight: 100, panelWidth: 130 });
+        $('#tagState').combo({ editable: false, panelHeight: 50, panelWidth: 130 });
         $('#orderType').combo({ editable: false, panelHeight: 100, panelWidth: 130 });
         $('#downloadState').combo({ editable: false, panelHeight: 50, panelWidth: 130 });
     }
-    function clear() {
+    //清空文本
+    function serachClear() {
         $("input[type=text]").attr("value", "");
-        $('#taskType').combobox('clear');
-        $('#currentPositionState').combobox('clear');
-        $('#state').combobox('clear');
-        $('#orderType').combobox('clear');
-        $('#downloadState').combobox('clear');
+        $('#taskType').combo('setValue', "");
+        $('#currentPositionState').combo('setValue', "");
+        $('#state').combo('setValue', "");
+        $('#tagState').combo('setValue', "");
+        $('#orderType').combo('setValue', "");
+        $('#downloadState').combo('setValue', "");
     }
+    //点击查询
     function searchClick() {
-        searchLoad();
-        //clear
+        searchInit();
+        serachClear();
         if (searchDialog == null) {
             $('#dlg-search').dialog('open').dialog('setTitle', '查询品牌信息');
         }
@@ -25,8 +31,16 @@
     function searchByParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.TaskType = $('#taskType').combo('getValue');
-        queryParams.TaskType = $('#currentPositionState').combo('getValue');
+        ///路径的 区域
+        queryParams.ProductCode = $('#inputProductCode').val();
+        queryParams.ProductName = $('#inputProductName').val();
+        queryParams.OriginStorageCode = $('#inputOriginStorageCode').val();
+        queryParams.TargetStorageCode = $('#inputTargetStorageCode').val();
+        ///起始、目标、当前位置
+        queryParams.CurrentPositionState = $('#currentPositionState').combo('getValue');
         queryParams.State = $('#state').combo('getValue');
+        queryParams.TagState = $('#tagState').combo('getValue');
+        queryParams.OrderID = $('#inputOrderID').val();
         queryParams.OrderType = $('#orderType').combo('getValue');
         queryParams.DownloadState = $('#downloadState').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
@@ -48,7 +62,7 @@
     #dlg-search
     {
         width: 300px;
-        height: 250px;
+        height: 300px;
         padding: 2px 2px;
     }
     .searchdiv2
@@ -57,7 +71,6 @@
         background: #fff;
         border: 1px solid #ccc;
         text-align: center;
-        border: 1px solid #ccc;
     }
 </style>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="" closed="true" buttons="#dlg-search-buttons">
@@ -69,7 +82,7 @@
                         任务类型：
                     </td>
                     <td align="left">
-                        <select id="taskType" required="true" class="easyui-combobox" style="width: 130px">
+                        <select id="taskType" class="easyui-combobox" style="width: 130px">
                             <option value=""></option>
                             <option value="01">正常任务</option>
                             <option value="02">叠空托盘</option>
@@ -81,7 +94,9 @@
                         商品编码：
                     </td>
                     <td width="168" align="left">
-                        <input id="productCode" type="text" />
+                        <input id="inputProductCode" type="text" />
+                        <a href="#" onclick="productQuery()" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +104,29 @@
                         商品名称：
                     </td>
                     <td align="left">
-                        <input id="productName" type="text" />
+                        <input id="inputProductName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        起始存储位：
+                    </td>
+                    <td>
+                        <input id="inputOriginStorageCode" name="OriginStorageCode" type="text" style="display: none;" />
+                        <input id="inputOriginStorageName" name="OriginStorageName" type="text" />
+                        <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        目标存储位：
+                    </td>
+                    <td>
+                        <input id="inputTargetStorageCode" name="TargetStorageCode" type="text" style="display: none;" />
+                        <input id="inputTargetStorageName" name="TargetStorageName" type="text" />
+                        <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
                     </td>
                 </tr>
                 <tr>
@@ -97,7 +134,7 @@
                         当前位置状态：
                     </td>
                     <td align="left">
-                        <select id="currentPositionState" required="true" class="easyui-combobox" style="width: 130px">
+                        <select id="currentPositionState" class="easyui-combobox" style="width: 130px">
                             <option value=""></option>
                             <option value="01">未到达</option>
                             <option value="02">已达到</option>
@@ -109,7 +146,7 @@
                         状态：
                     </td>
                     <td align="left">
-                        <select id="state" required="true" class="easyui-combobox" style="width: 130px">
+                        <select id="state" class="easyui-combobox" style="width: 130px">
                             <option value=""></option>
                             <option value="01">等待中</option>
                             <option value="02">执行中</option>
@@ -120,10 +157,30 @@
                 </tr>
                 <tr>
                     <td class="searchTd1">
+                        标签状态：
+                    </td>
+                    <td align="left">
+                        <select id="tagState" class="easyui-combobox" style="width: 130px">
+                            <option value=""></option>
+                            <option value="01">未点亮</option>
+                            <option value="02">已点亮</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="searchTd1">
+                        原订单号：
+                    </td>
+                    <td align="left">
+                        <input id="inputOrderID" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="searchTd1">
                         原订单类型：
                     </td>
                     <td align="left">
-                        <select id="orderType" required="true" class="easyui-combobox" style="width: 130px">
+                        <select id="orderType" class="easyui-combobox" style="width: 130px">
                             <option value=""></option>
                             <option value="01">入库单</option>
                             <option value="02">移库单</option>
@@ -137,7 +194,7 @@
                         补货下载状态：
                     </td>
                     <td align="left">
-                        <select id="downloadState" required="true" class="easyui-combobox" style="width: 130px">
+                        <select id="downloadState" class="easyui-combobox" style="width: 130px">
                             <option value=""></option>
                             <option value="0">未下载</option>
                             <option value="1">已下载</option>

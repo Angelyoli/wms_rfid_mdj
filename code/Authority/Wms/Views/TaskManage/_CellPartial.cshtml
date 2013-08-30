@@ -12,10 +12,12 @@
         var cellRow = $('#cellDetail').datagrid('getSelected');
         if (cellRow) {
             if (type == 1) {
-                $('#inputOriginStorage').val(cellRow.CellCode);
+                $('#inputOriginStorageCode').val(cellRow.CellCode);
+                $('#inputOriginStorageName').val(cellRow.CellName);
             }
             if (type == 2) {
-                $('#inputTargetStorage').val(cellRow.CellCode);
+                $('#inputTargetStorageCode').val(cellRow.CellCode);
+                $('#inputTargetStorageName').val(cellRow.CellName);
             }
             $('#dlg-cell').dialog('close');
         }

@@ -133,8 +133,8 @@
                         任务类型
                     </td>
                     <td style="padding-right: 30px;">
-                        <select id="inputTaskType" name="TaskType" class="easyui-combobox"
-                            panelheight="70" style="width: 129px;">
+                        <select id="inputTaskType" name="TaskType" class="easyui-combobox" panelheight="70"
+                            style="width: 129px;">
                             <option value="01">正常任务</option>
                             <option value="02">叠空托盘</option>
                         </select>
@@ -143,8 +143,8 @@
                         起始区域
                     </td>
                     <td>
-                        <input id="inputOriginRegionName" name="OriginRegionName" required="true" />
                         <input id="pathID" name="PathID" required="true" style="display: none;" />
+                        <input id="inputOriginRegionName" name="OriginRegionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="pathQuery()" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -152,7 +152,7 @@
                         目标区域
                     </td>
                     <td>
-                        <input id="inputTargetRegionName" name="TargetRegionName" required="true" />
+                        <input id="inputTargetRegionName" name="TargetRegionName" required="true" class="easyui-validatebox" />
                     </td>
                 </tr>
                 <tr>
@@ -174,7 +174,7 @@
                         商品名称
                     </td>
                     <td>
-                        <input id="inputProductName" name="ProductName" required="true" />
+                        <input id="inputProductName" name="ProductName" required="true" class="easyui-validatebox" />
                     </td>
                 </tr>
                 <tr>
@@ -182,7 +182,8 @@
                         起始存储位
                     </td>
                     <td>
-                        <input id="inputOriginStorage" name="OriginStorageCode" required="true" />
+                        <input id="inputOriginStorageCode" name="OriginStorageCode" required="true" style="display: none;" />
+                        <input id="inputOriginStorageName" name="OriginStorageName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -190,8 +191,8 @@
                         目标存储位
                     </td>
                     <td>
-                        <input id="inputTargetStorage" name="TargetStorageCode" class="easyui-validatebox"
-                            required="true" />
+                        <input id="inputTargetStorageCode" name="TargetStorageCode" required="true" style="display: none;" />
+                        <input id="inputTargetStorageName" name="TargetStorageName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -200,7 +201,7 @@
                     </td>
                     <td>
                         <input id="inputOriginPositionID" name="OriginPositionID" required="true" style="display: none;" />
-                        <input id="inputOriginPositionName" name="OriginPositionName" required="true" />
+                        <input id="inputOriginPositionName" name="OriginPositionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="positionQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -211,7 +212,7 @@
                     </td>
                     <td>
                         <input id="inputTargetPositionID" name="TargetPositionID" required="true" style="display: none;" />
-                        <input id="inputTargetPositionName" name="TargetPositionName" required="true" />
+                        <input id="inputTargetPositionName" name="TargetPositionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="positionQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -220,7 +221,7 @@
                     </td>
                     <td>
                         <input id="inputCurrentPositionID" name="CurrentPositionID" required="true" style="display: none;" />
-                        <input id="inputCurrentPositionName" name="CurrentPositionName" required="true" />
+                        <input id="inputCurrentPositionName" name="CurrentPositionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="positionQuery(3)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -252,8 +253,8 @@
                         标签状态
                     </td>
                     <td>
-                        <select id="inputTagState" name="TagState" class="easyui-combobox"
-                            panelheight="120" style="width: 129px;">
+                        <select id="inputTagState" name="TagState" class="easyui-combobox" panelheight="120"
+                            style="width: 129px;">
                             <option value="01">未点亮</option>
                             <option value="02">已点亮</option>
                         </select>

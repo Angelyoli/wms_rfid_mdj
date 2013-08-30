@@ -79,6 +79,7 @@ namespace THOK.Wms.Bll.Service
                     t.OrderType,
                     t.AllotID,
                     t.DownloadState,
+                    p.PathName,
                     OriginRegionName = p.OriginRegion.RegionName,
                     TargetRegionName = p.TargetRegion.RegionName
                 })
@@ -107,6 +108,7 @@ namespace THOK.Wms.Bll.Service
                     t.DownloadState,
                     t.OriginRegionName,
                     t.TargetRegionName,
+                    t.PathName,
                     OriginStorageName = c.CellName
                 })
                 .Join(cellQuery, t => t.TargetStorageCode, c => c.CellCode, (t, c) => new
@@ -134,6 +136,7 @@ namespace THOK.Wms.Bll.Service
                     t.DownloadState,
                     t.OriginRegionName,
                     t.TargetRegionName,
+                    t.PathName,
                     t.OriginStorageName,
                     TargetStorageName = c.CellName
                 })
@@ -162,6 +165,7 @@ namespace THOK.Wms.Bll.Service
                     t.DownloadState,
                     t.OriginRegionName,
                     t.TargetRegionName,
+                    t.PathName,
                     t.OriginStorageName,
                     t.TargetStorageName,
                     OriginPositionName = p.PositionName
@@ -191,6 +195,7 @@ namespace THOK.Wms.Bll.Service
                     t.DownloadState,
                     t.OriginRegionName,
                     t.TargetRegionName,
+                    t.PathName,
                     t.OriginStorageName,
                     t.TargetStorageName,
                     t.OriginPositionName,
@@ -221,62 +226,62 @@ namespace THOK.Wms.Bll.Service
                     t.DownloadState,
                     t.OriginRegionName,
                     t.TargetRegionName,
+                    t.PathName,
                     t.OriginStorageName,
                     t.TargetStorageName,
                     t.OriginPositionName,
                     t.TargetPositionName,
                     CurrentPositionName = p.PositionName
-                }).ToArray().OrderBy(t => t.ID).Select(t => new
-                {
-                    t.ID,
-                    t.PathID,
-                    t.OriginPositionID,
-                    t.TargetPositionID,
-                    t.CurrentPositionID,
-
-                    TaskType = t.TaskType == "01" ? "正常任务" : t.TaskType == "02" ? "叠空托盘" : "异常",
-                    t.TaskLevel,
-                    OriginRegionName = t.OriginRegionName,
-                    TargetRegionName = t.TargetRegionName,
-                    t.ProductCode,
-                    t.ProductName,
-                    t.OriginStorageCode,
-                    t.TargetStorageCode,
-                    OriginPositionName = t.OriginPositionName,
-                    TargetPositionName = t.TargetPositionName,
-                    CurrentPositionName = t.CurrentPositionName,
-                    CurrentPositionState = t.CurrentPositionState == "01" ? "未达到" : t.CurrentPositionState == "02" ? "已到达" : "异常",
-                    State = t.State == "01" ? "等待中" : t.State == "02" ? "执行中" : t.State == "03" ? "拣选中" : t.State == "04" ? "已完成" : "异常",
-                    TagState = t.TagState == "01" ? "未点亮" : t.TagState == "02" ? "已点亮" : "异常",
-                    t.Quantity,
-                    t.TaskQuantity,
-                    t.OperateQuantity,
-                    t.OrderID,
-                    OrderType = t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : "异常",
-                    t.AllotID,
-                    DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常"
-                });
+                })
+                .Where(t => t.TaskType.Contains(task.TaskType)
+                    ///路径的 区域
+                           && t.ProductCode.Contains(task.ProductCode)
+                           && t.ProductName.Contains(task.ProductName)
+                           && t.OriginStorageCode.Contains(task.OriginStorageCode)
+                           && t.TargetStorageCode.Contains(task.TargetStorageCode)
+                    ///起始位置，目标位置，当前位置
+                           && t.CurrentPositionState.Contains(task.CurrentPositionState)
+                           && t.State.Contains(task.State)
+                           && t.TagState.Contains(task.TagState)
+                           && t.OrderID.Contains(task.OrderID)
+                           && t.OrderType.Contains(task.OrderType)
+                           && t.DownloadState.Contains(task.DownloadState)
+                         )
+                  .OrderBy(t => t.ID).Select(t => new
+                 {
+                     t.ID,
+                     t.PathID,
+                     t.OriginPositionID,
+                     t.TargetPositionID,
+                     t.CurrentPositionID,
+                     TaskType = t.TaskType == "01" ? "正常任务" : t.TaskType == "02" ? "叠空托盘" : "异常",
+                     t.TaskLevel,
+                     t.OriginRegionName,
+                     t.TargetRegionName,
+                     t.ProductCode,
+                     t.ProductName,
+                     t.PathName,
+                     t.OriginStorageCode,
+                     t.OriginStorageName,
+                     t.TargetStorageCode,
+                     t.TargetStorageName,
+                     t.OriginPositionName,
+                     t.TargetPositionName,
+                     t.CurrentPositionName,
+                     CurrentPositionState = t.CurrentPositionState == "01" ? "未达到" : t.CurrentPositionState == "02" ? "已到达" : "异常",
+                     State = t.State == "01" ? "等待中" : t.State == "02" ? "执行中" : t.State == "03" ? "拣选中" : t.State == "04" ? "已完成" : "异常",
+                     TagState = t.TagState == "01" ? "未点亮" : t.TagState == "02" ? "已点亮" : "异常",
+                     t.Quantity,
+                     t.TaskQuantity,
+                     t.OperateQuantity,
+                     t.OrderID,
+                     OrderType = t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : "异常",
+                     t.AllotID,
+                     DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常"
+                 });
             int total = taskQuery2.Count();
             taskQuery2 = taskQuery2.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = taskQuery2.ToArray() };
-            #region MyRegion
-            //.Where(t => t.TaskType.Contains(task.TaskType)
-            //&& t.Path.PathName.Contains(task.Path.PathName)
-            //&& t.ProductCode.Contains(task.ProductCode)
-            //&& t.ProductName.Contains(task.ProductName)
-            //&& t.OriginStorageCode.Contains(task.OriginStorageCode)
-            //&& t.TargetStorageCode.Contains(task.TargetStorageCode)
-            //&& t.OriginPosition.PositionName.Contains(task.OriginPosition.PositionName)
-            //&& t.TargetPosition.PositionName.Contains(task.TargetPosition.PositionName)
-            //&& t.CurrentPosition.PositionName.Contains(task.CurrentPosition.PositionName)
-            //&& t.CurrentPositionState.Contains(task.CurrentPositionState)
-            //&& t.State.Contains(task.State)
-            //&& t.TagState.Contains(task.TagState)
-            //&& t.OrderID.Contains(task.OrderID)
-            //&& t.OrderType.Contains(task.OrderType)
-            //&& t.DownloadState.Contains(task.DownloadState)
-            //       ) 
-            #endregion
         }
         /// <summary>添加</summary>
         public bool Add(Task task, out string strResult)
