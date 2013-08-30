@@ -1,4 +1,6 @@
 ﻿<script type="text/javascript">
+    var Module = "TaskManage";
+
     $(function () {
         //双击赋值
         $('#positionDetail').datagrid({
@@ -19,16 +21,16 @@
         var positionRow = $('#positionDetail').datagrid('getSelected');
         if (positionRow) {
             if (type == 1) {
-                $('#inputOriginPositionID').val(positionRow.ID);
-                $('#inputOriginPositionName').val(positionRow.PositionName);
+                $('#originPositionID2').val(positionRow.ID);
+                $('#originPositionName2').val(positionRow.PositionName);
             }
             else if (type == 2) {
-                $('#inputTargetPositionID').val(positionRow.ID);
-                $('#inputTargetPositionName').val(positionRow.PositionName);
+                $('#targetPositionID2').val(positionRow.ID);
+                $('#targetPositionName2').val(positionRow.PositionName);
             }
             else if (type == 3) {
-                $('#inputCurrentPositionID').val(positionRow.ID);
-                $('#inputCurrentPositionName').val(positionRow.PositionName);
+                $('#currentPositionID2').val(positionRow.ID);
+                $('#currentPositionName2').val(positionRow.PositionName);
             }
             $('#dlg-position').dialog('close');
         }
@@ -39,7 +41,7 @@
     //查询
     function positionQueryClick() {
         $("#positionDetail").datagrid({
-            url: '/Position/GetPosition/?queryString=' + $('#queryType').combogrid('getValue') + '&value=' + $('#inputPositionInfo').val()
+            url: '/Position/GetPosition/?queryString=' + $('#positionType').combogrid('getValue') + '&value=' + $('#positionInfo').val()
         });
         $("#positionDetail").datagrid('reload');
         editKey = true;
@@ -48,13 +50,13 @@
 <div id="dlg-position" class="easyui-dialog" modal="true" style="width: 500px; height: 420px;
     padding: 0px 0px" closed="true" buttons="#dlg-position-buttons">
     <div id="btnQuery">
-        <select id="queryType" class="easyui-combobox" style="width: 100px;" readonly="true">
+        <select id="positionType" class="easyui-combobox" style="width: 100px;" readonly="true">
             <option value="PositionName">位置名称</option>
             <option value="PositionType">位置类型</option>
         </select>
-        <input id="inputPositionInfo">
-        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="positionQueryClick()"
-            id="positionQuery">查询</a>
+        <input id="positionInfo">
+        <a href="#" id="positionQuery" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+            onclick="positionQueryClick()">查询</a>
     </div>
     <div split="true" border="false" style="width: 486px; height: 320px;">
         <table id="positionDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"

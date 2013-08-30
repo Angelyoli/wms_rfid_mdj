@@ -1,4 +1,6 @@
 ﻿<script type="text/javascript">
+    var Module = "TaskManage";
+
     $(function () {
         pathInit();
         pathDoubleClick();
@@ -12,8 +14,10 @@
         var pathRow = $('#pathDetail').datagrid('getSelected');
         if (pathRow) {
             $('#pathID').val(pathRow.ID);
-            $('#inputOriginRegionName').val(pathRow.OriginRegionName);
-            $('#inputTargetRegionName').val(pathRow.TargetRegionName);
+            $('#originRegionName1').val(pathRow.OriginRegionName);
+            $('#targetRegionName1').val(pathRow.TargetRegionName);
+            $('#originRegionName2').val(pathRow.OriginRegionName);
+            $('#targetRegionName2').val(pathRow.TargetRegionName);
             $('#dlg-path').dialog('close');
         }
     }

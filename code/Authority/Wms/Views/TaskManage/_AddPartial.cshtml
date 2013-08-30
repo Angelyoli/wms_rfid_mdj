@@ -6,27 +6,32 @@
     $(function () {
         addInit();
     })
+
     //初始化
     function addInit() {
-        $('#inputOriginRegionName').attr('readonly', 'true');
-        $('#inputTargetRegionName').attr('readonly', 'true');
-        $('#inputProductCode').attr('readonly', 'true');
-        $('#inputProductName').attr('readonly', 'true');
-        $('#inputOriginStorageName').attr('readonly', 'true');
-        $('#inputTargetStorageName').attr('readonly', 'true');
-        $('#inputOriginPositionName').attr('readonly', 'true');
-        $('#inputTargetPositionName').attr('readonly', 'true');
-        $('#inputCurrentPositionName').attr('readonly', 'true');
+        $('#originRegionName2').attr('readonly', 'true');
+        $('#targetRegionName2').attr('readonly', 'true');
+        $('#productCode2').attr('readonly', 'true');
+        $('#productName2').attr('readonly', 'true');
+        $('#originStorageName2').attr('readonly', 'true');
+        $('#targetStorageName2').attr('readonly', 'true');
+        $('#originPositionName2').attr('readonly', 'true');
+        $('#targetPositionName2').attr('readonly', 'true');
+        $('#currentPositionName2').attr('readonly', 'true');
 
-        $('#inputTaskType').attr('editable', 'false');
-        $('#inputTagState').attr('editable', 'false');
+        $('#taskType2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
+        $('#currentPositionState2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
+        $('#state2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
+        $('#tagState2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
+        $('#orderType2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
+        $('#downloadState2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
     }
     //添加
     function addClick() {
         $('#dlg-add').dialog('open').dialog('setTitle', '新增');
 
         //恢复Form中的文本的有效验证
-        $('#Productfm .easyui-validatebox').validatebox({ required: true });
+        $('#addFm .easyui-validatebox').validatebox({ required: true });
         //恢复Form中禁用的文本
         $('form input').removeAttr("disabled");
         $('form textarea').removeAttr("disabled");
@@ -140,8 +145,7 @@
                         任务类型
                     </td>
                     <td style="padding-right: 30px;">
-                        <select id="inputTaskType" name="TaskType" class="easyui-combobox" panelheight="70"
-                            style="width: 129px;">
+                        <select id="taskType2" name="TaskType" class="easyui-combobox" panelheight="70">
                             <option value="01">正常任务</option>
                             <option value="02">叠空托盘</option>
                         </select>
@@ -150,8 +154,8 @@
                         起始区域
                     </td>
                     <td>
-                        <input id="pathID" name="PathID" required="true" style="display: none;" />
-                        <input id="inputOriginRegionName" name="OriginRegionName" required="true" class="easyui-validatebox" />
+                        <input id="pathID2" name="PathID" required="true" style="display: none;" />
+                        <input id="originRegionName2" name="OriginRegionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="pathQuery()" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -159,7 +163,7 @@
                         目标区域
                     </td>
                     <td>
-                        <input id="inputTargetRegionName" name="TargetRegionName" required="true" class="easyui-validatebox" />
+                        <input id="targetRegionName2" name="TargetRegionName" required="true" class="easyui-validatebox" />
                     </td>
                 </tr>
                 <tr>
@@ -173,7 +177,7 @@
                         商品编码
                     </td>
                     <td>
-                        <input id="inputProductCode" name="ProductCode" class="easyui-validatebox" required="true" />
+                        <input id="productCode2" name="ProductCode" class="easyui-validatebox" required="true" />
                         <a href="#" onclick="productQuery()" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -181,7 +185,7 @@
                         商品名称
                     </td>
                     <td>
-                        <input id="inputProductName" name="ProductName" required="true" class="easyui-validatebox" />
+                        <input id="productName2" name="ProductName" required="true" class="easyui-validatebox" />
                     </td>
                 </tr>
                 <tr>
@@ -189,8 +193,8 @@
                         起始存储位
                     </td>
                     <td>
-                        <input id="inputOriginStorageCode" name="OriginStorageCode" required="true" style="display: none;" />
-                        <input id="inputOriginStorageName" name="OriginStorageName" required="true" class="easyui-validatebox" />
+                        <input id="originStorageCode2" name="OriginStorageCode" required="true" style="display: none;" />
+                        <input id="originStorageName2" name="OriginStorageName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -198,8 +202,8 @@
                         目标存储位
                     </td>
                     <td>
-                        <input id="inputTargetStorageCode" name="TargetStorageCode" required="true" style="display: none;" />
-                        <input id="inputTargetStorageName" name="TargetStorageName" required="true" class="easyui-validatebox" />
+                        <input id="targetStorageCode2" name="TargetStorageCode" required="true" style="display: none;" />
+                        <input id="targetStorageName2" name="TargetStorageName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -207,8 +211,8 @@
                         起始位置
                     </td>
                     <td>
-                        <input id="inputOriginPositionID" name="OriginPositionID" required="true" style="display: none;" />
-                        <input id="inputOriginPositionName" name="OriginPositionName" required="true" class="easyui-validatebox" />
+                        <input id="originPositionID2" name="OriginPositionID" required="true" style="display: none;" />
+                        <input id="originPositionName2" name="OriginPositionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="positionQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -218,8 +222,8 @@
                         目标位置
                     </td>
                     <td>
-                        <input id="inputTargetPositionID" name="TargetPositionID" required="true" style="display: none;" />
-                        <input id="inputTargetPositionName" name="TargetPositionName" required="true" class="easyui-validatebox" />
+                        <input id="targetPositionID2" name="TargetPositionID" required="true" style="display: none;" />
+                        <input id="targetPositionName2" name="TargetPositionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="positionQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -227,8 +231,8 @@
                         当前位置
                     </td>
                     <td>
-                        <input id="inputCurrentPositionID" name="CurrentPositionID" required="true" style="display: none;" />
-                        <input id="inputCurrentPositionName" name="CurrentPositionName" required="true" class="easyui-validatebox" />
+                        <input id="currentPositionID2" name="CurrentPositionID" required="true" style="display: none;" />
+                        <input id="currentPositionName2" name="CurrentPositionName" required="true" class="easyui-validatebox" />
                         <a href="#" onclick="positionQuery(3)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -236,8 +240,8 @@
                         当前位置状态
                     </td>
                     <td>
-                        <select id="inputCurrentPositionState" name="CurrentPositionState" class="easyui-combobox"
-                            editable="false" panelheight="120" style="width: 129px;">
+                        <select id="currentPositionState2" name="CurrentPositionState" class="easyui-combobox"
+                            panelheight="120">
                             <option value="01">未达到</option>
                             <option value="02">已达到</option>
                         </select>
@@ -248,8 +252,7 @@
                         状态
                     </td>
                     <td>
-                        <select id="inputState" name="State" class="easyui-combobox" editable="false" panelheight="120"
-                            style="width: 129px;">
+                        <select id="state2" name="State" class="easyui-combobox" panelheight="120">
                             <option value="01">等待中</option>
                             <option value="02">执行中</option>
                             <option value="03">拣选中</option>
@@ -260,8 +263,7 @@
                         标签状态
                     </td>
                     <td>
-                        <select id="inputTagState" name="TagState" class="easyui-combobox" panelheight="120"
-                            style="width: 129px;">
+                        <select id="tagState2" name="TagState" class="easyui-combobox" panelheight="120">
                             <option value="01">未点亮</option>
                             <option value="02">已点亮</option>
                         </select>
@@ -298,8 +300,7 @@
                         原订单类型
                     </td>
                     <td>
-                        <select id="inputOrderType" name="OrderType" class="easyui-combobox" editable="false"
-                            panelheight="120" style="width: 129px;">
+                        <select id="orderType2" name="OrderType" class="easyui-combobox" panelheight="120">
                             <option value="01">入库单</option>
                             <option value="02">移库单</option>
                             <option value="03">出库单</option>
@@ -316,8 +317,8 @@
                         补货下载状态
                     </td>
                     <td>
-                        <select id="inputDownloadState" name="DownloadState" class="easyui-combobox" name="IsFamous"
-                            editable="false" panelheight="70" style="width: 129px;" required="true">
+                        <select id="downloadState2" name="DownloadState" class="easyui-combobox" name="IsFamous"
+                            panelheight="70" required="true">
                             <option value="0">未下载</option>
                             <option value="1">已下载</option>
                         </select>

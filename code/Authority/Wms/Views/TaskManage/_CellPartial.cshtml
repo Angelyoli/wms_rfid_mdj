@@ -1,4 +1,6 @@
 ﻿<script type="text/javascript">
+    var Module = "TaskManage";
+
     $(function () {
         cellInit();
         cellDoubleClick();
@@ -12,12 +14,16 @@
         var cellRow = $('#cellDetail').datagrid('getSelected');
         if (cellRow) {
             if (type == 1) {
-                $('#inputOriginStorageCode').val(cellRow.CellCode);
-                $('#inputOriginStorageName').val(cellRow.CellName);
+                $('#originStorageCode1').val(cellRow.CellCode);
+                $('#originStorageName1').val(cellRow.CellName);
+                $('#originStorageCode2').val(cellRow.CellCode);
+                $('#originStorageName2').val(cellRow.CellName);
             }
             if (type == 2) {
-                $('#inputTargetStorageCode').val(cellRow.CellCode);
-                $('#inputTargetStorageName').val(cellRow.CellName);
+                $('#targetStorageCode1').val(cellRow.CellCode);
+                $('#targetStorageName1').val(cellRow.CellName);
+                $('#targetStorageCode2').val(cellRow.CellCode);
+                $('#targetStorageName2').val(cellRow.CellName);
             }
             $('#dlg-cell').dialog('close');
         }
@@ -29,6 +35,14 @@
                 cellSave();
             }
         })
+    }
+    //根据条件查询
+    function cellQueryClick() {
+        alert(1);
+        $("#cellDetail").datagrid({
+            url: '/Cell/FindDetails/?queryString=' + $('#cellType').combogrid('getValue') + '&value=' + $('#cellInfo').val()
+        });
+        $("#cellDetail").datagrid('reload');
     }
 </script>
 <style type="text/css">
@@ -44,8 +58,21 @@
         height: 430px;
         padding: 0px 0px;
     }
+    #cellType
+    {
+        width: 100px;
+    }
 </style>
 <div id="dlg-cell" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-cell-buttons">
+    <div id="btnQuery">
+        <select id="cellType" class="easyui-combobox" readonly="true">
+            <option value="CellCode">货位编码</option>
+            <option value="CellName">货位名称</option>
+        </select>
+        <input id="cellInfo">
+        <a href="#" id="cellQuery" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+            onclick="cellQueryClick()">查询</a>
+    </div>
     <div split="true" border="false" class="divCellDetail">
         <table id="cellDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
             pagesize="50" singleselect="true" fit="true" fitcolumns="true" pagination="true"

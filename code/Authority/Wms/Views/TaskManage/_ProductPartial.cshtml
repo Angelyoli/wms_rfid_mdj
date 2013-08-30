@@ -1,4 +1,6 @@
 ﻿<script type="text/javascript">
+    var Module = "TaskManage";
+
     $(function () {
         productInit();
         productDoubleClick();
@@ -16,8 +18,12 @@
     function productSave() {
         var productRow = $('#productDetail').datagrid('getSelected');
         if (productRow) {
-            $('#inputProductCode').val(productRow.ProductCode);
-            $('#inputProductName').val(productRow.ProductName);
+            //AddPartial中的id
+            $('#productCode1').val(productRow.ProductCode);
+            $('#productName1').val(productRow.ProductName);
+            //SearchPartial中的id
+            $('#productCode2').val(productRow.ProductCode);
+            $('#productName2').val(productRow.ProductName);
             $('#dlg-product').dialog('close');
         }
     }
@@ -32,7 +38,7 @@
     //根据条件查询
     function productQueryClick() {
         $("#productDetail").datagrid({
-            url: '/DefaultProductSet/GetProductBy/?QueryString=' + $('#queryType').combogrid('getValue') + '&Value=' + $('#productInfo').val()
+            url: '/DefaultProductSet/GetProductBy/?QueryString=' + $('#productType').combogrid('getValue') + '&Value=' + $('#productInfo').val()
         });
         $("#productDetail").datagrid('reload');
     }
@@ -42,7 +48,7 @@
 <div id="dlg-product" class="easyui-dialog" modal="true" style="width: 500px; height: 500px;
     padding: 0px 0px" closed="true" buttons="#dlg-product-buttons">
     <div id="btnQuery">
-        <select id="queryType" class="easyui-combobox" style="width: 100px;" readonly="true">
+        <select id="productType" class="easyui-combobox" style="width: 100px;" readonly="true">
             <option value="ProductCode">卷烟编码</option>
             <option value="ProductName">卷烟名称</option>
         </select>
