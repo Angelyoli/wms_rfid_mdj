@@ -38,7 +38,6 @@
     }
     //根据条件查询
     function cellQueryClick() {
-        alert(1);
         $("#cellDetail").datagrid({
             url: '/Cell/FindDetails/?queryString=' + $('#cellType').combogrid('getValue') + '&value=' + $('#cellInfo').val()
         });
@@ -49,13 +48,13 @@
     #dlg-cell
     {
         width: 800px;
-        height: 500px;
+        height: 400px;
         padding: 0px 0px;
     }
     .divCellDetail
     {
-        width: 798px;
-        height: 430px;
+        width: 800px;
+        height: 400px;
         padding: 0px 0px;
     }
     #cellType

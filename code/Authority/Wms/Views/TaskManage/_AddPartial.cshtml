@@ -208,6 +208,19 @@
                             plain="true"></a>
                     </td>
                     <td>
+                        状态
+                    </td>
+                    <td>
+                        <select id="state2" name="State" class="easyui-combobox" panelheight="120">
+                            <option value="01">等待中</option>
+                            <option value="02">执行中</option>
+                            <option value="03">拣选中</option>
+                            <option value="04">已完成</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         起始位置
                     </td>
                     <td>
@@ -216,8 +229,6 @@
                         <a href="#" onclick="positionQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
-                </tr>
-                <tr>
                     <td>
                         目标位置
                     </td>
@@ -236,6 +247,8 @@
                         <a href="#" onclick="positionQuery(3)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
+                </tr>
+                <tr>
                     <td>
                         当前位置状态
                     </td>
@@ -244,19 +257,6 @@
                             panelheight="120">
                             <option value="01">未达到</option>
                             <option value="02">已达到</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        状态
-                    </td>
-                    <td>
-                        <select id="state2" name="State" class="easyui-combobox" panelheight="120">
-                            <option value="01">等待中</option>
-                            <option value="02">执行中</option>
-                            <option value="03">拣选中</option>
-                            <option value="04">已完成</option>
                         </select>
                     </td>
                     <td>
