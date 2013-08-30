@@ -1,12 +1,19 @@
 ﻿<script type="text/javascript">
     function deleteClick() {
-        var row = $('#details').datagrid('getSelected');
-        if (row) {
-            url = '/TaskManage/Delete/?taskId=' + row.ID;
-            showDialog('删除');
-            $('#fm').form('load', row);
+        var deleteRow = $('#details').datagrid('getSelected');
+        if (deleteRow) {
+            $('#dlg-add').dialog('open').dialog('setTitle', '删除任务信息');
+            $('#fm').form('load', deleteRow);
+            
+            $('form input').removeAttr("disabled");
+            $('#fm .easyui-validatebox').validatebox({
+                required: false
+            });
+            $('form input').attr("disabled", "disabled");
+
+            url = '/TaskManage/Delete/?taskId=' + deleteRow.ID;
         } else {
-            $.messager.alert('错误', '没有选择行！', 'info');
+            $.messager.alert('错误', '没有选择行！');
         }
     };
 </script>
