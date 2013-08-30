@@ -369,6 +369,7 @@
     <Compile Include="Migrations\201308070314391_modify_cell_add_IsMultiBrand.cs" />
     <Compile Include="Migrations\201308070314391_modify_cell_add_IsMultiBrand.Designer.cs">
       <DependentUpon>201308070314391_modify_cell_add_IsMultiBrand.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201308280038013_add_product_size.cs" />
     <Compile Include="Migrations\201308280038013_add_product_size.Designer.cs">
       <DependentUpon>201308280038013_add_product_size.cs</DependentUpon>
@@ -431,6 +432,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201308070314391_modify_cell_add_IsMultiBrand.resx">
       <DependentUpon>201308070314391_modify_cell_add_IsMultiBrand.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201308280038013_add_product_size.resx">
       <DependentUpon>201308280038013_add_product_size.cs</DependentUpon>
     </EmbeddedResource>
