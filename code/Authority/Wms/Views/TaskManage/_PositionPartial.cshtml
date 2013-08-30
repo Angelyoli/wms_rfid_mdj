@@ -1,7 +1,7 @@
 ﻿<script type="text/javascript">
     $(function () {
+        //双击赋值
         $('#positionDetail').datagrid({
-            //双击赋值
             onDblClickRow: function () {
                 positionSave();
             }
@@ -19,13 +19,16 @@
         var positionRow = $('#positionDetail').datagrid('getSelected');
         if (positionRow) {
             if (type == 1) {
-                $('#originPositionName').val(positionRow.PositionName);
+                $('#inputOriginPositionID').val(positionRow.ID);
+                $('#inputOriginPositionName').val(positionRow.PositionName);
             }
             else if (type == 2) {
-                $('#targetPositionName').val(positionRow.PositionName);
+                $('#inputTargetPositionID').val(positionRow.ID);
+                $('#inputTargetPositionName').val(positionRow.PositionName);
             }
             else if (type == 3) {
-                $('#currentPositionName').val(positionRow.PositionName);
+                $('#inputCurrentPositionID').val(positionRow.ID);
+                $('#inputCurrentPositionName').val(positionRow.PositionName);
             }
             $('#dlg-position').dialog('close');
         }
@@ -36,9 +39,9 @@
     //查询
     function positionQueryClick() {
         $("#positionDetail").datagrid({
-            url: '/Position/GetPosition/?queryString=' + $('#queryType').combogrid('getValue') + '&value=' + $('#parentPositionNameInfo').val()
+            url: '/Position/GetPosition/?queryString=' + $('#queryType').combogrid('getValue') + '&value=' + $('#inputPositionInfo').val()
         });
-        $("#CellPositionNameDetail").datagrid('reload');
+        $("#positionDetail").datagrid('reload');
         editKey = true;
     }
 </script>
@@ -49,7 +52,7 @@
             <option value="PositionName">位置名称</option>
             <option value="PositionType">位置类型</option>
         </select>
-        <input id="parentPositionNameInfo">
+        <input id="inputPositionInfo">
         <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="positionQueryClick()"
             id="positionQuery">查询</a>
     </div>

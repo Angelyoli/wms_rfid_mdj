@@ -12,8 +12,8 @@
         var pathRow = $('#pathDetail').datagrid('getSelected');
         if (pathRow) {
             $('#pathID').val(pathRow.ID);
-            $('#originRegionName').val(pathRow.OriginRegionName);
-            $('#targetRegionName').val(pathRow.TargetRegionName);
+            $('#inputOriginRegionName').val(pathRow.OriginRegionName);
+            $('#inputTargetRegionName').val(pathRow.TargetRegionName);
             $('#dlg-path').dialog('close');
         }
     }
