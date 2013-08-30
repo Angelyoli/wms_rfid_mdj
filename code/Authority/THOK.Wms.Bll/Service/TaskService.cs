@@ -47,7 +47,7 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
-        #region 作业任务管理
+        #region 查询
         /// <summary>查询</summary>
         public object GetDetails(int page, int rows, Task task)
         {
@@ -283,6 +283,9 @@ namespace THOK.Wms.Bll.Service
             taskQuery2 = taskQuery2.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = taskQuery2.ToArray() };
         }
+        #endregion
+
+        #region 添加
         /// <summary>添加</summary>
         public bool Add(Task task, out string strResult)
         {
@@ -328,7 +331,10 @@ namespace THOK.Wms.Bll.Service
                 strResult = "原因：找不到当前登陆用户！请重新登陆！";
             }
             return result;
-        }
+        } 
+        #endregion
+
+        #region 保存
         /// <summary>保存</summary>
         public bool Save(Task task, out string strResult)
         {
@@ -373,7 +379,10 @@ namespace THOK.Wms.Bll.Service
                 strResult = "原因：未找到当前需要修改的数据！";
             }
             return result;
-        }
+        } 
+        #endregion
+
+        #region 删除
         /// <summary>删除</summary>
         public bool Delete(string taskID, out string strResult)
         {
@@ -393,8 +402,15 @@ namespace THOK.Wms.Bll.Service
                 strResult = "删除失败，原因：" + ex.Message;
             }
             return result;
-        }
+        } 
         #endregion
+
+        public bool Add(string originPosition,string targetPosition)
+        {
+
+
+            return true;
+        }
 
         #region 入库单据作业
         /// <summary>
@@ -764,11 +780,11 @@ namespace THOK.Wms.Bll.Service
                         try
                         {
                             /* 作业生成后 修改入库订单状态=5 
-                             * Status == 1:已录入 2:已审核 3:已分配 4:已确认 5:执行中 6:已结单 */
-                            var moveBillMaster = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "4");
+                             * Status == 1:已录入 2:已审核  3:执行中 4:已结单 */
+                            var moveBillMaster = MoveBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "2");
                             if (moveBillMaster != null)
                             {
-                                moveBillMaster.Status = "5";
+                                moveBillMaster.Status = "3";
                                 MoveBillMasterRepository.SaveChanges();
 
                                 TaskRepository.SaveChanges();
