@@ -17,7 +17,7 @@ namespace THOK.Wms.DownloadWms.Dao
 
         public DataTable GetDistCarBillInfo(string distCarCode)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_DIST_BILL WHERE DIST_BILL_ID NOT IN({0})", distCarCode);
+            string sql = string.Format("SELECT * FROM V_WMS_DIST_BILL WHERE {0}", distCarCode);
             return this.ExecuteQuery(sql).Tables[0];
         }
 

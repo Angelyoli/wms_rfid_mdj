@@ -3,11 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using THOK.Util;
+using THOK.Wms.DownloadWms.Dao;
 
 namespace THOK.WMS.DownloadWms.Dao
 {
     public class DownInBillDao : BaseDao
     {
+        public string dbTypeName = "";
+        public string SalesSystemDao()
+        {
+            SysParameterDao parameterDao = new SysParameterDao();
+            Dictionary<string, string> parameter = parameterDao.FindParameters();
+
+            //仓储业务数据接口服务器数据库类型
+            if (parameter["SalesSystemDBType"] != "")
+                dbTypeName = parameter["SalesSystemDBType"];
+
+            return dbTypeName;
+        }
 
         /// <summary>
         /// 查询营销系统入库单据主表
@@ -15,7 +28,7 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetInBillMaster(string inBillNoList)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_IN_ORDER WHERE {0} AND QUANTITY_SUM>0", inBillNoList);
+            string sql = string.Format("SELECT * FROM V_WMS_IN_ORDER WHERE {0} ", inBillNoList);
             return this.ExecuteQuery(sql).Tables[0];
         }
         /// <summary>
@@ -33,7 +46,21 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <returns></returns>
         public DataTable GetInBillDetail(string inBillNoList)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_IN_ORDER_DETAIL WHERE {0} AND QUANTITY>0", inBillNoList);
+            string sql = "";
+            dbTypeName = this.SalesSystemDao();
+            switch (dbTypeName)
+            {
+                case "gxyc-db2"://广西烟草db2
+                    sql = string.Format("SELECT A.*,B.BRAND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
+                    break;
+                case "gzyc-oracle"://贵州烟草oracle
+                    sql = string.Format("SELECT V_WMS_IN_ORDER_DETAIL.*,BRAND_CODE AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL WHERE {0} ", inBillNoList);
+                    break;
+                default://默认广西烟草
+                    sql = string.Format("SELECT A.*,B.BRAND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
+                    break;
+            }
+
             return this.ExecuteQuery(sql).Tables[0];
         }
 

@@ -5,12 +5,16 @@
 		<Password Name = "PWD" Value = "65CED0851FFD283F"/>
 	</Connection>
 	<Connection Name = "YXConnection" DatabaseType="DB2">
-		<ConnectionString Value="server=10.80.1.239:50000;database =gxv3td;UID=qzcc" />
-		<Password Name="PWD" Value="59E4F4EFD5B49ED3"/>
+		<ConnectionString Value="server=10.80.1.239:50000;database =gxv3td;UID=ylcc" />
+		<Password Name="PWD" Value="2B081475F26880DF"/>
 	</Connection>
 	<Connection Name = "ZYJCConnection" DatabaseType = "SQLSERVER">
-		<ConnectionString Value = "server=10.82.211.205;database =CORP_SCAN;UID =sa" />
+		<ConnectionString Value = "server=10.82.130.106;database =CORP_SCAN;UID =sa" />
 		<Password Name = "PWD" Value = "F343AB1C018D8B2C"/>
+	</Connection>
+	<Connection Name = "ZYDB2Connection" DatabaseType = "DB2">
+		<ConnectionString Value = "server=.;database =wlctr;UID =ms" />
+		<Password Name = "PWD" Value = "A0E5B8AA619AE888"/>
 	</Connection>
 </Connections>
 
