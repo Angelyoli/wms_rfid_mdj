@@ -1,7 +1,6 @@
 ﻿<script type="text/javascript">
     var Module = "TaskManage";
 
-    var searchDialog;
     $(function () {
         searchInit();
     })
@@ -18,12 +17,12 @@
         $('#targetPositionName1').attr('readonly', 'true');
         $('#currentPositionName1').attr('readonly', 'true');
 
-        $('#taskType1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
-        $('#currentPositionState1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
-        $('#state1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
-        $('#tagState1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
-        $('#orderType1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
-        $('#downloadState1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
+        $('#taskType1').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#currentPositionState1').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#state1').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#tagState1').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#orderType1').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#downloadState1').combo({ editable: false, width: 130, panelHeight: 'auto' });
     }
     //清空文本
     function serachClear() {
@@ -38,10 +37,9 @@
     //点击查询
     function searchClick() {
         serachClear();
-        if (searchDialog == null) {
-            $('#dlg-search').dialog('open').dialog('setTitle', '查询品牌信息');
-        }
+        $('#dlg-search').dialog('open').dialog('setTitle', '查询任务管理信息');
     }
+    //查询条件
     function searchByParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
         queryParams.TaskType = $('#taskType1').combo('getValue');
@@ -51,8 +49,8 @@
         queryParams.OriginStorageCode = $('#originStorageCode1').val();
         queryParams.TargetStorageCode = $('#targetStorageCode1').val();
         queryParams.OriginPositionID = $('#originPositionID1').val();
-        queryParams.TargetPositionID = $('#targetPositionID2').val();
-        queryParams.CurrentPositionID = $('#currentPositionID3').val();
+        queryParams.TargetPositionID = $('#targetPositionID1').val();
+        queryParams.CurrentPositionID = $('#currentPositionID1').val();
         queryParams.CurrentPositionState = $('#currentPositionState1').combo('getValue');
         queryParams.State = $('#state1').combo('getValue');
         queryParams.TagState = $('#tagState1').combo('getValue');
@@ -89,7 +87,7 @@
         text-align: center;
     }
 </style>
-<div id="dlg-search" class="easyui-dialog" modal="true" style="" closed="true" buttons="#dlg-search-buttons">
+<div id="dlg-search" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-search-buttons">
     <div class="easyui-layout" fit="true">
         <div class="searchdiv2" region="center">
             <table class="searchtable">
@@ -98,7 +96,7 @@
                         任务类型：
                     </td>
                     <td align="left">
-                        <select id="taskType1" class="easyui-combobox" style="width: 130px">
+                        <select id="taskType1" class="easyui-combobox">
                             <option value="01">正常任务</option>
                             <option value="02">叠空托盘</option>
                         </select>
@@ -107,7 +105,7 @@
                         状态：
                     </td>
                     <td align="left">
-                        <select id="state1" class="easyui-combobox" style="width: 130px">
+                        <select id="state1" class="easyui-combobox">
                             <option value="01">等待中</option>
                             <option value="02">执行中</option>
                             <option value="03">拣选中</option>
@@ -197,7 +195,7 @@
                         原订单类型：
                     </td>
                     <td align="left">
-                        <select id="orderType1" class="easyui-combobox" style="width: 130px">
+                        <select id="orderType1" class="easyui-combobox">
                             <option value="01">入库单</option>
                             <option value="02">移库单</option>
                             <option value="03">出库单</option>
@@ -205,23 +203,24 @@
                         </select>
                     </td>
                 </tr>
-                <td>
-                    当前位置：
-                </td>
-                <td>
-                    <input id="currentPositionID1" type="text" />
-                    <a href="#" onclick="positionQuery(3)" class="easyui-linkbutton" iconcls="icon-search"
-                        plain="true"></a>
-                </td>
-                <td class="searchTd1">
-                    当前位置状态：
-                </td>
-                <td align="left">
-                    <select id="currentPositionState1" class="easyui-combobox" style="width: 130px">
-                        <option value="01">未到达</option>
-                        <option value="02">已达到</option>
-                    </select>
-                </td>
+                <tr>
+                    <td>
+                        当前位置：
+                    </td>
+                    <td>
+                        <input id="currentPositionID1" type="text" />
+                        <a href="#" onclick="positionQuery(3)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                    <td class="searchTd1">
+                        当前位置状态：
+                    </td>
+                    <td align="left">
+                        <select id="currentPositionState1" class="easyui-combobox">
+                            <option value="01">未到达</option>
+                            <option value="02">已达到</option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     `
@@ -229,7 +228,7 @@
                         标签状态：
                     </td>
                     <td align="left">
-                        <select id="tagState1" class="easyui-combobox" style="width: 130px">
+                        <select id="tagState1" class="easyui-combobox">
                             <option value="01">未点亮</option>
                             <option value="02">已点亮</option>
                         </select>

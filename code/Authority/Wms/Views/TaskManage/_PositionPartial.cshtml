@@ -2,21 +2,26 @@
     var Module = "TaskManage";
 
     $(function () {
-        //双击赋值
-        $('#positionDetail').datagrid({
-            onDblClickRow: function () {
-                positionSave();
-            }
-        })
-        //属性初始化
+        positionInit();
+        positionDoubleClick();
+    });
+    //属性初始化
+    function positionInit() {
         $('#queryType').combo({
             required: true,
             editable: false,
             panelHeight: 45,
             panelWidth: 100
         })
-    });
-
+    }
+    //双击赋值
+    function positionDoubleClick() {
+        $('#positionDetail').datagrid({
+            onDblClickRow: function () {
+                positionSave();
+            }
+        })
+    }
     //浏览位置信息
     function positionQuery(p) {
         if (p == 1) {
@@ -71,11 +76,22 @@
             url: '/Position/GetPosition/?queryString=' + $('#positionType').combogrid('getValue') + '&value=' + $('#positionInfo').val()
         });
         $("#positionDetail").datagrid('reload');
-        editKey = true;
     }
 </script>
-<div id="dlg-position" class="easyui-dialog" modal="true" style="width: 500px; height: 420px;
-    padding: 0px 0px" closed="true" buttons="#dlg-position-buttons">
+<style type="text/css">
+    #dlg-position
+    {
+        width: 500px;
+        height: 420px;
+        padding: 0px 0px;
+    }
+    .divpst
+    {
+        width: 486px;
+        height: 320px;
+    }
+</style>
+<div id="dlg-position" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-position-buttons">
     <div id="btnQuery">
         <select id="positionType" class="easyui-combobox" style="width: 100px;" readonly="true">
             <option value="PositionName">位置名称</option>
@@ -85,7 +101,7 @@
         <a href="#" id="positionQuery" class="easyui-linkbutton" iconcls="icon-search" plain="true"
             onclick="positionQueryClick()">查询</a>
     </div>
-    <div split="true" border="false" style="width: 486px; height: 320px;">
+    <div split="true" border="false" class="divpst">
         <table id="positionDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
             singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
             <thead>

@@ -17,21 +17,15 @@
             if (row.TaskType == '正常任务') {
                 $('#taskType2').combo('setValue', '01').combo('setText', row.TaskType);
             }
-            else if (row.TaskType == '叠空托盘') {
-                $('#taskType2').combo('setValue', '02').combo('setText', row.TaskType);
-            }
             else {
-                $('#taskType2').combo('setValue', '异常').combo('setText', row.TaskType);
+                $('#taskType2').combo('setValue', '02').combo('setText', row.TaskType);
             }
             //CurrentPositionState
             if (row.CurrentPositionState == '未达到') {
                 $('#currentPositionState2').combo('setValue', '01').combo('setText', row.CurrentPositionState);
             }
-            else if (row.CurrentPositionState == '已达到') {
-                $('#currentPositionState2').combo('setValue', '02').combo('setText', row.CurrentPositionState);
-            }
             else {
-                $('#currentPositionState2').combo('setValue', '异常').combo('setText', row.CurrentPositionState);
+                $('#currentPositionState2').combo('setValue', '02').combo('setText', row.CurrentPositionState);
             }
             //State
             if (row.State == '等待中') {
@@ -43,21 +37,15 @@
             else if (row.State == '拣选中') {
                 $('#state2').combo('setValue', '03').combo('setText', row.State);
             }
-            else if (row.State == '已完成') {
-                $('#state2').combo('setValue', '04').combo('setText', row.State);
-            }
             else {
-                $('#state2').combo('setValue', '异常').combo('setText', row.State);
+                $('#state2').combo('setValue', '04').combo('setText', row.State);
             }
             //TagState
             if (row.TagState == '未点亮') {
                 $('#tagState2').combo('setValue', '01').combo('setText', row.TagState);
             }
-            else if (row.CurrentPositionState == '已点亮') {
-                $('#tagState2').combo('setValue', '02').combo('setText', row.TagState);
-            }
             else {
-                $('#tagState2').combo('setValue', '异常').combo('setText', row.TagState);
+                $('#tagState2').combo('setValue', '02').combo('setText', row.TagState);
             }
             //OrderType
             if (row.OrderType == '入库单') {
@@ -69,21 +57,15 @@
             else if (row.CurrentPositionState == '出库单') {
                 $('#orderType2').combo('setValue', '03').combo('setText', row.OrderType);
             }
-            else if (row.CurrentPositionState == '盘点单') {
-                $('#orderType2').combo('setValue', '04').combo('setText', row.OrderType);
-            }
             else {
-                $('#orderType2').combo('setValue', '异常').combo('setText', row.OrderType);
+                $('#orderType2').combo('setValue', '04').combo('setText', row.OrderType);
             }
             //DownloadState
             if (row.DownloadState == '未下载') {
                 $('#downloadState2').combo('setValue', '0').combo('setText', row.DownloadState);
             }
-            else if (row.CurrentPositionState == '已下载') {
-                $('#downloadState2').combo('setValue', '1').combo('setText', row.DownloadState);
-            }
             else {
-                $('#downloadState2').combo('setValue', '异常').combo('setText', row.DownloadState);
+                $('#downloadState2').combo('setValue', '1').combo('setText', row.DownloadState);
             }
 
             $('#addFm .easyui-validatebox').validatebox({ required: true });

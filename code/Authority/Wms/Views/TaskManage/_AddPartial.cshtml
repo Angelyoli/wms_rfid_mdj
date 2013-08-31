@@ -15,17 +15,16 @@
         $('#originPositionName2').attr('readonly', 'true');
         $('#targetPositionName2').attr('readonly', 'true');
         $('#currentPositionName2').attr('readonly', 'true');
+        $('#originCellName2').attr('readonly', 'true');
+        $('#targetCellName2').attr('readonly', 'true');
+        $('#currentCellName2').attr('readonly', 'true');
 
-        $('#originCellCode2').attr('readonly', 'true');
-        $('#targetCellCode2').attr('readonly', 'true');
-        $('#currentCellCode2').attr('readonly', 'true');
-
-        $('#taskType2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
-        $('#currentPositionState2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
-        $('#state2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
-        $('#tagState2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
-        $('#orderType2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
-        $('#downloadState2').combo({ editable: false, panelWidth: 'auto', panelHeight: 'auto' });
+        $('#taskType2').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#currentPositionState2').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#state2').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#tagState2').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#orderType2').combo({ editable: false, width: 130, panelHeight: 'auto' });
+        $('#downloadState2').combo({ editable: false, width: 130, panelHeight: 'auto' });
     }
     //添加
     function addClick() {
@@ -40,7 +39,7 @@
         $('#addFm').form('clear');
         url = '/TaskManage/Create/';
     };
-    
+
     //保存
     function save() {
         $('#addFm').form('submit', {
@@ -84,7 +83,7 @@
 <div id="dlg-add" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-buttons">
     <div class="easyui-layout" fit="true">
         <div region="center" border="false" class="div1">
-            <form id="addFm" method="post" novalidate >
+            <form id="addFm" method="post" novalidate>
             <table class="addtable">
                 <tr>
                     <input name="ID" style="display: none" />
@@ -95,9 +94,9 @@
                     </td>
                     <td>
                         <input id="originCellCode2" name="OriginStorageCode" type="text" class="easyui-validatebox"
-                            required="true" readonly="true" style="display: none;" />
+                            style="display: none;" />
                         <input id="originCellName2" name="OriginStorageName" type="text" class="easyui-validatebox"
-                            missingmessage="请选择要移出的货位" required="true" readonly="true" />
+                            missingmessage="请选择要移出的货位" />
                         <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -106,9 +105,9 @@
                     </td>
                     <td>
                         <input id="targetCellCode2" name="TargetStorageCode" type="text" class="easyui-validatebox"
-                            required="true" readonly="true" style="display: none;" />
+                            style="display: none;" />
                         <input id="targetCellName2" name="TargetStorageName" type="text" class="easyui-validatebox"
-                            missingmessage="请选择要移出的货位" required="true" readonly="true" />
+                            missingmessage="请选择要移出的货位" />
                         <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -127,8 +126,7 @@
                         当前位置状态
                     </td>
                     <td>
-                        <select id="currentPositionState2" name="CurrentPositionState" class="easyui-combobox"
-                            panelheight="120">
+                        <select id="currentPositionState2" name="CurrentPositionState" class="easyui-combobox">
                             <option value="01">未达到</option>
                             <option value="02">已达到</option>
                         </select>
@@ -155,7 +153,7 @@
                         任务类型
                     </td>
                     <td style="padding-right: 30px;">
-                        <select id="taskType2" name="TaskType" class="easyui-combobox" panelheight="70">
+                        <select id="taskType2" name="TaskType" class="easyui-combobox">
                             <option value="01">正常任务</option>
                             <option value="02">叠空托盘</option>
                         </select>
@@ -172,7 +170,7 @@
                         状态
                     </td>
                     <td>
-                        <select id="state2" name="State" class="easyui-combobox" panelheight="120">
+                        <select id="state2" name="State" class="easyui-combobox">
                             <option value="01">等待中</option>
                             <option value="02">执行中</option>
                             <option value="03">拣选中</option>
@@ -183,7 +181,7 @@
                         标签状态
                     </td>
                     <td>
-                        <select id="tagState2" name="TagState" class="easyui-combobox" panelheight="120">
+                        <select id="tagState2" name="TagState" class="easyui-combobox">
                             <option value="01">未点亮</option>
                             <option value="02">已点亮</option>
                         </select>
@@ -222,7 +220,7 @@
                         原订单类型
                     </td>
                     <td>
-                        <select id="orderType2" name="OrderType" class="easyui-combobox" panelheight="120">
+                        <select id="orderType2" name="OrderType" class="easyui-combobox">
                             <option value="01">入库单</option>
                             <option value="02">移库单</option>
                             <option value="03">出库单</option>
@@ -241,7 +239,7 @@
                         补货下载状态
                     </td>
                     <td>
-                        <select id="downloadState2" name="DownloadState" class="easyui-combobox" panelheight="70">
+                        <select id="downloadState2" name="DownloadState" class="easyui-combobox">
                             <option value="0">未下载</option>
                             <option value="1">已下载</option>
                         </select>

@@ -49,11 +49,21 @@
         });
         $("#productDetail").datagrid('reload');
     }
-    
-    
 </script>
-<div id="dlg-product" class="easyui-dialog" modal="true" style="width: 500px; height: 500px;
-    padding: 0px 0px" closed="true" buttons="#dlg-product-buttons">
+<style type="text/css">
+    #dlg-product
+    {
+        width: 500px;
+        height: 500px;
+        padding: 0px 0px;
+    }
+    .divproinfo1
+    {
+        width: 486px;
+        height: 430px;
+    }
+</style>
+<div id="dlg-product" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-product-buttons">
     <div id="btnQuery">
         <select id="productType" class="easyui-combobox" style="width: 100px;" readonly="true">
             <option value="ProductCode">卷烟编码</option>
@@ -63,7 +73,7 @@
         <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="productQueryClick()"
             id="productQuery">查询</a>
     </div>
-    <div split="true" border="false" style="width: 486px; height: 430px;">
+    <div split="true" border="false" class="divproinfo1">
         <table id="productDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
             pagesize="50" singleselect="true" fit="true" fitcolumns="true" pagination="true"
             rownumbers="true">
