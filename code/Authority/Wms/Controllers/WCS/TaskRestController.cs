@@ -33,9 +33,9 @@ namespace Wms.Controllers.WCS
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FinishTask(int taskID)
+        public ActionResult FinishTask(int taskID, string orderType, string orderID, int allotID, string cellCode)
         {
-            bool bResult = TaskService.FinishTask(taskID);
+            bool bResult = TaskService.FinishTask(taskID, orderType, orderID, allotID, cellCode);
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
     }

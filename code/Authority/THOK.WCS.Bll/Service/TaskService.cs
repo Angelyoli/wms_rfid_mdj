@@ -77,7 +77,7 @@ namespace THOK.WCS.Bll.Service
 
         public bool CreateNewTaskForEmptyPalletStack(int positionID)
         {
-            string palletCode = "";
+            string palletCode = "00002A";
             int palletCount = 10;
             var position = PositionRepository.GetQueryable()
                 .Where(i=>i.ID == positionID).FirstOrDefault();
@@ -127,13 +127,13 @@ namespace THOK.WCS.Bll.Service
                     {
                         targetStorage.InFrozenQuantity += 1;
                         var newTask = new Task();
-                        newTask.TaskType = "01";
+                        newTask.TaskType = "02";
                         newTask.TaskLevel = 0;
                         //newTask.PathID = path.ID;
                         newTask.ProductCode = palletCode;
                         newTask.ProductName = "空托盘";
-                        //newTask.OriginStorageCode = inItem.CellCode;
-                        newTask.TargetStorageCode = cell.CellCode;
+                        newTask.OriginStorageCode = "";
+                        newTask.TargetStorageCode = cell.CellCode;                        
                         newTask.OriginPositionID = positionID;
                         newTask.TargetPositionID = cellPosition.StockInPositionID;
                         newTask.CurrentPositionID = positionID;
@@ -144,7 +144,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.TaskQuantity = 1;
                         newTask.OperateQuantity = 0;
                         //newTask.OrderID = inItem.BillNo;
-                        //newTask.OrderType = "01";
+                        newTask.OrderType = "05";
                         //newTask.AllotID = inItem.ID;
                         newTask.DownloadState = "1";
                         TaskRepository.Add(newTask);
@@ -194,7 +194,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.ProductCode = palletCode;
                         newTask.ProductName = "空托盘";
                         newTask.OriginStorageCode = storage.CellCode;
-                        newTask.TargetStorageCode = positionCell.CellCode;
+                        newTask.TargetStorageCode = positionCell.CellCode;//???
                         newTask.OriginPositionID = cellPosition.StockOutPositionID;
                         newTask.TargetPositionID = positionID;
                         newTask.CurrentPositionID = cellPosition.StockOutPositionID;
@@ -205,7 +205,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.TaskQuantity = Convert.ToInt32(quantity);
                         newTask.OperateQuantity = 0;
                         //newTask.OrderID = inItem.BillNo;
-                        //newTask.OrderType = "01";
+                        newTask.OrderType = "06";
                         //newTask.AllotID = inItem.ID;
                         newTask.DownloadState = "1";
                         TaskRepository.Add(newTask);
@@ -240,7 +240,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
                 newTask.OperateQuantity = 0;
                 //newTask.OrderID = inItem.BillNo;
-                //newTask.OrderType = "01";
+                newTask.OrderType = "07";
                 //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "1";
                 TaskRepository.Add(newTask);
@@ -251,34 +251,40 @@ namespace THOK.WCS.Bll.Service
         }
 
 
-        public bool FinishTask(int taskID)
+        public bool FinishTask(int taskID,string orderType, string orderID, int allotID,string cellCode)
         {
-            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null)
-            {
-                switch (task.OrderType)
+                switch (orderType)
                 {
-                    case "01":
+                    case "01"://入库
+                        return FinishInBillTask(orderID, allotID);
                         break;
-                    case "02":
+                    case "02"://出库
+                        return FinishOutBillTask(orderID, allotID);
                         break;
-                    case "03":
+                    case "03"://移库
+                        return FinishMoveBillTask(orderID, allotID);
                         break;
-                    case "04":
+                    case "04"://盘点
+                        return FinishCheckBillTask(orderID, allotID);
+                        break;
+                    case "05"://空托盘叠入库存
+                        return FinishEmptyPalletStackTask(cellCode);
+                        break;
+                    case "06"://空托盘移出库存
+                        return FinishEmptyPalletSupplyTask(cellCode);
                         break;
                     default:
                         break;
                 }
-            }
             return false;
         }
 
-        private bool FinishInBillTask(Task task)
+        private bool FinishInBillTask(string orderID ,int allotID)
         {
             var inAllot = InBillAllotRepository.GetQueryable()
-                                    .Where(i => i.BillNo == task.OrderID
-                                        && i.ID == task.AllotID
-                                        && i.Status == "1")
+                                    .Where(i => i.BillNo == orderID
+                                        && i.ID == allotID
+                                        && i.Status == "0")
                                     .FirstOrDefault();
             if (inAllot != null
                 && (inAllot.InBillMaster.Status == "4"
@@ -319,12 +325,12 @@ namespace THOK.WCS.Bll.Service
             }
         }
 
-        private bool FinishOutBillTask(Task task)
+        private bool FinishOutBillTask(string orderID, int allotID)
         {
             var outAllot = OutBillAllotRepository.GetQueryable()
-                                                .Where(i => i.BillNo == task.OrderID
-                                                    && i.ID == task.AllotID
-                                                    && i.Status == "1")
+                                                .Where(i => i.BillNo == orderID
+                                                    && i.ID == allotID
+                                                    && i.Status == "0")
                                                 .FirstOrDefault();
             if (outAllot != null
                 && (outAllot.OutBillMaster.Status == "4"
@@ -366,12 +372,12 @@ namespace THOK.WCS.Bll.Service
             }
         }
 
-        private bool FinishMoveBillTask(Task task)
+        private bool FinishMoveBillTask(string orderID, int allotID)
         {
             var moveDetail = MoveBillDetailRepository.GetQueryable()
-                                                .Where(i => i.BillNo == task.OrderID
-                                                    && i.ID == task.AllotID
-                                                    && i.Status == "1")
+                                                .Where(i => i.BillNo == orderID
+                                                    && i.ID == allotID
+                                                    && i.Status == "0")
                                                 .FirstOrDefault();
             if (moveDetail != null
                 && (moveDetail.MoveBillMaster.Status == "2"
@@ -425,12 +431,12 @@ namespace THOK.WCS.Bll.Service
             }
         }
 
-        private bool FinishCheckBillTask(Task task)
+        private bool FinishCheckBillTask(string orderID, int allotID)
         {
             var checkDetail = CheckBillDetailRepository.GetQueryable()
-                                                    .Where(i => i.BillNo == task.OrderID
-                                                        && i.ID == task.AllotID
-                                                        && i.Status == "1")
+                                                    .Where(i => i.BillNo == orderID
+                                                        && i.ID == allotID
+                                                        && i.Status == "0")
                                                     .FirstOrDefault();
             if (checkDetail != null
                 && (checkDetail.CheckBillMaster.Status == "2"
@@ -455,6 +461,36 @@ namespace THOK.WCS.Bll.Service
                 //"需确认盘点的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
+        }
+
+        private bool FinishEmptyPalletStackTask(string cellCode)
+        {
+            var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
+            if (cell != null && cell.Storages.FirstOrDefault() != null)
+            {
+                if (cell.Storages.FirstOrDefault().InFrozenQuantity >= 1)
+                {
+                    cell.Storages.FirstOrDefault().InFrozenQuantity -= 1;
+                    cell.Storages.FirstOrDefault().Quantity += 1;
+                    CellRepository.SaveChanges();
+                }
+            }
+            return true;
+        }
+
+        private bool FinishEmptyPalletSupplyTask(string cellCode)
+        {
+            var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
+            if (cell != null && cell.Storages.FirstOrDefault() != null)
+            {
+                if (cell.Storages.FirstOrDefault().OutFrozenQuantity > 0)
+                {
+                    cell.Storages.FirstOrDefault().OutFrozenQuantity = 0;
+                    cell.Storages.FirstOrDefault().Quantity = 0;
+                    CellRepository.SaveChanges();
+                }
+            }
+            return true;
         }
     }
 }

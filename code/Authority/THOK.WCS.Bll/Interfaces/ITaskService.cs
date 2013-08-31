@@ -21,6 +21,6 @@ namespace THOK.WCS.Bll.Interfaces
 
         bool CreateNewTaskForMoveBackRemain(int taskID);
 
-        bool FinishTask(int taskID);        
+        bool FinishTask(int taskID, string orderType, string orderID, int allotID, string cellCode);        
     }
 }
