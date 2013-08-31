@@ -56,232 +56,256 @@ namespace THOK.Wms.Bll.Service
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 
-            var taskQuery2 = taskQuery.Join(pathQuery, t => t.PathID, p => p.ID, (t, p) => new
-                {
-                    t.ID,
-                    t.TaskType,
-                    t.TaskLevel,
-                    t.PathID,
-                    t.ProductCode,
-                    t.ProductName,
-                    t.OriginStorageCode,
-                    t.TargetStorageCode,
-                    t.OriginPositionID,
-                    t.TargetPositionID,
-                    t.CurrentPositionID,
-                    t.CurrentPositionState,
-                    t.State,
-                    t.TagState,
-                    t.Quantity,
-                    t.TaskQuantity,
-                    t.OperateQuantity,
-                    t.OrderID,
-                    t.OrderType,
-                    t.AllotID,
-                    t.DownloadState,
-                    p.PathName,
-                    OriginRegionName = p.OriginRegion.RegionName,
-                    TargetRegionName = p.TargetRegion.RegionName
-                })
-                .Join(cellQuery, t => t.OriginStorageCode, c => c.CellCode, (t, c) => new
-                {
-                    t.ID,
-                    t.TaskType,
-                    t.TaskLevel,
-                    t.PathID,
-                    t.ProductCode,
-                    t.ProductName,
-                    t.OriginStorageCode,
-                    t.TargetStorageCode,
-                    t.OriginPositionID,
-                    t.TargetPositionID,
-                    t.CurrentPositionID,
-                    t.CurrentPositionState,
-                    t.State,
-                    t.TagState,
-                    t.Quantity,
-                    t.TaskQuantity,
-                    t.OperateQuantity,
-                    t.OrderID,
-                    t.OrderType,
-                    t.AllotID,
-                    t.DownloadState,
-                    t.OriginRegionName,
-                    t.TargetRegionName,
-                    t.PathName,
-                    OriginStorageName = c.CellName
-                })
-                .Join(cellQuery, t => t.TargetStorageCode, c => c.CellCode, (t, c) => new
-                {
-                    t.ID,
-                    t.TaskType,
-                    t.TaskLevel,
-                    t.PathID,
-                    t.ProductCode,
-                    t.ProductName,
-                    t.OriginStorageCode,
-                    t.TargetStorageCode,
-                    t.OriginPositionID,
-                    t.TargetPositionID,
-                    t.CurrentPositionID,
-                    t.CurrentPositionState,
-                    t.State,
-                    t.TagState,
-                    t.Quantity,
-                    t.TaskQuantity,
-                    t.OperateQuantity,
-                    t.OrderID,
-                    t.OrderType,
-                    t.AllotID,
-                    t.DownloadState,
-                    t.OriginRegionName,
-                    t.TargetRegionName,
-                    t.PathName,
-                    t.OriginStorageName,
-                    TargetStorageName = c.CellName
-                })
-                .Join(positionQuery, t => t.OriginPositionID, p => p.ID, (t, p) => new
-                {
-                    t.ID,
-                    t.TaskType,
-                    t.TaskLevel,
-                    t.PathID,
-                    t.ProductCode,
-                    t.ProductName,
-                    t.OriginStorageCode,
-                    t.TargetStorageCode,
-                    t.OriginPositionID,
-                    t.TargetPositionID,
-                    t.CurrentPositionID,
-                    t.CurrentPositionState,
-                    t.State,
-                    t.TagState,
-                    t.Quantity,
-                    t.TaskQuantity,
-                    t.OperateQuantity,
-                    t.OrderID,
-                    t.OrderType,
-                    t.AllotID,
-                    t.DownloadState,
-                    t.OriginRegionName,
-                    t.TargetRegionName,
-                    t.PathName,
-                    t.OriginStorageName,
-                    t.TargetStorageName,
-                    OriginPositionName = p.PositionName
-                })
-                .Join(positionQuery, t => t.TargetPositionID, p => p.ID, (t, p) => new
-                {
-                    t.ID,
-                    t.TaskType,
-                    t.TaskLevel,
-                    t.PathID,
-                    t.ProductCode,
-                    t.ProductName,
-                    t.OriginStorageCode,
-                    t.TargetStorageCode,
-                    t.OriginPositionID,
-                    t.TargetPositionID,
-                    t.CurrentPositionID,
-                    t.CurrentPositionState,
-                    t.State,
-                    t.TagState,
-                    t.Quantity,
-                    t.TaskQuantity,
-                    t.OperateQuantity,
-                    t.OrderID,
-                    t.OrderType,
-                    t.AllotID,
-                    t.DownloadState,
-                    t.OriginRegionName,
-                    t.TargetRegionName,
-                    t.PathName,
-                    t.OriginStorageName,
-                    t.TargetStorageName,
-                    t.OriginPositionName,
-                    TargetPositionName = p.PositionName
-                })
-                .Join(positionQuery, t => t.CurrentPositionID, p => p.ID, (t, p) => new
-                {
-                    t.ID,
-                    t.TaskType,
-                    t.TaskLevel,
-                    t.PathID,
-                    t.ProductCode,
-                    t.ProductName,
-                    t.OriginStorageCode,
-                    t.TargetStorageCode,
-                    t.OriginPositionID,
-                    t.TargetPositionID,
-                    t.CurrentPositionID,
-                    t.CurrentPositionState,
-                    t.State,
-                    t.TagState,
-                    t.Quantity,
-                    t.TaskQuantity,
-                    t.OperateQuantity,
-                    t.OrderID,
-                    t.OrderType,
-                    t.AllotID,
-                    t.DownloadState,
-                    t.OriginRegionName,
-                    t.TargetRegionName,
-                    t.PathName,
-                    t.OriginStorageName,
-                    t.TargetStorageName,
-                    t.OriginPositionName,
-                    t.TargetPositionName,
-                    CurrentPositionName = p.PositionName
-                })
-                .Where(t => t.TaskType.Contains(task.TaskType)
-                    ///路径的 区域
-                           && t.ProductCode.Contains(task.ProductCode)
-                           && t.ProductName.Contains(task.ProductName)
-                           && t.OriginStorageCode.Contains(task.OriginStorageCode)
-                           && t.TargetStorageCode.Contains(task.TargetStorageCode)
-                    ///起始位置，目标位置，当前位置
-                           && t.CurrentPositionState.Contains(task.CurrentPositionState)
-                           && t.State.Contains(task.State)
-                           && t.TagState.Contains(task.TagState)
-                           && t.OrderID.Contains(task.OrderID)
-                           && t.OrderType.Contains(task.OrderType)
-                           && t.DownloadState.Contains(task.DownloadState)
-                         )
-                  .OrderByDescending(t => t.ID).Select(t => new
-                 {
-                     t.ID,
-                     t.PathID,
-                     t.OriginPositionID,
-                     t.TargetPositionID,
-                     t.CurrentPositionID,
-                     TaskType = t.TaskType == "01" ? "正常任务" : t.TaskType == "02" ? "叠空托盘" : "异常",
-                     t.TaskLevel,
-                     t.OriginRegionName,
-                     t.TargetRegionName,
-                     t.ProductCode,
-                     t.ProductName,
-                     t.PathName,
-                     t.OriginStorageCode,
-                     t.OriginStorageName,
-                     t.TargetStorageCode,
-                     t.TargetStorageName,
-                     t.OriginPositionName,
-                     t.TargetPositionName,
-                     t.CurrentPositionName,
-                     CurrentPositionState = t.CurrentPositionState == "01" ? "未达到" : t.CurrentPositionState == "02" ? "已到达" : "异常",
-                     State = t.State == "01" ? "等待中" : t.State == "02" ? "执行中" : t.State == "03" ? "拣选中" : t.State == "04" ? "已完成" : "异常",
-                     TagState = t.TagState == "01" ? "未点亮" : t.TagState == "02" ? "已点亮" : "异常",
-                     t.Quantity,
-                     t.TaskQuantity,
-                     t.OperateQuantity,
-                     t.OrderID,
-                     OrderType = t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : "异常",
-                     t.AllotID,
-                     DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常"
-                 });
-            int total = taskQuery2.Count();
-            taskQuery2 = taskQuery2.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = taskQuery2.ToArray() };
+            var taskQuery1 = taskQuery;
+            if (task.PathID != 0 && task.PathID != null)
+            {
+                taskQuery1 = taskQuery.Where(a => a.PathID == task.PathID);
+            }
+            var taskQuery2 = taskQuery1;
+            if (task.OriginPositionID != 0 && task.OriginPositionID != null)
+            {
+                taskQuery2 = taskQuery1.Where(a => a.OriginPositionID == task.OriginPositionID);
+            }
+            var taskQuery3 = taskQuery2;
+            if (task.TargetPositionID != 0 && task.TargetPositionID != null)
+            {
+                taskQuery3 = taskQuery2.Where(a => a.TargetPositionID == task.TargetPositionID);
+            }
+            var taskQuery4 = taskQuery3;
+            if (task.CurrentPositionID != 0 && task.CurrentPositionID != null)
+            {
+                taskQuery4 = taskQuery3.Where(a => a.CurrentPositionID == task.CurrentPositionID);
+            }
+
+            #region taskQuery5
+            var taskQuery5 = taskQuery4.Join(pathQuery, t => t.PathID, p => p.ID, (t, p) => new
+                    {
+                        t.ID,
+                        t.TaskType,
+                        t.TaskLevel,
+                        t.PathID,
+                        t.ProductCode,
+                        t.ProductName,
+                        t.OriginStorageCode,
+                        t.TargetStorageCode,
+                        t.OriginPositionID,
+                        t.TargetPositionID,
+                        t.CurrentPositionID,
+                        t.CurrentPositionState,
+                        t.State,
+                        t.TagState,
+                        t.Quantity,
+                        t.TaskQuantity,
+                        t.OperateQuantity,
+                        t.OrderID,
+                        t.OrderType,
+                        t.AllotID,
+                        t.DownloadState,
+                        p.PathName,
+                        OriginRegionName = p.OriginRegion.RegionName,
+                        TargetRegionName = p.TargetRegion.RegionName
+                    })
+                    .Join(cellQuery, t => t.OriginStorageCode, c => c.CellCode, (t, c) => new
+                    {
+                        t.ID,
+                        t.TaskType,
+                        t.TaskLevel,
+                        t.PathID,
+                        t.ProductCode,
+                        t.ProductName,
+                        t.OriginStorageCode,
+                        t.TargetStorageCode,
+                        t.OriginPositionID,
+                        t.TargetPositionID,
+                        t.CurrentPositionID,
+                        t.CurrentPositionState,
+                        t.State,
+                        t.TagState,
+                        t.Quantity,
+                        t.TaskQuantity,
+                        t.OperateQuantity,
+                        t.OrderID,
+                        t.OrderType,
+                        t.AllotID,
+                        t.DownloadState,
+                        t.OriginRegionName,
+                        t.TargetRegionName,
+                        t.PathName,
+                        OriginStorageName = c.CellName
+                    })
+                    .Join(cellQuery, t => t.TargetStorageCode, c => c.CellCode, (t, c) => new
+                    {
+                        t.ID,
+                        t.TaskType,
+                        t.TaskLevel,
+                        t.PathID,
+                        t.ProductCode,
+                        t.ProductName,
+                        t.OriginStorageCode,
+                        t.TargetStorageCode,
+                        t.OriginPositionID,
+                        t.TargetPositionID,
+                        t.CurrentPositionID,
+                        t.CurrentPositionState,
+                        t.State,
+                        t.TagState,
+                        t.Quantity,
+                        t.TaskQuantity,
+                        t.OperateQuantity,
+                        t.OrderID,
+                        t.OrderType,
+                        t.AllotID,
+                        t.DownloadState,
+                        t.OriginRegionName,
+                        t.TargetRegionName,
+                        t.PathName,
+                        t.OriginStorageName,
+                        TargetStorageName = c.CellName
+                    })
+                    .Join(positionQuery, t => t.OriginPositionID, p => p.ID, (t, p) => new
+                    {
+                        t.ID,
+                        t.TaskType,
+                        t.TaskLevel,
+                        t.PathID,
+                        t.ProductCode,
+                        t.ProductName,
+                        t.OriginStorageCode,
+                        t.TargetStorageCode,
+                        t.OriginPositionID,
+                        t.TargetPositionID,
+                        t.CurrentPositionID,
+                        t.CurrentPositionState,
+                        t.State,
+                        t.TagState,
+                        t.Quantity,
+                        t.TaskQuantity,
+                        t.OperateQuantity,
+                        t.OrderID,
+                        t.OrderType,
+                        t.AllotID,
+                        t.DownloadState,
+                        t.OriginRegionName,
+                        t.TargetRegionName,
+                        t.PathName,
+                        t.OriginStorageName,
+                        t.TargetStorageName,
+                        OriginPositionName = p.PositionName
+                    })
+                    .Join(positionQuery, t => t.TargetPositionID, p => p.ID, (t, p) => new
+                    {
+                        t.ID,
+                        t.TaskType,
+                        t.TaskLevel,
+                        t.PathID,
+                        t.ProductCode,
+                        t.ProductName,
+                        t.OriginStorageCode,
+                        t.TargetStorageCode,
+                        t.OriginPositionID,
+                        t.TargetPositionID,
+                        t.CurrentPositionID,
+                        t.CurrentPositionState,
+                        t.State,
+                        t.TagState,
+                        t.Quantity,
+                        t.TaskQuantity,
+                        t.OperateQuantity,
+                        t.OrderID,
+                        t.OrderType,
+                        t.AllotID,
+                        t.DownloadState,
+                        t.OriginRegionName,
+                        t.TargetRegionName,
+                        t.PathName,
+                        t.OriginStorageName,
+                        t.TargetStorageName,
+                        t.OriginPositionName,
+                        TargetPositionName = p.PositionName
+                    })
+                    .Join(positionQuery, t => t.CurrentPositionID, p => p.ID, (t, p) => new
+                    {
+                        t.ID,
+                        t.TaskType,
+                        t.TaskLevel,
+                        t.PathID,
+                        t.ProductCode,
+                        t.ProductName,
+                        t.OriginStorageCode,
+                        t.TargetStorageCode,
+                        t.OriginPositionID,
+                        t.TargetPositionID,
+                        t.CurrentPositionID,
+                        t.CurrentPositionState,
+                        t.State,
+                        t.TagState,
+                        t.Quantity,
+                        t.TaskQuantity,
+                        t.OperateQuantity,
+                        t.OrderID,
+                        t.OrderType,
+                        t.AllotID,
+                        t.DownloadState,
+                        t.OriginRegionName,
+                        t.TargetRegionName,
+                        t.PathName,
+                        t.OriginStorageName,
+                        t.TargetStorageName,
+                        t.OriginPositionName,
+                        t.TargetPositionName,
+                        CurrentPositionName = p.PositionName
+                    })
+                    .Where(t => t.TaskType.Contains(task.TaskType)
+                        ///路径的 区域
+                               && t.ProductCode.Contains(task.ProductCode)
+                               && t.ProductName.Contains(task.ProductName)
+                               && t.OriginStorageCode.Contains(task.OriginStorageCode)
+                               && t.TargetStorageCode.Contains(task.TargetStorageCode)
+                        ///起始位置，目标位置，当前位置
+                               && t.CurrentPositionState.Contains(task.CurrentPositionState)
+                               && t.State.Contains(task.State)
+                               && t.TagState.Contains(task.TagState)
+                               && t.OrderID.Contains(task.OrderID)
+                               && t.OrderType.Contains(task.OrderType)
+                               && t.DownloadState.Contains(task.DownloadState)
+                             )
+                      .OrderByDescending(t => t.ID).Select(t => new
+                     {
+                         t.ID,
+                         t.PathID,
+                         t.OriginPositionID,
+                         t.TargetPositionID,
+                         t.CurrentPositionID,
+                         TaskType = t.TaskType == "01" ? "正常任务" : t.TaskType == "02" ? "叠空托盘" : "异常",
+                         t.TaskLevel,
+                         t.OriginRegionName,
+                         t.TargetRegionName,
+                         t.ProductCode,
+                         t.ProductName,
+                         t.PathName,
+                         t.OriginStorageCode,
+                         t.OriginStorageName,
+                         t.TargetStorageCode,
+                         t.TargetStorageName,
+                         t.OriginPositionName,
+                         t.TargetPositionName,
+                         t.CurrentPositionName,
+                         CurrentPositionState = t.CurrentPositionState == "01" ? "未达到" : t.CurrentPositionState == "02" ? "已到达" : "异常",
+                         State = t.State == "01" ? "等待中" : t.State == "02" ? "执行中" : t.State == "03" ? "拣选中" : t.State == "04" ? "已完成" : "异常",
+                         TagState = t.TagState == "01" ? "未点亮" : t.TagState == "02" ? "已点亮" : "异常",
+                         t.Quantity,
+                         t.TaskQuantity,
+                         t.OperateQuantity,
+                         t.OrderID,
+                         OrderType = t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : "异常",
+                         t.AllotID,
+                         DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常"
+                     }); 
+            #endregion
+
+            int total = taskQuery5.Count();
+            var taskQuery6 = taskQuery5.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = taskQuery6.ToArray() };
         }
         #endregion
 
@@ -331,7 +355,7 @@ namespace THOK.Wms.Bll.Service
                 strResult = "原因：找不到当前登陆用户！请重新登陆！";
             }
             return result;
-        } 
+        }
         #endregion
 
         #region 保存
@@ -339,47 +363,115 @@ namespace THOK.Wms.Bll.Service
         public bool Save(Task task, out string strResult)
         {
             strResult = string.Empty;
-            bool result = false;
+            bool bResult = false;
+
+            #region 默认值
+            if (task.TaskType == "" || task.TaskType == null)
+                task.TaskType = "01";
+            if (task.TaskLevel.ToString() == "" || task.TaskLevel.ToString() == null)
+                task.TaskLevel = 0;
+            if (task.ProductCode == "" || task.ProductCode == null)
+                task.ProductCode = "";
+            if (task.ProductName == "" || task.ProductName == null)
+                task.ProductName = "";
+            if (task.CurrentPositionState == "" || task.CurrentPositionState == null)
+                task.CurrentPositionState = "01";
+            if (task.State == "" || task.State == null)
+                task.State = "01";
+            if (task.TagState == "" || task.TagState == null)
+                task.TagState = "01";
+            if (task.Quantity.ToString() == "" || task.Quantity.ToString() == null)
+                task.Quantity = 0;
+            if (task.TaskQuantity.ToString() == "" || task.TaskQuantity.ToString() == null)
+                task.TaskQuantity = 0;
+            if (task.OperateQuantity.ToString() == "" || task.OperateQuantity.ToString() == null)
+                task.OperateQuantity = 0;
+            if (task.OrderID == "" || task.OrderID == null)
+                task.OrderID = "";
+            if (task.OrderType == "" || task.OrderType == null)
+                task.OrderType = "01";
+            if (task.AllotID.ToString() == "" || task.AllotID.ToString() == null)
+                task.AllotID = 0;
+            if (task.DownloadState == "" || task.DownloadState == null)
+                task.DownloadState = "0";
+            #endregion
+
             var t = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == task.ID);
             if (t != null)
             {
-                try
+                //查询 起始位置 和 目标位置
+                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.OriginPositionID);
+                var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.TargetPositionID);
+                if (originPosition != null && targetPosition != null)
                 {
-                    t.TaskType = task.TaskType;
-                    t.TaskLevel = task.TaskLevel;
-                    t.PathID = task.PathID;
-                    t.ProductCode = task.ProductCode;
-                    t.ProductName = task.ProductName;
-                    t.OriginStorageCode = task.OriginStorageCode;
-                    t.TargetStorageCode = task.TargetStorageCode;
-                    t.OriginPositionID = task.OriginPositionID;
-                    t.TargetPositionID = task.TargetPositionID;
-                    t.CurrentPositionID = task.CurrentPositionID;
-                    t.CurrentPositionState = task.CurrentPositionState;
-                    t.State = task.State;
-                    t.TagState = task.TagState;
-                    t.Quantity = task.Quantity;
-                    t.TaskQuantity = task.TaskQuantity;
-                    t.OperateQuantity = task.OperateQuantity;
-                    t.OrderID = task.OrderID;
-                    t.OrderType = task.OrderType;
-                    t.AllotID = task.AllotID;
-                    t.DownloadState = task.DownloadState;
-
-                    TaskRepository.SaveChanges();
-                    result = true;
+                    //查询 路径
+                    var path = PathRepository.GetQueryable().FirstOrDefault(a => a.OriginRegionID == originPosition.RegionID && a.TargetRegionID == targetPosition.RegionID);
+                    if (path != null)
+                    {
+                        //查询 起始货位
+                        var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.StockInPositionID == task.OriginPositionID || a.StockOutPositionID == task.OriginPositionID);
+                        //查询 目标货位
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.StockInPositionID == task.TargetPositionID || a.StockOutPositionID == task.TargetPositionID);
+                        if (originCellPosition != null)
+                        {
+                            if (targetCellPosition != null)
+                            {
+                                try
+                                {
+                                    t.TaskType = task.TaskType;
+                                    t.TaskLevel = task.TaskLevel;
+                                    t.PathID = path.ID;
+                                    t.ProductCode = task.ProductCode;
+                                    t.ProductName = task.ProductName;
+                                    t.OriginStorageCode = originCellPosition.CellCode;
+                                    t.TargetStorageCode = targetCellPosition.CellCode;
+                                    t.OriginPositionID = task.OriginPositionID;
+                                    t.TargetPositionID = task.TargetPositionID;
+                                    t.CurrentPositionID = task.CurrentPositionID;
+                                    t.CurrentPositionState = task.CurrentPositionState;
+                                    t.State = task.State;
+                                    t.TagState = task.TagState;
+                                    t.Quantity = task.Quantity;
+                                    t.TaskQuantity = task.TaskQuantity;
+                                    t.OperateQuantity = task.OperateQuantity;
+                                    t.OrderID = task.OrderID;
+                                    t.OrderType = task.OrderType;
+                                    t.AllotID = task.AllotID;
+                                    t.DownloadState = task.DownloadState;
+                                    TaskRepository.SaveChanges();
+                                    bResult = true;
+                                }
+                                catch (Exception ex)
+                                {
+                                    strResult = "原因：" + ex.Message;
+                                }
+                            }
+                            else
+                            {
+                                strResult = "未找到目标货位！";
+                            }
+                        }
+                        else
+                        {
+                            strResult = "未找到起始货位！";
+                        }
+                    }
+                    else
+                    {
+                        strResult = "未找到路径！";
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    strResult = "原因：" + ex.Message; ;
+                    strResult = "未找到起始位置或目标位置！";
                 }
             }
             else
             {
-                strResult = "原因：未找到当前需要修改的数据！";
+                strResult = "未找到当前需要修改的数据！";
             }
-            return result;
-        } 
+            return bResult;
+        }
         #endregion
 
         #region 删除
@@ -402,15 +494,119 @@ namespace THOK.Wms.Bll.Service
                 strResult = "删除失败，原因：" + ex.Message;
             }
             return result;
-        } 
+        }
         #endregion
 
-        public bool Add(string originPosition,string targetPosition)
+        #region 生成任务单
+        /// <summary>生成任务单</summary>
+        public bool CreateTask(Task task, out string strResult)
         {
+            bool bResult = false;
+            strResult = string.Empty;
 
+            #region 默认值
+            if (task.TaskType == "" || task.TaskType == null)
+                task.TaskType = "01";
+            if (task.TaskLevel.ToString() == "" || task.TaskLevel.ToString() == null)
+                task.TaskLevel = 0;
+            if (task.ProductCode == "" || task.ProductCode == null)
+                task.ProductCode = "";
+            if (task.ProductName == "" || task.ProductName == null)
+                task.ProductName = "";
+            if (task.CurrentPositionState == "" || task.CurrentPositionState == null)
+                task.CurrentPositionState = "01";
+            if (task.State == "" || task.State == null)
+                task.State = "01";
+            if (task.TagState == "" || task.TagState == null)
+                task.TagState = "01";
+            if (task.Quantity.ToString() == "" || task.Quantity.ToString() == null)
+                task.Quantity = 0;
+            if (task.TaskQuantity.ToString() == "" || task.TaskQuantity.ToString() == null)
+                task.TaskQuantity = 0;
+            if (task.OperateQuantity.ToString() == "" || task.OperateQuantity.ToString() == null)
+                task.OperateQuantity = 0;
+            if (task.OrderID == "" || task.OrderID == null)
+                task.OrderID = "";
+            if (task.OrderType == "" || task.OrderType == null)
+                task.OrderType = "01";
+            if (task.AllotID.ToString() == "" || task.AllotID.ToString() == null)
+                task.AllotID = 0;
+            if (task.DownloadState == "" || task.DownloadState == null)
+                task.DownloadState = "0"; 
+            #endregion
 
-            return true;
+            //查询 起始位置 和 目标位置
+            var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.OriginPositionID);
+            var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.TargetPositionID);
+            if (originPosition != null && targetPosition != null)
+            {
+                //查询 路径
+                var path = PathRepository.GetQueryable().FirstOrDefault(a => a.OriginRegionID == originPosition.RegionID && a.TargetRegionID == targetPosition.RegionID);
+                if (path != null)
+                {
+                    //查询 起始货位
+                    var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.StockInPositionID == task.OriginPositionID || a.StockOutPositionID == task.OriginPositionID);
+                    //查询 目标货位
+                    var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.StockInPositionID == task.TargetPositionID || a.StockOutPositionID == task.TargetPositionID);
+                    if (originCellPosition != null)
+                    {
+                        if (targetCellPosition != null)
+                        {
+                            try
+                            {
+                                Task t = new Task();
+                                t.TaskType = task.TaskType;
+                                t.TaskLevel = task.TaskLevel;
+                                t.PathID = path.ID;
+                                t.ProductCode = task.ProductCode;
+                                t.ProductName = task.ProductName;
+                                t.OriginStorageCode = originCellPosition.CellCode;
+                                t.TargetStorageCode = targetCellPosition.CellCode;
+                                t.OriginPositionID = task.OriginPositionID;
+                                t.TargetPositionID = task.TargetPositionID;
+                                t.CurrentPositionID = task.CurrentPositionID;
+                                t.CurrentPositionState = task.CurrentPositionState;
+                                t.State = task.State;
+                                t.TagState = task.TagState;
+                                t.Quantity = task.Quantity;
+                                t.TaskQuantity = task.TaskQuantity;
+                                t.OperateQuantity = task.OperateQuantity;
+                                t.OrderID = task.OrderID;
+                                t.OrderType = task.OrderType;
+                                t.AllotID = task.AllotID;
+                                t.DownloadState = task.DownloadState;
+                                TaskRepository.Add(t);
+                                TaskRepository.SaveChanges();
+                                bResult = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                strResult = "原因：" + ex.Message;
+                            }
+                        }
+                        else
+                        {
+                            strResult = "未找到目标货位！";
+                        }
+                    }
+                    else
+                    {
+                        strResult = "未找到起始货位！";
+                    }
+                }
+                else
+                {
+                    strResult = "未找到路径！";
+                }
+            }
+            else
+            {
+                strResult = "未找到起始位置或目标位置！";
+            }
+            return bResult;
         }
+
+        #endregion
 
         #region 入库单据作业
         /// <summary>

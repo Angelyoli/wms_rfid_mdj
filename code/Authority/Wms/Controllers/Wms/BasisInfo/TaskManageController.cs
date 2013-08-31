@@ -70,6 +70,14 @@ namespace Wms.Controllers.WMS.BasisInfo
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
+        // GET: /TaskManage/CreateTask/
+        public ActionResult CreateTask(Task task)
+        {
+            string strResult = string.Empty;
+            var bResult = TaskService.CreateTask(task, out strResult);
+            string msg = bResult ? "生成成功" : "生成失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+        }
         // GET: /TaskManage/Edit/
         public ActionResult Edit(Task task)
         {

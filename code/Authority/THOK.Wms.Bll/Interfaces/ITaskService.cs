@@ -6,6 +6,7 @@ namespace THOK.Wms.Bll.Interfaces
     {
         object GetDetails(int page, int rows, Task task);
         bool Add(Task task, out string strResult);
+        bool CreateTask(Task task, out string strResult);
         bool Save(Task task, out string strResult);
         bool Delete(string taskID, out string strResult);
         bool InBillTask(string billNo, out string errInfo);
