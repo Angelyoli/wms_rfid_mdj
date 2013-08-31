@@ -1,4 +1,60 @@
 ﻿<script type="text/javascript">
+    $(function () {
+        //双击选择移入货位
+        $('#cell-warehouseTree').tree({
+            onDblClick: function (node) {
+                if (node.attributes == "cell") {
+                    cellSave();
+                }
+            }
+        });
+    })
+    
+    //将选中的货位编码赋值给控件
+    function cellSave() {
+        var cellnode = $('#cell-warehouseTree').tree('getSelected');
+        if (cellnode.attributes == "cell") {
+            if (type == 1) {
+                $('#originCellCode2').val(cellnode.id);
+                $('#originCellName2').val(cellnode.text);
+            }
+            else {
+                $('#targetCellCode2').val(cellnode.id);
+                $('#targetCellName2').val(cellnode.text);
+            }
+            $('#dlg-cell').dialog('close');
+        }
+    }
+</script>
+<style type="text/css">
+    #dlg-cell
+    {
+        width: 320px;
+        height: 420px;
+        padding: 1px 1px;
+    }
+    #sidebar
+    {
+        width: 220px;
+        border-right-style: solid;
+        border-right-width: 1px;
+        border-right-color: #99BBE8;
+    }
+</style>
+<div id="dlg-cell" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-cell-buttons">
+    <div class="easyui-layout" fit="true">
+        <div id="sidebar" region="center" border="false">
+            <ul id="cell-warehouseTree" class="easyui-tree">
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="dlg-cell-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="cellSave()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-cell').dialog('close')">
+        取消</a>
+</div>
+@*<script type="text/javascript">
     var Module = "TaskManage";
 
     $(function () {
@@ -106,3 +162,4 @@
             取消</a>
     </div>
 </div>
+*@

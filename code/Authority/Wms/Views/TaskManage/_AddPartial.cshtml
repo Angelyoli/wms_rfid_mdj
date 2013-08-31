@@ -34,7 +34,7 @@
         $('form textarea').removeAttr("disabled");
 
         $('#addFm').form('clear');
-        url = '/TaskManage/CreateTask/';
+        url = '/TaskManage/Create/';
     };
     //浏览位置信息
     function positionQuery(p) {
@@ -59,15 +59,18 @@
         $('#productDetail').datagrid({ url: '/Product/Details/' });
         $("#productDetail").datagrid('reload');
     }
-    //浏览树形货位
-    function cellQuery() {
-        $('#area').combotree({
-            url: '/Area/GetDetailsTree/',
-            multiple: true,
-            width: 160
-        });
+    //浏览货位信息
+    function cellQuery(p) {
+        if (p == 1) {
+            $('#dlg-cell').dialog('open').dialog('setTitle', '选择起始货位');
+            type = 1;
+        }
+        else if (p == 2) {
+            $('#dlg-cell').dialog('open').dialog('setTitle', '选择目标货位');
+            type = 2;
+        }
+        $('#cell-warehouseTree').tree({ url: '/Cell/GetCellDetail/' }); //加载树形数据
     }
-
     //保存
     function save() {
         $('#addFm').form('submit', {
@@ -111,7 +114,7 @@
 <div id="dlg-add" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-buttons">
     <div class="easyui-layout" fit="true">
         <div region="center" border="false" class="div1">
-            <form id="addFm" method="post" novalidate>
+            <form id="addFm" method="post" novalidate >
             <table class="addtable">
                 <tr>
                     <input name="ID" style="display: none" />
@@ -121,18 +124,22 @@
                         起始位置
                     </td>
                     <td>
-                        <input id="originPositionID2" name="OriginPositionID" required="true" style="display: none;" />
-                        <input id="originPositionName2" name="OriginPositionName" required="true" class="easyui-validatebox" />
-                        <a href="#" onclick="positionQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
+                        <input id="originCellCode2" name="OriginStorageCode" type="text" class="easyui-validatebox"
+                            required="true" readonly="true" style="display: none;" />
+                        <input id="originCellName2" name="OriginStorageName" type="text" class="easyui-validatebox"
+                            missingmessage="请选择要移出的货位" required="true" readonly="true" />
+                        <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
                     <td>
                         目标位置
                     </td>
                     <td>
-                        <input id="targetPositionID2" name="TargetPositionID" required="true" style="display: none;" />
-                        <input id="targetPositionName2" name="TargetPositionName" required="true" class="easyui-validatebox" />
-                        <a href="#" onclick="positionQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
+                        <input id="targetCellCode2" name="TargetStorageCode" type="text" class="easyui-validatebox"
+                            required="true" readonly="true" style="display: none;" />
+                        <input id="targetCellName2" name="TargetStorageName" type="text" class="easyui-validatebox"
+                            missingmessage="请选择要移出的货位" required="true" readonly="true" />
+                        <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
                 </tr>
@@ -282,6 +289,7 @@
 </div>
 @Html.Partial("_PositionPartial")
 @Html.Partial("_ProductPartial")
+@Html.Partial("_CellPartial")
 @*<script type="text/javascript">
     var Module = "TaskManage";
     var url;

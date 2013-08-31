@@ -56,5 +56,7 @@ namespace THOK.Wms.Bll.Interfaces
         System.Data.DataTable GetCellByE(int page, int rows, string QueryString, string Value);
 
         bool uploadCell();
+
+        object GetCellDetail(string shelfCode);
     }
 }

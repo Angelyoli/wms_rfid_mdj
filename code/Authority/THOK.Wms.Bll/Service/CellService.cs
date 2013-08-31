@@ -1042,6 +1042,72 @@ namespace THOK.Wms.Bll.Service
             return cellCodeStr;
         }
 
+        #region 用于 任务管理浏览的信息
+        /// <summary>用于 任务管理浏览的信息 JJ</summary>
+        public object GetCellDetail(string shelfCode)
+        {
+            var warehouses = WarehouseRepository.GetQueryable().AsEnumerable();
+            HashSet<Tree> wareSet = new HashSet<Tree>();
+            if (shelfCode == null || shelfCode == string.Empty)//判断是否是加载货位
+            {
+                foreach (var warehouse in warehouses)//仓库
+                {
+                    Tree wareTree = new Tree();
+                    wareTree.id = warehouse.WarehouseCode;
+                    wareTree.text = "仓库：" + warehouse.WarehouseName;
+                    wareTree.attributes = "ware";
+                    wareTree.state = "open";
+
+                    var areas = AreaRepository.GetQueryable().Where(a => a.Warehouse.WarehouseCode == warehouse.WarehouseCode && a.IsActive == "1")
+                                                             .OrderBy(a => a.AreaCode).Select(a => a);
+                    HashSet<Tree> areaSet = new HashSet<Tree>();
+                    foreach (var area in areas)//库区
+                    {
+                        Tree areaTree = new Tree();
+                        areaTree.id = area.AreaCode;
+                        areaTree.text = "库区：" + area.AreaName;
+                        areaTree.attributes = "area";
+                        areaTree.state = "open";
+
+                        var shelfs = ShelfRepository.GetQueryable().Where(s => s.Area.AreaCode == area.AreaCode)
+                                                                   .OrderBy(s => s.ShelfCode).Select(s => s);
+                        HashSet<Tree> shelfSet = new HashSet<Tree>();
+                        foreach (var shelf in shelfs)//货架
+                        {
+                            Tree shelfTree = new Tree();
+                            shelfTree.id = shelf.ShelfCode;
+                            shelfTree.text = "货架：" + shelf.ShelfName;
+                            shelfTree.attributes = "shelf";
+                            shelfTree.state = "closed";
+
+                            shelfSet.Add(shelfTree);
+                        }
+                        areaTree.children = shelfSet.ToArray();
+                        areaSet.Add(areaTree);
+                    }
+                    wareTree.children = areaSet.ToArray();
+                    wareSet.Add(wareTree);
+                }
+            }
+            else
+            {
+                var cells = CellRepository.GetQueryable().Where(c => c.ShelfCode == shelfCode);
+                //货位
+                foreach (var cell in cells)
+                {
+                    Tree cellTree = new Tree();
+                    cellTree.id = cell.CellCode;
+                    cellTree.text = "货位：" + cell.CellName;
+                    cellTree.attributes = "cell";
+                    cellTree.state = "open";
+
+                    wareSet.Add(cellTree);
+                }
+            }
+            return wareSet.ToArray();
+        }
+        #endregion
+
         public System.Data.DataTable GetCell(int page, int rows, string type, string id)
         {
             var warehouses = WarehouseRepository.GetQueryable();
