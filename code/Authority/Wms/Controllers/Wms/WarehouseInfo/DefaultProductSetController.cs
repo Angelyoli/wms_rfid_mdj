@@ -115,14 +115,6 @@ namespace Wms.Controllers.Wms.WarehouseInfo
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
-        //POST: /DefaultProductSet/SetTree2/
-        public ActionResult SetTree2(string strId, string proCode)
-        {
-            bool bResult = CellService.SetTree2(strId, proCode);
-            string msg = bResult ? "修改成功" : "修改失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
-        }
-
         #region /DefaultProductSet/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {

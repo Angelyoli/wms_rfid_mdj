@@ -375,53 +375,6 @@ namespace THOK.Wms.Bll.Service
             }            
         }
         
-        //Test 
-        public bool SetTree2(string strId, string proCode)
-        {
-            string[] arrayList = strId.Split(',');
-            string id;
-            string type;
-            bool isCheck;
-            bool result = false;
-            for (int i = 0; i < arrayList.Length - 1; i++)
-            {
-                string[] array = arrayList[i].Split('^');
-                type = array[0];
-                id = array[1];
-                isCheck = Convert.ToBoolean(array[2]);
-                string proCode2 = proCode;
-                UpdateTree(type, id, isCheck, proCode2);
-                result = true;
-            }
-            return result;
-        }
-
-        public bool UpdateTree(string type, string id,bool isCheck, string proCode2)
-        {
-            bool result = false;
-
-            if (type == "cell")
-            {
-                IQueryable<Cell> queryCell = CellRepository.GetQueryable();
-                var cell = queryCell.FirstOrDefault(i => i.CellCode == id);
-                if (isCheck == true)
-                {
-                    cell.DefaultProductCode = proCode2;
-                }
-                else
-                {
-                    cell.DefaultProductCode = null;
-                }
-                CellRepository.SaveChanges();
-                result = true;
-            }
-            else
-            {
-                return false;
-            }
-            return result;
-        }
-        
         /// <summary>删除货位数量的信息</summary>
         public bool DeleteCell(string productCodes)
         {

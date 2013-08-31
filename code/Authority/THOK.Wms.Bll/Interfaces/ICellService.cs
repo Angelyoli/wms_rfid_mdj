@@ -45,8 +45,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool DeleteCell(string productCodes);
 
-        bool SetTree2(string strId, string proCode);
-
         object GetCellBy(int page, int rows, string QueryString, string Value);
 
         System.Data.DataTable GetProductCell(string queryString, string value);
