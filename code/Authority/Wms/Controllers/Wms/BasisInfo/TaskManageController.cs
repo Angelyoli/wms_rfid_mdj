@@ -35,29 +35,28 @@ namespace Wms.Controllers.WMS.BasisInfo
         {
             Task task = new Task();
             task.TaskType = collection["TaskType"] ?? "";
-            
-            //路径的 两个区域
-            
             task.ProductCode = collection["ProductCode"] ?? "";
             task.ProductName = collection["ProductName"] ?? "";
             task.OriginStorageCode = collection["OriginStorageCode"] ?? "";
             task.TargetStorageCode = collection["TargetStorageCode"] ?? "";
-
-            //起始位置，目标位置，当前位置
-
             task.CurrentPositionState = collection["CurrentPositionState"] ?? "";
             task.State = collection["State"] ?? "";
             task.TagState = collection["TagState"] ?? "";
             task.OrderID = collection["OrderID"] ?? "";
             task.OrderType = collection["OrderType"] ?? "";
             task.DownloadState = collection["DownloadState"] ?? "";
-
-            string OriginRegionID = collection["OriginRegionID"] ?? "";
-            string TargetRegionID = collection["TargetRegionID"] ?? "";
-            if (OriginRegionID != "" && OriginRegionID != null)
-            {
-                //task.or = Convert.ToInt32(OriginRegionID);
-            }
+            string pathID = collection["PathID"] ?? "";
+            string originPositionID = collection["OriginPositionID"] ?? "";
+            string targetPositionID = collection["TargetPositionID"] ?? "";
+            string currentPositionID = collection["CurrentPositionID"] ?? "";
+            if (pathID != null && pathID != "") 
+                task.PathID = Convert.ToInt32(pathID);
+            if (originPositionID != null && originPositionID != "") 
+                task.OriginPositionID = Convert.ToInt32(originPositionID);
+            if (targetPositionID != null && targetPositionID != "") 
+                task.TargetPositionID = Convert.ToInt32(targetPositionID);
+            if (currentPositionID != null && currentPositionID != "") 
+                task.CurrentPositionID = Convert.ToInt32(currentPositionID);
 
             var detail = TaskService.GetDetails(page, rows, task);
             return Json(detail, "text", JsonRequestBehavior.AllowGet);

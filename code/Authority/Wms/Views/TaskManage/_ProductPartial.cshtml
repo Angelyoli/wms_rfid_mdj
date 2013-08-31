@@ -5,6 +5,13 @@
         productInit();
         productDoubleClick();
     });
+    //浏览商品信息
+    function productQuery() {
+        $('#dlg-product').dialog('open').dialog('setTitle', '选择商品');
+        $('#productDetail').datagrid({ url: '/Product/Details/' });
+        $("#productDetail").datagrid('reload');
+    }
+
     //属性初始化
     function productInit() {
         $('#queryType').combo({

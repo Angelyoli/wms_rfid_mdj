@@ -16,21 +16,46 @@
             panelWidth: 100
         })
     });
+
+    //浏览位置信息
+    function positionQuery(p) {
+        if (p == 1) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择起始位置');
+            type = 1;
+        }
+        else if (p == 2) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择目标位置');
+            type = 2
+        }
+        else if (p == 3) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择当前位置');
+            type = 3
+        }
+        $('#positionDetail').datagrid({ url: '/Position/Details/' });
+        $("#positionDetail").datagrid('reload');
+    }
+
     //选中赋值
     function positionSave() {
         var positionRow = $('#positionDetail').datagrid('getSelected');
         if (positionRow) {
             if (type == 1) {
+                $('#originPositionID1').val(positionRow.ID);
+                $('#originPositionName1').val(positionRow.PositionName);
                 $('#originPositionID2').val(positionRow.ID);
                 $('#originPositionName2').val(positionRow.PositionName);
                 $('#currentPositionID2').val(positionRow.ID);
                 $('#currentPositionName2').val(positionRow.PositionName);
             }
             else if (type == 2) {
+                $('#targetPositionID1').val(positionRow.ID);
+                $('#targetPositionName1').val(positionRow.PositionName);
                 $('#targetPositionID2').val(positionRow.ID);
                 $('#targetPositionName2').val(positionRow.PositionName);
             }
             else if (type == 3) {
+                $('#currentPositionID1').val(positionRow.ID);
+                $('#currentPositionName1').val(positionRow.PositionName);
                 $('#currentPositionID2').val(positionRow.ID);
                 $('#currentPositionName2').val(positionRow.PositionName);
             }

@@ -47,6 +47,40 @@ namespace THOK.Wms.Bll.Service
             get { return this.GetType(); }
         }
 
+        #region 初始化值
+        public void InitValue(Task task)
+        {
+            if (task.TaskType == "" || task.TaskType == null)
+                task.TaskType = "01";
+            if (task.TaskLevel.ToString() == "" || task.TaskLevel.ToString() == null)
+                task.TaskLevel = 0;
+            if (task.ProductCode == "" || task.ProductCode == null)
+                task.ProductCode = "";
+            if (task.ProductName == "" || task.ProductName == null)
+                task.ProductName = "";
+            if (task.CurrentPositionState == "" || task.CurrentPositionState == null)
+                task.CurrentPositionState = "01";
+            if (task.State == "" || task.State == null)
+                task.State = "01";
+            if (task.TagState == "" || task.TagState == null)
+                task.TagState = "01";
+            if (task.Quantity.ToString() == "" || task.Quantity.ToString() == null)
+                task.Quantity = 0;
+            if (task.TaskQuantity.ToString() == "" || task.TaskQuantity.ToString() == null)
+                task.TaskQuantity = 0;
+            if (task.OperateQuantity.ToString() == "" || task.OperateQuantity.ToString() == null)
+                task.OperateQuantity = 0;
+            if (task.OrderID == "" || task.OrderID == null)
+                task.OrderID = "";
+            if (task.OrderType == "" || task.OrderType == null)
+                task.OrderType = "01";
+            if (task.AllotID.ToString() == "" || task.AllotID.ToString() == null)
+                task.AllotID = 0;
+            if (task.DownloadState == "" || task.DownloadState == null)
+                task.DownloadState = "0";
+        }
+        #endregion
+
         #region 查询
         /// <summary>查询</summary>
         public object GetDetails(int page, int rows, Task task)
@@ -57,28 +91,28 @@ namespace THOK.Wms.Bll.Service
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 
             var taskQuery1 = taskQuery;
-            if (task.PathID != 0 && task.PathID != null)
+            if (task.PathID != 0 && task.PathID.ToString() != null)
             {
                 taskQuery1 = taskQuery.Where(a => a.PathID == task.PathID);
             }
             var taskQuery2 = taskQuery1;
-            if (task.OriginPositionID != 0 && task.OriginPositionID != null)
+            if (task.OriginPositionID != 0 && task.OriginPositionID.ToString() != null)
             {
                 taskQuery2 = taskQuery1.Where(a => a.OriginPositionID == task.OriginPositionID);
             }
             var taskQuery3 = taskQuery2;
-            if (task.TargetPositionID != 0 && task.TargetPositionID != null)
+            if (task.TargetPositionID != 0 && task.TargetPositionID.ToString() != null)
             {
                 taskQuery3 = taskQuery2.Where(a => a.TargetPositionID == task.TargetPositionID);
             }
             var taskQuery4 = taskQuery3;
-            if (task.CurrentPositionID != 0 && task.CurrentPositionID != null)
+            if (task.CurrentPositionID != 0 && task.CurrentPositionID.ToString() != null)
             {
                 taskQuery4 = taskQuery3.Where(a => a.CurrentPositionID == task.CurrentPositionID);
             }
 
             #region taskQuery5
-            var taskQuery5 = taskQuery.Join(pathQuery, t => t.PathID, p => p.ID, (t, p) => new
+            var taskQuery5 = taskQuery4.Join(pathQuery, t => t.PathID, p => p.ID, (t, p) => new
                     {
                         t.ID,
                         t.TaskType,
@@ -317,36 +351,7 @@ namespace THOK.Wms.Bll.Service
             bool bResult = false;
             strResult = string.Empty;
 
-            #region 默认值
-            if (task.TaskType == "" || task.TaskType == null)
-                task.TaskType = "01";
-            if (task.TaskLevel.ToString() == "" || task.TaskLevel.ToString() == null)
-                task.TaskLevel = 0;
-            if (task.ProductCode == "" || task.ProductCode == null)
-                task.ProductCode = "";
-            if (task.ProductName == "" || task.ProductName == null)
-                task.ProductName = "";
-            if (task.CurrentPositionState == "" || task.CurrentPositionState == null)
-                task.CurrentPositionState = "01";
-            if (task.State == "" || task.State == null)
-                task.State = "01";
-            if (task.TagState == "" || task.TagState == null)
-                task.TagState = "01";
-            if (task.Quantity.ToString() == "" || task.Quantity.ToString() == null)
-                task.Quantity = 0;
-            if (task.TaskQuantity.ToString() == "" || task.TaskQuantity.ToString() == null)
-                task.TaskQuantity = 0;
-            if (task.OperateQuantity.ToString() == "" || task.OperateQuantity.ToString() == null)
-                task.OperateQuantity = 0;
-            if (task.OrderID == "" || task.OrderID == null)
-                task.OrderID = "";
-            if (task.OrderType == "" || task.OrderType == null)
-                task.OrderType = "01";
-            if (task.AllotID.ToString() == "" || task.AllotID.ToString() == null)
-                task.AllotID = 0;
-            if (task.DownloadState == "" || task.DownloadState == null)
-                task.DownloadState = "0";
-            #endregion
+            InitValue(task);
 
             var cellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode == task.OriginStorageCode || a.CellCode == task.TargetStorageCode);
             if (cellPosition != null)
@@ -426,36 +431,7 @@ namespace THOK.Wms.Bll.Service
             strResult = string.Empty;
             bool bResult = false;
 
-            #region 默认值
-            if (task.TaskType == "" || task.TaskType == null)
-                task.TaskType = "01";
-            if (task.TaskLevel.ToString() == "" || task.TaskLevel.ToString() == null)
-                task.TaskLevel = 0;
-            if (task.ProductCode == "" || task.ProductCode == null)
-                task.ProductCode = "";
-            if (task.ProductName == "" || task.ProductName == null)
-                task.ProductName = "";
-            if (task.CurrentPositionState == "" || task.CurrentPositionState == null)
-                task.CurrentPositionState = "01";
-            if (task.State == "" || task.State == null)
-                task.State = "01";
-            if (task.TagState == "" || task.TagState == null)
-                task.TagState = "01";
-            if (task.Quantity.ToString() == "" || task.Quantity.ToString() == null)
-                task.Quantity = 0;
-            if (task.TaskQuantity.ToString() == "" || task.TaskQuantity.ToString() == null)
-                task.TaskQuantity = 0;
-            if (task.OperateQuantity.ToString() == "" || task.OperateQuantity.ToString() == null)
-                task.OperateQuantity = 0;
-            if (task.OrderID == "" || task.OrderID == null)
-                task.OrderID = "";
-            if (task.OrderType == "" || task.OrderType == null)
-                task.OrderType = "01";
-            if (task.AllotID.ToString() == "" || task.AllotID.ToString() == null)
-                task.AllotID = 0;
-            if (task.DownloadState == "" || task.DownloadState == null)
-                task.DownloadState = "0";
-            #endregion
+            InitValue(task);
 
             var t = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == task.ID);
             if (t != null)
