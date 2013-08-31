@@ -165,42 +165,42 @@ namespace THOK.Wms.Bll.Service
 
         public object GetPosition(int page, int rows, string queryString, string value)
         {
-            string name= "",type="";
+            string positionName = "", positionType = "";
+
+            string type1 = "正常位置";
+            string type2 = "大品种出库位";
+            string type3 = "小品种出库位";
+            string type4 = "异形烟出库位";
+            string type5 = "空托盘出库位";
+
             if (queryString == "PositionName")
             {
-                name = value;
+                positionName = value;
             }
             else
             {
-                type = value;
+                if (type1.Contains(value)) positionType = "01";
+                else if (type2.Contains(value)) positionType = "02";
+                else if (type3.Contains(value)) positionType = "03";
+                else if (type4.Contains(value)) positionType = "04";
+                else if (type5.Contains(value)) positionType = "05";
+                else positionType = "异常";
             }
             IQueryable<Position> companyQuery = PositionRepository.GetQueryable();
-            var position = companyQuery.Where(p => p.State.Contains("01")&&p.PositionName.Contains(name))
+            var position = companyQuery.Where(p => p.State.Contains("01")
+                && p.PositionName.Contains(positionName) && p.PositionType.Contains(positionType))
                 .OrderBy(p => p.ID).AsEnumerable()
                 .Select(p => new
                 {
                     p.ID,
                     p.PositionName,
-                    PositionType = p.PositionType == "01" ? "正常位置" : (p.PositionType == "02" ? "大品种出库位" : (p.PositionType == "03" ? "小品种出库位" : (p.PositionType == "04" ? "异形烟出库位" : "空托盘出库位"))),
+                    PositionType = p.PositionType == "01" ? type1 : (p.PositionType == "02" ? type2 : (p.PositionType == "03" ? type3 : (p.PositionType == "04" ? type4 : type5))),
                     State = p.State == "01" ? "可用" : "不可用"
                 });
-            if (type != "" && type != null)
-            {
-                position = position.Where(p =>  p.PositionType.Contains(type))
-                .OrderBy(p => p.ID).AsEnumerable()
-                .Select(p => new
-                {
-                    p.ID,
-                    p.PositionName,
-                    p.PositionType ,
-                    p.State
-                });
-            }
             int total = position.Count();
             position = position.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = position.ToArray() };
         }
-
 
         public System.Data.DataTable GetPosition(int page, int rows, Position position)
         {

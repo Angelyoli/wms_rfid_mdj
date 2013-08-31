@@ -35,10 +35,29 @@ namespace Wms.Controllers.WMS.BasisInfo
         {
             Task task = new Task();
             task.TaskType = collection["TaskType"] ?? "";
+            
+            //路径的 两个区域
+            
+            task.ProductCode = collection["ProductCode"] ?? "";
+            task.ProductName = collection["ProductName"] ?? "";
+            task.OriginStorageCode = collection["OriginStorageCode"] ?? "";
+            task.TargetStorageCode = collection["TargetStorageCode"] ?? "";
+
+            //起始位置，目标位置，当前位置
+
             task.CurrentPositionState = collection["CurrentPositionState"] ?? "";
-            task.State = collection["Status"] ?? "";
+            task.State = collection["State"] ?? "";
+            task.TagState = collection["TagState"] ?? "";
+            task.OrderID = collection["OrderID"] ?? "";
             task.OrderType = collection["OrderType"] ?? "";
             task.DownloadState = collection["DownloadState"] ?? "";
+
+            string OriginRegionID = collection["OriginRegionID"] ?? "";
+            string TargetRegionID = collection["TargetRegionID"] ?? "";
+            if (OriginRegionID != "" && OriginRegionID != null)
+            {
+                //task.or = Convert.ToInt32(OriginRegionID);
+            }
 
             var detail = TaskService.GetDetails(page, rows, task);
             return Json(detail, "text", JsonRequestBehavior.AllowGet);

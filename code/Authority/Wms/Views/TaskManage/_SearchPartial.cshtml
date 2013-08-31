@@ -1,22 +1,43 @@
 ﻿<script type="text/javascript">
+    var Module = "TaskManage";
+
     var searchDialog;
-    function searchLoad() {
-        $('#taskType').combo({ editable: false, panelHeight: 50, panelWidth: 130 });
-        $('#status').combo({ editable: false, panelHeight: 100, panelWidth: 130 });
-        $('#orderType').combo({ editable: false, panelHeight: 100, panelWidth: 130 });
-        $('#downloadState').combo({ editable: false, panelHeight: 50, panelWidth: 130 });
+    $(function () {
+        searchInit();
+    })
+
+    //初始化控件
+    function searchInit() {
+        $('#originRegionName1').attr('readonly', 'true');
+        $('#targetRegionName1').attr('readonly', 'true');
+        $('#productCode1').attr('readonly', 'true');
+        $('#productName1').attr('readonly', 'true');
+        $('#originStorageName1').attr('readonly', 'true');
+        $('#targetStorageName1').attr('readonly', 'true');
+        $('#originPositionName1').attr('readonly', 'true');
+        $('#targetPositionName1').attr('readonly', 'true');
+        $('#currentPositionName1').attr('readonly', 'true');
+
+        $('#taskType1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
+        $('#currentPositionState1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
+        $('#state1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
+        $('#tagState1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
+        $('#orderType1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
+        $('#downloadState1').combo({ editable: false, panelWidth: 130, panelHeight: 'auto' });
     }
-    function clear() {
+    //清空文本
+    function serachClear() {
         $("input[type=text]").attr("value", "");
-        $('#taskType').combobox('clear');
-        $('#currentPositionState').combobox('clear');
-        $('#state').combobox('clear');
-        $('#orderType').combobox('clear');
-        $('#downloadState').combobox('clear');
+        $('#taskType1').combo('setValue', "");
+        $('#currentPositionState1').combo('setValue', "");
+        $('#state1').combo('setValue', "");
+        $('#tagState1').combo('setValue', "");
+        $('#orderType1').combo('setValue', "");
+        $('#downloadState1').combo('setValue', "");
     }
+    //点击查询
     function searchClick() {
-        searchLoad();
-        //clear
+        serachClear();
         if (searchDialog == null) {
             $('#dlg-search').dialog('open').dialog('setTitle', '查询品牌信息');
         }
@@ -24,11 +45,19 @@
     }
     function searchByParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.TaskType = $('#taskType').combo('getValue');
-        queryParams.TaskType = $('#currentPositionState').combo('getValue');
-        queryParams.State = $('#state').combo('getValue');
-        queryParams.OrderType = $('#orderType').combo('getValue');
-        queryParams.DownloadState = $('#downloadState').combo('getValue');
+        queryParams.TaskType = $('#taskType1').combo('getValue');
+        ///路径的 区域
+        queryParams.ProductCode = $('#productCode1').val();
+        queryParams.ProductName = $('#productName1').val();
+        queryParams.OriginStorageCode = $('#originStorageCode1').val();
+        queryParams.TargetStorageCode = $('#targetStorageCode1').val();
+        ///起始、目标、当前位置
+        queryParams.CurrentPositionState = $('#currentPositionState1').combo('getValue');
+        queryParams.State = $('#state1').combo('getValue');
+        queryParams.TagState = $('#tagState1').combo('getValue');
+        queryParams.OrderID = $('#inputOrderID1').val();
+        queryParams.OrderType = $('#orderType1').combo('getValue');
+        queryParams.DownloadState = $('#downloadState1').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({ pageNumber: 1, pageSize: 10 });
         $("#details").datagrid('reload');
@@ -48,7 +77,7 @@
     #dlg-search
     {
         width: 300px;
-        height: 250px;
+        height: 300px;
         padding: 2px 2px;
     }
     .searchdiv2
@@ -57,7 +86,6 @@
         background: #fff;
         border: 1px solid #ccc;
         text-align: center;
-        border: 1px solid #ccc;
     }
 </style>
 <div id="dlg-search" class="easyui-dialog" modal="true" style="" closed="true" buttons="#dlg-search-buttons">
@@ -69,8 +97,7 @@
                         任务类型：
                     </td>
                     <td align="left">
-                        <select id="taskType" required="true" class="easyui-combobox" style="width: 130px">
-                            <option value=""></option>
+                        <select id="taskType1" class="easyui-combobox" style="width: 130px">
                             <option value="01">正常任务</option>
                             <option value="02">叠空托盘</option>
                         </select>
@@ -81,7 +108,9 @@
                         商品编码：
                     </td>
                     <td width="168" align="left">
-                        <input id="productCode" type="text" />
+                        <input id="productCode1" type="text" />
+                        <a href="#" onclick="productQuery()" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +118,29 @@
                         商品名称：
                     </td>
                     <td align="left">
-                        <input id="productName" type="text" />
+                        <input id="productName1" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        起始存储位：
+                    </td>
+                    <td>
+                        <input id="originStorageCode1" name="OriginStorageCode" type="text" style="display: none;" />
+                        <input id="originStorageName1" name="OriginStorageName" type="text" />
+                        <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        目标存储位：
+                    </td>
+                    <td>
+                        <input id="targetStorageCode1" name="TargetStorageCode" type="text" style="display: none;" />
+                        <input id="targetStorageName1" name="TargetStorageName" type="text" />
+                        <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
                     </td>
                 </tr>
                 <tr>
@@ -97,8 +148,7 @@
                         当前位置状态：
                     </td>
                     <td align="left">
-                        <select id="currentPositionState" required="true" class="easyui-combobox" style="width: 130px">
-                            <option value=""></option>
+                        <select id="currentPositionState1" class="easyui-combobox" style="width: 130px">
                             <option value="01">未到达</option>
                             <option value="02">已达到</option>
                         </select>
@@ -109,8 +159,7 @@
                         状态：
                     </td>
                     <td align="left">
-                        <select id="state" required="true" class="easyui-combobox" style="width: 130px">
-                            <option value=""></option>
+                        <select id="state1" class="easyui-combobox" style="width: 130px">
                             <option value="01">等待中</option>
                             <option value="02">执行中</option>
                             <option value="03">拣选中</option>
@@ -120,11 +169,29 @@
                 </tr>
                 <tr>
                     <td class="searchTd1">
+                        标签状态：
+                    </td>
+                    <td align="left">
+                        <select id="tagState1" class="easyui-combobox" style="width: 130px">
+                            <option value="01">未点亮</option>
+                            <option value="02">已点亮</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="searchTd1">
+                        原订单号：
+                    </td>
+                    <td align="left">
+                        <input id="orderID1" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="searchTd1">
                         原订单类型：
                     </td>
                     <td align="left">
-                        <select id="orderType" required="true" class="easyui-combobox" style="width: 130px">
-                            <option value=""></option>
+                        <select id="orderType1" class="easyui-combobox" style="width: 130px">
                             <option value="01">入库单</option>
                             <option value="02">移库单</option>
                             <option value="03">出库单</option>
@@ -137,8 +204,7 @@
                         补货下载状态：
                     </td>
                     <td align="left">
-                        <select id="downloadState" required="true" class="easyui-combobox" style="width: 130px">
-                            <option value=""></option>
+                        <select id="downloadState1" class="easyui-combobox" style="width: 130px">
                             <option value="0">未下载</option>
                             <option value="1">已下载</option>
                         </select>
