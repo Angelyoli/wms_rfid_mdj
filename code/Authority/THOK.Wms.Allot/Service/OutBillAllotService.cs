@@ -503,7 +503,7 @@ namespace THOK.Wms.Allot.Service
                 {
                     if (MoveBillCreater.CheckIsNeedSyncMoveBill(ibm.WarehouseCode))
                     {
-                        var moveBillMaster = MoveBillCreater.CreateMoveBillMaster(ibm.WarehouseCode, "3001", employee.ID.ToString());
+                        var moveBillMaster = MoveBillCreater.CreateMoveBillMaster(ibm.WarehouseCode, ibm.BillTypeCode, employee.ID.ToString());
                         MoveBillCreater.CreateSyncMoveBillDetail(moveBillMaster);
                         moveBillMaster.Status = "2";
                         moveBillMaster.Description = "出库生成同步移库单！";
