@@ -162,7 +162,9 @@ namespace THOK.WCS.Bll.Service
             string palletCode = "00002A";
             var storageQuery = StorageRepository.GetQueryable()
                 .Where(i => i.ProductCode == palletCode
-                    && i.Quantity - i.OutFrozenQuantity > 0)
+                    && i.Quantity - i.OutFrozenQuantity > 0
+                    && i.OutFrozenQuantity == 0
+                    && i.InFrozenQuantity == 0)
                 .OrderBy(i=>i.StorageTime);
 
             var storage = storageQuery.FirstOrDefault();
@@ -257,12 +259,12 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null && task.State == "04")
             {
-                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.TargetStorageCode);
+                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID,task.OriginStorageCode,task.TargetStorageCode);
             }
             return false;
         }
 
-        public bool FinishTask(int taskID,string orderType, string orderID, int allotID,string cellCode)
+        public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode)
         {
                 switch (orderType)
                 {
@@ -279,10 +281,10 @@ namespace THOK.WCS.Bll.Service
                         return FinishCheckBillTask(orderID, allotID);
                         break;
                     case "05"://空托盘叠入库存
-                        return FinishEmptyPalletStackTask(cellCode);
+                        return FinishEmptyPalletStackTask(targetStorageCode);
                         break;
                     case "06"://空托盘移出库存
-                        return FinishEmptyPalletSupplyTask(cellCode);
+                        return FinishEmptyPalletSupplyTask(originStorageCode);
                         break;
                     default:
                         break;
