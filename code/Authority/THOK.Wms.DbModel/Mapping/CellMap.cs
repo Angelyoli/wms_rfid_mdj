@@ -75,6 +75,11 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsFixedLength()
                 .HasMaxLength(1);
 
+            this.Property(t => t.IsMultiBrand)
+                .IsRequired()
+                .IsFixedLength()
+                .HasMaxLength(1);
+
             this.Property(t => t.UpdateTime)
                 .IsRequired();
 

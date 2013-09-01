@@ -378,6 +378,10 @@
     <Compile Include="Migrations\201308291104387_modify_task_downloadstate.Designer.cs">
       <DependentUpon>201308291104387_modify_task_downloadstate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201308300548228_modify_cell_add_IsMultiBrand.cs" />
+    <Compile Include="Migrations\201308300548228_modify_cell_add_IsMultiBrand.Designer.cs">
+      <DependentUpon>201308300548228_modify_cell_add_IsMultiBrand.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -434,6 +438,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201308291104387_modify_task_downloadstate.resx">
       <DependentUpon>201308291104387_modify_task_downloadstate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201308300548228_modify_cell_add_IsMultiBrand.resx">
+      <DependentUpon>201308300548228_modify_cell_add_IsMultiBrand.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

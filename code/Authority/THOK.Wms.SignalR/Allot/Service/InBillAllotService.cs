@@ -12,6 +12,7 @@ using THOK.Wms.SignalR.Common;
 using THOK.Common.Entity;
 using THOK.Authority;
 using THOK.Authority.Dal.Interfaces;
+using THOK.Authority.DbModel;
 namespace THOK.Wms.SignalR.Allot.Service
 {
     public class InBillAllotService : Notifier<AllotStockInConnection>, IInBillAllotService
@@ -46,10 +47,9 @@ namespace THOK.Wms.SignalR.Allot.Service
             ps.State = StateType.Start;
             ps.Messages.Add("开始分配!");
             NotifyConnection(ps.Clone());
-            IQueryable<THOK.Authority.DbModel.SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+            IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
             IQueryable<InBillMaster> inBillMasterQuery = InBillMasterRepository.GetQueryable();
-            IQueryable<Cell> cellQuery = CellRepository.GetObjectSet()
-                .Include("Warehouse").Include("Area").Include("Storages");
+            IQueryable<Cell> cellQuery = CellRepository.GetObjectSet().Include("Warehouse").Include("Area").Include("Storages");
 
             InBillMaster billMaster = inBillMasterQuery.Single(b => b.BillNo == billNo);
             if (!CheckAndLock(billMaster, ps)){return;}
@@ -80,7 +80,8 @@ namespace THOK.Wms.SignalR.Allot.Service
 
             //排除 件烟区,条烟区 货位是单一存储的空货位；
             string [] areaTypes = new string []{"2","3"};
-            var cells1 = cells.Where(c => areaTypes.All(a => a != c.Area.AreaType)
+            var cells1 = cells.Where(c => c.Area.AreaType != "2" && c.Area.AreaType != "3"
+                //areaTypes.All(a => a != c.Area.AreaType)
                                     && c.IsSingle == "1"
                                     && (c.Storages.Count == 0
                                             || c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
@@ -210,15 +211,14 @@ namespace THOK.Wms.SignalR.Allot.Service
                     && (string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(c.AreaCode)));
                 AllotPiece(billMaster, billDetail, cs, cancellationToken, ps);
 
-                //分配未分配卷烟到其他非货位管理货位；
+                //分配未分配卷烟到其他非货位管理货位（预设的储位）；
                 while (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                 {
-                    var c = cellQueryFromList5.Where(i => !i.Storages.Any()
-                                                        || i.Storages.Count() < i.MaxPalletQuantity
-                                                            || i.Storages.Any(s=> string.IsNullOrEmpty(s.LockTag)
-                                                                && s.Quantity == 0
-                                                                && s.InFrozenQuantity == 0))
-                                              .Where(i=>string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(i.AreaCode))
+                    var c = cellQueryFromList5.Where(i => i.DefaultProductCode == billDetail.ProductCode)
+                                              .Where(i => string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(i.AreaCode))
+                                              .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode)))
+                                              .Where(i => i.Storages.Count() < i.MaxPalletQuantity
+                                                        || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
                                               .FirstOrDefault();
 
                     if (c != null)
@@ -238,7 +238,68 @@ namespace THOK.Wms.SignalR.Allot.Service
                             }
                         }
                     }
-                    else break;                   
+                    else break;
+                }
+                //分配未分配卷烟到其他非货位管理货位（无预设的储位）；
+                while (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
+                {
+                    var c = cellQueryFromList5.Where(i => string.IsNullOrEmpty(i.DefaultProductCode))
+                                              .Where(i => string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(i.AreaCode))
+                                              .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode)))
+                                              .Where(i => i.Storages.Count() < i.MaxPalletQuantity
+                                                        || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
+                                              .FirstOrDefault();
+
+                    if (c != null)
+                    {
+                        lock (c)
+                        {
+                            decimal allotQuantity = (c.MaxQuantity >= billDetail.Product.CellMaxProductQuantity ? billDetail.Product.CellMaxProductQuantity : c.MaxQuantity) * billDetail.Product.Unit.Count;
+                            decimal billQuantity = billDetail.BillQuantity - billDetail.AllotQuantity;
+                            allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                            var targetStorage = Locker.LockStorage(c);
+                            if (targetStorage != null
+                                && targetStorage.Quantity == 0
+                                && targetStorage.InFrozenQuantity == 0)
+                            {
+                                Allot(billMaster, billDetail, c, targetStorage, allotQuantity, ps);
+                                Locker.UnLockStorage(targetStorage);
+                            }
+                        }
+                    }
+                    else break;
+                }
+                //分配未分配卷烟到其他非货位管理货位（其他品牌的预设储位）；
+                if (isDefaultProduct.ParameterValue != "0")//判断预设卷烟后不能放入其他烟
+                {
+                    while (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
+                    {
+                        var c = cellQueryFromList5.Where(i => i.DefaultProductCode != billDetail.ProductCode && !string.IsNullOrEmpty(i.DefaultProductCode))
+                                                  .Where(i => string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(i.AreaCode))
+                                                  .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode)))
+                                                  .Where(i => i.Storages.Count() < i.MaxPalletQuantity
+                                                            || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
+                                                  .FirstOrDefault();
+
+                        if (c != null)
+                        {
+                            lock (c)
+                            {
+                                decimal allotQuantity = (c.MaxQuantity >= billDetail.Product.CellMaxProductQuantity ? billDetail.Product.CellMaxProductQuantity : c.MaxQuantity) * billDetail.Product.Unit.Count;
+                                decimal billQuantity = billDetail.BillQuantity - billDetail.AllotQuantity;
+                                allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                                var targetStorage = Locker.LockStorage(c);
+                                if (targetStorage != null
+                                    && targetStorage.Quantity == 0
+                                    && targetStorage.InFrozenQuantity == 0)
+                                {
+                                    Allot(billMaster, billDetail, c, targetStorage, allotQuantity, ps);
+                                    Locker.UnLockStorage(targetStorage);
+                                }
+                            }
+                        }
+                        else break;
+                    }
                 }
             }
 

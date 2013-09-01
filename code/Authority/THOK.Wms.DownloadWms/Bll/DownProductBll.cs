@@ -23,8 +23,8 @@ namespace THOK.WMS.DownloadWms.Bll
             try
             {
                 DataTable codedt = this.GetProductCode();
-                string codeList = UtinString.MakeString(codedt, "custom_code");
-                codeList = "BRAND_CODE NOT IN (" + codeList + ")";
+                string codeList = UtinString.MakeString(codedt, "product_code");
+                codeList = "BRANDCODE NOT IN (" + codeList + ")";
                 DataTable bradCodeTable = this.GetProductInfo("1=1");
                 DataRow[] bradCodeDr = bradCodeTable.Select(codeList);
                 if (bradCodeDr.Length > 0)
@@ -120,9 +120,9 @@ namespace THOK.WMS.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in brandTable)
             {
-                DataTable ulistCodeTable = this.FindUnitListCode(row["BRAND_N"].ToString().Trim());
+                DataTable ulistCodeTable = this.FindUnitListCode(row["BRANDCODE"].ToString().Trim());
                 DataRow inbrddr = ds.Tables["WMS_PRODUCT"].NewRow();
-                inbrddr["product_code"] = row["BRAND_N"];
+                inbrddr["product_code"] = row["BRANDCODE"];
                 inbrddr["product_name"] = row["BRAND_NAME"];
                 inbrddr["uniform_code"] = row["N_UNIFY_CODE"];
                 inbrddr["custom_code"] = row["BRAND_CODE"];
@@ -155,6 +155,9 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["description"] = "";
                 inbrddr["is_active"] = row["IsActive"];
                 inbrddr["update_time"] = DateTime.Now;
+                inbrddr["is_rounding"] = "1";
+                inbrddr["cell_max_product_quantity"] = "30";
+                inbrddr["point_area_codes"] = "";
                 ds.Tables["WMS_PRODUCT"].Rows.Add(inbrddr);
             }
             return ds;
@@ -301,7 +304,9 @@ namespace THOK.WMS.DownloadWms.Bll
             inbrtable.Columns.Add("description");
             inbrtable.Columns.Add("is_active");
             inbrtable.Columns.Add("update_time");
-
+            inbrtable.Columns.Add("is_rounding");
+            inbrtable.Columns.Add("cell_max_product_quantity");
+            inbrtable.Columns.Add("point_area_codes");
             return ds;
         }
         /// <summary>

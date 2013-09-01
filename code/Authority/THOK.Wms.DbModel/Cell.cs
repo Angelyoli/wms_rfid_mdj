@@ -35,6 +35,7 @@ namespace THOK.Wms.DbModel
         public string Description { get; set; }
         public string LockTag { get; set; }
         public string IsActive { get; set; }
+        public string IsMultiBrand { get; set; }
         public DateTime UpdateTime { get; set; }
         public byte[] RowVersion { get; set; }
 
