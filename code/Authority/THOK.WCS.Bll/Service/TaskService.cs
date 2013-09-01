@@ -98,7 +98,8 @@ namespace THOK.WCS.Bll.Service
                                 && s.Quantity == 0
                                 && s.InFrozenQuantity == 0)
                             || i.Storages.Any(s => s.ProductCode == palletCode
-                                && s.Quantity + s.InFrozenQuantity < palletCount)));
+                                && s.Quantity + s.InFrozenQuantity < palletCount
+                                && s.OutFrozenQuantity == 0)));
 
                 var cell = cellQuery.FirstOrDefault();
                 if (cell != null)
@@ -158,7 +159,7 @@ namespace THOK.WCS.Bll.Service
 
         public bool CreateNewTaskForEmptyPalletSupply(int positionID)
         {
-            string palletCode = "";
+            string palletCode = "00002A";
             var storageQuery = StorageRepository.GetQueryable()
                 .Where(i => i.ProductCode == palletCode
                     && i.Quantity - i.OutFrozenQuantity > 0)
@@ -169,9 +170,9 @@ namespace THOK.WCS.Bll.Service
                 .Where(i => i.ID == positionID).FirstOrDefault();
 
             var positionCell = CellPositionRepository.GetQueryable()
-                .Where(i=>i.StockInPositionID == positionID).FirstOrDefault();
+                .Where(i => i.StockInPositionID == positionID).FirstOrDefault();
 
-            if (storage != null && position != null && positionCell != null)
+            if (storage != null && position != null )
             {
                 var cellPosition = CellPositionRepository.GetQueryable()
                     .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
@@ -179,8 +180,8 @@ namespace THOK.WCS.Bll.Service
                 if (cellPosition != null)
                 {
                     var path = PathRepository.GetQueryable()
-                        .Where(p=>p.OriginRegion == cellPosition.StockOutPosition.Region
-                            && p.TargetRegion == position.Region)
+                        .Where(p=>p.OriginRegion.ID == cellPosition.StockOutPosition.Region.ID
+                            && p.TargetRegion.ID == position.Region.ID)
                             .FirstOrDefault();
                     if (path != null)
                     {
@@ -194,7 +195,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.ProductCode = palletCode;
                         newTask.ProductName = "空托盘";
                         newTask.OriginStorageCode = storage.CellCode;
-                        newTask.TargetStorageCode = positionCell.CellCode;//???
+                        newTask.TargetStorageCode = positionCell != null ? positionCell.CellCode:"";
                         newTask.OriginPositionID = cellPosition.StockOutPositionID;
                         newTask.TargetPositionID = positionID;
                         newTask.CurrentPositionID = cellPosition.StockOutPositionID;
@@ -250,6 +251,16 @@ namespace THOK.WCS.Bll.Service
             return false;
         }
 
+
+        public bool FinishTask(int taskID)
+        {
+            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
+            if (task != null && task.State == "04")
+            {
+                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.TargetStorageCode);
+            }
+            return false;
+        }
 
         public bool FinishTask(int taskID,string orderType, string orderID, int allotID,string cellCode)
         {
