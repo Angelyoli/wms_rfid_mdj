@@ -1,108 +1,75 @@
 ﻿<script type="text/javascript">
-    var Module = "TaskManage";
-
     $(function () {
-        cellInit();
         cellDoubleClick();
     })
-    //初始化
-    function cellInit() {
 
-    }
-    //选中赋值
-    function cellSave() {
-        var cellRow = $('#cellDetail').datagrid('getSelected');
-        if (cellRow) {
-            if (type == 1) {
-                $('#originStorageCode1').val(cellRow.CellCode);
-                $('#originStorageName1').val(cellRow.CellName);
-                $('#originStorageCode2').val(cellRow.CellCode);
-                $('#originStorageName2').val(cellRow.CellName);
+    //双击赋值
+    function cellDoubleClick() {
+        $('#cell-warehouseTree').tree({
+            onDblClick: function (node) {
+                if (node.attributes == "cell") {
+                    cellSave();
+                }
             }
-            if (type == 2) {
-                $('#targetStorageCode1').val(cellRow.CellCode);
-                $('#targetStorageName1').val(cellRow.CellName);
-                $('#targetStorageCode2').val(cellRow.CellCode);
-                $('#targetStorageName2').val(cellRow.CellName);
+        });
+    }
+    //浏览货位信息
+    function cellQuery(p) {
+        if (p == 1) {
+            $('#dlg-cell').dialog('open').dialog('setTitle', '选择起始货位');
+            type = 1;
+        }
+        else if (p == 2) {
+            $('#dlg-cell').dialog('open').dialog('setTitle', '选择目标货位');
+            type = 2;
+        }
+        $('#cell-warehouseTree').tree({ url: '/Cell/GetCellDetail/' }); //加载树形数据
+    }
+    //将选中的货位编码赋值给控件
+    function cellSave() {
+        var cellnode = $('#cell-warehouseTree').tree('getSelected');
+        if (cellnode.attributes == "cell") {
+            if (type == 1) {
+                $('#originCellCode1').val(cellnode.id);
+                $('#originCellName1').val(cellnode.text);
+                $('#originCellCode2').val(cellnode.id);
+                $('#originCellName2').val(cellnode.text);
+            }
+            else {
+                $('#targetCellCode1').val(cellnode.id);
+                $('#targetCellName1').val(cellnode.text);
+                $('#targetCellCode2').val(cellnode.id);
+                $('#targetCellName2').val(cellnode.text);
             }
             $('#dlg-cell').dialog('close');
         }
-    }
-    //双击赋值
-    function cellDoubleClick() {
-        $('#cellDetail').datagrid({
-            onDblClickRow: function () {
-                cellSave();
-            }
-        })
-    }
-    //根据条件查询
-    function cellQueryClick() {
-        $("#cellDetail").datagrid({
-            url: '/Cell/FindDetails/?queryString=' + $('#cellType').combogrid('getValue') + '&value=' + $('#cellInfo').val()
-        });
-        $("#cellDetail").datagrid('reload');
     }
 </script>
 <style type="text/css">
     #dlg-cell
     {
-        width: 800px;
-        height: 400px;
-        padding: 0px 0px;
+        width: 320px;
+        height: 420px;
+        padding: 1px 1px;
     }
-    .divCellDetail
+    #sidebar
     {
-        width: 800px;
-        height: 400px;
-        padding: 0px 0px;
-    }
-    #cellType
-    {
-        width: 100px;
+        width: 220px;
+        border-right-style: solid;
+        border-right-width: 1px;
+        border-right-color: #99BBE8;
     }
 </style>
 <div id="dlg-cell" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-cell-buttons">
-    <div id="btnQuery">
-        <select id="cellType" class="easyui-combobox" readonly="true">
-            <option value="CellCode">货位编码</option>
-            <option value="CellName">货位名称</option>
-        </select>
-        <input id="cellInfo">
-        <a href="#" id="cellQuery" class="easyui-linkbutton" iconcls="icon-search" plain="true"
-            onclick="cellQueryClick()">查询</a>
+    <div class="easyui-layout" fit="true">
+        <div id="sidebar" region="center" border="false">
+            <ul id="cell-warehouseTree" class="easyui-tree">
+            </ul>
+        </div>
     </div>
-    <div split="true" border="false" class="divCellDetail">
-        <table id="cellDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
-            pagesize="50" singleselect="true" fit="true" fitcolumns="true" pagination="true"
-            rownumbers="true">
-            <thead>
-                <tr>
-                    <th field="CellCode" width="60">
-                        货位编码
-                    </th>
-                    <th field="CellName" width="60">
-                        货位名称
-                    </th>
-                    <th field="DefaultProductCode" width="60">
-                        预设卷烟编码
-                    </th>
-                    <th field="MaxQuantity" width="60">
-                        预设最大储量
-                    </th>
-                    <th field="IsSingle" width="60">
-                        是否单一货位
-                    </th>
-                    <th field="IsActive" width="60">
-                        是否可用
-                    </th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <div id="dlg-cell-buttons">
-        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="cellSave()">确定</a>
-        <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-cell').dialog('close')">
-            取消</a>
-    </div>
+</div>
+<div id="dlg-cell-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="cellSave()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-cell').dialog('close')">
+        取消</a>
 </div>

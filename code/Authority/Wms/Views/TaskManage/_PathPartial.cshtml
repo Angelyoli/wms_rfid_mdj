@@ -5,19 +5,19 @@
         pathInit();
         pathDoubleClick();
     })
-    //初始化
-    function pathInit() {
-
+    //浏览路径信息
+    function pathQuery() {
+        $('#dlg-path').dialog('open').dialog('setTitle', '选择路径');
+        $('#pathDetail').datagrid({ url: '/Path/Details/' });
+        $("#pathDetail").datagrid('reload');
     }
     //选中赋值
     function pathSave() {
         var pathRow = $('#pathDetail').datagrid('getSelected');
         if (pathRow) {
-            $('#pathID').val(pathRow.ID);
+            $('#pathID1').val(pathRow.ID);
             $('#originRegionName1').val(pathRow.OriginRegionName);
             $('#targetRegionName1').val(pathRow.TargetRegionName);
-            $('#originRegionName2').val(pathRow.OriginRegionName);
-            $('#targetRegionName2').val(pathRow.TargetRegionName);
             $('#dlg-path').dialog('close');
         }
     }
@@ -39,7 +39,7 @@
     }
     .divPathDetail
     {
-        width: 498px;
+        width: 500px;
         height: 430px;
         padding: 0px 0px;
     }

@@ -2,33 +2,65 @@
     var Module = "TaskManage";
 
     $(function () {
-        //双击赋值
-        $('#positionDetail').datagrid({
-            onDblClickRow: function () {
-                positionSave();
-            }
-        })
-        //属性初始化
+        positionInit();
+        positionDoubleClick();
+    });
+    //属性初始化
+    function positionInit() {
         $('#queryType').combo({
             required: true,
             editable: false,
             panelHeight: 45,
             panelWidth: 100
         })
-    });
+    }
+    //双击赋值
+    function positionDoubleClick() {
+        $('#positionDetail').datagrid({
+            onDblClickRow: function () {
+                positionSave();
+            }
+        })
+    }
+    //浏览位置信息
+    function positionQuery(p) {
+        if (p == 1) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择起始位置');
+            type = 1;
+        }
+        else if (p == 2) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择目标位置');
+            type = 2
+        }
+        else if (p == 3) {
+            $('#dlg-position').dialog('open').dialog('setTitle', '选择当前位置');
+            type = 3
+        }
+        $('#positionDetail').datagrid({ url: '/Position/Details/' });
+        $("#positionDetail").datagrid('reload');
+    }
+
     //选中赋值
     function positionSave() {
         var positionRow = $('#positionDetail').datagrid('getSelected');
         if (positionRow) {
             if (type == 1) {
+                $('#originPositionID1').val(positionRow.ID);
+                $('#originPositionName1').val(positionRow.PositionName);
                 $('#originPositionID2').val(positionRow.ID);
                 $('#originPositionName2').val(positionRow.PositionName);
+                $('#currentPositionID2').val(positionRow.ID);
+                $('#currentPositionName2').val(positionRow.PositionName);
             }
             else if (type == 2) {
+                $('#targetPositionID1').val(positionRow.ID);
+                $('#targetPositionName1').val(positionRow.PositionName);
                 $('#targetPositionID2').val(positionRow.ID);
                 $('#targetPositionName2').val(positionRow.PositionName);
             }
             else if (type == 3) {
+                $('#currentPositionID1').val(positionRow.ID);
+                $('#currentPositionName1').val(positionRow.PositionName);
                 $('#currentPositionID2').val(positionRow.ID);
                 $('#currentPositionName2').val(positionRow.PositionName);
             }
@@ -44,11 +76,22 @@
             url: '/Position/GetPosition/?queryString=' + $('#positionType').combogrid('getValue') + '&value=' + $('#positionInfo').val()
         });
         $("#positionDetail").datagrid('reload');
-        editKey = true;
     }
 </script>
-<div id="dlg-position" class="easyui-dialog" modal="true" style="width: 500px; height: 420px;
-    padding: 0px 0px" closed="true" buttons="#dlg-position-buttons">
+<style type="text/css">
+    #dlg-position
+    {
+        width: 500px;
+        height: 420px;
+        padding: 0px 0px;
+    }
+    .divpst
+    {
+        width: 486px;
+        height: 320px;
+    }
+</style>
+<div id="dlg-position" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-position-buttons">
     <div id="btnQuery">
         <select id="positionType" class="easyui-combobox" style="width: 100px;" readonly="true">
             <option value="PositionName">位置名称</option>
@@ -58,7 +101,7 @@
         <a href="#" id="positionQuery" class="easyui-linkbutton" iconcls="icon-search" plain="true"
             onclick="positionQueryClick()">查询</a>
     </div>
-    <div split="true" border="false" style="width: 486px; height: 320px;">
+    <div split="true" border="false" class="divpst">
         <table id="positionDetail" class="easyui-datagrid" border="false" toolbar="#btn-query"
             singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
             <thead>

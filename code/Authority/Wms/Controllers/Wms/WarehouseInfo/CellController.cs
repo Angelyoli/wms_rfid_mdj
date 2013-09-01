@@ -134,5 +134,13 @@ namespace Authority.Controllers.Wms.WarehouseInfo
             var cellCode = CellService.GetCellCode(shelfCode);
             return Json(cellCode, "text", JsonRequestBehavior.AllowGet);
         }
+
+        // 用于任务管理
+        // GET: /Cell/GetCellDetail/
+        public ActionResult GetCellDetail(string id)
+        {
+            var wareCell = CellService.GetCellDetail(id);
+            return Json(wareCell, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }
