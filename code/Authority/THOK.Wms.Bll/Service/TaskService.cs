@@ -694,11 +694,11 @@ namespace THOK.Wms.Bll.Service
                         foreach (var outItem in outBillAllot.ToArray())
                         {
                             //根据“出库货位编码”查找“货位位置”
-                            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == outItem.CellCode);
-                            if (targetCellPosition != null)
+                            var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == outItem.CellCode);
+                            if (originCellPosition != null)
                             {
                                 //根据“起始位置的参数”查找“起始的位置信息”
-                                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockOutPositionID);
+                                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                                 if (originPosition != null)
                                 {
                                     //根据“货位位置中的出库位置ID”查找“目标的位置信息”
@@ -717,10 +717,10 @@ namespace THOK.Wms.Bll.Service
                                             outTask.ProductName = outItem.Product.ProductName;
                                             outTask.OriginStorageCode = outItem.CellCode;
                                             outTask.TargetStorageCode = outItem.CellCode;
-                                            outTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
+                                            outTask.OriginPositionID = originPosition.ID;
                                             outTask.TargetPositionID = targetPosition.ID;
-                                            outTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
-                                            outTask.CurrentPositionState = "01";
+                                            outTask.CurrentPositionID = originPosition.ID;
+                                            outTask.CurrentPositionState = "02";
                                             outTask.State = "01";
                                             outTask.TagState = "01";
                                             outTask.Quantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
@@ -740,7 +740,7 @@ namespace THOK.Wms.Bll.Service
                                     }
                                     else
                                     {
-                                        errorInfo = "未找到【位置信息】目标货位位置：" + targetCellPosition.StockOutPosition.PositionName;
+                                        errorInfo = "未找到【位置信息】目标货位位置：" + originCellPosition.StockOutPosition.PositionName;
                                         result = false;
                                     }
                                 }
@@ -854,7 +854,7 @@ namespace THOK.Wms.Bll.Service
                                             moveTask.OriginPositionID = originPosition.ID;
                                             moveTask.TargetPositionID = targetPosition.ID;
                                             moveTask.CurrentPositionID = originPosition.ID;
-                                            moveTask.CurrentPositionState = "01";
+                                            moveTask.CurrentPositionState = "02";
                                             moveTask.State = "01";
                                             moveTask.TagState = "01";
                                             moveTask.Quantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
