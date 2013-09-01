@@ -29,6 +29,8 @@ namespace THOK.Wms.DbModel
         public int CurrentOperateQuantity { get; set; }
         public string ChannelCode { get; set; }
         public string State { get; set; }
+        public bool HasGetRequest { get; set; }
+        public bool HasPutRequest { get; set; }
 
         public virtual Region Region { get; set; }
 

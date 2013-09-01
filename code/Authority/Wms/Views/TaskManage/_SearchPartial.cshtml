@@ -71,12 +71,12 @@
     }
     .searchtable
     {
-        width: 540;
+        width: 520;
     }
     #dlg-search
     {
-        width: 550px;
-        height: 280px;
+        width: 520px;
+        height: 240px;
         padding: 2px 2px;
     }
     .searchdiv2
@@ -97,6 +97,7 @@
                     </td>
                     <td align="left">
                         <select id="taskType1" class="easyui-combobox">
+                            <option value="">　</option>
                             <option value="01">正常任务</option>
                             <option value="02">叠空托盘</option>
                         </select>
@@ -106,6 +107,7 @@
                     </td>
                     <td align="left">
                         <select id="state1" class="easyui-combobox">
+                            <option value="">　</option>
                             <option value="01">等待中</option>
                             <option value="02">执行中</option>
                             <option value="03">拣选中</option>
@@ -140,7 +142,7 @@
                             plain="true"></a>
                     </td>
                     <td>
-                        起始区域：
+                        目标区域：
                     </td>
                     <td>
                         <input id="targetRegionName1" type="text" />
@@ -185,25 +187,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="searchTd1">
-                        原订单号：
-                    </td>
-                    <td align="left">
-                        <input id="orderID1" type="text" />
-                    </td>
-                    <td class="searchTd1">
-                        原订单类型：
-                    </td>
-                    <td align="left">
-                        <select id="orderType1" class="easyui-combobox">
-                            <option value="01">入库单</option>
-                            <option value="02">移库单</option>
-                            <option value="03">出库单</option>
-                            <option value="04">盘点单</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
                     <td>
                         当前位置：
                     </td>
@@ -217,18 +200,39 @@
                     </td>
                     <td align="left">
                         <select id="currentPositionState1" class="easyui-combobox">
+                            <option value="">　</option>
                             <option value="01">未到达</option>
                             <option value="02">已达到</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    `
+                    <td class="searchTd1">
+                        原订单号：
+                    </td>
+                    <td align="left">
+                        <input id="orderID1" type="text" />
+                    </td>
+                    <td class="searchTd1">
+                        原订单类型：
+                    </td>
+                    <td align="left">
+                        <select id="orderType1" class="easyui-combobox">
+                            <option value="">　</option>
+                            <option value="01">入库单</option>
+                            <option value="02">移库单</option>
+                            <option value="03">出库单</option>
+                            <option value="04">盘点单</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
                     <td class="searchTd1">
                         标签状态：
                     </td>
                     <td align="left">
                         <select id="tagState1" class="easyui-combobox">
+                            <option value="">　</option>
                             <option value="01">未点亮</option>
                             <option value="02">已点亮</option>
                         </select>
@@ -238,6 +242,7 @@
                     </td>
                     <td align="left">
                         <select id="downloadState1" class="easyui-combobox" style="width: 130px">
+                            <option value="">　</option>
                             <option value="0">未下载</option>
                             <option value="1">已下载</option>
                         </select>

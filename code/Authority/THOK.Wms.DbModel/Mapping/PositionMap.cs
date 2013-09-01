@@ -45,6 +45,10 @@ namespace THOK.Wms.DbModel.Mapping
                 .IsRequired()
                 .IsFixedLength()
                 .HasMaxLength(2);
+            this.Property(t => t.HasGetRequest)
+                .IsRequired();
+            this.Property(t => t.HasPutRequest)
+                .IsRequired();
 
             // Table & Column Mappings
             this.Property(t => t.ID).HasColumnName(ColumnMap.Value.To("ID"));
@@ -64,6 +68,8 @@ namespace THOK.Wms.DbModel.Mapping
             this.Property(t => t.CurrentOperateQuantity).HasColumnName(ColumnMap.Value.To("CurrentOperateQuantity"));
             this.Property(t => t.ChannelCode).HasColumnName(ColumnMap.Value.To("ChannelCode"));
             this.Property(t => t.State).HasColumnName(ColumnMap.Value.To("State"));
+            this.Property(t => t.HasGetRequest).HasColumnName(ColumnMap.Value.To("HasGetRequest"));
+            this.Property(t => t.HasPutRequest).HasColumnName(ColumnMap.Value.To("HasPutRequest"));
 
             // Relationships
             this.HasRequired(t => t.Region)
