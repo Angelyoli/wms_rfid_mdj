@@ -25,6 +25,10 @@
         $('#tagState2').combo({ editable: false, width: 130, panelHeight: 'auto' });
         $('#orderType2').combo({ editable: false, width: 130, panelHeight: 'auto' });
         $('#downloadState2').combo({ editable: false, width: 130, panelHeight: 'auto' });
+
+        $('#quantity2').attr('placeholder', '只能为数字');
+        $('#taskQuantity2').attr('placeholder', '只能为数字');
+        $('#operateQuantity2').attr('placeholder', '只能为数字');
     }
     //添加
     function addClick() {
@@ -191,13 +195,13 @@
                         原数量
                     </td>
                     <td>
-                        <input name="Quantity" class="easyui-numberbox" min="0" max="999999999" />
+                        <input id="quantity2" name="Quantity" class="easyui-numberbox" min="0" max="999999999" />
                     </td>
                     <td>
                         任务数量
                     </td>
                     <td>
-                        <input name="TaskQuantity" class="easyui-numberbox" min="0" max="999999999" />
+                        <input id="taskQuantity2" name="TaskQuantity" class="easyui-numberbox" min="0" max="999999999" />
                     </td>
                 </tr>
                 <tr>
@@ -205,7 +209,7 @@
                         已操作数量
                     </td>
                     <td>
-                        <input name="OperateQuantity" class="easyui-numberbox" min="0" max="999999999" />
+                        <input id="operateQuantity2" name="OperateQuantity" class="easyui-numberbox" min="0" max="999999999" />
                     </td>
                     <td>
                         原订单号
