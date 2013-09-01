@@ -53,7 +53,9 @@ namespace THOK.Wms.Bll.Service
                             p.CurrentTaskID,
                             p.CurrentOperateQuantity,
                             p.ChannelCode,
-                            p.State
+                            p.State,
+                            p.HasGetRequest,
+                            p.HasPutRequest
                         })
                 .Where(p => p.PositionName.Contains(positions.PositionName) 
                     && p.SRMName.Contains(positions.SRMName)
@@ -82,6 +84,8 @@ namespace THOK.Wms.Bll.Service
                     p.CurrentOperateQuantity,
                     p.ChannelCode,
                     State = p.State == "01" ? "可用" : "不可用",
+                    HasGetRequest = p.HasGetRequest == true ? "是" : "否",
+                    HasPutRequest = p.HasPutRequest == true ? "是" : "否"
                 });
 
             return new { total, rows = position_Detail.ToArray() };
@@ -111,6 +115,8 @@ namespace THOK.Wms.Bll.Service
                 post.CurrentTaskID = position.CurrentTaskID;
                 post.ChannelCode = position.ChannelCode;
                 post.State = position.State;
+                post.HasGetRequest = position.HasGetRequest;
+                post.HasPutRequest = position.HasPutRequest;
 
                 PositionRepository.Add(post);
                 PositionRepository.SaveChanges();
@@ -142,6 +148,8 @@ namespace THOK.Wms.Bll.Service
                     post.CurrentTaskID = position.CurrentTaskID;
                     post.ChannelCode = position.ChannelCode;
                     post.State = position.State;
+                    post.HasGetRequest = position.HasGetRequest;
+                    post.HasPutRequest = position.HasPutRequest;
 
                     PositionRepository.SaveChanges();
 
@@ -229,7 +237,9 @@ namespace THOK.Wms.Bll.Service
                         p.CurrentTaskID,
                         p.CurrentOperateQuantity,
                         p.ChannelCode,
-                        p.State
+                        p.State,
+                        p.HasGetRequest,
+                        p.HasPutRequest
                     })
             .Where(p => p.PositionName.Contains(position.PositionName)
                 && p.SRMName.Contains(position.SRMName)
@@ -255,7 +265,9 @@ namespace THOK.Wms.Bll.Service
                 p.ChannelCode,
                 Extension = p.Extension == 0 ? "单右伸" : (p.Extension == 4 ? "双右伸" : (p.Extension == 8 ? "单左伸" : "双左伸")),
                 State = p.State == "01" ? "可用" : "不可用",
-                p.Description,
+                HasGetRequest = p.HasGetRequest == true ? "是" : "否",
+                HasPutRequest = p.HasPutRequest == true ? "是" : "否",
+                p.Description
             });
 
             System.Data.DataTable dt = new System.Data.DataTable();
@@ -275,6 +287,8 @@ namespace THOK.Wms.Bll.Service
             dt.Columns.Add("补货烟道代码", typeof(string));
             dt.Columns.Add("货叉伸位", typeof(string));
             dt.Columns.Add("状态", typeof(string));
+            dt.Columns.Add("取货请求", typeof(string));
+            dt.Columns.Add("放货请求", typeof(string));
             dt.Columns.Add("描述", typeof(string));
 
             foreach (var item in position_Detail)
@@ -297,6 +311,8 @@ namespace THOK.Wms.Bll.Service
                     item.ChannelCode,
                     item.Extension,
                     item.State,
+                    item.HasGetRequest,
+                    item.HasPutRequest,
                     item.Description
                 );
 
