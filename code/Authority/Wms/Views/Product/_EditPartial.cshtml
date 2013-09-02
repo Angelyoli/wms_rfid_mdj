@@ -5,9 +5,8 @@
             $('#dlg').dialog('open').dialog('setTitle', '编辑卷烟信息');
             editKey = true;
             $('#Productfm').form('load', row);
-            $('#Productfm .easyui-validatebox').validatebox({
-                required: true
-            });
+            $('#Productfm .easyui-validatebox').validatebox({ required: true });
+
             if (row.IsActive == '可用') {
                 $('#cc').combo('setValue', 1).combo('setText', row.IsActive);
             } else {
@@ -37,7 +36,7 @@
             });
 
             //指定库区
-            $('#area').combotree({ url: '/Area/GetDetailsTree/', multiple: true });
+            $('#area').combotree({ url: '/Area/GetDetailsTree/', multiple: true, width: 210, panelheight: "auto" });
             var aa = row.PointAreaCodes.split(',');
             $('#area').combotree('setValues', aa);
             
