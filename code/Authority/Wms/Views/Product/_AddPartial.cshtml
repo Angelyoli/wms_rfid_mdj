@@ -1,6 +1,7 @@
 ﻿<script type="text/javascript">
     var url;
     function addClick() {
+        isadd = true;
         $('#dlg').dialog('open').dialog('setTitle', '新增');
         addKey = true;
         $('#Productfm').form('clear');
@@ -13,14 +14,25 @@
 
         //指定库区
         $('#area').combotree({ url: '/Area/GetDetailsTree/', multiple: true, width: 210, panelheight: "auto" });
-
-        url = '/Product/Create/';
     };
 
     function save() {
+        url = "";
         var areas = $('#area').combotree('getValues');
+        if (isadd == true) {
+            url = '/Product/Create/?pointAreaCodes=' + areas;
+            isadd = false;
+        }
+        if (isedit == true) {
+            url = '/Product/Edit/?pointAreaCodes=' + areas;
+            isedit = false;
+        }
+        if (isdel == true) {
+            url = '/Product/Delete/?ProductCode=' + $('#pid').val();
+            isdel = false;
+        }
         $('#Productfm').form('submit', {
-            url: url + "?pointAreaCodes=" + areas,
+            url: url,
             onSubmit: function () {
                 return $(this).form('validate');
             },
@@ -73,6 +85,7 @@
             <form id="Productfm" method="post" novalidate>
             <table>
                 <tr>
+                    <input id="pid" name="pCode" type="text" />
                     <td>
                         商品编码
                     </td>

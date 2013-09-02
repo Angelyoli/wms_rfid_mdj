@@ -2,6 +2,7 @@
     function editClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
+            isedit = true;
             $('#dlg').dialog('open').dialog('setTitle', '编辑卷烟信息');
             editKey = true;
             $('#Productfm').form('load', row);
@@ -28,8 +29,6 @@
             }
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
-            //$('#brandCode').attr("readonly", true);
-            //$('#supplierCode').attr("readonly", true);
             $('#p').attr("readonly", true);
             $('#cc').combo({
                 hasDownArrow: true
@@ -37,10 +36,10 @@
 
             //指定库区
             $('#area').combotree({ url: '/Area/GetDetailsTree/', multiple: true, width: 210, panelheight: "auto" });
-            var aa = row.PointAreaCodes.split(',');
-            $('#area').combotree('setValues', aa);
-            
-            url = '/Product/Edit/';
+            var pac = row.PointAreaCodes.split(',');
+            if (pac != null || pac != "") {
+                $('#area').combotree('setValues', pac);
+            }
         } else {
             $.messager.confirm('错误', '没有选择行！');
         }

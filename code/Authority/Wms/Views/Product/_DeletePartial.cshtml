@@ -2,6 +2,7 @@
     function deleteClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
+            isdel = true;
             $('#dlg').dialog('open').dialog('setTitle', '删除品牌信息');
             deleteKey = true;
             $('#Productfm .easyui-validatebox').validatebox({
@@ -15,7 +16,7 @@
             } else {
                 $('#cc').combo('setValue', false).combo('setText', row.IsActive);
             }
-            url = '/Product/Delete/?ProductCode=' + row.ProductCode;
+            $('#pid').val(row.ProductCode);
         } else {
             $.messager.confirm('错误', '没有选择行！');
         }
