@@ -385,6 +385,10 @@
     <Compile Include="Migrations\201309010654118_add_position.cs" />
     <Compile Include="Migrations\201309010654118_add_position.Designer.cs">
       <DependentUpon>201309010654118_add_position.cs</DependentUpon>
+	</Compile>
+    <Compile Include="Migrations\201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.cs" />
+    <Compile Include="Migrations\201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.Designer.cs">
+      <DependentUpon>201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
@@ -448,6 +452,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201309010654118_add_position.resx">
       <DependentUpon>201309010654118_add_position.cs</DependentUpon>
+	</EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.resx">
+      <DependentUpon>201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
