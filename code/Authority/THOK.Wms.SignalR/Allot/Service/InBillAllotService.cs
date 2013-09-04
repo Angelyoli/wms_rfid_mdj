@@ -100,7 +100,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                                         && c.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
                                             && s.Product != null
                                             && (s.Quantity > 0 || s.InFrozenQuantity > 0)
-                                            && (c.MaxQuantity >= s.Product.CellMaxProductQuantity ? s.Product.CellMaxProductQuantity : c.MaxQuantity * s.Product.Unit.Count) > s.Quantity + s.InFrozenQuantity));
+                                            && (c.MaxQuantity >= s.Product.CellMaxProductQuantity ? s.Product.CellMaxProductQuantity : c.MaxQuantity) * s.Product.Unit.Count > s.Quantity + s.InFrozenQuantity));
 
             //件烟区 货位是单一存储的空货位； 
             areaTypes = new string[] { "2" };
