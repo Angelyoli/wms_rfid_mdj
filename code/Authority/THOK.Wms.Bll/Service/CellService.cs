@@ -42,7 +42,29 @@ namespace THOK.Wms.Bll.Service
         public object GetDetails(int page, int rows, string cellCode)
         {
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
-            var cell = cellQuery.OrderBy(b => b.CellCode).AsEnumerable().Select(b => new { b.CellCode, b.CellName, b.CellType, b.ShortName, b.Rfid, b.Layer, b.Col, b.ImgX, b.ImgY, b.IsSingle, b.MaxQuantity, b.Description, b.Warehouse.WarehouseName, b.Warehouse.WarehouseCode, b.Area.AreaCode, b.Area.AreaName, b.Shelf.ShelfCode, b.Shelf.ShelfName, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+            var cell = cellQuery.OrderBy(b => b.CellCode).AsEnumerable().Select(b => new { 
+                b.CellCode, 
+                b.CellName, 
+                b.CellType, 
+                b.ShortName, 
+                b.Rfid, 
+                b.Layer, 
+                b.Col, 
+                b.ImgX, 
+                b.ImgY, 
+                b.IsSingle, 
+                b.MaxQuantity, 
+                b.Description, 
+                b.Warehouse.WarehouseName, 
+                b.Warehouse.WarehouseCode,
+                b.Area.AreaCode, 
+                b.Area.AreaName, 
+                b.Shelf.ShelfCode, 
+                b.Shelf.ShelfName, 
+                IsActive = b.IsActive == "1" ? "可用" : "不可用", 
+                UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                FirstInFirstOut = b.FirstInFirstOut == true ? "是" : "否"
+            });
             int total = cell.Count();
             cell = cell.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = cell.ToArray() };
@@ -83,7 +105,8 @@ namespace THOK.Wms.Bll.Service
                     b.Shelf.ShelfCode,
                     b.Shelf.ShelfName,
                     IsActive = b.IsActive == "1" ? "可用" : "不可用",
-                    UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                    UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss"),
+                    FirstInFirstOut = b.FirstInFirstOut == true ? "是" : "否"
                 });
             int total = cell.Count();
             cell = cell.Skip((page - 1) * rows).Take(rows);
@@ -168,6 +191,7 @@ namespace THOK.Wms.Bll.Service
                         cellTree.Layer = cell.Layer;
                         cellTree.MaxQuantity = cell.MaxQuantity;
                         cellTree.ProductName = cell.Product == null ? string.Empty : cell.Product.ProductName;
+                        cellTree.FirstInFirstOut = cell.FirstInFirstOut;
                         cellTree.attributes = "cell";
                         cellSet.Add(cellTree);
                     }
@@ -198,6 +222,7 @@ namespace THOK.Wms.Bll.Service
                     cellTree.ShortName = cell.ShortName;
                     cellTree.Layer = cell.Layer;
                     cellTree.MaxQuantity = cell.MaxQuantity;
+                    cellTree.FirstInFirstOut =  cell.FirstInFirstOut;
                     cellTree.ProductName = cell.Product == null ? string.Empty : cell.Product.ProductName;
                     cellTree.attributes = "cell";
                     cellSet.Add(cellTree);
@@ -266,6 +291,8 @@ namespace THOK.Wms.Bll.Service
                 cellAdd.Description = cell.Description;
                 cellAdd.IsActive = cell.IsActive;
                 cellAdd.UpdateTime = DateTime.Now;
+                cellAdd.FirstInFirstOut = cell.FirstInFirstOut;
+                cellAdd.IsMultiBrand = cell.IsMultiBrand;
 
                 CellRepository.Add(cellAdd);
                 CellRepository.SaveChanges();
@@ -320,6 +347,8 @@ namespace THOK.Wms.Bll.Service
             cellSave.Description = cell.Description;
             cellSave.IsActive = cell.IsActive;
             cellSave.UpdateTime = DateTime.Now;
+            cellSave.IsMultiBrand = cell.IsMultiBrand;
+            cellSave.FirstInFirstOut = cell.FirstInFirstOut;
 
             CellRepository.SaveChanges();
             //仓储属性上报
@@ -618,7 +647,32 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
             var cell = cellQuery.Where(c => c.CellCode == cellCode).OrderBy(b => b.CellCode).AsEnumerable()
-                                .Select(b => new { b.CellCode, b.CellName, b.CellType, b.ShortName, b.Rfid, b.Layer, b.Col, b.ImgX, b.ImgY, b.IsSingle, b.MaxQuantity, b.Description, b.Warehouse.WarehouseName, b.Warehouse.WarehouseCode, b.Area.AreaCode, b.Area.AreaName, b.Shelf.ShelfCode, b.Shelf.ShelfName, DefaultProductCode = b.Product == null ? string.Empty : b.Product.ProductCode, ProductName = b.Product == null ? string.Empty : b.Product.ProductName, IsActive = b.IsActive == "1" ? "可用" : "不可用", UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") });
+                                .Select(b => new {
+                                    b.CellCode, 
+                                    b.CellName, 
+                                    b.CellType, 
+                                    b.ShortName, 
+                                    b.Rfid, 
+                                    b.Layer, 
+                                    b.Col, 
+                                    b.ImgX, 
+                                    b.ImgY, 
+                                    b.IsSingle, 
+                                    b.MaxQuantity, 
+                                    b.Description, 
+                                    b.Warehouse.WarehouseName, 
+                                    b.Warehouse.WarehouseCode, 
+                                    b.Area.AreaCode, 
+                                    b.Area.AreaName, 
+                                    b.Shelf.ShelfCode, 
+                                    b.Shelf.ShelfName, 
+                                    DefaultProductCode = b.Product == null ? string.Empty : b.Product.ProductCode, 
+                                    ProductName = b.Product == null ? string.Empty : b.Product.ProductName, 
+                                    IsActive = b.IsActive == "1" ? "可用" : "不可用", 
+                                    UpdateTime = b.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss") ,
+                                    IsMultiBrand=b.IsMultiBrand=="1"?"是":"否",
+                                    FirstInFirstOut = b.FirstInFirstOut == true ? "是" : "否"
+                                });
             return cell.First(c => c.CellCode == cellCode);
         }
 

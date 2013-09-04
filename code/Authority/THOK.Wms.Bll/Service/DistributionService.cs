@@ -282,7 +282,8 @@ namespace THOK.Wms.Bll.Service
                     Quantity1 = d.Quantity / count1,
                     Quantity2 = d.Quantity / count2,
                     Quantity = d.Quantity,
-                    StorageTime = d.StorageTime.ToString("yyyy-MM-dd")
+                    StorageTime = d.StorageTime.ToString("yyyy-MM-dd"),
+                    d.StorageSequence
                 });
                 return new { total, rows = currentstorage.ToArray() };
             }

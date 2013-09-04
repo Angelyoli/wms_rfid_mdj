@@ -29,6 +29,7 @@ namespace THOK.Wms.DbModel
        public string IsActive { get; set; }
        public DateTime UpdateTime { get; set; }
        public byte[] RowVersion { get; set; }
+       public int StorageSequence { get; set; }
 
        public virtual Product Product { get; set; }
        public virtual Cell Cell { get; set; }

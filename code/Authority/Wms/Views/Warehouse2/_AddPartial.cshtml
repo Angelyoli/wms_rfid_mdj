@@ -256,7 +256,7 @@
         });
     }
 </script>
-<div id="dlg" class="easyui-dialog" modal="true" style="width: 500px; height: 360px;
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 500px; height: 400px;
     padding: 1px 1px" closed="true" buttons="#dlg-buttons">
     <div id="ware" class="easyui-layout" fit="true" style="display: none">
         <div region="center" border="false" style="padding: 10px 10px; background: #fff; border: 1px solid #ccc;">
@@ -654,12 +654,28 @@
                         </select>
                     </td>
                 </tr>
+                <tr style="height:20px">
+                  <td style="text-align:right">多种品牌</td>
+                  <td align="left">
+                    <select name="IsMultiBrand" id="cellIsMultiBrand" class="easyui-combobox"  editable="false" style="width: 140px;" panelHeight=45px  required="true">
+                       <option value="1">是</option>
+                       <option value="0">否</option>
+                    </select>
+                  </td>
+                  <td style="text-align:right">先进先出</td>
+                  <td align="left">
+                    <select name="FirstInFirstOut" id="cellFirstInFirstOut" class="easyui-combobox"  editable="false" style="width: 140px;" panelHeight=45px  required="true">
+                       <option value="true">是</option>
+                       <option value="false">否</option>
+                    </select>
+                  </td>
+                </tr>
                 <tr style="height: 20px">
                   <td style=" text-align:right">
                         描述:
                     </td>
                     <td colspan="3" style="text-align: left">
-                        <textarea name="Description" style="width: 360px; height: 50px"></textarea>
+                        <textarea name="Description" style="width: 360px; height: 50px; white-space:inherit"></textarea>
                     </td>
                 </tr>
             </table>

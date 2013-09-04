@@ -31,6 +31,7 @@ namespace THOK.Wms.Bll.Models
         public string IsActive { get; set; }
         public string UpdateTime { get; set; }
         public string attributes { get; set; }
+        public bool FirstInFirstOut { get; set; }
         public WareTree[] children { get; set; }
     }
 }
