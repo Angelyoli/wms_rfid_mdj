@@ -11,8 +11,8 @@
         $('#targetRegionName1').attr('readonly', 'true');
         $('#productCode1').attr('readonly', 'true');
         $('#productName1').attr('readonly', 'true');
-        $('#originStorageName1').attr('readonly', 'true');
-        $('#targetStorageName1').attr('readonly', 'true');
+        $('#originCellName1').attr('readonly', 'true');
+        $('#targetCellName1').attr('readonly', 'true');
         $('#originPositionName1').attr('readonly', 'true');
         $('#targetPositionName1').attr('readonly', 'true');
         $('#currentPositionName1').attr('readonly', 'true');
@@ -173,7 +173,8 @@
                         起始位置：
                     </td>
                     <td>
-                        <input id="originPositionID1" type="text" />
+                        <input id="originPositionID1" type="text" style="display:none;"/>
+                        <input id="originPositionName1" type="text"/>
                         <a href="#" onclick="positionQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -181,7 +182,8 @@
                         目标位置：
                     </td>
                     <td>
-                        <input id="targetPositionID1" type="text" />
+                        <input id="targetPositionID1" type="text" style="display:none;" />
+                        <input id="targetPositionName1" type="text"/>
                         <a href="#" onclick="positionQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -191,7 +193,8 @@
                         当前位置：
                     </td>
                     <td>
-                        <input id="currentPositionID1" type="text" />
+                        <input id="currentPositionID1" type="text" style="display:none;" />
+                        <input id="currentPositionName1" type="text"/>
                         <a href="#" onclick="positionQuery(3)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>

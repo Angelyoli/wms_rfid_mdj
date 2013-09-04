@@ -14,42 +14,14 @@
     })
 
     function AddLoad() {
-        $("#inputPositionType").combo({
-            required: true,
-            editable:false,
-            panelHeight:102,
-            panelWith:130
-        })
-        $("#selectExtension").combo({
-            required: true,
-            editable:false,
-            panelHeight:90,
-            panelWith:130
-        })
-        $("#selectHasGoods").combo({
-            required: true,
-            editable:false,
-            panelHeight:45,
-            panelWith:130
-        })
-        $("#selectAbleStockOut").combo({
-            reqired:true,
-            editable:false,
-            panelHeight:45,
-            panelWith:130
-        })
-        $("#selectAbleStockInPallet").combo({
-            required: true,
-            editable:false,
-            panelHeight:45,
-            panelWith:130
-        })
-        $("#selectState").combo({
-            required: true,
-            editable:false,
-            panelHeight:45,
-            panelWith:130
-        })
+        $("#inputPositionType").combo({ required: true, editable: false, panelHeight: 102, panelWith: 130 });
+        $("#selectExtension").combo({ required: true, editable: false, panelHeight: 90, panelWith: 130 });
+        $("#selectHasGoods").combo({ required: true, editable: false, panelHeight: 45, panelWith: 130 });
+        $("#selectAbleStockOut").combo({ reqired: true, editable: false, panelHeight: 45, panelWith: 130 });
+        $("#selectAbleStockInPallet").combo({ required: true, editable: false, panelHeight: 45, panelWith: 130 });
+        $("#selectState").combo({ required: true, editable: false, panelHeight: 45, panelWith: 130 });
+        $("#selectHasGetRequest").combo({ required: true, editable: false, panelHeight: 45, panelWith: 130 });
+        $("#selectHasPutRequest").combo({ required: true, editable: false, panelHeight: 45, panelWith: 130 });
     }
 
     //加载新增和编辑窗体
@@ -58,7 +30,7 @@
             addDialog = $('<div></div>').dialog({
                 title: title,
                 width: 540,
-                height: 360,
+                height: 390,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -133,6 +105,18 @@
                             $('#selectState').combo('setValue', '01').combo('setText', row.State);
                         } else {
                             $('#selectState').combo('setValue', '02').combo('setText', row.State);
+                        }
+                        //HasGetRequest
+                        if (row.HasGetRequest == '是') {
+                            $('#selectHasGetRequest').combo('setValue', 'true').combo('setText', row.HasGetRequest);
+                        } else {
+                            $('#selectHasGetRequest').combo('setValue', 'false').combo('setText', row.HasGetRequest);
+                        }
+                        //HasPutRequest
+                        if (row.HasPutRequest == '是') {
+                            $('#selectHasPutRequest').combo('setValue', 'true').combo('setText', row.HasPutRequest);
+                        } else {
+                            $('#selectHasPutRequest').combo('setValue', 'false').combo('setText', row.HasPutRequest);
                         }
                     }
                     else if (title == '删除') {
