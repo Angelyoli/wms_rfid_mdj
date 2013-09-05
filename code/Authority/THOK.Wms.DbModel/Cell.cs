@@ -39,6 +39,7 @@ namespace THOK.Wms.DbModel
         public DateTime UpdateTime { get; set; }
         public byte[] RowVersion { get; set; }
         public bool FirstInFirstOut { get; set; }
+        public DateTime StorageTime { get; set; }
 
         public virtual Warehouse Warehouse { get; set; }
         public virtual Area Area { get; set; }

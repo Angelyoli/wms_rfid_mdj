@@ -385,10 +385,10 @@
     <Compile Include="Migrations\201309010654118_add_position.cs" />
     <Compile Include="Migrations\201309010654118_add_position.Designer.cs">
       <DependentUpon>201309010654118_add_position.cs</DependentUpon>
-	</Compile>
-    <Compile Include="Migrations\201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.cs" />
-    <Compile Include="Migrations\201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.Designer.cs">
-      <DependentUpon>201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201309050228171_modify_cell_and_modify_storage_modify_task.cs" />
+    <Compile Include="Migrations\201309050228171_modify_cell_and_modify_storage_modify_task.Designer.cs">
+      <DependentUpon>201309050228171_modify_cell_and_modify_storage_modify_task.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
@@ -413,6 +413,10 @@
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.WCS.DbModel\THOK.WCS.DbModel.csproj">
+      <Project>{B8A298CE-D286-4381-9B61-6527B3677ACA}</Project>
+      <Name>THOK.WCS.DbModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.Wms.DbModel\THOK.WMS.DbModel.csproj">
       <Project>{E243AB76-351D-4C97-BFE3-D55E0BA0DECF}</Project>
@@ -452,9 +456,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201309010654118_add_position.resx">
       <DependentUpon>201309010654118_add_position.cs</DependentUpon>
-	</EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.resx">
-      <DependentUpon>201309040032503_cell_add_FirstInFirstOut_and_strage_add_StorageSequence.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201309050228171_modify_cell_and_modify_storage_modify_task.resx">
+      <DependentUpon>201309050228171_modify_cell_and_modify_storage_modify_task.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

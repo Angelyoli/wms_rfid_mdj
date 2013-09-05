@@ -594,6 +594,7 @@ namespace THOK.Wms.Bll.Service
                                             inTask.OrderType = "01";
                                             inTask.AllotID = inItem.ID;
                                             inTask.DownloadState = "0";
+                                            inTask.StorageSequence = 0;
                                             TaskRepository.Add(inTask);
                                         }
                                         else
@@ -730,6 +731,7 @@ namespace THOK.Wms.Bll.Service
                                             outTask.OrderType = "02";
                                             outTask.AllotID = outItem.ID;
                                             outTask.DownloadState = "0";
+                                            outTask.StorageSequence = outItem.Storage.StorageSequence;
                                             TaskRepository.Add(outTask);
                                         }
                                         else
@@ -864,6 +866,7 @@ namespace THOK.Wms.Bll.Service
                                             moveTask.OrderType = "03";
                                             moveTask.AllotID = moveItem.ID;
                                             moveTask.DownloadState = "0";
+                                            moveTask.StorageSequence = moveItem.OutStorage.StorageSequence;
                                             TaskRepository.Add(moveTask);
                                         }
                                         else

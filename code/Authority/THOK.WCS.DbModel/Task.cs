@@ -24,5 +24,6 @@ namespace THOK.Wms.DbModel
         public string OrderType { get; set; }
         public int AllotID { get; set; }
         public string DownloadState { get; set; }
+        public int StorageSequence { get; set; }
     }
 }

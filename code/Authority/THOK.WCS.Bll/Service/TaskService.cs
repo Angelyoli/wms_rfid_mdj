@@ -148,6 +148,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.OrderType = "05";
                         //newTask.AllotID = inItem.ID;
                         newTask.DownloadState = "1";
+                        newTask.StorageSequence = 0;
                         TaskRepository.Add(newTask);
                         TaskRepository.SaveChanges();
                         return true;
@@ -211,6 +212,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.OrderType = "06";
                         //newTask.AllotID = inItem.ID;
                         newTask.DownloadState = "1";
+                        newTask.StorageSequence = 0;
                         TaskRepository.Add(newTask);
                         TaskRepository.SaveChanges();
                         return true;
@@ -246,6 +248,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.OrderType = "07";
                 //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "1";
+                newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 return true;
@@ -315,6 +318,9 @@ namespace THOK.WCS.Bll.Service
                     inAllot.Storage.Quantity += quantity;
                     inAllot.Storage.StorageTime = DateTime.Now;
                     inAllot.Storage.InFrozenQuantity -= quantity;
+                    if (inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                    if (!inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                    inAllot.Storage.Cell.StorageTime = inAllot.Storage.Cell.Storages.Where(s=>s.Quantity >0).Min(s => s.StorageTime);
                     inAllot.InBillDetail.RealQuantity += quantity;
                     inAllot.InBillMaster.Status = "5";
                     inAllot.FinishTime = DateTime.Now;
@@ -361,6 +367,8 @@ namespace THOK.WCS.Bll.Service
                     if (outAllot.Storage.Quantity == 0)
                         outAllot.Storage.Rfid = "";
                     outAllot.Storage.OutFrozenQuantity -= quantity;
+                    if (outAllot.Storage.Quantity == 0) outAllot.Storage.StorageSequence = 0;
+                    outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime);
                     outAllot.OutBillDetail.RealQuantity += quantity;
                     outAllot.OutBillMaster.Status = "5";
                     outAllot.FinishTime = DateTime.Now;
@@ -405,10 +413,15 @@ namespace THOK.WCS.Bll.Service
                     moveDetail.Status = "2";
                     moveDetail.InStorage.Quantity += moveDetail.RealQuantity;
                     moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
+                    if (moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                    if (!moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Min(s => s.StorageSequence) - 1;
                     moveDetail.InStorage.Rfid = "";
                     moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                     moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                    if (moveDetail.OutStorage.Quantity == 0) moveDetail.OutStorage.StorageSequence = 0;
+                    moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime);
                     moveDetail.OutStorage.Rfid = "";
+
                     //判断移入的时间是否小于移出的时间
                     if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
                         moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
@@ -485,6 +498,8 @@ namespace THOK.WCS.Bll.Service
                 {
                     cell.Storages.FirstOrDefault().InFrozenQuantity -= 1;
                     cell.Storages.FirstOrDefault().Quantity += 1;
+                    cell.Storages.FirstOrDefault().StorageSequence = 0;
+                    cell.Storages.FirstOrDefault().StorageTime = DateTime.Now;
                     CellRepository.SaveChanges();
                 }
             }
@@ -500,6 +515,7 @@ namespace THOK.WCS.Bll.Service
                 {
                     cell.Storages.FirstOrDefault().OutFrozenQuantity = 0;
                     cell.Storages.FirstOrDefault().Quantity = 0;
+                    cell.Storages.FirstOrDefault().StorageSequence = 0;
                     CellRepository.SaveChanges();
                 }
             }

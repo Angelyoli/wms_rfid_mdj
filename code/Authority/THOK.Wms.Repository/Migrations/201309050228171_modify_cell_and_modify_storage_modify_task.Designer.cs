@@ -7,13 +7,13 @@ namespace THOK.Wms.Repository.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.0.0-alpha3-20222")]
-    public sealed partial class modify_cell_add_IsMultiBrand : IMigrationMetadata
+    public sealed partial class modify_cell_and_modify_storage_modify_task : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(modify_cell_add_IsMultiBrand));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(modify_cell_and_modify_storage_modify_task));
         
         string IMigrationMetadata.Id
         {
-            get { return "201308070314391_modify_cell_add_IsMultiBrand"; }
+            get { return "201309050228171_modify_cell_and_modify_storage_modify_task"; }
         }
         
         string IMigrationMetadata.Source
