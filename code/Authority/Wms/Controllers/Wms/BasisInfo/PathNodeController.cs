@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
-using THOK.Wms.Bll.Interfaces;
-using THOK.Wms.DbModel;
+using THOK.WCS.Bll.Interfaces;
+using THOK.WCS.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
 

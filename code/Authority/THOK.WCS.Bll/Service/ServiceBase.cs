@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using THOK.Common;
-using THOK.Wms.Bll.Interfaces;
+using THOK.WCS.Bll.Interfaces;
 using THOK.Common.Ef.Interfaces;
 
-namespace THOK.Wms.Bll.Service
+namespace THOK.WCS.Bll.Service
 {
     public abstract class ServiceBase<T> : LoggerBase, IService<T> 
     {

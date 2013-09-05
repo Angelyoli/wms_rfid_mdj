@@ -1,8 +1,8 @@
 ﻿using THOK.Common.Ef.EntityRepository;
-using THOK.Wms.DbModel;
-using THOK.Wms.Dal.Interfaces;
+using THOK.WCS.DbModel;
+using THOK.WCS.Dal.Interfaces;
 
-namespace THOK.Wms.Dal.EntityRepository
+namespace THOK.WCS.Dal.EntityRepository
 {
     public class CellPositionRepository : RepositoryBase<CellPosition>, ICellPositionRepository
     {

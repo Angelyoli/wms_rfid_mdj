@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace THOK.Wms.DbModel
+namespace THOK.WCS.DbModel
 {
     public class Region
     {

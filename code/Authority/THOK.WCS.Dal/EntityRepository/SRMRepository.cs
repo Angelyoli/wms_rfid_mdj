@@ -1,8 +1,8 @@
 ﻿using THOK.Common.Ef.EntityRepository;
-using THOK.Wms.Dal.Interfaces;
-using THOK.Wms.DbModel;
+using THOK.WCS.Dal.Interfaces;
+using THOK.WCS.DbModel;
 
-namespace THOK.Wms.Dal.EntityRepository
+namespace THOK.WCS.Dal.EntityRepository
 {
     public class SRMRepository : RepositoryBase<SRM>, ISRMRepository
     {

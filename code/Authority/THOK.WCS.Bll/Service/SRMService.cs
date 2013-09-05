@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.Practices.Unity;
-using THOK.Wms.Bll.Interfaces;
-using THOK.Wms.Dal.Interfaces;
-using THOK.Wms.DbModel;
+using THOK.WCS.Bll.Interfaces;
+using THOK.WCS.Dal.Interfaces;
+using THOK.WCS.DbModel;
 using System.Linq;
 
-namespace THOK.Wms.Bll.Service
+namespace THOK.WCS.Bll.Service
 {
     public class SRMService : ServiceBase<SRM>, ISRMService
     {

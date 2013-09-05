@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace THOK.Wms.Bll.Interfaces
+namespace THOK.WCS.Bll.Interfaces
 {
     public interface IService<T> 
     {

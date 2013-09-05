@@ -1,6 +1,6 @@
-﻿using THOK.Wms.DbModel;
+﻿using THOK.WCS.DbModel;
 
-namespace THOK.Wms.Bll.Interfaces
+namespace THOK.WCS.Bll.Interfaces
 {
     public interface IPathNodeService : IService<PathNode>
     {

@@ -5,7 +5,7 @@ using System.Text;
 using THOK.Common.Ef.MappingStrategy;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace THOK.Wms.DbModel.Mapping
+namespace THOK.WCS.DbModel.Mapping
 {
     public class RegionMap : EntityMappingBase<Region>
     {

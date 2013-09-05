@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using THOK.Wms.DbModel;
+using THOK.WCS.DbModel;
 
-namespace THOK.Wms.Bll.Interfaces
+namespace THOK.WCS.Bll.Interfaces
 {
     public interface IAlarmInfoService : IService<AlarmInfo>
     {

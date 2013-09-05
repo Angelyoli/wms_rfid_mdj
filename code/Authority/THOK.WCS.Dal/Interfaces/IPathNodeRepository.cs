@@ -1,7 +1,7 @@
 ﻿using THOK.Common.Ef.Interfaces;
-using THOK.Wms.DbModel;
+using THOK.WCS.DbModel;
 
-namespace THOK.Wms.Dal.Interfaces
+namespace THOK.WCS.Dal.Interfaces
 {
     public interface IPathNodeRepository : IRepository<PathNode>
     {

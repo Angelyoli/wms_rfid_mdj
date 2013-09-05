@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using THOK.Wms.DbModel;
-using THOK.Wms.Bll.Interfaces;
+using THOK.WCS.DbModel;
+using THOK.WCS.Bll.Interfaces;
 using Microsoft.Practices.Unity;
-using THOK.Wms.Dal.Interfaces;
+using THOK.WCS.Dal.Interfaces;
 
-namespace THOK.Wms.Bll.Service
+namespace THOK.WCS.Bll.Service
 {
     public class AlarmInfoService : ServiceBase<AlarmInfo>, IAlarmInfoService
     {

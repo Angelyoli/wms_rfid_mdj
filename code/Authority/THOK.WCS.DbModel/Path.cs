@@ -1,6 +1,6 @@
 ﻿
 using System.Collections.Generic;
-namespace THOK.Wms.DbModel
+namespace THOK.WCS.DbModel
 {
     public class Path
     {

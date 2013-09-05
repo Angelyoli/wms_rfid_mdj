@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using THOK.WCS.Bll.Interfaces;
+using THOK.WCS.Dal.Interfaces;
 using THOK.Wms.Dal.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.DbModel;
