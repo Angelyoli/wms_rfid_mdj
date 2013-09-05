@@ -52,13 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityRepository\AlarmInfoRepository.cs" />
     <Compile Include="EntityRepository\AreaRepository.cs" />
     <Compile Include="EntityRepository\BillDetailRepository.cs" />
     <Compile Include="EntityRepository\BillMasterRepository.cs" />
     <Compile Include="EntityRepository\BillTypeRepository.cs" />
     <Compile Include="EntityRepository\BrandRepository.cs" />
-    <Compile Include="EntityRepository\CellPositionRepository.cs" />
     <Compile Include="EntityRepository\CellRepository.cs" />
     <Compile Include="EntityRepository\CheckBillDetailHistoryRepository.cs" />
     <Compile Include="EntityRepository\CheckBillDetailRepository.cs" />
@@ -100,19 +98,13 @@
     <Compile Include="EntityRepository\OutBillMasterRepository.cs" />
     <Compile Include="EntityRepository\OutSearchDetailRepository.cs" />
     <Compile Include="EntityRepository\PalletRepository.cs" />
-    <Compile Include="EntityRepository\PathNodeRepository.cs" />
-    <Compile Include="EntityRepository\PathRepository.cs" />
-    <Compile Include="EntityRepository\PositionRepository.cs" />
     <Compile Include="EntityRepository\ProductRepository.cs" />
-    <Compile Include="EntityRepository\ProductSizeRepository.cs" />
     <Compile Include="EntityRepository\ProductWarningRepository.cs" />
     <Compile Include="EntityRepository\ProfitLossBillDetailHistoryRepository.cs" />
     <Compile Include="EntityRepository\ProfitLossBillDetailRepository.cs" />
     <Compile Include="EntityRepository\ProfitLossBillMasterHistoryRepository.cs" />
     <Compile Include="EntityRepository\ProfitLossBillMasterRepository.cs" />
-    <Compile Include="EntityRepository\RegionRepository.cs" />
     <Compile Include="EntityRepository\ShelfRepository.cs" />
-    <Compile Include="EntityRepository\SizeRepository.cs" />
     <Compile Include="EntityRepository\SortingLineRepository.cs" />
     <Compile Include="EntityRepository\SortingLowerlimitRepository.cs" />
     <Compile Include="EntityRepository\SortOrderDetailRepository.cs" />
@@ -120,7 +112,6 @@
     <Compile Include="EntityRepository\SortOrderRepository.cs" />
     <Compile Include="EntityRepository\SortOrderSearchRepository.cs" />
     <Compile Include="EntityRepository\SortWorkDispatchRepository.cs" />
-    <Compile Include="EntityRepository\SRMRepository.cs" />
     <Compile Include="EntityRepository\StockCheckSearchRepository.cs" />
     <Compile Include="EntityRepository\StockDifferSearchRepository.cs" />
     <Compile Include="EntityRepository\StockIntoSearchRepository.cs" />
@@ -128,19 +119,16 @@
     <Compile Include="EntityRepository\StockOutSearchRepository.cs" />
     <Compile Include="EntityRepository\StorageRepository.cs" />
     <Compile Include="EntityRepository\SupplierRepository.cs" />
-    <Compile Include="EntityRepository\TaskRepository.cs" />
     <Compile Include="EntityRepository\TrayInfoRepository.cs" />
     <Compile Include="EntityRepository\UnitListRepository.cs" />
     <Compile Include="EntityRepository\UnitRepository.cs" />
     <Compile Include="EntityRepository\WarehouseRepository.cs" />
     <Compile Include="EntityRepository\XmlValueRepository.cs" />
-    <Compile Include="Interfaces\IAlarmInfoRepository.cs" />
     <Compile Include="Interfaces\IAreaRepository.cs" />
     <Compile Include="Interfaces\IBillDetailRepository.cs" />
     <Compile Include="Interfaces\IBillMasterRepository.cs" />
     <Compile Include="Interfaces\IBillTypeRepository.cs" />
     <Compile Include="Interfaces\IBrandRepository.cs" />
-    <Compile Include="Interfaces\ICellPositionRepository.cs" />
     <Compile Include="Interfaces\ICellRepository.cs" />
     <Compile Include="Interfaces\ICheckBillDetailHistoryRepository.cs" />
     <Compile Include="Interfaces\ICheckBillDetailRepository.cs" />
@@ -182,19 +170,13 @@
     <Compile Include="Interfaces\IOutBillMasterRepository.cs" />
     <Compile Include="Interfaces\IOutSearchDetailRepository.cs" />
     <Compile Include="Interfaces\IPalletRepository.cs" />
-    <Compile Include="Interfaces\IPathNodeRepository.cs" />
-    <Compile Include="Interfaces\IPathRepository.cs" />
-    <Compile Include="Interfaces\IPositionRepository.cs" />
     <Compile Include="Interfaces\IProductRepository.cs" />
-    <Compile Include="Interfaces\IProductSizeRepository.cs" />
     <Compile Include="Interfaces\IProductWarningRepository.cs" />
     <Compile Include="Interfaces\IProfitLossBillDetailHistoryRepository.cs" />
     <Compile Include="Interfaces\IProfitLossBillDetailRepository.cs" />
     <Compile Include="Interfaces\IProfitLossBillMasterHistoryRepository.cs" />
     <Compile Include="Interfaces\IProfitLossBillMasterRepository.cs" />
-    <Compile Include="Interfaces\IRegionRepository.cs" />
     <Compile Include="Interfaces\IShelfRepository.cs" />
-    <Compile Include="Interfaces\ISizeRepository.cs" />
     <Compile Include="Interfaces\ISortingLineRepository.cs" />
     <Compile Include="Interfaces\ISortingLowerlimitRepository.cs" />
     <Compile Include="Interfaces\ISortOrderDetailRepository.cs" />
@@ -202,7 +184,6 @@
     <Compile Include="Interfaces\ISortOrderRepository.cs" />
     <Compile Include="Interfaces\ISortOrderSearchRepository.cs" />
     <Compile Include="Interfaces\ISortWorkDispatchRepository.cs" />
-    <Compile Include="Interfaces\ISRMRepository.cs" />
     <Compile Include="Interfaces\IStockCheckSearchRepository.cs" />
     <Compile Include="Interfaces\IStockDifferSearchRepository.cs" />
     <Compile Include="Interfaces\IStockIntoSearchRepository.cs" />
@@ -210,7 +191,6 @@
     <Compile Include="Interfaces\IStockOutSearchRepository.cs" />
     <Compile Include="Interfaces\IStorageRepository.cs" />
     <Compile Include="Interfaces\ISupplierRepository.cs" />
-    <Compile Include="Interfaces\ITaskRepository.cs" />
     <Compile Include="Interfaces\ITrayInfoRepository.cs" />
     <Compile Include="Interfaces\IUnitListRepository.cs" />
     <Compile Include="Interfaces\IUnitRepository.cs" />

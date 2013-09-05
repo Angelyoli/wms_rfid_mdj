@@ -43,9 +43,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IAlarmInfoService.cs" />
+    <Compile Include="Interfaces\ICellPositionService.cs" />
+    <Compile Include="Interfaces\IPathNodeService.cs" />
+    <Compile Include="Interfaces\IPathService.cs" />
+    <Compile Include="Interfaces\IPositionService.cs" />
+    <Compile Include="Interfaces\IProductSizeService.cs" />
+    <Compile Include="Interfaces\IRegionService.cs" />
+    <Compile Include="Interfaces\ISizeService.cs" />
+    <Compile Include="Interfaces\ISRMService.cs" />
     <Compile Include="Interfaces\ITaskService.cs" />
     <Compile Include="Models\RestReturn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\AlarmInfoService.cs" />
+    <Compile Include="Service\CellPositionService.cs" />
+    <Compile Include="Interfaces\IService.cs" />
+    <Compile Include="Service\PathNodeService.cs" />
+    <Compile Include="Service\PathService.cs" />
+    <Compile Include="Service\PositionService.cs" />
+    <Compile Include="Service\ProductSizeService.cs" />
+    <Compile Include="Service\RegionService.cs" />
+    <Compile Include="Service\ServiceBase.cs" />
+    <Compile Include="Service\SizeService.cs" />
+    <Compile Include="Service\SRMService.cs" />
     <Compile Include="Service\TaskService.cs" />
   </ItemGroup>
   <ItemGroup />
@@ -53,6 +73,10 @@
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Common\THOK.Common.csproj">
+      <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
+      <Name>THOK.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.WCS.Dal\THOK.WCS.Dal.csproj">
       <Project>{03A98CF0-14B1-4FD7-BC27-1F19728C8674}</Project>

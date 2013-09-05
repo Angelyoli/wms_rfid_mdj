@@ -7,7 +7,6 @@ using THOK.Wms.Bll.Interfaces;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using System.Data;
-using THOK.WMS.Upload.Bll;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -18,7 +17,6 @@ namespace THOK.Wms.Bll.Service
         [Dependency]
         public IRegionRepository RegionRepository { get; set; }
 
-        UploadBll Upload = new UploadBll();
 
         protected override Type LogPrefix
         {
