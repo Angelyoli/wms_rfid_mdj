@@ -11,6 +11,7 @@ using THOK.Wms.AutomotiveSystems.Models;
 using THOK.Security;
 using THOK.Common.NPOI.Models;
 using THOK.Common.NPOI.Service;
+using THOK.WCS.Bll.Interfaces;
 
 namespace Authority.Controllers.Wms.StockMove
 {
@@ -22,7 +23,7 @@ namespace Authority.Controllers.Wms.StockMove
         [Dependency]
         public IMoveBillDetailService MoveBillDetailService { get; set; }
         [Dependency]
-        public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
+        public ITaskService TaskService { get; set; }
         [Dependency]
         public IMoveBillMasterHistoryService MoveBillMasterHistoryService { get; set; }
         //

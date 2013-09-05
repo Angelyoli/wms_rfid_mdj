@@ -165,18 +165,18 @@
     <Compile Include="Controllers\WMS\AutomotiveSystems\StockMoveTaskController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\StockOutTaskController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\TaskController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\AlarmInfoController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\CellPositionController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\PathController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\PathNodeController.cs">
+    <Compile Include="Controllers\WCS\AlarmInfoController.cs" />
+    <Compile Include="Controllers\WCS\CellPositionController.cs" />
+    <Compile Include="Controllers\WCS\PathController.cs" />
+    <Compile Include="Controllers\WCS\PathNodeController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controllers\WMS\BasisInfo\ProductSizeController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\PositionController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\RegionController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\SizeController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\SRMController.cs" />
-    <Compile Include="Controllers\WMS\BasisInfo\TaskManageController.cs" />
+    <Compile Include="Controllers\WCS\ProductSizeController.cs" />
+    <Compile Include="Controllers\WCS\PositionController.cs" />
+    <Compile Include="Controllers\WCS\RegionController.cs" />
+    <Compile Include="Controllers\WCS\SizeController.cs" />
+    <Compile Include="Controllers\WCS\SRMController.cs" />
+    <Compile Include="Controllers\WCS\TaskManageController.cs" />
     <Compile Include="Controllers\WMS\ComplexSearch\OverStockProductSearchController.cs" />
     <Compile Include="Controllers\WMS\ComplexSearch\SortOrderSearchController.cs" />
     <Compile Include="Controllers\WMS\ComplexSearch\StockCheckSearchController.cs" />

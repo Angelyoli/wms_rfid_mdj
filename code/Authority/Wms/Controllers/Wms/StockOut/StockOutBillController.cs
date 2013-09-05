@@ -10,6 +10,7 @@ using THOK.Common.WebUtil;
 using THOK.WMS.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using THOK.WCS.Bll.Interfaces;
 
 namespace Authority.Controllers.Wms.StockOut
 {
@@ -24,7 +25,7 @@ namespace Authority.Controllers.Wms.StockOut
         [Dependency]
         public ISystemParameterService SystemParameterService { get; set; }
         [Dependency]
-        public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
+        public ITaskService TaskService { get; set; }
         [Dependency]
         public IOutBillMasterHistoryService OutBillMasterHistoryService { get; set; }
         //

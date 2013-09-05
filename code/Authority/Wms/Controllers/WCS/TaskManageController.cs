@@ -5,10 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Bll.Interfaces;
-using THOK.Wms.DbModel;
+using THOK.WCS.DbModel;
 using THOK.Common.WebUtil;
+using THOK.WCS.Bll.Interfaces;
 
-namespace Wms.Controllers.WMS.BasisInfo
+namespace Wms.Controllers.WCS
 {
     public class TaskManageController : Controller
     {

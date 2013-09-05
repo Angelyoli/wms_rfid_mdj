@@ -11,7 +11,7 @@ using THOK.Security;
 using THOK.Common.NPOI.Models;
 using THOK.Common.NPOI.Service;
 
-namespace Wms.Controllers.Wms.BasisInfo
+namespace Wms.Controllers.WCS
 {
     [TokenAclAuthorize]
     public class ProductSizeController : Controller

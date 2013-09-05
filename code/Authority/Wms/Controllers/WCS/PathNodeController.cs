@@ -9,7 +9,7 @@ using THOK.WCS.DbModel;
 using THOK.Common.WebUtil;
 using THOK.Security;
 
-namespace Wms.Controllers.Wms.BasisInfo
+namespace Wms.Controllers.WCS
 {
     [TokenAclAuthorize]
     public class PathNodeController : Controller
