@@ -35,7 +35,7 @@ namespace THOK.Wms.SignalR.Common
                                 CellCode = cell.CellCode,
                                 IsLock = "0",
                                 LockTag = this.LockKey,
-                                IsActive = "0",
+                                IsActive = "1",
                                 StorageTime = DateTime.Now,
                                 UpdateTime = DateTime.Now
                             };
@@ -68,7 +68,7 @@ namespace THOK.Wms.SignalR.Common
                                 CellCode = cell.CellCode,
                                 IsLock = "0",
                                 LockTag = this.LockKey,
-                                IsActive = "0",
+                                IsActive = "1",
                                 StorageTime = DateTime.Now,
                                 UpdateTime = DateTime.Now
                             };
@@ -140,7 +140,7 @@ namespace THOK.Wms.SignalR.Common
                             CellCode = cell.CellCode,
                             IsLock = "0",
                             LockTag = this.LockKey,
-                            IsActive = "0",
+                            IsActive = "1",
                             StorageTime = DateTime.Now,
                             UpdateTime = DateTime.Now
                         };
@@ -188,7 +188,7 @@ namespace THOK.Wms.SignalR.Common
                             CellCode = cell.CellCode,
                             IsLock = "0",
                             LockTag = this.LockKey,
-                            IsActive = "0",
+                            IsActive = "1",
                             StorageTime = DateTime.Now,
                             UpdateTime = DateTime.Now
                         };
@@ -384,7 +384,7 @@ namespace THOK.Wms.SignalR.Common
                                     StorageCode = Guid.NewGuid().ToString(),
                                     CellCode = cell.CellCode,
                                     IsLock = "0",
-                                    IsActive = "0",
+                                    IsActive = "1",
                                     StorageTime = DateTime.Now,
                                     UpdateTime = DateTime.Now
                                 };
@@ -406,7 +406,7 @@ namespace THOK.Wms.SignalR.Common
                             StorageCode = Guid.NewGuid().ToString(),
                             CellCode = cell.CellCode,
                             IsLock = "0",
-                            IsActive = "0",
+                            IsActive = "1",
                             StorageTime = DateTime.Now,
                             UpdateTime = DateTime.Now
                         };
