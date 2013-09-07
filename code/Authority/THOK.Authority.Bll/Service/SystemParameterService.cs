@@ -27,22 +27,18 @@ namespace THOK.Authority.Bll.Service
             var systemParameter = systemParameterQuery.Join(systemQuery,
                                          s => s.SystemID,
                                          s1 => s1.SystemID,
-                                         (s, s1) => new { s.Id, s.ParameterName, s.ParameterValue, s.Remark, s.UserName, SystemName = s1.SystemName })
-                                         .Join(systemQuery,
-                                         c => c.SystemName,
-                                         s2 => s2.SystemName,
-                                         (c, s2) => new { c.Id, c.ParameterName, c.ParameterValue, c.Remark, c.SystemName,c.UserName,SystemID=s2.SystemName })
+                                         (s, s1) => new { s.Id, s.ParameterName, s.ParameterValue, s.Remark, s.UserName, s.SystemID,s1.SystemName })
                                          .Where(p => p.ParameterName.Contains(parameterName) && p.ParameterValue.Contains(parameterValue) && p.Remark.Contains(remark))
                                          .OrderBy(p => p.Id).AsEnumerable()
                                          .Select(p => new
                                          {
-                                             Id = p.Id,
+                                             p.Id,
                                              p.ParameterName,
                                              p.ParameterValue,
                                              p.Remark,
                                              p.UserName,
                                              p.SystemID,
-                                             SystemName = p.SystemID == null ? "" : p.SystemName
+                                             p.SystemName
                                          });
 
             int total = systemParameter.Count();
