@@ -38,11 +38,20 @@
         var cellRow = $('#cellDetail').datagrid('getSelected');
         if (cellRow) {
             if (cellInOrOut == "out") {
+                if (cellRow.IsWholePallet == 1)//是整托盘出库，禁用单位编码按钮
+                {
+                    $('#UnitDetailLinkButton').linkbutton('disable');
+                    $('#realQuantity').attr('readonly', 'readonly');
+                }
+                else {
+                    $('#UnitDetailLinkButton').linkbutton('enable');
+                    $('#realQuantity').removeAttr('readonly');
+                }
                 $('#outCellCode').val(cellRow.CellCode);
                 $('#outCellName').val(cellRow.CellName);
                 $('#productCode').val(cellRow.ProductCode);
                 $('#productName').val(cellRow.ProductName);
-                $('#realQuantity').val(cellRow.Quantity);
+                $('#realQuantity').numberbox('setValue', cellRow.Quantity);
                 $('#unitCode').val(cellRow.UnitCode);
                 $('#unitName').val(cellRow.UnitName);
                 $('#outStorageCode').val(cellRow.StorageCode);
@@ -106,6 +115,9 @@
                                 </th>
                                 <th field="Quantity" width="60">
                                     数量
+                                </th>
+                                <th field="IsWholePallet" width="60" hidden="true">
+                                    是否整托盘
                                 </th>
                             </tr>
                         </thead>

@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Transactions;
 using THOK.Wms.SignalR.Common;
 using THOK.Common.Entity;
+using THOK.Authority.DbModel;
+using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.Allot.Service
 {
@@ -38,6 +40,8 @@ namespace THOK.Wms.Allot.Service
         public IEmployeeRepository EmployeeRepository { get; set; }
         [Dependency]
         public IStorageLocker Locker { get; set; }
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -67,6 +71,8 @@ namespace THOK.Wms.Allot.Service
         {
             var allotQuery = OutBillAllotRepository.GetQueryable();
             var query = allotQuery.Where(a => a.BillNo == billNo).OrderBy(a => a.ID).Select(i => i);
+            IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+            var isWholePallet = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsWholePallet");//查询是否整托盘出库
             int total = query.Count();
             query = query.Skip((page - 1) * rows).Take(rows);
 
@@ -86,6 +92,7 @@ namespace THOK.Wms.Allot.Service
                                             a.OperatePersonID,
                                             StartTime = a.StartTime == null ? "" : ((DateTime)a.StartTime).ToString("yyyy-MM-dd"),
                                             FinishTime = a.FinishTime == null ? "" : ((DateTime)a.FinishTime).ToString("yyyy-MM-dd"),
+                                            IsWholePallet=isWholePallet.ParameterValue,
                                             Status = WhatStatus(a.Status)
                                         });
 
