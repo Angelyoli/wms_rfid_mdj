@@ -118,6 +118,20 @@
                         } else {
                             $('#selectHasPutRequest').combo('setValue', 'false').combo('setText', row.HasPutRequest);
                         }
+                        //HasGetRequest
+                        if (row.HasGetRequest == '是') {
+                            $('#selectHasGetRequest').combo('setValue', true).combo('setText', row.HasGetRequest);
+                        }
+                        else {
+                            $('#selectHasGetRequest').combo('setValue', false).combo('setText', row.HasGetRequest);
+                        }
+                        //HasPutRequest
+                        if (row.HasPutRequest == '是') {
+                            $('#selectHasPutRequest').combo('setValue', true).combo('setText', row.HasPutRequest);
+                        }
+                        else {
+                            $('#selectHasPutRequest').combo('setValue', false).combo('setText', row.HasPutRequest);
+                        }
                     }
                     else if (title == '删除') {
                         var drow = $('#details').datagrid('getSelected');
