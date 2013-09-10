@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using THOK.Common.Ef.MappingStrategy;
 
-namespace THOK.Wms.DbModel.Mapping
+namespace THOK.WCS.DbModel.Mapping
 {
     public class AlarmInfoMap : EntityMappingBase<AlarmInfo>
     {

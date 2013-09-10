@@ -53,13 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IAlarmInfoService.cs" />
     <Compile Include="Interfaces\IBillDetailService.cs" />
     <Compile Include="Interfaces\IBillMasterService.cs" />
     <Compile Include="Interfaces\IBillTypeService.cs" />
     <Compile Include="Interfaces\ICargospaceService.cs" />
     <Compile Include="Interfaces\ICellHistoricalService.cs" />
-    <Compile Include="Interfaces\ICellPositionService.cs" />
     <Compile Include="Interfaces\ICheckBillDetailService.cs" />
     <Compile Include="Interfaces\ICheckBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\ICheckBillMasterService.cs" />
@@ -85,10 +83,6 @@
     <Compile Include="Interfaces\IMoveSearchDetailService.cs" />
     <Compile Include="Interfaces\INavicertService.cs" />
     <Compile Include="Interfaces\IPalletService.cs" />
-    <Compile Include="Interfaces\IPathNodeService.cs" />
-    <Compile Include="Interfaces\IPathService.cs" />
-    <Compile Include="Interfaces\IPositionService.cs" />
-    <Compile Include="Interfaces\IProductSizeService.cs" />
     <Compile Include="Interfaces\IProfitLossBillMasterHistoryService.cs" />
     <Compile Include="Interfaces\IOrderSearchDetailService.cs" />
     <Compile Include="Interfaces\IOutBillDetailService.cs" />
@@ -98,7 +92,6 @@
     <Compile Include="Interfaces\IProductWarningService.cs" />
     <Compile Include="Interfaces\IProfitLossBillDetailService.cs" />
     <Compile Include="Interfaces\IProfitLossBillMasterService.cs" />
-    <Compile Include="Interfaces\IRegionService.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Interfaces\IAreaService.cs" />
     <Compile Include="Interfaces\IBrandService.cs" />
@@ -109,7 +102,6 @@
     <Compile Include="Interfaces\IJobService.cs" />
     <Compile Include="Interfaces\IProductService.cs" />
     <Compile Include="Interfaces\IShelfService.cs" />
-    <Compile Include="Interfaces\ISizeService.cs" />
     <Compile Include="Interfaces\ISortingLineService.cs" />
     <Compile Include="Interfaces\ISortingLowerlimitService.cs" />
     <Compile Include="Interfaces\ISortOrderDetailService.cs" />
@@ -117,7 +109,6 @@
     <Compile Include="Interfaces\ISortOrderSearchService.cs" />
     <Compile Include="Interfaces\ISortOrderService.cs" />
     <Compile Include="Interfaces\ISortWorkDispatchService.cs" />
-    <Compile Include="Interfaces\ISRMService.cs" />
     <Compile Include="Interfaces\IStockCheckSearchService.cs" />
     <Compile Include="Interfaces\IStockDifferSearchService.cs" />
     <Compile Include="Interfaces\IStockIntoSearchService.cs" />
@@ -126,7 +117,6 @@
     <Compile Include="Interfaces\IStockOutSearchService.cs" />
     <Compile Include="Interfaces\IStorageService.cs" />
     <Compile Include="Interfaces\ISupplierService.cs" />
-    <Compile Include="Interfaces\ITaskService.cs" />
     <Compile Include="Interfaces\IUnitListService.cs" />
     <Compile Include="Interfaces\IUnitService.cs" />
     <Compile Include="Interfaces\IWarehouseService.cs" />
@@ -134,13 +124,11 @@
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Models\WareTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\AlarmInfoService.cs" />
     <Compile Include="Service\BillDetailService.cs" />
     <Compile Include="Service\BillMasterService.cs" />
     <Compile Include="Service\BillTypeService.cs" />
     <Compile Include="Service\CargospaceService.cs" />
     <Compile Include="Service\CellHistoricalService.cs" />
-    <Compile Include="Service\CellPositionService.cs" />
     <Compile Include="Service\CheckBillDetailService.cs" />
     <Compile Include="Service\CheckBillMasterHistoryService.cs" />
     <Compile Include="Service\CheckBillMasterService.cs" />
@@ -171,15 +159,10 @@
     <Compile Include="Service\OutBillMasterService.cs" />
     <Compile Include="Service\OutSearchDetailService.cs" />
     <Compile Include="Service\PalletService.cs" />
-    <Compile Include="Service\PathNodeService.cs" />
-    <Compile Include="Service\PathService.cs" />
-    <Compile Include="Service\PositionService.cs" />
-    <Compile Include="Service\ProductSizeService.cs" />
     <Compile Include="Service\ProductWarningService.cs" />
     <Compile Include="Service\ProfitLossBillDetailService.cs" />
     <Compile Include="Service\ProfitLossBillMasterHistoryService.cs" />
     <Compile Include="Service\ProfitLossBillMasterService.cs" />
-    <Compile Include="Service\RegionService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
     <Compile Include="Service\AreaService.cs" />
     <Compile Include="Service\BrandService.cs" />
@@ -190,7 +173,6 @@
     <Compile Include="Service\JobService.cs" />
     <Compile Include="Service\ProductService.cs" />
     <Compile Include="Service\ShelfService.cs" />
-    <Compile Include="Service\SizeService.cs" />
     <Compile Include="Service\SortingLineService.cs" />
     <Compile Include="Service\SortingLowerlimitService.cs" />
     <Compile Include="Service\SortOrder.cs" />
@@ -198,7 +180,6 @@
     <Compile Include="Service\SortOrderDispatchService.cs" />
     <Compile Include="Service\SortOrderSearchService.cs" />
     <Compile Include="Service\SortWorkDispatchService.cs" />
-    <Compile Include="Service\SRMService.cs" />
     <Compile Include="Service\StockCheckSearchService.cs" />
     <Compile Include="Service\StockDifferSearchService.cs" />
     <Compile Include="Service\StockIntoSearchService.cs" />
@@ -207,7 +188,6 @@
     <Compile Include="Service\StockOutSearchService.cs" />
     <Compile Include="Service\StorageService.cs" />
     <Compile Include="Service\SupplierService.cs" />
-    <Compile Include="Service\TaskService.cs" />
     <Compile Include="Service\UnitListService.cs" />
     <Compile Include="Service\UnitService.cs" />
     <Compile Include="Service\WarehouseService.cs" />
@@ -237,6 +217,10 @@
     <ProjectReference Include="..\THOK.Common\THOK.Common.csproj">
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.WCS.Dal\THOK.WCS.Dal.csproj">
+      <Project>{03A98CF0-14B1-4FD7-BC27-1F19728C8674}</Project>
+      <Name>THOK.WCS.Dal</Name>
     </ProjectReference>
     <ProjectReference Include="..\THOK.WCS.DbModel\THOK.WCS.DbModel.csproj">
       <Project>{B8A298CE-D286-4381-9B61-6527B3677ACA}</Project>

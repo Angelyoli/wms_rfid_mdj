@@ -1,5 +1,5 @@
 ﻿
-namespace THOK.Wms.DbModel
+namespace THOK.WCS.DbModel
 {
     public class PathNode
     {

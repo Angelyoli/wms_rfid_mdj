@@ -7,6 +7,8 @@ using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.Bll.Models;
+using THOK.WCS.Dal.Interfaces;
+using THOK.WCS.DbModel;
 using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service

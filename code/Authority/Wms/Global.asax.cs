@@ -161,86 +161,86 @@ namespace Wms
             }
         }        
 
-        void Application_AuthenticateRequest(object sender, EventArgs e)
-        {
-            //bool enableGzip = this.Request.Headers["Accept-Encoding"] != null ?
-            //    this.Request.Headers["Accept-Encoding"].Contains("gzip") : false;
-            //if (enableGzip)
-            //{
-            //    this.Response.Filter = new GZipStream(this.Response.Filter, CompressionMode.Compress);
-            //    this.Response.AppendHeader("Content-Encoding", "gzip");
-            //}
+        //void Application_AuthenticateRequest(object sender, EventArgs e)
+        //{
+        //    //bool enableGzip = this.Request.Headers["Accept-Encoding"] != null ?
+        //    //    this.Request.Headers["Accept-Encoding"].Contains("gzip") : false;
+        //    //if (enableGzip)
+        //    //{
+        //    //    this.Response.Filter = new GZipStream(this.Response.Filter, CompressionMode.Compress);
+        //    //    this.Response.AppendHeader("Content-Encoding", "gzip");
+        //    //}
 
-            if (Context.User == null)
-            {
-                var oldTicket = ExtractTicketFromCookie(Context, FormsAuthentication.FormsCookieName);
-                if (oldTicket != null && !oldTicket.Expired)
-                {
-                    var ticket = oldTicket;
-                    if (FormsAuthentication.SlidingExpiration)
-                    {
-                        ticket = FormsAuthentication.RenewTicketIfOld(oldTicket);
-                        if (ticket == null)
-                        {
-                            return;
-                        }
-                    }
-                    string[] roles = new string[] { "Administrator" };
-                    Context.User = new GenericPrincipal(new FormsIdentity(ticket), roles);
-                    if (ticket != oldTicket)
-                    {
-                        string cookieValue = FormsAuthentication.Encrypt(ticket);
-                        var cookie = Context.Request.Cookies[FormsAuthentication.FormsCookieName] ?? new HttpCookie(FormsAuthentication.FormsCookieName, cookieValue) { Path = ticket.CookiePath };
-                        if (ticket.IsPersistent)
-                        {
-                            cookie.Expires = ticket.Expiration;
-                        }
-                        cookie.Value = cookieValue;
-                        cookie.Secure = FormsAuthentication.RequireSSL;
-                        cookie.HttpOnly = true;
-                        if (FormsAuthentication.CookieDomain != null)
-                        {
-                            cookie.Domain = FormsAuthentication.CookieDomain;
-                        }
-                        Context.Response.Cookies.Remove(cookie.Name);
-                        Context.Response.Cookies.Add(cookie);
-                    }
-                }
-            }
-        }
+        //    if (Context.User == null)
+        //    {
+        //        var oldTicket = ExtractTicketFromCookie(Context, FormsAuthentication.FormsCookieName);
+        //        if (oldTicket != null && !oldTicket.Expired)
+        //        {
+        //            var ticket = oldTicket;
+        //            if (FormsAuthentication.SlidingExpiration)
+        //            {
+        //                ticket = FormsAuthentication.RenewTicketIfOld(oldTicket);
+        //                if (ticket == null)
+        //                {
+        //                    return;
+        //                }
+        //            }
+        //            string[] roles = new string[] { "Administrator" };
+        //            Context.User = new GenericPrincipal(new FormsIdentity(ticket), roles);
+        //            if (ticket != oldTicket)
+        //            {
+        //                string cookieValue = FormsAuthentication.Encrypt(ticket);
+        //                var cookie = Context.Request.Cookies[FormsAuthentication.FormsCookieName] ?? new HttpCookie(FormsAuthentication.FormsCookieName, cookieValue) { Path = ticket.CookiePath };
+        //                if (ticket.IsPersistent)
+        //                {
+        //                    cookie.Expires = ticket.Expiration;
+        //                }
+        //                cookie.Value = cookieValue;
+        //                cookie.Secure = FormsAuthentication.RequireSSL;
+        //                cookie.HttpOnly = true;
+        //                if (FormsAuthentication.CookieDomain != null)
+        //                {
+        //                    cookie.Domain = FormsAuthentication.CookieDomain;
+        //                }
+        //                Context.Response.Cookies.Remove(cookie.Name);
+        //                Context.Response.Cookies.Add(cookie);
+        //            }
+        //        }
+        //    }
+        //}
 
-        private static FormsAuthenticationTicket ExtractTicketFromCookie(HttpContext context, string name)
-        {
-            FormsAuthenticationTicket ticket = null;
-            string encryptedTicket = null;
+        //private static FormsAuthenticationTicket ExtractTicketFromCookie(HttpContext context, string name)
+        //{
+        //    FormsAuthenticationTicket ticket = null;
+        //    string encryptedTicket = null;
 
-            var cookie = context.Request.Cookies[name];
-            if (cookie != null)
-            {
-                encryptedTicket = cookie.Value;
-            }
+        //    var cookie = context.Request.Cookies[name];
+        //    if (cookie != null)
+        //    {
+        //        encryptedTicket = cookie.Value;
+        //    }
 
-            if (!string.IsNullOrEmpty(encryptedTicket))
-            {
-                try
-                {
-                    ticket = FormsAuthentication.Decrypt(encryptedTicket);
-                }
-                catch
-                {
-                    context.Request.Cookies.Remove(name);
-                }
+        //    if (!string.IsNullOrEmpty(encryptedTicket))
+        //    {
+        //        try
+        //        {
+        //            ticket = FormsAuthentication.Decrypt(encryptedTicket);
+        //        }
+        //        catch
+        //        {
+        //            context.Request.Cookies.Remove(name);
+        //        }
 
-                if (ticket != null && !ticket.Expired)
-                {
-                    return ticket;
-                }
+        //        if (ticket != null && !ticket.Expired)
+        //        {
+        //            return ticket;
+        //        }
 
-                context.Request.Cookies.Remove(name);
-            }
+        //        context.Request.Cookies.Remove(name);
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         private static void ResetContext()
         {

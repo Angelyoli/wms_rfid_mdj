@@ -49,6 +49,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityRepository\AlarmInfoRepository.cs" />
+    <Compile Include="EntityRepository\CellPositionRepository.cs" />
+    <Compile Include="EntityRepository\PathNodeRepository.cs" />
+    <Compile Include="EntityRepository\PathRepository.cs" />
+    <Compile Include="EntityRepository\PositionRepository.cs" />
+    <Compile Include="EntityRepository\ProductSizeRepository.cs" />
+    <Compile Include="EntityRepository\RegionRepository.cs" />
+    <Compile Include="EntityRepository\SizeRepository.cs" />
+    <Compile Include="EntityRepository\SRMRepository.cs" />
+    <Compile Include="EntityRepository\TaskRepository.cs" />
+    <Compile Include="Interfaces\IAlarmInfoRepository.cs" />
+    <Compile Include="Interfaces\ICellPositionRepository.cs" />
+    <Compile Include="Interfaces\IPathNodeRepository.cs" />
+    <Compile Include="Interfaces\IPathRepository.cs" />
+    <Compile Include="Interfaces\IPositionRepository.cs" />
+    <Compile Include="Interfaces\IProductSizeRepository.cs" />
+    <Compile Include="Interfaces\IRegionRepository.cs" />
+    <Compile Include="Interfaces\ISizeRepository.cs" />
+    <Compile Include="Interfaces\ISRMRepository.cs" />
+    <Compile Include="Interfaces\ITaskRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,11 +76,16 @@
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.WCS.DbModel\THOK.WCS.DbModel.csproj">
+      <Project>{B8A298CE-D286-4381-9B61-6527B3677ACA}</Project>
+      <Name>THOK.WCS.DbModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -11,6 +11,7 @@ using THOK.WMS.DownloadWms.Bll;
 using THOK.Wms.DownloadWms.Bll;
 using THOK.Authority.Bll.Interfaces;
 using THOK.Security;
+using THOK.WCS.Bll.Interfaces;
 
 namespace Authority.Controllers.Wms.StockIn
 {
@@ -24,7 +25,7 @@ namespace Authority.Controllers.Wms.StockIn
         [Dependency]
         public ISystemParameterService SystemParameterService { get; set; }
         [Dependency]
-        public THOK.Wms.Bll.Interfaces.ITaskService TaskService { get; set; }
+        public ITaskService TaskService { get; set; }
 		[Dependency]
         public IInBillMasterHistoryService InBillMasterHistoryService { get; set; }
 
