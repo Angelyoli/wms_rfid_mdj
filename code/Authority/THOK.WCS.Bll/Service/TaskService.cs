@@ -366,15 +366,16 @@ namespace THOK.WCS.Bll.Service
 
             InitValue(task);
 
-            var cellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode == task.OriginStorageCode || a.CellCode == task.TargetStorageCode);
-            if (cellPosition != null)
+            var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginStorageCode));
+            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetStorageCode));
+            if (originCellPosition != null && targetCellPosition!=null)
             {
                 //起始位置为货位位置的出库位置
-                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == cellPosition.StockOutPositionID);
+                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == originCellPosition.StockOutPositionID);
                 if (originPosition != null)
                 {
                     //目标位置为货位位置的入库位置
-                    var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == cellPosition.StockInPositionID);
+                    var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == targetCellPosition.StockInPositionID);
                     if (targetPosition != null)
                     {
                         //查询 路径
@@ -391,9 +392,16 @@ namespace THOK.WCS.Bll.Service
                                 t.ProductName = task.ProductName;
                                 t.OriginStorageCode = task.OriginStorageCode;
                                 t.TargetStorageCode = task.TargetStorageCode;
-                                t.OriginPositionID = cellPosition.StockOutPositionID;
-                                t.TargetPositionID = cellPosition.StockInPositionID;
-                                t.CurrentPositionID = cellPosition.StockOutPositionID;
+                                t.OriginPositionID = originCellPosition.StockOutPositionID;
+                                t.TargetPositionID = targetCellPosition.StockInPositionID;
+                                if (task.CurrentPositionID == 0 || task.CurrentPositionID == null)
+                                {
+                                    t.CurrentPositionID = originCellPosition.StockOutPositionID;
+                                }
+                                else
+                                {
+                                    t.CurrentPositionID = task.CurrentPositionID;
+                                }
                                 t.CurrentPositionState = task.CurrentPositionState;
                                 t.State = task.State;
                                 t.TagState = task.TagState;
@@ -449,15 +457,16 @@ namespace THOK.WCS.Bll.Service
             var t = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == task.ID);
             if (t != null)
             {
-                var cellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode == task.OriginStorageCode || a.CellCode == task.TargetStorageCode);
-                if (cellPosition != null)
+                var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginStorageCode));
+                var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetStorageCode));
+                if (originCellPosition != null && targetCellPosition!=null)
                 {
                     //起始位置为货位位置的出库位置
-                    var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == cellPosition.StockOutPositionID);
+                    var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == originCellPosition.StockOutPositionID);
                     if (originPosition != null)
                     {
                         //目标位置为货位位置的入库位置
-                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == cellPosition.StockInPositionID);
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == targetCellPosition.StockInPositionID);
                         if (targetPosition != null)
                         {
                             //查询 路径
@@ -473,9 +482,16 @@ namespace THOK.WCS.Bll.Service
                                     t.ProductName = task.ProductName;
                                     t.OriginStorageCode = task.OriginStorageCode;
                                     t.TargetStorageCode = task.TargetStorageCode;
-                                    t.OriginPositionID = cellPosition.StockOutPositionID;
-                                    t.TargetPositionID = cellPosition.StockInPositionID;
-                                    t.CurrentPositionID = cellPosition.StockOutPositionID;
+                                    t.OriginPositionID = originCellPosition.StockOutPositionID;
+                                    t.TargetPositionID = targetCellPosition.StockInPositionID;
+                                    if (task.CurrentPositionID == 0 || task.CurrentPositionID == null)
+                                    {
+                                        t.CurrentPositionID = originCellPosition.StockOutPositionID;
+                                    }
+                                    else
+                                    {
+                                        t.CurrentPositionID = task.CurrentPositionID;
+                                    }
                                     t.CurrentPositionState = task.CurrentPositionState;
                                     t.State = task.State;
                                     t.TagState = task.TagState;
