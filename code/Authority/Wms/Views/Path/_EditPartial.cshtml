@@ -15,17 +15,16 @@
             $('#fm .easyui-validatebox').validatebox({
                 required: true
             });
-           
-            
-            if (row.State == '可用') {
-                $('#state_emp').combo('setValue', 01).combo('setText', row.State);
-            }
-            else {
-                $('#state_emp').combo('setValue', 02).combo('setText', row.State);
-            }
+
             $('#state_emp').combo({
                 hasDownArrow: true
             });
+            if (row.State == '可用') {
+                $('#state_emp').combo('setValue', '01').combo('setText', row.State);
+            }
+            else {
+                $('#state_emp').combo('setValue', '02').combo('setText', row.State);
+            }
         } else {
             $.messager.alert('错误', '没有选择行！');
         }

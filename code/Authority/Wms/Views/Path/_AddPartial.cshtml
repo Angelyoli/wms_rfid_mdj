@@ -37,9 +37,16 @@
                     }
                 }],
                 onLoad: function () {
+                    AddLoad();
                     if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', erow);
+                        if (erow.State == '可用') {
+                            $('#state_emp').combo('setValue', '01').combo('setText', erow.State);
+                        }
+                        else {
+                            $('#state_emp').combo('setValue', '02').combo('setText', erow.State);
+                        }
                     }
                     else if (title == '删除') {
                         var drow = $('#details').datagrid('getSelected');

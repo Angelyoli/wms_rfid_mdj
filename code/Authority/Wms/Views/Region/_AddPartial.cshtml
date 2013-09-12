@@ -34,6 +34,7 @@
                     }
                 }],
                 onLoad: function () {
+                    AddLoad();
                     if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', erow);
@@ -49,7 +50,6 @@
                         $('form input').attr("disabled", "disabled");
                         $('form textarea').attr("disabled", "disabled");
                     }
-                    AddLoad();
                 }
             });
         }
