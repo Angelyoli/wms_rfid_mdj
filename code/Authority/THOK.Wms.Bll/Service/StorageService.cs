@@ -8,6 +8,8 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using System.Data;
 using THOK.WMS.Upload.Bll;
+using THOK.Authority.DbModel;
+using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -27,6 +29,9 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IMoveBillDetailRepository MoveBillDetailRepository { get; set; }
+
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
 
         UploadBll upload = new UploadBll();
 
@@ -102,6 +107,8 @@ namespace THOK.Wms.Bll.Service
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             var storages = storageQuery.OrderBy(s => s.StorageCode).Where(s => s.StorageCode != null);
+            IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+            var isWholePallet = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsWholePallet");//是否整托盘
             if (type == "ware")
             {
                 storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id);
@@ -122,6 +129,10 @@ namespace THOK.Wms.Bll.Service
             if (inOrOut == "out")
             {
                 storages = storages.Where(s => (s.Quantity - s.OutFrozenQuantity) > 0 && string.IsNullOrEmpty(s.Cell.LockTag));
+                if (isWholePallet.ParameterValue == "1")//是整托盘移库
+                {
+                    storages = storages.Where(s => s.OutFrozenQuantity == 0);
+                }
             }
             else if(inOrOut=="in")//传入的参数为in时查询的是移入货位的存储信息
             {
@@ -135,6 +146,10 @@ namespace THOK.Wms.Bll.Service
                 storages = storages.Where(s => (s.Quantity - s.OutFrozenQuantity) > 0
                                           && string.IsNullOrEmpty(s.Cell.LockTag)
                                           && s.ProductCode == productCode);
+                if (isWholePallet.ParameterValue == "1")//是整托盘出库
+                {
+                    storages = storages.Where(s => s.OutFrozenQuantity == 0);
+                }
             }
 
             if (!storages.Any())
@@ -159,6 +174,7 @@ namespace THOK.Wms.Bll.Service
                     Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
                     IsActive = s.IsActive == "1" ? "可用" : "不可用",
                     StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
+                    IsWholePallet=isWholePallet.ParameterValue,
                     UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
                 });
             return new { total, rows = tmp.ToArray() };

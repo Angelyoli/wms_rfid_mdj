@@ -407,8 +407,8 @@ namespace THOK.Wms.Bll.Service
             var storage = StorageQuery.Join(ProductQuery,
                                            s => s.ProductCode,
                                            p => p.ProductCode,
-                                           (s, p) => new { p.ProductCode, p.ProductName, s.Quantity, s.Product, p.Unit, p.BuyPrice }
-                                           ).GroupBy(s => new { s.ProductCode, s.ProductName, s.Unit, s.BuyPrice })
+                                           (s, p) => new { p.ProductCode, p.ProductName, s.Quantity, s.Product, p.Unit, p.BuyPrice ,s.OutFrozenQuantity}
+                                           ).GroupBy(s => new { s.ProductCode, s.ProductName, s.Unit, s.BuyPrice ,s.OutFrozenQuantity,s.Quantity})
                                            .Select(s => new
                                            {
                                                ProductCode = s.Key.ProductCode,
@@ -416,8 +416,10 @@ namespace THOK.Wms.Bll.Service
                                                UnitCode = s.Key.Unit.UnitCode,
                                                UnitName = s.Key.Unit.UnitName,
                                                BuyPrice = s.Key.BuyPrice,
+                                               OutFrozenQuantity=s.Key.OutFrozenQuantity,
+                                               Quantity2=s.Key.Quantity,
                                                Quantity = s.Sum(st => (st.Quantity / st.Product.Unit.Count))
-                                           }).Where(p=>p.ProductCode.Contains(ProductCode)&&p.ProductName.Contains(ProductName));
+                                           }).Where(p=>p.ProductCode.Contains(ProductCode)&&p.ProductName.Contains(ProductName) && p.Quantity2>p.OutFrozenQuantity);
             // var product = ProductQuery.OrderBy(p => p.ProductCode).Where(p => p.Storages.Any(s => s.ProductCode == p.ProductCode));
             return storage.ToArray();
         }

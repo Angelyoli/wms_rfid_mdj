@@ -205,6 +205,12 @@
         if (detailRow) {
             $('#dlg_allot_modify').dialog('open').dialog('setTitle', '修改');
             $('#fm_allot').form('load', detailRow);
+            if (detailRow.IsWholePallet == 1) {//是整托盘，分配数量只读
+                $('#allQuantity').attr('readonly', 'readonly');
+            }
+            else {
+                $('#allQuantity').removeAttr('readonly');
+            }
             modifyUrl = '/StockOutBillAllot/AllotEdit/';
         } else {
             $.messager.alert('错误', '没有选择行！');
@@ -308,6 +314,7 @@
                         <th field="StartTime" width="80" align="right">开始时间</th>
                         <th field="FinishTime" width="80" align="right">完成时间</th>
                         <th field="Status" width="80" align="right">作业状态</th>
+                        <th field="IsWholePallet" width="80" align="right" hidden="true">是否整托盘</th>
                     </tr>
                 </thead>
             </table>

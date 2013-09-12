@@ -32,6 +32,13 @@
         if (cellRow) {
             jCellCode.val(cellRow.CellCode);
             jCellName.val(cellRow.CellName);
+            $('#allQuantity').numberbox('setValue', cellRow.Quantity);
+            if (cellRow.IsWholePallet == 1) {//是整托盘，分配数量只读
+                $('#allQuantity').attr('readonly', 'readonly');
+            }
+            else {
+                $('#allQuantity').removeAttr('readonly');
+            }
             $('#cellData').dialog('close');
         }
     }
@@ -78,6 +85,9 @@
                                 </th>
                                 <th field="Quantity" width="60">
                                     数量
+                                </th>
+                                <th field="IsWholePallet" width="80" hidden="true">
+                                    是否整托盘
                                 </th>
                             </tr>
                         </thead>

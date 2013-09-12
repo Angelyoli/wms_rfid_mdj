@@ -9,6 +9,7 @@ using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.SignalR;
 using THOK.Wms.SignalR.Common;
 using THOK.Authority.Dal.Interfaces;
+using THOK.Authority.DbModel;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -81,6 +82,8 @@ namespace THOK.Wms.Bll.Service
             {
                 IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
                 var moveBillDetail = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => i);
+                IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
+                var isWholePallet = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsWholePallet");//查询是否整托盘出库
                 int total = moveBillDetail.Count();
                 moveBillDetail = moveBillDetail.Skip((page - 1) * rows).Take(rows);
 
@@ -103,6 +106,7 @@ namespace THOK.Wms.Bll.Service
                     EmployeeName = i.OperatePerson == null ? string.Empty : i.OperatePerson.EmployeeName,
                     StartTime = i.StartTime == null ? null : ((DateTime)i.StartTime).ToString("yyyy-MM-dd HH:mm:ss"),
                     FinishTime = i.FinishTime == null ? null : ((DateTime)i.FinishTime).ToString("yyyy-MM-dd HH:mm:ss"),
+                    IsWholePallet=isWholePallet.ParameterValue,
                     Status = WhatStatus(i.Status)
                 });
                 return new { total, rows = temp.ToArray() };
