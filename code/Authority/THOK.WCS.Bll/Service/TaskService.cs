@@ -1286,7 +1286,8 @@ namespace THOK.WCS.Bll.Service
                         outAllot.Storage.Rfid = "";
                     outAllot.Storage.OutFrozenQuantity -= quantity;
                     if (outAllot.Storage.Quantity == 0) outAllot.Storage.StorageSequence = 0;
-                    outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime);
+                    outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0 
+                        ? outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
                     outAllot.OutBillDetail.RealQuantity += quantity;
                     outAllot.OutBillMaster.Status = "5";
                     outAllot.FinishTime = DateTime.Now;
@@ -1337,7 +1338,8 @@ namespace THOK.WCS.Bll.Service
                     moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                     moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
                     if (moveDetail.OutStorage.Quantity == 0) moveDetail.OutStorage.StorageSequence = 0;
-                    moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime);
+                    moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0 
+                        ? moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
                     moveDetail.OutStorage.Rfid = "";
 
                     //判断移入的时间是否小于移出的时间
