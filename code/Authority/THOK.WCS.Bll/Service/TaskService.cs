@@ -996,7 +996,7 @@ namespace THOK.WCS.Bll.Service
         public bool CreateNewTaskForEmptyPalletStack(int positionID)
         {
             string palletCode = "00002A";
-            int palletCount = 10;
+            int palletCount = 12;
             var position = PositionRepository.GetQueryable()
                 .Where(i=>i.ID == positionID).FirstOrDefault();
 
@@ -1019,7 +1019,7 @@ namespace THOK.WCS.Bll.Service
                                 && s.Quantity + s.InFrozenQuantity < palletCount
                                 && s.OutFrozenQuantity == 0)));
 
-                var cell = cellQuery.FirstOrDefault();
+                var cell = cellQuery.OrderBy(c=>c.CellCode).FirstOrDefault();
                 if (cell != null)
                 {
                     var cellPosition = CellPositionRepository.GetQueryable()
@@ -1044,6 +1044,7 @@ namespace THOK.WCS.Bll.Service
                     var targetStorage = cell.Storages.FirstOrDefault();
                     if (targetStorage != null && cellPosition != null)
                     {
+                        targetStorage.ProductCode = palletCode;
                         targetStorage.InFrozenQuantity += 1;
                         var newTask = new Task();
                         newTask.TaskType = "02";
@@ -1093,7 +1094,10 @@ namespace THOK.WCS.Bll.Service
             var positionCell = CellPositionRepository.GetQueryable()
                 .Where(i => i.StockInPositionID == positionID).FirstOrDefault();
 
-            if (storage != null && position != null )
+            var task = TaskRepository.GetQueryable()
+                .Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
+
+            if (storage != null && position != null && task == null)
             {
                 var cellPosition = CellPositionRepository.GetQueryable()
                     .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
