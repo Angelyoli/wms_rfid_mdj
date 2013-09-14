@@ -36,16 +36,17 @@ namespace THOK.WMS.DownloadWms.Bll
                     DataTable emply = dao.FindEmployee(EmployeeCode);
                     DataTable inMasterBillNo = this.GetInBillNo();
                     string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
-                    billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
-                    DataTable masterdt = this.InBillMaster(billnolist);
+                    string billnolistStr = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}'", startDate, endDate);
+                    DataTable masterdt = this.InBillMaster(billnolistStr);
+                    DataRow[] masterdr = masterdt.Select("ORDER_ID NOT IN(" + billnolist + ")");
 
-                    string inDetailList = UtinString.MakeString(masterdt, "ORDER_ID");
+                    string inDetailList = UtinString.MakeString(masterdr, "ORDER_ID");
                     inDetailList = "ORDER_ID IN(" + inDetailList + ")";
                     DataTable detaildt = this.InBillDetail(inDetailList);
 
-                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                    if (masterdr.Length > 0 && detaildt.Rows.Count > 0)
                     {
-                        DataSet masterds = this.InBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
+                        DataSet masterds = this.InBillMaster(masterdr, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
 
                         DataSet detailds = this.InBillDetail(detaildt);
                         this.Insert(masterds, detailds);
@@ -84,16 +85,17 @@ namespace THOK.WMS.DownloadWms.Bll
                     DataTable emply = dao.FindEmployee(EmployeeCode);
                     DataTable inMasterBillNo = this.GetInBillNo();
                     string billnolist = UtinString.MakeString(inMasterBillNo, "bill_no");
-                    billnolist = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}' AND ORDER_ID NOT IN({2})", startDate, endDate, billnolist);
-                    DataTable masterdt = this.InBillMasters(billnolist);
+                    string billnolistStr = string.Format("ORDER_DATE >='{0}' AND ORDER_DATE <='{1}'", startDate, endDate);
+                    DataTable masterdt = this.InBillMaster(billnolistStr);
+                    DataRow[] masterdr = masterdt.Select("ORDER_ID NOT IN(" + billnolist + ")");
 
-                    string inDetailList = UtinString.MakeString(masterdt, "ORDER_ID");
+                    string inDetailList = UtinString.MakeString(masterdr, "ORDER_ID");
                     inDetailList = "ORDER_ID IN(" + inDetailList + ")";
                     DataTable detaildt = this.InBillDetail(inDetailList);
 
-                    if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                    if (masterdr.Length > 0 && detaildt.Rows.Count > 0)
                     {
-                        DataSet masterds = this.InBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
+                        DataSet masterds = this.InBillMaster(masterdr, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
 
                         DataSet detailds = this.InBillDetail(detaildt);
                         this.Insert(masterds, detailds);
@@ -167,10 +169,10 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public DataSet InBillMaster(DataTable inBillMasterdr, string employeeId,string wareCode,string billType)
+        public DataSet InBillMaster(DataRow[] inBillMasterdr, string employeeId,string wareCode,string billType)
         {
             DataSet ds = this.GenerateEmptyTables();
-            foreach (DataRow row in inBillMasterdr.Rows)
+            foreach (DataRow row in inBillMasterdr)
             {
                 Guid eid = new Guid(employeeId);
                 string createdate = row["ORDER_DATE"].ToString();
@@ -204,12 +206,12 @@ namespace THOK.WMS.DownloadWms.Bll
             DataSet ds = this.GenerateEmptyTables();
             foreach (DataRow row in inBillDetaildr.Rows)
             {
-                DataTable prodt = FindProductCodeInfo(" CUSTOM_CODE='" + row["BRAND_CODE"].ToString() + "'");//                
+                DataTable prodt = FindProductCodeInfo(" PRODUCT_CODE='" + row["BRANDCODE"].ToString() + "'");//                
                 DataRow detailrow = ds.Tables["WMS_IN_BILLDETAIL"].NewRow();
                 detailrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
                 detailrow["product_code"] = prodt.Rows[0]["product_code"];
                 detailrow["price"] = Convert.ToDecimal(row["PRICE"]);
-                detailrow["bill_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
+                detailrow["bill_quantity"] = Math.Abs(Convert.ToDecimal(row["QUANTITY"]));              
                 detailrow["allot_quantity"] = 0;
                 detailrow["unit_code"] = prodt.Rows[0]["unit_code"];
                 detailrow["description"] = "";

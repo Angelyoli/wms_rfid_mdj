@@ -194,6 +194,7 @@ namespace THOK.WMS.DownloadWms.Bll
                masterrow["update_time"] = DateTime.Now;//送货线路名称               
                masterrow["deliver_line_code"] = row["DIST_BILL_ID"].ToString().Trim(); //row["DELIVER_LINE_CODE"].ToString().Trim();// +"_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
                masterrow["dist_bill_id"] = row["DIST_BILL_ID"].ToString().Trim();//
+               masterrow["status"] = "0";//
                ds.Tables["DWV_OUT_ORDER"].Rows.Add(masterrow);
            }
            return ds;
@@ -227,6 +228,7 @@ namespace THOK.WMS.DownloadWms.Bll
                masterrow["update_time"] = DateTime.Now;//送货线路名称               
                masterrow["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString().Trim();// row["DIST_BILL_ID"].ToString().Trim(); //row["DELIVER_LINE_CODE"].ToString().Trim();// +"_" + row["DIST_BILL_ID"].ToString().Trim();//送货顺序编码
                masterrow["dist_bill_id"] = row["DIST_BILL_ID"].ToString().Trim();//
+               masterrow["status"] = "";
                ds.Tables["DWV_OUT_ORDER"].Rows.Add(masterrow);
            }
            return ds;
@@ -246,17 +248,17 @@ namespace THOK.WMS.DownloadWms.Bll
                int i = 0;
                foreach (DataRow row in detaildt)
                {
-                   DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRAND_N"].ToString().Trim()));
+                   DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRANDCODE"].ToString().Trim()));
                    DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();
                    i++;
                    string newcode = i.ToString();
-                   for (int j = 0; j < 6 - i.ToString().Length; j++)
+                   for (int j = 0; j < 5 - i.ToString().Length; j++)
                    {
                        newcode = "0" + newcode;
                    }
                    detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim() + newcode;
                    detailrow["order_id"] = row["ORDERID"].ToString().Trim();
-                   detailrow["product_code"] = row["BRAND_N"].ToString().Trim();
+                   detailrow["product_code"] = row["BRANDCODE"].ToString().Trim();
                    detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
                    detailrow["unit_code"] = list[0]["unit_code02"].ToString();
                    detailrow["unit_name"] = row["BRAND_UNIT_NAME"].ToString().Trim(); ;
@@ -360,6 +362,7 @@ namespace THOK.WMS.DownloadWms.Bll
            mastertable.Columns.Add("update_time");
            mastertable.Columns.Add("deliver_line_code");
            mastertable.Columns.Add("dist_bill_id");
+           mastertable.Columns.Add("status");
            
            DataTable detailtable = ds.Tables.Add("DWV_OUT_ORDER_DETAIL");
            detailtable.Columns.Add("order_detail_id");

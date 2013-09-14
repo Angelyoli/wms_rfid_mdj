@@ -3,22 +3,54 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using THOK.Util;
+using THOK.Wms.DownloadWms.Dao;
 
 namespace THOK.WMS.DownloadWms.Dao
 {
     public class DownUnitDao : BaseDao
     {
+        public string dbTypeName = "";
+        public string SalesSystemDao()
+        {
+            SysParameterDao parameterDao = new SysParameterDao();
+            Dictionary<string, string> parameter = parameterDao.FindParameters();
+
+            //仓储业务数据接口服务器数据库类型
+            if (parameter["SalesSystemDBType"] != "")
+                dbTypeName = parameter["SalesSystemDBType"];
+
+            return dbTypeName;
+        }
+
         /// <summary>
         /// 下载单位信息
         /// </summary>
         /// <returns></returns>
         public DataTable GetUnitInfo(string unitCode)
         {
-            string sql = string.Format(@"SELECT U.*,B.BRAND_N FROM V_WMS_BRAND_UNIT U
+            string sql = "";
+            dbTypeName = this.SalesSystemDao();
+            switch (dbTypeName)
+            {
+                case "gxyc-db2"://广西烟草db2
+                    sql = string.Format(@"SELECT U.*,B.BRAND_N AS BARNDCODE FROM V_WMS_BRAND_UNIT U
                                         LEFT JOIN  V_WMS_BRAND B ON U.BRAND_CODE =B.BRAND_CODE
-                                        WHERE (B.BRAND_N <> 'NULL' OR B.BRAND_N !='') and {0}", unitCode);
+                                        WHERE (B.BRAND_N <> 'NULL' OR B.BRAND_N !='') AND {0}", unitCode);
+                    break;
+                case "gzyc-oracle"://贵州烟草oracle
+                    sql = string.Format(@"SELECT U.*,U.BRAND_CODE AS BARNDCODE FROM V_WMS_BRAND_UNIT U
+                                        LEFT JOIN  V_WMS_BRAND B ON U.BRAND_CODE =B.BRAND_CODE
+                                        WHERE {0}", unitCode);
+                    break;
+                default://默认广西烟草
+                    string.Format(@"SELECT U.*,B.BRAND_N AS BARNDCODE FROM V_WMS_BRAND_UNIT U
+                                        LEFT JOIN  V_WMS_BRAND B ON U.BRAND_CODE =B.BRAND_CODE
+                                        WHERE (B.BRAND_N <> 'NULL' OR B.BRAND_N !='') AND {0}", unitCode);
+                    break;
+            }
             return this.ExecuteQuery(sql).Tables[0];
         }
+
         /// <summary>
         /// 下载单位信息 平顶山
         /// </summary>
