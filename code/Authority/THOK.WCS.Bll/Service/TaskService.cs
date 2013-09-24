@@ -996,11 +996,15 @@ namespace THOK.WCS.Bll.Service
         public bool CreateNewTaskForEmptyPalletStack(int positionID)
         {
             string palletCode = "00002A";
-            int palletCount = 12;
+            int palletCount = 10;
             var position = PositionRepository.GetQueryable()
-                .Where(i=>i.ID == positionID).FirstOrDefault();
+                .Where(i=>i.ID == positionID &&(i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04"))
+                .FirstOrDefault();
 
-            if (position != null)
+            var task = TaskRepository.GetQueryable()
+                .Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == positionID).FirstOrDefault();
+
+            if (position != null && task == null)
             {
                 var positionQuery = PositionRepository.GetQueryable()
                     .Where(i => i.SRMName == position.SRMName
@@ -1011,15 +1015,21 @@ namespace THOK.WCS.Bll.Service
                 var cellQuery = CellRepository.GetQueryable()
                     .Where(i => i.IsSingle == "1"
                         && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
-                        && (i.Storages.Count == 0
-                            || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
-                                && s.Quantity == 0
-                                && s.InFrozenQuantity == 0)
-                            || i.Storages.Any(s => s.ProductCode == palletCode
+                        && (i.Storages.Any(s => s.ProductCode == palletCode
                                 && s.Quantity + s.InFrozenQuantity < palletCount
                                 && s.OutFrozenQuantity == 0)));
+                if (!cellQuery.Any())
+                {
+                    cellQuery = CellRepository.GetQueryable()
+                        .Where(i => i.IsSingle == "1"
+                            && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
+                            && (i.Storages.Count == 0
+                                || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
+                                    && s.Quantity == 0
+                                    && s.InFrozenQuantity == 0)));
+                }
 
-                var cell = cellQuery.OrderBy(c=>c.CellCode).FirstOrDefault();
+                var cell = cellQuery.OrderBy(c=>Math.Abs(c.Col - c.Shelf.CellCols/2)).FirstOrDefault();
                 if (cell != null)
                 {
                     var cellPosition = CellPositionRepository.GetQueryable()
@@ -1080,12 +1090,23 @@ namespace THOK.WCS.Bll.Service
         public bool CreateNewTaskForEmptyPalletSupply(int positionID)
         {
             string palletCode = "00002A";
+            int palletCount = 10;
             var storageQuery = StorageRepository.GetQueryable()
                 .Where(i => i.ProductCode == palletCode
-                    && i.Quantity - i.OutFrozenQuantity > 0
+                    && i.Quantity - i.OutFrozenQuantity >= palletCount
                     && i.OutFrozenQuantity == 0
                     && i.InFrozenQuantity == 0)
-                .OrderBy(i=>i.StorageTime);
+                .OrderByDescending(i=>i.StorageTime);
+
+            if (!storageQuery.Any())
+            {
+                storageQuery = StorageRepository.GetQueryable()
+                    .Where(i => i.ProductCode == palletCode
+                        && i.Quantity - i.OutFrozenQuantity > 0
+                        && i.OutFrozenQuantity == 0
+                        && i.InFrozenQuantity == 0)
+                    .OrderByDescending(i=>i.StorageTime);
+            }
 
             var storage = storageQuery.FirstOrDefault();
             var position = PositionRepository.GetQueryable()
@@ -1097,7 +1118,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable()
                 .Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
 
-            if (storage != null && position != null && task == null)
+            if (storage != null && position != null && position.PositionType == "05" && task == null)
             {
                 var cellPosition = CellPositionRepository.GetQueryable()
                     .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
