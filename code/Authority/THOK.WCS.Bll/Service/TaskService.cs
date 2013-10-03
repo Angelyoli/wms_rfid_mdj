@@ -439,7 +439,7 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-                strResult = "未找到【货位信息】起始货位或目标货位！";
+                strResult = "未找到【货位位置】起始货位位置或目标货位位置！";
             }
             return bResult;
         }
@@ -528,7 +528,7 @@ namespace THOK.WCS.Bll.Service
                 }
                 else
                 {
-                    strResult = "未找到【货位信息】起始货位或目标货位！";
+                    strResult = "未找到【货位位置】起始货位位置或目标货位位置！";
                 }
             }
             else

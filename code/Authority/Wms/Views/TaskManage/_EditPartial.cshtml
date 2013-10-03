@@ -51,10 +51,10 @@
             if (row.OrderType == '入库单') {
                 $('#orderType2').combo('setValue', '01').combo('setText', row.OrderType);
             }
-            else if (row.CurrentPositionState == '移库单') {
+            else if (row.OrderType == '移库单') {
                 $('#orderType2').combo('setValue', '02').combo('setText', row.OrderType);
             }
-            else if (row.CurrentPositionState == '出库单') {
+            else if (row.OrderType == '出库单') {
                 $('#orderType2').combo('setValue', '03').combo('setText', row.OrderType);
             }
             else {
