@@ -32,6 +32,11 @@ namespace THOK.WMS.DownloadWms.Dao
             dbTypeName = this.SalesSystemDao();
             switch (dbTypeName)
             {
+                case "mdjyc-db2"://Äµµ¤½­ÑÌ²Ýdb2
+                    sql = string.Format(@"SELECT U.*,B.BRAND_N AS BARNDCODE FROM V_WMS_BRAND_UNIT U
+                                        LEFT JOIN  V_WMS_BRAND B ON U.BRAND_CODE =B.BRAND_CODE
+                                        WHERE (B.BRAND_N <> 'NULL' OR B.BRAND_N !='') AND {0}", unitCode);
+                    break;
                 case "gxyc-db2"://¹ãÎ÷ÑÌ²Ýdb2
                     sql = string.Format(@"SELECT U.*,B.BRAND_N AS BARNDCODE FROM V_WMS_BRAND_UNIT U
                                         LEFT JOIN  V_WMS_BRAND B ON U.BRAND_CODE =B.BRAND_CODE

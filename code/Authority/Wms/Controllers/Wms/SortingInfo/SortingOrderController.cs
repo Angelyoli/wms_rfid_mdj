@@ -109,7 +109,8 @@ namespace Authority.Controllers.Wms.SortingInfo
                     {
                         //从营销下载分拣数据 
                         lineResult = routeBll.DownRouteInfo();
-                        bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                        //bResult = orderBll.GetSortingOrderDate(beginDate, endDate, out errorInfo);
+                        bResult = orderBll.GetSortingOrderDate2(beginDate, endDate, out errorInfo);//牡丹江浪潮
                     }
                 }
                 else

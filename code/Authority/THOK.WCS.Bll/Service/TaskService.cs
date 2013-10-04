@@ -9,6 +9,7 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.DbModel;
 using THOK.WCS.DbModel;
 using THOK.Authority.Dal.Interfaces;
+using THOK.WCS.Bll.Models;
 
 namespace THOK.WCS.Bll.Service
 {
@@ -1238,7 +1239,8 @@ namespace THOK.WCS.Bll.Service
             return false;
         }
 
-        private bool FinishInBillTask(string orderID ,int allotID)
+        #region 完成入库任务，并反馈给浪潮
+        private bool FinishInBillTask(string orderID, int allotID)
         {
             var inAllot = InBillAllotRepository.GetQueryable()
                                     .Where(i => i.BillNo == orderID
@@ -1263,7 +1265,7 @@ namespace THOK.WCS.Bll.Service
                     inAllot.Storage.InFrozenQuantity -= quantity;
                     if (inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
                     if (!inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                    inAllot.Storage.Cell.StorageTime = inAllot.Storage.Cell.Storages.Where(s=>s.Quantity >0).Min(s => s.StorageTime);
+                    inAllot.Storage.Cell.StorageTime = inAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime);
                     inAllot.InBillDetail.RealQuantity += quantity;
                     inAllot.InBillMaster.Status = "5";
                     inAllot.FinishTime = DateTime.Now;
@@ -1272,6 +1274,28 @@ namespace THOK.WCS.Bll.Service
                         inAllot.InBillMaster.Status = "6";
                     }
                     InBillAllotRepository.SaveChanges();
+                    try
+                    {
+                        InspurService inspurService = new InspurService();
+                        Inspur inspur = new Inspur();
+                        inspur.Param = "";
+                        inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
+                        inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
+                        inspur.BillNo = inAllot.BillNo;
+                        inspur.ProductCode = inAllot.ProductCode;
+                        inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
+                        //反馈给浪潮的xml数据信息
+                        //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                        //LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
+                        //if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
+                        //{
+                        //    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        return false;
+                    }
                     return true;
                 }
                 else
@@ -1285,8 +1309,10 @@ namespace THOK.WCS.Bll.Service
                 //"需确认入库的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
-        }
+        } 
+        #endregion
 
+        #region 完成出库任务，并反馈给浪潮
         private bool FinishOutBillTask(string orderID, int allotID)
         {
             var outAllot = OutBillAllotRepository.GetQueryable()
@@ -1311,7 +1337,7 @@ namespace THOK.WCS.Bll.Service
                         outAllot.Storage.Rfid = "";
                     outAllot.Storage.OutFrozenQuantity -= quantity;
                     if (outAllot.Storage.Quantity == 0) outAllot.Storage.StorageSequence = 0;
-                    outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0 
+                    outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
                         ? outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
                     outAllot.OutBillDetail.RealQuantity += quantity;
                     outAllot.OutBillMaster.Status = "5";
@@ -1321,7 +1347,28 @@ namespace THOK.WCS.Bll.Service
                         outAllot.OutBillMaster.Status = "6";
                     }
                     OutBillAllotRepository.SaveChanges();
-
+                    try
+                    {
+                        InspurService inspurService = new InspurService();
+                        Inspur inspur = new Inspur();
+                        inspur.Param = "";
+                        inspur.User = outAllot.OutBillMaster.OperatePerson.EmployeeName;
+                        inspur.Time = outAllot.OutBillMaster.UpdateTime.ToString();
+                        inspur.BillNo = outAllot.BillNo;
+                        inspur.ProductCode = outAllot.ProductCode;
+                        inspur.RealQuantity = outAllot.OutBillDetail.RealQuantity;
+                        //反馈给浪潮的xml数据信息
+                        //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                        //LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
+                        //if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
+                        //{
+                        //    LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        return false;
+                    }
                     return true;
                 }
                 else
@@ -1335,7 +1382,8 @@ namespace THOK.WCS.Bll.Service
                 //"需确认出库的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
-        }
+        } 
+        #endregion
 
         private bool FinishMoveBillTask(string orderID, int allotID)
         {

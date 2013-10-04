@@ -14,6 +14,7 @@ namespace THOK.WMS.DownloadWms.Bll
 
         #region 日期从营系统据下载数据
 
+        #region 选择日期从营销系统下载出库数据
         /// <summary>
         /// 选择日期从营销系统下载出库单据
         /// </summary>
@@ -28,7 +29,7 @@ namespace THOK.WMS.DownloadWms.Bll
             using (PersistentManager dbpm = new PersistentManager())
             {
                 DownOutBillDao dao = new DownOutBillDao();
-                DataTable emply = dao.FindEmployee(EmployeeCode);   
+                DataTable emply = dao.FindEmployee(EmployeeCode);
                 DataTable outBillNoTable = this.GetOutBillNo(startDate);
                 string outBillList = UtinString.MakeString(outBillNoTable, "bill_no");
                 outBillList = string.Format("ORDER_DATE ='{0}' AND ORDER_ID NOT IN({1}) ", startDate, outBillList);
@@ -43,9 +44,9 @@ namespace THOK.WMS.DownloadWms.Bll
                     try
                     {
                         string billno = this.GetNewBillNo();
-                        DataSet middleds = this.MiddleTable(masterdt,billno);
+                        DataSet middleds = this.MiddleTable(masterdt, billno);
                         //DataSet masterds = this.OutBillMaster(masterdt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType);
-                        DataSet detailds = this.OutBillDetail(detaildt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType, startDate,billno);
+                        DataSet detailds = this.OutBillDetail(detaildt, emply.Rows[0]["employee_id"].ToString(), wareCode, billType, startDate, billno);
                         this.Insert(detailds, middleds);
                     }
                     catch (Exception e)
@@ -61,7 +62,46 @@ namespace THOK.WMS.DownloadWms.Bll
                 }
             }
             return tag;
+        } 
+        #endregion
+
+        #region 选择日期从营销系统下载出库单据（牡丹江浪潮）
+        /// <summary>选择日期从营销系统下载出库单据 2013-09-09 20:53:35 JJ</summary>
+        public bool GetOutBill2(string startDate, string endDate, string EmployeeCode, out string errorInfo, string wareCode, string billType)
+        {
+            bool tag = true;
+            Employee = EmployeeCode;
+            errorInfo = string.Empty;
+            using (PersistentManager dbpm = new PersistentManager())
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                DataTable emply = dao.FindEmployee(EmployeeCode);
+                DataTable outMasterBillNo = this.GetOutBillNo2(startDate);
+                string billnolist = UtinString.MakeString(outMasterBillNo, "bill_no");
+                string billnolistStr = string.Format("ORDER_DATE ='{0}' AND ORDER_ID NOT IN({1}) ", startDate, billnolist);
+                DataTable masterdt = this.GetOutBillMaster2(billnolistStr);
+                DataRow[] masterdr = masterdt.Select("ORDER_ID NOT IN(" + billnolist + ")");
+
+                string outDetailList = UtinString.MakeString(masterdr, "ORDER_ID");
+                outDetailList = "ORDER_ID IN(" + outDetailList + ")";
+                DataTable detaildt = this.GetOutBillDetail2(outDetailList);
+
+                if (masterdt.Rows.Count > 0 && detaildt.Rows.Count > 0)
+                {
+                    DataSet masterds = this.OutBillMaster2(masterdr, emply.Rows[0]["employee_id"].ToString(), wareCode, billType);
+                    DataSet detailds = this.OutBillDetail2(detaildt);
+                    this.Insert2(masterds, detailds);
+                    tag = true;
+                }
+                else
+                {
+                    errorInfo = "没有可下载的出库数据！";
+                    tag = false;
+                }
+            }
+            return tag;
         }
+        #endregion
 
         /// <summary>
         /// 选择日期从营销系统下载出库单据 创联
@@ -124,6 +164,18 @@ namespace THOK.WMS.DownloadWms.Bll
             }
         }
 
+        #region 根据时间查询仓库出库单据号（牡丹江浪潮）
+        /// <summary>根据时间查询仓库出库单据号 2013-09-10 08:54:06 JJ</summary>
+        public DataTable GetOutBillNo2(string orderDate)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                return dao.GetOutBillNo2(orderDate);
+            }
+        } 
+        #endregion
+
         /// <summary>
         /// 下载出库主表信息
         /// </summary>
@@ -137,6 +189,20 @@ namespace THOK.WMS.DownloadWms.Bll
                 return dao.GetOutBillMaster(billno);
             }
         }
+
+        #region 下载出库主表信息（牡丹江浪潮）
+        /// <summary>下载出库主表信息</summary>
+        public DataTable GetOutBillMaster2(string billno)
+        {
+            using (PersistentManager dbpm = new PersistentManager("YXConnection"))
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                dao.SetPersistentManager(dbpm);
+                return dao.GetOutBillMaster2(billno);
+            }
+        } 
+        #endregion
+
         /// <summary>
         /// 下载出库主表信息 创联
         /// </summary>
@@ -163,6 +229,19 @@ namespace THOK.WMS.DownloadWms.Bll
                 return dao.GetOutBillDetail(billno);
             }
         }
+
+        #region 下载出库明细表信息（牡丹江浪潮）
+        /// <summary>下载出库明细表信息 2013-09-10 09:35:33 JJ</summary>
+        public DataTable GetOutBillDetail2(string billno)
+        {
+            using (PersistentManager dbpm = new PersistentManager("YXConnection"))
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                dao.SetPersistentManager(dbpm);
+                return dao.GetOutBillDetail2(billno);
+            }
+        } 
+        #endregion
 
         /// <summary>
         /// 保存主表信息到虚拟表
@@ -192,6 +271,33 @@ namespace THOK.WMS.DownloadWms.Bll
             }
             return ds;
         }
+
+        #region 保存主表信息到虚拟表（牡丹江浪潮）
+        /// <summary>保存主表信息到虚拟表 2013-09-10 10:16:50 JJ</summary>
+        public DataSet OutBillMaster2(DataRow[] inBillMasterdr, string emplcodeId, string wareCode, string billType)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+            Guid eid = new Guid(emplcodeId);
+            foreach (DataRow row in inBillMasterdr)
+            {
+                string createdate = row["ORDER_DATE"].ToString();
+                createdate = createdate.Substring(0, 4) + "-" + createdate.Substring(4, 2) + "-" + createdate.Substring(6, 2);
+                DataRow masterrow = ds.Tables["WMS_OUT_BILLMASTER"].NewRow();
+                masterrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
+                masterrow["bill_date"] = Convert.ToDateTime(createdate);
+                masterrow["bill_type_code"] = billType;
+                masterrow["warehouse_code"] = wareCode;
+                masterrow["operate_person_id"] = eid;
+                masterrow["status"] = "1";
+                masterrow["is_active"] = "1";
+                masterrow["update_time"] = DateTime.Now;
+                masterrow["origin"] = "1";
+                ds.Tables["WMS_OUT_BILLMASTER"].Rows.Add(masterrow);
+
+            }
+            return ds;
+        }
+        #endregion
 
         /// <summary>
         /// 保存订单主表和细表
@@ -231,6 +337,28 @@ namespace THOK.WMS.DownloadWms.Bll
             return ds;
         }
 
+        #region 保存订单主表和细表（牡丹江浪潮）
+        /// <summary>保存订单主表和细表 2013-09-10 09:08:20 JJ</summary>
+        public DataSet OutBillDetail2(DataTable outBillDetaildr)
+        {
+            DataSet ds = this.GenerateEmptyTables();
+
+            foreach (DataRow row in outBillDetaildr.Rows)
+            {
+                DataTable prodt = FindProductCodeInfo(" CUSTOM_CODE='" + row["BRAND_CODE"].ToString() + "'");
+                DataRow detailrow = ds.Tables["WMS_OUT_BILLDETAILA"].NewRow();
+                detailrow["bill_no"] = row["ORDER_ID"].ToString().Trim();
+                detailrow["product_code"] = prodt.Rows[0]["product_code"];
+                detailrow["price"] = row["PRICE"] == "" ? 0 : row["PRICE"];
+                detailrow["bill_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
+                detailrow["allot_quantity"] = 0;
+                detailrow["unit_code"] = prodt.Rows[0]["unit_code"];
+                detailrow["real_quantity"] = 0;
+                ds.Tables["WMS_OUT_BILLDETAILA"].Rows.Add(detailrow);
+            }
+            return ds;
+        } 
+        #endregion
 
         /// <summary>
         /// 把数据添加到中间表。zxl   2012-09-14 
@@ -299,6 +427,32 @@ namespace THOK.WMS.DownloadWms.Bll
             }
         }
 
+        #region 把下载的数据添加到数据库（牡丹江浪潮）
+        /// <summary>把下载的数据添加到数据库（牡丹江浪潮） JJ</summary>
+        public void Insert2(DataSet masterds, DataSet detailds)
+        {
+            using (PersistentManager pm = new PersistentManager())
+            {
+                DownOutBillDao dao = new DownOutBillDao();
+                try
+                {
+                    if (masterds.Tables["WMS_OUT_BILLMASTER"].Rows.Count > 0)
+                    {
+                        dao.InsertOutBillMaster(masterds);
+                    }
+                    if (detailds.Tables["WMS_OUT_BILLDETAILA"].Rows.Count > 0)
+                    {
+                        dao.InsertOutBillDetail(detailds);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    throw new Exception(exp.Message);
+                }
+            }
+        }
+        #endregion
+
         /// <summary>
         /// 生成出库单号
         /// </summary>
@@ -326,7 +480,6 @@ namespace THOK.WMS.DownloadWms.Bll
                 }
             }
         }
-
 
         /// <summary>
         /// 创建虚拟表
@@ -364,15 +517,12 @@ namespace THOK.WMS.DownloadWms.Bll
             detailtable.Columns.Add("real_quantity");
             detailtable.Columns.Add("description");
 
-
             DataTable middletable = ds.Tables.Add("WMS_MIDDLE_OUT_BILLDETAIL");
             middletable.Columns.Add("bill_no");
             middletable.Columns.Add("bill_date");
             middletable.Columns.Add("in_bill_no");
             return ds;
         }
-
         #endregion
-
     }
 }
