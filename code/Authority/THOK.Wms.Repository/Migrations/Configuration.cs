@@ -3821,6 +3821,18 @@
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("EA86ECE1-BFE3-42CD-9071-A7131A9280FD")
+                 },
+                 new Module
+                 {
+                     ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4"),
+                     ModuleName = "任务管理",
+                     ShowOrder = 9,
+                     ModuleURL = "/TaskManage/",
+                     IndicateImage = "icon-son_SortWork",
+                     DeskTopImage = "image-son_SortWork",
+                     System = system,
+                     System_SystemID = system.SystemID,
+                     ParentModule_ModuleID = new Guid("EA86ECE1-BFE3-42CD-9071-A7131A9280FD")
                  }
              );
             context.SaveChanges();
@@ -3989,6 +4001,55 @@
                     ControlName = "batch",
                     IndicateImage = "icon-batch",
                     Module_ModuleID = new Guid("737DDF67-4ADA-4F57-A239-8CEAFC0E3C0C")
+                },
+                //任务管理
+                new Function()
+                {
+                    FunctionID = new Guid("E31D827C-8C53-41C1-8494-B906F6202B3E"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("D1816F10-9369-4122-A221-3B25A11101C6"),
+                    FunctionName = "增加",
+                    ControlName = "add",
+                    IndicateImage = "icon-add",
+                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("92333F92-0F11-4F41-8063-38D114EBD87D"),
+                    FunctionName = "修改",
+                    ControlName = "edit",
+                    IndicateImage = "icon-edit",
+                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
+                },
+                 new Function()
+                 {
+                     FunctionID = new Guid("83CAC4D0-1E93-4B51-B3C4-588FDD71EF02"),
+                     FunctionName = "删除",
+                     ControlName = "delete",
+                     IndicateImage = "icon-remove",
+                     Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
+                 },
+                 new Function()
+                 {
+                     FunctionID = new Guid("11B4CB5D-17CE-49C9-BD9E-29FC7D3E810E"),
+                     FunctionName = "打印",
+                     ControlName = "print",
+                     IndicateImage = "icon-print",
+                     Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
+                 },
+                new Function()
+                {
+                    FunctionID = new Guid("D396B38D-A06B-46B6-B275-DACFDE9491A7"),
+                    FunctionName = "帮助",
+                    ControlName = "help",
+                    IndicateImage = "icon-help",
+                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
                 }
             );
             context.SaveChanges();
