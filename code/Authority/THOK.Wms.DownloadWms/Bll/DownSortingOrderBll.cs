@@ -260,7 +260,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 masterrow["customer_name"] = row["CUST_NAME"].ToString().Trim();//客户名称
                 masterrow["quantity_sum"] = Convert.ToDecimal(row["QUANTITY_SUM"].ToString());//总数量
                 masterrow["amount_sum"] = Convert.ToDecimal(row["AMOUNT_SUM"].ToString());//总金额
-                masterrow["detail_num"] = Convert.ToInt32(row["DETAIL_SUM"].ToString());//明细数
+                masterrow["detail_num"] = Convert.ToInt32(row["DETAIL_NUM"].ToString());//明细数
                 masterrow["deliver_order"] = 0; //配车顺序
                 masterrow["DeliverDate"] = row["ORDER_DATE"].ToString();//配送日期
                 masterrow["description"] = row["DIST_BILL_ID"].ToString();
@@ -336,7 +336,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     detailrow["product_code"] = row["BRANDCODE"].ToString().Trim();
                     detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
                     detailrow["unit_code"] = list[0]["unit_code02"].ToString();
-                    detailrow["unit_name"] = row["BRAND_UNIT_NAME"].ToString().Trim(); ;
+                    detailrow["unit_name"] = row["BRAND_UNIT_NAME"].ToString().Trim();
                     detailrow["demand_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
                     detailrow["real_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
                     detailrow["price"] = Convert.ToDecimal(row["PRICE"]);
@@ -360,14 +360,12 @@ namespace THOK.WMS.DownloadWms.Bll
             DownSortingOrderDao dao = new DownSortingOrderDao();
             DataTable unitList = dao.GetUnitProduct();
             DataSet ds = this.GenerateEmptyTables();
-            DataTable unitDt = dao.GetUnit();
             try
             {
                 int i = 0;
                 foreach (DataRow row in detaildt)
                 {
                     DataRow[] list = unitList.Select(string.Format("unit_list_code='{0}'", row["BRANDCODE"].ToString().Trim()));
-                    DataRow[] unit = unitDt.Select(string.Format("unit_code='{0}'", list[0]["unit_code02"].ToString()));
                     DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();
                     i++;
                     string newcode = i.ToString();
@@ -380,7 +378,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     detailrow["product_code"] = row["BRAND_CODE"].ToString().Trim();
                     detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
                     detailrow["unit_code"] = list[0]["unit_code02"].ToString();
-                    detailrow["unit_name"] = unit[0]["unit_name"].ToString();
+                    detailrow["unit_name"] = row["BRAND_UNIT_NAME"].ToString().Trim();
                     detailrow["demand_quantity"] = Convert.ToDecimal(row["QTY_DEMAND"]);
                     detailrow["real_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
                     detailrow["price"] = Convert.ToDecimal(row["PRICE"]);
