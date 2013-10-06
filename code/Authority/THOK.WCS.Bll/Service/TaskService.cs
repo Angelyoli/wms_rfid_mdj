@@ -994,24 +994,24 @@ namespace THOK.WCS.Bll.Service
         }
 
 
-        public bool CreateNewTaskForEmptyPalletStack(int positionID)
+        public bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName)
         {
             string palletCode = "00002A";
             int palletCount = 10;
             var position = PositionRepository.GetQueryable()
-                .Where(i=>i.ID == positionID &&(i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04"))
+                .Where(i=>(i.ID == positionID || i.PositionName == positionName) &&(i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04"))
                 .FirstOrDefault();
 
             var task = TaskRepository.GetQueryable()
-                .Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == positionID).FirstOrDefault();
+                .Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == (position != null ? position.ID : 0)).FirstOrDefault();
 
             if (position != null && task == null)
             {
                 var positionQuery = PositionRepository.GetQueryable()
                     .Where(i => i.SRMName == position.SRMName
-                        && i.AbleStockInPallet && i.ID != positionID);
+                        && i.AbleStockInPallet && i.ID != position.ID);
                 var cellPositionQuery = CellPositionRepository.GetQueryable()
-                    .Where(i => i.StockOutPositionID != positionID
+                    .Where(i => i.StockOutPositionID != position.ID
                         && positionQuery.Contains(i.StockInPosition));
                 var cellQuery = CellRepository.GetQueryable()
                     .Where(i => i.IsSingle == "1"
@@ -1065,9 +1065,9 @@ namespace THOK.WCS.Bll.Service
                         newTask.ProductName = "空托盘";
                         newTask.OriginStorageCode = "";
                         newTask.TargetStorageCode = cell.CellCode;                        
-                        newTask.OriginPositionID = positionID;
+                        newTask.OriginPositionID = position.ID;
                         newTask.TargetPositionID = cellPosition.StockInPositionID;
-                        newTask.CurrentPositionID = positionID;
+                        newTask.CurrentPositionID = position.ID;
                         newTask.CurrentPositionState = "02";
                         newTask.State = "01";
                         newTask.TagState = "01";//拟不使用
@@ -1088,7 +1088,7 @@ namespace THOK.WCS.Bll.Service
             return false;
         }
 
-        public bool CreateNewTaskForEmptyPalletSupply(int positionID)
+        public bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName)
         {
             string palletCode = "00002A";
             int palletCount = 10;
@@ -1111,10 +1111,10 @@ namespace THOK.WCS.Bll.Service
 
             var storage = storageQuery.FirstOrDefault();
             var position = PositionRepository.GetQueryable()
-                .Where(i => i.ID == positionID).FirstOrDefault();
+                .Where(i => (i.ID == positionID || i.PositionName == positionName)).FirstOrDefault();
 
             var positionCell = CellPositionRepository.GetQueryable()
-                .Where(i => i.StockInPositionID == positionID).FirstOrDefault();
+                .Where(i => i.StockInPositionID == (position!=null?position.ID:0)).FirstOrDefault();
 
             var task = TaskRepository.GetQueryable()
                 .Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
@@ -1144,7 +1144,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.OriginStorageCode = storage.CellCode;
                         newTask.TargetStorageCode = positionCell != null ? positionCell.CellCode:"";
                         newTask.OriginPositionID = cellPosition.StockOutPositionID;
-                        newTask.TargetPositionID = positionID;
+                        newTask.TargetPositionID = position.ID;
                         newTask.CurrentPositionID = cellPosition.StockOutPositionID;
                         newTask.CurrentPositionState = "02";
                         newTask.State = "01";
