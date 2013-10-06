@@ -24,9 +24,9 @@ namespace THOK.WCS.Bll.Interfaces
 
         bool CreateNewTaskFromCheckBill(string billNo);
 
-        bool CreateNewTaskForEmptyPalletStack(int positionID);
+        bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName);
 
-        bool CreateNewTaskForEmptyPalletSupply(int positionID);
+        bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName);
 
         bool CreateNewTaskForMoveBackRemain(int taskID);
 
