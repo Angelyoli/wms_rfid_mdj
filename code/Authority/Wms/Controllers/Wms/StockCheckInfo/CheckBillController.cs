@@ -36,6 +36,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             ViewBag.hasAntiTrial = true;
             ViewBag.hasAudit = true;
             ViewBag.hasConfirm = true;
+            ViewBag.hasTask = true;
             ViewBag.ModuleID = moduleID;
             return View();
         }
@@ -162,7 +163,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
-        #region /MoveBillMaster/CreateExcelToClient/
+        // GET: /MoveBillMaster/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
@@ -173,8 +174,6 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             ep.HeadTitle1 = "盘点单明细";
             return PrintService.Print(ep);
         }
-        #endregion
-
 
         public ActionResult CheckBillMasterHistory(DateTime datetime)
         {
@@ -184,6 +183,12 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             string msg = bResult ? "迁移成功" : "迁移失败";
             if (msg != "迁移成功") result = "原因：" + strResult;
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
+        }
+
+        // GET: /MoveBillMaster/CheckBillTask/
+        public ActionResult CheckBillTask()
+        {
+            return null;
         }
     }
 }

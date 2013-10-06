@@ -972,6 +972,21 @@ namespace THOK.WCS.Bll.Service
         }
         #endregion
 
+        public bool CheckBillTask(string billNo, out string errorInfo)
+        {
+            bool result = true;
+            errorInfo = string.Empty;
+            var taskQuery = TaskRepository.GetQueryable().Where(t => t.State == "02" && t.State=="03");//02:已到达 03:拣选中
+            if (taskQuery == null)
+            {
+
+            }
+            else
+            {
+                errorInfo = "当前有任务未执行完毕！";
+            }
+            return true;
+        }
 
         public bool CreateNewTaskFromInBill(string billNo)
         {

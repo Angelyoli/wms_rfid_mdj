@@ -2380,6 +2380,14 @@
                     ControlName = "migration",
                     IndicateImage = "icon-reload",
                     Module_ModuleID = new Guid("FA344F88-08AD-4FDA-8F45-EAD3BB471104")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("87CCA685-5A77-47CC-B4A2-000E793DA8C9"),
+                    FunctionName = "作业",
+                    ControlName = "task",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("FA344F88-08AD-4FDA-8F45-EAD3BB471104")
                 }
                 );
             context.SaveChanges();
