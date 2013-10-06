@@ -27,9 +27,9 @@ namespace Wms.Controllers.WCS
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateNewTaskForMoveBackRemain(int positionID)
+        public ActionResult CreateNewTaskForMoveBackRemain(int taskID)
         {
-            bool bResult = TaskService.CreateNewTaskForMoveBackRemain(positionID);
+            bool bResult = TaskService.CreateNewTaskForMoveBackRemain(taskID);
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
