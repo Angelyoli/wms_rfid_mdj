@@ -32,6 +32,10 @@ namespace THOK.WMS.DownloadWms.Dao
            dbTypeName = this.SalesSystemDao();
            switch (dbTypeName)
            {
+               case "mdjyc-db2"://Äµµ¤½­ÑÌ²Ýdb2
+                   sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,SUBSTR(A.ORDER_ID,3,8) AS ORDERID FROM V_WMS_SORT_ORDER A
+                                        LEFT JOIN V_WMS_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
+                   break;
                case "gxyc-db2"://¹ãÎ÷ÑÌ²Ýdb2
                    sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,SUBSTR(A.ORDER_ID,3,8) AS ORDERID FROM V_WMS_SORT_ORDER A
                                         LEFT JOIN V_WMS_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
@@ -59,6 +63,11 @@ namespace THOK.WMS.DownloadWms.Dao
            dbTypeName = this.SalesSystemDao();
            switch (dbTypeName)
            {
+               case "mdjyc-db2"://Äµµ¤½­ÑÌ²Ýdb2
+                   sql = string.Format(@"SELECT A.* ,SUBSTR(A.ORDER_ID,3,8) AS ORDERID,B.BRAND_N AS BRANDCODE FROM V_WMS_SORT_ORDER_DETAIL A
+                                        LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE
+                                        LEFT JOIN V_WMS_SORT_ORDER C ON A.ORDER_ID=C.ORDER_ID WHERE {0} ", orderid);
+                   break;
                case "gxyc-db2"://¹ãÎ÷ÑÌ²Ýdb2
                    sql = string.Format(@"SELECT A.* ,SUBSTR(A.ORDER_ID,3,8) AS ORDERID,B.BRAND_N AS BRANDCODE FROM V_WMS_SORT_ORDER_DETAIL A
                                         LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE

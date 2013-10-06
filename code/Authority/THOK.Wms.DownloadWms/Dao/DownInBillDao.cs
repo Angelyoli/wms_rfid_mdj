@@ -50,6 +50,9 @@ namespace THOK.WMS.DownloadWms.Dao
             dbTypeName = this.SalesSystemDao();
             switch (dbTypeName)
             {
+                case "mdjyc-db2"://Äµµ¤½­ÑÌ²Ýdb2
+                    sql = string.Format("SELECT A.*,B.BRAND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
+                    break;
                 case "gxyc-db2"://¹ãÎ÷ÑÌ²Ýdb2
                     sql = string.Format("SELECT A.*,B.BRAND_N AS BRANDCODE FROM V_WMS_IN_ORDER_DETAIL A LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE WHERE {0} ", inBillNoList);
                     break;

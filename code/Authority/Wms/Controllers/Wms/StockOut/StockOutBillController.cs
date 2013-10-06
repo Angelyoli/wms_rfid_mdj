@@ -197,8 +197,14 @@ namespace Authority.Controllers.Wms.StockOut
                     pbll.DownProductInfos();//创联
                     custBll.DownCustomerInfos();//创联
                 }
-                bResult = ibll.GetOutBills(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
-
+                if (!SystemParameterService.SetSystemParameter())
+                {
+                    bResult = ibll.GetOutBill2(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
+                }
+                else
+                {
+                    bResult = ibll.GetOutBills(beginDate, endDate, this.User.Identity.Name.ToString(), out errorInfo, wareCode, billType);
+                }
             }
             catch (Exception e)
             {

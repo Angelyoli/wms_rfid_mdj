@@ -47,7 +47,6 @@ namespace THOK.WMS.DownloadWms.Bll
                     if (masterdr.Length > 0 && detaildt.Rows.Count > 0)
                     {
                         DataSet masterds = this.InBillMaster(masterdr, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
-
                         DataSet detailds = this.InBillDetail(detaildt);
                         this.Insert(masterds, detailds);
                         tag = true;
@@ -96,7 +95,6 @@ namespace THOK.WMS.DownloadWms.Bll
                     if (masterdr.Length > 0 && detaildt.Rows.Count > 0)
                     {
                         DataSet masterds = this.InBillMaster(masterdr, emply.Rows[0]["employee_id"].ToString(), wareCode, billtype);
-
                         DataSet detailds = this.InBillDetail(detaildt);
                         this.Insert(masterds, detailds);
                         tag = true;
@@ -290,7 +288,6 @@ namespace THOK.WMS.DownloadWms.Bll
             detailtable.Columns.Add("real_quantity");
             detailtable.Columns.Add("description");
 
-
             DataTable middletable = ds.Tables.Add("WMS_MIDDLE_IN_BILLDETAIL");
             middletable.Columns.Add("bill_no");
             middletable.Columns.Add("bill_date");
@@ -298,7 +295,5 @@ namespace THOK.WMS.DownloadWms.Bll
         }
 
         #endregion
-
-        
     }
 }

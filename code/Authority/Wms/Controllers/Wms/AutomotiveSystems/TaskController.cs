@@ -64,9 +64,6 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
                     case "getRfidInfo":
                         TaskService.SearchRfidInfo(taskParameter.RfidId, result);
                         break;
-                    case "getWarehouseInBillProgressFeedback":
-                        TaskService.WarehouseInBillProgressFeedback(taskParameter.BillDetails);
-                        break;
                     default:
                         result.IsSuccess = false;
                         result.Message = "调用了未定义的方法！";
