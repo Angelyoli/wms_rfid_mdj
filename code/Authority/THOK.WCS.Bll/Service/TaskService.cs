@@ -1017,10 +1017,12 @@ namespace THOK.WCS.Bll.Service
                 .Where(i=>(i.ID == positionID || i.PositionName == positionName) &&(i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04"))
                 .FirstOrDefault();
 
-            var task = TaskRepository.GetQueryable()
-                .Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == (position != null ? position.ID : 0)).FirstOrDefault();
+            if (position == null) return false;
 
-            if (position != null && task == null)
+            var task = TaskRepository.GetQueryable()
+                .Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID ==  position.ID).FirstOrDefault();
+
+            if (position != null && position.HasGoods && task == null)
             {
                 var positionQuery = PositionRepository.GetQueryable()
                     .Where(i => i.SRMName == position.SRMName
@@ -1128,8 +1130,10 @@ namespace THOK.WCS.Bll.Service
             var position = PositionRepository.GetQueryable()
                 .Where(i => (i.ID == positionID || i.PositionName == positionName)).FirstOrDefault();
 
+            if (position == null) return false;
+
             var positionCell = CellPositionRepository.GetQueryable()
-                .Where(i => i.StockInPositionID == (position!=null?position.ID:0)).FirstOrDefault();
+                .Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
 
             var task = TaskRepository.GetQueryable()
                 .Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
@@ -1509,6 +1513,10 @@ namespace THOK.WCS.Bll.Service
                     cell.Storages.FirstOrDefault().StorageSequence = 0;
                     cell.Storages.FirstOrDefault().StorageTime = DateTime.Now;
                     CellRepository.SaveChanges();
+                }
+                else
+                {
+                    return false;
                 }
             }
             return true;

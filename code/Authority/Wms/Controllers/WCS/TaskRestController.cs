@@ -15,15 +15,15 @@ namespace Wms.Controllers.WCS
         [Dependency]
         public ITaskService TaskService { get; set; }
 
-        public ActionResult CreateNewTaskForEmptyPalletStack(int positionID,string positionName)
+        public ActionResult CreateNewTaskForEmptyPalletStack(string positionName)
         {
-            bool bResult = TaskService.CreateNewTaskForEmptyPalletStack(positionID,positionName);
+            bool bResult = TaskService.CreateNewTaskForEmptyPalletStack(0,positionName);
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateNewTaskForEmptyPalletSupply(int positionID,string positionName)
+        public ActionResult CreateNewTaskForEmptyPalletSupply(string positionName)
         {
-            bool bResult = TaskService.CreateNewTaskForEmptyPalletSupply(positionID,positionName);
+            bool bResult = TaskService.CreateNewTaskForEmptyPalletSupply(0,positionName);
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
