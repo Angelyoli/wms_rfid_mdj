@@ -27,6 +27,7 @@ namespace Wms.Controllers.WCS
             ViewBag.hasDelete = true;
             ViewBag.hasPrint = true;
             ViewBag.hasHelp = true;
+            ViewBag.hasEmpty = true;
             ViewBag.ModuleID = moduleID;
             return View();
         }
@@ -85,6 +86,14 @@ namespace Wms.Controllers.WCS
             bool bResult = TaskService.Delete(taskId, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+        // GET: /TaskManage/Clear/
+        public ActionResult Clear()
+        {
+            string errorInfo = string.Empty;
+            bool bResult = TaskService.ClearTask(out errorInfo);
+            string msg = bResult ? "删除成功" : "删除失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

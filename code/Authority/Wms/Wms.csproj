@@ -2365,7 +2365,6 @@
     <Content Include="Views\SystemEventLog\_EmptyPartial.cshtml" />
     <Content Include="Views\SystemEventLog\_PrintPartial.cshtml" />
     <Content Include="Views\SystemEventLog\_DeletePartial.cshtml" />
-    <Content Include="Views\Shared\_EmptyPartial.cshtml" />
     <Content Include="Views\Home\_ProductWarningPartial.cshtml" />
     <Content Include="Views\Shared\_EmptyPartial.cshtml">
       <SubType>Code</SubType>
@@ -2411,6 +2410,7 @@
     <Content Include="Views\TaskManage\_ProductPartial.cshtml" />
     <Content Include="Views\TaskManage\_CellPartial.cshtml" />
     <Content Include="Views\TaskManage\_PositionPartial.cshtml" />
+    <Content Include="Views\TaskManage\_EmptyPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

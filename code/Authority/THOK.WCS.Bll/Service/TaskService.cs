@@ -1467,49 +1467,59 @@ namespace THOK.WCS.Bll.Service
             return true;
         }
 
-        private bool AddTaskHistory(Task task)
+        public bool ClearTask(out string errorInfo)
         {
-            TaskHistory taskHistory = new TaskHistory();
-            taskHistory.TaskID = task.ID;
-            taskHistory.TaskType = task.TaskType;
-            taskHistory.TaskLevel = task.TaskLevel;
-            taskHistory.PathID = task.PathID;
-            taskHistory.ProductCode = task.ProductCode;
-            taskHistory.ProductName = task.ProductName;
-            taskHistory.OriginStorageCode = task.OriginStorageCode;
-            taskHistory.TargetStorageCode = task.TargetStorageCode;
-            taskHistory.OriginPositionID = task.OriginPositionID;
-            taskHistory.TargetPositionID = task.TargetPositionID;
-            taskHistory.CurrentPositionID = task.CurrentPositionID;
-            taskHistory.CurrentPositionState = task.CurrentPositionState;
-            taskHistory.State = task.State;
-            taskHistory.TagState = task.TagState;
-            taskHistory.Quantity = task.Quantity;
-            taskHistory.TaskQuantity = task.TaskQuantity;
-            taskHistory.OperateQuantity = task.OperateQuantity;
-            taskHistory.OrderID = task.OrderID;
-            taskHistory.OrderType = task.OrderType;
-            taskHistory.AllotID = task.AllotID;
-            taskHistory.DownloadState = task.DownloadState;
-            taskHistory.ClearTime = System.DateTime.Now;
-            try
+            bool result = false;
+            errorInfo = string.Empty;
+            var tasks = TaskRepository.GetQueryable().Where(a => (a.CurrentPositionID == a.OriginPositionID 
+                                                               || a.CurrentPositionID == a.TargetPositionID));
+                                                              //&& (a.State == "01" && a.State == "04"));
+            if (tasks != null)
             {
-                using (var scope = new System.Transactions.TransactionScope())
+                TaskHistory taskHistory = null;
+                foreach (var task in tasks)
                 {
-                    TaskHistoryRepository.Add(taskHistory);
-                    TaskHistoryRepository.SaveChanges();
+                    taskHistory = new TaskHistory();
+                    taskHistory.TaskID = task.ID;
+                    taskHistory.TaskType = task.TaskType;
+                    taskHistory.TaskLevel = task.TaskLevel;
+                    taskHistory.PathID = task.PathID;
+                    taskHistory.ProductCode = task.ProductCode;
+                    taskHistory.ProductName = task.ProductName;
+                    taskHistory.OriginStorageCode = task.OriginStorageCode;
+                    taskHistory.TargetStorageCode = task.TargetStorageCode;
+                    taskHistory.OriginPositionID = task.OriginPositionID;
+                    taskHistory.TargetPositionID = task.TargetPositionID;
+                    taskHistory.CurrentPositionID = task.CurrentPositionID;
+                    taskHistory.CurrentPositionState = task.CurrentPositionState;
+                    taskHistory.State = task.State;
+                    taskHistory.TagState = task.TagState;
+                    taskHistory.Quantity = task.Quantity;
+                    taskHistory.TaskQuantity = task.TaskQuantity;
+                    taskHistory.OperateQuantity = task.OperateQuantity;
+                    taskHistory.OrderID = task.OrderID;
+                    taskHistory.OrderType = task.OrderType;
+                    taskHistory.AllotID = task.AllotID;
+                    taskHistory.DownloadState = task.DownloadState;
+                    taskHistory.ClearTime = System.DateTime.Now;
+                    using (var scope = new System.Transactions.TransactionScope())
+                    {
+                        TaskHistoryRepository.Add(taskHistory);
+                        TaskHistoryRepository.SaveChanges();
 
-                    TaskRepository.Delete(task);
-                    TaskRepository.SaveChanges();
+                        TaskRepository.Delete(task);
+                        TaskRepository.SaveChanges();
 
-                    scope.Complete();
+                        scope.Complete();
+                        result = true;
+                    }
                 }
             }
-            catch (Exception)
+            else
             {
-                return false;
+                errorInfo = "当前有任务未执行完毕！";
             }
-            return true;
+            return result;
         }
     }
 }

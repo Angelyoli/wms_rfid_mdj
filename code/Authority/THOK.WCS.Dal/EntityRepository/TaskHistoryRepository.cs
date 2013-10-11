@@ -6,6 +6,5 @@ namespace THOK.WCS.Dal.EntityRepository
 {
     public class TaskHistoryRepository : RepositoryBase<TaskHistory>, ITaskHistoryRepository
     {
-
     }
 }
