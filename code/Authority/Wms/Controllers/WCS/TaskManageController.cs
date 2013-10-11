@@ -92,7 +92,7 @@ namespace Wms.Controllers.WCS
         {
             string errorInfo = string.Empty;
             bool bResult = TaskService.ClearTask(out errorInfo);
-            string msg = bResult ? "删除成功" : "删除失败";
+            string msg = bResult ? "清空成功" : "清空失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
     }
