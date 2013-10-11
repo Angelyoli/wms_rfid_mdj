@@ -549,133 +549,91 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-        
+
         public bool InBillTask(string billNo, out string errorInfo)
         {
-            bool result = true;
+            bool result = false;
             errorInfo = string.Empty;
-            try
-            {
-                //查询“起始位置参数”
-                var originPositionSystem = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "InBillPositionId");
-                if (originPositionSystem != null)
-                {
-                    //入库分配信息
-                    var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
-                    if (inBillAllot.Any())
-                    {
-                        foreach (var inItem in inBillAllot.ToArray())
-                        {
-                            //根据“入库货位编码”查找“目标货位位置”
-                            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inItem.CellCode);
-                            if (targetCellPosition != null)
-                            {
-                                //根据“起始位置参数”查找“起始位置信息”
-                                int paramterValue = Convert.ToInt32(originPositionSystem.ParameterValue);
-                                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramterValue);
-                                if (originPosition != null)
-                                {
-                                    //根据“货位位置中的入库位置ID”查找“目标位置信息”
-                                    var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
-                                    if (targetPosition != null)
-                                    {
-                                        //根据“入库（目标和起始）位置信息的区域ID”查找“路径信息”
-                                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
-                                        if (path != null)
-                                        {
-                                            var inTask = new Task();
-                                            inTask.TaskType = "01";
-                                            inTask.TaskLevel = 0;
-                                            inTask.PathID = path.ID;
-                                            inTask.ProductCode = inItem.Product.ProductCode;
-                                            inTask.ProductName = inItem.Product.ProductName;
-                                            inTask.OriginStorageCode = inItem.CellCode;
-                                            inTask.TargetStorageCode = inItem.CellCode;
-                                            inTask.OriginPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
-                                            inTask.TargetPositionID = targetPosition.ID;
-                                            inTask.CurrentPositionID = Convert.ToInt32(originPositionSystem.ParameterValue);
-                                            inTask.CurrentPositionState = "01";
-                                            inTask.State = "01";
-                                            inTask.TagState = "01";
-                                            inTask.Quantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
-                                            inTask.TaskQuantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
-                                            inTask.OperateQuantity = 0;
-                                            inTask.OrderID = inItem.BillNo;
-                                            inTask.OrderType = "01";
-                                            inTask.AllotID = inItem.ID;
-                                            inTask.DownloadState = "0";
-                                            inTask.StorageSequence = 0;
-                                            TaskRepository.Add(inTask);
-                                        }
-                                        else
-                                        {
-                                            errorInfo = "未找到【路径信息】起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName;
-                                            result = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        errorInfo = "未找到【位置信息】目标货位位置：" + targetCellPosition.StockInPosition.PositionName;
-                                        result = false;
-                                    }
-                                }
-                                else
-                                {
-                                    errorInfo = "未找到【位置信息】的起始位置！";
-                                    result = false;
-                                }
-                            }
-                            else
-                            {
-                                errorInfo = "未找到【货位位置】入库货位：" + inItem.Cell.CellName;
-                                result = false;
-                            }
-                        }
-                        using (var scope = new System.Transactions.TransactionScope())
-                        {
-                            try
-                            {
-                                /* 作业生成后 修改入库订单状态=5 
-                                 * Status == 1:已录入 2:已审核 3:已分配 4:已确认 5:执行中 6:已结单 */
-                                var inBillMaster = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && (i.Status == "4" || i.Status == "5"));
-                                if (inBillMaster != null)
-                                {
-                                    inBillMaster.Status = "5";
-                                    InBillMasterRepository.SaveChanges();
 
-                                    TaskRepository.SaveChanges();
-                                }
-                                else
-                                {
-                                    errorInfo = "未获取订单号";
-                                    result = false;
-                                }
-                                if (result == true)
-                                    scope.Complete();
-                            }
-                            catch (Exception ex)
-                            {
-                                errorInfo = "事务异常：" + ex.Message;
-                                result = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        errorInfo = "当前选择订单没有分配数据，请重新选择！";
-                    }
-                }
-                else
-                {
-                    errorInfo = "请检查【系统参数】，未找到起始位置InBillPosition！";
-                    result = false;
-                }
-            }
-            catch (Exception e)
+            var originSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "InBillPositionId"); //查询“起始位置参数”
+            if (originSystemParam == null) { errorInfo = "请检查【系统参数】，未找到起始位置InBillPosition！"; return false; }
+            
+            int paramValue = Convert.ToInt32(originSystemParam.ParameterValue);
+            if (paramValue == 0) { errorInfo = "请检查【系统参数】，未找到起始位置InBillPosition的值！"; return false; }
+
+            var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue); //根据“起始位置参数”查找“起始位置信息”
+            if (originPosition == null) { errorInfo = "未找到【位置信息】的起始位置！"; return false; }
+
+            var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
+            if (originCellPosition == null) { errorInfo = "未找到【货位位置】起始货位：" + originCellPosition.StockInPositionID; return false; }
+
+            var originCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == originCellPosition.CellCode);
+            if (originCell == null) { errorInfo = "未找到【货位信息】起始货位：" + originCell.CellCode; return false; }
+
+            var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo); //入库分配信息
+            if (inBillAllot.Any())
             {
-                errorInfo = e.Message;
-                result = false;
+                try
+                {
+                    foreach (var inItem in inBillAllot.ToArray())
+                    {
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inItem.CellCode); //根据“入库货位编码”查找“目标货位位置”
+                        if (targetCellPosition == null) { errorInfo = "未找到【货位位置】入库货位：" + inItem.Cell.CellName; return false; }
+
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID); //根据“货位位置中的入库位置ID”查找“目标位置信息”
+                        if (targetPosition == null) { errorInfo = "未找到【位置信息】目标货位位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
+
+                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID); //根据“入库（目标和起始）位置信息的区域ID”查找“路径信息”
+                        if (path == null) { errorInfo = "未找到【路径信息】起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName; return false; }
+
+                        var inTask = new Task();
+                        inTask.TaskType = "01";
+                        inTask.TaskLevel = 0;
+                        inTask.PathID = path.ID;
+                        inTask.ProductCode = inItem.Product.ProductCode;
+                        inTask.ProductName = inItem.Product.ProductName;
+                        inTask.OriginStorageCode = originCell.CellCode;
+                        inTask.TargetStorageCode = inItem.CellCode;
+                        inTask.OriginPositionID = Convert.ToInt32(originSystemParam.ParameterValue);
+                        inTask.TargetPositionID = targetPosition.ID;
+                        inTask.CurrentPositionID = Convert.ToInt32(originSystemParam.ParameterValue);
+                        inTask.CurrentPositionState = "01";
+                        inTask.State = "01";
+                        inTask.TagState = "01";
+                        inTask.Quantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
+                        inTask.TaskQuantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
+                        inTask.OperateQuantity = 0;
+                        inTask.OrderID = inItem.BillNo;
+                        inTask.OrderType = "01";
+                        inTask.AllotID = inItem.ID;
+                        inTask.DownloadState = "0";
+                        inTask.StorageSequence = 0;
+                        TaskRepository.Add(inTask);
+                    }
+                    using (var scope = new System.Transactions.TransactionScope())
+                    {
+                        try
+                        {
+                            /* 作业生成后 修改入库订单状态=5 
+                             * Status == 1:已录入 2:已审核 3:已分配 4:已确认 5:执行中 6:已结单 */
+                            var inBillMaster = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && (i.Status == "4" || i.Status == "5"));
+                            if (inBillMaster != null)
+                            {
+                                inBillMaster.Status = "5";
+                                InBillMasterRepository.SaveChanges();
+                                TaskRepository.SaveChanges();
+
+                                scope.Complete();
+                                result = true;
+                            }
+                            else { errorInfo = "未获取订单号"; }
+                        }
+                        catch (Exception ex) { errorInfo = "事务异常：" + ex.Message; }
+                    }
+                }
+                catch (Exception e) { errorInfo = e.Message; }
             }
+            else { errorInfo = "当前选择订单没有分配数据，请重新选择！"; }
             return result;
         }
         public bool OutBillTask(string billNo, out string errorInfo)
@@ -729,7 +687,7 @@ namespace THOK.WCS.Bll.Service
                                             outTask.TaskQuantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
                                             outTask.OperateQuantity = 0;
                                             outTask.OrderID = outItem.BillNo;
-                                            outTask.OrderType = "02";
+                                            outTask.OrderType = "03";
                                             outTask.AllotID = outItem.ID;
                                             outTask.DownloadState = "0";
                                             outTask.StorageSequence = outItem.Storage.StorageSequence;
@@ -855,7 +813,7 @@ namespace THOK.WCS.Bll.Service
                                             moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
                                             moveTask.OperateQuantity = Convert.ToInt32(moveItem.RealQuantity);
                                             moveTask.OrderID = moveItem.BillNo;
-                                            moveTask.OrderType = "03";
+                                            moveTask.OrderType = "02";
                                             moveTask.AllotID = moveItem.ID;
                                             moveTask.DownloadState = "0";
                                             moveTask.StorageSequence = moveItem.OutStorage.StorageSequence;
@@ -949,11 +907,11 @@ namespace THOK.WCS.Bll.Service
                     {
                         foreach (var checkItem in checkQuery.ToArray())
                         {
-                            //根据“移出的货位信息的编码”查找“起始的位置信息”
+                            //根据“起始货位”查找起始“位置信息”
                             var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == checkItem.CellCode);
                             if (originCellPosition != null)
                             {
-                                //根据“起始位置的参数”查找“起始的位置信息”
+                                //根据“货位出库位置ID”查找“起始位置信息”
                                 var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                                 if (originPosition != null)
                                 {
