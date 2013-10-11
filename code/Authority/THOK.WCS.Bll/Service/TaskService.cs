@@ -559,7 +559,7 @@ namespace THOK.WCS.Bll.Service
                 if (originPositionSystem != null)
                 {
                     //入库分配信息
-                    var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
+                    var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo && i.Status == "0");
                     if (inBillAllot.Any())
                     {
                         foreach (var inItem in inBillAllot.ToArray())
@@ -635,7 +635,7 @@ namespace THOK.WCS.Bll.Service
                             {
                                 /* 作业生成后 修改入库订单状态=5 
                                  * Status == 1:已录入 2:已审核 3:已分配 4:已确认 5:执行中 6:已结单 */
-                                var inBillMaster = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "4");
+                                var inBillMaster = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && (i.Status == "4" || i.Status == "5"));
                                 if (inBillMaster != null)
                                 {
                                     inBillMaster.Status = "5";
@@ -688,7 +688,7 @@ namespace THOK.WCS.Bll.Service
                 {
                     int paramterValue = Convert.ToInt32(originPositionSystem.ParameterValue);
                     //出库分配信息
-                    var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
+                    var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo && i.Status == "0");
                     if (outBillAllot.Any())
                     {
                         foreach (var outItem in outBillAllot.ToArray())
@@ -810,7 +810,7 @@ namespace THOK.WCS.Bll.Service
             errorInfo = string.Empty;
             try
             {
-                var moveQuery = MoveBillDetailRepository.GetQueryable().Where(i => i.BillNo == billNo);
+                var moveQuery = MoveBillDetailRepository.GetQueryable().Where(i => i.BillNo == billNo && i.Status == "0");
                 if (moveQuery.Any())
                 {
                     foreach (var moveItem in moveQuery.ToArray())
