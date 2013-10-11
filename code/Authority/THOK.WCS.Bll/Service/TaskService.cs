@@ -10,6 +10,8 @@ using THOK.Wms.DbModel;
 using THOK.WCS.DbModel;
 using THOK.Authority.Dal.Interfaces;
 using THOK.WCS.Bll.Models;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace THOK.WCS.Bll.Service
 {
@@ -1474,9 +1476,9 @@ namespace THOK.WCS.Bll.Service
         {
             bool result = false;
             errorInfo = string.Empty;
-            var tasks = TaskRepository.GetQueryable().Where(a => ((a.CurrentPositionID == a.OriginPositionID && (a.State == "01" || a.State == "04"))
-                                                               || (a.CurrentPositionID == a.TargetPositionID)&& (a.State == "01" || a.State == "04")));
-            if (tasks.Any())
+            var tasks = TaskRepository.GetQueryable();
+            if (tasks.All(a => (a.CurrentPositionID == a.OriginPositionID)
+                            || (a.CurrentPositionID == a.TargetPositionID)))
             {
                 TaskHistory taskHistory = null;
                 foreach (var task in tasks)
@@ -1504,22 +1506,33 @@ namespace THOK.WCS.Bll.Service
                     taskHistory.AllotID = task.AllotID;
                     taskHistory.DownloadState = task.DownloadState;
                     taskHistory.ClearTime = System.DateTime.Now;
-                    using (var scope = new System.Transactions.TransactionScope())
+                    
+                    TaskHistoryRepository.Add(taskHistory);
+                }
+                using (var scope = new System.Transactions.TransactionScope())
+                {
+                    TaskHistoryRepository.SaveChanges();
+
+                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
+                    SqlConnection con = new SqlConnection(constr);
+                    string sql = "truncate table wcs_task";
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    try
                     {
-                        TaskHistoryRepository.Add(taskHistory);
-                        TaskHistoryRepository.SaveChanges();
-
-                        TaskRepository.Delete(task);
-                        TaskRepository.SaveChanges();
-
-                        scope.Complete();
-                        result = true;
+                        con.Open();
+                        int i = (int)cmd.ExecuteNonQuery();
+                        if (i > 0) result = true; else result = false;
                     }
+                    catch (Exception ex) { errorInfo = ex.Message; }
+                    finally { con.Close(); }
+
+                    scope.Complete();
+                    result = true;
                 }
             }
             else
             {
-                errorInfo = "当前有任务未执行完毕！";
+                errorInfo = "当前有未执行完毕的任务！";
             }
             return result;
         }
