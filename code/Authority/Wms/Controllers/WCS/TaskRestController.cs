@@ -44,5 +44,17 @@ namespace Wms.Controllers.WCS
             bool bResult = TaskService.FinishTask(taskID, orderType, orderID, allotID,originStorageCode,targetStorageCode);
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult FinishStockOutTask(int taskID,int stockOutQuantity)
+        {
+            int iResult = TaskService.FinishStockOutTask(taskID, stockOutQuantity);
+            return Json(new RestReturn() { IsSuccess = true, Message = "todo", Data = iResult }, "application/json", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FinishInventoryTask(int taskID,int realQuantity)
+        {
+            int iResult = TaskService.FinishInventoryTask(taskID, realQuantity);
+            return Json(new RestReturn() { IsSuccess = true, Message = "todo" , Data = iResult}, "application/json", JsonRequestBehavior.AllowGet);
+        }
     }
 }
