@@ -9,6 +9,8 @@ using THOK.Common.WebUtil;
 using THOK.Security;
 using THOK.Common.NPOI.Models;
 using THOK.Common.NPOI.Service;
+using THOK.WCS.Bll.Service;
+using THOK.WCS.Bll.Interfaces;
 
 namespace Authority.Controllers.Wms.StockCheckInfo
 {
@@ -21,6 +23,9 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         public ICheckBillDetailService CheckBillDetailService { get; set; }
         [Dependency]
         public ICheckBillMasterHistoryService CheckBillMasterHistoryService { get; set; }
+        [Dependency]
+        public ITaskService TaskService { get; set; }
+
         //
         // GET: /CheckBill/
 
@@ -163,7 +168,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }
 
-        // GET: /MoveBillMaster/CreateExcelToClient/
+        // GET: /CheckBill/CreateExcelToClient/
         public FileStreamResult CreateExcelToClient()
         {
             int page = 0, rows = 0;
@@ -185,10 +190,13 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, result), "text", JsonRequestBehavior.AllowGet);
         }
 
-        // GET: /MoveBillMaster/CheckBillTask/
-        public ActionResult CheckBillTask()
+        // GET: /CheckBill/CheckBillTask/
+        public ActionResult CheckBillTask(string billNo)
         {
-            return null;
+            string strResult = string.Empty;
+            bool bResult = TaskService.CheckBillTask(billNo, out strResult);
+            string msg = bResult ? "作业成功" : "作业失败";
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
     }
 }

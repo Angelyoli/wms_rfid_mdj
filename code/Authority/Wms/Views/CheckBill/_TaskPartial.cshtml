@@ -2,9 +2,7 @@
     function taskClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
-            if (row.Status != "已确认") {
-                $.messager.confirm('错误', '该记录状态不是已确认状态无法作业！');
-            } else {
+            if (row.Status == "已审核" || row.Status == "执行中") {
                 $.messager.confirm('作业', '确认要作业吗？作业后将无法取消分配！', function (r) {
                     if (r) {
                         $.ajaxSender.send('/CheckBill/CheckBillTask/',
@@ -15,7 +13,10 @@
                     }
                 });
             }
-        } else {
+            else {
+                $.messager.confirm('错误', '该记录状态不是已确认状态无法作业！');
+            }
+        } else { 
             $.messager.confirm('错误', '没有选择行，无法作业！');
         }
     }
