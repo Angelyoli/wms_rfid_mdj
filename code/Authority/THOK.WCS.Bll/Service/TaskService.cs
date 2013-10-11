@@ -17,6 +17,8 @@ namespace THOK.WCS.Bll.Service
     {
         [Dependency]
         public ITaskRepository TaskRepository { get; set; }
+        [Dependency]
+        public ITaskHistoryRepository TaskHistoryRepository { get; set; }
 
         [Dependency]
         public IInBillMasterRepository InBillMasterRepository { get; set; }
@@ -61,8 +63,7 @@ namespace THOK.WCS.Bll.Service
         [Dependency]
         public ISystemParameterRepository SystemParameterRepository { get; set; }
 
-        #region 初始化值
-        public void InitValue(Task task)
+        private void InitValue(Task task)
         {
             if (task.TaskType == "" || task.TaskType == null)
                 task.TaskType = "01";
@@ -93,10 +94,7 @@ namespace THOK.WCS.Bll.Service
             if (task.DownloadState == "" || task.DownloadState == null)
                 task.DownloadState = "0";
         }
-        #endregion
 
-        #region 查询
-        /// <summary>查询</summary>
         public object GetDetails(int page, int rows, Task task)
         {
             IQueryable<Task> taskQuery = TaskRepository.GetQueryable();
@@ -356,10 +354,6 @@ namespace THOK.WCS.Bll.Service
             var taskQuery6 = taskQuery5.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = taskQuery6.ToArray() };
         }
-        #endregion
-
-        #region 添加
-        /// <summary>添加</summary>
         public bool Add(Task task, out string strResult)
         {
             bool bResult = false;
@@ -444,10 +438,6 @@ namespace THOK.WCS.Bll.Service
             }
             return bResult;
         }
-        #endregion
-
-        #region 保存
-        /// <summary>保存</summary>
         public bool Save(Task task, out string strResult)
         {
             strResult = string.Empty;
@@ -538,10 +528,6 @@ namespace THOK.WCS.Bll.Service
             }
             return bResult;
         }
-        #endregion
-
-        #region 删除
-        /// <summary>删除</summary>
         public bool Delete(string taskID, out string strResult)
         {
             strResult = string.Empty;
@@ -561,15 +547,7 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-        #endregion
-
-        #region 入库单据作业
-        /// <summary>
-        /// 入库单据作业
-        /// </summary>
-        /// <param name="billNo">单据号</param>
-        /// <param name="errInfo">错误消息</param>
-        /// <returns></returns>
+        
         public bool InBillTask(string billNo, out string errorInfo)
         {
             bool result = true;
@@ -698,15 +676,6 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-        #endregion
-
-        #region 出库单据作业
-        /// <summary>
-        /// 出库单据作业
-        /// </summary>
-        /// <param name="billNo">单据号</param>
-        /// <param name="errInfo">错误消息</param>
-        /// <returns></returns>
         public bool OutBillTask(string billNo, out string errorInfo)
         {
             bool result = true;
@@ -835,15 +804,6 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-        #endregion
-
-        #region 移库单据作业
-        /// <summary>
-        /// 移库单据作业
-        /// </summary>
-        /// <param name="billNo">单据号</param>
-        /// <param name="errInfo">错误消息</param>
-        /// <returns></returns>
         public bool MoveBillTask(string billNo, out string errorInfo)
         {
             bool result = true;
@@ -970,8 +930,6 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-        #endregion
-
         public bool CheckBillTask(string billNo, out string errorInfo)
         {
             bool result = true;
@@ -992,22 +950,18 @@ namespace THOK.WCS.Bll.Service
         {
             throw new NotImplementedException();
         }
-
         public bool CreateNewTaskFromOutBill(string billNo)
         {
             throw new NotImplementedException();
         }
-
         public bool CreateNewTaskFromMoveBill(string billNo)
         {
             throw new NotImplementedException();
         }
-
         public bool CreateNewTaskFromCheckBill(string billNo)
         {
             throw new NotImplementedException();
         }
-
 
         public bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName)
         {
@@ -1104,7 +1058,6 @@ namespace THOK.WCS.Bll.Service
             }
             return false;
         }
-
         public bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName)
         {
             string palletCode = "00002A";
@@ -1184,7 +1137,6 @@ namespace THOK.WCS.Bll.Service
             }
             return false;
         }
-
         public bool CreateNewTaskForMoveBackRemain(int taskID)
         {
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
@@ -1219,7 +1171,6 @@ namespace THOK.WCS.Bll.Service
             return false;
         }
 
-
         public bool FinishTask(int taskID)
         {
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
@@ -1229,36 +1180,21 @@ namespace THOK.WCS.Bll.Service
             }
             return false;
         }
-
         public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode)
         {
-                switch (orderType)
-                {
-                    case "01"://入库
-                        return FinishInBillTask(orderID, allotID);
-                        break;
-                    case "02"://出库
-                        return FinishOutBillTask(orderID, allotID);
-                        break;
-                    case "03"://移库
-                        return FinishMoveBillTask(orderID, allotID);
-                        break;
-                    case "04"://盘点
-                        return FinishCheckBillTask(orderID, allotID);
-                        break;
-                    case "05"://空托盘叠入库存
-                        return FinishEmptyPalletStackTask(targetStorageCode);
-                        break;
-                    case "06"://空托盘移出库存
-                        return FinishEmptyPalletSupplyTask(originStorageCode);
-                        break;
-                    default:
-                        break;
-                }
+            switch (orderType)
+            {
+                case "01": return FinishInBillTask(orderID, allotID);
+                case "02": return FinishOutBillTask(orderID, allotID);
+                case "03": return FinishMoveBillTask(orderID, allotID);
+                case "04": return FinishCheckBillTask(orderID, allotID);
+                case "05": return FinishEmptyPalletStackTask(targetStorageCode);
+                case "06": return FinishEmptyPalletSupplyTask(originStorageCode);
+                default: break;
+            }
             return false;
         }
 
-        #region 完成入库任务，并反馈给浪潮
         private bool FinishInBillTask(string orderID, int allotID)
         {
             var inAllot = InBillAllotRepository.GetQueryable()
@@ -1328,10 +1264,7 @@ namespace THOK.WCS.Bll.Service
                 //"需确认入库的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
-        } 
-        #endregion
-
-        #region 完成出库任务，并反馈给浪潮
+        }
         private bool FinishOutBillTask(string orderID, int allotID)
         {
             var outAllot = OutBillAllotRepository.GetQueryable()
@@ -1402,8 +1335,6 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         } 
-        #endregion
-
         private bool FinishMoveBillTask(string orderID, int allotID)
         {
             var moveDetail = MoveBillDetailRepository.GetQueryable()
@@ -1468,7 +1399,6 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-
         private bool FinishCheckBillTask(string orderID, int allotID)
         {
             var checkDetail = CheckBillDetailRepository.GetQueryable()
@@ -1500,7 +1430,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-
+        
         private bool FinishEmptyPalletStackTask(string cellCode)
         {
             var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
@@ -1521,7 +1451,6 @@ namespace THOK.WCS.Bll.Service
             }
             return true;
         }
-
         private bool FinishEmptyPalletSupplyTask(string cellCode)
         {
             var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
@@ -1534,6 +1463,51 @@ namespace THOK.WCS.Bll.Service
                     cell.Storages.FirstOrDefault().StorageSequence = 0;
                     CellRepository.SaveChanges();
                 }
+            }
+            return true;
+        }
+
+        private bool AddTaskHistory(Task task)
+        {
+            TaskHistory taskHistory = new TaskHistory();
+            taskHistory.TaskID = task.ID;
+            taskHistory.TaskType = task.TaskType;
+            taskHistory.TaskLevel = task.TaskLevel;
+            taskHistory.PathID = task.PathID;
+            taskHistory.ProductCode = task.ProductCode;
+            taskHistory.ProductName = task.ProductName;
+            taskHistory.OriginStorageCode = task.OriginStorageCode;
+            taskHistory.TargetStorageCode = task.TargetStorageCode;
+            taskHistory.OriginPositionID = task.OriginPositionID;
+            taskHistory.TargetPositionID = task.TargetPositionID;
+            taskHistory.CurrentPositionID = task.CurrentPositionID;
+            taskHistory.CurrentPositionState = task.CurrentPositionState;
+            taskHistory.State = task.State;
+            taskHistory.TagState = task.TagState;
+            taskHistory.Quantity = task.Quantity;
+            taskHistory.TaskQuantity = task.TaskQuantity;
+            taskHistory.OperateQuantity = task.OperateQuantity;
+            taskHistory.OrderID = task.OrderID;
+            taskHistory.OrderType = task.OrderType;
+            taskHistory.AllotID = task.AllotID;
+            taskHistory.DownloadState = task.DownloadState;
+            taskHistory.ClearTime = System.DateTime.Now;
+            try
+            {
+                using (var scope = new System.Transactions.TransactionScope())
+                {
+                    TaskHistoryRepository.Add(taskHistory);
+                    TaskHistoryRepository.SaveChanges();
+
+                    TaskRepository.Delete(task);
+                    TaskRepository.SaveChanges();
+
+                    scope.Complete();
+                }
+            }
+            catch (Exception)
+            {
+                return false;
             }
             return true;
         }

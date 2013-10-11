@@ -390,6 +390,10 @@
     <Compile Include="Migrations\201309050228171_modify_cell_and_modify_storage_modify_task.Designer.cs">
       <DependentUpon>201309050228171_modify_cell_and_modify_storage_modify_task.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201310101056238_add_task_history.cs" />
+    <Compile Include="Migrations\201310101056238_add_task_history.Designer.cs">
+      <DependentUpon>201310101056238_add_task_history.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -459,6 +463,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201309050228171_modify_cell_and_modify_storage_modify_task.resx">
       <DependentUpon>201309050228171_modify_cell_and_modify_storage_modify_task.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201310101056238_add_task_history.resx">
+      <DependentUpon>201310101056238_add_task_history.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

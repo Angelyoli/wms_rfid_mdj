@@ -59,6 +59,7 @@
     <Compile Include="Mapping\ProductSizeMap.cs" />
     <Compile Include="Mapping\RegionMap.cs" />
     <Compile Include="Mapping\SRMMap.cs" />
+    <Compile Include="Mapping\TaskHistoryMap.cs" />
     <Compile Include="Mapping\TaskMap.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PathNode.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Mapping\SizeMap.cs" />
     <Compile Include="SRM.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="TaskHistory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
