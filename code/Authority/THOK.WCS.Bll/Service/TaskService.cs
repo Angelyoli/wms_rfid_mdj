@@ -13,7 +13,7 @@ using THOK.WCS.Bll.Models;
 
 namespace THOK.WCS.Bll.Service
 {
-    public class TaskService:ITaskService 
+    public class TaskService:ITaskService
     {
         [Dependency]
         public ITaskRepository TaskRepository { get; set; }
@@ -1474,9 +1474,8 @@ namespace THOK.WCS.Bll.Service
         {
             bool result = false;
             errorInfo = string.Empty;
-            var tasks = TaskRepository.GetQueryable().Where(a => (a.CurrentPositionID == a.OriginPositionID
-                                                               || a.CurrentPositionID == a.TargetPositionID)
-                                                              && (a.State == "01" && a.State == "04"));
+            var tasks = TaskRepository.GetQueryable().Where(a => ((a.CurrentPositionID == a.OriginPositionID && (a.State == "01" || a.State == "04"))
+                                                               || (a.CurrentPositionID == a.TargetPositionID)&& (a.State == "01" || a.State == "04")));
             if (tasks.Any())
             {
                 TaskHistory taskHistory = null;
