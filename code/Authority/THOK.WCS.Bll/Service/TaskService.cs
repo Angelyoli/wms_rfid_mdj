@@ -1288,6 +1288,8 @@ namespace THOK.WCS.Bll.Service
                     if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
                     {
                         inAllot.InBillMaster.Status = "6";
+                        string errorInfo = string.Empty;
+                        this.ClearTask(out errorInfo);
                     }
                     InBillAllotRepository.SaveChanges();
                     try
@@ -1308,10 +1310,7 @@ namespace THOK.WCS.Bll.Service
                         //    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
                         //}
                     }
-                    catch (Exception ex)
-                    {
-                        return false;
-                    }
+                    catch (Exception) { return false; }
                     return true;
                 }
                 else
@@ -1358,6 +1357,8 @@ namespace THOK.WCS.Bll.Service
                     if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
                     {
                         outAllot.OutBillMaster.Status = "6";
+                        string errorInfo = string.Empty;
+                        this.ClearTask(out errorInfo);
                     }
                     OutBillAllotRepository.SaveChanges();
                     try
@@ -1442,7 +1443,9 @@ namespace THOK.WCS.Bll.Service
                     }
                     if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                     {
-                        moveDetail.MoveBillMaster.Status = "4";                                           
+                        moveDetail.MoveBillMaster.Status = "4";
+                        string errorInfo = string.Empty;
+                        this.ClearTask(out errorInfo);
                     }
 
                     MoveBillDetailRepository.SaveChanges();  
@@ -1610,7 +1613,6 @@ namespace THOK.WCS.Bll.Service
             }
             return 0;
         }
-
         public int FinishInventoryTask(int taskID, int realQuantity)
         {
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
@@ -1645,7 +1647,6 @@ namespace THOK.WCS.Bll.Service
             }
             return false;
         }
-
         private bool FinishInventoryRemainMoveBackTask(string orderID, int allotID)
         {
             var outAllot = CheckBillDetailRepository.GetQueryable()

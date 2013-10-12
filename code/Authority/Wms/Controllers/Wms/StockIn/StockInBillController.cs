@@ -226,7 +226,17 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult InBillMasterSettle(string BillNo)
         {
             string strResult = string.Empty;
-            bool bResult = InBillMasterService.Settle(BillNo, out strResult);
+            bool bResult = false;
+            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+            {
+                var v1 = InBillMasterService.Settle(BillNo, out strResult);
+                var v2 = TaskService.ClearTask(out strResult);
+                if (v1 == true && v2 == true)
+                {
+                    bResult = true;
+                    scope.Complete();
+                }
+            }
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

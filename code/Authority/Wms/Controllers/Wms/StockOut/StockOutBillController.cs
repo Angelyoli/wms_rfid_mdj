@@ -166,7 +166,17 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult outBillMasterSettle(string BillNo)
         {
             string errorInfo = string.Empty;
-            bool bResult = OutBillMasterService.Settle(BillNo, out errorInfo);
+            bool bResult = false;
+            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+            {
+                var v1 = OutBillMasterService.Settle(BillNo, out errorInfo);
+                var v2 = TaskService.ClearTask(out errorInfo);
+                if (v1 == true && v2 == true)
+                {
+                    bResult = true;
+                    scope.Complete();
+                }
+            }
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
