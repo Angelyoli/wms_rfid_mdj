@@ -892,8 +892,10 @@ namespace THOK.WCS.Bll.Service
 
         public bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName)
         {
-            string palletCode = "00002A";
+            var systemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(i => i.ParameterName == "EmptyPallet");
+            string palletCode = systemParam.ParameterValue;
             int palletCount = 10;
+
             var position = PositionRepository.GetQueryable()
                 .Where(i=>(i.ID == positionID || i.PositionName == positionName) &&(i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04"))
                 .FirstOrDefault();
@@ -987,8 +989,10 @@ namespace THOK.WCS.Bll.Service
         }
         public bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName)
         {
-            string palletCode = "00002A";
+            var systemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(i => i.ParameterName == "EmptyPallet");
+            string palletCode = systemParam.ParameterValue;
             int palletCount = 10;
+
             var storageQuery = StorageRepository.GetQueryable()
                 .Where(i => i.ProductCode == palletCode
                     && i.Quantity - i.OutFrozenQuantity >= palletCount
