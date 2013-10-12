@@ -1288,8 +1288,7 @@ namespace THOK.WCS.Bll.Service
                     if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
                     {
                         inAllot.InBillMaster.Status = "6";
-                        string errorInfo = string.Empty;
-                        this.ClearTask(out errorInfo);
+                        this.ClearTask(orderID);
                     }
                     InBillAllotRepository.SaveChanges();
                     try
@@ -1357,8 +1356,7 @@ namespace THOK.WCS.Bll.Service
                     if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
                     {
                         outAllot.OutBillMaster.Status = "6";
-                        string errorInfo = string.Empty;
-                        this.ClearTask(out errorInfo);
+                        this.ClearTask(orderID);
                     }
                     OutBillAllotRepository.SaveChanges();
                     try
@@ -1444,8 +1442,7 @@ namespace THOK.WCS.Bll.Service
                     if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                     {
                         moveDetail.MoveBillMaster.Status = "4";
-                        string errorInfo = string.Empty;
-                        this.ClearTask(out errorInfo);
+                        this.ClearTask(orderID);
                     }
 
                     MoveBillDetailRepository.SaveChanges();  
@@ -1592,6 +1589,68 @@ namespace THOK.WCS.Bll.Service
             else
             {
                 errorInfo = "当前有未执行完毕的任务！";
+            }
+            return result;
+        }
+        public bool ClearTask(string orderID)
+        {
+            bool result = false;
+            var tasks = TaskRepository.GetQueryable().Where(a => a.OrderID == orderID);
+            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID || a.CurrentPositionID == a.TargetPositionID))))
+            {
+                TaskHistory taskHistory = null;
+                foreach (var task in tasks)
+                {
+                    taskHistory = new TaskHistory();
+                    taskHistory.TaskID = task.ID;
+                    taskHistory.TaskType = task.TaskType;
+                    taskHistory.TaskLevel = task.TaskLevel;
+                    taskHistory.PathID = task.PathID;
+                    taskHistory.ProductCode = task.ProductCode;
+                    taskHistory.ProductName = task.ProductName;
+                    taskHistory.OriginStorageCode = task.OriginStorageCode;
+                    taskHistory.TargetStorageCode = task.TargetStorageCode;
+                    taskHistory.OriginPositionID = task.OriginPositionID;
+                    taskHistory.TargetPositionID = task.TargetPositionID;
+                    taskHistory.CurrentPositionID = task.CurrentPositionID;
+                    taskHistory.CurrentPositionState = task.CurrentPositionState;
+                    taskHistory.State = task.State;
+                    taskHistory.TagState = task.TagState;
+                    taskHistory.Quantity = task.Quantity;
+                    taskHistory.TaskQuantity = task.TaskQuantity;
+                    taskHistory.OperateQuantity = task.OperateQuantity;
+                    taskHistory.OrderID = task.OrderID;
+                    taskHistory.OrderType = task.OrderType;
+                    taskHistory.AllotID = task.AllotID;
+                    taskHistory.DownloadState = task.DownloadState;
+                    taskHistory.ClearTime = System.DateTime.Now;
+
+                    TaskHistoryRepository.Add(taskHistory);
+                }
+                using (var scope = new System.Transactions.TransactionScope())
+                {
+                    TaskHistoryRepository.SaveChanges();
+
+                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
+                    SqlConnection con = new SqlConnection(constr);
+                    string sql = string.Format("truncate table wcs_task where orderID='{0}' ", orderID);
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    try
+                    {
+                        con.Open();
+                        int i = (int)cmd.ExecuteNonQuery();
+                        if (i > 0) result = true; else result = false;
+                    }
+                    catch (Exception) {  }
+                    finally { con.Close(); }
+
+                    scope.Complete();
+                    result = true;
+                }
+            }
+            else
+            {
+
             }
             return result;
         }

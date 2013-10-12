@@ -188,9 +188,9 @@ namespace Authority.Controllers.Wms.StockMove
             bool bResult = false;
             using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
             {
-                var v1 = MoveBillMasterService.Settle(billNo, out strResult);
-                var v2 = TaskService.ClearTask(out strResult);
-                if (v1 == true && v2 == true)
+                var moveBill = MoveBillMasterService.Settle(billNo, out strResult);
+                var task = TaskService.ClearTask(billNo);
+                if (moveBill == true && task == true)
                 {
                     bResult = true;
                     scope.Complete();

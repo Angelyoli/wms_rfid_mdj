@@ -31,6 +31,7 @@ namespace THOK.WCS.Bll.Interfaces
         bool FinishTask(int taskID, string orderType, string orderID, int allotID,string originStorageCode, string targetStorageCode);
 
         bool ClearTask(out string errorInfo);
+        bool ClearTask(string orderID);
 
         int FinishStockOutTask(int taskID, int stockOutQuantity);
         int FinishInventoryTask(int taskID, int realQuantity);

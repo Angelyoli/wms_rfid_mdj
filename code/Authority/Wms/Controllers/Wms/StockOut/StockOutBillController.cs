@@ -169,9 +169,9 @@ namespace Authority.Controllers.Wms.StockOut
             bool bResult = false;
             using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
             {
-                var v1 = OutBillMasterService.Settle(BillNo, out errorInfo);
-                var v2 = TaskService.ClearTask(out errorInfo);
-                if (v1 == true && v2 == true)
+                var outBill = OutBillMasterService.Settle(BillNo, out errorInfo);
+                var task = TaskService.ClearTask(BillNo);
+                if (outBill == true && task == true)
                 {
                     bResult = true;
                     scope.Complete();

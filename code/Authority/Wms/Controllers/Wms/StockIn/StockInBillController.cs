@@ -229,9 +229,9 @@ namespace Authority.Controllers.Wms.StockIn
             bool bResult = false;
             using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
             {
-                var v1 = InBillMasterService.Settle(BillNo, out strResult);
-                var v2 = TaskService.ClearTask(out strResult);
-                if (v1 == true && v2 == true)
+                var inBill = InBillMasterService.Settle(BillNo, out strResult);
+                var task = TaskService.ClearTask(BillNo);
+                if (inBill == true && task == true)
                 {
                     bResult = true;
                     scope.Complete();
