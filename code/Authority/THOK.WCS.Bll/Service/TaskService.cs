@@ -561,7 +561,7 @@ namespace THOK.WCS.Bll.Service
                 int paramValue = Convert.ToInt32(originSystemParam.ParameterValue);
 
                 var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue); //根据“起始位置参数”查找“起始位置信息”
-                if (originPosition == null) { errorInfo = "未找到起始位置：" + originPosition.PositionName; return false; }
+                if (originPosition == null) { errorInfo = "未找到起始位置（移出位置）：" + originPosition.PositionName; return false; }
                 
                 var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
                 if (originCellPosition == null) { errorInfo = "未找到货位位置：" + originCellPosition.StockInPositionID; return false; }
@@ -578,7 +578,7 @@ namespace THOK.WCS.Bll.Service
                         if (targetCellPosition == null) { errorInfo = "未找到货位位置的入库货位：" + inItem.Cell.CellName; return false; }
 
                         var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID); //根据“货位位置中的入库位置ID”查找“目标位置信息”
-                        if (targetPosition == null) { errorInfo = "未找到位置信息的目标货位位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
+                        if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetCellPosition.StockInPosition.PositionName; return false; }
 
                         var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID); //根据“入库（目标和起始）位置信息的区域ID”查找“路径信息”
                         if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.Region.RegionName + "，和目标位置：" + targetPosition.Region.RegionName; return false; }
@@ -645,7 +645,7 @@ namespace THOK.WCS.Bll.Service
                 int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
 
                 var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);//根据“货位位置中的出库位置ID”查找“目标的位置信息”
-                if (targetPosition == null) { errorInfo = "未找到目标位置：" + targetPosition.PositionName; return false; }
+                if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
 
                 var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
                 if (targetCellPosition == null) { errorInfo = "未找到货位位置：" + targetCellPosition.StockInPositionID; return false; }
@@ -662,7 +662,7 @@ namespace THOK.WCS.Bll.Service
                         if (originCellPosition == null) { errorInfo = "未找到起始货位位置：" + outItem.Cell.CellName; return false; }
 
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);//根据“起始位置的参数”查找“起始的位置信息”
-                        if (originPosition != null) { errorInfo = "未找到起始位置：" + originPosition.PositionName; return false; }
+                        if (originPosition != null) { errorInfo = "未找到起始位置（移出位置）：" + originPosition.PositionName; return false; }
 
                         var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);//根据“出库（目标和起始）位置信息的区域ID”查找“路径信息”
                         if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName; return false; }
@@ -850,111 +850,79 @@ namespace THOK.WCS.Bll.Service
             var taskQuery = TaskRepository.GetQueryable().Where(t => t.State == "02" && t.State == "03");//02:已到达 03:拣选中
             if (!taskQuery.Any())
             {
-                //查询“目标位置的参数”
-                var systemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");
-                if (systemParam != null)
-                {
-                    int paramterValue = Convert.ToInt32(systemParam.ParameterValue);
-                    var checkQuery = CheckBillDetailRepository.GetQueryable().Where(i => i.BillNo == billNo);
-                    if (checkQuery.Any())
-                    {
-                        foreach (var checkItem in checkQuery.ToArray())
-                        {
-                            //根据“起始货位”查找起始“位置信息”
-                            var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == checkItem.CellCode);
-                            if (originCellPosition != null)
-                            {
-                                //根据“货位出库位置ID”查找“起始位置信息”
-                                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
-                                if (originPosition != null)
-                                {
-                                    //根据“货位位置中的出库位置ID”查找“目标的位置信息”
-                                    var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramterValue);
-                                    if (targetPosition != null)
-                                    {
-                                        //根据“出库（目标和起始）位置信息的区域ID”查找“路径信息”
-                                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
-                                        if (path != null)
-                                        {
-                                            var checkTask = new Task();
-                                            checkTask.TaskType = "01";
-                                            checkTask.TaskLevel = 0;
-                                            checkTask.PathID = path.ID;
-                                            checkTask.ProductCode = checkItem.Product.ProductCode;
-                                            checkTask.ProductName = checkItem.Product.ProductName;
-                                            checkTask.OriginStorageCode = checkItem.CellCode;
-                                            checkTask.TargetStorageCode = checkItem.CellCode;
-                                            checkTask.OriginPositionID = originPosition.ID;
-                                            checkTask.TargetPositionID = targetPosition.ID;
-                                            checkTask.CurrentPositionID = originPosition.ID;
-                                            checkTask.CurrentPositionState = "02";
-                                            checkTask.State = "01";
-                                            checkTask.TagState = "01";
-                                            checkTask.Quantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
-                                            checkTask.TaskQuantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
-                                            checkTask.OperateQuantity = Convert.ToInt32(checkItem.RealQuantity);
-                                            checkTask.OrderID = checkItem.BillNo;
-                                            checkTask.OrderType = "04";
-                                            checkTask.AllotID = checkItem.ID;
-                                            checkTask.DownloadState = "0";
-                                            checkTask.StorageSequence = checkItem.Storage.StorageSequence;
-                                            TaskRepository.Add(checkTask);
-                                            result = true;
-                                        }
-                                        else
-                                        {
-                                            errorInfo = "未找到【路径信息】起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        errorInfo = "未找到目标【位置信息】移入位置：" + targetPosition.PositionName;
-                                    }
-                                }
-                                else
-                                {
-                                    errorInfo = "未找到起始【位置信息】移出位置：" + originCellPosition.StockOutPosition.PositionName;
-                                }
-                            }
-                            else
-                            {
-                                errorInfo = "未找到目标【货位位置】起始位置：" + originCellPosition.CellCode;
-                            }
-                        }
-                        using (var scope = new System.Transactions.TransactionScope())
-                        {
-                            try
-                            {
-                                /* 作业生成后 修改入库订单状态=3 
-                                 * Status == 1:已录入 2:已审核 3:执行中 4:已盘点 5:已结单 */
-                                var checkBillMaster = CheckBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo 
-                                                                                            && (i.Status == "2" || i.Status == "3"));
-                                if (checkBillMaster != null)
-                                {
-                                    checkBillMaster.Status = "3";
-                                    CheckBillMasterRepository.SaveChanges();
+                var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");//查询“目标位置的参数”
+                if (targetSystemParam != null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
 
-                                    TaskRepository.SaveChanges();
-                                }
-                                else
-                                {
-                                    errorInfo = "未获取订单号";
-                                    result = false;
-                                }
-                                if (result == true)
-                                    scope.Complete();
-                            }
-                            catch (Exception ex)
-                            {
-                                errorInfo = "事务异常：" + ex.Message;
-                                result = false;
-                            }
-                        }
+                var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);//根据“货位位置中的出库位置ID”查找“目标的位置信息”
+                if (targetPosition != null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
+
+                var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
+                if (targetCellPosition == null) { errorInfo = "未找到货位位置：" + targetCellPosition.StockInPositionID; return false; }
+
+                var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
+                if (targetCell == null) { errorInfo = "未找到货位：" + targetCell.CellCode; return false; }
+
+                var checkQuery = CheckBillDetailRepository.GetQueryable().Where(i => i.BillNo == billNo);
+                if (checkQuery.Any())
+                {
+                    foreach (var checkItem in checkQuery.ToArray())
+                    {
+                        var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == checkItem.CellCode);//根据“起始货位”查找起始“位置信息”
+                        if (originCellPosition != null) { errorInfo = "未找到目标货位位置：" + originCellPosition.CellCode; return false; }
+
+                        var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);//根据“货位出库位置ID”查找“起始位置信息”
+                        if (originPosition != null) { errorInfo = "未找到起始位置（移出位置）：" + originCellPosition.StockOutPosition.PositionName; return false; }
+
+                        //根据“出库（目标和起始）位置信息的区域ID”查找“路径信息”
+                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
+                        if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName; return false; }
+                        
+                        var checkTask = new Task();
+                        checkTask.TaskType = "01";
+                        checkTask.TaskLevel = 0;
+                        checkTask.PathID = path.ID;
+                        checkTask.ProductCode = checkItem.Product.ProductCode;
+                        checkTask.ProductName = checkItem.Product.ProductName;
+                        checkTask.OriginStorageCode = checkItem.CellCode;
+                        checkTask.TargetStorageCode = targetCell.CellCode;
+                        checkTask.OriginPositionID = originPosition.ID;
+                        checkTask.TargetPositionID = targetPosition.ID;
+                        checkTask.CurrentPositionID = originPosition.ID;
+                        checkTask.CurrentPositionState = "02";
+                        checkTask.State = "01";
+                        checkTask.TagState = "01";
+                        checkTask.Quantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
+                        checkTask.TaskQuantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
+                        checkTask.OperateQuantity = Convert.ToInt32(checkItem.RealQuantity);
+                        checkTask.OrderID = checkItem.BillNo;
+                        checkTask.OrderType = "04";
+                        checkTask.AllotID = checkItem.ID;
+                        checkTask.DownloadState = "0";
+                        checkTask.StorageSequence = checkItem.Storage.StorageSequence;
+                        TaskRepository.Add(checkTask);
                     }
                 }
-                else
+                using (var scope = new System.Transactions.TransactionScope())
                 {
-                    errorInfo = "请检查【系统参数】，未找到起始位置OutBillPosition！";
+                    try
+                    {
+                        /* 作业生成后 修改入库订单状态=3 
+                         * Status == 1:已录入 2:已审核 3:执行中 4:已盘点 5:已结单 */
+                        var checkBillMaster = CheckBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo
+                                                                                    && (i.Status == "2" || i.Status == "3"));
+                        if (checkBillMaster != null)
+                        {
+                            checkBillMaster.Status = "3";
+                            CheckBillMasterRepository.SaveChanges();
+                            TaskRepository.SaveChanges();
+
+                            scope.Complete();
+                            result = true;
+                        }
+                        else { errorInfo = "未获取订单号"; }
+                    }
+                    catch (Exception ex) { errorInfo = "事务异常：" + ex.Message; }
                 }
             }
             return result;
