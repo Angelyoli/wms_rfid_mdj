@@ -1175,12 +1175,12 @@ namespace THOK.WCS.Bll.Service
                         inspur.ProductCode = inAllot.ProductCode;
                         inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
                         //反馈给浪潮的xml数据信息
-                        //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                        //LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
-                        //if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
-                        //{
-                        //    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
-                        //}
+                        MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                        LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
+                        if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
+                        {
+                            LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
+                        }
                     }
                     catch (Exception) { return false; }
                     return true;
@@ -1243,12 +1243,12 @@ namespace THOK.WCS.Bll.Service
                         inspur.ProductCode = outAllot.ProductCode;
                         inspur.RealQuantity = outAllot.OutBillDetail.RealQuantity;
                         //反馈给浪潮的xml数据信息
-                        //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                        //LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
-                        //if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
-                        //{
-                        //    LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
-                        //}
+                        MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                        LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
+                        if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
+                        {
+                            LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
+                        }
                     }
                     catch (Exception ex)
                     {
