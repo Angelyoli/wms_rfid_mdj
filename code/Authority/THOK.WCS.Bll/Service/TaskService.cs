@@ -556,34 +556,33 @@ namespace THOK.WCS.Bll.Service
             errorInfo = string.Empty;
             try
             {
-                var originSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "InBillPositionId"); //查询“起始位置参数”
+                var originSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "InBillPositionId");
                 if (originSystemParam == null) { errorInfo = "请检查系统参数，未找到参数InBillPosition！"; return false; }
                 int paramValue = Convert.ToInt32(originSystemParam.ParameterValue);
 
-                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue); //根据“起始位置参数”查找“起始位置信息”
-                if (originPosition == null) { errorInfo = "未找到起始位置（移出位置）：" + originPosition.PositionName; return false; }
-                
-                var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
-                if (originCellPosition == null) { errorInfo = "未找到货位位置：" + originCellPosition.StockInPositionID; return false; }
+                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
+                if (originPosition == null) { errorInfo = "未找到起始位置ID（移出位置）：" + paramValue; return false; }
+                var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockOutPositionID == originPosition.ID);
+                if (originCellPosition == null) { errorInfo = "未找到起始货位位置的起始位置：" + originPosition.PositionName; return false; }
 
                 var originCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == originCellPosition.CellCode);
-                if (originCell == null) { errorInfo = "未找到起始货位：" + originCell.CellCode; return false; }
+                if (originCell == null) { errorInfo = "未找到起始货位编码：" + originCellPosition.CellCode; return false; }
 
-                var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo); //入库分配信息
+                var inBillAllot = InBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
                 if (inBillAllot.Any())
                 {
                     foreach (var inItem in inBillAllot.ToArray())
                     {
-                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inItem.CellCode); //根据“入库货位编码”查找“目标货位位置”
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == inItem.CellCode);
                         if (targetCellPosition == null) { errorInfo = "未找到货位位置的入库货位：" + inItem.Cell.CellName; return false; }
 
-                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID); //根据“货位位置中的入库位置ID”查找“目标位置信息”
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
                         if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetCellPosition.StockInPosition.PositionName; return false; }
 
-                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID); //根据“入库（目标和起始）位置信息的区域ID”查找“路径信息”
+                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
                         if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.Region.RegionName + "，和目标位置：" + targetPosition.Region.RegionName; return false; }
 
-                        var inTask = new Task();
+                        Task inTask = new Task();
                         inTask.TaskType = "01";
                         inTask.TaskLevel = 0;
                         inTask.PathID = path.ID;
@@ -640,34 +639,33 @@ namespace THOK.WCS.Bll.Service
             errorInfo = string.Empty;
             try
             {
-                var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");//查询“目标位置的参数”
+                var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");
                 if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到参数OutBillPosition！"; return false; }
                 int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
 
-                var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);//根据“货位位置中的出库位置ID”查找“目标的位置信息”
-                if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
-
-                var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
-                if (targetCellPosition == null) { errorInfo = "未找到货位位置：" + targetCellPosition.StockInPositionID; return false; }
+                var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
+                if (targetPosition == null) { errorInfo = "未找到目标位置ID（移入位置）：" + paramValue; return false; }
+                var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue);
+                if (targetCellPosition == null) { errorInfo = "未找到目标货位位置的起始位置：" + targetPosition.PositionName; return false; }
 
                 var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
-                if (targetCell == null) { errorInfo = "未找到货位：" + targetCell.CellCode; return false; }
+                if (targetCell == null) { errorInfo = "未找到货位位置的货位编码：" + targetCellPosition.CellCode; return false; }
 
-                var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);//出库分配信息
+                var outBillAllot = OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == billNo);
                 if (outBillAllot.Any())
                 {
                     foreach (var outItem in outBillAllot.ToArray())
                     {
-                        var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == outItem.CellCode);//根据“出库货位编码”查找“货位位置”
-                        if (originCellPosition == null) { errorInfo = "未找到起始货位位置：" + outItem.Cell.CellName; return false; }
+                        var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == outItem.CellCode);
+                        if (originCellPosition == null) { errorInfo = "未找到起始货位：" + outItem.Cell.CellName; return false; }
 
-                        var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);//根据“起始位置的参数”查找“起始的位置信息”
-                        if (originPosition != null) { errorInfo = "未找到起始位置（移出位置）：" + originPosition.PositionName; return false; }
+                        var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
+                        if (originPosition == null) { errorInfo = "未找到起始位置（移出位置）：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
-                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);//根据“出库（目标和起始）位置信息的区域ID”查找“路径信息”
+                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
                         if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName; return false; }
 
-                        var outTask = new Task();
+                        Task outTask = new Task();
                         outTask.TaskType = "01";
                         outTask.TaskLevel = 0;
                         outTask.PathID = path.ID;
@@ -719,7 +717,7 @@ namespace THOK.WCS.Bll.Service
         }
         public bool MoveBillTask(string billNo, out string errorInfo)
         {
-            bool result = true;
+            bool result = false;
             errorInfo = string.Empty;
             try
             {
@@ -728,79 +726,42 @@ namespace THOK.WCS.Bll.Service
                 {
                     foreach (var moveItem in moveQuery.ToArray())
                     {
-                        //根据“移出的货位信息的编码”查找“起始的位置信息”
                         var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveItem.OutCellCode);
-                        if (originCellPosition != null)
-                        {
-                            //根据“移入的货位信息”查找“目标货位位置”
-                            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveItem.InCellCode);
-                            if (targetCellPosition != null)
-                            {
-                                //根据“移出的位置信息ID”去找“起始位置的位置信息”
-                                var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
-                                if (originPosition != null)
-                                {
-                                    //根据“移入位置ID”去找“目标位置的区域ID”信息
-                                    var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
-                                    if (targetPosition != null)
-                                    {
-                                        //根据“入库的目标位置信息的区域ID”和"起始的位置信息的区域ID"去找"路径信息"
-                                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
-                                        if (path != null)
-                                        {
-                                            var moveTask = new Task();
-                                            moveTask.TaskType = "01";
-                                            moveTask.TaskLevel = 0;
-                                            moveTask.PathID = path.ID;
-                                            moveTask.ProductCode = moveItem.Product.ProductCode;
-                                            moveTask.ProductName = moveItem.Product.ProductName;
-                                            moveTask.OriginStorageCode = moveItem.OutCellCode;
-                                            moveTask.TargetStorageCode = moveItem.InCellCode;
-                                            moveTask.OriginPositionID = originPosition.ID;
-                                            moveTask.TargetPositionID = targetPosition.ID;
-                                            moveTask.CurrentPositionID = originPosition.ID;
-                                            moveTask.CurrentPositionState = "02";
-                                            moveTask.State = "01";
-                                            moveTask.TagState = "01";
-                                            moveTask.Quantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
-                                            moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
-                                            moveTask.OperateQuantity = Convert.ToInt32(moveItem.RealQuantity);
-                                            moveTask.OrderID = moveItem.BillNo;
-                                            moveTask.OrderType = "02";
-                                            moveTask.AllotID = moveItem.ID;
-                                            moveTask.DownloadState = "0";
-                                            moveTask.StorageSequence = moveItem.OutStorage.StorageSequence;
-                                            TaskRepository.Add(moveTask);
-                                        }
-                                        else
-                                        {
-                                            errorInfo = "未找到【路径信息】起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName;
-                                            result = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        errorInfo = "未找到目标【位置信息】移入位置：" + targetCellPosition.StockInPosition.PositionName;
-                                        result = false;
-                                    }
-                                }
-                                else
-                                {
-                                    errorInfo = "未找到起始【位置信息】移出位置：" + originCellPosition.StockOutPosition.PositionName;
-                                    result = false;
-                                }
-                            }
-                            else
-                            {
-                                errorInfo = "未找到目标【货位位置】移入货位：" + moveItem.InCell.CellName;
-                                result = false;
-                            }
-                        }
-                        else
-                        {
-                            errorInfo = "未找到起始【货位位置】移出货位：" + moveItem.OutCell.CellName;
-                            result = false;
-                        }
+                        if (originCellPosition == null) { errorInfo = "未找到货位位置的起始货位：" + moveItem.OutCell.CellName; return false; }
+                        var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
+                        if (originPosition == null) { errorInfo = "未找到目标位置（移出位置）：" + originCellPosition.StockOutPosition.PositionName; return false; }
+
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveItem.InCellCode);
+                        if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标货位：" + moveItem.InCell.CellName; return false; }
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
+                        if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetCellPosition.StockInPosition.PositionName; return false; }
+
+                        var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
+                        if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName; return false; }
+                        
+                        var moveTask = new Task();
+                        moveTask.TaskType = "01";
+                        moveTask.TaskLevel = 0;
+                        moveTask.PathID = path.ID;
+                        moveTask.ProductCode = moveItem.Product.ProductCode;
+                        moveTask.ProductName = moveItem.Product.ProductName;
+                        moveTask.OriginStorageCode = moveItem.OutCellCode;
+                        moveTask.TargetStorageCode = moveItem.InCellCode;
+                        moveTask.OriginPositionID = originPosition.ID;
+                        moveTask.TargetPositionID = targetPosition.ID;
+                        moveTask.CurrentPositionID = originPosition.ID;
+                        moveTask.CurrentPositionState = "02";
+                        moveTask.State = "01";
+                        moveTask.TagState = "01";
+                        moveTask.Quantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
+                        moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
+                        moveTask.OperateQuantity = Convert.ToInt32(moveItem.RealQuantity);
+                        moveTask.OrderID = moveItem.BillNo;
+                        moveTask.OrderType = "02";
+                        moveTask.AllotID = moveItem.ID;
+                        moveTask.DownloadState = "0";
+                        moveTask.StorageSequence = moveItem.OutStorage.StorageSequence;
+                        TaskRepository.Add(moveTask);
                     }
                     using (var scope = new System.Transactions.TransactionScope())
                     {
@@ -813,34 +774,18 @@ namespace THOK.WCS.Bll.Service
                             {
                                 moveBillMaster.Status = "3";
                                 MoveBillMasterRepository.SaveChanges();
-
                                 TaskRepository.SaveChanges();
-                            }
-                            else
-                            {
-                                errorInfo = "未获取订单号";
-                                result = false;
-                            }
-                            if (result == true)
                                 scope.Complete();
+                                result = true;
+                            }
+                            else { errorInfo = "未获取订单号"; }
                         }
-                        catch (Exception ex)
-                        {
-                            errorInfo = "事务异常：" + ex.Message;
-                            result = false;
-                        }
+                        catch (Exception ex) { errorInfo = "事务异常：" + ex.Message; }
                     }
                 }
-                else
-                {
-                    errorInfo = "当前选择订单没有移库细表数据，请重新选择！";
-                }
+                else { errorInfo = "当前选择的订单没有移库细表的数据，请重新选择！"; }
             }
-            catch (Exception e)
-            {
-                result = false;
-                errorInfo = e.Message;
-            }
+            catch (Exception ex) { errorInfo = ex.Message; }
             return result;
         }
         public bool CheckBillTask(string billNo, out string errorInfo)
@@ -850,26 +795,26 @@ namespace THOK.WCS.Bll.Service
             var taskQuery = TaskRepository.GetQueryable().Where(t => t.State == "02" && t.State == "03");//02:已到达 03:拣选中
             if (!taskQuery.Any())
             {
-                var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");//查询“目标位置的参数”
+                var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");
                 if (targetSystemParam != null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
                 int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
 
-                var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);//根据“货位位置中的出库位置ID”查找“目标的位置信息”
+                var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
                 if (targetPosition != null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
 
                 var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
-                if (targetCellPosition == null) { errorInfo = "未找到货位位置：" + targetCellPosition.StockInPositionID; return false; }
+                if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
 
                 var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
-                if (targetCell == null) { errorInfo = "未找到货位：" + targetCell.CellCode; return false; }
+                if (targetCell == null) { errorInfo = "未找到目标货位编码：" + targetCellPosition.CellCode; return false; }
 
                 var checkQuery = CheckBillDetailRepository.GetQueryable().Where(i => i.BillNo == billNo);
                 if (checkQuery.Any())
                 {
                     foreach (var checkItem in checkQuery.ToArray())
                     {
-                        var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == checkItem.CellCode);//根据“起始货位”查找起始“位置信息”
-                        if (originCellPosition != null) { errorInfo = "未找到目标货位位置：" + originCellPosition.CellCode; return false; }
+                        var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == checkItem.CellCode);
+                        if (originCellPosition != null) { errorInfo = "未找到起始货位：" + checkItem.Cell.CellName; return false; }
 
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);//根据“货位出库位置ID”查找“起始位置信息”
                         if (originPosition != null) { errorInfo = "未找到起始位置（移出位置）：" + originCellPosition.StockOutPosition.PositionName; return false; }
@@ -878,7 +823,7 @@ namespace THOK.WCS.Bll.Service
                         var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
                         if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.Region.RegionName + "，目标位置：" + targetPosition.Region.RegionName; return false; }
                         
-                        var checkTask = new Task();
+                        Task checkTask = new Task();
                         checkTask.TaskType = "01";
                         checkTask.TaskLevel = 0;
                         checkTask.PathID = path.ID;
