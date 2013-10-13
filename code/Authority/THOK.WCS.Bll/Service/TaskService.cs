@@ -12,6 +12,9 @@ using THOK.Authority.Dal.Interfaces;
 using THOK.WCS.Bll.Models;
 using System.Data.SqlClient;
 using System.Configuration;
+=======
+using THOK.Wms.SignalR.Common;
+>>>>>>> refs/remotes/thok-sw/mdj
 
 namespace THOK.WCS.Bll.Service
 {
@@ -64,6 +67,12 @@ namespace THOK.WCS.Bll.Service
 
         [Dependency]
         public ISystemParameterRepository SystemParameterRepository { get; set; }
+
+        [Dependency]
+        public IStorageLocker Locker { get; set; }
+
+        [Dependency]
+        public IMoveBillCreater MoveBillCreater { get; set; }
 
         private void InitValue(Task task)
         {
@@ -1640,6 +1649,89 @@ namespace THOK.WCS.Bll.Service
                 return newTask.ID;
             }
             return 0;
+        }
+
+        public void AutoCreateMoveBill()
+        {
+            var positions = PositionRepository.GetQueryable()
+                .Where(i => i.PositionType == "02"
+                    && !i.HasGoods 
+                    && !string.IsNullOrEmpty(i.ChannelCode) 
+                    && i.ChannelCode != "0");
+
+            var cellPositions= CellPositionRepository.GetQueryable()
+                .Where(i => positions.Contains(i.StockInPosition));
+
+            var cells = CellRepository.GetQueryable()
+                .Where(i => cellPositions.Any(p => p.CellCode == i.CellCode)
+                    && !string.IsNullOrEmpty(i.DefaultProductCode))
+                .ToArray();
+
+            if (cells.Count() > 0)
+            {
+                string WarehouseCode = "", MoveBillTypeCode = "", operatePersonID = "";
+                MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(WarehouseCode, MoveBillTypeCode, operatePersonID);
+                moveBillMaster.Origin = "2";
+                moveBillMaster.Description = "系统自动生成补大品种拆盘位移库单！";
+                moveBillMaster.Status = "2";
+                moveBillMaster.VerifyDate = DateTime.Now;
+
+                foreach (var cell in cells)
+                {
+                    AlltoMoveBill(moveBillMaster, cell.Product, cell);
+                }
+
+                if (moveBillMaster.MoveBillDetails.Count > 0)
+                {
+                    CellRepository.SaveChanges();
+                    string errorInfo = string.Empty;
+                    MoveBillTask(moveBillMaster.BillNo, out errorInfo);
+                }
+            }
+        }
+
+        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
+        {
+            //选择当前订单操作目标仓库；
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()            
+                .Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
+                    && s.Quantity - s.OutFrozenQuantity > 0
+                    && s.Cell.Area.AllotInOrder > 0
+                    && s.Cell.Area.AllotOutOrder > 0
+                    && s.Cell.IsActive == "1");
+
+            if (product.IsRounding == "2")
+            {
+                //分配整托盘烟；大品种区 
+                var storages = storageQuery.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
+                                        && s.ProductCode == product.ProductCode)
+                                  .OrderBy(s => new { s.Cell.StorageTime, s.Cell.Area.AllotOutOrder,s.CellCode, s.StorageSequence, s.Quantity });
+                AllotPallet(moveBillMaster, storages, cell);
+            }
+        }
+
+        private void AllotPallet(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> storages, Cell cell)
+        {
+            foreach (var s in storages.ToArray())
+            {
+                int storageSequence = s.Cell.Storages.Where(t=>t.Quantity - t.OutFrozenQuantity > 0).Min(t => t.StorageSequence);
+                decimal allotQuantity = Math.Floor((s.Quantity - s.OutFrozenQuantity) / s.Product.Unit.Count) * s.Product.Unit.Count;
+
+                if (allotQuantity > 0 
+                    && allotQuantity == s.Quantity - s.OutFrozenQuantity
+                    && storageSequence == s.StorageSequence)
+                {
+                    var sourceStorage = Locker.LockNoEmptyStorage(s, s.Product);
+                    var targetStorage = Locker.LockStorage(cell);
+                    if (sourceStorage != null && targetStorage != null
+                        && targetStorage.Quantity == 0
+                        && targetStorage.InFrozenQuantity == 0)
+                    {
+                        MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity, "0");
+                        break;
+                    }
+                }
+            }
         }
     }
 }
