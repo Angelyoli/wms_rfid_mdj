@@ -12,9 +12,7 @@ using THOK.Authority.Dal.Interfaces;
 using THOK.WCS.Bll.Models;
 using System.Data.SqlClient;
 using System.Configuration;
-=======
 using THOK.Wms.SignalR.Common;
->>>>>>> refs/remotes/thok-sw/mdj
 
 namespace THOK.WCS.Bll.Service
 {
