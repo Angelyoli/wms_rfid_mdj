@@ -398,7 +398,7 @@ namespace THOK.WCS.Bll.Service
                                 t.TargetStorageCode = task.TargetStorageCode;
                                 t.OriginPositionID = originCellPosition.StockOutPositionID;
                                 t.TargetPositionID = targetCellPosition.StockInPositionID;
-                                if (task.CurrentPositionID == 0 || task.CurrentPositionID == null)
+                                if (task.CurrentPositionID == 0)
                                 {
                                     t.CurrentPositionID = originCellPosition.StockOutPositionID;
                                 }
@@ -1123,8 +1123,8 @@ namespace THOK.WCS.Bll.Service
             switch (orderType)
             {
                 case "01": return FinishInBillTask(orderID, allotID);
-                case "02": return FinishOutBillTask(orderID, allotID);
-                case "03": return FinishMoveBillTask(orderID, allotID);
+                case "02": return FinishMoveBillTask(orderID, allotID);
+                case "03": return FinishOutBillTask(orderID, allotID);
                 case "04": return FinishCheckBillTask(orderID, allotID);
                 case "05": return FinishEmptyPalletStackTask(targetStorageCode);
                 case "06": return FinishEmptyPalletSupplyTask(originStorageCode);
