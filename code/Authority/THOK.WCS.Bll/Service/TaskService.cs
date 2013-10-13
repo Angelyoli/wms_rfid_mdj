@@ -1168,7 +1168,6 @@ namespace THOK.WCS.Bll.Service
                     if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
                     {
                         inAllot.InBillMaster.Status = "6";
-                        this.ClearTask(orderID);
                     }
                     InBillAllotRepository.SaveChanges();
                     try
@@ -1236,7 +1235,6 @@ namespace THOK.WCS.Bll.Service
                     if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
                     {
                         outAllot.OutBillMaster.Status = "6";
-                        this.ClearTask(orderID);
                     }
                     OutBillAllotRepository.SaveChanges();
                     try
@@ -1322,7 +1320,6 @@ namespace THOK.WCS.Bll.Service
                     if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                     {
                         moveDetail.MoveBillMaster.Status = "4";
-                        this.ClearTask(orderID);
                     }
 
                     MoveBillDetailRepository.SaveChanges();  
