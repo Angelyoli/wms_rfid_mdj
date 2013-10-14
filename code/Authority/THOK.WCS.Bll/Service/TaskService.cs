@@ -1151,25 +1151,31 @@ namespace THOK.WCS.Bll.Service
             return false;
         }
 
-        public bool FinishTask(int taskID)
+        public bool FinishTask(int taskID, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null && task.State == "04")
             {
-                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID,task.OriginStorageCode,task.TargetStorageCode);
+                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo);
+            }
+            else
+            {
+                errorInfo = "当前任务未完成！";
             }
             return false;
         }
-        public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode)
+        public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode, out string errorInfo)
         {
+            errorInfo = string.Empty;
             switch (orderType)
             {
-                case "01": return FinishInBillTask(orderID, allotID);
-                case "02": return FinishMoveBillTask(orderID, allotID);
-                case "03": return FinishOutBillTask(orderID, allotID);
-                case "04": return FinishCheckBillTask(orderID, allotID);
-                case "05": return FinishEmptyPalletStackTask(targetStorageCode);
-                case "06": return FinishEmptyPalletSupplyTask(originStorageCode);
+                case "01": return FinishInBillTask(orderID, allotID, out errorInfo);
+                case "02": return FinishMoveBillTask(orderID, allotID, out errorInfo);
+                case "03": return FinishOutBillTask(orderID, allotID, out errorInfo);
+                case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
+                case "05": return FinishEmptyPalletStackTask(targetStorageCode, out errorInfo);
+                case "06": return FinishEmptyPalletSupplyTask(originStorageCode, out errorInfo);
                 case "07": break;
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
@@ -1178,17 +1184,22 @@ namespace THOK.WCS.Bll.Service
             return false;
         }
 
-        private bool FinishInBillTask(string orderID, int allotID)
+        private bool FinishInBillTask(string orderID, int allotID, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var inAllot = InBillAllotRepository.GetQueryable()
                                     .Where(i => i.BillNo == orderID
                                         && i.ID == allotID
                                         && i.Status == "0")
                                     .FirstOrDefault();
-            if (inAllot != null
-                && (inAllot.InBillMaster.Status == "4"
-                || inAllot.InBillMaster.Status == "5"
-                ))
+
+            if (inAllot == null)
+            {
+                errorInfo = "未找到入库分配信息！";
+                return false;
+            }
+
+            if (inAllot != null && (inAllot.InBillMaster.Status == "4"|| inAllot.InBillMaster.Status == "5"))
             {
                 decimal quantity = inAllot.AllotQuantity;
                 if (string.IsNullOrEmpty(inAllot.Storage.LockTag)
@@ -1211,51 +1222,73 @@ namespace THOK.WCS.Bll.Service
                     {
                         inAllot.InBillMaster.Status = "6";
                     }
-                    InBillAllotRepository.SaveChanges();
                     try
                     {
-                        InspurService inspurService = new InspurService();
-                        Inspur inspur = new Inspur();
-                        inspur.Param = "";
-                        inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
-                        inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
-                        inspur.BillNo = inAllot.BillNo;
-                        inspur.ProductCode = inAllot.ProductCode;
-                        inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
-                        //反馈给浪潮的xml数据信息
-                        //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                        //LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
-                        //if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
-                        //{
-                        //    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
-                        //}
+                        using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                        {
+                            try
+                            {
+                                InBillAllotRepository.SaveChanges();
+                            }
+                            catch (Exception ex)
+                            {
+                                errorInfo = "入库分配保存失败！" + ex.Message;
+                                return false;
+                            }
+                            InspurService inspurService = new InspurService();
+                            Inspur inspur = new Inspur();
+                            inspur.Param = "";
+                            inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
+                            inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
+                            inspur.BillNo = inAllot.BillNo;
+                            inspur.ProductCode = inAllot.ProductCode;
+                            inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
+                            try
+                            {
+                                //反馈给浪潮的xml数据信息
+                                //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                                //LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
+                                //if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
+                                //{
+                                //    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
+                                //}
+                            }
+                            catch (Exception ex)
+                            {
+                                errorInfo = "入库分配进度反馈给浪潮失败！" + ex.Message;
+                                return false;
+                            }
+                            scope.Complete();
+                            return true;
+                        }
                     }
-                    catch (Exception) { return false; }
-                    return true;
+                    catch (Exception ex)
+                    {
+                        errorInfo = "事务回滚失败！" + ex.Message;
+                        return false;
+                    }
                 }
                 else
                 {
-                    //"需确认入库的数据别人在操作或完成的数量不对，完成出错！";
+                    errorInfo = "需确认入库的数据别人在操作或完成的数量不对，完成出错！";
                     return false;
                 }
             }
             else
             {
-                //"需确认入库的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = "需确认入库的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
         }
-        private bool FinishOutBillTask(string orderID, int allotID)
+        private bool FinishOutBillTask(string orderID, int allotID, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var outAllot = OutBillAllotRepository.GetQueryable()
                                                 .Where(i => i.BillNo == orderID
                                                     && i.ID == allotID
                                                     && i.Status == "0")
                                                 .FirstOrDefault();
-            if (outAllot != null
-                && (outAllot.OutBillMaster.Status == "4"
-                || outAllot.OutBillMaster.Status == "5"
-                ))
+            if (outAllot != null && (outAllot.OutBillMaster.Status == "4" || outAllot.OutBillMaster.Status == "5"))
             {
                 decimal quantity = outAllot.AllotQuantity;
                 if (string.IsNullOrEmpty(outAllot.Storage.LockTag)
@@ -1278,9 +1311,17 @@ namespace THOK.WCS.Bll.Service
                     {
                         outAllot.OutBillMaster.Status = "6";
                     }
-                    OutBillAllotRepository.SaveChanges();
-                    try
+                    using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
                     {
+                        try
+                        {
+                            OutBillAllotRepository.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            errorInfo = "出库单保存失败！" + ex.Message;
+                            return false;
+                        }
                         InspurService inspurService = new InspurService();
                         Inspur inspur = new Inspur();
                         inspur.Param = "";
@@ -1289,43 +1330,46 @@ namespace THOK.WCS.Bll.Service
                         inspur.BillNo = outAllot.BillNo;
                         inspur.ProductCode = outAllot.ProductCode;
                         inspur.RealQuantity = outAllot.OutBillDetail.RealQuantity;
-                        //反馈给浪潮的xml数据信息
-                        //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                        //LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
-                        //if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
-                        //{
-                        //    LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
-                        //}
+                        try
+                        {
+                            //反馈给浪潮的xml数据信息
+                            //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                            //LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
+                            //if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
+                            //{
+                            //    LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
+                            //}
+                        }
+                        catch (Exception ex)
+                        {
+                            errorInfo = "出库分配进度反馈给浪潮失败！" + ex.Message;
+                            return false;
+                        }
+                        scope.Complete();
+                        return true;
                     }
-                    catch (Exception ex)
-                    {
-                        return false;
-                    }
-                    return true;
                 }
                 else
                 {
-                    //"需确认出库的数据别人在操作或完成的数量不对，完成出错！";
+                    errorInfo = "需确认出库的数据别人在操作或完成的数量不对，完成出错！";
                     return false;
                 }
             }
             else
             {
-                //"需确认出库的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = "需确认出库的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
         } 
-        private bool FinishMoveBillTask(string orderID, int allotID)
+        private bool FinishMoveBillTask(string orderID, int allotID, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var moveDetail = MoveBillDetailRepository.GetQueryable()
                                                 .Where(i => i.BillNo == orderID
                                                     && i.ID == allotID
                                                     && i.Status == "0")
                                                 .FirstOrDefault();
-            if (moveDetail != null
-                && (moveDetail.MoveBillMaster.Status == "2"
-                || moveDetail.MoveBillMaster.Status == "3"
-                ))
+            if (moveDetail != null && (moveDetail.MoveBillMaster.Status == "2" || moveDetail.MoveBillMaster.Status == "3"))
             {
                 if (string.IsNullOrEmpty(moveDetail.InStorage.LockTag)
                     && string.IsNullOrEmpty(moveDetail.OutStorage.LockTag)
@@ -1363,32 +1407,30 @@ namespace THOK.WCS.Bll.Service
                     {
                         moveDetail.MoveBillMaster.Status = "4";
                     }
-
                     MoveBillDetailRepository.SaveChanges();  
                     return true;
                 }
                 else
                 {
-                    //"需确认移库的数据别人在操作或者完成的数量不对，完成出错！";
+                    errorInfo = "需确认移库的数据别人在操作或者完成的数量不对，完成出错！";
                     return false;
                 }
             }
             else
             {
-                //"需确认移库的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = "需确认移库的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
         }
-        private bool FinishCheckBillTask(string orderID, int allotID)
+        private bool FinishCheckBillTask(string orderID, int allotID, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var checkDetail = CheckBillDetailRepository.GetQueryable()
                                                     .Where(i => i.BillNo == orderID
                                                         && i.ID == allotID
                                                         && i.Status == "0")
                                                     .FirstOrDefault();
-            if (checkDetail != null
-                && (checkDetail.CheckBillMaster.Status == "2"
-                || checkDetail.CheckBillMaster.Status == "3"))
+            if (checkDetail != null && (checkDetail.CheckBillMaster.Status == "2" || checkDetail.CheckBillMaster.Status == "3"))
             {
                 decimal quantity = checkDetail.Quantity;
 
@@ -1406,13 +1448,13 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-                //"需确认盘点的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = "需确认盘点的数据查询为空或者主单状态不对，完成出错！";
                 return false;
             }
         }
-        
-        private bool FinishEmptyPalletStackTask(string cellCode)
+        private bool FinishEmptyPalletStackTask(string cellCode, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
             if (cell != null && cell.Storages.FirstOrDefault() != null)
             {
@@ -1426,13 +1468,19 @@ namespace THOK.WCS.Bll.Service
                 }
                 else
                 {
+                    errorInfo = "未找到货位库存信息或者货位库存冻结量<1";
                     return false;
                 }
             }
+            else
+            {
+                errorInfo = "未找到货位库存信息！";
+            }
             return true;
         }
-        private bool FinishEmptyPalletSupplyTask(string cellCode)
+        private bool FinishEmptyPalletSupplyTask(string cellCode, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
             if (cell != null && cell.Storages.FirstOrDefault() != null)
             {
@@ -1443,6 +1491,16 @@ namespace THOK.WCS.Bll.Service
                     cell.Storages.FirstOrDefault().StorageSequence = 0;
                     CellRepository.SaveChanges();
                 }
+                else
+                {
+                    errorInfo = "库存冻结量<=0";
+                    return false;
+                }
+            }
+            else
+            {
+                errorInfo = "未找到货位库存信息！";
+                return false;
             }
             return true;
         }
@@ -1574,12 +1632,13 @@ namespace THOK.WCS.Bll.Service
             return result;
         }
 
-        public int FinishStockOutTask(int taskID, int stockOutQuantity)
+        public int FinishStockOutTask(int taskID, int stockOutQuantity, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null && task.State == "04")
             {
-                FinishOutBillTask(task.OrderID, task.AllotID);
+                FinishOutBillTask(task.OrderID, task.AllotID, out errorInfo);
                 if (task.Quantity > task.TaskQuantity)
                 {
                     return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
@@ -1591,12 +1650,13 @@ namespace THOK.WCS.Bll.Service
             }
             return 0;
         }
-        public int FinishInventoryTask(int taskID, int realQuantity)
+        public int FinishInventoryTask(int taskID, int realQuantity, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null && task.State == "04")
             {
-                FinishCheckBillTask(task.OrderID, task.AllotID);
+                FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
 
                 if (task.Quantity > task.TaskQuantity)
                 {
