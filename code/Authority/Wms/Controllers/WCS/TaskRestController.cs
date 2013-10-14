@@ -17,13 +17,15 @@ namespace Wms.Controllers.WCS
 
         public ActionResult CreateNewTaskForEmptyPalletStack(string positionName)
         {
-            bool bResult = TaskService.CreateNewTaskForEmptyPalletStack(0,positionName);
+            string errorInfo = string.Empty;
+            bool bResult = TaskService.CreateNewTaskForEmptyPalletStack(0,positionName,out errorInfo);
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CreateNewTaskForEmptyPalletSupply(string positionName)
         {
-            bool bResult = TaskService.CreateNewTaskForEmptyPalletSupply(0,positionName);
+            string errorInfo = string.Empty;
+            bool bResult = TaskService.CreateNewTaskForEmptyPalletSupply(0,positionName,out errorInfo);
             return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
         }
 

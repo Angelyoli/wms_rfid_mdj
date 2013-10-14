@@ -897,8 +897,9 @@ namespace THOK.WCS.Bll.Service
             throw new NotImplementedException();
         }
 
-        public bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName)
+        public bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var systemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(i => i.ParameterName == "EmptyPallet");
             string palletCode = systemParam.ParameterValue;
             int palletCount = 10;
@@ -907,10 +908,17 @@ namespace THOK.WCS.Bll.Service
                 .Where(i=>(i.ID == positionID || i.PositionName == positionName) &&(i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04"))
                 .FirstOrDefault();
 
-            if (position == null) return false;
-
-            var task = TaskRepository.GetQueryable()
-                .Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID ==  position.ID).FirstOrDefault();
+            if (position == null)
+            {
+                errorInfo = "未找到位置信息！"; 
+                return false;
+            }
+            var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID ==  position.ID).FirstOrDefault();
+            if (task != null)
+            {
+                errorInfo = "当前任务：空托盘回收（订单状态为05），位置是起始位置，不是已完成状态";
+                return false;
+            }
 
             if (position != null && position.HasGoods && task == null)
             {
@@ -937,11 +945,10 @@ namespace THOK.WCS.Bll.Service
                                     && s.InFrozenQuantity == 0)));
                 }
 
-                var cell = cellQuery.OrderBy(c=>Math.Abs(c.Col - c.Shelf.CellCols/2)).FirstOrDefault();
+                var cell = cellQuery.OrderBy(c => Math.Abs(c.Col - c.Shelf.CellCols / 2)).FirstOrDefault();
                 if (cell != null)
                 {
-                    var cellPosition = CellPositionRepository.GetQueryable()
-                        .Where(cp => cp.CellCode == cell.CellCode).FirstOrDefault();
+                    var cellPosition = CellPositionRepository.GetQueryable().Where(cp => cp.CellCode == cell.CellCode).FirstOrDefault();
                     if (!cell.Storages.Any())
                     {
                         var storage = new Storage()
@@ -971,7 +978,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.ProductCode = palletCode;
                         newTask.ProductName = "空托盘";
                         newTask.OriginStorageCode = "";
-                        newTask.TargetStorageCode = cell.CellCode;                        
+                        newTask.TargetStorageCode = cell.CellCode;
                         newTask.OriginPositionID = position.ID;
                         newTask.TargetPositionID = cellPosition.StockInPositionID;
                         newTask.CurrentPositionID = position.ID;
@@ -990,12 +997,27 @@ namespace THOK.WCS.Bll.Service
                         TaskRepository.SaveChanges();
                         return true;
                     }
+                    else
+                    {
+                        errorInfo = "未找到目标库存或者货位位置不存在！";
+                        return false;
+                    }
+                }
+                else
+                {
+                    errorInfo = "未找到货位信息！";
+                    return false;
                 }
             }
-            return false;
+            else 
+            {
+                errorInfo = "该任务中的位置上无空托盘！";
+                return false;
+            }
         }
-        public bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName)
+        public bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var systemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(i => i.ParameterName == "EmptyPallet");
             string palletCode = systemParam.ParameterValue;
             int palletCount = 10;
@@ -1018,26 +1040,41 @@ namespace THOK.WCS.Bll.Service
             }
 
             var storage = storageQuery.FirstOrDefault();
+
+            if (storage == null)
+            {
+                errorInfo = "未找到库存信息！";
+                return false; 
+            }
+
             var position = PositionRepository.GetQueryable()
                 .Where(i => (i.ID == positionID || i.PositionName == positionName)).FirstOrDefault();
 
-            if (position == null) return false;
+            if (position == null) 
+            {
+                errorInfo = "未找到位置信息！";
+                return false; 
+            }
 
-            var positionCell = CellPositionRepository.GetQueryable()
-                .Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
+            var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
 
-            var task = TaskRepository.GetQueryable()
-                .Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
+            var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
+
+            if (task != null)
+            {
+                errorInfo = "当前空托盘补货任务未完成！";
+                return false;
+            }
 
             if (storage != null && position != null && position.PositionType == "05" && task == null)
             {
                 var cellPosition = CellPositionRepository.GetQueryable()
                     .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
-                
+
                 if (cellPosition != null)
                 {
                     var path = PathRepository.GetQueryable()
-                        .Where(p=>p.OriginRegion.ID == cellPosition.StockOutPosition.Region.ID
+                        .Where(p => p.OriginRegion.ID == cellPosition.StockOutPosition.Region.ID
                             && p.TargetRegion.ID == position.Region.ID)
                             .FirstOrDefault();
                     if (path != null)
@@ -1052,7 +1089,7 @@ namespace THOK.WCS.Bll.Service
                         newTask.ProductCode = palletCode;
                         newTask.ProductName = "空托盘";
                         newTask.OriginStorageCode = storage.CellCode;
-                        newTask.TargetStorageCode = positionCell != null ? positionCell.CellCode:"";
+                        newTask.TargetStorageCode = positionCell != null ? positionCell.CellCode : "";
                         newTask.OriginPositionID = cellPosition.StockOutPositionID;
                         newTask.TargetPositionID = position.ID;
                         newTask.CurrentPositionID = cellPosition.StockOutPositionID;
@@ -1071,6 +1108,11 @@ namespace THOK.WCS.Bll.Service
                         TaskRepository.SaveChanges();
                         return true;
                     }
+                }
+                else
+                {
+                    errorInfo = "未找到货位位置！";
+                    return false;
                 }
             }
             return false;
