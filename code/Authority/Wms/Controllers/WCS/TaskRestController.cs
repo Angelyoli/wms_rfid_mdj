@@ -19,34 +19,35 @@ namespace Wms.Controllers.WCS
         {
             string errorInfo = string.Empty;
             bool bResult = TaskService.CreateNewTaskForEmptyPalletStack(0,positionName,out errorInfo);
-            return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
+            return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CreateNewTaskForEmptyPalletSupply(string positionName)
         {
             string errorInfo = string.Empty;
             bool bResult = TaskService.CreateNewTaskForEmptyPalletSupply(0,positionName,out errorInfo);
-            return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
+            return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CreateNewTaskForMoveBackRemain(int taskID)
         {
-            bool bResult = TaskService.CreateNewTaskForMoveBackRemain(taskID);
-            return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
+            string errorInfo = string.Empty;
+            bool bResult = TaskService.CreateNewTaskForMoveBackRemain(taskID, out errorInfo);
+            return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult FinishTaskUseTaskID(int taskID)
         {
             string errorInfo = string.Empty;
             bool bResult = TaskService.FinishTask(taskID, out errorInfo);
-            return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
+            return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode)
         {
             string errorInfo = string.Empty;
             bool bResult = TaskService.FinishTask(taskID, orderType, orderID, allotID, originStorageCode, targetStorageCode, out errorInfo);
-            return Json(new RestReturn() { IsSuccess = bResult, Message = "todo" }, "application/json", JsonRequestBehavior.AllowGet);
+            return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult FinishStockOutTask(int taskID,int stockOutQuantity)

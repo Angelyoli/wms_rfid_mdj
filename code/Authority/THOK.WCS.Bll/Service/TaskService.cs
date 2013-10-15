@@ -1117,11 +1117,12 @@ namespace THOK.WCS.Bll.Service
             }
             return false;
         }
-        public bool CreateNewTaskForMoveBackRemain(int taskID)
+        public bool CreateNewTaskForMoveBackRemain(int taskID, out string errorInfo)
         {
+            errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null)
-            {               
+            {
                 var newTask = new Task();
                 newTask.TaskType = "01";
                 newTask.TaskLevel = 0;
@@ -1136,7 +1137,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.CurrentPositionState = "02";
                 newTask.State = "01";
                 newTask.TagState = "01";//拟不使用
-                newTask.Quantity = task.Quantity - task.OperateQuantity ;
+                newTask.Quantity = task.Quantity - task.OperateQuantity;
                 newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
                 newTask.OperateQuantity = 0;
                 //newTask.OrderID = inItem.BillNo;
@@ -1147,7 +1148,11 @@ namespace THOK.WCS.Bll.Service
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 return true;
-            }        
+            }
+            else
+            {
+                errorInfo = "为找到任务号：" + taskID;   
+            }
             return false;
         }
 

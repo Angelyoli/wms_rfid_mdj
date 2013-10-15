@@ -25,7 +25,7 @@ namespace THOK.WCS.Bll.Interfaces
 
         bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName, out string errorInfo);
         bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName, out string errorInfo);
-        bool CreateNewTaskForMoveBackRemain(int taskID);
+        bool CreateNewTaskForMoveBackRemain(int taskID, out string errorInfo);
 
         bool FinishTask(int taskID, out string errorInfo);    
         bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode, out string errorInfo);
