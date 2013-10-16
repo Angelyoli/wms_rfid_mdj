@@ -982,7 +982,7 @@ namespace THOK.WCS.Bll.Service
                                             newTask.StorageSequence = 0;
                                             TaskRepository.Add(newTask);
                                             TaskRepository.SaveChanges();
-                                            return true;
+                                            result = true; ;
                                         }
                                         else
                                         {
@@ -1030,105 +1030,119 @@ namespace THOK.WCS.Bll.Service
         }
         public bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName, out string errorInfo)
         {
+            bool result = false;
             errorInfo = string.Empty;
             var systemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(i => i.ParameterName == "EmptyPallet");
-            string palletCode = systemParam.ParameterValue;
-            int palletCount = 10;
-
-            var storageQuery = StorageRepository.GetQueryable()
-                .Where(i => i.ProductCode == palletCode
-                    && i.Quantity - i.OutFrozenQuantity >= palletCount
-                    && i.OutFrozenQuantity == 0
-                    && i.InFrozenQuantity == 0)
-                .OrderByDescending(i=>i.StorageTime);
-
-            if (!storageQuery.Any())
+            if (systemParam != null)
             {
-                storageQuery = StorageRepository.GetQueryable()
+                string palletCode = systemParam.ParameterValue;
+                int palletCount = 10;
+
+                var storageQuery = StorageRepository.GetQueryable()
                     .Where(i => i.ProductCode == palletCode
-                        && i.Quantity - i.OutFrozenQuantity > 0
+                        && i.Quantity - i.OutFrozenQuantity >= palletCount
                         && i.OutFrozenQuantity == 0
                         && i.InFrozenQuantity == 0)
-                    .OrderByDescending(i=>i.StorageTime);
-            }
-
-            var storage = storageQuery.FirstOrDefault();
-
-            if (storage == null)
-            {
-                errorInfo = "未找到库存信息！";
-                return false; 
-            }
-
-            var position = PositionRepository.GetQueryable()
-                .Where(i => (i.ID == positionID || i.PositionName == positionName)).FirstOrDefault();
-
-            if (position == null) 
-            {
-                errorInfo = "未找到位置信息！";
-                return false; 
-            }
-
-            var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
-
-            var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
-
-            if (task != null)
-            {
-                errorInfo = "当前空托盘补货任务未完成！";
-                return false;
-            }
-
-            if (storage != null && position != null && position.PositionType == "05" && task == null)
-            {
-                var cellPosition = CellPositionRepository.GetQueryable()
-                    .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
-
-                if (cellPosition != null)
+                    .OrderByDescending(i => i.StorageTime);
+                if (!storageQuery.Any())
                 {
-                    var path = PathRepository.GetQueryable()
-                        .Where(p => p.OriginRegion.ID == cellPosition.StockOutPosition.Region.ID
-                            && p.TargetRegion.ID == position.Region.ID)
-                            .FirstOrDefault();
-                    if (path != null)
-                    {
-                        var quantity = storage.Quantity - storage.OutFrozenQuantity;
-                        storage.OutFrozenQuantity += quantity;
+                    storageQuery = StorageRepository.GetQueryable()
+                        .Where(i => i.ProductCode == palletCode
+                            && i.Quantity - i.OutFrozenQuantity > 0
+                            && i.OutFrozenQuantity == 0
+                            && i.InFrozenQuantity == 0)
+                        .OrderByDescending(i => i.StorageTime);
+                }
+                if (storageQuery != null)
+                {
+                    var storage = storageQuery.FirstOrDefault();
 
-                        var newTask = new Task();
-                        newTask.TaskType = "01";
-                        newTask.TaskLevel = 0;
-                        newTask.PathID = path.ID;
-                        newTask.ProductCode = palletCode;
-                        newTask.ProductName = "空托盘";
-                        newTask.OriginStorageCode = storage.CellCode;
-                        newTask.TargetStorageCode = positionCell != null ? positionCell.CellCode : "";
-                        newTask.OriginPositionID = cellPosition.StockOutPositionID;
-                        newTask.TargetPositionID = position.ID;
-                        newTask.CurrentPositionID = cellPosition.StockOutPositionID;
-                        newTask.CurrentPositionState = "02";
-                        newTask.State = "01";
-                        newTask.TagState = "01";//拟不使用
-                        newTask.Quantity = Convert.ToInt32(storage.Quantity);
-                        newTask.TaskQuantity = Convert.ToInt32(quantity);
-                        newTask.OperateQuantity = 0;
-                        //newTask.OrderID = inItem.BillNo;
-                        newTask.OrderType = "06";
-                        //newTask.AllotID = inItem.ID;
-                        newTask.DownloadState = "1";
-                        newTask.StorageSequence = 0;
-                        TaskRepository.Add(newTask);
-                        TaskRepository.SaveChanges();
-                        return true;
+                    var position = PositionRepository.GetQueryable()
+                        .Where(i => (i.ID == positionID || i.PositionName == positionName)).FirstOrDefault();
+
+                    if (position != null && position.PositionType == "05")
+                    {
+                        var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
+                        if (positionCell != null)
+                        {
+                            var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
+
+                            if (storage != null && task == null)
+                            {
+                                var cellPosition = CellPositionRepository.GetQueryable()
+                                    .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
+
+                                if (cellPosition != null)
+                                {
+                                    var path = PathRepository.GetQueryable()
+                                        .Where(p => p.OriginRegion.ID == cellPosition.StockOutPosition.Region.ID
+                                            && p.TargetRegion.ID == position.Region.ID)
+                                            .FirstOrDefault();
+                                    if (path != null)
+                                    {
+                                        var quantity = storage.Quantity - storage.OutFrozenQuantity;
+                                        storage.OutFrozenQuantity += quantity;
+
+                                        var newTask = new Task();
+                                        newTask.TaskType = "01";
+                                        newTask.TaskLevel = 0;
+                                        newTask.PathID = path.ID;
+                                        newTask.ProductCode = palletCode;
+                                        newTask.ProductName = "空托盘";
+                                        newTask.OriginStorageCode = storage.CellCode;
+                                        newTask.TargetStorageCode = positionCell != null ? positionCell.CellCode : "";
+                                        newTask.OriginPositionID = cellPosition.StockOutPositionID;
+                                        newTask.TargetPositionID = position.ID;
+                                        newTask.CurrentPositionID = cellPosition.StockOutPositionID;
+                                        newTask.CurrentPositionState = "02";
+                                        newTask.State = "01";
+                                        newTask.TagState = "01";//拟不使用
+                                        newTask.Quantity = Convert.ToInt32(storage.Quantity);
+                                        newTask.TaskQuantity = Convert.ToInt32(quantity);
+                                        newTask.OperateQuantity = 0;
+                                        //newTask.OrderID = inItem.BillNo;
+                                        newTask.OrderType = "06";
+                                        //newTask.AllotID = inItem.ID;
+                                        newTask.DownloadState = "1";
+                                        newTask.StorageSequence = 0;
+                                        TaskRepository.Add(newTask);
+                                        TaskRepository.SaveChanges();
+                                        result = true;
+                                    }
+                                }
+                                else
+                                {
+                                    errorInfo = "请检查：未找到货位" + storage.Cell.CellName + "的位置！";
+                                }
+                            }
+                            else
+                            {
+                                errorInfo = "请检查：该空托盘补货任务状态必须是已完成";
+                            }
+                        }
+                        else
+                        {
+                            errorInfo = "未找到位置[" + position.PositionName + "]的货位位置信息";
+                        }
+                    }
+                    else
+                    {
+                        errorInfo = "未找到空托盘出库位[" + positionName + "]的位置信息";
                     }
                 }
                 else
                 {
-                    errorInfo = "未找到货位位置！";
-                    return false;
+                    errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "存在于卷烟信息表中。"
+                              + "分析引导："
+                              + "1.此货位的数量-出库冻结量>=10(托盘数量)，并且入库和出库冻结量必须=0；"
+                              + "2.此货位的数量-出库冻结量>0，并且并且入库和出库冻结量必须=0";
                 }
             }
-            return false;
+            else
+            {
+                errorInfo = "请检查：系统参数是否存在参数名：EmptyPallet，并且该值是否存在卷烟信息表中！";
+            }
+            return result;
         }
         public bool CreateNewTaskForMoveBackRemain(int taskID, out string errorInfo)
         {
