@@ -1773,13 +1773,15 @@ namespace THOK.WCS.Bll.Service
             return 0;
         }
 
-        public void AutoCreateMoveBill()
+        public bool AutoCreateMoveBill(out string errorInfo)
         {
+            errorInfo = string.Empty;
+
             var positions = PositionRepository.GetQueryable()
                 .Where(i => i.PositionType == "02"
-                    && !i.HasGoods 
-                    && !string.IsNullOrEmpty(i.ChannelCode) 
-                    && i.ChannelCode != "0");
+                    && !i.HasGoods
+                    && !string.IsNullOrEmpty(i.ChannelCode)
+                    && i.ChannelCode != "0"); 
 
             var cellPositions= CellPositionRepository.GetQueryable()
                 .Where(i => positions.Contains(i.StockInPosition));
@@ -1800,16 +1802,22 @@ namespace THOK.WCS.Bll.Service
 
                 foreach (var cell in cells)
                 {
-                    AlltoMoveBill(moveBillMaster, cell.Product, cell);
+                    var task = TaskRepository.GetQueryable()
+                        .Where(t=>t.State != "04" && t.TargetStorageCode == cell.CellCode)
+                        .FirstOrDefault();
+                    if (task == null)
+                    {
+                        AlltoMoveBill(moveBillMaster, cell.Product, cell);
+                    }                    
                 }
 
                 if (moveBillMaster.MoveBillDetails.Count > 0)
                 {
                     CellRepository.SaveChanges();
-                    string errorInfo = string.Empty;
                     MoveBillTask(moveBillMaster.BillNo, out errorInfo);
                 }
             }
+            return true;
         }
 
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
