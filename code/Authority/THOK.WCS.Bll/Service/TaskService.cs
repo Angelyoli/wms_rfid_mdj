@@ -1220,7 +1220,7 @@ namespace THOK.WCS.Bll.Service
 
             if (inAllot == null)
             {
-                errorInfo = "未找到入库分配信息！";
+                errorInfo = string.Format("未找到订单号{0}分配单号{1}入库分配信息！", orderID, allotID);
                 return false;
             }
 
