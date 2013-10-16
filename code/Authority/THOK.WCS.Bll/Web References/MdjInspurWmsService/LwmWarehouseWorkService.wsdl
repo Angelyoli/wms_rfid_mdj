@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:intf="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:impl="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" targetNamespace="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types />
+  <wsdl:message name="lwmStoreInCompleteResponse">
+    <wsdl:part name="lwmStoreInCompleteReturn" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="lwmStoreOutCompleteResponse">
+    <wsdl:part name="lwmStoreOutCompleteReturn" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="lwmStoreOutProgFeedbackResponse">
+    <wsdl:part name="lwmStoreOutProgFeedbackReturn" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="lwmStroeInProgFeedbackResponse">
+    <wsdl:part name="lwmStroeInProgFeedbackReturn" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="lwmStoreOutCompleteRequest">
+    <wsdl:part name="inXml" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="lwmStoreInCompleteRequest">
+    <wsdl:part name="inXml" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="lwmStroeInProgFeedbackRequest">
+    <wsdl:part name="inXml" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:message name="lwmStoreOutProgFeedbackRequest">
+    <wsdl:part name="inXml" type="soapenc:string" />
+  </wsdl:message>
+  <wsdl:portType name="LwmWarehouseWorkService">
+    <wsdl:operation name="lwmStroeInProgFeedback" parameterOrder="inXml">
+      <wsdl:input name="lwmStroeInProgFeedbackRequest" message="impl:lwmStroeInProgFeedbackRequest" />
+      <wsdl:output name="lwmStroeInProgFeedbackResponse" message="impl:lwmStroeInProgFeedbackResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="lwmStoreInComplete" parameterOrder="inXml">
+      <wsdl:input name="lwmStoreInCompleteRequest" message="impl:lwmStoreInCompleteRequest" />
+      <wsdl:output name="lwmStoreInCompleteResponse" message="impl:lwmStoreInCompleteResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="lwmStoreOutProgFeedback" parameterOrder="inXml">
+      <wsdl:input name="lwmStoreOutProgFeedbackRequest" message="impl:lwmStoreOutProgFeedbackRequest" />
+      <wsdl:output name="lwmStoreOutProgFeedbackResponse" message="impl:lwmStoreOutProgFeedbackResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="lwmStoreOutComplete" parameterOrder="inXml">
+      <wsdl:input name="lwmStoreOutCompleteRequest" message="impl:lwmStoreOutCompleteRequest" />
+      <wsdl:output name="lwmStoreOutCompleteResponse" message="impl:lwmStoreOutCompleteResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LwmWarehouseWorkServiceSoapBinding" type="impl:LwmWarehouseWorkService">
+    <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <wsdl:operation name="lwmStroeInProgFeedback">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="lwmStroeInProgFeedbackRequest">
+        <wsdlsoap:body use="encoded" namespace="http://warehouseservice.mdj.online.itfc.lwm.v6.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="lwmStroeInProgFeedbackResponse">
+        <wsdlsoap:body use="encoded" namespace="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="lwmStoreInComplete">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="lwmStoreInCompleteRequest">
+        <wsdlsoap:body use="encoded" namespace="http://warehouseservice.mdj.online.itfc.lwm.v6.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="lwmStoreInCompleteResponse">
+        <wsdlsoap:body use="encoded" namespace="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="lwmStoreOutProgFeedback">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="lwmStoreOutProgFeedbackRequest">
+        <wsdlsoap:body use="encoded" namespace="http://warehouseservice.mdj.online.itfc.lwm.v6.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="lwmStoreOutProgFeedbackResponse">
+        <wsdlsoap:body use="encoded" namespace="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="lwmStoreOutComplete">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="lwmStoreOutCompleteRequest">
+        <wsdlsoap:body use="encoded" namespace="http://warehouseservice.mdj.online.itfc.lwm.v6.com" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="lwmStoreOutCompleteResponse">
+        <wsdlsoap:body use="encoded" namespace="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LwmWarehouseWorkServiceService">
+    <wsdl:port name="LwmWarehouseWorkService" binding="impl:LwmWarehouseWorkServiceSoapBinding">
+      <wsdlsoap:address location="http://10.56.192.104:9081/lwm/axis/LwmWarehouseWorkService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

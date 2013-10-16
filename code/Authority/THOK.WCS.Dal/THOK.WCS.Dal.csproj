@@ -58,6 +58,7 @@
     <Compile Include="EntityRepository\RegionRepository.cs" />
     <Compile Include="EntityRepository\SizeRepository.cs" />
     <Compile Include="EntityRepository\SRMRepository.cs" />
+    <Compile Include="EntityRepository\TaskHistoryRepository.cs" />
     <Compile Include="EntityRepository\TaskRepository.cs" />
     <Compile Include="Interfaces\IAlarmInfoRepository.cs" />
     <Compile Include="Interfaces\ICellPositionRepository.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Interfaces\IRegionRepository.cs" />
     <Compile Include="Interfaces\ISizeRepository.cs" />
     <Compile Include="Interfaces\ISRMRepository.cs" />
+    <Compile Include="Interfaces\ITaskHistoryRepository.cs" />
     <Compile Include="Interfaces\ITaskRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
