@@ -63,5 +63,12 @@ namespace Wms.Controllers.WCS
             int iResult = TaskService.FinishInventoryTask(taskID, realQuantity, out errorInfo);
             return Json(new RestReturn() { IsSuccess = true, Message = errorInfo, Data = iResult }, "application/json", JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult AutoCreateMoveBill()
+        {
+            string errorInfo = string.Empty;
+            bool bResult = TaskService.AutoCreateMoveBill(out errorInfo);
+            return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
+        }
     }
 }
