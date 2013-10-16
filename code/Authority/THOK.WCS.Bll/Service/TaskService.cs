@@ -947,7 +947,7 @@ namespace THOK.WCS.Bll.Service
             }
             if (cellQuery == null)
             {
-                errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "存在于卷烟信息表中。"
+                errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "是否存在于卷烟信息表中。"
                           + "分析引导："
                           + "1.此货位的数量+入库冻结量<10(托盘数量)，并且出库冻结量必须=0；"
                           + "2.LockTag必须未锁定，库存数量和入库冻结量必须=0";
@@ -1054,7 +1054,7 @@ namespace THOK.WCS.Bll.Service
             }
             if (storageQuery == null)
             {
-                errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "存在于卷烟信息表中。"
+                errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "是否存在于卷烟信息表中。"
                              + "分析引导："
                              + "1.此货位的数量-出库冻结量>=10(托盘数量)，并且入库和出库冻结量必须=0；"
                              + "2.此货位的数量-出库冻结量>0，并且并且入库和出库冻结量必须=0";
