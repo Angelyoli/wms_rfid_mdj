@@ -185,7 +185,17 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult MoveBillMasterSettle(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = MoveBillMasterService.Settle(billNo, out strResult);
+            bool bResult = false;
+            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+            {
+                var moveBill = MoveBillMasterService.Settle(billNo, out strResult);
+                var task = TaskService.ClearTask(billNo);
+                if (moveBill == true && task == true)
+                {
+                    bResult = true;
+                    scope.Complete();
+                }
+            }
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

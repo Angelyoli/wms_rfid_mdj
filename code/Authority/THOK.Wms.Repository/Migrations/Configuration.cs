@@ -2380,6 +2380,14 @@
                     ControlName = "migration",
                     IndicateImage = "icon-reload",
                     Module_ModuleID = new Guid("FA344F88-08AD-4FDA-8F45-EAD3BB471104")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("87CCA685-5A77-47CC-B4A2-000E793DA8C9"),
+                    FunctionName = "作业",
+                    ControlName = "task",
+                    IndicateImage = "icon-reload",
+                    Module_ModuleID = new Guid("FA344F88-08AD-4FDA-8F45-EAD3BB471104")
                 }
                 );
             context.SaveChanges();
@@ -4050,6 +4058,14 @@
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("50AA66D8-ED04-4DF3-B287-3E4B9E957D35"),
+                    FunctionName = "清空",
+                    ControlName = "empty",
+                    IndicateImage = "icon-cancel",
+                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
                 }
             );
             context.SaveChanges();
@@ -4992,6 +5008,14 @@
                     FunctionName = "帮助",
                     ControlName = "help",
                     IndicateImage = "icon-help",
+                    Module_ModuleID = new Guid("145A95C4-C37D-48EE-96F1-6EDEAFE70A7E")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("F035AF71-87D0-4D18-98EE-3318BF65145C"),
+                    FunctionName = "清空",
+                    ControlName = "empty",
+                    IndicateImage = "icon-cancel",
                     Module_ModuleID = new Guid("145A95C4-C37D-48EE-96F1-6EDEAFE70A7E")
                 }
             );
