@@ -1730,18 +1730,25 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 var currentPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.CurrentPositionID).FirstOrDefault();
+                   .Where(i => i.ID == task.CurrentPositionID)
+                   .FirstOrDefault();
                 if (currentPosition == null) return 0;
 
                 var targetPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.OriginPositionID).FirstOrDefault();
+                   .Where(i => i.ID == task.OriginPositionID)
+                   .FirstOrDefault();
                 if (targetPosition == null) return 0;
 
                 var path = PathRepository.GetQueryable()
-                                .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
-                                    && p.TargetRegion.ID == targetPosition.Region.ID)
-                                    .FirstOrDefault();
+                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
+                        && p.TargetRegion.ID == targetPosition.Region.ID)
+                    .FirstOrDefault();
                 if (path == null) return 0;
+
+                var cellPosition = CellPositionRepository.GetQueryable()
+                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
+                    .FirstOrDefault();
+                if (cellPosition == null) return 0;
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
@@ -1752,7 +1759,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.OriginStorageCode = task.TargetStorageCode;
                 newTask.TargetStorageCode = task.OriginStorageCode;
                 newTask.OriginPositionID = task.CurrentPositionID;
-                newTask.TargetPositionID = task.OriginPositionID;
+                newTask.TargetPositionID = cellPosition.StockInPositionID;
                 newTask.CurrentPositionID = task.CurrentPositionID;
                 newTask.CurrentPositionState = "02";
                 newTask.State = "01";
