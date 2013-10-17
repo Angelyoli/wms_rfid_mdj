@@ -919,7 +919,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == position.ID).FirstOrDefault();
             if (task != null)
             {
-                errorInfo = "请检查：起始位置是[" + position.PositionName + "]" + "任务订单类型必须是05，并且任务状态必须是已完成！";
+                errorInfo = "位置[" + position.PositionName + "]已有任务在执行中！";
                 return false;
             }
             var positionQuery = PositionRepository.GetQueryable().Where(i => i.SRMName == position.SRMName && i.AbleStockInPallet && i.ID != position.ID);
