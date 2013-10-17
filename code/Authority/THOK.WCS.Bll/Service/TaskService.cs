@@ -1793,11 +1793,19 @@ namespace THOK.WCS.Bll.Service
 
             if (cells.Count() > 0)
             {
-                string WarehouseCode = "", MoveBillTypeCode = "", operatePersonID = "";
-                MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(WarehouseCode, MoveBillTypeCode, operatePersonID);
+                var systemParamWare = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "WarehouseCode");
+                var systemParamMove = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "MoveBillTypeCode");
+                var systemParamPerson = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "OperatePersonID");
+
+                string warehouseCode = systemParamWare.ParameterValue;
+                string moveBillTypeCode = systemParamMove.ParameterValue;
+                string operatePersonID = systemParamPerson.ParameterValue;
+
+                MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(warehouseCode, moveBillTypeCode, operatePersonID);
                 moveBillMaster.Origin = "2";
                 moveBillMaster.Description = "系统自动生成补大品种拆盘位移库单！";
                 moveBillMaster.Status = "2";
+                moveBillMaster.VerifyPersonID = Guid.Parse(operatePersonID);
                 moveBillMaster.VerifyDate = DateTime.Now;
 
                 foreach (var cell in cells)
