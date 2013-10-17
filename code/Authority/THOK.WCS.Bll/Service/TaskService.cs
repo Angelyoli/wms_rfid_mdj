@@ -1074,11 +1074,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
             var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
-            if (positionCell != null)
-            {
-                errorInfo = "未找到位置[" + position.PositionName + "]的货位位置信息";
-                return false;
-            }
+            
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
             if (task != null)
             {
