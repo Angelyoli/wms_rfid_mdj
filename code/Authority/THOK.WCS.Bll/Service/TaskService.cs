@@ -603,7 +603,7 @@ namespace THOK.WCS.Bll.Service
                         inTask.CurrentPositionState = "01";
                         inTask.State = "01";
                         inTask.TagState = "01";
-                        inTask.Quantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
+                        inTask.Quantity = Convert.ToInt32(inItem.Storage.Quantity / inItem.Product.Unit.Count);
                         inTask.TaskQuantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
                         inTask.OperateQuantity = 0;
                         inTask.OrderID = inItem.BillNo;
@@ -686,7 +686,7 @@ namespace THOK.WCS.Bll.Service
                         outTask.CurrentPositionState = "02";
                         outTask.State = "01";
                         outTask.TagState = "01";
-                        outTask.Quantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
+                        outTask.Quantity = Convert.ToInt32(outItem.Storage.Quantity / outItem.Product.Unit.Count);
                         outTask.TaskQuantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
                         outTask.OperateQuantity = 0;
                         outTask.OrderID = outItem.BillNo;
@@ -760,9 +760,9 @@ namespace THOK.WCS.Bll.Service
                         moveTask.CurrentPositionState = "02";
                         moveTask.State = "01";
                         moveTask.TagState = "01";
-                        moveTask.Quantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
+                        moveTask.Quantity = Convert.ToInt32(moveItem.OutStorage.Quantity / moveItem.Product.Unit.Count);
                         moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
-                        moveTask.OperateQuantity = Convert.ToInt32(moveItem.RealQuantity);
+                        moveTask.OperateQuantity = 0;
                         moveTask.OrderID = moveItem.BillNo;
                         moveTask.OrderType = "02";
                         moveTask.AllotID = moveItem.ID;
@@ -844,9 +844,9 @@ namespace THOK.WCS.Bll.Service
                         checkTask.CurrentPositionState = "02";
                         checkTask.State = "01";
                         checkTask.TagState = "01";
-                        checkTask.Quantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
+                        checkTask.Quantity = Convert.ToInt32(checkItem.Storage.Quantity / checkItem.Product.Unit.Count);
                         checkTask.TaskQuantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
-                        checkTask.OperateQuantity = Convert.ToInt32(checkItem.RealQuantity);
+                        checkTask.OperateQuantity = 0;
                         checkTask.OrderID = checkItem.BillNo;
                         checkTask.OrderType = "04";
                         checkTask.AllotID = checkItem.ID;
@@ -1201,12 +1201,11 @@ namespace THOK.WCS.Bll.Service
                 case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
                 case "05": return FinishEmptyPalletStackTask(targetStorageCode, out errorInfo);
                 case "06": return FinishEmptyPalletSupplyTask(originStorageCode, out errorInfo);
-                case "07": break;
+                case "07": return true;
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
-                default: break;
+                default: return true;
             }
-            return false;
         }
 
         private bool FinishInBillTask(string orderID, int allotID, out string errorInfo)
