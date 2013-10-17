@@ -1080,9 +1080,9 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
-            if (storage == null || task != null)
+            if (task != null)
             {
-                errorInfo = "请检查：该空托盘补货任务状态必须是已完成";
+                errorInfo = "已生成了一个空托盘出库的任务正在执行中！";
                 return false;
             }
             var cellPosition = CellPositionRepository.GetQueryable()
