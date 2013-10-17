@@ -57,8 +57,26 @@
             else if (row.OrderType == '出库单') {
                 $('#orderType2').combo('setValue', '03').combo('setText', row.OrderType);
             }
-            else {
+            else if (row.OrderType == '盘点单') {
                 $('#orderType2').combo('setValue', '04').combo('setText', row.OrderType);
+            }
+            else if (row.OrderType == '空托盘回收') {
+                $('#orderType2').combo('setValue', '05').combo('setText', row.OrderType);
+            }
+            else if (row.OrderType == '空托盘补货') {
+                $('#orderType2').combo('setValue', '06').combo('setText', row.OrderType);
+            }
+            else if (row.OrderType == '小品种补货') {
+                $('#orderType2').combo('setValue', '07').combo('setText', row.OrderType);
+            }
+            else if (row.OrderType == '出库余烟返库') {
+                $('#orderType2').combo('setValue', '08').combo('setText', row.OrderType);
+            }
+            else if (row.OrderType == '盘点余烟返库') {
+                $('#orderType2').combo('setValue', '09').combo('setText', row.OrderType);
+            }
+            else {
+                $('#orderType2').combo('setValue', '').combo('无', row.OrderType);
             }
             //DownloadState
             if (row.DownloadState == '未下载') {
