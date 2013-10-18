@@ -1589,11 +1589,12 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-        public bool ClearTask(string orderID)
+        public bool ClearTask(string orderID, out string errorInfo)
         {
             bool result = false;
+            errorInfo = string.Empty;
             var tasks = TaskRepository.GetQueryable().Where(a => a.OrderID == orderID);
-            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID || a.CurrentPositionID == a.TargetPositionID))))
+            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID && a.State == "01" || a.CurrentPositionID == a.TargetPositionID && a.State == "04"))))
             {
                 TaskHistory taskHistory = null;
                 foreach (var task in tasks)
@@ -1638,7 +1639,7 @@ namespace THOK.WCS.Bll.Service
                         int i = (int)cmd.ExecuteNonQuery();
                         if (i > 0) result = true; else result = false;
                     }
-                    catch (Exception ex) { return false; }
+                    catch (Exception ex) { errorInfo = "清空订单任务时：" + ex.Message; return false; }
                     finally { con.Close(); }
 
                     scope.Complete();
@@ -1647,7 +1648,7 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-
+                errorInfo = "当前有任务正在执行中或者未执行完毕！";
             }
             return result;
         }
