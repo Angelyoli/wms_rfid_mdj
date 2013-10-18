@@ -1678,15 +1678,7 @@ namespace THOK.WCS.Bll.Service
             if (task != null && task.State == "04")
             {
                 FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
-
-                if (task.Quantity > task.TaskQuantity)
-                {
-                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
-                }
-                else
-                {
-                    return -1;
-                }
+                return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
             }
             return 0;
         }
