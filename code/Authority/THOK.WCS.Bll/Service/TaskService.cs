@@ -1630,7 +1630,7 @@ namespace THOK.WCS.Bll.Service
 
                     string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
                     SqlConnection con = new SqlConnection(constr);
-                    string sql = string.Format("truncate table wcs_task where orderID='{0}' ", orderID);
+                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
                     SqlCommand cmd = new SqlCommand(sql, con);
                     try
                     {
@@ -1638,7 +1638,7 @@ namespace THOK.WCS.Bll.Service
                         int i = (int)cmd.ExecuteNonQuery();
                         if (i > 0) result = true; else result = false;
                     }
-                    catch (Exception) {  }
+                    catch (Exception ex) { return false; }
                     finally { con.Close(); }
 
                     scope.Complete();
