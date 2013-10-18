@@ -94,8 +94,8 @@ namespace THOK.Wms.SignalR.Common
             {
                 try
                 {
-                    storage = cell.Storages.Where(s => s.ProductCode == product.ProductCode 
-                                                  && s.Quantity - s.OutFrozenQuantity > 0)
+                    storage = cell.Storages.Where(s => s.ProductCode == product.ProductCode
+                                                  && s.Quantity - s.OutFrozenQuantity > 0).OrderBy(s => s.StorageSequence)
                                            .FirstOrDefault();
                     if (storage != null)
                     {

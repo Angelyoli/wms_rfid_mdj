@@ -800,6 +800,12 @@ namespace THOK.WCS.Bll.Service
             bool result = false;
             errorInfo = string.Empty;
             var taskQuery = TaskRepository.GetQueryable().Where(t => t.State == "02" && t.State == "03");//02:已到达 03:拣选中
+            var checkWarehouse = CheckBillMasterRepository.GetQueryable().Where(i => i.BillNo == billNo).FirstOrDefault();
+            if (checkWarehouse.Warehouse.WarehouseType == "3" && checkWarehouse.BillTypeCode == "4003")
+            {
+                errorInfo = "该仓库是密集库，无法使用异动盘点进行作业！请打印单子进行盘点！";
+                return result;
+            }
             if (!taskQuery.Any())
             {
                 var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");

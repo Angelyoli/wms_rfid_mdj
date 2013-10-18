@@ -131,6 +131,16 @@ namespace THOK.Wms.Bll.Service
                 var outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == moveBillDetail.OutStorageCode);
                 var outCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.OutCellCode);
                 var inCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
+                var isWholePallet = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsWholePallet");//是否整托盘
+
+                int storageSequence = outCell.Storages.Where(t => t.Quantity - t.OutFrozenQuantity > 0).Min(t => t.StorageSequence);
+                if (isWholePallet.ParameterValue == "1")//是整托盘移库            
+                    storageSequence = outCell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);              
+                if (storageSequence != outStorage.StorageSequence)
+                {
+                    strResult = "密集库通道请按照托盘顺序选择最小数出库";
+                    return result;
+                }
                 Storage inStorage = null;
                 if (storage != null)
                 {
@@ -247,6 +257,7 @@ namespace THOK.Wms.Bll.Service
             bool result = false;
             decimal inFrozenQuantity = 0;
             decimal outFrozenQuantity = 0;
+            var isWholePallet = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsWholePallet");//是否整托盘
             if (moveBillDetail.OutCellCode == moveBillDetail.InCellCode)
             {
                 strResult = "移入和移出货位不能一样！";
@@ -268,6 +279,7 @@ namespace THOK.Wms.Bll.Service
             var inCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
             Storage outStorage = null;
             Storage oldOutStorage = null;
+
             if (mbd.OutStorageCode == moveBillDetail.OutStorageCode)//判断用户选择的移出库存和之前保存的移出库存是否相等
             {
                 outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == mbd.OutStorageCode);
@@ -279,6 +291,17 @@ namespace THOK.Wms.Bll.Service
                 outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == moveBillDetail.OutStorageCode);
                 outFrozenQuantity = outStorage.OutFrozenQuantity;
             }
+
+            int storageSequence = outCell.Storages.Where(t => t.Quantity - t.OutFrozenQuantity > 0).Min(t => t.StorageSequence);
+            if (isWholePallet.ParameterValue == "1")//是整托盘移库            
+                storageSequence = outCell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
+           
+            if (storageSequence != outStorage.StorageSequence)
+            {
+                strResult = "密集库通道请按照托盘顺序选择最小数出库";
+                return result;
+            }
+
             Storage inStorage = null;
             Storage oldInStorage = null;
             if (mbd.InCellCode == moveBillDetail.InCellCode)//判断用户选择的移入货位和之前保存的移入货位是否相等
