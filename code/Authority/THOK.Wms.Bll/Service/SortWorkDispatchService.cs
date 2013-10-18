@@ -8,6 +8,8 @@ using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using THOK.Wms.SignalR.Common;
 using System.Transactions;
+using THOK.Authority.Dal.Interfaces;
+using System.Data;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -31,6 +33,15 @@ namespace THOK.Wms.Bll.Service
         public IStorageRepository StorageRepository { get; set; }
         [Dependency]
         public IStorageLocker Locker { get; set; }
+        [Dependency]
+        public ISortingLowerlimitRepository SortingLowerlimitRepository { get; set; }
+        [Dependency]
+        public ISortingLineRepository SortingLineRepository { get; set; }
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
+
+        [Dependency]
+        public IMoveBillCreater MoveBillCreater { get; set; }
 
         protected override Type LogPrefix
         {
@@ -376,6 +387,13 @@ namespace THOK.Wms.Bll.Service
                     }
                     else
                     {
+                        var outAllots = sortWork.OutBillMaster.OutBillAllots;
+                        var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
+                                            .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
+
+                        //大品种先自动移库到分拣线
+                        AutoMoveToSortingLine(sortWork, outDetails);
+
                         //出库单作自动出库
                         var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == sortWork.SortingLine.CellCode
                                                                                 && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
@@ -385,9 +403,7 @@ namespace THOK.Wms.Bll.Service
                             errorInfo = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
                             return false;
                         }
-                        var outAllots = sortWork.OutBillMaster.OutBillAllots;
-                        var outDetails = OutBillDetailRepository.GetQueryableIncludeProduct()
-                                            .Where(o => o.BillNo == sortWork.OutBillMaster.BillNo);
+
                         outDetails.ToArray().AsParallel().ForAll(
                             (Action<OutBillDetail>)delegate(OutBillDetail o)
                             {
@@ -468,7 +484,139 @@ namespace THOK.Wms.Bll.Service
             }
         }
 
-        public System.Data.DataTable GetSortWorkDispatch(int page, int rows, string OrderDate, string SortingLineCode, string DispatchStatus)
+        private void AutoMoveToSortingLine(SortWorkDispatch sortWork, IQueryable<OutBillDetail> outDetails)
+        {
+            var sortingLowerlimitQuery = SortingLowerlimitRepository.GetQueryable();
+            var sortingLineQuery = SortingLineRepository.GetQueryable();
+            var storageQuery = StorageRepository.GetQueryable();
+            var systemParQuery = SystemParameterRepository.GetQueryable();
+
+            //查询调度是否使用下限 0：否；1：是；
+            bool isUselowerlimit = Convert.ToBoolean(systemParQuery
+                .Where(s => s.ParameterName == "IsUselowerlimit")
+                .Select(s => s.ParameterValue));
+
+            var moveBillMaster = MoveBillMasterRepository.GetQueryable()
+                .FirstOrDefault(m => m.BillNo == sortWork.MoveBillNo);
+
+            foreach (var outDetail in outDetails.Where(o => o.Product.IsRounding == "2"))
+            {
+                //获取分拣线下限数量
+                decimal lowerlimitQuantity = sortingLowerlimitQuery
+                    .Where(s => s.ProductCode == outDetail.ProductCode
+                        && s.SortingLineCode == sortWork.SortingLine.SortingLineCode)
+                    .Sum(s => s.Quantity);
+
+                //获取分拣备货区库存数量                   
+                decimal sortQuantity = storageQuery
+                    .Where(s => s.ProductCode == outDetail.ProductCode)
+                    .Join(sortingLineQuery,
+                        s => s.Cell,
+                        l => l.Cell,
+                        (s, l) => new { l.SortingLineCode, s.Quantity }
+                    )
+                    .Where(r => r.SortingLineCode == sortWork.SortingLine.SortingLineCode)
+                    .Sum(s => s.Quantity);
+
+                //是否使用下限
+                if (!isUselowerlimit)
+                    lowerlimitQuantity = 0;
+
+                //获取移库量 = 出库量 + 下限量 - 分拣备货区库存量;
+                decimal quantity = Math.Ceiling((outDetail.BillQuantity + lowerlimitQuantity - sortQuantity)
+                                        / outDetail.Product.Unit.Count) * outDetail.Product.Unit.Count;
+
+                if (quantity > 0)
+                {
+                    AlltoMoveBill(moveBillMaster, outDetail.Product, sortWork.SortingLine.Cell, ref quantity);
+                }
+
+                if (quantity > 0)
+                {
+                    //生成移库不完整,可能是库存不足；
+                    throw new Exception(sortWork.SortingLine.SortingLineName + " " + outDetail.ProductCode + " " + outDetail.Product.ProductName + "仓储拆盘区库存不足，未能结单！");
+                }
+            }
+
+            //自动执行移库单；
+            foreach (var moveDetail in moveBillMaster.MoveBillDetails.Where(m => m.Status == "0"))
+            {
+                if (string.IsNullOrEmpty(moveDetail.InStorage.LockTag)
+                    && string.IsNullOrEmpty(moveDetail.OutStorage.LockTag)
+                    && moveDetail.InStorage.InFrozenQuantity >= moveDetail.RealQuantity
+                    && moveDetail.OutStorage.OutFrozenQuantity >= moveDetail.RealQuantity)
+                {
+                    moveDetail.Status = "2";
+                    moveDetail.InStorage.Quantity += moveDetail.RealQuantity;
+                    moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
+                    if (moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                    if (!moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                    moveDetail.InStorage.Rfid = "";
+                    moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
+                    moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                    if (moveDetail.OutStorage.Quantity == 0) moveDetail.OutStorage.StorageSequence = 0;
+                    moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
+                        ? moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
+                    moveDetail.OutStorage.Rfid = "";
+
+                    //判断移入的时间是否小于移出的时间
+                    if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
+                        moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+
+                    moveDetail.FinishTime = DateTime.Now;
+                }
+            }
+        }
+
+        private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity)
+        {
+            //选择当前订单操作目标仓库；
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()            
+                .Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
+                    && s.Quantity - s.OutFrozenQuantity > 0
+                    && s.Cell.Area.AllotInOrder > 0
+                    && s.Cell.Area.AllotOutOrder > 0
+                    && s.Cell.IsActive == "1");
+
+            if (product.IsRounding == "2")
+            {
+                //分配件烟；大品种拆盘区 
+                var storages = storageQuery.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
+                                        && s.ProductCode == product.ProductCode)
+                                  .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+                if (quantity > 0) AllotPiece(moveBillMaster, storages, cell, ref quantity);
+            }
+        }
+
+        private void AllotPiece(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> storages, Cell cell, ref decimal quantity)
+        {
+            foreach (var storage in storages.ToArray())
+            {
+                if (quantity > 0)
+                {
+                    decimal allotQuantity = Math.Floor((storage.Quantity - storage.OutFrozenQuantity) / storage.Product.Unit.Count) 
+                        * storage.Product.Unit.Count;
+                    decimal billQuantity = Math.Floor(quantity / storage.Product.Unit.Count) 
+                        * storage.Product.Unit.Count;
+                    allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                    if (allotQuantity > 0)
+                    {
+                        var sourceStorage = Locker.LockNoEmptyStorage(storage, storage.Product);
+                        var targetStorage = Locker.LockStorage(cell);
+                        if (sourceStorage != null && targetStorage != null
+                            && targetStorage.Quantity == 0
+                            && targetStorage.InFrozenQuantity == 0)
+                        {
+                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity, "1");
+                            quantity -= allotQuantity;
+                        }
+                    }
+                }
+                else break;
+            }
+        }
+
+        public  DataTable GetSortWorkDispatch(int page, int rows, string OrderDate, string SortingLineCode, string DispatchStatus)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
             IQueryable<SortWorkDispatch> SortWorkDispatchQuery = SortWorkDispatchRepository.GetQueryable();
