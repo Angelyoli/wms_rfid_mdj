@@ -383,7 +383,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     detailrow["real_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
                     detailrow["price"] = Convert.ToDecimal(row["PRICE"]);
                     detailrow["amount"] = Convert.ToDecimal(row["AMOUNT"]);
-                    detailrow["unit_quantity"] = Convert.ToDecimal(row["QY_UNIT"]);
+                    detailrow["unit_quantity"] = Convert.ToDecimal(row["QTY_UNIT"]);
                     ds.Tables["DWV_OUT_ORDER_DETAIL"].Rows.Add(detailrow);
                 }
                 return ds;
