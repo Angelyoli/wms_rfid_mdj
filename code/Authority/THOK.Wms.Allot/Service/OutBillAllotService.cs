@@ -174,18 +174,20 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
 
-        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity, out string strResult)
+        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity, out string strResult,string storageCode)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo);
             var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
             var obm = OutBillDetailRepository.GetQueryable().FirstOrDefault(o => o.ID == id);
+            var outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == storageCode);
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
                 {
-                    Storage storage = Locker.LockNoEmpty(cell, obm.Product);
-                    if (storage != null && allotQuantity > 0)
+                    Storage storage = Locker.LockNoEmptyStorage(outStorage, obm.Product);
+                    int storageSequence = cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
+                    if (storage != null && allotQuantity > 0 && storageSequence == storage.StorageSequence)
                     {
                         OutBillAllot billAllot = null;
                         decimal q1 = obm.BillQuantity - obm.AllotQuantity;
@@ -228,7 +230,7 @@ namespace THOK.Wms.Allot.Service
                     }
                     else
                     {
-                        strResult = "当前选择的储位不可用，其他人正在操作或没有库存！";
+                        strResult = "当前选择的储位库存不可用，请选择其它库存，或者其他人正在操作或没有库存！";
                     }
                 }
                 else
@@ -403,11 +405,12 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
 
-        public bool AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity, out string strResult)
+        public bool AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity, out string strResult, string storageCode)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "3");
             var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
+            var outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == storageCode);
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
@@ -423,8 +426,14 @@ namespace THOK.Wms.Allot.Service
                         }
                         else
                         {
-                            storage = Locker.LockNoEmpty(cell, allotDetail.Product);
+                            storage = Locker.LockNoEmptyStorage(outStorage, allotDetail.Product);
                             allotDetail.Storage.OutFrozenQuantity -= allotDetail.AllotQuantity;
+                        }
+                        int storageSequence = cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
+                        if (storageSequence != storage.StorageSequence)
+                        {
+                            strResult = "密集库不允许有出库冻结的数据进行出库，请选择其它货位库存出库";
+                            return result;
                         }
                         if (storage != null)
                         {

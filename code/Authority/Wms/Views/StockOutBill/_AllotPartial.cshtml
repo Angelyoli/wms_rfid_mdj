@@ -366,7 +366,7 @@
                     <td >储位编码</td>
                     <td align="left">
                       <input type="text" name="CellCode" class="easyui-validatebox"  readonly="true" missingmessage="请选择储位！"/>
-                      <a href="#" onclick="javascript:outCellSelect($('input[name=CellCode]'),$('input[name=CellName]'))" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
+                      <a href="#" onclick="javascript:outCellSelect($('input[name=CellCode]'),$('input[name=CellName]'),$('input[name=StorageCode]'))" class="easyui-linkbutton" iconcls="icon-search" plain="true"></a>
                     </td>
                   </tr>
                   <tr>
@@ -386,6 +386,10 @@
                   <tr>
                     <td >分配数量</td>
                     <td align="left"><input type="text" name="AllotQuantity" id="allQuantity" class="easyui-numberbox" min="0" max="999999999" precision="2" required="true"/></td>
+                  </tr>
+                  <tr style="display:none">
+                    <td >库存编码</td>
+                    <td align="left"><input type="text" name="StorageCode" class="easyui-validatebox" readonly="true" /></td>
                   </tr>
                 </table>
         </form>
