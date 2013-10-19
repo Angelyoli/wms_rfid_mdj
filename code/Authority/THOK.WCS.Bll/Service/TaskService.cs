@@ -603,7 +603,7 @@ namespace THOK.WCS.Bll.Service
                         inTask.CurrentPositionState = "01";
                         inTask.State = "01";
                         inTask.TagState = "01";
-                        inTask.Quantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
+                        inTask.Quantity = Convert.ToInt32(inItem.Storage.Quantity / inItem.Product.Unit.Count);
                         inTask.TaskQuantity = Convert.ToInt32(inItem.AllotQuantity / inItem.Product.Unit.Count);
                         inTask.OperateQuantity = 0;
                         inTask.OrderID = inItem.BillNo;
@@ -686,7 +686,7 @@ namespace THOK.WCS.Bll.Service
                         outTask.CurrentPositionState = "02";
                         outTask.State = "01";
                         outTask.TagState = "01";
-                        outTask.Quantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
+                        outTask.Quantity = Convert.ToInt32(outItem.Storage.Quantity / outItem.Product.Unit.Count);
                         outTask.TaskQuantity = Convert.ToInt32(outItem.AllotQuantity / outItem.Product.Unit.Count);
                         outTask.OperateQuantity = 0;
                         outTask.OrderID = outItem.BillNo;
@@ -760,9 +760,9 @@ namespace THOK.WCS.Bll.Service
                         moveTask.CurrentPositionState = "02";
                         moveTask.State = "01";
                         moveTask.TagState = "01";
-                        moveTask.Quantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
+                        moveTask.Quantity = Convert.ToInt32(moveItem.OutStorage.Quantity / moveItem.Product.Unit.Count);
                         moveTask.TaskQuantity = Convert.ToInt32(moveItem.RealQuantity / moveItem.Product.Unit.Count);
-                        moveTask.OperateQuantity = Convert.ToInt32(moveItem.RealQuantity);
+                        moveTask.OperateQuantity = 0;
                         moveTask.OrderID = moveItem.BillNo;
                         moveTask.OrderType = "02";
                         moveTask.AllotID = moveItem.ID;
@@ -809,11 +809,11 @@ namespace THOK.WCS.Bll.Service
             if (!taskQuery.Any())
             {
                 var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");
-                if (targetSystemParam != null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
                 int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
 
                 var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
-                if (targetPosition != null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
+                if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
 
                 var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
                 if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
@@ -827,10 +827,10 @@ namespace THOK.WCS.Bll.Service
                     foreach (var checkItem in checkQuery.ToArray())
                     {
                         var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == checkItem.CellCode);
-                        if (originCellPosition != null) { errorInfo = "未找到起始货位：" + checkItem.Cell.CellName; return false; }
+                        if (originCellPosition == null) { errorInfo = "未找到起始货位：" + checkItem.Cell.CellName; return false; }
 
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);//根据“货位出库位置ID”查找“起始位置信息”
-                        if (originPosition != null) { errorInfo = "未找到起始位置（移出位置）：" + originCellPosition.StockOutPosition.PositionName; return false; }
+                        if (originPosition == null) { errorInfo = "未找到起始位置（移出位置）：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
                         //根据“出库（目标和起始）位置信息的区域ID”查找“路径信息”
                         var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
@@ -850,9 +850,9 @@ namespace THOK.WCS.Bll.Service
                         checkTask.CurrentPositionState = "02";
                         checkTask.State = "01";
                         checkTask.TagState = "01";
-                        checkTask.Quantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
+                        checkTask.Quantity = Convert.ToInt32(checkItem.Storage.Quantity / checkItem.Product.Unit.Count);
                         checkTask.TaskQuantity = Convert.ToInt32(checkItem.RealQuantity / checkItem.Product.Unit.Count);
-                        checkTask.OperateQuantity = Convert.ToInt32(checkItem.RealQuantity);
+                        checkTask.OperateQuantity = 0;
                         checkTask.OrderID = checkItem.BillNo;
                         checkTask.OrderType = "04";
                         checkTask.AllotID = checkItem.ID;
@@ -925,7 +925,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == position.ID).FirstOrDefault();
             if (task != null)
             {
-                errorInfo = "请检查：起始位置是[" + position.PositionName + "]" + "任务订单类型必须是05，并且任务状态必须是已完成！";
+                errorInfo = "位置[" + position.PositionName + "]已有任务在执行中！";
                 return false;
             }
             var positionQuery = PositionRepository.GetQueryable().Where(i => i.SRMName == position.SRMName && i.AbleStockInPallet && i.ID != position.ID);
@@ -1080,15 +1080,11 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
             var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
-            if (positionCell != null)
-            {
-                errorInfo = "未找到位置[" + position.PositionName + "]的货位位置信息";
-                return false;
-            }
+            
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
-            if (storage == null || task != null)
+            if (task != null)
             {
-                errorInfo = "请检查：该空托盘补货任务状态必须是已完成";
+                errorInfo = "已生成了一个空托盘出库的任务正在执行中！";
                 return false;
             }
             var cellPosition = CellPositionRepository.GetQueryable()
@@ -1207,12 +1203,11 @@ namespace THOK.WCS.Bll.Service
                 case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
                 case "05": return FinishEmptyPalletStackTask(targetStorageCode, out errorInfo);
                 case "06": return FinishEmptyPalletSupplyTask(originStorageCode, out errorInfo);
-                case "07": break;
+                case "07": return true;
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
-                default: break;
+                default: return true;
             }
-            return false;
         }
 
         private bool FinishInBillTask(string orderID, int allotID, out string errorInfo)
@@ -1737,18 +1732,25 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 var currentPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.CurrentPositionID).FirstOrDefault();
+                   .Where(i => i.ID == task.CurrentPositionID)
+                   .FirstOrDefault();
                 if (currentPosition == null) return 0;
 
                 var targetPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.OriginPositionID).FirstOrDefault();
+                   .Where(i => i.ID == task.OriginPositionID)
+                   .FirstOrDefault();
                 if (targetPosition == null) return 0;
 
                 var path = PathRepository.GetQueryable()
-                                .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
-                                    && p.TargetRegion.ID == targetPosition.Region.ID)
-                                    .FirstOrDefault();
+                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
+                        && p.TargetRegion.ID == targetPosition.Region.ID)
+                    .FirstOrDefault();
                 if (path == null) return 0;
+
+                var cellPosition = CellPositionRepository.GetQueryable()
+                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
+                    .FirstOrDefault();
+                if (cellPosition == null) return 0;
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
@@ -1759,7 +1761,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.OriginStorageCode = task.TargetStorageCode;
                 newTask.TargetStorageCode = task.OriginStorageCode;
                 newTask.OriginPositionID = task.CurrentPositionID;
-                newTask.TargetPositionID = task.OriginPositionID;
+                newTask.TargetPositionID = cellPosition.StockInPositionID;
                 newTask.CurrentPositionID = task.CurrentPositionID;
                 newTask.CurrentPositionState = "02";
                 newTask.State = "01";
@@ -1799,11 +1801,19 @@ namespace THOK.WCS.Bll.Service
 
             if (cells.Count() > 0)
             {
-                string WarehouseCode = "", MoveBillTypeCode = "", operatePersonID = "";
-                MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(WarehouseCode, MoveBillTypeCode, operatePersonID);
+                var systemParamWare = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "WarehouseCode");
+                var systemParamMove = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "MoveBillTypeCode");
+                var systemParamPerson = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "OperatePersonID");
+
+                string warehouseCode = systemParamWare.ParameterValue;
+                string moveBillTypeCode = systemParamMove.ParameterValue;
+                string operatePersonID = systemParamPerson.ParameterValue;
+
+                MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(warehouseCode, moveBillTypeCode, operatePersonID);
                 moveBillMaster.Origin = "2";
                 moveBillMaster.Description = "系统自动生成补大品种拆盘位移库单！";
                 moveBillMaster.Status = "2";
+                moveBillMaster.VerifyPersonID = Guid.Parse(operatePersonID);
                 moveBillMaster.VerifyDate = DateTime.Now;
 
                 foreach (var cell in cells)
