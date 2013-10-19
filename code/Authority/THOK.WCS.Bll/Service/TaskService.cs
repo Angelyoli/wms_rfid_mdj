@@ -97,7 +97,7 @@ namespace THOK.WCS.Bll.Service
             if (task.OrderID == "" || task.OrderID == null)
                 task.OrderID = "";
             if (task.OrderType == "" || task.OrderType == null)
-                task.OrderType = "01";
+                task.OrderType = "";
             if (task.AllotID.ToString() == "" || task.AllotID.ToString() == null)
                 task.AllotID = 0;
             if (task.DownloadState == "" || task.DownloadState == null)
