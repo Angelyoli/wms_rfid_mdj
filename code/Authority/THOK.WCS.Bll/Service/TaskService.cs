@@ -1212,13 +1212,6 @@ namespace THOK.WCS.Bll.Service
                                         && i.ID == allotID
                                         && i.Status == "0")
                                     .FirstOrDefault();
-
-            if (inAllot == null)
-            {
-                errorInfo = string.Format("未找到订单号{0}分配单号{1}入库分配信息！", orderID, allotID);
-                return false;
-            }
-
             if (inAllot != null && (inAllot.InBillMaster.Status == "4"|| inAllot.InBillMaster.Status == "5"))
             {
                 decimal quantity = inAllot.AllotQuantity;
