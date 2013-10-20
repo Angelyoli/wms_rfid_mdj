@@ -203,7 +203,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 else if (product.Product.IsRounding == "0")
                                 {
                                     //取整件
-                                    quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - sortQuantity) 
+                                    quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - sortQuantity - (lowerlimitQuantity > 0 ? 30 : 0)) 
                                         / product.Product.Unit.Count) * product.Product.Unit.Count;
                                 }
                                 else
