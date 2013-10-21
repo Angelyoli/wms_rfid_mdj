@@ -270,11 +270,11 @@ namespace THOK.Wms.SignalR.Allot.Service
                     decimal billQuantity = Math.Floor((billDetail.BillQuantity - billDetail.AllotQuantity)
                         / billDetail.Product.Unit.Count)
                         * billDetail.Product.Unit.Count;
-                    if (billQuantity >= allotQuantity && storageSequence==s.StorageSequence)
+                    if (billQuantity >= allotQuantity && storageSequence == s.StorageSequence)
                     {
                         Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
                     }
-                    else if (billQuantity >= 300000 && storageSequence == s.StorageSequence) 
+                    else if (billQuantity >= 300000 && storageSequence == s.StorageSequence)
                     {
                         allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
                         Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);

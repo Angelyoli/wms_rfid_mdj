@@ -644,51 +644,86 @@ namespace THOK.Wms.Bll.Service
         {
             strResult = string.Empty;
             bool result = false;
-            string[] ids = id.Split(',');
-            string strId = "";
+            string[] ids = id.Split(',').ToArray();
+            int strId;
             MoveBillDetail detail = null;
 
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
 
-            for (int i = 0; i < ids.Length; i++)
+            for (int i = 0; i < ids.Length - 1; i++)
             {
-                strId = ids[i].ToString();
-                detail = MoveBillDetailRepository.GetQueryable().AsEnumerable().FirstOrDefault(a => strId == a.ID.ToString());
+                strId = Convert.ToInt32(ids[i].ToString());
+                detail = MoveBillDetailRepository.GetQueryable().FirstOrDefault(a => strId == a.ID);
                 if (detail != null)
                 {
-                    if (detail.Status == "0" && status == "1"
-                     || detail.Status == "1" && status == "0"
-                     || detail.Status == "1" && status == "2")
+                    try
                     {
-                        try
+                        decimal quantity = detail.RealQuantity;
+                        if (detail.Status == "0" && status == "1")//申请
                         {
                             detail.Status = status;
-                            if (operater != "")
-                            {
-                                detail.Operator = employee.EmployeeName;
-                            }
-                            else
-                            {
-                                detail.Operator = "";
-                            }
-                            MoveBillDetailRepository.SaveChanges();
+                            detail.StartTime = DateTime.Now;
+                            detail.Operator = employee.EmployeeName;
                             result = true;
                         }
-                        catch (Exception ex)
+                        else if (detail.Status == "1" && status == "0" && detail.Operator == employee.EmployeeName)//取消
                         {
-                            strResult = "原因：" + ex.Message;
+                            detail.Status = status;
+                            detail.StartTime = null;
+                            detail.Operator = string.Empty;
+                            result = true;
+                        }
+                        else if (detail.Status == "1" && status == "2" && detail.Operator == employee.EmployeeName)//完成
+                        {
+                            if ((detail.MoveBillMaster.Status == "2" || detail.MoveBillMaster.Status == "3")
+                                         && string.IsNullOrEmpty(detail.InStorage.LockTag)
+                                         && string.IsNullOrEmpty(detail.OutStorage.LockTag)
+                                         && detail.InStorage.InFrozenQuantity >= detail.RealQuantity
+                                         && detail.OutStorage.OutFrozenQuantity >= detail.RealQuantity)
+                            {
+                                detail.Status = status;
+                                detail.InStorage.Quantity += detail.RealQuantity;
+                                detail.InStorage.InFrozenQuantity -= detail.RealQuantity;
+                                detail.OutStorage.Quantity -= detail.RealQuantity;
+                                detail.OutStorage.OutFrozenQuantity -= detail.RealQuantity;
+                                detail.FinishTime = DateTime.Now;
+                                detail.MoveBillMaster.Status = "3";
+                                //当移入货位的库存为0时，以移出的货位的时间为移入货位的库存时间
+                                if (detail.InStorage.Quantity - detail.RealQuantity == 0)
+                                {
+                                    detail.InStorage.StorageTime = detail.OutStorage.StorageTime;
+                                }
+                                //当移入货位的库存不为0时，以最晚的时间为移入货位的入库时间
+                                else
+                                {
+                                    //当移出货位的入库时间早于移入货位的时间，则更新移入货位的入库时间
+                                    if (DateTime.Compare(detail.OutStorage.StorageTime, detail.InStorage.StorageTime) == -1)
+                                        detail.InStorage.StorageTime = detail.OutStorage.StorageTime;
+                                }
+                                if (detail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
+                                {
+                                    detail.MoveBillMaster.Status = "4";
+                                }
+                                result = true;
+                            }
+                        }
+                        else
+                        {
+                            strResult = "查询状态错误,该数据没有当前状态，请尝试使用车载系统完成！";
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        strResult = "原因：操作错误！";
+                        strResult = "原因：" + ex.Message;
                     }
                 }
                 else
                 {
-                    strResult = "原因：未找到该记录！";
+                    strResult = "原因：未找到细表单号为：" + detail.ID + " 主表单号为:" + detail.BillNo + " 的记录！";
+                    return result;
                 }
             }
+            MoveBillDetailRepository.SaveChanges();
             return result;
         }
         #endregion
