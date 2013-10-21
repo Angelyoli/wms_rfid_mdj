@@ -1503,11 +1503,12 @@ namespace THOK.WCS.Bll.Service
                     cell.Storages.FirstOrDefault().Quantity = 0;
                     cell.Storages.FirstOrDefault().StorageSequence = 0;
                     CellRepository.SaveChanges();
+                    return true;
                 }
                 else
                 {
                     errorInfo = "库存冻结量<=0";
-                    return false;
+                    return true;
                 }
             }
             else
@@ -1515,7 +1516,6 @@ namespace THOK.WCS.Bll.Service
                 errorInfo = "未找到货位库存信息！";
                 return false;
             }
-            return true;
         }
 
         public bool ClearTask(out string errorInfo)
