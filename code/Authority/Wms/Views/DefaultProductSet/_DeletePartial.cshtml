@@ -6,16 +6,21 @@
             $.messager.alert('提示', '请选择要删除的数据!', 'info');
             return;
         }
-        for (var i = 0; i < productRows.length; i++) {
-            pRows += productRows[i].ProductCode + ",";
-        }
-
-        $.ajaxSender.send('/DefaultProductSet/CellDel/',
+        $.messager.confirm('删除', '确认要删除该记录吗？', function (r) {
+            $.messager.confirm('删除', '警告：请谨慎操作！', function (r) {
+                if (r) {
+                    for (var i = 0; i < productRows.length; i++) {
+                        pRows += productRows[i].ProductCode + ",";
+                    }
+                    $.ajaxSender.send('/DefaultProductSet/CellDel/',
                         {
                             'productCodes': pRows
                         },
                         function (data) {
                             $('#details').datagrid('reload');
                         });
+                }
+            });
+        });
     }
 </script>
