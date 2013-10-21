@@ -1079,7 +1079,7 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 errorInfo = "已生成了一个空托盘出库的任务正在执行中！";
-                return false;
+                return true;
             }
             var cellPosition = CellPositionRepository.GetQueryable()
                 .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
