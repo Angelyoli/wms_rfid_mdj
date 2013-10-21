@@ -75,10 +75,10 @@ namespace THOK.WMS.DownloadWms.Bll
                     string orderlist = UtinString.MakeString(orderdt, "order_id");
                     string orderlistDate = "ORDER_DATE ='" + orderDate + "'";
                     DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询主表数据
-                    DataRow[] masterdr = masterdt.Select("ORDERID NOT IN(" + orderlist + ")");//排除已经下载的数据
-                    string ordermasterlist = UtinString.MakeString(masterdr, "ORDERID");//获取未下载主表单据的数据字符
+                    DataRow[] masterdr = masterdt.Select("ORDER_ID NOT IN(" + orderlist + ")");//排除已经下载的数据
+                    string ordermasterlist = UtinString.MakeString(masterdr, "ORDER_ID");//获取未下载主表单据的数据字符
                     DataTable detaildt = this.GetSortingOrderDetail(orderlistDate);//根据时间查询细表数据
-                    DataRow[] detaildr = detaildt.Select("ORDERID IN (" + ordermasterlist + ")");//查询未下载的细单数据
+                    DataRow[] detaildr = detaildt.Select("ORDER_ID IN (" + ordermasterlist + ")");//查询未下载的细单数据
                     if (masterdr.Length > 0 && detaildr.Length > 0)
                     {
                         DataSet masterds = this.SaveSortingOrder2(masterdr);
