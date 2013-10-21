@@ -1507,7 +1507,7 @@ namespace THOK.WCS.Bll.Service
                 }
                 else
                 {
-                    errorInfo = "库存冻结量<=0";
+                    errorInfo = "补空托盘货位的出库冻结量<=0";
                     return true;
                 }
             }
