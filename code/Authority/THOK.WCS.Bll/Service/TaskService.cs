@@ -920,7 +920,7 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 errorInfo = "位置[" + position.PositionName + "]已有任务在执行中！";
-                return false;
+                return true;
             }
             var positionQuery = PositionRepository.GetQueryable().Where(i => i.SRMName == position.SRMName && i.AbleStockInPallet && i.ID != position.ID);
             if (positionQuery == null)
