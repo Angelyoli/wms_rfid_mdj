@@ -934,6 +934,9 @@ namespace THOK.WCS.Bll.Service
                 errorInfo = "请检查：位置[" + position.PositionName + "]必须在货位位置表中存在！";
                 return false;
             }
+            CellPosition originCellPosition = CellPositionRepository.GetQueryable().Where(i => i.StockOutPositionID == position.ID).FirstOrDefault();
+            Cell originCell = CellRepository.GetQueryable().Where(i => i.CellCode == originCellPosition.CellCode).FirstOrDefault();
+
             var cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
                 && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
                 && (i.Storages.Any(s => s.ProductCode == palletCode
@@ -988,6 +991,14 @@ namespace THOK.WCS.Bll.Service
             {
                 errorInfo = "未找到目标货位的库存或者货位位置不存在！";
             }
+            var path = PathRepository.GetQueryable()
+                .Where(p => p.OriginRegion.ID == cellPosition.StockOutPosition.Region.ID
+                    && p.TargetRegion.ID == position.Region.ID)
+                    .FirstOrDefault();
+            if (path == null)
+            {
+                errorInfo = "未找到路径信息！";
+            }
             try
             {
                 targetStorage.ProductCode = palletCode;
@@ -995,10 +1006,10 @@ namespace THOK.WCS.Bll.Service
                 var newTask = new Task();
                 newTask.TaskType = "02";
                 newTask.TaskLevel = 0;
-                //newTask.PathID = path.ID;
+                newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
-                newTask.OriginStorageCode = "";
+                newTask.OriginStorageCode = originCell.CellCode;
                 newTask.TargetStorageCode = cell.CellCode;
                 newTask.OriginPositionID = position.ID;
                 newTask.TargetPositionID = cellPosition.StockInPositionID;
@@ -1009,10 +1020,10 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = 1;
                 newTask.TaskQuantity = 1;
                 newTask.OperateQuantity = 0;
-                //newTask.OrderID = inItem.BillNo;
+                newTask.OrderID = "";
                 newTask.OrderType = "05";
                 //newTask.AllotID = inItem.ID;
-                newTask.DownloadState = "1";
+                newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
@@ -1118,7 +1129,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = Convert.ToInt32(storage.Quantity);
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
-                //newTask.OrderID = inItem.BillNo;
+                newTask.OrderID = "";
                 newTask.OrderType = "06";
                 //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "1";
