@@ -920,7 +920,7 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 errorInfo = "位置[" + position.PositionName + "]已有任务在执行中！";
-                return true;
+                return false;
             }
             var positionQuery = PositionRepository.GetQueryable().Where(i => i.SRMName == position.SRMName && i.AbleStockInPallet && i.ID != position.ID);
             if (positionQuery == null)
@@ -987,7 +987,7 @@ namespace THOK.WCS.Bll.Service
                 }
             }
             var targetStorage = cell.Storages.FirstOrDefault();
-            if (targetStorage == null || cellPosition == null)
+            if (targetStorage == null)
             {
                 errorInfo = "未找到目标货位的库存或者货位位置不存在！";
             }
@@ -997,7 +997,7 @@ namespace THOK.WCS.Bll.Service
                     .FirstOrDefault();
             if (path == null)
             {
-                errorInfo = "未找到路径信息！";
+                errorInfo = "未找到路径[" + path.PathName + "]";
                 return false;
             }
             try
@@ -1090,8 +1090,8 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
             if (task != null)
             {
-                errorInfo = "已生成了一个空托盘出库的任务正在执行中！";
-                return true;
+                errorInfo = "已生成了一个空托盘出库的任务号[" + task.ID + "]正在执行中！";
+                return false;
             }
             var cellPosition = CellPositionRepository.GetQueryable()
                 .Where(cp => cp.CellCode == storage.CellCode).FirstOrDefault();
@@ -1180,9 +1180,9 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-                errorInfo = "为找到任务号：" + taskID;   
+                errorInfo = "未找到任务号：" + taskID;
+                return false;
             }
-            return false;
         }
 
         public bool FinishTask(int taskID, out string errorInfo)
@@ -1195,9 +1195,9 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-                errorInfo = "当前任务未完成！";
+                errorInfo = "当前任务号[" + taskID + "]未完成！";
+                return false;
             }
-            return false;
         }
         public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode, out string errorInfo)
         {
@@ -1513,7 +1513,7 @@ namespace THOK.WCS.Bll.Service
                 else
                 {
                     errorInfo = "补空托盘货位的出库冻结量<=0";
-                    return true;
+                    return false;
                 }
             }
             else
