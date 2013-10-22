@@ -48,8 +48,8 @@ namespace Wms.Controllers.Wms.AutomotiveSystems
             string operater = string.Empty;
             string msg = string.Empty;
 
-            if (status == "1") operater = this.User.Identity.Name.ToString();
-            if (status == "0") operater = "";
+            operater = this.User.Identity.Name.ToString();
+            
             bool bResult = InBillAllotService.EditAllot(id, status, operater, out strResult);
             if (status == "0") msg = bResult ? "取消成功" : "取消失败";
             if (status == "1") msg = bResult ? "申请成功" : "申请失败";

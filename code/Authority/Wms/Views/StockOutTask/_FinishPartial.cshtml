@@ -14,7 +14,7 @@
     function save() {
         $.ajaxSender.send('/StockOutTask/Operate/',
                         {
-                            'id': $("input[name='ID']").val(),
+                            'id': $("input[name='ID']").val() + ",",
                             'status': '2'
                         },
                         function (data) {

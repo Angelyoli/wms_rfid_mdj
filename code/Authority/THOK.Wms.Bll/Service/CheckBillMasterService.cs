@@ -663,7 +663,7 @@ namespace THOK.Wms.Bll.Service
                         sw.Start();
 
                         #region 循环所有仓库的订单，一个仓库一个盘点单据
-                        var warehouses = wareQuery.OrderBy(w => w.WarehouseCode);
+                        var warehouses = wareQuery.OrderBy(w => w.WarehouseCode);                        
                         foreach (var item in warehouses.ToArray())
                         {
                             var inCells = inAllotQuery.Where(i => i.FinishTime >= begin && i.FinishTime <= end && i.Cell.WarehouseCode == item.WarehouseCode).OrderBy(i => i.CellCode).Select(i => i.CellCode);
@@ -679,7 +679,7 @@ namespace THOK.Wms.Bll.Service
                                 var check = new CheckBillMaster();
                                 check.BillNo = billNo;
                                 check.BillDate = DateTime.Now;
-                                check.BillTypeCode = billType;
+                                check.BillTypeCode = "4003";
                                 check.WarehouseCode = item.WarehouseCode;
                                 check.OperatePersonID = employee.ID;
                                 check.Status = "1";

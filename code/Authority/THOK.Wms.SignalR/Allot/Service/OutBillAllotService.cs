@@ -225,10 +225,14 @@ namespace THOK.Wms.SignalR.Allot.Service
             {
                 if (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                 {
+                    int storageSequence = s.Cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0 || t.Cell.IsSingle == "1").Min(t => t.StorageSequence);
                     decimal allotQuantity = s.Quantity - s.OutFrozenQuantity;
                     decimal billQuantity = billDetail.BillQuantity - billDetail.AllotQuantity;
-                    allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                    Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
+                    if (storageSequence == s.StorageSequence)
+                    {
+                        allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                        Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
+                    }
                 }
                 else break;
             }
@@ -240,12 +244,16 @@ namespace THOK.Wms.SignalR.Allot.Service
             {
                 if (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                 {
+                    int storageSequence = s.Cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0 || t.Cell.IsSingle == "1").Min(t => t.StorageSequence);
                     decimal allotQuantity = s.Quantity - s.OutFrozenQuantity;
                     decimal billQuantity = Math.Floor((billDetail.BillQuantity - billDetail.AllotQuantity)
                         / billDetail.Product.Unit.Count)
                         * billDetail.Product.Unit.Count;
-                    allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                    Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
+                    if (storageSequence == s.StorageSequence)
+                    {
+                        allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
+                        Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
+                    }
                 }
                 else break;
             }
@@ -257,15 +265,16 @@ namespace THOK.Wms.SignalR.Allot.Service
             {
                 if (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                 {
+                    int storageSequence = s.Cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0 || t.Cell.IsSingle == "1").Min(t => t.StorageSequence);
                     decimal allotQuantity = s.Quantity - s.OutFrozenQuantity;
                     decimal billQuantity = Math.Floor((billDetail.BillQuantity - billDetail.AllotQuantity)
                         / billDetail.Product.Unit.Count)
                         * billDetail.Product.Unit.Count;
-                    if (billQuantity >= allotQuantity)
+                    if (billQuantity >= allotQuantity && storageSequence == s.StorageSequence)
                     {
                         Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
                     }
-                    else if (billQuantity >= 300000) 
+                    else if (billQuantity >= 300000 && storageSequence == s.StorageSequence)
                     {
                         allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
                         Allot(billMaster, billDetail, s, Locker.LockNoEmptyStorage(s, billDetail.Product), allotQuantity, ps);
