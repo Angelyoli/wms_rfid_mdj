@@ -369,11 +369,13 @@ namespace THOK.WMS.DownloadWms.Bll
                     DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();
                     i++;
                     string newcode = i.ToString();
-                    for (int j = 0; j < 5 - i.ToString().Length; j++)
+                    for (int j = 0; j < 8 - i.ToString().Length; j++)
                     {
                         newcode = "0" + newcode;
                     }
-                    detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim() + newcode;
+                    string yearToMinute = System.DateTime.Now.ToString("yyyyMMddHHmm");
+
+                    detailrow["order_detail_id"] = yearToMinute + newcode;
                     detailrow["order_id"] = row["ORDER_ID"].ToString().Trim();
                     detailrow["product_code"] = row["BRAND_CODE"].ToString().Trim();
                     detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
