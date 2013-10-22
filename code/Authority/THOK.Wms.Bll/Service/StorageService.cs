@@ -156,7 +156,7 @@ namespace THOK.Wms.Bll.Service
             {
                 return null;
             }
-            var temp = storages.OrderBy(i=>i.CellCode).Select(s =>s);
+            var temp = storages.OrderBy(i=>i.StorageSequence).Select(s =>s);
 
             int total = temp.Count();
             temp = temp.Skip((page - 1) * rows).Take(rows);

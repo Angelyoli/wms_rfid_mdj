@@ -494,7 +494,7 @@ namespace THOK.Wms.Bll.Service
             //查询调度是否使用下限 0：否；1：是；
             bool isUselowerlimit = Convert.ToBoolean(systemParQuery
                 .Where(s => s.ParameterName == "IsUselowerlimit")
-                .Select(s => s.ParameterValue));
+                .Select(s => s.ParameterValue).FirstOrDefault());
 
             var moveBillMaster = MoveBillMasterRepository.GetQueryable()
                 .FirstOrDefault(m => m.BillNo == sortWork.MoveBillNo);
@@ -505,7 +505,9 @@ namespace THOK.Wms.Bll.Service
                 decimal lowerlimitQuantity = sortingLowerlimitQuery
                     .Where(s => s.ProductCode == outDetail.ProductCode
                         && s.SortingLineCode == sortWork.SortingLine.SortingLineCode)
-                    .Sum(s => s.Quantity);
+                        .GroupBy(l => new { l.SortingLineCode, l.ProductCode })
+                        .Select(l => l.Sum(s => s.Quantity))
+                        .FirstOrDefault();
 
                 //获取分拣备货区库存数量                   
                 decimal sortQuantity = storageQuery
@@ -516,7 +518,9 @@ namespace THOK.Wms.Bll.Service
                         (s, l) => new { l.SortingLineCode, s.Quantity }
                     )
                     .Where(r => r.SortingLineCode == sortWork.SortingLine.SortingLineCode)
-                    .Sum(s => s.Quantity);
+                    .GroupBy(l => l.SortingLineCode)
+                    .Select(l => l.Sum(s => s.Quantity))
+                    .FirstOrDefault();
 
                 //是否使用下限
                 if (!isUselowerlimit)

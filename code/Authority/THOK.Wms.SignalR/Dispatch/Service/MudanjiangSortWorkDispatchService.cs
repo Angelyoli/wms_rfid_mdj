@@ -87,7 +87,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             //查询调度是否使用下限 0：否；1：是；
             bool isUselowerlimit = Convert.ToBoolean(systemParQuery
                 .Where(s => s.ParameterName == "IsUselowerlimit")
-                .Select(s=>s.ParameterValue));
+                .Select(s=>s.ParameterValue).FirstOrDefault());
 
             //要调度的作业任务转成数组
             workDispatchId = workDispatchId.Substring(0, workDispatchId.Length - 1);
@@ -174,7 +174,9 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 decimal lowerlimitQuantity = sortingLowerlimitQuery
                                     .Where(s => s.ProductCode == product.Product.ProductCode
                                         && s.SortingLineCode == product.SortingLine.SortingLineCode)
-                                    .Sum(s => s.Quantity);
+                                    .GroupBy(l => new { l.SortingLineCode,l.ProductCode})
+                                    .Select(l=>l.Sum(s=>s.Quantity))
+                                    .FirstOrDefault();
              
                                 //获取分拣备货区库存数量                   
                                 decimal sortQuantity = storageQuery
@@ -185,7 +187,9 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                         (s, l) => new { l.SortingLineCode, s.Quantity }
                                     )
                                     .Where(r => r.SortingLineCode == product.SortingLine.SortingLineCode)
-                                    .Sum(s=>s.Quantity);
+                                    .GroupBy(l=>l.SortingLineCode)
+                                    .Select(l=>l.Sum(s=>s.Quantity))
+                                    .FirstOrDefault();
 
                                 //是否使用下限
                                 if (!isUselowerlimit)

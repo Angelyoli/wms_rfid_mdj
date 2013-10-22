@@ -699,51 +699,75 @@ namespace THOK.Wms.Allot.Service
         {
             strResult = string.Empty;
             bool result = false;
-            string[] ids = id.Split(',');
-            string strId = "";
+            string[] ids = id.Split(',').ToArray();
+            int strId;
             InBillAllot allot = null;
 
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
 
-            for (int i = 0; i < ids.Length; i++)
+            for (int i = 0; i < ids.Length - 1; i++)
             {
-                strId = ids[i].ToString();
-                allot = InBillAllotRepository.GetQueryable().ToArray().FirstOrDefault(a => strId == a.ID.ToString());
+                strId = Convert.ToInt32(ids[i].ToString());
+                allot = InBillAllotRepository.GetQueryable().FirstOrDefault(a => strId == a.ID);
                 if (allot != null)
                 {
-                    if (allot.Status == "0" && status == "1"
-                     || allot.Status == "1" && status == "0"
-                     || allot.Status == "1" && status == "2")
+                    try
                     {
-                        try
+                        decimal quantity = allot.AllotQuantity;
+                        if (allot.Status == "0" && status == "1")//申请
                         {
                             allot.Status = status;
-                            if (operater != "")
-                            {
-                                allot.Operator = employee.EmployeeName;
-                            }
-                            else
-                            {
-                                allot.Operator = "";
-                            }
-                            InBillAllotRepository.SaveChanges();
+                            allot.StartTime = DateTime.Now;
+                            allot.Operator = employee.EmployeeName;
                             result = true;
                         }
-                        catch (Exception ex)
+                        else if (allot.Status == "1" && status == "0" && allot.Operator == employee.EmployeeName)//取消
                         {
-                            strResult = "原因：" + ex.Message;
+                            allot.Status = status;
+                            allot.StartTime = null;
+                            allot.Operator = string.Empty;
+                            result = true;
+                        }
+                        else if (allot.Status == "1" && status == "2" && allot.Operator == employee.EmployeeName)//完成
+                        {
+                            if ((allot.InBillMaster.Status == "4"
+                                    || allot.InBillMaster.Status == "5"
+                                    )&&string.IsNullOrEmpty(allot.Storage.LockTag)
+                                        && allot.AllotQuantity >= quantity
+                                        && allot.Storage.InFrozenQuantity >= quantity)
+                            {
+                                allot.Status = status;
+                                allot.RealQuantity += quantity;
+                                allot.Storage.Quantity += quantity;
+                                allot.Storage.StorageTime = DateTime.Now;
+                                allot.Storage.InFrozenQuantity -= quantity;
+                                allot.InBillDetail.RealQuantity += quantity;
+                                allot.InBillMaster.Status = "5";
+                                allot.FinishTime = DateTime.Now;
+                                if (allot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
+                                {
+                                    allot.InBillMaster.Status = "6";
+                                }
+                                result = true;
+                            }
+                        }
+                        else
+                        {
+                            strResult = "查询状态错误,该数据没有当前状态，请尝试使用车载系统完成！";
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        strResult = "原因：操作错误！";
+                        strResult = "原因：" + ex.Message;
                     }
                 }
                 else
                 {
-                    strResult = "原因：未找到该记录！";
+                    strResult = "原因：未找到细表单号为：" + allot.ID + " 主表单号为:" + allot.BillNo + " 的记录！";
+                    return result;
                 }
             }
+            InBillAllotRepository.SaveChanges();
             return result;
         }
         #endregion

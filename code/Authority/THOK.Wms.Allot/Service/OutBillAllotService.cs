@@ -174,18 +174,20 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
 
-        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity, out string strResult)
+        public bool AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity, out string strResult,string storageCode)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo);
             var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
             var obm = OutBillDetailRepository.GetQueryable().FirstOrDefault(o => o.ID == id);
+            var outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == storageCode);
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
                 {
-                    Storage storage = Locker.LockNoEmpty(cell, obm.Product);
-                    if (storage != null && allotQuantity > 0)
+                    Storage storage = Locker.LockNoEmptyStorage(outStorage, obm.Product);
+                    int storageSequence = cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
+                    if (storage != null && allotQuantity > 0 && storageSequence == storage.StorageSequence)
                     {
                         OutBillAllot billAllot = null;
                         decimal q1 = obm.BillQuantity - obm.AllotQuantity;
@@ -228,7 +230,7 @@ namespace THOK.Wms.Allot.Service
                     }
                     else
                     {
-                        strResult = "当前选择的储位不可用，其他人正在操作或没有库存！";
+                        strResult = "当前选择的储位库存不可用，请选择其它库存，或者其他人正在操作或没有库存！";
                     }
                 }
                 else
@@ -403,11 +405,12 @@ namespace THOK.Wms.Allot.Service
             return result;
         }
 
-        public bool AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity, out string strResult)
+        public bool AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity, out string strResult, string storageCode)
         {
             bool result = false;
             var ibm = OutBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == billNo && i.Status == "3");
             var cell = CellRepository.GetQueryable().Single(c => c.CellCode == cellCode);
+            var outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == storageCode);
             if (ibm != null)
             {
                 if (string.IsNullOrEmpty(ibm.LockTag))
@@ -423,8 +426,14 @@ namespace THOK.Wms.Allot.Service
                         }
                         else
                         {
-                            storage = Locker.LockNoEmpty(cell, allotDetail.Product);
+                            storage = Locker.LockNoEmptyStorage(outStorage, allotDetail.Product);
                             allotDetail.Storage.OutFrozenQuantity -= allotDetail.AllotQuantity;
+                        }
+                        int storageSequence = cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
+                        if (storageSequence != storage.StorageSequence)
+                        {
+                            strResult = "密集库不允许有出库冻结的数据进行出库，请选择其它货位库存出库";
+                            return result;
                         }
                         if (storage != null)
                         {
@@ -697,51 +706,74 @@ namespace THOK.Wms.Allot.Service
         {
             strResult = string.Empty;
             bool result = false;
-            string[] ids = id.Split(',');
-            string strId = "";
+            string[] ids = id.Split(',').ToArray();
+            int strId;
             OutBillAllot allot = null;
 
             var employee = EmployeeRepository.GetQueryable().FirstOrDefault(e => e.UserName == operater);
 
-            for (int i = 0; i < ids.Length; i++)
+            for (int i = 0; i < ids.Length -1; i++)
             {
-                strId = ids[i].ToString();
-                allot = OutBillAllotRepository.GetQueryable().ToArray().FirstOrDefault(a => strId == a.ID.ToString());
+                strId =Convert.ToInt32( ids[i].ToString());
+                allot = OutBillAllotRepository.GetQueryable().FirstOrDefault(a => strId == a.ID);
                 if (allot != null)
                 {
-                    if (allot.Status == "0" && status == "1"
-                     || allot.Status == "1" && status == "0"
-                     || allot.Status == "1" && status == "2")
+                    try
                     {
-                        try
+                        decimal quantity = allot.AllotQuantity;
+                        if (allot.Status == "0" && status == "1")//申请
                         {
                             allot.Status = status;
-                            if (operater != "")
-                            {
-                                allot.Operator = employee.EmployeeName;
-                            }
-                            else
-                            {
-                                allot.Operator = "";
-                            }
-                            OutBillAllotRepository.SaveChanges();
+                            allot.StartTime = DateTime.Now;
+                            allot.Operator = employee.EmployeeName;
                             result = true;
                         }
-                        catch (Exception ex)
+                        else if (allot.Status == "1" && status == "0" && allot.Operator == employee.EmployeeName)//取消
                         {
-                            strResult = "原因：" + ex.Message;
+                            allot.Status = status;
+                            allot.StartTime = null;
+                            allot.Operator = string.Empty;
+                            result = true;
+                        }
+                        else if (allot.Status == "1" && status == "2" && allot.Operator == employee.EmployeeName)//完成
+                        {
+                            if ((allot.OutBillMaster.Status == "4"
+                                    || allot.OutBillMaster.Status == "5")
+                                        && string.IsNullOrEmpty(allot.Storage.LockTag)
+                                        && allot.AllotQuantity >= quantity
+                                        && allot.Storage.OutFrozenQuantity >= quantity)
+                            {
+                                allot.Status = status;
+                                allot.RealQuantity += quantity;
+                                allot.Storage.Quantity -= quantity;
+                                allot.Storage.OutFrozenQuantity -= quantity;
+                                allot.OutBillDetail.RealQuantity += quantity;
+                                allot.OutBillMaster.Status = "5";
+                                allot.FinishTime = DateTime.Now;
+                                if (allot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
+                                {
+                                    allot.OutBillMaster.Status = "6";
+                                }
+                                result = true;
+                            }
+                        }
+                        else
+                        {
+                            strResult = "查询状态错误,该数据没有当前状态，请尝试使用车载系统完成！";
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        strResult = "原因：操作错误！";
+                        strResult = "原因：" + ex.Message;
                     }
                 }
                 else
                 {
-                    strResult = "原因：未找到该记录！";
+                    strResult = "原因：未找到细表单号为：" + allot.ID + " 主表单号为:" + allot.BillNo + " 的记录！";
+                    return result;
                 }
             }
+            OutBillAllotRepository.SaveChanges();
             return result;
         }
         #endregion

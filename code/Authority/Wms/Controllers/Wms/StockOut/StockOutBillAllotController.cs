@@ -35,10 +35,10 @@ namespace Authority.Controllers.Wms.StockOut
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity)
+        public ActionResult AllotEdit(string billNo, long id, string cellCode, decimal allotQuantity,string storageCode)
         {
             string strResult = string.Empty;
-            bool bResult = OutBillAllotService.AllotEdit(billNo, id, cellCode, allotQuantity, out strResult);
+            bool bResult = OutBillAllotService.AllotEdit(billNo, id, cellCode, allotQuantity, out strResult, storageCode);
             string msg = bResult ? "修改分配成功" : "修改分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -67,10 +67,10 @@ namespace Authority.Controllers.Wms.StockOut
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity)
+        public ActionResult AllotAdd(string billNo, long id, string productCode, string cellCode, decimal allotQuantity,string storageCode)
         {
             string strResult = string.Empty;
-            bool bResult = OutBillAllotService.AllotAdd(billNo, id, productCode, cellCode, allotQuantity, out strResult);
+            bool bResult = OutBillAllotService.AllotAdd(billNo, id, productCode, cellCode, allotQuantity, out strResult, storageCode);
             string msg = bResult ? "添加分配成功" : "添加分配失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

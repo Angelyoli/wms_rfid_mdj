@@ -1,10 +1,12 @@
 ﻿<script type="text/javascript">
     var jCellCode;
     var jCellName;
+    var jStorageCode;
     //选择移出货位编码
-    function outCellSelect(cellCode, cellName) {       
+    function outCellSelect(cellCode, cellName, storageCode) {       
         jCellCode = cellCode;
         jCellName = cellName;
+        jStorageCode = storageCode;
         var productCode = $('#cellProductCode').val();
         $('#cellData').dialog('open').dialog('setTitle', '选择货位信息');
         loadData("stockOut", productCode);
@@ -32,6 +34,7 @@
         if (cellRow) {
             jCellCode.val(cellRow.CellCode);
             jCellName.val(cellRow.CellName);
+            jStorageCode.val(cellRow.StorageCode);
             $('#allQuantity').numberbox('setValue', cellRow.Quantity);
             if (cellRow.IsWholePallet == 1) {//是整托盘，分配数量只读
                 $('#allQuantity').attr('readonly', 'readonly');
