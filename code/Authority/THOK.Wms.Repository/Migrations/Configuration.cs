@@ -55,15 +55,8 @@
                     new System()
                     {
                         SystemID = new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B666AA8"),
-                        SystemName = "烟草商业企业数字仓储管理系统",
-                        Description = "烟草商业企业数字仓储管理系统",
-                        Status = true
-                    },
-                    new System()
-                    {
-                        SystemID = new Guid("ED0E6EF0-9DEB-4CDE-8DCF-702D5B234A19"),
-                        SystemName = "烟草数字仓储控制系统",
-                        Description = "烟草数字仓储控制系统",
+                        SystemName = "自动化仓储管理系统",
+                        Description = "自动化仓储管理系统",
                         Status = true
                     }
                 );
@@ -3994,63 +3987,6 @@
                     ControlName = "batch",
                     IndicateImage = "icon-batch",
                     Module_ModuleID = new Guid("737DDF67-4ADA-4F57-A239-8CEAFC0E3C0C")
-                },
-                //任务管理
-                new Function()
-                {
-                    FunctionID = new Guid("E31D827C-8C53-41C1-8494-B906F6202B3E"),
-                    FunctionName = "查询",
-                    ControlName = "search",
-                    IndicateImage = "icon-search",
-                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("D1816F10-9369-4122-A221-3B25A11101C6"),
-                    FunctionName = "增加",
-                    ControlName = "add",
-                    IndicateImage = "icon-add",
-                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("92333F92-0F11-4F41-8063-38D114EBD87D"),
-                    FunctionName = "修改",
-                    ControlName = "edit",
-                    IndicateImage = "icon-edit",
-                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
-                },
-                 new Function()
-                 {
-                     FunctionID = new Guid("83CAC4D0-1E93-4B51-B3C4-588FDD71EF02"),
-                     FunctionName = "删除",
-                     ControlName = "delete",
-                     IndicateImage = "icon-remove",
-                     Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
-                 },
-                 new Function()
-                 {
-                     FunctionID = new Guid("11B4CB5D-17CE-49C9-BD9E-29FC7D3E810E"),
-                     FunctionName = "打印",
-                     ControlName = "print",
-                     IndicateImage = "icon-print",
-                     Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
-                 },
-                new Function()
-                {
-                    FunctionID = new Guid("D396B38D-A06B-46B6-B275-DACFDE9491A7"),
-                    FunctionName = "帮助",
-                    ControlName = "help",
-                    IndicateImage = "icon-help",
-                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
-                },
-                new Function()
-                {
-                    FunctionID = new Guid("50AA66D8-ED04-4DF3-B287-3E4B9E957D35"),
-                    FunctionName = "清空",
-                    ControlName = "empty",
-                    IndicateImage = "icon-cancel",
-                    Module_ModuleID = new Guid("CD8B3A7E-A86F-4935-BEA0-C4169FC036C4")
                 }
             );
             context.SaveChanges();
@@ -4131,7 +4067,7 @@
                     new Module()
                     {
                         ModuleID = new Guid("ED0E6EF5-AD8A-4D50-8DB9-71D36EF77F9D"),
-                        ModuleName = "基础信息管理",
+                        ModuleName = "仓储控制管理",
                         ShowOrder = 14,
                         ModuleURL = "",
                         IndicateImage = "icon-Menu_Jurisdiction",
