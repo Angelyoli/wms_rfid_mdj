@@ -998,6 +998,7 @@ namespace THOK.WCS.Bll.Service
             if (path == null)
             {
                 errorInfo = "未找到路径信息！";
+                return false;
             }
             try
             {
@@ -1107,6 +1108,7 @@ namespace THOK.WCS.Bll.Service
             if (path == null)
             {
                 errorInfo = "未找到路径信息！";
+                return false;
             }
             try
             {
@@ -1246,51 +1248,43 @@ namespace THOK.WCS.Bll.Service
                     {
                         inAllot.InBillMaster.Status = "6";
                     }
-                    try
-                    {
-                        using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                    //using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                    //{
+                        try
                         {
-                            try
+                            InBillAllotRepository.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            errorInfo = "入库分配保存失败！" + ex.Message;
+                            return false;
+                        }
+                        InspurService inspurService = new InspurService();
+                        Inspur inspur = new Inspur();
+                        inspur.Param = "";
+                        inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
+                        inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
+                        inspur.BillNo = inAllot.BillNo;
+                        inspur.ProductCode = inAllot.ProductCode;
+                        inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
+                        try
+                        {
+                            //反馈给浪潮的xml数据信息
+                            MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                            LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
+                            if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
                             {
-                                InBillAllotRepository.SaveChanges();
+                                LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
                             }
-                            catch (Exception ex)
-                            {
-                                errorInfo = "入库分配保存失败！" + ex.Message;
-                                return false;
-                            }
-                            InspurService inspurService = new InspurService();
-                            Inspur inspur = new Inspur();
-                            inspur.Param = "";
-                            inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
-                            inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
-                            inspur.BillNo = inAllot.BillNo;
-                            inspur.ProductCode = inAllot.ProductCode;
-                            inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
-                            try
-                            {
-                                //反馈给浪潮的xml数据信息
-                                //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                                //LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
-                                //if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
-                                //{
-                                //    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
-                                //}
-                            }
-                            catch (Exception ex)
-                            {
-                                errorInfo = "入库分配进度反馈给浪潮失败！" + ex.Message;
-                                return false;
-                            }
-                            scope.Complete();
+                        }
+                        catch (Exception ex)
+                        {
+                            errorInfo = "入库分配进度反馈给浪潮失败！" + ex.Message;
                             return true;
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        errorInfo = "事务回滚失败！" + ex.Message;
-                        return false;
-                    }
+                        //scope.Complete();
+                        return true;
+                    //}
                 }
                 else
                 {
@@ -1335,8 +1329,8 @@ namespace THOK.WCS.Bll.Service
                     {
                         outAllot.OutBillMaster.Status = "6";
                     }
-                    using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-                    {
+                    //using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                    //{
                         try
                         {
                             OutBillAllotRepository.SaveChanges();
@@ -1357,21 +1351,21 @@ namespace THOK.WCS.Bll.Service
                         try
                         {
                             //反馈给浪潮的xml数据信息
-                            //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                            //LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
-                            //if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
-                            //{
-                            //    LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
-                            //}
+                            MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                            LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
+                            if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
+                            {
+                                LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
+                            }
                         }
                         catch (Exception ex)
                         {
                             errorInfo = "出库分配进度反馈给浪潮失败！" + ex.Message;
-                            return false;
+                            return true;
                         }
-                        scope.Complete();
+                        //scope.Complete();
                         return true;
-                    }
+                    //}
                 }
                 else
                 {
