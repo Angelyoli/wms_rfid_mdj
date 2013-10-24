@@ -526,7 +526,7 @@ namespace THOK.Wms.Bll.Service
                     lowerlimitQuantity = 0;
 
                 //获取移库量 = 出库量 + 下限量 - 分拣备货区库存量;
-                decimal quantity = Math.Ceiling((outDetail.BillQuantity + lowerlimitQuantity - sortQuantity)
+                decimal quantity = Math.Ceiling((outDetail.BillQuantity + lowerlimitQuantity - sortQuantity - (lowerlimitQuantity > 0 ? 30 : 0))
                                         / outDetail.Product.Unit.Count) * outDetail.Product.Unit.Count;
 
                 if (quantity > 0)
