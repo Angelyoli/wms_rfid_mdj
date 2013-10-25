@@ -925,19 +925,19 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == position.ID).FirstOrDefault();
             if (task != null)
             {
-                errorInfo = "位置[" + position.PositionName + "]已有任务在执行中！";
+                errorInfo = string.Format("位置[{0}]已有任务在执行中！", position.PositionName);
                 return false;
             }
             var positionQuery = PositionRepository.GetQueryable().Where(i => i.SRMName == position.SRMName && i.AbleStockInPallet && i.ID != position.ID);
             if (positionQuery == null)
             {
-                errorInfo = "请检查：堆垛机[" + position.SRMName + "]区域的位置[" + position.PositionName + "]，必须允许叠空托盘！";
+                errorInfo = string.Format("请检查：堆垛机[{0}]区域的位置[{1}]，必须允许叠空托盘！", position.SRMName, position.PositionName);
                 return false;
             }
             var cellPositionQuery = CellPositionRepository.GetQueryable().Where(i => i.StockOutPositionID != position.ID && positionQuery.Contains(i.StockInPosition));
             if (cellPositionQuery == null)
             {
-                errorInfo = "请检查：位置[" + position.PositionName + "]必须在货位位置表中存在！";
+                errorInfo = string.Format("请检查：位置[{0}]必须在货位位置表中存在！", position.PositionName);
                 return false;
             }
             CellPosition originCellPosition = CellPositionRepository.GetQueryable().Where(i => i.StockOutPositionID == position.ID).FirstOrDefault();
@@ -972,7 +972,7 @@ namespace THOK.WCS.Bll.Service
             var cellPosition = CellPositionRepository.GetQueryable().Where(cp => cp.CellCode == cell.CellCode).FirstOrDefault();
             if (cellPosition == null)
             {
-                errorInfo = "未找到" + cell.CellName + "的货位位置！";
+                errorInfo = string.Format("未找到[{0}]的货位位置！", cell.CellName);
             }
 
             if (!cell.Storages.Any())
@@ -1003,7 +1003,7 @@ namespace THOK.WCS.Bll.Service
                     .FirstOrDefault();
             if (path == null)
             {
-                errorInfo = "未找到路径[" + path.PathName + "]";
+                errorInfo = string.Format("未找到路径[{0}]", path.PathName);
                 return false;
             }
             try
@@ -1088,7 +1088,7 @@ namespace THOK.WCS.Bll.Service
                 .Where(i => (i.ID == positionID || i.PositionName == positionName)).FirstOrDefault();
             if (position == null || position.PositionType != "05")
             {
-                errorInfo = "未找到空托盘出库位[" + positionName + "]的位置信息";
+                errorInfo = string.Format("未找到空托盘出库位[{0}]的位置信息", positionName);
                 return false;
             }
             var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
@@ -1096,7 +1096,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
             if (task != null)
             {
-                errorInfo = "已生成了一个空托盘出库的任务号[" + task.ID + "]正在执行中！";
+                errorInfo = string.Format("已生成一个空托盘出库任务号[{0}]正在执行中，未到达空托盘缓存区[{1}]！", task.ID, positionName);
                 return false;
             }
             var cellPosition = CellPositionRepository.GetQueryable()
@@ -1104,7 +1104,7 @@ namespace THOK.WCS.Bll.Service
 
             if (cellPosition == null)
             {
-                errorInfo = "请检查：未找到货位" + storage.Cell.CellName + "的位置！";
+                errorInfo = string.Format("请检查：未找到货位[{0}]的位置！", storage.Cell.CellName);
                 return false;
             }
             var path = PathRepository.GetQueryable()
