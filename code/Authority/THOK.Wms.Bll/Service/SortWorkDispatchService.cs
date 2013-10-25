@@ -393,7 +393,6 @@ namespace THOK.Wms.Bll.Service
 
                         //大品种先自动移库到分拣线
                         AutoMoveToSortingLine(sortWork, outDetails);
-
                         //出库单作自动出库
                         var storages = StorageRepository.GetQueryable().Where(s => s.CellCode == sortWork.SortingLine.CellCode
                                                                                 && s.Quantity - s.OutFrozenQuantity > 0).ToArray();
@@ -403,7 +402,7 @@ namespace THOK.Wms.Bll.Service
                             errorInfo = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
                             return false;
                         }
-
+                       
                         outDetails.ToArray().AsParallel().ForAll(
                             (Action<OutBillDetail>)delegate(OutBillDetail o)
                             {
@@ -542,6 +541,8 @@ namespace THOK.Wms.Bll.Service
                 }
             }
 
+            MoveBillMasterRepository.SaveChanges();
+
             //自动执行移库单；
             foreach (var moveDetail in moveBillMaster.MoveBillDetails.Where(m => m.Status == "0"))
             {
@@ -570,6 +571,7 @@ namespace THOK.Wms.Bll.Service
                     moveDetail.FinishTime = DateTime.Now;
                 }
             }
+            MoveBillMasterRepository.SaveChanges();
         }
 
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity)
@@ -585,7 +587,7 @@ namespace THOK.Wms.Bll.Service
             if (product.IsRounding == "2")
             {
                 //分配件烟；大品种拆盘区 
-                var storages = storageQuery.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
+                var storages = storageQuery.Where(s => s.Cell.Area.AreaType == "10"
                                         && s.ProductCode == product.ProductCode)
                                   .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
                 if (quantity > 0) AllotPiece(moveBillMaster, storages, cell, ref quantity);
