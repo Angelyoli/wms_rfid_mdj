@@ -863,7 +863,7 @@ namespace THOK.Wms.Bll.Service
                 else if (inOrOut == "in")//查询出可以移入卷烟的货位 ,
                 {
                     cells = cells.Where(i => i.Shelf.ShelfCode == shelfCode && i.IsActive == "1")
-                                 .Where(i => string.IsNullOrEmpty(i.DefaultProductCode))
+                                 //.Where(i => string.IsNullOrEmpty(i.DefaultProductCode))
                                  .Where(i => i.Storages.All(s => s.ProductCode == productCode || string.IsNullOrEmpty(s.ProductCode) || (s.Quantity == 0 && s.InFrozenQuantity == 0)))
                                  .Where(i => i.Storages.Count() < i.MaxPalletQuantity
                                                         || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
