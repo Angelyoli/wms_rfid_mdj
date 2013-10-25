@@ -54,7 +54,19 @@ namespace THOK.WMS.DownloadWms.Dao
         /// <param name="ds"></param>
         public void Insert(DataSet ds)
         {
-            BatchInsert(ds.Tables["WMS_PRODUCT"], "wms_product");
+            foreach (DataRow row in ds.Tables["WMS_PRODUCT"].Rows)
+            {
+                string sql = @"IF '{0}' IN (SELECT PRODUCT_CODE FROM WMS_PRODUCT) 
+                                BEGIN 
+                                    UPDATE WMS_PRODUCT SET PIECE_BARCODE='{14}',IS_ABNORMITY='{29}',PRODUCT_NAME = '{1}',CUSTOM_CODE='{3}' WHERE PRODUCT_CODE = '{0}' 
+                                END 
+                             ELSE 
+                                BEGIN 
+                                    INSERT INTO WMS_PRODUCT VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}' ,'{7}','{8}','{9}','{10}','{11}','{12}' ,'{13}','{14}' ,'{15}','{16}','{17}',{18},{19},{20},{21},'{22}','{23}','{24}','{25}','{26}','{27}','{28}','{29}','{30}','{31}','{32}',{33},'{34}','{35}')
+                               END";
+                sql = string.Format(sql, row["product_code"], row["product_name"], row["uniform_code"], row["custom_code"], row["short_code"], row["unit_list_code"], row["unit_code"], row["supplier_code"], row["brand_code"], row["abc_type_code"], row["product_type_code"], row["pack_type_code"], row["price_level_code"], row["statistic_type"], row["piece_barcode"], row["bar_barcode"], row["package_barcode"], row["one_project_barcode"], row["buy_price"], row["trade_price"], row["retail_price"], row["cost_price"], row["is_filter_tip"], row["is_new"], row["is_famous"], row["is_main_product"], row["is_province_main_product"], row["belong_region"], row["is_confiscate"], row["is_abnormity"], row["description"], row["is_active"], row["update_time"], row["is_rounding"], row["cell_max_product_quantity"], row["point_area_codes"]);
+                ExecuteNonQuery(sql);
+            }
         }
         
         /// <summary>

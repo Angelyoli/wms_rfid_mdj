@@ -22,14 +22,14 @@ namespace THOK.WMS.DownloadWms.Bll
             bool tag = true;
             try
             {
-                DataTable codedt = this.GetProductCode();
-                string codeList = UtinString.MakeString(codedt, "product_code");
-                codeList = "BRANDCODE NOT IN (" + codeList + ")";
                 DataTable bradCodeTable = this.GetProductInfo("1=1");
-                DataRow[] bradCodeDr = bradCodeTable.Select(codeList);
-                if (bradCodeDr.Length > 0)
+                //DataTable codedt = this.GetProductCode();
+                //string codeList = UtinString.MakeString(codedt, "product_code");
+                //codeList = "BRANDCODE NOT IN (" + codeList + ")";                
+                //DataRow[] bradCodeDr = bradCodeTable.Select(codeList);
+                if (bradCodeTable.Rows.Count > 0)
                 {
-                    DataSet brandCodeDs = this.Insert(bradCodeDr);
+                    DataSet brandCodeDs = this.Insert(bradCodeTable);
                     this.Insert(brandCodeDs);
                     //上报数据
                     //upload.InsertProduct(brandCodeDs);
@@ -114,11 +114,11 @@ namespace THOK.WMS.DownloadWms.Bll
         /// </summary>
         /// <param name="brandTable"></param>
         /// <returns></returns>
-        public DataSet Insert(DataRow[] brandTable)
+        public DataSet Insert(DataTable brandTable)
         {
             DownUnitBll bll = new DownUnitBll();
             DataSet ds = this.GenerateEmptyTables();
-            foreach (DataRow row in brandTable)
+            foreach (DataRow row in brandTable.Rows)
             {
                 DataTable ulistCodeTable = this.FindUnitListCode(row["BRANDCODE"].ToString().Trim());
                 DataRow inbrddr = ds.Tables["WMS_PRODUCT"].NewRow();
@@ -137,7 +137,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["price_level_code"] = "";
                 inbrddr["statistic_type"] = "";
                 inbrddr["piece_barcode"] = row["BARCODE_PIECE"];
-                inbrddr["bar_barcode"] = "";//row["BARCODE_BAR"];
+                inbrddr["bar_barcode"] = row["BARCODE_BAR"];
                 inbrddr["package_barcode"] = row["BARCODE_PACKAGE"];
                 inbrddr["one_project_barcode"] = row["BARCODE_ONE_PROJECT"];
                 inbrddr["buy_price"] = row["BUY_PRICE"];
