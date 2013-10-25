@@ -170,7 +170,7 @@ namespace Authority.Controllers.Wms.StockOut
             using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
             {
                 var outBill = OutBillMasterService.Settle(BillNo, out errorInfo);
-                var task = TaskService.ClearTask(BillNo);
+                var task = TaskService.ClearTask(BillNo, out errorInfo);
                 if (outBill == true && task == true)
                 {
                     bResult = true;

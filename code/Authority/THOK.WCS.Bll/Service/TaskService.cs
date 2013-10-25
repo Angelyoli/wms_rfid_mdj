@@ -97,7 +97,7 @@ namespace THOK.WCS.Bll.Service
             if (task.OrderID == "" || task.OrderID == null)
                 task.OrderID = "";
             if (task.OrderType == "" || task.OrderType == null)
-                task.OrderType = "01";
+                task.OrderType = "00";
             if (task.AllotID.ToString() == "" || task.AllotID.ToString() == null)
                 task.AllotID = 0;
             if (task.DownloadState == "" || task.DownloadState == null)
@@ -353,7 +353,7 @@ namespace THOK.WCS.Bll.Service
                           t.TaskQuantity,
                           t.OperateQuantity,
                           t.OrderID,
-                          OrderType = t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : "异常",
+                          OrderType = t.OrderType == "00" ? "无" : t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : t.OrderType == "05" ? "叠空托盘" : t.OrderType == "06" ? "补空托盘" : t.OrderType == "07" ? "小品种补货" : t.OrderType == "08" ? "出库余烟返库" : t.OrderType == "09" ? "盘点余烟返库" : "异常",
                           t.AllotID,
                           DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常"
                       });
@@ -748,7 +748,7 @@ namespace THOK.WCS.Bll.Service
                         
                         var moveTask = new Task();
                         moveTask.TaskType = "01";
-                        moveTask.TaskLevel = 0;
+                        moveTask.TaskLevel = 10;
                         moveTask.PathID = path.ID;
                         moveTask.ProductCode = moveItem.Product.ProductCode;
                         moveTask.ProductName = moveItem.Product.ProductName;
@@ -925,21 +925,24 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "05" && t.OriginPositionID == position.ID).FirstOrDefault();
             if (task != null)
             {
-                errorInfo = "位置[" + position.PositionName + "]已有任务在执行中！";
+                errorInfo = string.Format("已生成一个任务号[{0}]，位置[{1}]已有任务在执行中！", task.ID, position.PositionName);
                 return false;
             }
             var positionQuery = PositionRepository.GetQueryable().Where(i => i.SRMName == position.SRMName && i.AbleStockInPallet && i.ID != position.ID);
             if (positionQuery == null)
             {
-                errorInfo = "请检查：堆垛机[" + position.SRMName + "]区域的位置[" + position.PositionName + "]，必须允许叠空托盘！";
+                errorInfo = string.Format("请检查：堆垛机[{0}]区域的位置[{1}]，必须允许叠空托盘！", position.SRMName, position.PositionName);
                 return false;
             }
             var cellPositionQuery = CellPositionRepository.GetQueryable().Where(i => i.StockOutPositionID != position.ID && positionQuery.Contains(i.StockInPosition));
             if (cellPositionQuery == null)
             {
-                errorInfo = "请检查：位置[" + position.PositionName + "]必须在货位位置表中存在！";
+                errorInfo = string.Format("请检查：位置[{0}]必须在货位位置表中存在！", position.PositionName);
                 return false;
             }
+            CellPosition originCellPosition = CellPositionRepository.GetQueryable().Where(i => i.StockOutPositionID == position.ID).FirstOrDefault();
+            Cell originCell = CellRepository.GetQueryable().Where(i => i.CellCode == originCellPosition.CellCode).FirstOrDefault();
+
             var cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
                 && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
                 && (i.Storages.Any(s => s.ProductCode == palletCode
@@ -969,7 +972,7 @@ namespace THOK.WCS.Bll.Service
             var cellPosition = CellPositionRepository.GetQueryable().Where(cp => cp.CellCode == cell.CellCode).FirstOrDefault();
             if (cellPosition == null)
             {
-                errorInfo = "未找到" + cell.CellName + "的货位位置！";
+                errorInfo = string.Format("未找到[{0}]的货位位置！", cell.CellName);
             }
 
             if (!cell.Storages.Any())
@@ -990,9 +993,18 @@ namespace THOK.WCS.Bll.Service
                 }
             }
             var targetStorage = cell.Storages.FirstOrDefault();
-            if (targetStorage == null || cellPosition == null)
+            if (targetStorage == null)
             {
                 errorInfo = "未找到目标货位的库存或者货位位置不存在！";
+            }
+            var path = PathRepository.GetQueryable()
+                .Where(p => p.OriginRegion.ID == cellPosition.StockOutPosition.Region.ID
+                    && p.TargetRegion.ID == position.Region.ID)
+                    .FirstOrDefault();
+            if (path == null)
+            {
+                errorInfo = string.Format("未找到路径[{0}]", path.PathName);
+                return false;
             }
             try
             {
@@ -1000,11 +1012,11 @@ namespace THOK.WCS.Bll.Service
                 targetStorage.InFrozenQuantity += 1;
                 var newTask = new Task();
                 newTask.TaskType = "02";
-                newTask.TaskLevel = 0;
-                //newTask.PathID = path.ID;
+                newTask.TaskLevel = 9;
+                newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
-                newTask.OriginStorageCode = "";
+                newTask.OriginStorageCode = originCell.CellCode;
                 newTask.TargetStorageCode = cell.CellCode;
                 newTask.OriginPositionID = position.ID;
                 newTask.TargetPositionID = cellPosition.StockInPositionID;
@@ -1015,10 +1027,10 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = 1;
                 newTask.TaskQuantity = 1;
                 newTask.OperateQuantity = 0;
-                //newTask.OrderID = inItem.BillNo;
+                newTask.OrderID = "";
                 newTask.OrderType = "05";
                 //newTask.AllotID = inItem.ID;
-                newTask.DownloadState = "1";
+                newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
@@ -1076,7 +1088,7 @@ namespace THOK.WCS.Bll.Service
                 .Where(i => (i.ID == positionID || i.PositionName == positionName)).FirstOrDefault();
             if (position == null || position.PositionType != "05")
             {
-                errorInfo = "未找到空托盘出库位[" + positionName + "]的位置信息";
+                errorInfo = string.Format("未找到空托盘出库位[{0}]的位置信息", positionName);
                 return false;
             }
             var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
@@ -1084,7 +1096,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
             if (task != null)
             {
-                errorInfo = "已生成了一个空托盘出库的任务正在执行中！";
+                errorInfo = string.Format("已生成一个空托盘出库任务号[{0}]正在执行中，未到达空托盘缓存区[{1}]！", task.ID, positionName);
                 return false;
             }
             var cellPosition = CellPositionRepository.GetQueryable()
@@ -1092,7 +1104,7 @@ namespace THOK.WCS.Bll.Service
 
             if (cellPosition == null)
             {
-                errorInfo = "请检查：未找到货位" + storage.Cell.CellName + "的位置！";
+                errorInfo = string.Format("请检查：未找到货位[{0}]的位置！", storage.Cell.CellName);
                 return false;
             }
             var path = PathRepository.GetQueryable()
@@ -1102,6 +1114,7 @@ namespace THOK.WCS.Bll.Service
             if (path == null)
             {
                 errorInfo = "未找到路径信息！";
+                return false;
             }
             try
             {
@@ -1109,7 +1122,7 @@ namespace THOK.WCS.Bll.Service
                 storage.OutFrozenQuantity += quantity;
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 0;
+                newTask.TaskLevel = 10;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
@@ -1124,7 +1137,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = Convert.ToInt32(storage.Quantity);
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
-                //newTask.OrderID = inItem.BillNo;
+                newTask.OrderID = "";
                 newTask.OrderType = "06";
                 //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "1";
@@ -1173,9 +1186,9 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-                errorInfo = "为找到任务号：" + taskID;   
+                errorInfo = "未找到任务号：" + taskID;
+                return false;
             }
-            return false;
         }
 
         public bool FinishTask(int taskID, out string errorInfo)
@@ -1188,9 +1201,9 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-                errorInfo = "当前任务未完成！";
+                errorInfo = "当前任务号[" + taskID + "]未完成！";
+                return false;
             }
-            return false;
         }
         public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode, out string errorInfo)
         {
@@ -1218,13 +1231,6 @@ namespace THOK.WCS.Bll.Service
                                         && i.ID == allotID
                                         && i.Status == "0")
                                     .FirstOrDefault();
-
-            if (inAllot == null)
-            {
-                errorInfo = string.Format("未找到订单号{0}分配单号{1}入库分配信息！", orderID, allotID);
-                return false;
-            }
-
             if (inAllot != null && (inAllot.InBillMaster.Status == "4"|| inAllot.InBillMaster.Status == "5"))
             {
                 decimal quantity = inAllot.AllotQuantity;
@@ -1248,51 +1254,43 @@ namespace THOK.WCS.Bll.Service
                     {
                         inAllot.InBillMaster.Status = "6";
                     }
-                    try
-                    {
-                        using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                    //using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                    //{
+                        try
                         {
-                            try
+                            InBillAllotRepository.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            errorInfo = "入库分配保存失败！" + ex.Message;
+                            return false;
+                        }
+                        InspurService inspurService = new InspurService();
+                        Inspur inspur = new Inspur();
+                        inspur.Param = "";
+                        inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
+                        inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
+                        inspur.BillNo = inAllot.BillNo;
+                        inspur.ProductCode = inAllot.ProductCode;
+                        inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
+                        try
+                        {
+                            //反馈给浪潮的xml数据信息
+                            MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                            LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
+                            if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
                             {
-                                InBillAllotRepository.SaveChanges();
+                                LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
                             }
-                            catch (Exception ex)
-                            {
-                                errorInfo = "入库分配保存失败！" + ex.Message;
-                                return false;
-                            }
-                            InspurService inspurService = new InspurService();
-                            Inspur inspur = new Inspur();
-                            inspur.Param = "";
-                            inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
-                            inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
-                            inspur.BillNo = inAllot.BillNo;
-                            inspur.ProductCode = inAllot.ProductCode;
-                            inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
-                            try
-                            {
-                                //反馈给浪潮的xml数据信息
-                                //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                                //LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
-                                //if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
-                                //{
-                                //    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
-                                //}
-                            }
-                            catch (Exception ex)
-                            {
-                                errorInfo = "入库分配进度反馈给浪潮失败！" + ex.Message;
-                                return false;
-                            }
-                            scope.Complete();
+                        }
+                        catch (Exception ex)
+                        {
+                            errorInfo = "入库分配进度反馈给浪潮失败！" + ex.Message;
                             return true;
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        errorInfo = "事务回滚失败！" + ex.Message;
-                        return false;
-                    }
+                        //scope.Complete();
+                        return true;
+                    //}
                 }
                 else
                 {
@@ -1337,8 +1335,8 @@ namespace THOK.WCS.Bll.Service
                     {
                         outAllot.OutBillMaster.Status = "6";
                     }
-                    using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-                    {
+                    //using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                    //{
                         try
                         {
                             OutBillAllotRepository.SaveChanges();
@@ -1359,21 +1357,21 @@ namespace THOK.WCS.Bll.Service
                         try
                         {
                             //反馈给浪潮的xml数据信息
-                            //MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                            //LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
-                            //if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
-                            //{
-                            //    LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
-                            //}
+                            MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                            LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
+                            if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
+                            {
+                                LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
+                            }
                         }
                         catch (Exception ex)
                         {
                             errorInfo = "出库分配进度反馈给浪潮失败！" + ex.Message;
-                            return false;
+                            return true;
                         }
-                        scope.Complete();
+                        //scope.Complete();
                         return true;
-                    }
+                    //}
                 }
                 else
                 {
@@ -1516,10 +1514,11 @@ namespace THOK.WCS.Bll.Service
                     cell.Storages.FirstOrDefault().Quantity = 0;
                     cell.Storages.FirstOrDefault().StorageSequence = 0;
                     CellRepository.SaveChanges();
+                    return true;
                 }
                 else
                 {
-                    errorInfo = "库存冻结量<=0";
+                    errorInfo = "补空托盘货位的出库冻结量<=0";
                     return false;
                 }
             }
@@ -1528,7 +1527,6 @@ namespace THOK.WCS.Bll.Service
                 errorInfo = "未找到货位库存信息！";
                 return false;
             }
-            return true;
         }
 
         public bool ClearTask(out string errorInfo)
@@ -1595,11 +1593,12 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-        public bool ClearTask(string orderID)
+        public bool ClearTask(string orderID, out string errorInfo)
         {
             bool result = false;
+            errorInfo = string.Empty;
             var tasks = TaskRepository.GetQueryable().Where(a => a.OrderID == orderID);
-            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID || a.CurrentPositionID == a.TargetPositionID))))
+            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID && a.State == "01" || a.CurrentPositionID == a.TargetPositionID && a.State == "04"))))
             {
                 TaskHistory taskHistory = null;
                 foreach (var task in tasks)
@@ -1636,7 +1635,7 @@ namespace THOK.WCS.Bll.Service
 
                     string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
                     SqlConnection con = new SqlConnection(constr);
-                    string sql = string.Format("truncate table wcs_task where orderID='{0}' ", orderID);
+                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
                     SqlCommand cmd = new SqlCommand(sql, con);
                     try
                     {
@@ -1644,7 +1643,7 @@ namespace THOK.WCS.Bll.Service
                         int i = (int)cmd.ExecuteNonQuery();
                         if (i > 0) result = true; else result = false;
                     }
-                    catch (Exception) {  }
+                    catch (Exception ex) { errorInfo = "清空订单任务时：" + ex.Message; return false; }
                     finally { con.Close(); }
 
                     scope.Complete();
@@ -1653,7 +1652,7 @@ namespace THOK.WCS.Bll.Service
             }
             else
             {
-
+                errorInfo = "当前有任务正在执行中或者未执行完毕！";
             }
             return result;
         }
@@ -1683,15 +1682,7 @@ namespace THOK.WCS.Bll.Service
             if (task != null && task.State == "04")
             {
                 FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
-
-                if (task.Quantity > task.TaskQuantity)
-                {
-                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
-                }
-                else
-                {
-                    return -1;
-                }
+                return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
             }
             return 0;
         }

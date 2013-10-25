@@ -416,19 +416,21 @@ namespace THOK.Wms.Bll.Service
         }
 
         /// <summary>加载卷烟信息</summary>
-        public object GetCellInfo()
+        public object GetCellInfo(int page,int rows)
         {
-            IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
-
-            var cellInfo = cellQuery.Where(c1 => c1.Product != null)
+            var cell = CellRepository.GetQueryable()
+                .Where(c1 => c1.Product != null)
                 .GroupBy(c2 => c2.Product)
                 .Select(c3 => new
                 {
                     ProductCode = c3.Key.ProductCode,
                     ProductName = c3.Key.ProductName,
                     ProductQuantity = c3.Count()
-                });
-            return cellInfo;
+                })
+                .OrderBy(c=>c.ProductCode);
+            int total = cell.Count();
+            var cell2 = cell.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = cell2.ToArray() };
         }
 
         public object GetCellBy(int page, int rows, string QueryString, string Value)

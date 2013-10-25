@@ -153,12 +153,12 @@ namespace Wms
 
         void Session_End()
         {
-            if (Session["userName"] != null)
-            {
-                ServiceFactory UserFactory = new ServiceFactory();
-                UserFactory.GetService<IUserService>().DeleteUserIp(Session["userName"].ToString());
-                UserFactory.GetService<ILoginLogService>().UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
-            }
+            //if (Session["userName"] != null)
+            //{
+            //    ServiceFactory UserFactory = new ServiceFactory();
+            //    UserFactory.GetService<IUserService>().DeleteUserIp(Session["userName"].ToString());
+            //    UserFactory.GetService<ILoginLogService>().UpdateLoginLog(Session["userName"].ToString(), DateTime.Now.ToString());
+            //}
         }        
 
         //void Application_AuthenticateRequest(object sender, EventArgs e)

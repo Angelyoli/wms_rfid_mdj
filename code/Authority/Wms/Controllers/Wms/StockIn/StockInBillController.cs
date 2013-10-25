@@ -230,7 +230,7 @@ namespace Authority.Controllers.Wms.StockIn
             using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
             {
                 var inBill = InBillMasterService.Settle(BillNo, out strResult);
-                var task = TaskService.ClearTask(BillNo);
+                var task = TaskService.ClearTask(BillNo, out strResult);
                 if (inBill == true && task == true)
                 {
                     bResult = true;

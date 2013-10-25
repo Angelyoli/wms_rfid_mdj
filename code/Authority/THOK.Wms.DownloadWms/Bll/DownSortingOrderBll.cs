@@ -75,10 +75,10 @@ namespace THOK.WMS.DownloadWms.Bll
                     string orderlist = UtinString.MakeString(orderdt, "order_id");
                     string orderlistDate = "ORDER_DATE ='" + orderDate + "'";
                     DataTable masterdt = this.GetSortingOrder(orderlistDate);//根据时间查询主表数据
-                    DataRow[] masterdr = masterdt.Select("ORDERID NOT IN(" + orderlist + ")");//排除已经下载的数据
-                    string ordermasterlist = UtinString.MakeString(masterdr, "ORDERID");//获取未下载主表单据的数据字符
+                    DataRow[] masterdr = masterdt.Select("ORDER_ID NOT IN(" + orderlist + ")");//排除已经下载的数据
+                    string ordermasterlist = UtinString.MakeString(masterdr, "ORDER_ID");//获取未下载主表单据的数据字符
                     DataTable detaildt = this.GetSortingOrderDetail(orderlistDate);//根据时间查询细表数据
-                    DataRow[] detaildr = detaildt.Select("ORDERID IN (" + ordermasterlist + ")");//查询未下载的细单数据
+                    DataRow[] detaildr = detaildt.Select("ORDER_ID IN (" + ordermasterlist + ")");//查询未下载的细单数据
                     if (masterdr.Length > 0 && detaildr.Length > 0)
                     {
                         DataSet masterds = this.SaveSortingOrder2(masterdr);
@@ -251,7 +251,7 @@ namespace THOK.WMS.DownloadWms.Bll
             foreach (DataRow row in masterdt)
             {
                 DataRow masterrow = ds.Tables["DWV_OUT_ORDER"].NewRow();
-                masterrow["order_id"] = row["ORDERID"].ToString().Trim();//订单编号
+                masterrow["order_id"] = row["ORDER_ID"].ToString().Trim();//订单编号
                 masterrow["company_code"] = row["ORG_CODE"].ToString().Trim();//所属单位编号
                 masterrow["sale_region_code"] = row["SALE_REG_CODE"].ToString().Trim();//营销部编号
                 masterrow["order_date"] = row["ORDER_DATE"].ToString().Trim();//订单日期
@@ -266,7 +266,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 masterrow["description"] = row["DIST_BILL_ID"].ToString();
                 masterrow["is_active"] = row["ISACTIVE"].ToString().Trim();//送货线路编码
                 masterrow["update_time"] = DateTime.Now;
-                masterrow["deliver_line_code"] = row["DELIVER_LINE_CODE"].ToString();
+                masterrow["deliver_line_code"] = row["DIST_BILL_ID"].ToString();
                 masterrow["dist_bill_id"] = row["DIST_BILL_ID"].ToString();
                 masterrow["status"] = "0";
                 ds.Tables["DWV_OUT_ORDER"].Rows.Add(masterrow);
@@ -369,12 +369,14 @@ namespace THOK.WMS.DownloadWms.Bll
                     DataRow detailrow = ds.Tables["DWV_OUT_ORDER_DETAIL"].NewRow();
                     i++;
                     string newcode = i.ToString();
-                    for (int j = 0; j < 5 - i.ToString().Length; j++)
+                    for (int j = 0; j < 8 - i.ToString().Length; j++)
                     {
                         newcode = "0" + newcode;
                     }
-                    detailrow["order_detail_id"] = row["ORDER_DETAIL_ID"].ToString().Trim() + newcode;
-                    detailrow["order_id"] = row["ORDERID"].ToString().Trim();
+                    string yearToMinute = System.DateTime.Now.ToString("yyyyMMddHHmm");
+
+                    detailrow["order_detail_id"] = yearToMinute + newcode;
+                    detailrow["order_id"] = row["ORDER_ID"].ToString().Trim();
                     detailrow["product_code"] = row["BRAND_CODE"].ToString().Trim();
                     detailrow["product_name"] = row["BRAND_NAME"].ToString().Trim();
                     detailrow["unit_code"] = list[0]["unit_code02"].ToString();
@@ -383,7 +385,7 @@ namespace THOK.WMS.DownloadWms.Bll
                     detailrow["real_quantity"] = Convert.ToDecimal(row["QUANTITY"]);
                     detailrow["price"] = Convert.ToDecimal(row["PRICE"]);
                     detailrow["amount"] = Convert.ToDecimal(row["AMOUNT"]);
-                    detailrow["unit_quantity"] = Convert.ToDecimal(row["QY_UNIT"]);
+                    detailrow["unit_quantity"] = Convert.ToDecimal(row["QTY_UNIT"]);
                     ds.Tables["DWV_OUT_ORDER_DETAIL"].Rows.Add(detailrow);
                 }
                 return ds;

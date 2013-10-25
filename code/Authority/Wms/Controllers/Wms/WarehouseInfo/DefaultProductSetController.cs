@@ -74,9 +74,9 @@ namespace Wms.Controllers.Wms.WarehouseInfo
 
         //首页加载卷烟信息
         //POST: /DefaultProductSet/GetProductCell/
-        public ActionResult GetProductCell()
+        public ActionResult GetProductCell(int page,int rows)
         {
-            var product = CellService.GetCellInfo();
+            var product = CellService.GetCellInfo(page,rows);
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 

@@ -60,10 +60,10 @@
             else if (row.OrderType == '盘点单') {
                 $('#orderType2').combo('setValue', '04').combo('setText', row.OrderType);
             }
-            else if (row.OrderType == '空托盘回收') {
+            else if (row.OrderType == '叠空托盘') {
                 $('#orderType2').combo('setValue', '05').combo('setText', row.OrderType);
             }
-            else if (row.OrderType == '空托盘补货') {
+            else if (row.OrderType == '补空托盘') {
                 $('#orderType2').combo('setValue', '06').combo('setText', row.OrderType);
             }
             else if (row.OrderType == '小品种补货') {
@@ -76,7 +76,7 @@
                 $('#orderType2').combo('setValue', '09').combo('setText', row.OrderType);
             }
             else {
-                $('#orderType2').combo('setValue', '').combo('无', row.OrderType);
+                $('#orderType2').combo('setValue', '00').combo('setText', row.OrderType);
             }
             //DownloadState
             if (row.DownloadState == '未下载') {
