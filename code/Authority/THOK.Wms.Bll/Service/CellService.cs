@@ -864,7 +864,7 @@ namespace THOK.Wms.Bll.Service
                 {
                     cells = cells.Where(i => i.Shelf.ShelfCode == shelfCode && i.IsActive == "1")
                                  //.Where(i => string.IsNullOrEmpty(i.DefaultProductCode))
-                                 .Where(i => i.Storages.All(s => s.ProductCode == productCode || string.IsNullOrEmpty(s.ProductCode) || (s.Quantity == 0 && s.InFrozenQuantity == 0)))
+                                 .Where(i => i.Storages.All(s => s.ProductCode == productCode|| (s.Quantity == 0 && s.InFrozenQuantity == 0)))
                                  .Where(i => i.Storages.Count() < i.MaxPalletQuantity
                                                         || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
                                  .OrderBy(c => c.CellCode).Select(c => c);

@@ -73,14 +73,14 @@ namespace THOK.Wms.Bll.Service
             {
                 s.BillNo,
                 s.Warehouse.WarehouseName,
-                BillDate = s.BillDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                BillDate = s.BillDate.ToString("yyyy-MM-dd HH:mm:ss"),
                 OperatePersonName = s.OperatePerson.EmployeeName,
                 s.OperatePersonID,
                 Status = WhatStatus(s.Status),
                 VerifyPersonName = s.VerifyPersonID == null ? string.Empty : s.VerifyPerson.EmployeeName,
-                VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd hh:mm:ss")),
+                VerifyDate = (s.VerifyDate == null ? string.Empty : ((DateTime)s.VerifyDate).ToString("yyyy-MM-dd HH:mm:ss")),
                 Description = s.Description,
-                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd hh:mm:ss")
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
             });
             return new { total, rows = MoveSearch.ToArray() };
         }
