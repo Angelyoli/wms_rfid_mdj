@@ -191,6 +191,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     .Select(l=>l.Sum(s=>s.Quantity))
                                     .FirstOrDefault();
 
+                                //获取当前这个卷烟库存数量
+                                decimal areaSumQuantity = storageQuery
+                                    .Where(s => (s.Cell.Area.AreaType == "10" || product.Product.PointAreaCodes.Contains(s.Cell.AreaCode))
+                                         && s.ProductCode == product.Product.ProductCode)
+                                    .GroupBy(l=>l.Product.ProductCode)
+                                    .Select(l=>l.Sum(s=>s.Quantity))
+                                    .FirstOrDefault();
+
                                 //是否使用下限
                                 if (!isUselowerlimit)
                                     lowerlimitQuantity = 0;
@@ -198,6 +206,9 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 //获取移库量 = 出库量 + 下限量 - 分拣备货区库存量;
                                 decimal quantity = 0;
 
+                                //取整件
+                                decimal pieceQuantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - sortQuantity - (lowerlimitQuantity > 0 ? 30 * product.Product.UnitList.Quantity02 * product.Product.UnitList.Quantity03 : 0))
+                                            / product.Product.Unit.Count) * product.Product.Unit.Count;
 
                                 if (product.Product.IsRounding == "1" || product.Product.IsAbnormity == "1")
                                 {
@@ -207,26 +218,32 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 else if (product.Product.IsRounding == "0")
                                 {
                                     //取整件
-                                    quantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - sortQuantity - (lowerlimitQuantity > 0 ? 30 : 0)) 
-                                        / product.Product.Unit.Count) * product.Product.Unit.Count;
+                                    quantity = pieceQuantity;                                
                                 }
                                 else
                                 {
-                                    //整托盘自动移库；
-                                    quantity = 0;
+                                    decimal wholeTray = Math.Ceiling(pieceQuantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
+                                    quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
+
+                                    if (areaSumQuantity < quantity)
+                                        quantity = pieceQuantity;//库存不够整托盘出库，就取整件
+                                    else
+                                        quantity = 0;//整托盘自动移库；
                                 }
 
-                                if (quantity > 0)
+                                if (quantity > 0 && areaSumQuantity > quantity)
                                 {
                                     AlltoMoveBill(moveBillMaster, product.Product, dispatch.SortingLine.Cell, ref quantity, cancellationToken, ps, dispatch.SortingLine.Cell.CellCode);
                                 }
+                                else
+                                    quantity = quantity - areaSumQuantity;
 
                                 if (quantity > 0)
                                 {
                                     //生成移库不完整,可能是库存不足；
                                     hasError = true;
                                     ps.State = StateType.Error;
-                                    ps.Errors.Add(dispatch.SortingLine.SortingLineCode + "线," + product.Product.ProductCode + " " + product.Product.ProductName + ",库存不足！当前总量：" + Convert.ToDecimal(product.SumQuantity / product.Product.UnitList.Unit02.Count) + "(条),缺少：" + Convert.ToDecimal(quantity / product.Product.UnitList.Unit02.Count) + "(条)");
+                                    ps.Errors.Add(dispatch.SortingLine.SortingLineCode + "线," + product.Product.ProductCode + " " + product.Product.ProductName + ",库存不足！当前总量：" + Convert.ToDecimal(product.SumQuantity / product.Product.UnitList.Unit02.Count) + "(条),缺少：" + Convert.ToDecimal((quantity) / product.Product.UnitList.Unit02.Count) + "(条)");
                                     NotifyConnection(ps.Clone());
                                 }
                             }

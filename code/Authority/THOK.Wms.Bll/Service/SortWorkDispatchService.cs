@@ -526,7 +526,7 @@ namespace THOK.Wms.Bll.Service
                     lowerlimitQuantity = 0;
 
                 //获取移库量 = 出库量 + 下限量 - 分拣备货区库存量;
-                decimal quantity = Math.Ceiling((outDetail.BillQuantity + lowerlimitQuantity - sortQuantity - (lowerlimitQuantity > 0 ? 30 : 0))
+                decimal quantity = Math.Ceiling((outDetail.BillQuantity + lowerlimitQuantity - sortQuantity - (lowerlimitQuantity > 0 ? 30 * outDetail.Product.UnitList.Quantity02 * outDetail.Product.UnitList.Quantity03 : 0))
                                         / outDetail.Product.Unit.Count) * outDetail.Product.Unit.Count;
 
                 if (quantity > 0)
@@ -537,7 +537,7 @@ namespace THOK.Wms.Bll.Service
                 if (quantity > 0)
                 {
                     //生成移库不完整,可能是库存不足；
-                    throw new Exception(sortWork.SortingLine.SortingLineName + " " + outDetail.ProductCode + " " + outDetail.Product.ProductName + "仓储拆盘区库存不足，未能结单！");
+                    throw new Exception(sortWork.SortingLine.SortingLineName + " " + outDetail.ProductCode + " " + outDetail.Product.ProductName + "仓储拆盘区库存不足，缺少：" + Convert.ToDecimal((quantity) / outDetail.Product.Unit.Count) + "(件)，未能结单！");
                 }
             }
 

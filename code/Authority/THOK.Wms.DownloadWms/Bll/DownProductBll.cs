@@ -155,7 +155,7 @@ namespace THOK.WMS.DownloadWms.Bll
                 inbrddr["description"] = "";
                 inbrddr["is_active"] = row["IsActive"];
                 inbrddr["update_time"] = DateTime.Now;
-                inbrddr["is_rounding"] = "1";
+                inbrddr["is_rounding"] = row["IS_ABNORMITY_BRAND"] == "1" ? "1" : "0";
                 inbrddr["cell_max_product_quantity"] = "30";
                 inbrddr["point_area_codes"] = "";
                 ds.Tables["WMS_PRODUCT"].Rows.Add(inbrddr);
