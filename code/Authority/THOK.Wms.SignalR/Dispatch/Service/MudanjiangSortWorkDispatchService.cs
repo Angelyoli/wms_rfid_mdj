@@ -222,21 +222,21 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 }
                                 else
                                 {
-                                    decimal wholeTray = Math.Ceiling(pieceQuantity / (product.Product.CellMaxProductQuantity * product.Product.Unit.Count));
-                                    quantity = Convert.ToDecimal(wholeTray * (product.Product.Unit.Count * product.Product.CellMaxProductQuantity));
-
-                                    if (areaSumQuantity < quantity)
-                                        quantity = pieceQuantity;//库存不够整托盘出库，就取整件
-                                    else
-                                        quantity = 0;//整托盘自动移库；
+                                    quantity = 0;//整托盘自动移库；
+                                    if (pieceQuantity > areaSumQuantity)
+                                    {
+                                        //不够整件出库
+                                        hasError = true;
+                                        ps.State = StateType.Error;
+                                        ps.Errors.Add(dispatch.SortingLine.SortingLineCode + "线," + product.Product.ProductCode + " " + product.Product.ProductName + ",库存不足！当前总量：" + Convert.ToDecimal(product.SumQuantity / product.Product.UnitList.Unit02.Count) + "(条),缺少：" + Convert.ToDecimal((pieceQuantity - areaSumQuantity) / product.Product.UnitList.Unit02.Count) + "(条)");
+                                        NotifyConnection(ps.Clone());
+                                    }
                                 }
 
-                                if (quantity > 0 && areaSumQuantity > quantity)
+                                if (quantity > 0)
                                 {
                                     AlltoMoveBill(moveBillMaster, product.Product, dispatch.SortingLine.Cell, ref quantity, cancellationToken, ps, dispatch.SortingLine.Cell.CellCode);
                                 }
-                                else
-                                    quantity = quantity - areaSumQuantity;
 
                                 if (quantity > 0)
                                 {
