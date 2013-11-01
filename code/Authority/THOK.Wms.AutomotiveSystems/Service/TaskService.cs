@@ -672,7 +672,11 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         outAllot.RealQuantity += quantity;
                                         outAllot.Storage.Quantity -= quantity;
                                         if (outAllot.Storage.Quantity == 0)
+                                        {
+                                            outAllot.Storage.ProductCode = null;
+                                            outAllot.Storage.StorageSequence = 0;
                                             outAllot.Storage.Rfid = "";
+                                        }
                                         outAllot.Storage.OutFrozenQuantity -= quantity;
                                         outAllot.OutBillDetail.RealQuantity += quantity;
                                         outAllot.OutBillMaster.Status = "5";
@@ -723,7 +727,12 @@ namespace THOK.Wms.AutomotiveSystems.Service
                                         moveDetail.InStorage.Rfid = billDetail.StorageRfid;
                                         moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                                         moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
-                                        moveDetail.OutStorage.Rfid = "";
+                                        if (moveDetail.OutStorage.Quantity == 0)
+                                        {
+                                            moveDetail.OutStorage.Rfid = "";
+                                            moveDetail.OutStorage.StorageSequence = 0;
+                                            moveDetail.OutStorage.ProductCode = null;
+                                        }
                                         //当移入货位的库存为0时，以移出的货位的时间为移入货位的库存时间
                                         if (moveDetail.InStorage.Quantity - moveDetail.RealQuantity == 0)
                                         {

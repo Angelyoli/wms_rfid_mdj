@@ -1321,11 +1321,14 @@ namespace THOK.WCS.Bll.Service
                 {
                     outAllot.Status = "2";
                     outAllot.RealQuantity += quantity;
-                    outAllot.Storage.Quantity -= quantity;
-                    if (outAllot.Storage.Quantity == 0)
-                        outAllot.Storage.Rfid = "";
+                    outAllot.Storage.Quantity -= quantity;                  
                     outAllot.Storage.OutFrozenQuantity -= quantity;
-                    if (outAllot.Storage.Quantity == 0) outAllot.Storage.StorageSequence = 0;
+                    if (outAllot.Storage.Quantity == 0)
+                    {
+                        outAllot.Storage.Rfid = "";
+                        outAllot.Storage.ProductCode = null;
+                        outAllot.Storage.StorageSequence = 0;
+                    }
                     outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
                         ? outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
                     outAllot.OutBillDetail.RealQuantity += quantity;
@@ -1408,10 +1411,14 @@ namespace THOK.WCS.Bll.Service
                     moveDetail.InStorage.Rfid = "";
                     moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                     moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
-                    if (moveDetail.OutStorage.Quantity == 0) moveDetail.OutStorage.StorageSequence = 0;
+                    if (moveDetail.OutStorage.Quantity == 0)
+                    {
+                        moveDetail.OutStorage.Rfid = "";
+                        moveDetail.OutStorage.StorageSequence = 0;
+                        moveDetail.OutStorage.ProductCode = null;
+                    }
                     moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0 
                         ? moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
-                    moveDetail.OutStorage.Rfid = "";
 
                     //判断移入的时间是否小于移出的时间
                     if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)

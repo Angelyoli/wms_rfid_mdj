@@ -181,7 +181,7 @@ namespace Authority.Controllers.Wms.StockOut
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 
-        //主单结单
+        //主单下载
         // POST: /StockOutBill/DownOutBillMaster/
         public ActionResult DownOutBillMaster(string beginDate, string endDate, string wareCode, string billType)
         {
