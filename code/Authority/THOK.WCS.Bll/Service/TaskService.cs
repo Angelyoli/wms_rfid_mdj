@@ -1687,6 +1687,61 @@ namespace THOK.WCS.Bll.Service
             return 0;
         }
 
+        public bool AutoCreateMoveBill(out string errorInfo)
+        {
+            errorInfo = string.Empty;
+
+            var positions = PositionRepository.GetQueryable()
+                .Where(i => i.PositionType == "02"
+                    && !i.HasGoods
+                    && !string.IsNullOrEmpty(i.ChannelCode)
+                    && i.ChannelCode != "0");
+
+            var cellPositions = CellPositionRepository.GetQueryable()
+                .Where(i => positions.Contains(i.StockInPosition));
+
+            var cells = CellRepository.GetQueryable()
+                .Where(i => cellPositions.Any(p => p.CellCode == i.CellCode)
+                    && !string.IsNullOrEmpty(i.DefaultProductCode))
+                .ToArray();
+
+            if (cells.Count() > 0)
+            {
+                var systemParamWare = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "WarehouseCode");
+                var systemParamMove = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "MoveBillTypeCode");
+                var systemParamPerson = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "OperatePersonID");
+
+                string warehouseCode = systemParamWare.ParameterValue;
+                string moveBillTypeCode = systemParamMove.ParameterValue;
+                string operatePersonID = systemParamPerson.ParameterValue;
+
+                MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(warehouseCode, moveBillTypeCode, operatePersonID);
+                moveBillMaster.Origin = "2";
+                moveBillMaster.Description = "系统自动生成补大品种拆盘位移库单！";
+                moveBillMaster.Status = "2";
+                moveBillMaster.VerifyPersonID = Guid.Parse(operatePersonID);
+                moveBillMaster.VerifyDate = DateTime.Now;
+
+                foreach (var cell in cells)
+                {
+                    var task = TaskRepository.GetQueryable()
+                        .Where(t => t.State != "04" && t.TargetStorageCode == cell.CellCode)
+                        .FirstOrDefault();
+                    if (task == null)
+                    {
+                        AlltoMoveBill(moveBillMaster, cell.Product, cell);
+                    }
+                }
+
+                if (moveBillMaster.MoveBillDetails.Count > 0)
+                {
+                    CellRepository.SaveChanges();
+                    MoveBillTask(moveBillMaster.BillNo, out errorInfo);
+                }
+            }
+            return true;
+        }
+
         private bool FinishStockOutRemainMoveBackTask(string orderID, int allotID)
         {
             var checkDetail = OutBillAllotRepository.GetQueryable()
@@ -1772,61 +1827,6 @@ namespace THOK.WCS.Bll.Service
             return 0;
         }
 
-        public bool AutoCreateMoveBill(out string errorInfo)
-        {
-            errorInfo = string.Empty;
-
-            var positions = PositionRepository.GetQueryable()
-                .Where(i => i.PositionType == "02"
-                    && !i.HasGoods
-                    && !string.IsNullOrEmpty(i.ChannelCode)
-                    && i.ChannelCode != "0"); 
-
-            var cellPositions= CellPositionRepository.GetQueryable()
-                .Where(i => positions.Contains(i.StockInPosition));
-
-            var cells = CellRepository.GetQueryable()
-                .Where(i => cellPositions.Any(p => p.CellCode == i.CellCode)
-                    && !string.IsNullOrEmpty(i.DefaultProductCode))
-                .ToArray();
-
-            if (cells.Count() > 0)
-            {
-                var systemParamWare = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "WarehouseCode");
-                var systemParamMove = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "MoveBillTypeCode");
-                var systemParamPerson = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "OperatePersonID");
-
-                string warehouseCode = systemParamWare.ParameterValue;
-                string moveBillTypeCode = systemParamMove.ParameterValue;
-                string operatePersonID = systemParamPerson.ParameterValue;
-
-                MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(warehouseCode, moveBillTypeCode, operatePersonID);
-                moveBillMaster.Origin = "2";
-                moveBillMaster.Description = "系统自动生成补大品种拆盘位移库单！";
-                moveBillMaster.Status = "2";
-                moveBillMaster.VerifyPersonID = Guid.Parse(operatePersonID);
-                moveBillMaster.VerifyDate = DateTime.Now;
-
-                foreach (var cell in cells)
-                {
-                    var task = TaskRepository.GetQueryable()
-                        .Where(t=>t.State != "04" && t.TargetStorageCode == cell.CellCode)
-                        .FirstOrDefault();
-                    if (task == null)
-                    {
-                        AlltoMoveBill(moveBillMaster, cell.Product, cell);
-                    }                    
-                }
-
-                if (moveBillMaster.MoveBillDetails.Count > 0)
-                {
-                    CellRepository.SaveChanges();
-                    MoveBillTask(moveBillMaster.BillNo, out errorInfo);
-                }
-            }
-            return true;
-        }
-
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
         {
             //选择当前订单操作目标仓库；
@@ -1846,7 +1846,6 @@ namespace THOK.WCS.Bll.Service
                 AllotPallet(moveBillMaster, storages, cell);
             }
         }
-
         private void AllotPallet(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> storages, Cell cell)
         {
             foreach (var s in storages.ToArray())
@@ -1868,6 +1867,163 @@ namespace THOK.WCS.Bll.Service
                         break;
                     }
                 }
+            }
+        }
+
+        public void GetOutTask(string positionType, RestReturn result)
+        {
+            try
+            {
+                RestTask[] RestTask = new RestTask[] { };
+                var taskQuery = TaskRepository.GetQueryable().Where(a => (a.OrderType == "02" || a.OrderType == "03") && (a.State == "02" || a.State == "01"));
+                var positionQuery = PositionRepository.GetQueryable().Where(a => a.PositionType == positionType || a.PositionName == "1001");
+                var outBillAllotQuery = OutBillAllotRepository.GetQueryable();
+                var moveBillAllotQuery = MoveBillDetailRepository.GetQueryable();
+                #region 出库
+                var abnormalOutTask = taskQuery
+                            .Join(outBillAllotQuery, a => a.OrderID, o => o.BillNo, (a, o) => new
+                            {
+                                a.ID,
+                                a.TaskType,
+                                a.TargetPositionID,
+                                a.TargetStorageCode,
+                                a.OrderID,
+                                a.OrderType,
+                                a.ProductCode,
+                                a.ProductName,
+                                a.Quantity,
+                                a.TaskQuantity,
+                                a.State,
+                                o.Product,
+                                o.AllotQuantity
+                            })
+                            .Join(positionQuery, a => a.TargetPositionID, p => p.ID, (a, p) => new
+                            {
+                                a.ID,
+                                a.TaskType,
+                                a.TargetStorageCode,
+                                a.OrderID,
+                                a.OrderType,
+                                a.ProductCode,
+                                a.ProductName,
+                                a.Quantity,
+                                a.TaskQuantity,
+                                a.State,
+                                a.AllotQuantity,
+                                a.Product
+                            })
+                            .Select(i => new RestTask()
+                            {
+                                TaskID = i.ID,
+                                CellName = i.TargetStorageCode,
+                                ProductCode = i.ProductCode,
+                                ProductName = i.ProductName,
+                                OrderID = i.OrderID,
+                                OrderType = i.OrderType == "02" ? "移库" : "出库",
+                                Quantity = i.Quantity,
+                                TaskQuantity = i.AllotQuantity / i.Product.Unit.Count,
+                                PieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
+                            })
+                            .ToArray();
+                #endregion
+                #region 移库
+                var abnormalMoveTask = taskQuery
+                            .Join(moveBillAllotQuery, a => a.OrderID, m => m.BillNo, (a, m) => new
+                            {
+                                a.ID,
+                                a.TaskType,
+                                a.TargetPositionID,
+                                a.TargetStorageCode,
+                                a.OrderID,
+                                a.OrderType,
+                                a.ProductCode,
+                                a.ProductName,
+                                a.Quantity,
+                                a.TaskQuantity,
+                                a.State,
+                                m.RealQuantity,
+                                m.Product
+                            })
+                            .Join(positionQuery, a => a.TargetPositionID, p => p.ID, (a, p) => new
+                            {
+                                a.ID,
+                                a.TaskType,
+                                a.TargetStorageCode,
+                                a.OrderID,
+                                a.OrderType,
+                                a.ProductCode,
+                                a.ProductName,
+                                a.Quantity,
+                                a.TaskQuantity,
+                                a.State,
+                                a.RealQuantity,
+                                a.Product
+                            })
+                            .Select(i => new RestTask()
+                            {
+                                TaskID = i.ID,
+                                CellName = i.TargetStorageCode,
+                                ProductCode = i.ProductCode,
+                                ProductName = i.ProductName,
+                                OrderID = i.OrderID,
+                                OrderType = i.OrderType == "02" ? "移库" : "出库",
+                                Quantity = i.Quantity,
+                                TaskQuantity = i.RealQuantity / i.Product.Unit.Count,
+                                PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
+                            })
+                            .ToArray();
+                #endregion
+                RestTask = RestTask.Concat(abnormalOutTask).Concat(abnormalMoveTask).ToArray();
+                result.IsSuccess = true;
+                result.RestTasks = RestTask;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public void FinishTask(string taskID, RestReturn result)
+        {
+            string errorInfo = string.Empty;
+            try
+            {
+                int tid = Convert.ToInt32(taskID);
+                var task = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == tid);
+                var position = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.OriginPositionID);
+
+                if (!FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
+                {
+                    throw new Exception(string.Format("{0} 完成任务失败！", position.PositionName));
+                }
+
+                task.CurrentPositionID = task.TargetPositionID;
+                task.State = "04";
+                TaskRepository.SaveChanges();
+
+                if (task.TaskQuantity == task.OperateQuantity)
+                {
+                    if (!CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
+                    {
+                        throw new Exception(string.Format("{0} 生成空托盘叠垛任务失败！", position.PositionName));
+                    }
+                }
+                else
+                {
+                    if (!CreateNewTaskForMoveBackRemain(task.ID, out errorInfo))
+                    {
+                        throw new Exception(string.Format("{0} 生成余烟回库任务失败！", position.PositionName));
+                    }
+                }
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + errorInfo);
             }
         }
     }
