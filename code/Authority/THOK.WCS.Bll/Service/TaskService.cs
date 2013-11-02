@@ -1876,11 +1876,13 @@ namespace THOK.WCS.Bll.Service
             {
                 RestTask[] RestTask = new RestTask[] { };
                 var taskQuery = TaskRepository.GetQueryable().Where(a => (a.OrderType == "02" || a.OrderType == "03") && (a.State == "02" || a.State == "01"));
-                var positionQuery = PositionRepository.GetQueryable().Where(a => a.PositionType == positionType || a.PositionName == "1001");
+                var positionQuery = PositionRepository.GetQueryable().Where(a => a.PositionType == positionType);
+
                 var outBillAllotQuery = OutBillAllotRepository.GetQueryable();
                 var moveBillAllotQuery = MoveBillDetailRepository.GetQueryable();
+
                 #region 出库
-                var abnormalOutTask = taskQuery
+                var outTask = taskQuery
                             .Join(outBillAllotQuery, a => a.OrderID, o => o.BillNo, (a, o) => new
                             {
                                 a.ID,
@@ -1927,9 +1929,10 @@ namespace THOK.WCS.Bll.Service
                                 Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
                             })
                             .ToArray();
-                #endregion
+                #endregion}
+
                 #region 移库
-                var abnormalMoveTask = taskQuery
+                var moveTask = taskQuery
                             .Join(moveBillAllotQuery, a => a.OrderID, m => m.BillNo, (a, m) => new
                             {
                                 a.ID,
@@ -1977,7 +1980,8 @@ namespace THOK.WCS.Bll.Service
                             })
                             .ToArray();
                 #endregion
-                RestTask = RestTask.Concat(abnormalOutTask).Concat(abnormalMoveTask).ToArray();
+
+                RestTask = RestTask.Concat(outTask).Concat(moveTask).ToArray();
                 result.IsSuccess = true;
                 result.RestTasks = RestTask;
             }

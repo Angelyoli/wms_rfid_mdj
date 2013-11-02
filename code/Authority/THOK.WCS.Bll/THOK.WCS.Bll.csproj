@@ -86,9 +86,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\THOK.Authority.Dal\THOK.Authority.Dal.csproj">
       <Project>{A8E32F0A-A9F4-4CDD-8C7A-8304CD034070}</Project>
       <Name>THOK.Authority.Dal</Name>
