@@ -1875,11 +1875,12 @@ namespace THOK.WCS.Bll.Service
             try
             {
                 RestTask[] RestTask = new RestTask[] { };
-                var taskQuery = TaskRepository.GetQueryable().Where(a => (a.OrderType == "02" || a.OrderType == "03") && (a.State == "02" || a.State == "01"));
+                
+                var taskQuery = TaskRepository.GetQueryable().Where(a => (a.OrderType == "02" || a.OrderType == "03") && (a.State == "01" || a.State == "02"));
                 var positionQuery = PositionRepository.GetQueryable().Where(a => a.PositionType == positionType);
-
+                
                 var outBillAllotQuery = OutBillAllotRepository.GetQueryable();
-                var moveBillAllotQuery = MoveBillDetailRepository.GetQueryable();
+                var moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
 
                 #region 出库
                 var outTask = taskQuery
@@ -1933,7 +1934,7 @@ namespace THOK.WCS.Bll.Service
 
                 #region 移库
                 var moveTask = taskQuery
-                            .Join(moveBillAllotQuery, a => a.AllotID, m => m.ID, (a, m) => new
+                            .Join(moveBillDetailQuery, a => a.AllotID, m => m.ID, (a, m) => new
                             {
                                 a.ID,
                                 a.TaskType,
