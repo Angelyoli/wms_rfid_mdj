@@ -419,7 +419,11 @@ namespace THOK.Wms.Bll.Service
                                             o.AllotQuantity += allotQuantity;
                                             o.RealQuantity += allotQuantity;
                                             s.Quantity -= allotQuantity;
-
+                                            if (s.Quantity == 0)
+                                            {
+                                                s.ProductCode = null;
+                                                s.StorageSequence = 0;
+                                            }
                                             var billAllot = new OutBillAllot()
                                             {
                                                 BillNo = sortWork.OutBillMaster.BillNo,
@@ -559,15 +563,26 @@ namespace THOK.Wms.Bll.Service
                     moveDetail.InStorage.Rfid = "";
                     moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
                     moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
-                    if (moveDetail.OutStorage.Quantity == 0) moveDetail.OutStorage.StorageSequence = 0;
+                    if (moveDetail.OutStorage.Quantity == 0)
+                    {
+                        moveDetail.OutStorage.Rfid = "";
+                        moveDetail.OutStorage.ProductCode = null;
+                        moveDetail.OutStorage.StorageSequence = 0;
+                    }
                     moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
                         ? moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
-                    moveDetail.OutStorage.Rfid = "";
 
-                    //判断移入的时间是否小于移出的时间
-                    if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
+                    //当移入货位的库存为0时，以移出的货位的时间为移入货位的库存时间
+                    if (moveDetail.InStorage.Quantity - moveDetail.RealQuantity == 0)
+                    {
                         moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
-
+                    }
+                    else
+                    {
+                        //当移出货位的入库时间早于移入货位的时间，则更新移入货位的入库时间
+                        if (DateTime.Compare(moveDetail.OutStorage.StorageTime, moveDetail.InStorage.StorageTime) == -1)
+                            moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+                    }
                     moveDetail.FinishTime = DateTime.Now;
                 }
             }

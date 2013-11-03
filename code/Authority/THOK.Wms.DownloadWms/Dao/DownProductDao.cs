@@ -56,9 +56,10 @@ namespace THOK.WMS.DownloadWms.Dao
         {
             foreach (DataRow row in ds.Tables["WMS_PRODUCT"].Rows)
             {
+                //PIECE_BARCODE='{14}',
                 string sql = @"IF '{0}' IN (SELECT PRODUCT_CODE FROM WMS_PRODUCT) 
                                 BEGIN 
-                                    UPDATE WMS_PRODUCT SET PIECE_BARCODE='{14}',IS_ABNORMITY='{29}',PRODUCT_NAME = '{1}',CUSTOM_CODE='{3}' WHERE PRODUCT_CODE = '{0}' 
+                                    UPDATE WMS_PRODUCT SET IS_ABNORMITY='{29}',PRODUCT_NAME = '{1}',CUSTOM_CODE='{3}' WHERE PRODUCT_CODE = '{0}' 
                                 END 
                              ELSE 
                                 BEGIN 

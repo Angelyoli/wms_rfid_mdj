@@ -108,7 +108,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             var storages = storageQuery.OrderBy(s => s.StorageCode).Where(s => s.StorageCode != null);
             IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
-            var isWholePallet = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsWholePallet");//是否整托盘
+            string IsWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
             if (type == "ware")
             {
                 storages = storages.Where(s => s.Cell.Shelf.Area.Warehouse.WarehouseCode == id);
@@ -129,7 +129,7 @@ namespace THOK.Wms.Bll.Service
             if (inOrOut == "out")
             {
                 storages = storages.Where(s => (s.Quantity - s.OutFrozenQuantity) > 0 && string.IsNullOrEmpty(s.Cell.LockTag));
-                if (isWholePallet.ParameterValue == "1")//是整托盘移库
+                if (IsWholePallet == "1")//是整托盘移库
                 {
                     storages = storages.Where(s => s.OutFrozenQuantity == 0);
                 }
@@ -146,7 +146,7 @@ namespace THOK.Wms.Bll.Service
                 storages = storages.Where(s => (s.Quantity - s.OutFrozenQuantity) > 0
                                           && string.IsNullOrEmpty(s.Cell.LockTag)
                                           && s.ProductCode == productCode);
-                if (isWholePallet.ParameterValue == "1")//是整托盘出库
+                if (IsWholePallet == "1")//是整托盘出库
                 {
                     storages = storages.Where(s => s.OutFrozenQuantity == 0);
                 }
@@ -174,7 +174,7 @@ namespace THOK.Wms.Bll.Service
                     Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
                     IsActive = s.IsActive == "1" ? "可用" : "不可用",
                     StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                    IsWholePallet=isWholePallet.ParameterValue,
+                    IsWholePallet = IsWholePallet,
                     UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
                 });
             return new { total, rows = tmp.ToArray() };

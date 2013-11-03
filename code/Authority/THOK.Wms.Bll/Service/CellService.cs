@@ -889,7 +889,7 @@ namespace THOK.Wms.Bll.Service
                         quantityStr = "<可入：";
                         if (cell.Storages.Count != 0 && cell.Storages.Sum(s => s.Quantity + s.InFrozenQuantity) != 0)
                         {
-                            var cellQuantity = cell.Storages.GroupBy(g => new { g.Cell }).Select(s => new { quan = s.Key.Cell.Storages.Max(t => t.ProductCode) == null ? s.Key.Cell.MaxQuantity : ((s.Key.Cell.MaxQuantity * s.Key.Cell.Storages.Max(t => t.Product.Unit.Count)) - s.Sum(p => p.Quantity + p.InFrozenQuantity)) / s.Key.Cell.Storages.Max(t => t.Product.Unit.Count) });
+                            var cellQuantity = cell.Storages.Select(s => new { quan = s.Product == null ? s.Cell.MaxQuantity : ((s.Cell.MaxQuantity * s.Product.Unit.Count) - (s.Quantity+s.InFrozenQuantity)) / s.Product.Unit.Count });
                             decimal quantity = Convert.ToDecimal(cellQuantity.Sum(s => s.quan));
                             // quantity = Math.Round(quantity, 2);
                             quantityStr += cell.MaxPalletQuantity.ToString() == "8" ? cell.MaxPalletQuantity - cell.Storages.Where(s => s.Quantity + s.InFrozenQuantity > 0).Count() + ">托盘，当前卷烟：" + productCode : quantity + ">件，当前卷烟：" + productCode;

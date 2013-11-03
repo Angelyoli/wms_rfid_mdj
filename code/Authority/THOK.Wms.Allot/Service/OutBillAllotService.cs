@@ -748,6 +748,12 @@ namespace THOK.Wms.Allot.Service
                                 allot.Storage.Quantity -= quantity;
                                 allot.Storage.OutFrozenQuantity -= quantity;
                                 allot.OutBillDetail.RealQuantity += quantity;
+                                if (allot.Storage.Quantity == 0)
+                                {
+                                    allot.Storage.ProductCode = null;
+                                    allot.Storage.StorageSequence = 0;
+                                    allot.Storage.Rfid = "";
+                                }
                                 allot.OutBillMaster.Status = "5";
                                 allot.FinishTime = DateTime.Now;
                                 if (allot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
