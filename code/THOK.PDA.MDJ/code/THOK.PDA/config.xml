@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Config>
+  <Connection>
+    <ConnectionString name="ConnectionString" value="server=10.57.64.171;database=wms_rfid;uid=sa;pwd=******" />
+  </Connection>
+  <ConnetionType>
+    <Type name="Type" value="NetWork" />
+  </ConnetionType>
+  <HttpConnectionStr>
+    <Type name="HttpConnStr" value="http://10.57.64.171:8089/TaskRest/" />
+  </HttpConnectionStr>
+</Config>
