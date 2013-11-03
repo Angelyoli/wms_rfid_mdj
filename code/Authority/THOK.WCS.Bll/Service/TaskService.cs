@@ -1883,7 +1883,7 @@ namespace THOK.WCS.Bll.Service
 
                 #region 出库
                 var outTask = taskQuery
-                            .Join(outBillAllotQuery, a => a.OrderID, o => o.BillNo, (a, o) => new
+                            .Join(outBillAllotQuery, a => a.AllotID, o => o.ID, (a, o) => new
                             {
                                 a.ID,
                                 a.TaskType,
@@ -1933,7 +1933,7 @@ namespace THOK.WCS.Bll.Service
 
                 #region 移库
                 var moveTask = taskQuery
-                            .Join(moveBillAllotQuery, a => a.OrderID, m => m.BillNo, (a, m) => new
+                            .Join(moveBillAllotQuery, a => a.AllotID, m => m.ID, (a, m) => new
                             {
                                 a.ID,
                                 a.TaskType,
