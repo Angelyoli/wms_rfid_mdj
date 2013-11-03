@@ -83,7 +83,7 @@ namespace THOK.Wms.Bll.Service
                 IQueryable<MoveBillDetail> MoveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
                 var moveBillDetail = MoveBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => i);
                 IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
-                var isWholePallet = systemParQuery.FirstOrDefault(s => s.ParameterName == "IsWholePallet");//查询是否整托盘出库
+                var isWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
                 int total = moveBillDetail.Count();
                 moveBillDetail = moveBillDetail.Skip((page - 1) * rows).Take(rows);
 
@@ -106,7 +106,7 @@ namespace THOK.Wms.Bll.Service
                     EmployeeName = i.OperatePerson == null ? string.Empty : i.OperatePerson.EmployeeName,
                     StartTime = i.StartTime == null ? null : ((DateTime)i.StartTime).ToString("yyyy-MM-dd HH:mm:ss"),
                     FinishTime = i.FinishTime == null ? null : ((DateTime)i.FinishTime).ToString("yyyy-MM-dd HH:mm:ss"),
-                    IsWholePallet=isWholePallet.ParameterValue,
+                    IsWholePallet=isWholePallet,
                     Status = WhatStatus(i.Status)
                 });
                 return new { total, rows = temp.ToArray() };
@@ -131,10 +131,10 @@ namespace THOK.Wms.Bll.Service
                 var outStorage = StorageRepository.GetQueryable().FirstOrDefault(s => s.StorageCode == moveBillDetail.OutStorageCode);
                 var outCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.OutCellCode);
                 var inCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
-                var isWholePallet = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsWholePallet");//是否整托盘
+                var isWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(t => t.ParameterValue).FirstOrDefault();//是否整托盘
 
                 int storageSequence = outCell.Storages.Where(t => t.Quantity - t.OutFrozenQuantity > 0).Min(t => t.StorageSequence);
-                if (isWholePallet.ParameterValue == "1")//是整托盘移库            
+                if (isWholePallet == "1")//是整托盘移库            
                     storageSequence = outCell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);              
                 if (storageSequence != outStorage.StorageSequence)
                 {
@@ -257,7 +257,7 @@ namespace THOK.Wms.Bll.Service
             bool result = false;
             decimal inFrozenQuantity = 0;
             decimal outFrozenQuantity = 0;
-            var isWholePallet = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "IsWholePallet");//是否整托盘
+            var isWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
             if (moveBillDetail.OutCellCode == moveBillDetail.InCellCode)
             {
                 strResult = "移入和移出货位不能一样！";
@@ -293,7 +293,7 @@ namespace THOK.Wms.Bll.Service
             }
 
             int storageSequence = outCell.Storages.Where(t => t.Quantity - t.OutFrozenQuantity > 0).Min(t => t.StorageSequence);
-            if (isWholePallet.ParameterValue == "1")//是整托盘移库            
+            if (isWholePallet == "1")//是整托盘移库            
                 storageSequence = outCell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
            
             if (storageSequence != outStorage.StorageSequence)
