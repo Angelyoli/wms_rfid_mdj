@@ -1420,9 +1420,18 @@ namespace THOK.WCS.Bll.Service
                     moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0 
                         ? moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
 
-                    //判断移入的时间是否小于移出的时间
-                    if (DateTime.Compare(moveDetail.InStorage.StorageTime, moveDetail.OutStorage.StorageTime) == 1)
+                    //当移入货位的库存为0时，以移出的货位的时间为移入货位的库存时间
+                    if (moveDetail.InStorage.Quantity - moveDetail.RealQuantity == 0)
+                    {
                         moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+                    }
+                    else
+                    {
+                        //当移出货位的入库时间早于移入货位的时间，则更新移入货位的入库时间
+                        if (DateTime.Compare(moveDetail.OutStorage.StorageTime, moveDetail.InStorage.StorageTime) == -1)
+                            moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+                    }
+
                     moveDetail.MoveBillMaster.Status = "3";
                     moveDetail.FinishTime = DateTime.Now;
                     var sortwork = SortWorkDispatchRepository.GetQueryable()

@@ -686,8 +686,19 @@ namespace THOK.Wms.Bll.Service
                                 detail.InStorage.InFrozenQuantity -= detail.RealQuantity;
                                 detail.OutStorage.Quantity -= detail.RealQuantity;
                                 detail.OutStorage.OutFrozenQuantity -= detail.RealQuantity;
+                                if (detail.InStorage.Cell.FirstInFirstOut) detail.InStorage.StorageSequence = detail.InStorage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                                if (!detail.InStorage.Cell.FirstInFirstOut) detail.InStorage.StorageSequence = detail.InStorage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                                detail.OutStorage.Cell.StorageTime = detail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
+                                        ? detail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
                                 detail.FinishTime = DateTime.Now;
                                 detail.MoveBillMaster.Status = "3";
+                                detail.InStorage.Rfid = "";
+                                if (detail.OutStorage.Quantity == 0)
+                                {
+                                    detail.OutStorage.Rfid = "";
+                                    detail.OutStorage.StorageSequence = 0;
+                                    detail.OutStorage.ProductCode = null;
+                                }                              
                                 //当移入货位的库存为0时，以移出的货位的时间为移入货位的库存时间
                                 if (detail.InStorage.Quantity - detail.RealQuantity == 0)
                                 {
@@ -700,6 +711,14 @@ namespace THOK.Wms.Bll.Service
                                     if (DateTime.Compare(detail.OutStorage.StorageTime, detail.InStorage.StorageTime) == -1)
                                         detail.InStorage.StorageTime = detail.OutStorage.StorageTime;
                                 }
+
+                                var sortwork = SortWorkDispatchRepository.GetQueryable().FirstOrDefault(s => s.MoveBillMaster.BillNo == detail.MoveBillMaster.BillNo && s.DispatchStatus == "2");
+                                //修改分拣调度作业状态
+                                if (sortwork != null)
+                                {
+                                    sortwork.DispatchStatus = "3";
+                                }
+
                                 if (detail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
                                 {
                                     detail.MoveBillMaster.Status = "4";
