@@ -1052,7 +1052,7 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 errorInfo = string.Format("已生成一个任务号[{0}]，位置[{1}]已有任务在执行中！", task.ID, position.PositionName);
-                return false;
+                return true;
             }
             var positionQuery = PositionRepository.GetQueryable().Where(i => i.SRMName == position.SRMName && i.AbleStockInPallet && i.ID != position.ID);
             if (positionQuery == null)
