@@ -324,7 +324,7 @@ namespace THOK.WCS.Bll.Service
                                && t.OrderType.Contains(task.OrderType)
                                && t.DownloadState.Contains(task.DownloadState)
                              )
-                      .OrderByDescending(t => t.ID)
+                      .OrderBy(t => t.State).ThenByDescending(t => t.ID)
                       .Select(t => new
                       {
                           t.ID,
