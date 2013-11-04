@@ -943,12 +943,14 @@ namespace THOK.WCS.Bll.Service
             Cell originCell = CellRepository.GetQueryable().Where(i => i.CellCode == originCellPosition.CellCode).FirstOrDefault();
 
             var cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
-                && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
-                && (i.Storages.Any(s => s.ProductCode == palletCode
-                    && s.Quantity + s.InFrozenQuantity < ((s.Cell.MaxQuantity /5) *2) && s.OutFrozenQuantity == 0)));
+                    && i.IsActive == "1"
+                    && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
+                    && (i.Storages.Any(s => s.ProductCode == palletCode
+                        && s.Quantity + s.InFrozenQuantity < ((s.Cell.MaxQuantity /5) *2) && s.OutFrozenQuantity == 0)));
             if (!cellQuery.Any())
             {
                 cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
+                    && i.IsActive == "1"
                     && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
                     && (i.Storages.Count == 0 || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
                         && s.Quantity == 0 && s.InFrozenQuantity == 0)));
