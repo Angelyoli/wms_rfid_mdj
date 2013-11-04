@@ -914,7 +914,6 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
             string palletCode = systemParam.ParameterValue;
-            int palletCount = 10;
 
             var position = PositionRepository.GetQueryable().Where(i => (i.ID == positionID || i.PositionName == positionName) && (i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04")).FirstOrDefault();
             if (position == null && !position.HasGoods)
@@ -946,7 +945,7 @@ namespace THOK.WCS.Bll.Service
             var cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
                 && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
                 && (i.Storages.Any(s => s.ProductCode == palletCode
-                    && s.Quantity + s.InFrozenQuantity < palletCount && s.OutFrozenQuantity == 0)));
+                    && s.Quantity + s.InFrozenQuantity < ((s.Cell.MaxQuantity /5) *2) && s.OutFrozenQuantity == 0)));
             if (!cellQuery.Any())
             {
                 cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
@@ -958,12 +957,12 @@ namespace THOK.WCS.Bll.Service
             {
                 errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "是否存在于卷烟信息表中。"
                           + "分析引导："
-                          + "1.此货位的数量+入库冻结量<10(托盘数量)，并且出库冻结量必须=0；"
+                          + "1.此货位的数量+入库冻结量<((托盘充许存放数量/5)*2)，并且出库冻结量必须=0；"
                           + "2.LockTag必须未锁定，库存数量和入库冻结量必须=0";
                 return false;
             }
 
-            var cell = cellQuery.OrderBy(c => Math.Abs(c.Col - c.Shelf.CellCols / 2)).FirstOrDefault();
+            var cell = cellQuery.ToArray().OrderBy(c => Math.Abs(c.Col - c.Shelf.CellCols / 2)).FirstOrDefault();
             if (cell == null)
             {
                 errorInfo = "请检查：货位表的字段储位列号Col和货架列数CellCols，计算：Math.Abs(Col - CellCols / 2)是否正确！";
@@ -1029,7 +1028,6 @@ namespace THOK.WCS.Bll.Service
                 newTask.OperateQuantity = 0;
                 newTask.OrderID = "";
                 newTask.OrderType = "05";
-                //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
