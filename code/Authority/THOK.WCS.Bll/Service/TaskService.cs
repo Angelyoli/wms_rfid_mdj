@@ -556,6 +556,133 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
+        public bool ClearTask(out string errorInfo)
+        {
+            bool result = false;
+            errorInfo = string.Empty;
+            var tasks = TaskRepository.GetQueryable();
+            if (tasks.All(a => (a.CurrentPositionID == a.OriginPositionID)
+                            || (a.CurrentPositionID == a.TargetPositionID)))
+            {
+                TaskHistory taskHistory = null;
+                foreach (var task in tasks)
+                {
+                    taskHistory = new TaskHistory();
+                    taskHistory.TaskID = task.ID;
+                    taskHistory.TaskType = task.TaskType;
+                    taskHistory.TaskLevel = task.TaskLevel;
+                    taskHistory.PathID = task.PathID;
+                    taskHistory.ProductCode = task.ProductCode;
+                    taskHistory.ProductName = task.ProductName;
+                    taskHistory.OriginStorageCode = task.OriginStorageCode;
+                    taskHistory.TargetStorageCode = task.TargetStorageCode;
+                    taskHistory.OriginPositionID = task.OriginPositionID;
+                    taskHistory.TargetPositionID = task.TargetPositionID;
+                    taskHistory.CurrentPositionID = task.CurrentPositionID;
+                    taskHistory.CurrentPositionState = task.CurrentPositionState;
+                    taskHistory.State = task.State;
+                    taskHistory.TagState = task.TagState;
+                    taskHistory.Quantity = task.Quantity;
+                    taskHistory.TaskQuantity = task.TaskQuantity;
+                    taskHistory.OperateQuantity = task.OperateQuantity;
+                    taskHistory.OrderID = task.OrderID;
+                    taskHistory.OrderType = task.OrderType;
+                    taskHistory.AllotID = task.AllotID;
+                    taskHistory.DownloadState = task.DownloadState;
+                    taskHistory.ClearTime = System.DateTime.Now;
+
+                    TaskHistoryRepository.Add(taskHistory);
+                }
+                using (var scope = new System.Transactions.TransactionScope())
+                {
+                    TaskHistoryRepository.SaveChanges();
+
+                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
+                    SqlConnection con = new SqlConnection(constr);
+                    string sql = "truncate table wcs_task";
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    try
+                    {
+                        con.Open();
+                        int i = (int)cmd.ExecuteNonQuery();
+                        if (i > 0) result = true; else result = false;
+                    }
+                    catch (Exception ex) { errorInfo = ex.Message; }
+                    finally { con.Close(); }
+
+                    scope.Complete();
+                    result = true;
+                }
+            }
+            else
+            {
+                errorInfo = "当前有未执行完毕的任务！";
+            }
+            return result;
+        }
+        public bool ClearTask(string orderID, out string errorInfo)
+        {
+            bool result = false;
+            errorInfo = string.Empty;
+            var tasks = TaskRepository.GetQueryable().Where(a => a.OrderID == orderID);
+            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID && a.State == "01" || a.CurrentPositionID == a.TargetPositionID && a.State == "04"))))
+            {
+                TaskHistory taskHistory = null;
+                foreach (var task in tasks)
+                {
+                    taskHistory = new TaskHistory();
+                    taskHistory.TaskID = task.ID;
+                    taskHistory.TaskType = task.TaskType;
+                    taskHistory.TaskLevel = task.TaskLevel;
+                    taskHistory.PathID = task.PathID;
+                    taskHistory.ProductCode = task.ProductCode;
+                    taskHistory.ProductName = task.ProductName;
+                    taskHistory.OriginStorageCode = task.OriginStorageCode;
+                    taskHistory.TargetStorageCode = task.TargetStorageCode;
+                    taskHistory.OriginPositionID = task.OriginPositionID;
+                    taskHistory.TargetPositionID = task.TargetPositionID;
+                    taskHistory.CurrentPositionID = task.CurrentPositionID;
+                    taskHistory.CurrentPositionState = task.CurrentPositionState;
+                    taskHistory.State = task.State;
+                    taskHistory.TagState = task.TagState;
+                    taskHistory.Quantity = task.Quantity;
+                    taskHistory.TaskQuantity = task.TaskQuantity;
+                    taskHistory.OperateQuantity = task.OperateQuantity;
+                    taskHistory.OrderID = task.OrderID;
+                    taskHistory.OrderType = task.OrderType;
+                    taskHistory.AllotID = task.AllotID;
+                    taskHistory.DownloadState = task.DownloadState;
+                    taskHistory.ClearTime = System.DateTime.Now;
+
+                    TaskHistoryRepository.Add(taskHistory);
+                }
+                using (var scope = new System.Transactions.TransactionScope())
+                {
+                    TaskHistoryRepository.SaveChanges();
+
+                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
+                    SqlConnection con = new SqlConnection(constr);
+                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    try
+                    {
+                        con.Open();
+                        int i = (int)cmd.ExecuteNonQuery();
+                        if (i > 0) result = true; else result = false;
+                    }
+                    catch (Exception ex) { errorInfo = "清空订单任务时：" + ex.Message; return false; }
+                    finally { con.Close(); }
+
+                    scope.Complete();
+                    result = true;
+                }
+            }
+            else
+            {
+                errorInfo = "当前有任务正在执行中或者未执行完毕！";
+            }
+            return result;
+        }
 
         public bool InBillTask(string billNo, out string errorInfo)
         {
@@ -914,7 +1041,6 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
             string palletCode = systemParam.ParameterValue;
-            int palletCount = 10;
 
             var position = PositionRepository.GetQueryable().Where(i => (i.ID == positionID || i.PositionName == positionName) && (i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04")).FirstOrDefault();
             if (position == null && !position.HasGoods)
@@ -944,12 +1070,14 @@ namespace THOK.WCS.Bll.Service
             Cell originCell = CellRepository.GetQueryable().Where(i => i.CellCode == originCellPosition.CellCode).FirstOrDefault();
 
             var cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
-                && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
-                && (i.Storages.Any(s => s.ProductCode == palletCode
-                    && s.Quantity + s.InFrozenQuantity < palletCount && s.OutFrozenQuantity == 0)));
+                    && i.IsActive == "1"
+                    && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
+                    && (i.Storages.Any(s => s.ProductCode == palletCode
+                        && s.Quantity + s.InFrozenQuantity < ((s.Cell.MaxQuantity /5) *2) && s.OutFrozenQuantity == 0)));
             if (!cellQuery.Any())
             {
                 cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
+                    && i.IsActive == "1"
                     && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
                     && (i.Storages.Count == 0 || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag)
                         && s.Quantity == 0 && s.InFrozenQuantity == 0)));
@@ -958,12 +1086,12 @@ namespace THOK.WCS.Bll.Service
             {
                 errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "是否存在于卷烟信息表中。"
                           + "分析引导："
-                          + "1.此货位的数量+入库冻结量<10(托盘数量)，并且出库冻结量必须=0；"
+                          + "1.此货位的数量+入库冻结量<((托盘充许存放数量/5)*2)，并且出库冻结量必须=0；"
                           + "2.LockTag必须未锁定，库存数量和入库冻结量必须=0";
                 return false;
             }
 
-            var cell = cellQuery.OrderBy(c => Math.Abs(c.Col - c.Shelf.CellCols / 2)).FirstOrDefault();
+            var cell = cellQuery.ToArray().OrderBy(c => Math.Abs(c.Col - c.Shelf.CellCols / 2)).FirstOrDefault();
             if (cell == null)
             {
                 errorInfo = "请检查：货位表的字段储位列号Col和货架列数CellCols，计算：Math.Abs(Col - CellCols / 2)是否正确！";
@@ -1029,7 +1157,6 @@ namespace THOK.WCS.Bll.Service
                 newTask.OperateQuantity = 0;
                 newTask.OrderID = "";
                 newTask.OrderType = "05";
-                //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
@@ -1222,7 +1349,7 @@ namespace THOK.WCS.Bll.Service
                 default: return true;
             }
         }
-
+        
         private bool FinishInBillTask(string orderID, int allotID, out string errorInfo)
         {
             errorInfo = string.Empty;
@@ -1545,135 +1672,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-
-        public bool ClearTask(out string errorInfo)
-        {
-            bool result = false;
-            errorInfo = string.Empty;
-            var tasks = TaskRepository.GetQueryable();
-            if (tasks.All(a => (a.CurrentPositionID == a.OriginPositionID)
-                            || (a.CurrentPositionID == a.TargetPositionID)))
-            {
-                TaskHistory taskHistory = null;
-                foreach (var task in tasks)
-                {
-                    taskHistory = new TaskHistory();
-                    taskHistory.TaskID = task.ID;
-                    taskHistory.TaskType = task.TaskType;
-                    taskHistory.TaskLevel = task.TaskLevel;
-                    taskHistory.PathID = task.PathID;
-                    taskHistory.ProductCode = task.ProductCode;
-                    taskHistory.ProductName = task.ProductName;
-                    taskHistory.OriginStorageCode = task.OriginStorageCode;
-                    taskHistory.TargetStorageCode = task.TargetStorageCode;
-                    taskHistory.OriginPositionID = task.OriginPositionID;
-                    taskHistory.TargetPositionID = task.TargetPositionID;
-                    taskHistory.CurrentPositionID = task.CurrentPositionID;
-                    taskHistory.CurrentPositionState = task.CurrentPositionState;
-                    taskHistory.State = task.State;
-                    taskHistory.TagState = task.TagState;
-                    taskHistory.Quantity = task.Quantity;
-                    taskHistory.TaskQuantity = task.TaskQuantity;
-                    taskHistory.OperateQuantity = task.OperateQuantity;
-                    taskHistory.OrderID = task.OrderID;
-                    taskHistory.OrderType = task.OrderType;
-                    taskHistory.AllotID = task.AllotID;
-                    taskHistory.DownloadState = task.DownloadState;
-                    taskHistory.ClearTime = System.DateTime.Now;
-                    
-                    TaskHistoryRepository.Add(taskHistory);
-                }
-                using (var scope = new System.Transactions.TransactionScope())
-                {
-                    TaskHistoryRepository.SaveChanges();
-
-                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
-                    SqlConnection con = new SqlConnection(constr);
-                    string sql = "truncate table wcs_task";
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    try
-                    {
-                        con.Open();
-                        int i = (int)cmd.ExecuteNonQuery();
-                        if (i > 0) result = true; else result = false;
-                    }
-                    catch (Exception ex) { errorInfo = ex.Message; }
-                    finally { con.Close(); }
-
-                    scope.Complete();
-                    result = true;
-                }
-            }
-            else
-            {
-                errorInfo = "当前有未执行完毕的任务！";
-            }
-            return result;
-        }
-        public bool ClearTask(string orderID, out string errorInfo)
-        {
-            bool result = false;
-            errorInfo = string.Empty;
-            var tasks = TaskRepository.GetQueryable().Where(a => a.OrderID == orderID);
-            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID && a.State == "01" || a.CurrentPositionID == a.TargetPositionID && a.State == "04"))))
-            {
-                TaskHistory taskHistory = null;
-                foreach (var task in tasks)
-                {
-                    taskHistory = new TaskHistory();
-                    taskHistory.TaskID = task.ID;
-                    taskHistory.TaskType = task.TaskType;
-                    taskHistory.TaskLevel = task.TaskLevel;
-                    taskHistory.PathID = task.PathID;
-                    taskHistory.ProductCode = task.ProductCode;
-                    taskHistory.ProductName = task.ProductName;
-                    taskHistory.OriginStorageCode = task.OriginStorageCode;
-                    taskHistory.TargetStorageCode = task.TargetStorageCode;
-                    taskHistory.OriginPositionID = task.OriginPositionID;
-                    taskHistory.TargetPositionID = task.TargetPositionID;
-                    taskHistory.CurrentPositionID = task.CurrentPositionID;
-                    taskHistory.CurrentPositionState = task.CurrentPositionState;
-                    taskHistory.State = task.State;
-                    taskHistory.TagState = task.TagState;
-                    taskHistory.Quantity = task.Quantity;
-                    taskHistory.TaskQuantity = task.TaskQuantity;
-                    taskHistory.OperateQuantity = task.OperateQuantity;
-                    taskHistory.OrderID = task.OrderID;
-                    taskHistory.OrderType = task.OrderType;
-                    taskHistory.AllotID = task.AllotID;
-                    taskHistory.DownloadState = task.DownloadState;
-                    taskHistory.ClearTime = System.DateTime.Now;
-
-                    TaskHistoryRepository.Add(taskHistory);
-                }
-                using (var scope = new System.Transactions.TransactionScope())
-                {
-                    TaskHistoryRepository.SaveChanges();
-
-                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
-                    SqlConnection con = new SqlConnection(constr);
-                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    try
-                    {
-                        con.Open();
-                        int i = (int)cmd.ExecuteNonQuery();
-                        if (i > 0) result = true; else result = false;
-                    }
-                    catch (Exception ex) { errorInfo = "清空订单任务时：" + ex.Message; return false; }
-                    finally { con.Close(); }
-
-                    scope.Complete();
-                    result = true;
-                }
-            }
-            else
-            {
-                errorInfo = "当前有任务正在执行中或者未执行完毕！";
-            }
-            return result;
-        }
-
+        
         public int FinishStockOutTask(int taskID, int stockOutQuantity, out string errorInfo)
         {
             errorInfo = string.Empty;
@@ -1703,7 +1702,90 @@ namespace THOK.WCS.Bll.Service
             }
             return 0;
         }
+        private int CreateNewTaskForMoveBackRemainAndReturnTaskID(int taskID)
+        {
+            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
+            if (task != null)
+            {
+                var currentPosition = PositionRepository.GetQueryable()
+                   .Where(i => i.ID == task.CurrentPositionID)
+                   .FirstOrDefault();
+                if (currentPosition == null) return 0;
 
+                var targetPosition = PositionRepository.GetQueryable()
+                   .Where(i => i.ID == task.OriginPositionID)
+                   .FirstOrDefault();
+                if (targetPosition == null) return 0;
+
+                var path = PathRepository.GetQueryable()
+                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
+                        && p.TargetRegion.ID == targetPosition.Region.ID)
+                    .FirstOrDefault();
+                if (path == null) return 0;
+
+                var cellPosition = CellPositionRepository.GetQueryable()
+                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
+                    .FirstOrDefault();
+                if (cellPosition == null) return 0;
+
+                var newTask = new Task();
+                newTask.TaskType = "01";
+                newTask.TaskLevel = 0;
+                newTask.PathID = path.ID;
+                newTask.ProductCode = task.ProductCode;
+                newTask.ProductName = task.ProductName;
+                newTask.OriginStorageCode = task.TargetStorageCode;
+                newTask.TargetStorageCode = task.OriginStorageCode;
+                newTask.OriginPositionID = task.CurrentPositionID;
+                newTask.TargetPositionID = cellPosition.StockInPositionID;
+                newTask.CurrentPositionID = task.CurrentPositionID;
+                newTask.CurrentPositionState = "02";
+                newTask.State = "01";
+                newTask.TagState = "01";//拟不使用
+                newTask.Quantity = task.Quantity - task.OperateQuantity;
+                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
+                newTask.OperateQuantity = 0;
+                newTask.OrderID = task.OrderID;
+                newTask.OrderType = task.OrderType == "02" ? "08" : "09";
+                newTask.AllotID = task.AllotID;
+                newTask.DownloadState = "1";
+                newTask.StorageSequence = 0;
+                TaskRepository.Add(newTask);
+                TaskRepository.SaveChanges();
+                return newTask.ID;
+            }
+            return 0;
+        }                
+        private bool FinishStockOutRemainMoveBackTask(string orderID, int allotID)
+        {
+            var checkDetail = OutBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == orderID
+                                        && i.ID == allotID)
+                                    .FirstOrDefault();
+
+            if (checkDetail != null)
+            {
+                if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                return true;
+            }
+            return false;
+        }
+        private bool FinishInventoryRemainMoveBackTask(string orderID, int allotID)
+        {
+            var outAllot = CheckBillDetailRepository.GetQueryable()
+                                        .Where(i => i.BillNo == orderID
+                                            && i.ID == allotID)
+                                        .FirstOrDefault();
+            if (outAllot != null)
+            {
+                if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                return true;
+            }
+            return false;
+        }
+        
         public bool AutoCreateMoveBill(out string errorInfo)
         {
             errorInfo = string.Empty;
@@ -1758,92 +1840,6 @@ namespace THOK.WCS.Bll.Service
             }
             return true;
         }
-
-        private bool FinishStockOutRemainMoveBackTask(string orderID, int allotID)
-        {
-            var checkDetail = OutBillAllotRepository.GetQueryable()
-                                    .Where(i => i.BillNo == orderID
-                                        && i.ID == allotID)
-                                    .FirstOrDefault();
-
-            if (checkDetail != null)
-            {
-                if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                return true;
-            }
-            return false;
-        }
-        private bool FinishInventoryRemainMoveBackTask(string orderID, int allotID)
-        {
-            var outAllot = CheckBillDetailRepository.GetQueryable()
-                                        .Where(i => i.BillNo == orderID
-                                            && i.ID == allotID)
-                                        .FirstOrDefault();
-            if (outAllot != null)
-            {
-                if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                return true;
-            }
-            return false;
-        }
-
-        private int CreateNewTaskForMoveBackRemainAndReturnTaskID(int taskID)
-        {
-            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null)
-            {
-                var currentPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.CurrentPositionID)
-                   .FirstOrDefault();
-                if (currentPosition == null) return 0;
-
-                var targetPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.OriginPositionID)
-                   .FirstOrDefault();
-                if (targetPosition == null) return 0;
-
-                var path = PathRepository.GetQueryable()
-                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
-                        && p.TargetRegion.ID == targetPosition.Region.ID)
-                    .FirstOrDefault();
-                if (path == null) return 0;
-
-                var cellPosition = CellPositionRepository.GetQueryable()
-                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
-                    .FirstOrDefault();
-                if (cellPosition == null) return 0;
-
-                var newTask = new Task();
-                newTask.TaskType = "01";
-                newTask.TaskLevel = 0;
-                newTask.PathID = path.ID;
-                newTask.ProductCode = task.ProductCode;
-                newTask.ProductName = task.ProductName;
-                newTask.OriginStorageCode = task.TargetStorageCode;
-                newTask.TargetStorageCode = task.OriginStorageCode;
-                newTask.OriginPositionID = task.CurrentPositionID;
-                newTask.TargetPositionID = cellPosition.StockInPositionID;
-                newTask.CurrentPositionID = task.CurrentPositionID;
-                newTask.CurrentPositionState = "02";
-                newTask.State = "01";
-                newTask.TagState = "01";//拟不使用
-                newTask.Quantity = task.Quantity - task.OperateQuantity;
-                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
-                newTask.OperateQuantity = 0;
-                newTask.OrderID = task.OrderID;
-                newTask.OrderType = task.OrderType == "02"?"08":"09";
-                newTask.AllotID = task.AllotID;
-                newTask.DownloadState = "1";
-                newTask.StorageSequence = 0;
-                TaskRepository.Add(newTask);
-                TaskRepository.SaveChanges();
-                return newTask.ID;
-            }
-            return 0;
-        }
-
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
         {
             //选择当前订单操作目标仓库；
@@ -2008,7 +2004,6 @@ namespace THOK.WCS.Bll.Service
                 throw new Exception(e.Message);
             }
         }
-
         public void FinishTask(string taskID, RestReturn result)
         {
             string errorInfo = string.Empty;
