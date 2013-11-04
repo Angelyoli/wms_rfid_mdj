@@ -556,6 +556,133 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
+        public bool ClearTask(out string errorInfo)
+        {
+            bool result = false;
+            errorInfo = string.Empty;
+            var tasks = TaskRepository.GetQueryable();
+            if (tasks.All(a => (a.CurrentPositionID == a.OriginPositionID)
+                            || (a.CurrentPositionID == a.TargetPositionID)))
+            {
+                TaskHistory taskHistory = null;
+                foreach (var task in tasks)
+                {
+                    taskHistory = new TaskHistory();
+                    taskHistory.TaskID = task.ID;
+                    taskHistory.TaskType = task.TaskType;
+                    taskHistory.TaskLevel = task.TaskLevel;
+                    taskHistory.PathID = task.PathID;
+                    taskHistory.ProductCode = task.ProductCode;
+                    taskHistory.ProductName = task.ProductName;
+                    taskHistory.OriginStorageCode = task.OriginStorageCode;
+                    taskHistory.TargetStorageCode = task.TargetStorageCode;
+                    taskHistory.OriginPositionID = task.OriginPositionID;
+                    taskHistory.TargetPositionID = task.TargetPositionID;
+                    taskHistory.CurrentPositionID = task.CurrentPositionID;
+                    taskHistory.CurrentPositionState = task.CurrentPositionState;
+                    taskHistory.State = task.State;
+                    taskHistory.TagState = task.TagState;
+                    taskHistory.Quantity = task.Quantity;
+                    taskHistory.TaskQuantity = task.TaskQuantity;
+                    taskHistory.OperateQuantity = task.OperateQuantity;
+                    taskHistory.OrderID = task.OrderID;
+                    taskHistory.OrderType = task.OrderType;
+                    taskHistory.AllotID = task.AllotID;
+                    taskHistory.DownloadState = task.DownloadState;
+                    taskHistory.ClearTime = System.DateTime.Now;
+
+                    TaskHistoryRepository.Add(taskHistory);
+                }
+                using (var scope = new System.Transactions.TransactionScope())
+                {
+                    TaskHistoryRepository.SaveChanges();
+
+                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
+                    SqlConnection con = new SqlConnection(constr);
+                    string sql = "truncate table wcs_task";
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    try
+                    {
+                        con.Open();
+                        int i = (int)cmd.ExecuteNonQuery();
+                        if (i > 0) result = true; else result = false;
+                    }
+                    catch (Exception ex) { errorInfo = ex.Message; }
+                    finally { con.Close(); }
+
+                    scope.Complete();
+                    result = true;
+                }
+            }
+            else
+            {
+                errorInfo = "当前有未执行完毕的任务！";
+            }
+            return result;
+        }
+        public bool ClearTask(string orderID, out string errorInfo)
+        {
+            bool result = false;
+            errorInfo = string.Empty;
+            var tasks = TaskRepository.GetQueryable().Where(a => a.OrderID == orderID);
+            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID && a.State == "01" || a.CurrentPositionID == a.TargetPositionID && a.State == "04"))))
+            {
+                TaskHistory taskHistory = null;
+                foreach (var task in tasks)
+                {
+                    taskHistory = new TaskHistory();
+                    taskHistory.TaskID = task.ID;
+                    taskHistory.TaskType = task.TaskType;
+                    taskHistory.TaskLevel = task.TaskLevel;
+                    taskHistory.PathID = task.PathID;
+                    taskHistory.ProductCode = task.ProductCode;
+                    taskHistory.ProductName = task.ProductName;
+                    taskHistory.OriginStorageCode = task.OriginStorageCode;
+                    taskHistory.TargetStorageCode = task.TargetStorageCode;
+                    taskHistory.OriginPositionID = task.OriginPositionID;
+                    taskHistory.TargetPositionID = task.TargetPositionID;
+                    taskHistory.CurrentPositionID = task.CurrentPositionID;
+                    taskHistory.CurrentPositionState = task.CurrentPositionState;
+                    taskHistory.State = task.State;
+                    taskHistory.TagState = task.TagState;
+                    taskHistory.Quantity = task.Quantity;
+                    taskHistory.TaskQuantity = task.TaskQuantity;
+                    taskHistory.OperateQuantity = task.OperateQuantity;
+                    taskHistory.OrderID = task.OrderID;
+                    taskHistory.OrderType = task.OrderType;
+                    taskHistory.AllotID = task.AllotID;
+                    taskHistory.DownloadState = task.DownloadState;
+                    taskHistory.ClearTime = System.DateTime.Now;
+
+                    TaskHistoryRepository.Add(taskHistory);
+                }
+                using (var scope = new System.Transactions.TransactionScope())
+                {
+                    TaskHistoryRepository.SaveChanges();
+
+                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
+                    SqlConnection con = new SqlConnection(constr);
+                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    try
+                    {
+                        con.Open();
+                        int i = (int)cmd.ExecuteNonQuery();
+                        if (i > 0) result = true; else result = false;
+                    }
+                    catch (Exception ex) { errorInfo = "清空订单任务时：" + ex.Message; return false; }
+                    finally { con.Close(); }
+
+                    scope.Complete();
+                    result = true;
+                }
+            }
+            else
+            {
+                errorInfo = "当前有任务正在执行中或者未执行完毕！";
+            }
+            return result;
+        }
 
         public bool InBillTask(string billNo, out string errorInfo)
         {
@@ -1222,7 +1349,7 @@ namespace THOK.WCS.Bll.Service
                 default: return true;
             }
         }
-
+        
         private bool FinishInBillTask(string orderID, int allotID, out string errorInfo)
         {
             errorInfo = string.Empty;
@@ -1544,135 +1671,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-
-        public bool ClearTask(out string errorInfo)
-        {
-            bool result = false;
-            errorInfo = string.Empty;
-            var tasks = TaskRepository.GetQueryable();
-            if (tasks.All(a => (a.CurrentPositionID == a.OriginPositionID)
-                            || (a.CurrentPositionID == a.TargetPositionID)))
-            {
-                TaskHistory taskHistory = null;
-                foreach (var task in tasks)
-                {
-                    taskHistory = new TaskHistory();
-                    taskHistory.TaskID = task.ID;
-                    taskHistory.TaskType = task.TaskType;
-                    taskHistory.TaskLevel = task.TaskLevel;
-                    taskHistory.PathID = task.PathID;
-                    taskHistory.ProductCode = task.ProductCode;
-                    taskHistory.ProductName = task.ProductName;
-                    taskHistory.OriginStorageCode = task.OriginStorageCode;
-                    taskHistory.TargetStorageCode = task.TargetStorageCode;
-                    taskHistory.OriginPositionID = task.OriginPositionID;
-                    taskHistory.TargetPositionID = task.TargetPositionID;
-                    taskHistory.CurrentPositionID = task.CurrentPositionID;
-                    taskHistory.CurrentPositionState = task.CurrentPositionState;
-                    taskHistory.State = task.State;
-                    taskHistory.TagState = task.TagState;
-                    taskHistory.Quantity = task.Quantity;
-                    taskHistory.TaskQuantity = task.TaskQuantity;
-                    taskHistory.OperateQuantity = task.OperateQuantity;
-                    taskHistory.OrderID = task.OrderID;
-                    taskHistory.OrderType = task.OrderType;
-                    taskHistory.AllotID = task.AllotID;
-                    taskHistory.DownloadState = task.DownloadState;
-                    taskHistory.ClearTime = System.DateTime.Now;
-                    
-                    TaskHistoryRepository.Add(taskHistory);
-                }
-                using (var scope = new System.Transactions.TransactionScope())
-                {
-                    TaskHistoryRepository.SaveChanges();
-
-                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
-                    SqlConnection con = new SqlConnection(constr);
-                    string sql = "truncate table wcs_task";
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    try
-                    {
-                        con.Open();
-                        int i = (int)cmd.ExecuteNonQuery();
-                        if (i > 0) result = true; else result = false;
-                    }
-                    catch (Exception ex) { errorInfo = ex.Message; }
-                    finally { con.Close(); }
-
-                    scope.Complete();
-                    result = true;
-                }
-            }
-            else
-            {
-                errorInfo = "当前有未执行完毕的任务！";
-            }
-            return result;
-        }
-        public bool ClearTask(string orderID, out string errorInfo)
-        {
-            bool result = false;
-            errorInfo = string.Empty;
-            var tasks = TaskRepository.GetQueryable().Where(a => a.OrderID == orderID);
-            if (tasks.All(a => ((a.OrderID == orderID) && (a.CurrentPositionID == a.OriginPositionID && a.State == "01" || a.CurrentPositionID == a.TargetPositionID && a.State == "04"))))
-            {
-                TaskHistory taskHistory = null;
-                foreach (var task in tasks)
-                {
-                    taskHistory = new TaskHistory();
-                    taskHistory.TaskID = task.ID;
-                    taskHistory.TaskType = task.TaskType;
-                    taskHistory.TaskLevel = task.TaskLevel;
-                    taskHistory.PathID = task.PathID;
-                    taskHistory.ProductCode = task.ProductCode;
-                    taskHistory.ProductName = task.ProductName;
-                    taskHistory.OriginStorageCode = task.OriginStorageCode;
-                    taskHistory.TargetStorageCode = task.TargetStorageCode;
-                    taskHistory.OriginPositionID = task.OriginPositionID;
-                    taskHistory.TargetPositionID = task.TargetPositionID;
-                    taskHistory.CurrentPositionID = task.CurrentPositionID;
-                    taskHistory.CurrentPositionState = task.CurrentPositionState;
-                    taskHistory.State = task.State;
-                    taskHistory.TagState = task.TagState;
-                    taskHistory.Quantity = task.Quantity;
-                    taskHistory.TaskQuantity = task.TaskQuantity;
-                    taskHistory.OperateQuantity = task.OperateQuantity;
-                    taskHistory.OrderID = task.OrderID;
-                    taskHistory.OrderType = task.OrderType;
-                    taskHistory.AllotID = task.AllotID;
-                    taskHistory.DownloadState = task.DownloadState;
-                    taskHistory.ClearTime = System.DateTime.Now;
-
-                    TaskHistoryRepository.Add(taskHistory);
-                }
-                using (var scope = new System.Transactions.TransactionScope())
-                {
-                    TaskHistoryRepository.SaveChanges();
-
-                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
-                    SqlConnection con = new SqlConnection(constr);
-                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    try
-                    {
-                        con.Open();
-                        int i = (int)cmd.ExecuteNonQuery();
-                        if (i > 0) result = true; else result = false;
-                    }
-                    catch (Exception ex) { errorInfo = "清空订单任务时：" + ex.Message; return false; }
-                    finally { con.Close(); }
-
-                    scope.Complete();
-                    result = true;
-                }
-            }
-            else
-            {
-                errorInfo = "当前有任务正在执行中或者未执行完毕！";
-            }
-            return result;
-        }
-
+        
         public int FinishStockOutTask(int taskID, int stockOutQuantity, out string errorInfo)
         {
             errorInfo = string.Empty;
