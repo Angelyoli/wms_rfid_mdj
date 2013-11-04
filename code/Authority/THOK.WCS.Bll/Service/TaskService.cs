@@ -1702,7 +1702,90 @@ namespace THOK.WCS.Bll.Service
             }
             return 0;
         }
+        private int CreateNewTaskForMoveBackRemainAndReturnTaskID(int taskID)
+        {
+            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
+            if (task != null)
+            {
+                var currentPosition = PositionRepository.GetQueryable()
+                   .Where(i => i.ID == task.CurrentPositionID)
+                   .FirstOrDefault();
+                if (currentPosition == null) return 0;
 
+                var targetPosition = PositionRepository.GetQueryable()
+                   .Where(i => i.ID == task.OriginPositionID)
+                   .FirstOrDefault();
+                if (targetPosition == null) return 0;
+
+                var path = PathRepository.GetQueryable()
+                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
+                        && p.TargetRegion.ID == targetPosition.Region.ID)
+                    .FirstOrDefault();
+                if (path == null) return 0;
+
+                var cellPosition = CellPositionRepository.GetQueryable()
+                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
+                    .FirstOrDefault();
+                if (cellPosition == null) return 0;
+
+                var newTask = new Task();
+                newTask.TaskType = "01";
+                newTask.TaskLevel = 0;
+                newTask.PathID = path.ID;
+                newTask.ProductCode = task.ProductCode;
+                newTask.ProductName = task.ProductName;
+                newTask.OriginStorageCode = task.TargetStorageCode;
+                newTask.TargetStorageCode = task.OriginStorageCode;
+                newTask.OriginPositionID = task.CurrentPositionID;
+                newTask.TargetPositionID = cellPosition.StockInPositionID;
+                newTask.CurrentPositionID = task.CurrentPositionID;
+                newTask.CurrentPositionState = "02";
+                newTask.State = "01";
+                newTask.TagState = "01";//拟不使用
+                newTask.Quantity = task.Quantity - task.OperateQuantity;
+                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
+                newTask.OperateQuantity = 0;
+                newTask.OrderID = task.OrderID;
+                newTask.OrderType = task.OrderType == "02" ? "08" : "09";
+                newTask.AllotID = task.AllotID;
+                newTask.DownloadState = "1";
+                newTask.StorageSequence = 0;
+                TaskRepository.Add(newTask);
+                TaskRepository.SaveChanges();
+                return newTask.ID;
+            }
+            return 0;
+        }                
+        private bool FinishStockOutRemainMoveBackTask(string orderID, int allotID)
+        {
+            var checkDetail = OutBillAllotRepository.GetQueryable()
+                                    .Where(i => i.BillNo == orderID
+                                        && i.ID == allotID)
+                                    .FirstOrDefault();
+
+            if (checkDetail != null)
+            {
+                if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                return true;
+            }
+            return false;
+        }
+        private bool FinishInventoryRemainMoveBackTask(string orderID, int allotID)
+        {
+            var outAllot = CheckBillDetailRepository.GetQueryable()
+                                        .Where(i => i.BillNo == orderID
+                                            && i.ID == allotID)
+                                        .FirstOrDefault();
+            if (outAllot != null)
+            {
+                if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                return true;
+            }
+            return false;
+        }
+        
         public bool AutoCreateMoveBill(out string errorInfo)
         {
             errorInfo = string.Empty;
@@ -1757,92 +1840,6 @@ namespace THOK.WCS.Bll.Service
             }
             return true;
         }
-
-        private bool FinishStockOutRemainMoveBackTask(string orderID, int allotID)
-        {
-            var checkDetail = OutBillAllotRepository.GetQueryable()
-                                    .Where(i => i.BillNo == orderID
-                                        && i.ID == allotID)
-                                    .FirstOrDefault();
-
-            if (checkDetail != null)
-            {
-                if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                return true;
-            }
-            return false;
-        }
-        private bool FinishInventoryRemainMoveBackTask(string orderID, int allotID)
-        {
-            var outAllot = CheckBillDetailRepository.GetQueryable()
-                                        .Where(i => i.BillNo == orderID
-                                            && i.ID == allotID)
-                                        .FirstOrDefault();
-            if (outAllot != null)
-            {
-                if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                return true;
-            }
-            return false;
-        }
-
-        private int CreateNewTaskForMoveBackRemainAndReturnTaskID(int taskID)
-        {
-            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null)
-            {
-                var currentPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.CurrentPositionID)
-                   .FirstOrDefault();
-                if (currentPosition == null) return 0;
-
-                var targetPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.OriginPositionID)
-                   .FirstOrDefault();
-                if (targetPosition == null) return 0;
-
-                var path = PathRepository.GetQueryable()
-                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
-                        && p.TargetRegion.ID == targetPosition.Region.ID)
-                    .FirstOrDefault();
-                if (path == null) return 0;
-
-                var cellPosition = CellPositionRepository.GetQueryable()
-                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
-                    .FirstOrDefault();
-                if (cellPosition == null) return 0;
-
-                var newTask = new Task();
-                newTask.TaskType = "01";
-                newTask.TaskLevel = 0;
-                newTask.PathID = path.ID;
-                newTask.ProductCode = task.ProductCode;
-                newTask.ProductName = task.ProductName;
-                newTask.OriginStorageCode = task.TargetStorageCode;
-                newTask.TargetStorageCode = task.OriginStorageCode;
-                newTask.OriginPositionID = task.CurrentPositionID;
-                newTask.TargetPositionID = cellPosition.StockInPositionID;
-                newTask.CurrentPositionID = task.CurrentPositionID;
-                newTask.CurrentPositionState = "02";
-                newTask.State = "01";
-                newTask.TagState = "01";//拟不使用
-                newTask.Quantity = task.Quantity - task.OperateQuantity;
-                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
-                newTask.OperateQuantity = 0;
-                newTask.OrderID = task.OrderID;
-                newTask.OrderType = task.OrderType == "02"?"08":"09";
-                newTask.AllotID = task.AllotID;
-                newTask.DownloadState = "1";
-                newTask.StorageSequence = 0;
-                TaskRepository.Add(newTask);
-                TaskRepository.SaveChanges();
-                return newTask.ID;
-            }
-            return 0;
-        }
-
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
         {
             //选择当前订单操作目标仓库；
@@ -2007,7 +2004,6 @@ namespace THOK.WCS.Bll.Service
                 throw new Exception(e.Message);
             }
         }
-
         public void FinishTask(string taskID, RestReturn result)
         {
             string errorInfo = string.Empty;
