@@ -1522,19 +1522,20 @@ namespace THOK.WCS.Bll.Service
         {
             errorInfo = string.Empty;
             var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
-            if (cell != null && cell.Storages.FirstOrDefault() != null)
+            if (cell != null)
             {
-                if (cell.Storages.FirstOrDefault().OutFrozenQuantity > 0)
+                var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
+                if (storage != null && storage.OutFrozenQuantity > 0)
                 {
-                    cell.Storages.FirstOrDefault().OutFrozenQuantity = 0;
-                    cell.Storages.FirstOrDefault().Quantity = 0;
-                    cell.Storages.FirstOrDefault().StorageSequence = 0;
+                    storage.OutFrozenQuantity = 0;
+                    storage.Quantity = 0;
+                    storage.StorageSequence = 0;
                     CellRepository.SaveChanges();
                     return true;
                 }
                 else
                 {
-                    errorInfo = "补空托盘货位的出库冻结量<=0";
+                    errorInfo = "库存不存在或补空托盘货位的出库冻结量<=0";
                     return false;
                 }
             }
