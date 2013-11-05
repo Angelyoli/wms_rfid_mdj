@@ -1141,7 +1141,7 @@ namespace THOK.WCS.Bll.Service
                     .FirstOrDefault();
             if (path == null)
             {
-                errorInfo = string.Format("未找到路径[{0}]", path.PathName);
+                errorInfo = string.Format("从 [{0}] 到 [{1}] 未找到路径!", cellPosition.StockOutPosition.PositionName, position.PositionName);
                 return false;
             }
             try
@@ -1250,7 +1250,7 @@ namespace THOK.WCS.Bll.Service
                     .FirstOrDefault();
             if (path == null)
             {
-                errorInfo = "未找到路径信息！";
+                errorInfo = string.Format("从 [{0}] 到 [{1}] 未找到路径!", cellPosition.StockOutPosition.PositionName, position.PositionName);
                 return false;
             }
             try
@@ -1309,7 +1309,7 @@ namespace THOK.WCS.Bll.Service
 
                 if (path == null)
                 {
-                    errorInfo = string.Format("未找到路径[{0}]", path.PathName);
+                    errorInfo = string.Format("从 [{0}] 到 [{1}] 未找到路径!", originPosition.PositionName, targetPosition.PositionName);
                     return false;
                 }
 
