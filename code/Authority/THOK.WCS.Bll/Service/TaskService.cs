@@ -111,10 +111,15 @@ namespace THOK.WCS.Bll.Service
             IQueryable<Position> positionQuery = PositionRepository.GetQueryable();
             IQueryable<Cell> cellQuery = CellRepository.GetQueryable();
 
-            var taskQuery1 = taskQuery;
+            var taskQuery0 = taskQuery;
+            if (task.ID != 0 && task.ID.ToString() != null)
+            {
+                taskQuery0 = taskQuery.Where(a => a.ID == task.ID);
+            }
+            var taskQuery1 = taskQuery0;
             if (task.PathID != 0 && task.PathID.ToString() != null)
             {
-                taskQuery1 = taskQuery.Where(a => a.PathID == task.PathID);
+                taskQuery1 = taskQuery0.Where(a => a.PathID == task.PathID);
             }
             var taskQuery2 = taskQuery1;
             if (task.OriginPositionID != 0 && task.OriginPositionID.ToString() != null)
@@ -131,9 +136,14 @@ namespace THOK.WCS.Bll.Service
             {
                 taskQuery4 = taskQuery3.Where(a => a.CurrentPositionID == task.CurrentPositionID);
             }
+            var taskQuery5 = taskQuery4;
+            if (task.AllotID != 0 && task.AllotID.ToString() != null)
+            {
+                taskQuery5 = taskQuery4.Where(a => a.AllotID == task.AllotID);
+            }
 
-            #region taskQuery5
-            var taskQuery5 = taskQuery4.Join(pathQuery, t => t.PathID, p => p.ID, (t, p) => new
+            #region taskQuery6
+            var taskQuery6 = taskQuery5.Join(pathQuery, t => t.PathID, p => p.ID, (t, p) => new
             {
                 t.ID,
                 t.TaskType,
@@ -324,7 +334,7 @@ namespace THOK.WCS.Bll.Service
                                && t.OrderType.Contains(task.OrderType)
                                && t.DownloadState.Contains(task.DownloadState)
                              )
-                      .OrderByDescending(t => t.ID)
+                      .OrderBy(t => t.State).ThenByDescending(t => t.ID)
                       .Select(t => new
                       {
                           t.ID,
@@ -359,9 +369,9 @@ namespace THOK.WCS.Bll.Service
                       });
             #endregion
 
-            int total = taskQuery5.Count();
-            var taskQuery6 = taskQuery5.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = taskQuery6.ToArray() };
+            int total = taskQuery6.Count();
+            var taskQuery7 = taskQuery6.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = taskQuery7.ToArray() };
         }
         public bool Add(Task task, out string strResult)
         {
@@ -1649,19 +1659,20 @@ namespace THOK.WCS.Bll.Service
         {
             errorInfo = string.Empty;
             var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
-            if (cell != null && cell.Storages.FirstOrDefault() != null)
+            if (cell != null)
             {
-                if (cell.Storages.FirstOrDefault().OutFrozenQuantity > 0)
+                var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
+                if (storage != null && storage.OutFrozenQuantity > 0)
                 {
-                    cell.Storages.FirstOrDefault().OutFrozenQuantity = 0;
-                    cell.Storages.FirstOrDefault().Quantity = 0;
-                    cell.Storages.FirstOrDefault().StorageSequence = 0;
+                    storage.OutFrozenQuantity = 0;
+                    storage.Quantity = 0;
+                    storage.StorageSequence = 0;
                     CellRepository.SaveChanges();
                     return true;
                 }
                 else
                 {
-                    errorInfo = "补空托盘货位的出库冻结量<=0";
+                    errorInfo = "库存不存在或补空托盘货位的出库冻结量<=0";
                     return false;
                 }
             }

@@ -47,10 +47,14 @@ namespace Wms.Controllers.WCS
             task.OrderID = collection["OrderID"] ?? "";
             task.OrderType = collection["OrderType"] ?? "";
             task.DownloadState = collection["DownloadState"] ?? "";
+            string id = collection["ID"] ?? "";
             string pathID = collection["PathID"] ?? "";
             string originPositionID = collection["OriginPositionID"] ?? "";
             string targetPositionID = collection["TargetPositionID"] ?? "";
             string currentPositionID = collection["CurrentPositionID"] ?? "";
+            string allotID = collection["AllotID"] ?? "";
+            if (id != null && id != "")
+                task.ID = Convert.ToInt32(id);
             if (pathID != null && pathID != "") 
                 task.PathID = Convert.ToInt32(pathID);
             if (originPositionID != null && originPositionID != "") 
@@ -59,6 +63,8 @@ namespace Wms.Controllers.WCS
                 task.TargetPositionID = Convert.ToInt32(targetPositionID);
             if (currentPositionID != null && currentPositionID != "") 
                 task.CurrentPositionID = Convert.ToInt32(currentPositionID);
+            if (allotID != null && allotID != "")
+                task.AllotID = Convert.ToInt32(allotID);
 
             var detail = TaskService.GetDetails(page, rows, task);
             return Json(detail, "text", JsonRequestBehavior.AllowGet);

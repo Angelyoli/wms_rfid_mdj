@@ -42,6 +42,7 @@
     //查询条件
     function searchByParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ID = $('#id1').val();
         queryParams.TaskType = $('#taskType1').combo('getValue');
         queryParams.PathID = $('#pathID1').val();
         queryParams.ProductCode = $('#productCode1').val();
@@ -57,6 +58,7 @@
         queryParams.OrderID = $('#orderID1').val();
         queryParams.OrderType = $('#orderType1').combo('getValue');
         queryParams.DownloadState = $('#downloadState1').combo('getValue');
+        queryParams.AllotID = $('#allotID1').val();
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({ pageNumber: 1, pageSize: 10 });
         $("#details").datagrid('reload');
@@ -76,7 +78,7 @@
     #dlg-search
     {
         width: 520px;
-        height: 240px;
+        height: 270px;
         padding: 2px 2px;
     }
     .searchdiv2
@@ -91,6 +93,20 @@
     <div class="easyui-layout" fit="true">
         <div class="searchdiv2" region="center">
             <table class="searchtable">
+                <tr>
+                    <td class="searchTd1">
+                        任务号：
+                    </td>
+                    <td width="168" align="left">
+                        <input id="id1" type="text" />
+                    </td>
+                    <td class="searchTd1">
+                        分配号：
+                    </td>
+                    <td align="left">
+                        <input id="allotID1" type="text" />
+                    </td>
+                </tr>
                 <tr>
                     <td class="searchTd1">
                         任务类型：
