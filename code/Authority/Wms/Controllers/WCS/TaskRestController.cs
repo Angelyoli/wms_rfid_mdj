@@ -70,5 +70,34 @@ namespace Wms.Controllers.WCS
             bool bResult = TaskService.AutoCreateMoveBill(out errorInfo);
             return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult GetOutTask(string positionType)
+        {
+            RestReturn restReturn = new RestReturn();
+            try
+            {
+                TaskService.GetOutTask(positionType, restReturn);
+            }
+            catch (Exception e)
+            {
+                restReturn.IsSuccess = false;
+                restReturn.Message = "获取服务器数据失败！详情：" + e.Message;
+            }
+            return Json(restReturn, "application/json", JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult FinishOutTask(string taskID)
+        {
+            RestReturn restReturn = new RestReturn();
+            try
+            {
+                TaskService.FinishTask(taskID, restReturn);
+            }
+            catch (Exception e)
+            {
+                restReturn.IsSuccess = false;
+                restReturn.Message = "获取服务器数据失败！详情：" + e.Message;
+            }
+            return Json(restReturn, "application/json", JsonRequestBehavior.AllowGet);
+        }
     }
 }

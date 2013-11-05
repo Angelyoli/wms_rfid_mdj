@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using THOK.WCS.DbModel;
+using THOK.WCS.Bll.Models;
 
 namespace THOK.WCS.Bll.Interfaces
 {
@@ -37,5 +38,8 @@ namespace THOK.WCS.Bll.Interfaces
         int FinishInventoryTask(int taskID, int realQuantity, out string errorInfo);
 
         bool AutoCreateMoveBill(out string errorInfo);
+
+        void GetOutTask(string positionType, RestReturn result);
+        void FinishTask(string taskID, RestReturn result);
     }
 }

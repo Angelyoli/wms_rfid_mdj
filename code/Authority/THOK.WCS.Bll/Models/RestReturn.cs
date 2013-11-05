@@ -10,5 +10,6 @@ namespace THOK.WCS.Bll.Models
         public bool IsSuccess { get; set; }
         public object Data { get; set; }
         public string Message { get; set; }
+        public RestTask[] RestTasks = new RestTask[] { };
     }
 }
