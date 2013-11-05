@@ -1274,9 +1274,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = Convert.ToInt32(storage.Quantity);
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = "";
-                newTask.OrderType = "06";
-                //newTask.AllotID = inItem.ID;
+                newTask.OrderType = "06";               
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
@@ -1295,10 +1293,30 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null)
             {
+                var originPosition = PositionRepository.GetQueryable()
+                    .Where(i => i.ID == task.CurrentPositionID)
+                    .FirstOrDefault();
+
+                var targetPosition = PositionRepository.GetQueryable()
+                    .Where(i => i.ID == task.OriginPositionID)
+                    .FirstOrDefault();
+
+                var path = PathRepository.GetQueryable()
+                    .Where(p => originPosition != null && targetPosition!= null
+                        && p.OriginRegionID == originPosition.RegionID
+                        && p.TargetRegionID == targetPosition.RegionID)
+                    .FirstOrDefault();
+
+                if (path == null)
+                {
+                    errorInfo = string.Format("未找到路径[{0}]", path.PathName);
+                    return false;
+                }
+
                 var newTask = new Task();
                 newTask.TaskType = "01";
                 newTask.TaskLevel = 0;
-                //newTask.PathID = path.ID;
+                newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
                 newTask.OriginStorageCode = task.TargetStorageCode;
@@ -1312,9 +1330,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = task.Quantity - task.OperateQuantity;
                 newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
                 newTask.OperateQuantity = 0;
-                //newTask.OrderID = inItem.BillNo;
                 newTask.OrderType = "07";
-                //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
