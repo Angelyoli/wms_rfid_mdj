@@ -5,6 +5,7 @@ using THOK.Wms.DbModel;
 using Microsoft.Practices.Unity;
 using THOK.Wms.Dal.Interfaces;
 using System.Transactions;
+using THOK.Authority.Dal.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -34,6 +35,9 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IStorageRepository StorageRepository { get; set; }
+
+        [Dependency]
+        public ISystemParameterRepository SystemParameterRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -592,6 +596,11 @@ namespace THOK.Wms.Bll.Service
                 var dailyBalanceQuery = DailyBalanceRepository.GetQueryable();
                 var storageQuery = StorageRepository.GetQueryable();
 
+                var emptyPalletCode = SystemParameterRepository.GetQueryable()
+                    .Where(p => p.ParameterName == "EmptyPallet")
+                    .Select(p => p.ParameterValue)
+                    .FirstOrDefault();
+
                 DateTime dt1 = Convert.ToDateTime(settleDate);
                 var maxDailyBalance = dailyBalanceQuery.Where(d => d.SettleDate < dt1)
                                            .OrderByDescending(d => d.SettleDate)
@@ -634,7 +643,8 @@ namespace THOK.Wms.Bll.Service
 
                 var query = inQuery.Where(a => (a.InBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                               && a.FinishTime >= dt1 && a.FinishTime < dt2
-                                              && dt3 != null)
+                                              && dt3 != null
+                                              && a.ProductCode != emptyPalletCode)
                     .Select(a => new
                     {
                         BillDate = settleDate,
@@ -652,7 +662,8 @@ namespace THOK.Wms.Bll.Service
                 .Concat(
                     outQuery.Where(a => (a.OutBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                             && a.FinishTime >= dt1 && a.FinishTime < dt2
-                                            && dt3 != null)
+                                            && dt3 != null
+                                            && a.ProductCode != emptyPalletCode)
                     .Select(a => new
                     {
                         BillDate = settleDate,
@@ -671,7 +682,8 @@ namespace THOK.Wms.Bll.Service
                     moveQuery.Where(a => (a.MoveBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                             && a.FinishTime >= dt1 && a.FinishTime < dt2
                                             && a.Status == "2"
-                                            && dt3 != null)
+                                            && dt3 != null
+                                            && a.ProductCode != emptyPalletCode)
                     .Select(a => new
                     {
                         BillDate = settleDate,
@@ -691,7 +703,8 @@ namespace THOK.Wms.Bll.Service
                     moveQuery.Where(a => (a.MoveBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                             && a.FinishTime >= dt1 && a.FinishTime < dt2
                                             && a.Status == "2"
-                                            && dt3 != null)
+                                            && dt3 != null
+                                            && a.ProductCode != emptyPalletCode)
                     .Select(a => new
                     {
                         BillDate = settleDate,
@@ -709,7 +722,8 @@ namespace THOK.Wms.Bll.Service
                 ).Concat(
                     profitLossQuery.Where(a => (a.ProfitLossBillMaster.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                                     && a.ProfitLossBillMaster.VerifyDate >= dt1 && a.ProfitLossBillMaster.VerifyDate < dt2
-                                                    && dt3 != null)
+                                                    && dt3 != null
+                                                    && a.ProductCode != emptyPalletCode)
                     .Select(a => new
                     {
                         BillDate = settleDate,
@@ -727,7 +741,8 @@ namespace THOK.Wms.Bll.Service
                 ).Concat(
                     dailyBalanceQuery.Where(d => (d.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
                                                       && dt3 != null && d.SettleDate == dt3
-                                                      && d.Ending != decimal.Zero)
+                                                      && d.Ending != decimal.Zero
+                                                      && d.ProductCode != emptyPalletCode)
                     .Select(a => new
                     {
                         BillDate = settleDate,
@@ -744,7 +759,8 @@ namespace THOK.Wms.Bll.Service
                     }
                 )).Concat(
                     storageQuery.Where(s => (s.Cell.Area.WarehouseCode == warehouseCode || string.IsNullOrEmpty(warehouseCode))
-                                                && s.Product != null && dt3 == null)
+                                                && s.Product != null && dt3 == null
+                                                && s.ProductCode != emptyPalletCode)
                     .GroupBy(s => new { s.Cell.Area.WarehouseCode,s.Cell.AreaCode, s.ProductCode, s.Product.UnitCode })
                     .Select(s => new
                     {

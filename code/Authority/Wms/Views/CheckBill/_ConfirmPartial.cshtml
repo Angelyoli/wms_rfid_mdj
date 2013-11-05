@@ -4,7 +4,7 @@
         var rows = $('#details').datagrid('getSelections');
         if (rows.length > 0) {
             for (var i = 0; i < rows.length; i++) {
-                if (rows[i].Status == "已盘点") {
+                if (rows[i].Status == "已盘点" || rows[i].Status == "执行中") {
                     //                    billnoRow += rows[i].BillNo + ",";\\多选时要启用
                     billnoRow += rows[i].BillNo;
                 }

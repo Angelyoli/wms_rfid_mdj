@@ -592,12 +592,13 @@ namespace THOK.Wms.Bll.Service
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell, ref decimal quantity)
         {
             //选择当前订单操作目标仓库；
-            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()            
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()
                 .Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
                     && s.Quantity - s.OutFrozenQuantity > 0
                     && s.Cell.Area.AllotInOrder > 0
                     && s.Cell.Area.AllotOutOrder > 0
-                    && s.Cell.IsActive == "1");
+                    && s.Cell.IsActive == "1"
+                    && s.IsLock == "0");
 
             if (product.IsRounding == "2")
             {

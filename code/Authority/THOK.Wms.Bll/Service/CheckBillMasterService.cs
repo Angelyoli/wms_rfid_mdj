@@ -822,7 +822,6 @@ namespace THOK.Wms.Bll.Service
                             pbm.UpdateTime = DateTime.Now;
 
                             ProfitLossBillMasterRepository.Add(pbm);
-                            ProfitLossBillMasterRepository.SaveChanges();
                         }
 
                         //添加损益细表
@@ -850,9 +849,7 @@ namespace THOK.Wms.Bll.Service
                                 }
                                 ProfitLossBillDetailRepository.Add(pbd);
                                 item.Storage.LockTag = string.Empty;
-                                ProfitLossBillDetailRepository.SaveChanges();
                             }
-                            scope.Complete();
                         }
                     }
 
@@ -861,20 +858,20 @@ namespace THOK.Wms.Bll.Service
                     {
                         item.Storage.IsLock = "0";
                     }
-                    if (checkbm != null && checkbm.Status == "4")
+                    if (checkbm != null && (checkbm.Status == "4" || checkbm.Status=="3"))
                     {
                         checkbm.Status = "5";
                         checkbm.VerifyDate = DateTime.Now;
                         checkbm.UpdateTime = DateTime.Now;
-                        CheckBillMasterRepository.SaveChanges();
-                        result = true;
                     }
+                    result = true;
+                    CheckBillMasterRepository.SaveChanges();
+                    scope.Complete();
                 }
                 catch (Exception e)
                 {
                     errorInfo = "确认盘点损益失败！原因：" + e.Message;
                 }
-                scope.Complete();
             }
             return result;
         }

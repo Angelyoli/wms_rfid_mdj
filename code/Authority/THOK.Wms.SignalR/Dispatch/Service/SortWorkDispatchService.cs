@@ -364,7 +364,11 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             //选择当前订单操作目标仓库；
             var storages = storageQuery.Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode);
-            storages = storages.Where(s => s.Quantity - s.OutFrozenQuantity > 0 && s.Cell.Area.AllotInOrder > 0 && s.Cell.Area.AllotOutOrder > 0 && s.Cell.IsActive == "1");
+            storages = storages.Where(s => s.Quantity - s.OutFrozenQuantity > 0
+                            && s.Cell.Area.AllotInOrder > 0
+                            && s.Cell.Area.AllotOutOrder > 0
+                            && s.Cell.IsActive == "1"
+                            && s.IsLock == "0");
 
             //分配整盘；排除 件烟区 条烟区 分拣区
             if (cancellationToken.IsCancellationRequested) return;

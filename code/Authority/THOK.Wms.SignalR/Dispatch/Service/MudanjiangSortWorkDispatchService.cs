@@ -332,10 +332,11 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
             //选择当前订单操作目标仓库；
             var storages = storageQuery.Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
-                                            && s.Quantity - s.OutFrozenQuantity > 0 
-                                            && s.Cell.Area.AllotInOrder > 0 
-                                            && s.Cell.Area.AllotOutOrder > 0 
-                                            && s.Cell.IsActive == "1");
+                                            && s.Quantity - s.OutFrozenQuantity > 0
+                                            && s.Cell.Area.AllotInOrder > 0
+                                            && s.Cell.Area.AllotOutOrder > 0
+                                            && s.Cell.IsActive == "1"
+                                            && s.IsLock == "0");
 
             if (product.IsRounding == "1" || product.IsAbnormity == "1")
             {
