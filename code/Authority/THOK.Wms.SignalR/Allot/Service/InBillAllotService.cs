@@ -214,9 +214,9 @@ namespace THOK.Wms.SignalR.Allot.Service
                 //分配未分配卷烟到其他非货位管理货位（预设的储位）；
                 while (!cancellationToken.IsCancellationRequested && (billDetail.BillQuantity - billDetail.AllotQuantity) > 0)
                 {
-                    var c = cellQueryFromList5.Where(i => i.DefaultProductCode == billDetail.ProductCode)
+                    var c = cellQueryFromList5.Where(i => i.DefaultProductCode == billDetail.ProductCode || i.Storages.Any(s=> s.ProductCode == billDetail.ProductCode && s.Quantity - s.OutFrozenQuantity > 0))
                                               .Where(i => string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(i.AreaCode))
-                                              .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode)))
+                                              .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode) || (s.Quantity == 0 && s.InFrozenQuantity == 0)))
                                               .Where(i => i.Storages.Count() < i.MaxPalletQuantity
                                                         || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
                                               .FirstOrDefault();
@@ -245,7 +245,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                 {
                     var c = cellQueryFromList5.Where(i => string.IsNullOrEmpty(i.DefaultProductCode))
                                               .Where(i => string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(i.AreaCode))
-                                              .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode)))
+                                              .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode) || (s.Quantity == 0 && s.InFrozenQuantity == 0)))
                                               .Where(i => i.Storages.Count() < i.MaxPalletQuantity
                                                         || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
                                               .FirstOrDefault();
@@ -276,7 +276,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                     {
                         var c = cellQueryFromList5.Where(i => i.DefaultProductCode != billDetail.ProductCode && !string.IsNullOrEmpty(i.DefaultProductCode))
                                                   .Where(i => string.IsNullOrEmpty(billDetail.Product.PointAreaCodes) || billDetail.Product.PointAreaCodes.Contains(i.AreaCode))
-                                                  .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode)))
+                                                  .Where(i => i.IsMultiBrand == "1" || i.Storages.All(s => s.ProductCode == billDetail.ProductCode || string.IsNullOrEmpty(s.ProductCode) || (s.Quantity == 0 && s.InFrozenQuantity == 0)))
                                                   .Where(i => i.Storages.Count() < i.MaxPalletQuantity
                                                             || i.Storages.Any(s => string.IsNullOrEmpty(s.LockTag) && s.Quantity == 0 && s.InFrozenQuantity == 0))
                                                   .FirstOrDefault();
