@@ -1704,12 +1704,25 @@ namespace THOK.WCS.Bll.Service
         {
             errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null && task.State == "04")
+            if (task != null)
             {
                 FinishOutBillTask(task.OrderID, task.AllotID, out errorInfo);
                 if (task.Quantity > task.TaskQuantity)
                 {
-                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                    var tid = TaskRepository.GetQueryable()
+                        .Where(i => i.AllotID == task.AllotID
+                            && i.OriginPositionID == task.TargetPositionID
+                            && i.TargetPositionID == task.OriginPositionID)
+                        .Select(i=>i.ID)
+                        .FirstOrDefault();
+                    if (tid > 0)
+                    {
+                        return tid;
+                    }
+                    else
+                    {
+                        return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                    }
                 }
                 else
                 {
@@ -1722,10 +1735,23 @@ namespace THOK.WCS.Bll.Service
         {
             errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null && task.State == "04")
+            if (task != null)
             {
                 FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
-                return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                var tid = TaskRepository.GetQueryable()
+                    .Where(i => i.AllotID == task.AllotID
+                        && i.OriginPositionID == task.TargetPositionID
+                        && i.TargetPositionID == task.OriginPositionID)
+                    .Select(i => i.ID)
+                    .FirstOrDefault();
+                if (tid > 0)
+                {
+                    return tid;
+                }
+                else
+                {
+                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                }
             }
             return 0;
         }
