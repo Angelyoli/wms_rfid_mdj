@@ -1482,6 +1482,11 @@ namespace THOK.WCS.Bll.Service
                         outAllot.Storage.ProductCode = null;
                         outAllot.Storage.StorageSequence = 0;
                     }
+                    else
+                    {
+                        if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                        if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                    }
                     outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
                         ? outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
                     outAllot.OutBillDetail.RealQuantity += quantity;
@@ -1632,6 +1637,10 @@ namespace THOK.WCS.Bll.Service
                 checkDetail.Storage.IsLock = "0";
                 checkDetail.CheckBillMaster.Status = "3";
                 checkDetail.FinishTime = DateTime.Now;
+
+                if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                
                 if (checkDetail.CheckBillMaster.CheckBillDetails.All(c => c.Status == "2"))
                 {
                     checkDetail.CheckBillMaster.Status = "4";
