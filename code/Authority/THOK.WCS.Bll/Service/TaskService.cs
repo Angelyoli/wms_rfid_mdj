@@ -2053,7 +2053,7 @@ namespace THOK.WCS.Bll.Service
                 task.State = "04";
                 TaskRepository.SaveChanges();
 
-                if (task.TaskQuantity == task.OperateQuantity)
+                if (task.Quantity == task.TaskQuantity)
                 {
                     if (!CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
                     {
