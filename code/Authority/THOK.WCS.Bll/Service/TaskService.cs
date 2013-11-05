@@ -1664,6 +1664,7 @@ namespace THOK.WCS.Bll.Service
                 var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
                 if (storage != null && storage.OutFrozenQuantity > 0)
                 {
+                    storage.ProductCode = null;
                     storage.OutFrozenQuantity = 0;
                     storage.Quantity = 0;
                     storage.StorageSequence = 0;
