@@ -1829,6 +1829,7 @@ namespace THOK.WCS.Bll.Service
             {
                 if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
                 if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                OutBillAllotRepository.SaveChanges();
                 return true;
             }
             return false;
@@ -1843,6 +1844,7 @@ namespace THOK.WCS.Bll.Service
             {
                 if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
                 if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                CheckBillDetailRepository.SaveChanges();
                 return true;
             }
             return false;
