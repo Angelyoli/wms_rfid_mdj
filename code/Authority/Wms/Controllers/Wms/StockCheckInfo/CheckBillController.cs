@@ -25,7 +25,6 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         public ICheckBillMasterHistoryService CheckBillMasterHistoryService { get; set; }
         [Dependency]
         public ITaskService TaskService { get; set; }
-
         //
         // GET: /CheckBill/
 
@@ -163,7 +162,18 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         public ActionResult checkBillMasterConfirm(string BillNo)
         {
             string errorInfo = string.Empty;
-            bool bResult = CheckBillMasterService.confirmCheck(BillNo, this.User.Identity.Name.ToString(), out errorInfo);
+            bool bResult = false;                
+            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+            {
+                var checkBill = CheckBillMasterService.confirmCheck(BillNo, this.User.Identity.Name.ToString(), out errorInfo);
+                var task = TaskService.ClearTask(BillNo, out errorInfo);
+                if (checkBill && task)
+                {
+                    bResult = true;
+                    scope.Complete();
+                }
+            }
+
             string msg = bResult ? "确认成功" : "确认失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
         }

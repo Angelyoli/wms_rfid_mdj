@@ -56,7 +56,7 @@ namespace THOK.Wms.SignalR.Allot.Service
             //选择未分配的细单；
             var billDetails = billMaster.OutBillDetails.Where(b => (b.BillQuantity - b.AllotQuantity) > 0).ToArray();
             //选择当前订单操作目标仓库；
-            var storages = storageQuery.Where(s => s.Cell.WarehouseCode == billMaster.WarehouseCode);
+            var storages = storageQuery.Where(s => s.Cell.WarehouseCode == billMaster.WarehouseCode && s.IsLock == "0");
             if (areaCodes.Length > 0)
             {
                 //选择指定库区；
