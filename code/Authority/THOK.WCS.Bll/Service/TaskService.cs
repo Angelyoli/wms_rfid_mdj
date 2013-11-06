@@ -628,10 +628,10 @@ namespace THOK.WCS.Bll.Service
                 {
                     AddTaskHistorys(task, taskHistory);
                 }
-                TaskHistoryRepository.SaveChanges();
                 string sql = "delete wcs_task where state = '04' ";
                 try
                 {
+                    TaskHistoryRepository.SaveChanges();
                     if (ExecuteCommand(sql) > 0) result = true;
                 }
                 catch (Exception ex)
@@ -657,10 +657,10 @@ namespace THOK.WCS.Bll.Service
                 {
                     AddTaskHistorys(task, taskHistory);
                 }
-                TaskHistoryRepository.SaveChanges();
                 string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
                 try
                 {
+                    TaskHistoryRepository.SaveChanges();
                     if (ExecuteCommand(sql) > 0) result = true;
                 }
                 catch (Exception ex)
