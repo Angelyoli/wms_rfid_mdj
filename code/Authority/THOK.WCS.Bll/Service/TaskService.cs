@@ -334,7 +334,7 @@ namespace THOK.WCS.Bll.Service
                                && t.OrderType.Contains(task.OrderType)
                                && t.DownloadState.Contains(task.DownloadState)
                              )
-                      .OrderBy(t => t.State).ThenByDescending(t => t.ID)
+                      .OrderBy(t => t.State).ThenBy(t => t.CurrentPositionState).ThenByDescending(t => t.ID)
                       .Select(t => new
                       {
                           t.ID,
@@ -1141,7 +1141,7 @@ namespace THOK.WCS.Bll.Service
                     .FirstOrDefault();
             if (path == null)
             {
-                errorInfo = string.Format("未找到路径[{0}]", path.PathName);
+                errorInfo = string.Format("从 [{0}] 到 [{1}] 未找到路径!", cellPosition.StockOutPosition.PositionName, position.PositionName);
                 return false;
             }
             try
@@ -1250,7 +1250,7 @@ namespace THOK.WCS.Bll.Service
                     .FirstOrDefault();
             if (path == null)
             {
-                errorInfo = "未找到路径信息！";
+                errorInfo = string.Format("从 [{0}] 到 [{1}] 未找到路径!", cellPosition.StockOutPosition.PositionName, position.PositionName);
                 return false;
             }
             try
@@ -1274,9 +1274,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = Convert.ToInt32(storage.Quantity);
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = "";
-                newTask.OrderType = "06";
-                //newTask.AllotID = inItem.ID;
+                newTask.OrderType = "06";               
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
@@ -1295,10 +1293,30 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null)
             {
+                var originPosition = PositionRepository.GetQueryable()
+                    .Where(i => i.ID == task.CurrentPositionID)
+                    .FirstOrDefault();
+
+                var targetPosition = PositionRepository.GetQueryable()
+                    .Where(i => i.ID == task.OriginPositionID)
+                    .FirstOrDefault();
+
+                var path = PathRepository.GetQueryable()
+                    .Where(p => originPosition != null && targetPosition!= null
+                        && p.OriginRegionID == originPosition.RegionID
+                        && p.TargetRegionID == targetPosition.RegionID)
+                    .FirstOrDefault();
+
+                if (path == null)
+                {
+                    errorInfo = string.Format("从 [{0}] 到 [{1}] 未找到路径!", originPosition.PositionName, targetPosition.PositionName);
+                    return false;
+                }
+
                 var newTask = new Task();
                 newTask.TaskType = "01";
                 newTask.TaskLevel = 0;
-                //newTask.PathID = path.ID;
+                newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
                 newTask.OriginStorageCode = task.TargetStorageCode;
@@ -1312,9 +1330,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = task.Quantity - task.OperateQuantity;
                 newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
                 newTask.OperateQuantity = 0;
-                //newTask.OrderID = inItem.BillNo;
                 newTask.OrderType = "07";
-                //newTask.AllotID = inItem.ID;
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
                 TaskRepository.Add(newTask);
@@ -1466,6 +1482,11 @@ namespace THOK.WCS.Bll.Service
                         outAllot.Storage.ProductCode = null;
                         outAllot.Storage.StorageSequence = 0;
                     }
+                    else
+                    {
+                        if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                        if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                    }
                     outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
                         ? outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
                     outAllot.OutBillDetail.RealQuantity += quantity;
@@ -1616,6 +1637,10 @@ namespace THOK.WCS.Bll.Service
                 checkDetail.Storage.IsLock = "0";
                 checkDetail.CheckBillMaster.Status = "3";
                 checkDetail.FinishTime = DateTime.Now;
+
+                if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                
                 if (checkDetail.CheckBillMaster.CheckBillDetails.All(c => c.Status == "2"))
                 {
                     checkDetail.CheckBillMaster.Status = "4";
@@ -1664,6 +1689,7 @@ namespace THOK.WCS.Bll.Service
                 var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
                 if (storage != null && storage.OutFrozenQuantity > 0)
                 {
+                    storage.ProductCode = null;
                     storage.OutFrozenQuantity = 0;
                     storage.Quantity = 0;
                     storage.StorageSequence = 0;
@@ -1687,12 +1713,25 @@ namespace THOK.WCS.Bll.Service
         {
             errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null && task.State == "04")
+            if (task != null)
             {
                 FinishOutBillTask(task.OrderID, task.AllotID, out errorInfo);
                 if (task.Quantity > task.TaskQuantity)
                 {
-                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                    var tid = TaskRepository.GetQueryable()
+                        .Where(i => i.AllotID == task.AllotID
+                            && i.OriginPositionID == task.TargetPositionID
+                            && i.TargetPositionID == task.OriginPositionID)
+                        .Select(i=>i.ID)
+                        .FirstOrDefault();
+                    if (tid > 0)
+                    {
+                        return tid;
+                    }
+                    else
+                    {
+                        return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                    }
                 }
                 else
                 {
@@ -1705,10 +1744,23 @@ namespace THOK.WCS.Bll.Service
         {
             errorInfo = string.Empty;
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null && task.State == "04")
+            if (task != null)
             {
                 FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
-                return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                var tid = TaskRepository.GetQueryable()
+                    .Where(i => i.AllotID == task.AllotID
+                        && i.OriginPositionID == task.TargetPositionID
+                        && i.TargetPositionID == task.OriginPositionID)
+                    .Select(i => i.ID)
+                    .FirstOrDefault();
+                if (tid > 0)
+                {
+                    return tid;
+                }
+                else
+                {
+                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                }
             }
             return 0;
         }
@@ -1717,13 +1769,18 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null)
             {
+                var cellPosition = CellPositionRepository.GetQueryable()
+                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
+                    .FirstOrDefault();
+                if (cellPosition == null) return 0;
+
                 var currentPosition = PositionRepository.GetQueryable()
                    .Where(i => i.ID == task.CurrentPositionID)
                    .FirstOrDefault();
                 if (currentPosition == null) return 0;
 
                 var targetPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.OriginPositionID)
+                   .Where(i => i.ID == cellPosition.StockInPositionID)
                    .FirstOrDefault();
                 if (targetPosition == null) return 0;
 
@@ -1732,11 +1789,6 @@ namespace THOK.WCS.Bll.Service
                         && p.TargetRegion.ID == targetPosition.Region.ID)
                     .FirstOrDefault();
                 if (path == null) return 0;
-
-                var cellPosition = CellPositionRepository.GetQueryable()
-                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
-                    .FirstOrDefault();
-                if (cellPosition == null) return 0;
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
@@ -2036,7 +2088,7 @@ namespace THOK.WCS.Bll.Service
                 task.State = "04";
                 TaskRepository.SaveChanges();
 
-                if (task.TaskQuantity == task.OperateQuantity)
+                if (task.Quantity == task.TaskQuantity)
                 {
                     if (!CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
                     {
