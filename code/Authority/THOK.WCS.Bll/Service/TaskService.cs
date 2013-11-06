@@ -610,10 +610,10 @@ namespace THOK.WCS.Bll.Service
                 {
                     AddTaskHistorys(task, taskHistory);
                 }
-                TaskHistoryRepository.SaveChanges();
                 string sql = "truncate table wcs_task";
                 try
                 {
+                    TaskHistoryRepository.SaveChanges();
                     if (ExecuteCommand(sql) > 0) result = true;
                 }
                 catch (Exception ex)
