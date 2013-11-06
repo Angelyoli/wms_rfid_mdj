@@ -610,22 +610,15 @@ namespace THOK.WCS.Bll.Service
                 {
                     AddTaskHistorys(task, taskHistory);
                 }
-                using (var scope = new System.Transactions.TransactionScope())
+                TaskHistoryRepository.SaveChanges();
+                string sql = "truncate table wcs_task";
+                try
                 {
-                    TaskHistoryRepository.SaveChanges();
-                    string sql = "truncate table wcs_task";
-                    try
-                    {
-                        if (ExecuteCommand(sql) > 0)
-                        {
-                            scope.Complete();
-                            result = true;
-                        }
-                    }
-                    catch(Exception ex)
-                    {
-                        errorInfo = "系统错误x001：" + ex.Message;
-                    }
+                    if (ExecuteCommand(sql) > 0) result = true;
+                }
+                catch (Exception ex)
+                {
+                    errorInfo = "系统错误x001：" + ex.Message;
                 }
             }
             else if (tasks.Any(a => a.State == "04"))
@@ -635,22 +628,15 @@ namespace THOK.WCS.Bll.Service
                 {
                     AddTaskHistorys(task, taskHistory);
                 }
-                using (var scope = new System.Transactions.TransactionScope())
+                TaskHistoryRepository.SaveChanges();
+                string sql = "delete wcs_task where state = '04' ";
+                try
                 {
-                    TaskHistoryRepository.SaveChanges();
-                    string sql = "delete wcs_task where state = '04' ";
-                    try
-                    {
-                        if (ExecuteCommand(sql) > 0)
-                        {
-                            scope.Complete();
-                            result = true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        errorInfo = "系统错误x002：" + ex.Message;
-                    }
+                    if (ExecuteCommand(sql) > 0) result = true;
+                }
+                catch (Exception ex)
+                {
+                    errorInfo = "系统错误x002：" + ex.Message;
                 }
             }
             else
@@ -670,24 +656,16 @@ namespace THOK.WCS.Bll.Service
                 foreach (var task in tasks)
                 {
                     AddTaskHistorys(task, taskHistory);
-                    TaskHistoryRepository.Add(taskHistory);
                 }
-                using (var scope = new System.Transactions.TransactionScope())
+                TaskHistoryRepository.SaveChanges();
+                string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
+                try
                 {
-                    TaskHistoryRepository.SaveChanges();
-                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
-                    try
-                    {
-                        if (ExecuteCommand(sql) > 0)
-                        {
-                            scope.Complete();
-                            result = true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        errorInfo = "系统错误x003：" + ex.Message;
-                    }
+                    if (ExecuteCommand(sql) > 0) result = true;
+                }
+                catch (Exception ex)
+                {
+                    errorInfo = "系统错误x003：" + ex.Message;
                 }
             }
             else
