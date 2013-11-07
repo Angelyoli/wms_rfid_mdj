@@ -72,6 +72,38 @@ namespace THOK.WCS.Bll.Service
         [Dependency]
         public IMoveBillCreater MoveBillCreater { get; set; }
 
+        #region SQL连接
+        private SqlConnection connection;
+        public SqlConnection Connection
+        {
+            get
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
+                if (connection == null)
+                {
+                    connection = new SqlConnection(connectionString);
+                    connection.Open();
+                }
+                else if (connection.State == System.Data.ConnectionState.Closed)
+                {
+                    connection.Open();
+                }
+                else if (connection.State == System.Data.ConnectionState.Broken)
+                {
+                    connection.Close();
+                    connection.Open();
+                }
+                return connection;
+            }
+        }
+        private int ExecuteCommand(string sql)
+        {
+            SqlCommand cmd = new SqlCommand(sql, Connection);
+            int result = cmd.ExecuteNonQuery();
+            return result;
+        } 
+        #endregion
+
         private void InitValue(Task task)
         {
             if (task.TaskType == "" || task.TaskType == null)
@@ -334,7 +366,7 @@ namespace THOK.WCS.Bll.Service
                                && t.OrderType.Contains(task.OrderType)
                                && t.DownloadState.Contains(task.DownloadState)
                              )
-                      .OrderBy(t => t.State).ThenByDescending(t => t.ID)
+                      .OrderByDescending(t => t.ID)
                       .Select(t => new
                       {
                           t.ID,
@@ -571,62 +603,45 @@ namespace THOK.WCS.Bll.Service
             bool result = false;
             errorInfo = string.Empty;
             var tasks = TaskRepository.GetQueryable();
-            if (tasks.All(a => (a.CurrentPositionID == a.OriginPositionID)
-                            || (a.CurrentPositionID == a.TargetPositionID)))
+            if (tasks.All(a => a.State == "04"))
             {
                 TaskHistory taskHistory = null;
                 foreach (var task in tasks)
                 {
-                    taskHistory = new TaskHistory();
-                    taskHistory.TaskID = task.ID;
-                    taskHistory.TaskType = task.TaskType;
-                    taskHistory.TaskLevel = task.TaskLevel;
-                    taskHistory.PathID = task.PathID;
-                    taskHistory.ProductCode = task.ProductCode;
-                    taskHistory.ProductName = task.ProductName;
-                    taskHistory.OriginStorageCode = task.OriginStorageCode;
-                    taskHistory.TargetStorageCode = task.TargetStorageCode;
-                    taskHistory.OriginPositionID = task.OriginPositionID;
-                    taskHistory.TargetPositionID = task.TargetPositionID;
-                    taskHistory.CurrentPositionID = task.CurrentPositionID;
-                    taskHistory.CurrentPositionState = task.CurrentPositionState;
-                    taskHistory.State = task.State;
-                    taskHistory.TagState = task.TagState;
-                    taskHistory.Quantity = task.Quantity;
-                    taskHistory.TaskQuantity = task.TaskQuantity;
-                    taskHistory.OperateQuantity = task.OperateQuantity;
-                    taskHistory.OrderID = task.OrderID;
-                    taskHistory.OrderType = task.OrderType;
-                    taskHistory.AllotID = task.AllotID;
-                    taskHistory.DownloadState = task.DownloadState;
-                    taskHistory.ClearTime = System.DateTime.Now;
-
-                    TaskHistoryRepository.Add(taskHistory);
+                    AddTaskHistorys(task, taskHistory);
                 }
-                using (var scope = new System.Transactions.TransactionScope())
+                string sql = "truncate table wcs_task";
+                try
                 {
                     TaskHistoryRepository.SaveChanges();
-
-                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
-                    SqlConnection con = new SqlConnection(constr);
-                    string sql = "truncate table wcs_task";
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    try
-                    {
-                        con.Open();
-                        int i = (int)cmd.ExecuteNonQuery();
-                        if (i > 0) result = true; else result = false;
-                    }
-                    catch (Exception ex) { errorInfo = ex.Message; }
-                    finally { con.Close(); }
-
-                    scope.Complete();
-                    result = true;
+                    if (ExecuteCommand(sql) > 0) result = true;
+                }
+                catch (Exception ex)
+                {
+                    errorInfo = "系统错误x001：" + ex.Message;
+                }
+            }
+            else if (tasks.Any(a => a.State == "04"))
+            {
+                TaskHistory taskHistory = null;
+                foreach (var task in tasks)
+                {
+                    AddTaskHistorys(task, taskHistory);
+                }
+                string sql = "delete wcs_task where state = '04' ";
+                try
+                {
+                    TaskHistoryRepository.SaveChanges();
+                    if (ExecuteCommand(sql) > 0) result = true;
+                }
+                catch (Exception ex)
+                {
+                    errorInfo = "系统错误x002：" + ex.Message;
                 }
             }
             else
             {
-                errorInfo = "当前有未执行完毕的任务！";
+                errorInfo = "未找到已完成的任务！";
             }
             return result;
         }
@@ -640,51 +655,17 @@ namespace THOK.WCS.Bll.Service
                 TaskHistory taskHistory = null;
                 foreach (var task in tasks)
                 {
-                    taskHistory = new TaskHistory();
-                    taskHistory.TaskID = task.ID;
-                    taskHistory.TaskType = task.TaskType;
-                    taskHistory.TaskLevel = task.TaskLevel;
-                    taskHistory.PathID = task.PathID;
-                    taskHistory.ProductCode = task.ProductCode;
-                    taskHistory.ProductName = task.ProductName;
-                    taskHistory.OriginStorageCode = task.OriginStorageCode;
-                    taskHistory.TargetStorageCode = task.TargetStorageCode;
-                    taskHistory.OriginPositionID = task.OriginPositionID;
-                    taskHistory.TargetPositionID = task.TargetPositionID;
-                    taskHistory.CurrentPositionID = task.CurrentPositionID;
-                    taskHistory.CurrentPositionState = task.CurrentPositionState;
-                    taskHistory.State = task.State;
-                    taskHistory.TagState = task.TagState;
-                    taskHistory.Quantity = task.Quantity;
-                    taskHistory.TaskQuantity = task.TaskQuantity;
-                    taskHistory.OperateQuantity = task.OperateQuantity;
-                    taskHistory.OrderID = task.OrderID;
-                    taskHistory.OrderType = task.OrderType;
-                    taskHistory.AllotID = task.AllotID;
-                    taskHistory.DownloadState = task.DownloadState;
-                    taskHistory.ClearTime = System.DateTime.Now;
-
-                    TaskHistoryRepository.Add(taskHistory);
+                    AddTaskHistorys(task, taskHistory);
                 }
-                using (var scope = new System.Transactions.TransactionScope())
+                string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
+                try
                 {
                     TaskHistoryRepository.SaveChanges();
-
-                    string constr = ConfigurationManager.ConnectionStrings["AuthorizeContext"].ConnectionString;
-                    SqlConnection con = new SqlConnection(constr);
-                    string sql = string.Format("delete wcs_task where order_id = '{0}' ", orderID);
-                    SqlCommand cmd = new SqlCommand(sql, con);
-                    try
-                    {
-                        con.Open();
-                        int i = (int)cmd.ExecuteNonQuery();
-                        if (i > 0) result = true; else result = false;
-                    }
-                    catch (Exception ex) { errorInfo = "清空订单任务时：" + ex.Message; return false; }
-                    finally { con.Close(); }
-
-                    scope.Complete();
-                    result = true;
+                    if (ExecuteCommand(sql) > 0) result = true;
+                }
+                catch (Exception ex)
+                {
+                    errorInfo = "系统错误x003：" + ex.Message;
                 }
             }
             else
@@ -692,6 +673,35 @@ namespace THOK.WCS.Bll.Service
                 errorInfo = "当前有任务正在执行中或者未执行完毕！";
             }
             return result;
+        }
+
+        void AddTaskHistorys(Task task, TaskHistory taskHistory)
+        {
+            taskHistory = new TaskHistory();
+            taskHistory.TaskID = task.ID;
+            taskHistory.TaskType = task.TaskType;
+            taskHistory.TaskLevel = task.TaskLevel;
+            taskHistory.PathID = task.PathID;
+            taskHistory.ProductCode = task.ProductCode;
+            taskHistory.ProductName = task.ProductName;
+            taskHistory.OriginStorageCode = task.OriginStorageCode;
+            taskHistory.TargetStorageCode = task.TargetStorageCode;
+            taskHistory.OriginPositionID = task.OriginPositionID;
+            taskHistory.TargetPositionID = task.TargetPositionID;
+            taskHistory.CurrentPositionID = task.CurrentPositionID;
+            taskHistory.CurrentPositionState = task.CurrentPositionState;
+            taskHistory.State = task.State;
+            taskHistory.TagState = task.TagState;
+            taskHistory.Quantity = task.Quantity;
+            taskHistory.TaskQuantity = task.TaskQuantity;
+            taskHistory.OperateQuantity = task.OperateQuantity;
+            taskHistory.OrderID = task.OrderID;
+            taskHistory.OrderType = task.OrderType;
+            taskHistory.AllotID = task.AllotID;
+            taskHistory.DownloadState = task.DownloadState;
+            taskHistory.ClearTime = System.DateTime.Now;
+
+            TaskHistoryRepository.Add(taskHistory);
         }
 
         public bool InBillTask(string billNo, out string errorInfo)

@@ -137,6 +137,28 @@
                 </tr>
                 <tr>
                     <td>
+                        任务类型
+                    </td>
+                    <td style="padding-right: 30px;">
+                        <select id="taskType2" name="TaskType" class="easyui-combobox">
+                            <option value="01">正常任务</option>
+                            <option value="02">叠空托盘</option>
+                        </select>
+                    </td>
+                    <td>
+                        状态
+                    </td>
+                    <td>
+                        <select id="state2" name="State" class="easyui-combobox">
+                            <option value="01">等待中</option>
+                            <option value="02">执行中</option>
+                            <option value="03">拣选中</option>
+                            <option value="04">已完成</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         商品编码
                     </td>
                     <td>
@@ -150,46 +172,7 @@
                     <td>
                         <input id="productName2" name="ProductName" />
                     </td>
-                </tr>
-                <tr>
-                    <td>
-                        任务类型
-                    </td>
-                    <td style="padding-right: 30px;">
-                        <select id="taskType2" name="TaskType" class="easyui-combobox">
-                            <option value="01">正常任务</option>
-                            <option value="02">叠空托盘</option>
-                        </select>
-                    </td>
-                    <td>
-                        任务优先级
-                    </td>
-                    <td>
-                        <input name="TaskLevel" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        状态
-                    </td>
-                    <td>
-                        <select id="state2" name="State" class="easyui-combobox">
-                            <option value="01">等待中</option>
-                            <option value="02">执行中</option>
-                            <option value="03">拣选中</option>
-                            <option value="04">已完成</option>
-                        </select>
-                    </td>
-                    <td>
-                        标签状态
-                    </td>
-                    <td>
-                        <select id="tagState2" name="TagState" class="easyui-combobox">
-                            <option value="01">未点亮</option>
-                            <option value="02">已点亮</option>
-                        </select>
-                    </td>
-                </tr>
+                </tr>                
                 <tr>
                     <td>
                         原数量
@@ -245,6 +228,15 @@
                 </tr>
                 <tr>
                     <td>
+                        标签状态
+                    </td>
+                    <td>
+                        <select id="tagState2" name="TagState" class="easyui-combobox">
+                            <option value="01">未点亮</option>
+                            <option value="02">已点亮</option>
+                        </select>
+                    </td>
+                    <td>
                         补货下载状态
                     </td>
                     <td>
@@ -252,6 +244,14 @@
                             <option value="0">未下载</option>
                             <option value="1">已下载</option>
                         </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        任务优先级
+                    </td>
+                    <td>
+                        <input name="TaskLevel" />
                     </td>
                 </tr>
             </table>

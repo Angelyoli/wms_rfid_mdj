@@ -60,7 +60,7 @@
         queryParams.DownloadState = $('#downloadState1').combo('getValue');
         queryParams.AllotID = $('#allotID1').val();
         $('#details').datagrid('options').queryParams = queryParams;
-        $('#details').datagrid({ pageNumber: 1, pageSize: 10 });
+        $('#details').datagrid({ pageNumber: 1, pageSize: 50 });
         $("#details").datagrid('reload');
         $('#dlg-search').dialog('close');
     }
