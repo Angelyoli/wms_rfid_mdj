@@ -603,7 +603,7 @@ namespace THOK.WCS.Bll.Service
             bool result = false;
             errorInfo = string.Empty;
             var tasks = TaskRepository.GetQueryable();
-            if (tasks.All(a => a.State == "04"))
+            if (tasks.All(a => a.CurrentPositionID == a.OriginPositionID && a.State == "01" || a.CurrentPositionID == a.TargetPositionID && a.State == "04"))
             {
                 TaskHistory taskHistory = null;
                 foreach (var task in tasks)
@@ -613,35 +613,47 @@ namespace THOK.WCS.Bll.Service
                 string sql = "truncate table wcs_task";
                 try
                 {
-                    TaskHistoryRepository.SaveChanges();
-                    if (ExecuteCommand(sql) > 0) result = true;
+                    using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+                    {
+                        TaskHistoryRepository.SaveChanges();
+                        ExecuteCommand(sql);
+                        result = true;
+                        scope.Complete();
+                    }
                 }
                 catch (Exception ex)
                 {
                     errorInfo = "系统错误x001：" + ex.Message;
                 }
             }
-            else if (tasks.Any(a => a.State == "04"))
-            {
-                TaskHistory taskHistory = null;
-                foreach (var task in tasks)
-                {
-                    AddTaskHistorys(task, taskHistory);
-                }
-                string sql = "delete wcs_task where state = '04' ";
-                try
-                {
-                    TaskHistoryRepository.SaveChanges();
-                    if (ExecuteCommand(sql) > 0) result = true;
-                }
-                catch (Exception ex)
-                {
-                    errorInfo = "系统错误x002：" + ex.Message;
-                }
-            }
+            #region //
+            //else if (tasks.Any(a => a.State == "04"))
+            //{
+            //    TaskHistory taskHistory = null;
+            //    foreach (var task in tasks)
+            //    {
+            //        AddTaskHistorys(task, taskHistory);
+            //    }
+            //    string sql = "delete wcs_task where state = '04' ";
+            //    try
+            //    {
+            //        using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
+            //        {
+            //            TaskHistoryRepository.SaveChanges();
+            //            ExecuteCommand(sql);
+            //            result = true;
+            //            scope.Complete();
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        errorInfo = "系统错误x002：" + ex.Message;
+            //    }
+            //} 
+            #endregion
             else
             {
-                errorInfo = "未找到已完成的任务！";
+                errorInfo = "当前有任务正在执行中或者未执行完毕！";
             }
             return result;
         }
@@ -661,7 +673,8 @@ namespace THOK.WCS.Bll.Service
                 try
                 {
                     TaskHistoryRepository.SaveChanges();
-                    if (ExecuteCommand(sql) > 0) result = true;
+                    ExecuteCommand(sql);
+                    result = true;
                 }
                 catch (Exception ex)
                 {
