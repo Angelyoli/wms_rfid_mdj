@@ -39,7 +39,7 @@ namespace THOK.WCS.Bll.Interfaces
 
         bool AutoCreateMoveBill(out string errorInfo);
 
-        void GetOutTask(string positionType, RestReturn result);
+        void GetOutTask(string positionType, string orderType, RestReturn result);
         void FinishTask(string taskID, RestReturn result);
     }
 }
