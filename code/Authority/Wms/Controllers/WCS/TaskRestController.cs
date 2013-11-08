@@ -71,32 +71,16 @@ namespace Wms.Controllers.WCS
             return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetOutTask(string positionType)
+        public ActionResult GetOutTask(string positionType,string orderType)
         {
             RestReturn restReturn = new RestReturn();
-            try
-            {
-                TaskService.GetOutTask(positionType, restReturn);
-            }
-            catch (Exception e)
-            {
-                restReturn.IsSuccess = false;
-                restReturn.Message = "获取服务器数据失败！详情：" + e.Message;
-            }
+            TaskService.GetOutTask(positionType, orderType, restReturn);
             return Json(restReturn, "application/json", JsonRequestBehavior.AllowGet);
         }
         public ActionResult FinishOutTask(string taskID)
         {
             RestReturn restReturn = new RestReturn();
-            try
-            {
-                TaskService.FinishTask(taskID, restReturn);
-            }
-            catch (Exception e)
-            {
-                restReturn.IsSuccess = false;
-                restReturn.Message = "获取服务器数据失败！详情：" + e.Message;
-            }
+            TaskService.FinishTask(taskID, restReturn);
             return Json(restReturn, "application/json", JsonRequestBehavior.AllowGet);
         }
     }
