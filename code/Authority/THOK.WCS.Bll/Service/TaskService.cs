@@ -775,19 +775,6 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
 
-            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");
-            if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
-            int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
-
-            var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
-            if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
-
-            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
-            if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
-
-            var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
-            if (targetCell == null) { errorInfo = "未找到目标货位编码：" + targetCellPosition.CellCode; return false; }
-
             try
             {
                 using (TransactionScope scope = new TransactionScope())
@@ -810,6 +797,19 @@ namespace THOK.WCS.Bll.Service
                         if (originCellPosition == null) { errorInfo = "未找到货位位置的起始货位位置：" + outBillAllot.Cell.CellName; return false; }
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
+
+                        var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName));
+                        if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                        int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
+
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
+                        if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
+
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue);
+                        if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
+
+                        var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
+                        if (targetCell == null) { errorInfo = "未找到目标货位编码：" + targetCellPosition.CellCode; return false; }
 
                         var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
                         if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.PositionName + "，目标位置：" + targetPosition.PositionName; return false; }
@@ -949,19 +949,6 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
 
-            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "OutBillPositionId");
-            if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
-            int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
-
-            var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
-            if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
-
-            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue || i.StockOutPositionID == paramValue);
-            if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
-
-            var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
-            if (targetCell == null) { errorInfo = "未找到目标货位编码：" + targetCellPosition.CellCode; return false; }
-
             try
             {
                 using (TransactionScope scope = new TransactionScope())
@@ -984,6 +971,19 @@ namespace THOK.WCS.Bll.Service
                         if (originCellPosition == null) { errorInfo = "未找到货位位置的起始货位位置：" + checkItem.Cell.CellName; return false; }
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
+
+                        var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName));
+                        if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                        int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
+
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
+                        if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
+
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue);
+                        if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
+
+                        var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
+                        if (targetCell == null) { errorInfo = "未找到目标货位编码：" + targetCellPosition.CellCode; return false; }
 
                         var path = PathRepository.GetQueryable().FirstOrDefault(p => p.OriginRegionID == originPosition.RegionID && p.TargetRegionID == targetPosition.RegionID);
                         if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.PositionName + "，目标位置：" + targetPosition.PositionName; return false; }
@@ -1037,7 +1037,7 @@ namespace THOK.WCS.Bll.Service
 
             try
             {
-                using (var scope = new System.Transactions.TransactionScope())
+                using (TransactionScope scope = new TransactionScope())
                 {
                     var moveBillMaster = MoveBillMasterRepository.GetQueryable()
                         .Where(i => i.BillNo == billNo && (i.Status == "2" || i.Status == "3"))
@@ -1058,7 +1058,21 @@ namespace THOK.WCS.Bll.Service
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
-                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
+                        int targetPositionID = 0;
+                        if (moveBillDetail.Product.IsAbnormity == "0")
+                        {
+                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "SmallPositionID");
+                            if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                            targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
+                        }
+                        else
+                        {
+                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "AbnormityPositionID");
+                            if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                            targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
+                        }
+
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.StockInPositionID == targetPositionID);
                         if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标货位位置：" + moveBillDetail.InCell.CellName; return false; }
                         var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
                         if (targetPosition == null) { errorInfo = "未找到目标货位位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
