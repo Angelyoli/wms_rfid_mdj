@@ -2251,7 +2251,7 @@ namespace THOK.WCS.Bll.Service
                                 Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
                             })
                             .ToArray();
-                #endregion}
+                #endregion
 
                 RestTask = RestTask.Concat(outTask).Concat(moveTask).Concat(checkTask).ToArray();
                 result.IsSuccess = true;
