@@ -687,8 +687,7 @@ namespace THOK.WCS.Bll.Service
             }
             return result;
         }
-
-        void AddTaskHistorys(Task task, TaskHistory taskHistory)
+        private void AddTaskHistorys(Task task, TaskHistory taskHistory)
         {
             taskHistory = new TaskHistory();
             taskHistory.TaskID = task.ID;
@@ -1313,7 +1312,62 @@ namespace THOK.WCS.Bll.Service
         }
         public bool CreateNewTaskForMoveBackRemain(int taskID, out string errorInfo)
         {
-            return CreateNewTaskForMoveBackRemainAndReturnTaskID(task.ID) > 0;
+            return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID,out errorInfo) > 0;
+        }
+        private int CreateNewTaskForMoveBackRemainAndReturnTaskID(int taskID, out string errorInfo)
+        {
+            errorInfo = "";
+            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
+            if (task != null)
+            {
+                var cellPosition = CellPositionRepository.GetQueryable()
+                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
+                    .FirstOrDefault();
+                if (cellPosition == null) return 0;
+
+                var currentPosition = PositionRepository.GetQueryable()
+                   .Where(i => i.ID == task.CurrentPositionID)
+                   .FirstOrDefault();
+                if (currentPosition == null) return 0;
+
+                var targetPosition = PositionRepository.GetQueryable()
+                   .Where(i => i.ID == cellPosition.StockInPositionID)
+                   .FirstOrDefault();
+                if (targetPosition == null) return 0;
+
+                var path = PathRepository.GetQueryable()
+                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
+                        && p.TargetRegion.ID == targetPosition.Region.ID)
+                    .FirstOrDefault();
+                if (path == null) return 0;
+
+                var newTask = new Task();
+                newTask.TaskType = "01";
+                newTask.TaskLevel = 0;
+                newTask.PathID = path.ID;
+                newTask.ProductCode = task.ProductCode;
+                newTask.ProductName = task.ProductName;
+                newTask.OriginStorageCode = task.TargetStorageCode;
+                newTask.TargetStorageCode = task.OriginStorageCode;
+                newTask.OriginPositionID = task.CurrentPositionID;
+                newTask.TargetPositionID = cellPosition.StockInPositionID;
+                newTask.CurrentPositionID = task.CurrentPositionID;
+                newTask.CurrentPositionState = "02";
+                newTask.State = "01";
+                newTask.TagState = "01";//拟不使用
+                newTask.Quantity = task.Quantity - task.OperateQuantity;
+                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
+                newTask.OperateQuantity = 0;
+                newTask.OrderID = task.OrderID;
+                newTask.OrderType = task.OrderType == "02" ? "07" : (task.OrderType == "03" ? "08" : "09");
+                newTask.AllotID = task.AllotID;
+                newTask.DownloadState = "1";
+                newTask.StorageSequence = 0;
+                TaskRepository.Add(newTask);
+                TaskRepository.SaveChanges();
+                return newTask.ID;
+            }
+            return 0;
         }
 
         public bool FinishTask(int taskID, out string errorInfo)
@@ -1749,7 +1803,7 @@ namespace THOK.WCS.Bll.Service
                     }
                     else
                     {
-                        return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                        return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID, out errorInfo);
                     }
                 }
                 else
@@ -1778,66 +1832,12 @@ namespace THOK.WCS.Bll.Service
                 }
                 else
                 {
-                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID);
+                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID, out errorInfo);
                 }
             }
             return 0;
         }
-        private int CreateNewTaskForMoveBackRemainAndReturnTaskID(int taskID)
-        {
-            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null)
-            {
-                var cellPosition = CellPositionRepository.GetQueryable()
-                    .Where(i => i.StockOutPositionID == task.OriginPositionID)
-                    .FirstOrDefault();
-                if (cellPosition == null) return 0;
-
-                var currentPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == task.CurrentPositionID)
-                   .FirstOrDefault();
-                if (currentPosition == null) return 0;
-
-                var targetPosition = PositionRepository.GetQueryable()
-                   .Where(i => i.ID == cellPosition.StockInPositionID)
-                   .FirstOrDefault();
-                if (targetPosition == null) return 0;
-
-                var path = PathRepository.GetQueryable()
-                    .Where(p => p.OriginRegion.ID == currentPosition.Region.ID
-                        && p.TargetRegion.ID == targetPosition.Region.ID)
-                    .FirstOrDefault();
-                if (path == null) return 0;
-
-                var newTask = new Task();
-                newTask.TaskType = "01";
-                newTask.TaskLevel = 0;
-                newTask.PathID = path.ID;
-                newTask.ProductCode = task.ProductCode;
-                newTask.ProductName = task.ProductName;
-                newTask.OriginStorageCode = task.TargetStorageCode;
-                newTask.TargetStorageCode = task.OriginStorageCode;
-                newTask.OriginPositionID = task.CurrentPositionID;
-                newTask.TargetPositionID = cellPosition.StockInPositionID;
-                newTask.CurrentPositionID = task.CurrentPositionID;
-                newTask.CurrentPositionState = "02";
-                newTask.State = "01";
-                newTask.TagState = "01";//拟不使用
-                newTask.Quantity = task.Quantity - task.OperateQuantity;
-                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
-                newTask.OperateQuantity = 0;
-                newTask.OrderID = task.OrderID;
-                newTask.OrderType = task.OrderType == "02" ? "07" : (task.OrderType == "03" ? "08" : "09");
-                newTask.AllotID = task.AllotID;
-                newTask.DownloadState = "1";
-                newTask.StorageSequence = 0;
-                TaskRepository.Add(newTask);
-                TaskRepository.SaveChanges();
-                return newTask.ID;
-            }
-            return 0;
-        }
-        
+                
         private static object locker = new object();
         public bool AutoCreateMoveBill(out string errorInfo)
         {
@@ -2232,8 +2232,10 @@ namespace THOK.WCS.Bll.Service
             try
             {
                 int tid = Convert.ToInt32(taskID);
-                var task = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == tid);
-                var position = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.CurrentPositionID);
+                var task = TaskRepository.GetQueryable()
+                    .FirstOrDefault(a => a.ID == tid);
+                var position = PositionRepository.GetQueryable()
+                    .FirstOrDefault(a => a.ID == task.CurrentPositionID);
 
                 if (!FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
                 {
@@ -2255,7 +2257,7 @@ namespace THOK.WCS.Bll.Service
                 }
                 else
                 {
-                    if (CreateNewTaskForMoveBackRemainAndReturnTaskID(task.ID) > 0)
+                    if (CreateNewTaskForMoveBackRemain(task.ID,out errorInfo))
                     {
                         task.CurrentPositionID = task.TargetPositionID;
                         task.State = "04";
@@ -2271,7 +2273,7 @@ namespace THOK.WCS.Bll.Service
             catch (Exception ex)
             {
                 result.IsSuccess = false;
-                result.Message= ex.Message + errorInfo;
+                result.Message = ex.Message + errorInfo;
             }
         }
     }
