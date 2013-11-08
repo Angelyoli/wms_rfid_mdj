@@ -175,7 +175,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
             }
 
             string msg = bResult ? "确认成功" : "确认失败";
-            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, null), "text", JsonRequestBehavior.AllowGet);
+            return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
 
         // GET: /CheckBill/CreateExcelToClient/
