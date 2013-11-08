@@ -235,7 +235,7 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult OutBillTask(string BillNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.OutBillTask(BillNo, out strResult);
+            bool bResult = TaskService.CreateOutBillTask(BillNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

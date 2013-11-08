@@ -196,7 +196,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         public ActionResult CheckBillTask(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.CheckBillTask(billNo, out strResult);
+            bool bResult = TaskService.CreateCheckBillTask(billNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

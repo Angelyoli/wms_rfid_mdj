@@ -103,7 +103,7 @@ namespace Authority.Controllers.Wms.SortingInfo
         public ActionResult Task(string moveBillNo)
         {
             string errorInfo = string.Empty;
-            bool bResult = TaskService.MoveBillTask(moveBillNo, out errorInfo);
+            bool bResult = TaskService.CreateMoveBillTask(moveBillNo, out errorInfo);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }

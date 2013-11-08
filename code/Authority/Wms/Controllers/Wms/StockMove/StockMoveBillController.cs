@@ -198,7 +198,7 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult MoveBillTask(string moveBillNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.MoveBillTask(moveBillNo, out strResult);
+            bool bResult = TaskService.CreateMoveBillTask(moveBillNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

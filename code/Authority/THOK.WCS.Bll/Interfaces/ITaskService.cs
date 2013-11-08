@@ -14,15 +14,11 @@ namespace THOK.WCS.Bll.Interfaces
         bool Save(Task task, out string strResult);
         bool Delete(string taskID, out string strResult);
 
-        bool InBillTask(string billNo, out string errInfo);
-        bool OutBillTask(string billNo, out string errInfo);
-        bool MoveBillTask(string billNo, out string errInfo);
-        bool CheckBillTask(string billNo, out string errorInfo);
-
-        bool CreateNewTaskFromInBill(string billNo);
-        bool CreateNewTaskFromOutBill(string billNo);
-        bool CreateNewTaskFromMoveBill(string billNo);
-        bool CreateNewTaskFromCheckBill(string billNo);
+        bool CreateInBillTask(string billNo, out string errInfo);
+        bool CreateOutBillTask(string billNo, out string errInfo);
+        bool CreateMoveBillTask(string billNo, out string errInfo);
+        bool CreateCheckBillTask(string billNo, out string errorInfo);
+        bool CreateSortWorkDispatchTask(string billNo, out string errorInfo);
 
         bool CreateNewTaskForEmptyPalletStack(int positionID, string positionName, out string errorInfo);
         bool CreateNewTaskForEmptyPalletSupply(int positionID, string positionName, out string errorInfo);
