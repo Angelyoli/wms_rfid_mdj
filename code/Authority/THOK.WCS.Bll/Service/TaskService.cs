@@ -1296,14 +1296,15 @@ namespace THOK.WCS.Bll.Service
                 var originPosition = PositionRepository.GetQueryable()
                     .Where(i => i.ID == task.CurrentPositionID)
                     .FirstOrDefault();
+                if (originPosition == null) return false;
 
                 var targetPosition = PositionRepository.GetQueryable()
                     .Where(i => i.ID == task.OriginPositionID)
                     .FirstOrDefault();
+                if (targetPosition == null) return false;
 
                 var path = PathRepository.GetQueryable()
-                    .Where(p => originPosition != null && targetPosition!= null
-                        && p.OriginRegionID == originPosition.RegionID
+                    .Where(p => p.OriginRegionID == originPosition.RegionID
                         && p.TargetRegionID == targetPosition.RegionID)
                     .FirstOrDefault();
 
@@ -1956,12 +1957,13 @@ namespace THOK.WCS.Bll.Service
             try
             {
                 RestTask[] RestTask = new RestTask[] { };
-                
-                var taskQuery = TaskRepository.GetQueryable().Where(a => (a.OrderType == "02" || a.OrderType == "03") && (a.State == "01" || a.State == "02"));
+
+                var taskQuery = TaskRepository.GetQueryable().Where(a => (a.OrderType == "02" || a.OrderType == "03" || a.OrderType == "04") && a.State != "04");
                 var positionQuery = PositionRepository.GetQueryable().Where(a => a.PositionType == positionType);
                 
                 var outBillAllotQuery = OutBillAllotRepository.GetQueryable();
                 var moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
+                var checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
 
                 #region 出库
                 var outTask = taskQuery
@@ -2063,7 +2065,57 @@ namespace THOK.WCS.Bll.Service
                             .ToArray();
                 #endregion
 
-                RestTask = RestTask.Concat(outTask).Concat(moveTask).ToArray();
+                #region 盘点
+                var checkTask = taskQuery
+                            .Join(checkBillDetailQuery, a => a.AllotID, o => o.ID, (a, o) => new
+                            {
+                                a.ID,
+                                a.TaskType,
+                                a.TargetPositionID,
+                                a.TargetStorageCode,
+                                a.OrderID,
+                                a.OrderType,
+                                a.ProductCode,
+                                a.ProductName,
+                                a.Quantity,
+                                a.TaskQuantity,
+                                a.State,
+                                o.Product,
+                                checkQuantity = o.Quantity
+                            })
+                            .Join(positionQuery, a => a.TargetPositionID, p => p.ID, (a, p) => new
+                            {
+                                a.ID,
+                                a.TaskType,
+                                a.TargetStorageCode,
+                                a.OrderID,
+                                a.OrderType,
+                                a.ProductCode,
+                                a.ProductName,
+                                a.Quantity,
+                                a.TaskQuantity,
+                                a.State,
+                                a.checkQuantity,
+                                a.Product
+                            })
+                            .Select(i => new RestTask()
+                            {
+                                TaskID = i.ID,
+                                CellName = i.TargetStorageCode,
+                                ProductCode = i.ProductCode,
+                                ProductName = i.ProductName,
+                                OrderID = i.OrderID,
+                                OrderType = i.OrderType == "02" ? "移库" : i.OrderType == "03" ? "出库" : "盘点",
+                                Quantity = i.Quantity,
+                                TaskQuantity = i.checkQuantity / i.Product.Unit.Count,
+                                PieceQuantity = Math.Floor(i.checkQuantity / i.Product.UnitList.Unit01.Count),
+                                BarQuantity = Math.Floor((i.checkQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
+                            })
+                            .ToArray();
+                #endregion}
+
+                RestTask = RestTask.Concat(outTask).Concat(moveTask).Concat(checkTask).ToArray();
                 result.IsSuccess = true;
                 result.RestTasks = RestTask;
             }
@@ -2090,7 +2142,7 @@ namespace THOK.WCS.Bll.Service
                 task.State = "04";
                 TaskRepository.SaveChanges();
 
-                if (task.Quantity == task.TaskQuantity)
+                if (task.Quantity == task.TaskQuantity && task.OrderType != "04")
                 {
                     if (!CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
                     {
