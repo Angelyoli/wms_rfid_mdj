@@ -218,6 +218,10 @@
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.WCS.Bll\THOK.WCS.Bll.csproj">
+      <Project>{C7885513-E200-41BD-8409-359DE49C232D}</Project>
+      <Name>THOK.WCS.Bll</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.WCS.Dal\THOK.WCS.Dal.csproj">
       <Project>{03A98CF0-14B1-4FD7-BC27-1F19728C8674}</Project>
       <Name>THOK.WCS.Dal</Name>
