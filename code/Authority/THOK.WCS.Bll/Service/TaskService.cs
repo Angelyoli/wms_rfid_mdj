@@ -1952,13 +1952,13 @@ namespace THOK.WCS.Bll.Service
             }
         }
 
-        public void GetOutTask(string positionType, RestReturn result)
+        public void GetOutTask(string positionType,string orderType, RestReturn result)
         {
             try
             {
                 RestTask[] RestTask = new RestTask[] { };
 
-                var taskQuery = TaskRepository.GetQueryable().Where(a => (a.OrderType == "02" || a.OrderType == "03" || a.OrderType == "04") && a.State != "04");
+                var taskQuery = TaskRepository.GetQueryable().Where(a => a.OrderType == orderType && a.State != "04");
                 var positionQuery = PositionRepository.GetQueryable().Where(a => a.PositionType == positionType);
                 
                 var outBillAllotQuery = OutBillAllotRepository.GetQueryable();
@@ -2121,7 +2121,8 @@ namespace THOK.WCS.Bll.Service
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                result.IsSuccess = false;
+                result.Message = e.Message;
             }
         }
         public void FinishTask(string taskID, RestReturn result)
@@ -2160,7 +2161,8 @@ namespace THOK.WCS.Bll.Service
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message + errorInfo);
+                result.IsSuccess = false;
+                result.Message= ex.Message + errorInfo;
             }
         }
     }
