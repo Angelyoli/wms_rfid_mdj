@@ -580,7 +580,10 @@ namespace THOK.WCS.Bll.Service
                     var tasks = TaskRepository.GetQueryable()
                         .Where(t => t.State == "04"
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                            || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
+                            || (t.OrderType != "01" && t.OrderType != "05"
+                                && t.OrderType != "06" && t.OrderType != "07"
+                                && t.OrderType != "08" && t.OrderType != "09" 
+                                && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
 
                     foreach (var task in tasks)
                     {
@@ -591,7 +594,10 @@ namespace THOK.WCS.Bll.Service
 
                     TaskRepository.GetObjectSet().DeleteEntity(t => t.State == "04"
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                            || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
+                            || (t.OrderType != "01" && t.OrderType != "05"
+                                && t.OrderType != "06" && t.OrderType != "07"
+                                && t.OrderType != "08" && t.OrderType != "09"
+                                && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
 
                     if (TaskRepository.GetQueryable().Count() == 0)
                     {
