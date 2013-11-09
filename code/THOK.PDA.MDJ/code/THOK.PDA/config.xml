@@ -7,6 +7,6 @@
     <Type name="Type" value="NetWork" />
   </ConnetionType>
   <HttpConnectionStr>
-    <Type name="HttpConnStr" value="http://10.57.64.171:8089/TaskRest/" />
+    <Type name="HttpConnStr" value="http://10.57.64.171:8080/TaskRest/" />
   </HttpConnectionStr>
 </Config>
