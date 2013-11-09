@@ -1467,445 +1467,597 @@ namespace THOK.WCS.Bll.Service
         private bool FinishInBillTask(string orderID, int allotID, out string errorInfo)
         {
             errorInfo = string.Empty;
-            var inAllot = InBillAllotRepository.GetQueryable()
-                                    .Where(i => i.BillNo == orderID
-                                        && i.ID == allotID
-                                        && i.Status == "0")
-                                    .FirstOrDefault();
-            if (inAllot != null && (inAllot.InBillMaster.Status == "4"|| inAllot.InBillMaster.Status == "5"))
+
+            try
             {
-                decimal quantity = inAllot.AllotQuantity;
-                if (string.IsNullOrEmpty(inAllot.Storage.LockTag)
-                    && inAllot.AllotQuantity >= quantity
-                    && inAllot.Storage.InFrozenQuantity >= quantity)
+                if(InBillAllotRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
                 {
-                    inAllot.Status = "2";
-                    inAllot.Storage.Rfid = "";
-                    inAllot.RealQuantity += quantity;
-                    inAllot.Storage.Quantity += quantity;
-                    inAllot.Storage.StorageTime = DateTime.Now;
-                    inAllot.Storage.InFrozenQuantity -= quantity;
-                    if (inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                    if (!inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                    inAllot.Storage.Cell.StorageTime = inAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime);
-                    inAllot.InBillDetail.RealQuantity += quantity;
-                    inAllot.InBillMaster.Status = "5";
-                    inAllot.FinishTime = DateTime.Now;
-                    if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
+                    return true;
+                }
+
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var inAllot = InBillAllotRepository.GetQueryable()
+                        .Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "0")
+                        .FirstOrDefault();
+
+                    if (inAllot != null && (inAllot.InBillMaster.Status == "4" || inAllot.InBillMaster.Status == "5"))
                     {
-                        inAllot.InBillMaster.Status = "6";
-                    }
-                    //using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-                    //{
-                        try
+                        decimal quantity = inAllot.AllotQuantity;
+                        if (string.IsNullOrEmpty(inAllot.Storage.LockTag)
+                            && inAllot.AllotQuantity >= quantity
+                            && inAllot.Storage.InFrozenQuantity >= quantity)
                         {
-                            InBillAllotRepository.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            errorInfo = "入库分配保存失败！" + ex.Message;
-                            return false;
-                        }
-                        InspurService inspurService = new InspurService();
-                        Inspur inspur = new Inspur();
-                        inspur.Param = "";
-                        inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
-                        inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
-                        inspur.BillNo = inAllot.BillNo;
-                        inspur.ProductCode = inAllot.ProductCode;
-                        inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
-                        try
-                        {
-                            //反馈给浪潮的xml数据信息
-                            MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                            LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
-                            if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
+                            inAllot.Status = "2";
+                            inAllot.Storage.Rfid = "";
+                            inAllot.RealQuantity += quantity;
+                            inAllot.Storage.Quantity += quantity;
+                            inAllot.Storage.StorageTime = DateTime.Now;
+                            inAllot.Storage.InFrozenQuantity -= quantity;
+                            if (inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                            if (!inAllot.Storage.Cell.FirstInFirstOut) inAllot.Storage.StorageSequence = inAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                            inAllot.Storage.Cell.StorageTime = inAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime);
+                            inAllot.InBillDetail.RealQuantity += quantity;
+                            inAllot.InBillMaster.Status = "5";
+                            inAllot.FinishTime = DateTime.Now;
+                            if (inAllot.InBillMaster.InBillAllots.All(c => c.Status == "2"))
                             {
-                                LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
+                                inAllot.InBillMaster.Status = "6";
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            errorInfo = "入库分配进度反馈给浪潮失败！" + ex.Message;
+
+                            InBillAllotRepository.SaveChanges();
+
+                            #region 反馈给浪潮的xml数据信息
+
+                            try
+                            {
+                                InspurService inspurService = new InspurService();
+                                Inspur inspur = new Inspur();
+                                inspur.Param = "";
+                                inspur.User = inAllot.InBillMaster.OperatePerson.EmployeeName;
+                                inspur.Time = inAllot.InBillMaster.UpdateTime.ToString();
+                                inspur.BillNo = inAllot.BillNo;
+                                inspur.ProductCode = inAllot.ProductCode;
+                                inspur.RealQuantity = inAllot.InBillDetail.RealQuantity;
+
+                                MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                                LWWSS.lwmStroeInProgFeedback(inspurService.BillProgressFeedback(inspur, "in"));
+                                if (inAllot.InBillDetail.RealQuantity == inAllot.InBillDetail.AllotQuantity)
+                                {
+                                    LWWSS.lwmStoreInComplete(inspurService.BillFinished(inspur, "in"));
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                errorInfo = "入库进度反馈给浪潮失败！" + ex.Message;
+                            }
+
+                            #endregion 反馈给浪潮的xml数据信息
+
+                            scope.Complete();
                             return true;
                         }
-                        //scope.Complete();
-                        return true;
-                    //}
-                }
-                else
-                {
-                    errorInfo = "需确认入库的数据别人在操作或完成的数量不对，完成出错！";
-                    return false;
+                        else
+                        {
+                            errorInfo = "需确认入库的数据别人在操作或完成的数量不对，完成出错！";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        errorInfo = "需确认入库的数据查询为空或者主单状态不对，完成出错！";
+                        return false;
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                errorInfo = "需确认入库的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = ex.Message;
                 return false;
             }
         }
         private bool FinishOutBillTask(string orderID, int allotID, out string errorInfo)
         {
             errorInfo = string.Empty;
-            var outAllot = OutBillAllotRepository.GetQueryable()
-                                                .Where(i => i.BillNo == orderID
-                                                    && i.ID == allotID
-                                                    && i.Status == "0")
-                                                .FirstOrDefault();
-            if (outAllot != null && (outAllot.OutBillMaster.Status == "4" || outAllot.OutBillMaster.Status == "5"))
+
+            try
             {
-                decimal quantity = outAllot.AllotQuantity;
-                if (string.IsNullOrEmpty(outAllot.Storage.LockTag)
-                    && outAllot.AllotQuantity >= quantity
-                    && outAllot.Storage.OutFrozenQuantity >= quantity)
+                if (OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
                 {
-                    outAllot.Status = "2";
-                    outAllot.RealQuantity += quantity;
-                    outAllot.Storage.Quantity -= quantity;                  
-                    outAllot.Storage.OutFrozenQuantity -= quantity;
-                    if (outAllot.Storage.Quantity == 0)
+                    return true;
+                }
+
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var outAllot = OutBillAllotRepository.GetQueryable()
+                        .Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "0")
+                        .FirstOrDefault();
+
+                    if (outAllot != null && (outAllot.OutBillMaster.Status == "4" || outAllot.OutBillMaster.Status == "5"))
                     {
-                        outAllot.Storage.Rfid = "";
-                        outAllot.Storage.ProductCode = null;
-                        outAllot.Storage.StorageSequence = 0;
+                        decimal quantity = outAllot.AllotQuantity;
+                        if (string.IsNullOrEmpty(outAllot.Storage.LockTag)
+                            && outAllot.AllotQuantity >= quantity
+                            && outAllot.Storage.OutFrozenQuantity >= quantity)
+                        {
+                            outAllot.Status = "2";
+                            outAllot.RealQuantity += quantity;
+                            outAllot.Storage.Quantity -= quantity;
+                            outAllot.Storage.OutFrozenQuantity -= quantity;
+                            if (outAllot.Storage.Quantity == 0)
+                            {
+                                outAllot.Storage.Rfid = "";
+                                outAllot.Storage.ProductCode = null;
+                                outAllot.Storage.StorageSequence = 0;
+                            }
+                            else
+                            {
+                                if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                                if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                            }
+                            outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
+                                ? outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
+                            outAllot.OutBillDetail.RealQuantity += quantity;
+                            outAllot.OutBillMaster.Status = "5";
+                            outAllot.FinishTime = DateTime.Now;
+                            if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
+                            {
+                                outAllot.OutBillMaster.Status = "6";
+                            }
+
+                            OutBillAllotRepository.SaveChanges();             
+
+                            #region 反馈给浪潮的xml数据信息
+
+                            try
+                            {
+                                InspurService inspurService = new InspurService();
+                                Inspur inspur = new Inspur();
+                                inspur.Param = "";
+                                inspur.User = outAllot.OutBillMaster.OperatePerson.EmployeeName;
+                                inspur.Time = outAllot.OutBillMaster.UpdateTime.ToString();
+                                inspur.BillNo = outAllot.BillNo;
+                                inspur.ProductCode = outAllot.ProductCode;
+                                inspur.RealQuantity = outAllot.OutBillDetail.RealQuantity;
+
+                                MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
+                                LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
+                                if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
+                                {
+                                    LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                errorInfo = "出库进度反馈给浪潮失败！" + ex.Message;
+                            }
+
+                            #endregion 反馈给浪潮的xml数据信息
+
+                            scope.Complete();
+                            return true;
+                        }
+                        else
+                        {
+                            errorInfo = "需确认出库的数据别人在操作或完成的数量不对，完成出错！";
+                            return false;
+                        }
                     }
                     else
                     {
-                        if (outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                        if (!outAllot.Storage.Cell.FirstInFirstOut) outAllot.Storage.StorageSequence = outAllot.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                        errorInfo = "需确认出库的数据查询为空或者主单状态不对，完成出错！";
+                        return false;
                     }
-                    outAllot.Storage.Cell.StorageTime = outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
-                        ? outAllot.Storage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
-                    outAllot.OutBillDetail.RealQuantity += quantity;
-                    outAllot.OutBillMaster.Status = "5";
-                    outAllot.FinishTime = DateTime.Now;
-                    if (outAllot.OutBillMaster.OutBillAllots.All(c => c.Status == "2"))
-                    {
-                        outAllot.OutBillMaster.Status = "6";
-                    }
-                    //using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-                    //{
-                        try
-                        {
-                            OutBillAllotRepository.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            errorInfo = "出库单保存失败！" + ex.Message;
-                            return false;
-                        }
-                        InspurService inspurService = new InspurService();
-                        Inspur inspur = new Inspur();
-                        inspur.Param = "";
-                        inspur.User = outAllot.OutBillMaster.OperatePerson.EmployeeName;
-                        inspur.Time = outAllot.OutBillMaster.UpdateTime.ToString();
-                        inspur.BillNo = outAllot.BillNo;
-                        inspur.ProductCode = outAllot.ProductCode;
-                        inspur.RealQuantity = outAllot.OutBillDetail.RealQuantity;
-                        try
-                        {
-                            //反馈给浪潮的xml数据信息
-                            MdjInspurWmsService.LwmWarehouseWorkServiceService LWWSS = new MdjInspurWmsService.LwmWarehouseWorkServiceService();
-                            LWWSS.lwmStoreOutProgFeedback(inspurService.BillProgressFeedback(inspur, "out"));
-                            if (outAllot.OutBillDetail.RealQuantity == outAllot.OutBillDetail.AllotQuantity)
-                            {
-                                LWWSS.lwmStoreOutComplete(inspurService.BillFinished(inspur, "out"));
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            errorInfo = "出库分配进度反馈给浪潮失败！" + ex.Message;
-                            return true;
-                        }
-                        //scope.Complete();
-                        return true;
-                    //}
-                }
-                else
-                {
-                    errorInfo = "需确认出库的数据别人在操作或完成的数量不对，完成出错！";
-                    return false;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                errorInfo = "需确认出库的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = ex.Message;
                 return false;
-            }
-        } 
+            }            
+        }
         private bool FinishMoveBillTask(string orderID, int allotID, out string errorInfo)
         {
             errorInfo = string.Empty;
-            var moveDetail = MoveBillDetailRepository.GetQueryable()
-                                                .Where(i => i.BillNo == orderID
-                                                    && i.ID == allotID
-                                                    && i.Status == "0")
-                                                .FirstOrDefault();
-            if (moveDetail != null && (moveDetail.MoveBillMaster.Status == "2" || moveDetail.MoveBillMaster.Status == "3"))
-            {
-                if (string.IsNullOrEmpty(moveDetail.InStorage.LockTag)
-                    && string.IsNullOrEmpty(moveDetail.OutStorage.LockTag)
-                    && moveDetail.InStorage.InFrozenQuantity >= moveDetail.RealQuantity
-                    && moveDetail.OutStorage.OutFrozenQuantity >= moveDetail.RealQuantity)
-                {
-                    moveDetail.Status = "2";
-                    moveDetail.InStorage.Quantity += moveDetail.RealQuantity;
-                    moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
-                    if (moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                    if (!moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                    moveDetail.InStorage.Rfid = "";
-                    moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
-                    moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
-                    if (moveDetail.OutStorage.Quantity == 0)
-                    {
-                        moveDetail.OutStorage.Rfid = "";
-                        moveDetail.OutStorage.StorageSequence = 0;
-                        moveDetail.OutStorage.ProductCode = null;
-                    }
-                    moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0 
-                        ? moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
 
-                    //当移入货位的库存为0时，以移出的货位的时间为移入货位的库存时间
-                    if (moveDetail.InStorage.Quantity - moveDetail.RealQuantity == 0)
+            try
+            {
+                if (MoveBillDetailRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
+                {
+                    return true;
+                }
+
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var moveDetail = MoveBillDetailRepository.GetQueryable()
+                        .Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "0")
+                        .FirstOrDefault();
+
+                    if (moveDetail != null && (moveDetail.MoveBillMaster.Status == "2" || moveDetail.MoveBillMaster.Status == "3"))
                     {
-                        moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+                        if (string.IsNullOrEmpty(moveDetail.InStorage.LockTag)
+                            && string.IsNullOrEmpty(moveDetail.OutStorage.LockTag)
+                            && moveDetail.InStorage.InFrozenQuantity >= moveDetail.RealQuantity
+                            && moveDetail.OutStorage.OutFrozenQuantity >= moveDetail.RealQuantity)
+                        {
+                            moveDetail.Status = "2";
+                            moveDetail.InStorage.Quantity += moveDetail.RealQuantity;
+                            moveDetail.InStorage.InFrozenQuantity -= moveDetail.RealQuantity;
+                            if (moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                            if (!moveDetail.InStorage.Cell.FirstInFirstOut) moveDetail.InStorage.StorageSequence = moveDetail.InStorage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                            moveDetail.InStorage.Rfid = "";
+                            moveDetail.OutStorage.Quantity -= moveDetail.RealQuantity;
+                            moveDetail.OutStorage.OutFrozenQuantity -= moveDetail.RealQuantity;
+                            if (moveDetail.OutStorage.Quantity == 0)
+                            {
+                                moveDetail.OutStorage.Rfid = "";
+                                moveDetail.OutStorage.StorageSequence = 0;
+                                moveDetail.OutStorage.ProductCode = null;
+                            }
+                            moveDetail.OutStorage.Cell.StorageTime = moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Count() > 0
+                                ? moveDetail.OutStorage.Cell.Storages.Where(s => s.Quantity > 0).Min(s => s.StorageTime) : DateTime.Now;
+
+                            if (moveDetail.InStorage.Quantity - moveDetail.RealQuantity == 0)
+                            {
+                                moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+                            }
+                            else
+                            {
+                                if (DateTime.Compare(moveDetail.OutStorage.StorageTime, moveDetail.InStorage.StorageTime) == -1)
+                                    moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+                            }
+
+                            moveDetail.MoveBillMaster.Status = "3";
+                            moveDetail.FinishTime = DateTime.Now;
+                            var sortwork = SortWorkDispatchRepository.GetQueryable()
+                                .Where(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo && s.DispatchStatus == "2")
+                                .FirstOrDefault();
+
+                            if (sortwork != null)
+                            {
+                                sortwork.DispatchStatus = "3";
+                            }
+                            if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
+                            {
+                                moveDetail.MoveBillMaster.Status = "4";
+                            }
+                            MoveBillDetailRepository.SaveChanges();
+
+                            scope.Complete();
+                            return true;
+                        }
+                        else
+                        {
+                            errorInfo = "需确认移库的数据别人在操作或者完成的数量不对，完成出错！";
+                            return false;
+                        }
                     }
                     else
                     {
-                        //当移出货位的入库时间早于移入货位的时间，则更新移入货位的入库时间
-                        if (DateTime.Compare(moveDetail.OutStorage.StorageTime, moveDetail.InStorage.StorageTime) == -1)
-                            moveDetail.InStorage.StorageTime = moveDetail.OutStorage.StorageTime;
+                        errorInfo = "需确认移库的数据查询为空或者主单状态不对，完成出错！";
+                        return false;
                     }
-
-                    moveDetail.MoveBillMaster.Status = "3";
-                    moveDetail.FinishTime = DateTime.Now;
-                    var sortwork = SortWorkDispatchRepository.GetQueryable()
-                                                        .Where(s => s.MoveBillMaster.BillNo == moveDetail.MoveBillMaster.BillNo 
-                                                            && s.DispatchStatus == "2")
-                                                        .FirstOrDefault();
-                    //修改分拣调度作业状态
-                    if (sortwork != null)
-                    {
-                        sortwork.DispatchStatus = "3";
-                    }
-                    if (moveDetail.MoveBillMaster.MoveBillDetails.All(c => c.Status == "2"))
-                    {
-                        moveDetail.MoveBillMaster.Status = "4";
-                    }
-                    MoveBillDetailRepository.SaveChanges();  
-                    return true;
-                }
-                else
-                {
-                    errorInfo = "需确认移库的数据别人在操作或者完成的数量不对，完成出错！";
-                    return false;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                errorInfo = "需确认移库的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = ex.Message;
                 return false;
             }
         }
         private bool FinishCheckBillTask(string orderID, int allotID, out string errorInfo)
         {
             errorInfo = string.Empty;
-            var checkDetail = CheckBillDetailRepository.GetQueryable()
-                                                    .Where(i => i.BillNo == orderID
-                                                        && i.ID == allotID
-                                                        && i.Status == "0")
-                                                    .FirstOrDefault();
-            if (checkDetail != null && (checkDetail.CheckBillMaster.Status == "2" || checkDetail.CheckBillMaster.Status == "3"))
+
+            try
             {
-                decimal quantity = checkDetail.Quantity;
-
-                checkDetail.Status = "2";
-                checkDetail.RealQuantity = quantity;
-                checkDetail.Storage.IsLock = "0";
-                checkDetail.CheckBillMaster.Status = "3";
-                checkDetail.FinishTime = DateTime.Now;
-
-                if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                
-                if (checkDetail.CheckBillMaster.CheckBillDetails.All(c => c.Status == "2"))
+                if (CheckBillDetailRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
                 {
-                    checkDetail.CheckBillMaster.Status = "4";
+                    return true;
                 }
-                CheckBillDetailRepository.SaveChanges();
-                return true;
+
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var checkDetail = CheckBillDetailRepository.GetQueryable()
+                        .Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "0")
+                        .FirstOrDefault();
+
+                    if (checkDetail != null && (checkDetail.CheckBillMaster.Status == "2" || checkDetail.CheckBillMaster.Status == "3"))
+                    {
+                        decimal quantity = checkDetail.Quantity;
+                        checkDetail.Status = "2";
+                        checkDetail.RealQuantity = quantity;
+                        checkDetail.Storage.IsLock = "0";
+                        checkDetail.CheckBillMaster.Status = "3";
+                        checkDetail.FinishTime = DateTime.Now;
+
+                        if (checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                        if (!checkDetail.Storage.Cell.FirstInFirstOut) checkDetail.Storage.StorageSequence = checkDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+
+                        if (checkDetail.CheckBillMaster.CheckBillDetails.All(c => c.Status == "2"))
+                        {
+                            checkDetail.CheckBillMaster.Status = "4";
+                        }
+                        CheckBillDetailRepository.SaveChanges();
+
+                        scope.Complete();
+                        return true;
+                    }
+                    else
+                    {
+                        errorInfo = "需确认盘点的数据查询为空或者主单状态不对，完成出错！";
+                        return false;
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                errorInfo = "需确认盘点的数据查询为空或者主单状态不对，完成出错！";
+                errorInfo = ex.Message;
                 return false;
-            }
+            }            
         }
         private bool FinishEmptyPalletStackTask(string cellCode, out string errorInfo)
         {
             errorInfo = string.Empty;
-            var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
-            if (cell != null && cell.Storages.FirstOrDefault() != null)
+
+            try
             {
-                if (cell.Storages.FirstOrDefault().InFrozenQuantity >= 1)
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    cell.Storages.FirstOrDefault().InFrozenQuantity -= 1;
-                    cell.Storages.FirstOrDefault().Quantity += 1;
-                    cell.Storages.FirstOrDefault().StorageSequence = 0;
-                    cell.Storages.FirstOrDefault().StorageTime = DateTime.Now;
-                    CellRepository.SaveChanges();
-                }
-                else
-                {
-                    errorInfo = "未找到货位库存信息或者货位库存冻结量<1";
-                    return false;
+                    var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
+                    if (cell != null && cell.Storages.FirstOrDefault() != null)
+                    {
+                        if (cell.Storages.FirstOrDefault().InFrozenQuantity >= 1)
+                        {
+                            cell.Storages.FirstOrDefault().InFrozenQuantity -= 1;
+                            cell.Storages.FirstOrDefault().Quantity += 1;
+                            cell.Storages.FirstOrDefault().StorageSequence = 0;
+                            cell.Storages.FirstOrDefault().StorageTime = DateTime.Now;
+                            CellRepository.SaveChanges();
+
+                            scope.Complete();
+                            return true;
+                        }
+                        else
+                        {
+                            errorInfo = "未找到货位库存信息或者货位入库冻结量 < 1";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        errorInfo = "未找到货位库存信息！";
+                        return false;
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                errorInfo = "未找到货位库存信息！";
+                errorInfo = ex.Message;
+                return false;
             }
-            return true;
         }
         private bool FinishEmptyPalletSupplyTask(string cellCode, out string errorInfo)
         {
             errorInfo = string.Empty;
-            var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
-            if (cell != null)
+
+            try
             {
-                var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
-                if (storage != null && storage.OutFrozenQuantity > 0)
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    storage.ProductCode = null;
-                    storage.OutFrozenQuantity = 0;
-                    storage.Quantity = 0;
-                    storage.StorageSequence = 0;
-                    CellRepository.SaveChanges();
-                    return true;
-                }
-                else
-                {
-                    errorInfo = "库存不存在或补空托盘货位的出库冻结量<=0";
-                    return false;
+                    var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
+                    if (cell != null)
+                    {
+                        var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
+                        if (storage != null && storage.OutFrozenQuantity > 0)
+                        {
+                            storage.ProductCode = null;
+                            storage.OutFrozenQuantity = 0;
+                            storage.Quantity = 0;
+                            storage.StorageSequence = 0;
+                            CellRepository.SaveChanges();
+
+                            scope.Complete();
+                            return true;
+                        }
+                        else
+                        {
+                            errorInfo = "库存不存在或补空托盘货位的出库冻结量 <=0";
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        errorInfo = "未找到货位库存信息！";
+                        return false;
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                errorInfo = "未找到货位库存信息！";
+                errorInfo = ex.Message;
+                return false;
+            }            
+        }
+        private bool FinishMoveRemainMoveBackTask(string orderID, int allotID)
+        {            
+            try
+            {
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var moveBillDetail = MoveBillDetailRepository.GetQueryable()
+                        .Where(i => i.BillNo == orderID && i.ID == allotID)
+                        .FirstOrDefault();
+
+                    if (moveBillDetail != null)
+                    {
+                        if (moveBillDetail.OutStorage.Cell.FirstInFirstOut) moveBillDetail.OutStorage.StorageSequence = moveBillDetail.OutStorage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                        if (!moveBillDetail.OutStorage.Cell.FirstInFirstOut) moveBillDetail.OutStorage.StorageSequence = moveBillDetail.OutStorage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                        OutBillAllotRepository.SaveChanges();
+
+                        scope.Complete();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception)
+            {
                 return false;
             }
         }
-        private bool FinishMoveRemainMoveBackTask(string orderID, int allotID)
-        {
-            var moveBillDetail = MoveBillDetailRepository.GetQueryable()
-                                    .Where(i => i.BillNo == orderID
-                                        && i.ID == allotID)
-                                    .FirstOrDefault();
-
-            if (moveBillDetail != null)
-            {
-                if (moveBillDetail.OutStorage.Cell.FirstInFirstOut) moveBillDetail.OutStorage.StorageSequence = moveBillDetail.OutStorage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!moveBillDetail.OutStorage.Cell.FirstInFirstOut) moveBillDetail.OutStorage.StorageSequence = moveBillDetail.OutStorage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                OutBillAllotRepository.SaveChanges();
-                return true;
-            }
-            return false;
-        }
         private bool FinishStockOutRemainMoveBackTask(string orderID, int allotID)
-        {
-            var outBillDetail = OutBillAllotRepository.GetQueryable()
-                                    .Where(i => i.BillNo == orderID
-                                        && i.ID == allotID)
-                                    .FirstOrDefault();
-
-            if (outBillDetail != null)
+        {            
+            try
             {
-                if (outBillDetail.Storage.Cell.FirstInFirstOut) outBillDetail.Storage.StorageSequence = outBillDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!outBillDetail.Storage.Cell.FirstInFirstOut) outBillDetail.Storage.StorageSequence = outBillDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                OutBillAllotRepository.SaveChanges();
-                return true;
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var outBillDetail = OutBillAllotRepository.GetQueryable()
+                        .Where(i => i.BillNo == orderID && i.ID == allotID)
+                        .FirstOrDefault();
+
+                    if (outBillDetail != null)
+                    {
+                        if (outBillDetail.Storage.Cell.FirstInFirstOut) outBillDetail.Storage.StorageSequence = outBillDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                        if (!outBillDetail.Storage.Cell.FirstInFirstOut) outBillDetail.Storage.StorageSequence = outBillDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                        OutBillAllotRepository.SaveChanges();
+
+                        scope.Complete();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
-            return false;
+            catch (Exception)
+            {
+                return false;
+            }            
         }        
         private bool FinishInventoryRemainMoveBackTask(string orderID, int allotID)
         {
-            var checkBillDetail = CheckBillDetailRepository.GetQueryable()
-                                        .Where(i => i.BillNo == orderID
-                                            && i.ID == allotID)
-                                        .FirstOrDefault();
-            if (checkBillDetail != null)
+            try
             {
-                if (checkBillDetail.Storage.Cell.FirstInFirstOut) checkBillDetail.Storage.StorageSequence = checkBillDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
-                if (!checkBillDetail.Storage.Cell.FirstInFirstOut) checkBillDetail.Storage.StorageSequence = checkBillDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
-                CheckBillDetailRepository.SaveChanges();
-                return true;
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var checkBillDetail = CheckBillDetailRepository.GetQueryable()
+                        .Where(i => i.BillNo == orderID && i.ID == allotID)
+                        .FirstOrDefault();
+
+                    if (checkBillDetail != null)
+                    {
+                        if (checkBillDetail.Storage.Cell.FirstInFirstOut) checkBillDetail.Storage.StorageSequence = checkBillDetail.Storage.Cell.Storages.Max(s => s.StorageSequence) + 1;
+                        if (!checkBillDetail.Storage.Cell.FirstInFirstOut) checkBillDetail.Storage.StorageSequence = checkBillDetail.Storage.Cell.Storages.Min(s => s.StorageSequence) - 1;
+                        CheckBillDetailRepository.SaveChanges();
+
+                        scope.Complete();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
-            return false;
+            catch (Exception)
+            {
+                return false;
+            }           
         }
 
         public int FinishStockOutTask(int taskID, int stockOutQuantity, out string errorInfo)
         {
-            errorInfo = string.Empty;
-            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null)
-            {
-                FinishOutBillTask(task.OrderID, task.AllotID, out errorInfo);
-                task.CurrentPositionID = task.TargetPositionID;
-                task.State = "04";
-                TaskRepository.SaveChanges();
+            int newTaskID = 0; errorInfo = string.Empty;
 
-                if (task.Quantity > task.TaskQuantity)
+            var task = TaskRepository.GetQueryable()
+                .Where(i => i.ID == taskID).FirstOrDefault();
+
+            if (task != null && FinishOutBillTask(task.OrderID, task.AllotID, out errorInfo))
+            {
+                try
                 {
-                    var tid = TaskRepository.GetQueryable()
-                        .Where(i => i.AllotID == task.AllotID
-                            && i.OriginPositionID == task.TargetPositionID
-                            && i.TargetPositionID == task.OriginPositionID)
-                        .Select(i=>i.ID)
-                        .FirstOrDefault();
-                    if (tid > 0)
+                    using (TransactionScope scope = new TransactionScope())
                     {
-                        return tid;
-                    }
-                    else
-                    {
-                        return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID, out errorInfo);
+                        if (task.Quantity > task.TaskQuantity)
+                        {
+                            newTaskID = CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID, out errorInfo);
+                        }
+                        else
+                        {
+                            return -1;
+                        }
+
+                        task.CurrentPositionID = task.TargetPositionID;
+                        task.State = "04";
+                        TaskRepository.SaveChanges();
+
+                        if (newTaskID > 0)
+                        {
+                            scope.Complete();
+                            return newTaskID;
+                        }
+                        else
+                        {
+                            return newTaskID;
+                        }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return -1;
+                    errorInfo = ex.Message;
+                    return newTaskID;
                 }
             }
-            return 0;
+            else
+            {
+                return newTaskID;
+            }
         }
         public int FinishInventoryTask(int taskID, int realQuantity, out string errorInfo)
         {
-            errorInfo = string.Empty;
-            var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
-            if (task != null)
-            {
-                FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
-                task.CurrentPositionID = task.TargetPositionID;
-                task.State = "04";
-                TaskRepository.SaveChanges();
+            int newTaskID = 0; errorInfo = string.Empty;
 
-                var tid = TaskRepository.GetQueryable()
-                    .Where(i => i.AllotID == task.AllotID
-                        && i.OriginPositionID == task.TargetPositionID
-                        && i.TargetPositionID == task.OriginPositionID)
-                    .Select(i => i.ID)
-                    .FirstOrDefault();
-                if (tid > 0)
+            var task = TaskRepository.GetQueryable()
+                .Where(i => i.ID == taskID).FirstOrDefault();
+
+            if (task != null && FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo))
+            {
+                try
                 {
-                    return tid;
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        newTaskID = CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID, out errorInfo);
+
+                        task.CurrentPositionID = task.TargetPositionID;
+                        task.State = "04";
+                        TaskRepository.SaveChanges();
+
+                        if (newTaskID > 0)
+                        {
+                            scope.Complete();
+                            return newTaskID;
+                        }
+                        else
+                        {
+                            return newTaskID;
+                        }
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID, out errorInfo);
+                    errorInfo = ex.Message;
+                    return newTaskID;
                 }
             }
-            return 0;
+            else
+            {
+                return newTaskID;
+            }
         }
                 
         private static object locker = new object();
