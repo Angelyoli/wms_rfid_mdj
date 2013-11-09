@@ -16,6 +16,7 @@ namespace THOK.Wms.Bll.Interfaces
         
         bool Save(Product product);
 
+        object OutBillFindProduct(string QueryString, string value);
 
         object FindProduct(int page, int rows, string QueryString, string value);
 
