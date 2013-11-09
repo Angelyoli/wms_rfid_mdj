@@ -1851,6 +1851,10 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 FinishOutBillTask(task.OrderID, task.AllotID, out errorInfo);
+                task.CurrentPositionID = task.TargetPositionID;
+                task.State = "04";
+                TaskRepository.SaveChanges();
+
                 if (task.Quantity > task.TaskQuantity)
                 {
                     var tid = TaskRepository.GetQueryable()
@@ -1882,6 +1886,10 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
+                task.CurrentPositionID = task.TargetPositionID;
+                task.State = "04";
+                TaskRepository.SaveChanges();
+
                 var tid = TaskRepository.GetQueryable()
                     .Where(i => i.AllotID == task.AllotID
                         && i.OriginPositionID == task.TargetPositionID
