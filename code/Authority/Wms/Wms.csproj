@@ -246,6 +246,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Quartz\JobDoDailyBalance.cs" />
+    <Compile Include="Quartz\JobClearTask.cs" />
     <Compile Include="Security\FormsAuthenticationService.cs" />
     <Compile Include="Security\FormsAuthorizeAttribute.cs" />
     <Compile Include="Security\IFormsAuthenticationService.cs" />
