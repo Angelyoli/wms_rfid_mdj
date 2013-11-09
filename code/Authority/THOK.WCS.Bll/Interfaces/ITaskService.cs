@@ -16,7 +16,7 @@ namespace THOK.WCS.Bll.Interfaces
 
         bool CreateInBillTask(string billNo, out string errInfo);
         bool CreateOutBillTask(string billNo, out string errInfo);
-        bool CreateMoveBillTask(string billNo, out string errInfo);
+        bool CreateMoveBillTask(string billNo,int taskLevel, out string errInfo);
         bool CreateCheckBillTask(string billNo, out string errorInfo);
         bool CreateSortWorkDispatchTask(string billNo, out string errorInfo);
 

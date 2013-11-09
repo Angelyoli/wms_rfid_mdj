@@ -857,7 +857,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-        public bool CreateMoveBillTask(string billNo, out string errorInfo)
+        public bool CreateMoveBillTask(string billNo, int taskLevel,out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -900,7 +900,7 @@ namespace THOK.WCS.Bll.Service
 
                         var moveTask = new Task();
                         moveTask.TaskType = "01";
-                        moveTask.TaskLevel = 10;
+                        moveTask.TaskLevel = taskLevel;
                         moveTask.PathID = path.ID;
                         moveTask.ProductCode = moveBillDetail.Product.ProductCode;
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
@@ -1343,7 +1343,7 @@ namespace THOK.WCS.Bll.Service
                 storage.OutFrozenQuantity += quantity;
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 10;
+                newTask.TaskLevel = 11;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
@@ -1405,7 +1405,7 @@ namespace THOK.WCS.Bll.Service
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 0;
+                newTask.TaskLevel = 12;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
@@ -2112,7 +2112,7 @@ namespace THOK.WCS.Bll.Service
                     if (moveBillMaster.MoveBillDetails.Count > 0)
                     {
                         CellRepository.SaveChanges();
-                        CreateMoveBillTask(moveBillMaster.BillNo, out errorInfo);
+                        CreateMoveBillTask(moveBillMaster.BillNo,10, out errorInfo);
                     }
                 }
                 return true;
