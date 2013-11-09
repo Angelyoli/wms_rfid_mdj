@@ -10,6 +10,7 @@ using THOK.Wms.SignalR.Common;
 using System.Transactions;
 using THOK.Authority.Dal.Interfaces;
 using System.Data;
+using THOK.WCS.Bll.Interfaces;
 
 namespace THOK.Wms.Bll.Service
 {
@@ -42,6 +43,9 @@ namespace THOK.Wms.Bll.Service
 
         [Dependency]
         public IMoveBillCreater MoveBillCreater { get; set; }
+
+        [Dependency]
+        public ITaskService TaskService { get; set; }
 
         protected override Type LogPrefix
         {
@@ -341,6 +345,12 @@ namespace THOK.Wms.Bll.Service
                     errorInfo = "当前选择的调度记录移库单不是执行中，未能结单！";
                     return false;
                 }
+
+                if (!TaskService.ClearTask(sortWork.MoveBillNo, out errorInfo))
+                {
+                    return false;
+                }
+
                 using (var scope = new TransactionScope())
                 {
                     //移库细单解锁冻结量

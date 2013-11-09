@@ -165,18 +165,11 @@ namespace Authority.Controllers.Wms.StockOut
         // POST: /StockOutBill/outBillMasterSettle/
         public ActionResult outBillMasterSettle(string BillNo)
         {
-            string errorInfo = string.Empty;
-            bool bResult = false;
-            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-            {
-                var outBill = OutBillMasterService.Settle(BillNo, out errorInfo);
-                var task = TaskService.ClearTask(BillNo, out errorInfo);
-                if (outBill == true && task == true)
-                {
-                    bResult = true;
-                    scope.Complete();
-                }
-            }
+            bool bResult = false; string errorInfo = string.Empty;
+            
+            bResult = TaskService.ClearTask(BillNo, out errorInfo)
+                && OutBillMasterService.Settle(BillNo, out errorInfo);
+
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
         }
@@ -242,7 +235,7 @@ namespace Authority.Controllers.Wms.StockOut
         public ActionResult OutBillTask(string BillNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.OutBillTask(BillNo, out strResult);
+            bool bResult = TaskService.CreateOutBillTask(BillNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

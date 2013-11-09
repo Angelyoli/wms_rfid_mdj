@@ -225,18 +225,11 @@ namespace Authority.Controllers.Wms.StockIn
         // POST: /StockInBill/inBillMasterSettle/
         public ActionResult InBillMasterSettle(string BillNo)
         {
-            string strResult = string.Empty;
-            bool bResult = false;
-            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-            {
-                var inBill = InBillMasterService.Settle(BillNo, out strResult);
-                var task = TaskService.ClearTask(BillNo, out strResult);
-                if (inBill == true && task == true)
-                {
-                    bResult = true;
-                    scope.Complete();
-                }
-            }
+            bool bResult = false; string strResult = string.Empty;
+            
+            bResult = TaskService.ClearTask(BillNo, out strResult)
+                && InBillMasterService.Settle(BillNo, out strResult);
+
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -247,7 +240,7 @@ namespace Authority.Controllers.Wms.StockIn
         public ActionResult InBillTask(string BillNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.InBillTask(BillNo, out strResult);
+            bool bResult = TaskService.CreateInBillTask(BillNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

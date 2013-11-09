@@ -184,18 +184,11 @@ namespace Authority.Controllers.Wms.StockMove
 
         public ActionResult MoveBillMasterSettle(string billNo)
         {
-            string strResult = string.Empty;
-            bool bResult = false;
-            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-            {
-                var moveBill = MoveBillMasterService.Settle(billNo, out strResult);
-                var task = TaskService.ClearTask(billNo, out strResult);
-                if (moveBill == true && task == true)
-                {
-                    bResult = true;
-                    scope.Complete();
-                }
-            }
+            bool bResult = false; string strResult = string.Empty;
+            
+            bResult = TaskService.ClearTask(billNo, out strResult) 
+                && MoveBillMasterService.Settle(billNo, out strResult);
+
             string msg = bResult ? "结单成功" : "结单失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
@@ -205,7 +198,7 @@ namespace Authority.Controllers.Wms.StockMove
         public ActionResult MoveBillTask(string moveBillNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.MoveBillTask(moveBillNo, out strResult);
+            bool bResult = TaskService.CreateMoveBillTask(moveBillNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }

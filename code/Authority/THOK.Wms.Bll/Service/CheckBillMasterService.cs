@@ -800,78 +800,72 @@ namespace THOK.Wms.Bll.Service
                                                                     && c.ProductCode == c.RealProductCode
                                                                     && c.Quantity != c.RealQuantity
                                                                     && c.Status == "2");
-            using (var scope = new TransactionScope())
+            try
             {
-                try
+                if (checkDetail.Count() > 0)
                 {
-                    if (checkDetail.Count() > 0)
+                    string billno = GenProfitLossBillNo(userName).ToString();
+                    //添加损益主表
+                    var pbm = new ProfitLossBillMaster();
+                    var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
+                    if (employee != null)
                     {
-                        string billno = GenProfitLossBillNo(userName).ToString();
-                        //添加损益主表
-                        var pbm = new ProfitLossBillMaster();
-                        var employee = EmployeeRepository.GetQueryable().FirstOrDefault(i => i.UserName == userName);
-                        if (employee != null)
-                        {
-                            pbm.BillNo = billno;
-                            pbm.BillDate = DateTime.Now;
-                            pbm.BillTypeCode = "5002";
-                            pbm.WarehouseCode = checkbm.WarehouseCode;
-                            pbm.OperatePersonID = employee.ID;
-                            pbm.Status = "1";
-                            pbm.IsActive = "1";
-                            pbm.UpdateTime = DateTime.Now;
+                        pbm.BillNo = billno;
+                        pbm.BillDate = DateTime.Now;
+                        pbm.BillTypeCode = "5002";
+                        pbm.WarehouseCode = checkbm.WarehouseCode;
+                        pbm.OperatePersonID = employee.ID;
+                        pbm.Status = "1";
+                        pbm.IsActive = "1";
+                        pbm.UpdateTime = DateTime.Now;
 
-                            ProfitLossBillMasterRepository.Add(pbm);
-                        }
-
-                        //添加损益细表
-                        foreach (var item in checkDetail.ToArray())
+                        ProfitLossBillMasterRepository.Add(pbm);
+                    }
+                    //添加损益细表
+                    foreach (var item in checkDetail.ToArray())
+                    {
+                        decimal differQuantity = item.RealQuantity - item.Quantity;//损益数量
+                        if (Locker.LockNoEmptyStorage(item.Storage, item.Product) != null)//锁库存
                         {
-                            decimal differQuantity = item.RealQuantity - item.Quantity;//损益数量
-                            if (Locker.LockNoEmptyStorage(item.Storage, item.Product) != null)//锁库存
+                            var pbd = new ProfitLossBillDetail();
+                            pbd.BillNo = billno;
+                            pbd.CellCode = item.CellCode;
+                            pbd.StorageCode = item.StorageCode;
+                            pbd.ProductCode = item.ProductCode;
+                            pbd.UnitCode = item.UnitCode;
+                            pbd.Price = item.Product != null ? item.Product.CostPrice : 0;
+                            pbd.Quantity = differQuantity;
+
+                            if (differQuantity > 0)
                             {
-                                var pbd = new ProfitLossBillDetail();
-                                pbd.BillNo = billno;
-                                pbd.CellCode = item.CellCode;
-                                pbd.StorageCode = item.StorageCode;
-                                pbd.ProductCode = item.ProductCode;
-                                pbd.UnitCode = item.UnitCode;
-                                pbd.Price = item.Product != null ? item.Product.CostPrice : 0;
-                                pbd.Quantity = differQuantity;
-
-                                if (differQuantity > 0)
-                                {
-                                    item.Storage.InFrozenQuantity += differQuantity;
-                                }
-                                else
-                                {
-                                    item.Storage.OutFrozenQuantity += Math.Abs(differQuantity);
-                                }
-                                ProfitLossBillDetailRepository.Add(pbd);
-                                item.Storage.LockTag = string.Empty;
+                                item.Storage.InFrozenQuantity += differQuantity;
                             }
+                            else
+                            {
+                                item.Storage.OutFrozenQuantity += Math.Abs(differQuantity);
+                            }
+                            ProfitLossBillDetailRepository.Add(pbd);
+                            item.Storage.LockTag = string.Empty;
                         }
                     }
-
-                    var checkBillDetail = CheckBillDetailRepository.GetQueryable().Where(c => c.BillNo == checkbm.BillNo);//解锁盘点锁定
-                    foreach (var item in checkBillDetail.ToArray())
-                    {
-                        item.Storage.IsLock = "0";
-                    }
-                    if (checkbm != null && (checkbm.Status == "4" || checkbm.Status=="3"))
-                    {
-                        checkbm.Status = "5";
-                        checkbm.VerifyDate = DateTime.Now;
-                        checkbm.UpdateTime = DateTime.Now;
-                    }
-                    result = true;
-                    CheckBillMasterRepository.SaveChanges();
-                    scope.Complete();
                 }
-                catch (Exception e)
+                var checkBillDetail = CheckBillDetailRepository.GetQueryable().Where(c => c.BillNo == checkbm.BillNo);//解锁盘点锁定
+                foreach (var item in checkBillDetail.ToArray())
                 {
-                    errorInfo = "确认盘点损益失败！原因：" + e.Message;
+                    item.Storage.IsLock = "0";
                 }
+                if (checkbm != null && (checkbm.Status == "4" || checkbm.Status == "3"))
+                {
+                    checkbm.Status = "5";
+                    checkbm.VerifyDate = DateTime.Now;
+                    checkbm.UpdateTime = DateTime.Now;
+                }
+                result = true;
+                CheckBillMasterRepository.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                errorInfo = "确认盘点损益失败！原因：" + e.Message;
             }
             return result;
         }
