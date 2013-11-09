@@ -1470,6 +1470,11 @@ namespace THOK.WCS.Bll.Service
 
             try
             {
+                if(InBillAllotRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
+                {
+                    return true;
+                }
+
                 using (TransactionScope scope = new TransactionScope())
                 {
                     var inAllot = InBillAllotRepository.GetQueryable()
@@ -1557,6 +1562,11 @@ namespace THOK.WCS.Bll.Service
 
             try
             {
+                if (OutBillAllotRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
+                {
+                    return true;
+                }
+
                 using (TransactionScope scope = new TransactionScope())
                 {
                     var outAllot = OutBillAllotRepository.GetQueryable()
@@ -1652,6 +1662,11 @@ namespace THOK.WCS.Bll.Service
 
             try
             {
+                if (MoveBillDetailRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
+                {
+                    return true;
+                }
+
                 using (TransactionScope scope = new TransactionScope())
                 {
                     var moveDetail = MoveBillDetailRepository.GetQueryable()
@@ -1736,6 +1751,11 @@ namespace THOK.WCS.Bll.Service
 
             try
             {
+                if (CheckBillDetailRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
+                {
+                    return true;
+                }
+
                 using (TransactionScope scope = new TransactionScope())
                 {
                     var checkDetail = CheckBillDetailRepository.GetQueryable()
