@@ -161,18 +161,10 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         // POST: /CheckBill/checkBillMasterConfirm/
         public ActionResult checkBillMasterConfirm(string BillNo)
         {
-            string errorInfo = string.Empty;
-            bool bResult = false;                
-            using (System.Transactions.TransactionScope scope = new System.Transactions.TransactionScope())
-            {
-                var checkBill = CheckBillMasterService.confirmCheck(BillNo, this.User.Identity.Name.ToString(), out errorInfo);
-                var task = TaskService.ClearTask(BillNo, out errorInfo);
-                if (checkBill && task)
-                {
-                    bResult = true;
-                    scope.Complete();
-                }
-            }
+            bool bResult = false; string errorInfo = string.Empty;
+
+            bResult = TaskService.ClearTask(BillNo, out errorInfo)
+                    && CheckBillMasterService.confirmCheck(BillNo, this.User.Identity.Name.ToString(), out errorInfo);   
 
             string msg = bResult ? "确认成功" : "确认失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, errorInfo), "text", JsonRequestBehavior.AllowGet);
@@ -204,7 +196,7 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         public ActionResult CheckBillTask(string billNo)
         {
             string strResult = string.Empty;
-            bool bResult = TaskService.CheckBillTask(billNo, out strResult);
+            bool bResult = TaskService.CreateCheckBillTask(billNo, out strResult);
             string msg = bResult ? "作业成功" : "作业失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
