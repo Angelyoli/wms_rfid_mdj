@@ -260,24 +260,40 @@ namespace Wms
             ISchedulerFactory sf = new StdSchedulerFactory(properties);
             IScheduler sched = sf.GetScheduler();
 
-            IJobDetail job = JobBuilder.Create<JobDoDailyBalance>()
-                .WithIdentity("HelloJob", "HelloJobGroup")
-                .WithDescription("This is my first job")
+            IJobDetail job1 = JobBuilder.Create<JobDoDailyBalance>()
+                .WithIdentity("JobDoDailyBalance", "JobDoDailyBalance")
                 .RequestRecovery()
                 .Build();
 
-            ITrigger trigger = TriggerBuilder.Create()
-                .WithIdentity("HelloJob", "HelloJobGroup")
-                .WithDescription("This is my first trigger")
+            ITrigger trigger1 = TriggerBuilder.Create()
+                .WithIdentity("JobDoDailyBalance", "JobDoDailyBalance")
                 //.WithCronSchedule("0/10 * * * * ?")//每10秒执行；
                 .WithCronSchedule("0 0 0/1 1/1 * ? *")//每小时执行；
                 //.WithCronSchedule("0 0 4 1/1 * ? *")//每天4点执行；
                 .StartNow()
                 .Build();
 
-            if (!sched.CheckExists(job.Key))
+            IJobDetail job2 = JobBuilder.Create<JobClearTask>()
+                .WithIdentity("JobClearTask", "JobClearTask")
+                .RequestRecovery()
+                .Build();
+
+            ITrigger trigger2 = TriggerBuilder.Create()
+                .WithIdentity("JobClearTask", "JobClearTask")
+                //.WithCronSchedule("0/10 * * * * ?")//每10秒执行；
+                //.WithCronSchedule("0 0 0/1 1/1 * ? *")//每小时执行；
+                .WithCronSchedule("0 0 4 1/1 * ? *")//每天4点执行；
+                .StartNow()
+                .Build();
+
+            if (!sched.CheckExists(job1.Key))
             {
-                sched.ScheduleJob(job, trigger);
+                sched.ScheduleJob(job1, trigger1);
+            }
+
+            if (!sched.CheckExists(job2.Key))
+            {
+                sched.ScheduleJob(job2, trigger2);
             }
 
             if (!sched.IsStarted)

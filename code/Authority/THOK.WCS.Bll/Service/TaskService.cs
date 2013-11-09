@@ -580,7 +580,10 @@ namespace THOK.WCS.Bll.Service
                     var tasks = TaskRepository.GetQueryable()
                         .Where(t => t.State == "04"
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                            || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
+                            || (t.OrderType != "01" && t.OrderType != "05"
+                                && t.OrderType != "06" && t.OrderType != "07"
+                                && t.OrderType != "08" && t.OrderType != "09" 
+                                && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
 
                     foreach (var task in tasks)
                     {
@@ -591,7 +594,10 @@ namespace THOK.WCS.Bll.Service
 
                     TaskRepository.GetObjectSet().DeleteEntity(t => t.State == "04"
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                            || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
+                            || (t.OrderType != "01" && t.OrderType != "05"
+                                && t.OrderType != "06" && t.OrderType != "07"
+                                && t.OrderType != "08" && t.OrderType != "09"
+                                && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
 
                     if (TaskRepository.GetQueryable().Count() == 0)
                     {
@@ -863,7 +869,7 @@ namespace THOK.WCS.Bll.Service
 
             try
             {
-                using (var scope = new System.Transactions.TransactionScope())
+                using (TransactionScope scope = new TransactionScope())
                 {
                     var moveBillMaster = MoveBillMasterRepository.GetQueryable()
                         .Where(i => i.BillNo == billNo && (i.Status == "2" || i.Status == "3"))
@@ -1845,6 +1851,10 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 FinishOutBillTask(task.OrderID, task.AllotID, out errorInfo);
+                task.CurrentPositionID = task.TargetPositionID;
+                task.State = "04";
+                TaskRepository.SaveChanges();
+
                 if (task.Quantity > task.TaskQuantity)
                 {
                     var tid = TaskRepository.GetQueryable()
@@ -1876,6 +1886,10 @@ namespace THOK.WCS.Bll.Service
             if (task != null)
             {
                 FinishCheckBillTask(task.OrderID, task.AllotID, out errorInfo);
+                task.CurrentPositionID = task.TargetPositionID;
+                task.State = "04";
+                TaskRepository.SaveChanges();
+
                 var tid = TaskRepository.GetQueryable()
                     .Where(i => i.AllotID == task.AllotID
                         && i.OriginPositionID == task.TargetPositionID
