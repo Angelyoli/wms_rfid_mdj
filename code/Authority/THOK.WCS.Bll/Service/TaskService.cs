@@ -869,7 +869,7 @@ namespace THOK.WCS.Bll.Service
 
             try
             {
-                using (var scope = new System.Transactions.TransactionScope())
+                using (TransactionScope scope = new TransactionScope())
                 {
                     var moveBillMaster = MoveBillMasterRepository.GetQueryable()
                         .Where(i => i.BillNo == billNo && (i.Status == "2" || i.Status == "3"))
