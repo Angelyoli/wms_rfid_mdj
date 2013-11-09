@@ -20,22 +20,50 @@ namespace THOK.PDA.View
             InitializeComponent();
             SystemCache.MainFrom = this;
         }
-        private void btnSmallOut_Click(object sender, EventArgs e)
+        
+        private void btnRepositoryOneOut_Click(object sender, EventArgs e)
         {
             string positionType = "03";
-            TaskFormShow(positionType);
+            string orderType = "03";
+            TaskFormShow(positionType, orderType);
         }
-        private void btnAbnormalOut_Click(object sender, EventArgs e)
+        private void btnRepositoryOneCheck_Click(object sender, EventArgs e)
+        {
+            string positionType = "03";
+            string orderType = "04";
+            TaskFormShow(positionType, orderType);
+        }
+        private void btnRepositoryTwoOut_Click(object sender, EventArgs e)
         {
             string positionType = "04";
-            TaskFormShow(positionType);
+            string orderType = "03";
+            TaskFormShow(positionType, orderType);
         }
-        private void TaskFormShow(string positionType)
+        private void btnRepositoryTwoCheck_Click(object sender, EventArgs e)
+        {
+            string positionType = "04";
+            string orderType = "04";
+            TaskFormShow(positionType, orderType);
+        }
+        private void btnSmallMove_Click(object sender, EventArgs e)
+        {
+            string positionType = "03";
+            string orderType = "02";
+            TaskFormShow(positionType, orderType);
+        }
+        private void btnAbnormalMove_Click(object sender, EventArgs e)
+        {
+            string positionType = "04";
+            string orderType = "02";
+            TaskFormShow(positionType, orderType);
+        }
+
+        private void TaskFormShow(string positionType, string orderType)
         {
             WaitCursor.Set();
             try
             {
-                TaskForm taskFrom = new TaskForm(positionType);
+                TaskForm taskFrom = new TaskForm(positionType,orderType);
                 taskFrom.Show();
                 this.Visible = false;
             }
