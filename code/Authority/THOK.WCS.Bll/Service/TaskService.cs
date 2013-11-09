@@ -798,7 +798,7 @@ namespace THOK.WCS.Bll.Service
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
-                        var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName));
+                        var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName) && s.ParameterName.Contains("StockOutAndCheckPositionID"));
                         if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
                         int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
 
@@ -972,7 +972,7 @@ namespace THOK.WCS.Bll.Service
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
-                        var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName));
+                        var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName) && s.ParameterName.Contains("StockOutAndCheckPositionID"));
                         if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
                         int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
 
@@ -1061,13 +1061,13 @@ namespace THOK.WCS.Bll.Service
                         int targetPositionID = 0;
                         if (moveBillDetail.Product.IsAbnormity == "0")
                         {
-                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "SmallPositionID");
+                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "SmallStockOutPositionID");
                             if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
                             targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
                         }
                         else
                         {
-                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "AbnormityPositionID");
+                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "AbnormityStockOutPositionID");
                             if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
                             targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
                         }
