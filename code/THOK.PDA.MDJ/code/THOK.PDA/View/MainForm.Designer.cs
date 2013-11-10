@@ -107,7 +107,7 @@
             // 
             this.btnRepositoryTwoOut.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.btnRepositoryTwoOut.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnRepositoryTwoOut.Location = new System.Drawing.Point(32, 108);
+            this.btnRepositoryTwoOut.Location = new System.Drawing.Point(172, 50);
             this.btnRepositoryTwoOut.Name = "btnRepositoryTwoOut";
             this.btnRepositoryTwoOut.Size = new System.Drawing.Size(120, 52);
             this.btnRepositoryTwoOut.TabIndex = 3;
@@ -140,7 +140,7 @@
             // 
             this.btnRepositoryOneCheck.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
             this.btnRepositoryOneCheck.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnRepositoryOneCheck.Location = new System.Drawing.Point(172, 50);
+            this.btnRepositoryOneCheck.Location = new System.Drawing.Point(32, 108);
             this.btnRepositoryOneCheck.Name = "btnRepositoryOneCheck";
             this.btnRepositoryOneCheck.Size = new System.Drawing.Size(120, 52);
             this.btnRepositoryOneCheck.TabIndex = 2;
