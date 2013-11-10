@@ -67,7 +67,7 @@ namespace Wms.Controllers.WCS
         public ActionResult AutoCreateMoveBill()
         {
             string errorInfo = string.Empty;
-            bool bResult = TaskService.AutoCreateMoveBill(out errorInfo);
+            bool bResult = TaskService.CreateAutoMoveBill(out errorInfo);
             return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 

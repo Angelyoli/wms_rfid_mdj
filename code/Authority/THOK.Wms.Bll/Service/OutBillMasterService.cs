@@ -487,6 +487,8 @@ namespace THOK.Wms.Bll.Service
                                 && m.OutStorage.OutFrozenQuantity >= m.RealQuantity)
                             {
                                 m.InStorage.InFrozenQuantity -= m.RealQuantity;
+                                m.InStorage.ProductCode = null;
+                                m.InStorage.StorageSequence = 0;
                                 m.OutStorage.OutFrozenQuantity -= m.RealQuantity;
                                 m.InStorage.LockTag = string.Empty;
                                 m.OutStorage.LockTag = string.Empty;
