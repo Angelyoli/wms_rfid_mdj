@@ -16,16 +16,19 @@ namespace THOK.PDA.View
 {
     public partial class DetailForm : Form
     {
+        public int Index;
+
         RestTask task = null;
         HttpDataService httpDataService = new HttpDataService();
         string positionType = "";
-        public int Index;
+        string orderType = "";
 
-        public DetailForm(RestTask sTask, string positionType)
+        public DetailForm(RestTask sTask, string positionType, string orderType)
         {
             InitializeComponent();
             this.task = sTask;
             this.positionType = positionType;
+            this.orderType = orderType;
         }
 
         private void BillDetailForm_Load(object sender, EventArgs e)
@@ -69,7 +72,7 @@ namespace THOK.PDA.View
                     return;
                 }
                 MessageBox.Show(result);
-                TaskForm baseTaskForm = new TaskForm(this.positionType);
+                TaskForm baseTaskForm = new TaskForm(this.positionType,this.orderType);
                 if (this.Index > 0)
                 {
                     baseTaskForm.index = this.Index;
@@ -115,7 +118,7 @@ namespace THOK.PDA.View
         private void btnBack_Click(object sender, EventArgs e)
         {
             WaitCursor.Set();
-            TaskForm task = new TaskForm(this.positionType);
+            TaskForm task = new TaskForm(this.positionType, this.orderType);
             task.Show();
             this.Close();
         }

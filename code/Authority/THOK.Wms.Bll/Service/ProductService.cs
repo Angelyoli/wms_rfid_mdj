@@ -387,6 +387,44 @@ namespace THOK.Wms.Bll.Service
         }
 
         /// <summary>
+        /// 出库查询卷烟
+        /// </summary>
+        /// <returns></returns>
+        public object OutBillFindProduct(string QueryString, string value)
+        {
+            IQueryable<Product> ProductQuery = ProductRepository.GetQueryable();
+            IQueryable<Storage> StorageQuery = StorageRepository.GetQueryable();
+            string ProductName = "";
+            string ProductCode = "";
+            if (QueryString == "ProductCode")
+            {
+                ProductCode = value;
+            }
+            else
+            {
+                ProductName = value;
+            }
+            var storage = StorageQuery.Join(ProductQuery,
+                                           s => s.ProductCode,
+                                           p => p.ProductCode,
+                                           (s, p) => new 
+                                           { 
+                                               p.ProductCode, p.ProductName, s.Quantity, s.Product, p.Unit, p.BuyPrice, s.OutFrozenQuantity 
+                                           })
+                                           .GroupBy(s => new { s.Product })
+                                           .Select(s => new
+                                           {
+                                               ProductCode = s.Key.Product.ProductCode,
+                                               ProductName = s.Key.Product.ProductName,
+                                               UnitCode = s.Key.Product.Unit.UnitCode,
+                                               UnitName = s.Key.Product.Unit.UnitName,
+                                               BuyPrice = s.Key.Product.BuyPrice,
+                                               Quantity = s.Sum(st => ((st.Quantity-st.OutFrozenQuantity) / st.Product.Unit.Count))
+                                           })
+                                           .Where(p => p.ProductCode.Contains(ProductCode) && p.ProductName.Contains(ProductName));
+            return storage.ToArray();
+        }
+        /// <summary>
         /// 产品盘点显示卷烟信息，入库新增显示卷烟数据
         /// </summary>
         /// <returns></returns>
@@ -400,7 +438,7 @@ namespace THOK.Wms.Bll.Service
             {
                 ProductCode = value;
             }
-            else
+            else 
             {
                 ProductName = value;
             }

@@ -6,7 +6,7 @@
             productcode = $('#ProductInfo').val();
         else if($('#queryType').combobox('getValue') == "ProductName")
             productname = $('#ProductInfo').val();
-        $('#productDetail').datagrid({ url: '/Product/CheckFindProduct/?QueryString=' + $('#queryType').combobox('getValue') + '&Value=' + $('#ProductInfo').val() });
+        $('#productDetail').datagrid({ url: '/Product/OutBillFindProduct/?QueryString=' + $('#queryType').combobox('getValue') + '&Value=' + $('#ProductInfo').val() });
         $("#productDetail").datagrid('reload');
     };
 
