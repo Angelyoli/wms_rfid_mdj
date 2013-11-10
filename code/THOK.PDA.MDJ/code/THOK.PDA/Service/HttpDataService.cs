@@ -59,7 +59,7 @@ namespace THOK.PDA.Service
         DataTable BuildTaskTable()
         {
             DataTable table = new DataTable();
-            table.Columns.Add("TaskID");
+            table.Columns.Add("TaskID", typeof(Int32));
             table.Columns.Add("OrderID");
             table.Columns.Add("OrderType");
             table.Columns.Add("Status");
