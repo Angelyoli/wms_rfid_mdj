@@ -210,7 +210,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 decimal pieceQuantity = Math.Ceiling((product.SumQuantity + lowerlimitQuantity - sortQuantity - (lowerlimitQuantity > 0 ? 30 * product.Product.UnitList.Quantity02 * product.Product.UnitList.Quantity03 : 0))
                                             / product.Product.Unit.Count) * product.Product.Unit.Count;
 
-                                if (product.Product.IsRounding == "1" || product.Product.IsAbnormity == "1")
+                                if (product.Product.IsRounding == "1")
                                 {
                                     //不取整
                                     quantity = product.SumQuantity + lowerlimitQuantity - sortQuantity;
