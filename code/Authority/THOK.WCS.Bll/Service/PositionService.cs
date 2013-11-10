@@ -66,7 +66,7 @@ namespace THOK.WCS.Bll.Service
                 {
                     p.ID,
                     p.PositionName,
-                    PositionType = p.PositionType == "01" ? "正常位置" : (p.PositionType == "02" ? "大品种出库位" : (p.PositionType == "03" ? "小品种出库位" : (p.PositionType == "04" ? "异形烟出库位" : "空托盘出库位"))),
+                    PositionType = p.PositionType == "01" ? "正常位置" : (p.PositionType == "02" ? "大品种出库位" : (p.PositionType == "03" ? "小品种出库位" : (p.PositionType == "04" ? "异形烟出库位" : (p.PositionType == "05" ? "空托盘出库位" : (p.PositionType == "06" ? "空托盘出库位" : "异常"))))),
                     p.RegionID,
                     p.RegionName,
                     p.SRMName,

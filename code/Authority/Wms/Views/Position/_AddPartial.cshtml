@@ -70,6 +70,9 @@
                         else if (row.PositionType == "空托盘出库位") {
                             $('#inputPositionType').combo('setValue', '05').combo('setText', row.PositionType);
                         }
+                        else if (row.PositionType == "出入库位") {
+                            $('#inputPositionType').combo('setValue', '06').combo('setText', row.PositionType);
+                        }
                         //Extension
                         if (row.Extension == "单右伸") {
                             $('#selectExtension').combo('setValue', 0).combo('setText', row.Extension);
