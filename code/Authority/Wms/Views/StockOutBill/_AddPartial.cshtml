@@ -231,10 +231,10 @@
             }
         });
     }
-    
+
     function productSelect() {
         $('#productData').dialog('open').dialog('setTitle', '选择产品信息');
-        $('#productDetail').datagrid({ url: '/Product/CheckFindProduct/' });
+        $('#productDetail').datagrid({ url: '/Product/OutBillFindProduct/' });
         $("#productDetail").datagrid('reload');
     }
     function unitSelect() {

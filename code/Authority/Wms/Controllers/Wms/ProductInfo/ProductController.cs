@@ -73,6 +73,21 @@ namespace Authority.Controllers.ProductInfo
             return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
 
+        // GET: /Product/OutBillFindProduct/
+        public ActionResult OutBillFindProduct(string QueryString, string value)
+        {
+            if (QueryString == null)
+            {
+                QueryString = "ProductCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var product = ProductService.OutBillFindProduct(QueryString, value);
+            return Json(product, "text", JsonRequestBehavior.AllowGet);
+        }
+
         //盘点查询卷烟信息 
         // GET: /Product/CheckFindProduct/
         public ActionResult CheckFindProduct(string QueryString, string value)

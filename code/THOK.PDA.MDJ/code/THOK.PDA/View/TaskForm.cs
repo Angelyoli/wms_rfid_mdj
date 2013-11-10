@@ -16,20 +16,23 @@ namespace THOK.PDA.View
 {
     public partial class TaskForm : Form
     {
+        public int index;
+
         HttpDataService httpDataService = new HttpDataService();
         DataTable detailTable = null;
         string positionType = "";
-        public int index;
+        string orderType = "";
 
-        public TaskForm(string positionType)
+        public TaskForm(string positionType,string orderType)
         {
             InitializeComponent();
             this.positionType = positionType;
+            this.orderType = orderType;
         }
 
         private void BaseTaskForm_Load(object sender, EventArgs e)
         {
-            string method = "GetOutTask/?positionType=" + positionType;
+            string method = string.Format("GetOutTask/?positionType={0}&orderType={1}", positionType, orderType);
 
             detailTable = httpDataService.SearchOutTask(method);
 
@@ -114,7 +117,7 @@ namespace THOK.PDA.View
                     task.ProductName = dr[0]["ProductName"].ToString();
                     task.Status = dr[0]["Status"].ToString();
                 }
-                DetailForm billDetailForm = new DetailForm(task, positionType);
+                DetailForm billDetailForm = new DetailForm(task, positionType, orderType);
                 billDetailForm.Index = this.index;
                 billDetailForm.Show();
                 this.Close();

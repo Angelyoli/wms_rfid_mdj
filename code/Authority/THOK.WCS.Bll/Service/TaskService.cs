@@ -806,12 +806,12 @@ namespace THOK.WCS.Bll.Service
 
                         var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName) && s.ParameterName.Contains("StockOutAndCheckPositionID"));
                         if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
-                        int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
+                        int targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
 
-                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetPositionID);
                         if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
 
-                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue);
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == targetPositionID);
                         if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
 
                         var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
@@ -857,7 +857,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-        public bool CreateMoveBillTask(string billNo, out string errorInfo)
+        public bool CreateMoveBillTask(string billNo, int taskLevel,out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -900,7 +900,7 @@ namespace THOK.WCS.Bll.Service
 
                         var moveTask = new Task();
                         moveTask.TaskType = "01";
-                        moveTask.TaskLevel = 10;
+                        moveTask.TaskLevel = taskLevel;
                         moveTask.PathID = path.ID;
                         moveTask.ProductCode = moveBillDetail.Product.ProductCode;
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
@@ -980,12 +980,12 @@ namespace THOK.WCS.Bll.Service
 
                         var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName) && s.ParameterName.Contains("StockOutAndCheckPositionID"));
                         if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
-                        int paramValue = Convert.ToInt32(targetSystemParam.ParameterValue);
+                        int targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
 
-                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == paramValue);
+                        var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetPositionID);
                         if (targetPosition == null) { errorInfo = "未找到目标位置（移入位置）：" + targetPosition.PositionName; return false; }
 
-                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == paramValue);
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(i => i.StockInPositionID == targetPositionID);
                         if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
 
                         var targetCell = CellRepository.GetQueryable().FirstOrDefault(i => i.CellCode == targetCellPosition.CellCode);
@@ -1064,19 +1064,9 @@ namespace THOK.WCS.Bll.Service
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
-                        int targetPositionID = 0;
-                        if (moveBillDetail.Product.IsAbnormity == "0")
-                        {
-                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "SmallStockOutPositionID");
-                            if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
-                            targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
-                        }
-                        else
-                        {
-                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName == "AbnormityStockOutPositionID");
-                            if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
-                            targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
-                        }
+                        var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName) && s.ParameterName.Contains("StockOutAndCheckPositionID"));
+                        if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                        int targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
 
                         var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.StockInPositionID == targetPositionID);
                         if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标货位位置：" + moveBillDetail.InCell.CellName; return false; }
@@ -1343,7 +1333,7 @@ namespace THOK.WCS.Bll.Service
                 storage.OutFrozenQuantity += quantity;
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 10;
+                newTask.TaskLevel = 11;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
@@ -1405,7 +1395,7 @@ namespace THOK.WCS.Bll.Service
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 0;
+                newTask.TaskLevel = 12;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
@@ -2112,7 +2102,7 @@ namespace THOK.WCS.Bll.Service
                     if (moveBillMaster.MoveBillDetails.Count > 0)
                     {
                         CellRepository.SaveChanges();
-                        CreateMoveBillTask(moveBillMaster.BillNo, out errorInfo);
+                        CreateMoveBillTask(moveBillMaster.BillNo,10, out errorInfo);
                     }
                 }
                 return true;
@@ -2449,48 +2439,60 @@ namespace THOK.WCS.Bll.Service
             }
         }
         public void FinishTask(string taskID, RestReturn result)
-        {
+        {            
             string errorInfo = string.Empty;
+            
             try
             {
                 int tid = Convert.ToInt32(taskID);
-                var task = TaskRepository.GetQueryable()
-                    .FirstOrDefault(a => a.ID == tid);
-                var position = PositionRepository.GetQueryable()
-                    .FirstOrDefault(a => a.ID == task.CurrentPositionID);
+                var task = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == tid);
+                var position = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.CurrentPositionID);
 
-                if (!FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
+                if (FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
                 {
-                    throw new Exception(string.Format("{0} 完成任务失败！", task.ID));
-                }
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        if (task.Quantity == task.TaskQuantity && task.OrderType != "04")
+                        {
+                            if (CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
+                            {
+                                task.CurrentPositionID = task.TargetPositionID;
+                                task.State = "04";
+                                TaskRepository.SaveChanges();
 
-                if (task.Quantity == task.TaskQuantity && task.OrderType != "04")
-                {
-                    if (CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
-                    {
-                        task.CurrentPositionID = task.TargetPositionID;
-                        task.State = "04";
-                        TaskRepository.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new Exception(string.Format("{0} 生成空托盘叠垛任务失败！", position.PositionName));
+                                scope.Complete();
+                                result.IsSuccess = true;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = string.Format("{0} 生成空托盘叠垛任务失败！", position.PositionName);
+                            }
+                        }
+                        else
+                        {
+                            if (CreateNewTaskForMoveBackRemain(task.ID, out errorInfo))
+                            {
+                                task.CurrentPositionID = task.TargetPositionID;
+                                task.State = "04";
+                                TaskRepository.SaveChanges();
+
+                                scope.Complete();
+                                result.IsSuccess = true;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = string.Format("{0} 生成余烟回库任务失败！", position.PositionName);
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    if (CreateNewTaskForMoveBackRemain(task.ID,out errorInfo))
-                    {
-                        task.CurrentPositionID = task.TargetPositionID;
-                        task.State = "04";
-                        TaskRepository.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new Exception(string.Format("{0} 生成余烟回库任务失败！", position.PositionName));
-                    }
+                    result.IsSuccess = false;
+                    result.Message = string.Format("{0} 完成任务失败！", task.ID);
                 }
-                result.IsSuccess = true;
             }
             catch (Exception ex)
             {
