@@ -2439,48 +2439,60 @@ namespace THOK.WCS.Bll.Service
             }
         }
         public void FinishTask(string taskID, RestReturn result)
-        {
+        {            
             string errorInfo = string.Empty;
+            
             try
             {
                 int tid = Convert.ToInt32(taskID);
-                var task = TaskRepository.GetQueryable()
-                    .FirstOrDefault(a => a.ID == tid);
-                var position = PositionRepository.GetQueryable()
-                    .FirstOrDefault(a => a.ID == task.CurrentPositionID);
+                var task = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == tid);
+                var position = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.CurrentPositionID);
 
-                if (!FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
+                if (FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
                 {
-                    throw new Exception(string.Format("{0} 完成任务失败！", task.ID));
-                }
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        if (task.Quantity == task.TaskQuantity && task.OrderType != "04")
+                        {
+                            if (CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
+                            {
+                                task.CurrentPositionID = task.TargetPositionID;
+                                task.State = "04";
+                                TaskRepository.SaveChanges();
 
-                if (task.Quantity == task.TaskQuantity && task.OrderType != "04")
-                {
-                    if (CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
-                    {
-                        task.CurrentPositionID = task.TargetPositionID;
-                        task.State = "04";
-                        TaskRepository.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new Exception(string.Format("{0} 生成空托盘叠垛任务失败！", position.PositionName));
+                                scope.Complete();
+                                result.IsSuccess = true;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = string.Format("{0} 生成空托盘叠垛任务失败！", position.PositionName);
+                            }
+                        }
+                        else
+                        {
+                            if (CreateNewTaskForMoveBackRemain(task.ID, out errorInfo))
+                            {
+                                task.CurrentPositionID = task.TargetPositionID;
+                                task.State = "04";
+                                TaskRepository.SaveChanges();
+
+                                scope.Complete();
+                                result.IsSuccess = true;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = string.Format("{0} 生成余烟回库任务失败！", position.PositionName);
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    if (CreateNewTaskForMoveBackRemain(task.ID,out errorInfo))
-                    {
-                        task.CurrentPositionID = task.TargetPositionID;
-                        task.State = "04";
-                        TaskRepository.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new Exception(string.Format("{0} 生成余烟回库任务失败！", position.PositionName));
-                    }
+                    result.IsSuccess = false;
+                    result.Message = string.Format("{0} 完成任务失败！", task.ID);
                 }
-                result.IsSuccess = true;
             }
             catch (Exception ex)
             {
