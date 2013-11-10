@@ -33,7 +33,7 @@ namespace THOK.WCS.Bll.Interfaces
         int FinishStockOutTask(int taskID, int stockOutQuantity, out string errorInfo);
         int FinishInventoryTask(int taskID, int realQuantity, out string errorInfo);
 
-        bool AutoCreateMoveBill(out string errorInfo);
+        bool CreateAutoMoveBill(out string errorInfo);
 
         void GetOutTask(string positionType, string orderType, RestReturn result);
         void FinishTask(string taskID, RestReturn result);
