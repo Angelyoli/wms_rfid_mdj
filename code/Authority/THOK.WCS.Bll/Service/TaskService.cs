@@ -2196,21 +2196,19 @@ namespace THOK.WCS.Bll.Service
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
         {
             //选择当前订单操作目标仓库；
-            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()            
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()
                 .Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
                     && s.Quantity > 0
                     && s.OutFrozenQuantity == 0
                     && s.Cell.Area.AllotOutOrder > 0
                     && s.Cell.IsActive == "1");
 
-            if (product.IsRounding == "2")
-            {
-                //分配整托盘烟；大品种区 
-                var storages = storageQuery.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
-                                        && s.ProductCode == product.ProductCode)
-                                  .OrderBy(s => new { s.Cell.StorageTime, s.Cell.Area.AllotOutOrder,s.CellCode, s.StorageSequence, s.Quantity });
-                AllotPallet(moveBillMaster, storages, cell);
-            }
+
+            //分配整托盘烟；固定拆盘位； 
+            var storages = storageQuery.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
+                                    && s.ProductCode == product.ProductCode)
+                              .OrderBy(s => new { s.Cell.StorageTime, s.Cell.Area.AllotOutOrder, s.CellCode, s.StorageSequence, s.Quantity });
+            AllotPallet(moveBillMaster, storages, cell);
         }
         private void AllotPallet(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> storages, Cell cell)
         {
