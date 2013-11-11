@@ -1469,7 +1469,7 @@ namespace THOK.WCS.Bll.Service
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 12;
+                newTask.TaskLevel = 9;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
@@ -2137,9 +2137,7 @@ namespace THOK.WCS.Bll.Service
                     {
                         var positions = PositionRepository.GetQueryable()
                             .Where(i => (i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04")
-                                && !i.HasGoods
-                                && !string.IsNullOrEmpty(i.ChannelCode)
-                                && i.ChannelCode != "0");
+                                && !i.HasGoods);
 
                         var cellPositions = CellPositionRepository.GetQueryable()
                             .Where(i => positions.Contains(i.StockInPosition));
@@ -2161,7 +2159,7 @@ namespace THOK.WCS.Bll.Service
 
                             MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(warehouseCode, moveBillTypeCode, operatePersonID);
                             moveBillMaster.Origin = "2";
-                            moveBillMaster.Description = "系统自动生成补大品种拆盘位移库单！";
+                            moveBillMaster.Description = "系统自动生成补固定拆盘位移库单！";
                             moveBillMaster.Status = "2";
                             moveBillMaster.VerifyPersonID = Guid.Parse(operatePersonID);
                             moveBillMaster.VerifyDate = DateTime.Now;
@@ -2202,7 +2200,6 @@ namespace THOK.WCS.Bll.Service
                 .Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
                     && s.Quantity > 0
                     && s.OutFrozenQuantity == 0
-                    && s.Cell.Area.AllotInOrder > 0
                     && s.Cell.Area.AllotOutOrder > 0
                     && s.Cell.IsActive == "1");
 
@@ -2516,7 +2513,7 @@ namespace THOK.WCS.Bll.Service
                             .ToArray();
                 #endregion
 
-                RestTask = RestTask.Concat(outTask).Concat(moveTask).Concat(checkTask).ToArray();
+                RestTask = RestTask.Concat(outTask).Concat(moveTask).Concat(checkTask).OrderBy(t=>t.CellCode).ToArray();
                 result.IsSuccess = true;
                 result.RestTasks = RestTask;
             }
@@ -2542,7 +2539,24 @@ namespace THOK.WCS.Bll.Service
                     {
                         if (task.Quantity == task.TaskQuantity && task.OrderType != "04")
                         {
-                            if (CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
+                            if (task.TaskType != "03")
+                            {
+                                if (CreateNewTaskForEmptyPalletStack(0, position.PositionName, out errorInfo))
+                                {
+                                    task.CurrentPositionID = task.TargetPositionID;
+                                    task.State = "04";
+                                    TaskRepository.SaveChanges();
+
+                                    scope.Complete();
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = string.Format("{0} 生成空托盘叠垛任务失败！", position.PositionName);
+                                }
+                            }
+                            else
                             {
                                 task.CurrentPositionID = task.TargetPositionID;
                                 task.State = "04";
@@ -2550,11 +2564,6 @@ namespace THOK.WCS.Bll.Service
 
                                 scope.Complete();
                                 result.IsSuccess = true;
-                            }
-                            else
-                            {
-                                result.IsSuccess = false;
-                                result.Message = string.Format("{0} 生成空托盘叠垛任务失败！", position.PositionName);
                             }
                         }
                         else
