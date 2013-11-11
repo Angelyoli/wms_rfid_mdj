@@ -344,7 +344,7 @@ namespace THOK.WCS.Bll.Service
                           t.OriginPositionID,
                           t.TargetPositionID,
                           t.CurrentPositionID,
-                          TaskType = t.TaskType == "01" ? "正常任务" : t.TaskType == "02" ? "叠空托盘" : "异常",
+                          TaskType = t.TaskType == "01" ? "正常任务" : t.TaskType == "02" ? "叠空托盘" : t.TaskType == "03" ? "自动移库" : "异常",
                           t.TaskLevel,
                           t.OriginRegionName,
                           t.TargetRegionName,

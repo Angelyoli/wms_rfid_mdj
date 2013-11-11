@@ -14,7 +14,7 @@
     })
 
     function AddLoad() {
-        $("#inputPositionType").combo({ required: true, editable: false, panelHeight: 102, panelWith: 130 });
+        $("#inputPositionType").combo({ required: true, editable: false, panelHeight: 125, panelWith: 130 });
         $("#selectExtension").combo({ required: true, editable: false, panelHeight: 90, panelWith: 130 });
         $("#selectHasGoods").combo({ required: true, editable: false, panelHeight: 45, panelWith: 130 });
         $("#selectAbleStockOut").combo({ reqired: true, editable: false, panelHeight: 45, panelWith: 130 });
@@ -69,6 +69,9 @@
                         }
                         else if (row.PositionType == "空托盘出库位") {
                             $('#inputPositionType').combo('setValue', '05').combo('setText', row.PositionType);
+                        }
+                        else if (row.PositionType == "出入库位") {
+                            $('#inputPositionType').combo('setValue', '06').combo('setText', row.PositionType);
                         }
                         //Extension
                         if (row.Extension == "单右伸") {

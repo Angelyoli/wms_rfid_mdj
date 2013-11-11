@@ -17,8 +17,11 @@
             if (row.TaskType == '正常任务') {
                 $('#taskType2').combo('setValue', '01').combo('setText', row.TaskType);
             }
-            else {
+            else if (row.TaskType == '叠空托盘') {
                 $('#taskType2').combo('setValue', '02').combo('setText', row.TaskType);
+            }
+            else if (row.TaskType == '自动移库') {
+                $('#taskType2').combo('setValue', '03').combo('setText', row.TaskType);
             }
             //CurrentPositionState
             if (row.CurrentPositionState == '未达到') {
