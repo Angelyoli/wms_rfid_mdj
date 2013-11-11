@@ -90,7 +90,19 @@ namespace THOK.Wms.SignalR.Dispatch.Service
 
             workDispatchId = workDispatchId.Substring(0, workDispatchId.Length - 1);
             int[] work = workDispatchId.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
-            
+
+            var sortingLines = sortOrderDispatchQuery
+                    .WhereIn(w => w.ID, work).GroupBy(w => w.SortingLine)
+                    .Select(s => new { s.Key.SortingLineCode });
+            if (sortWorkDispatchQuery.Where(s => s.DispatchStatus != "4"
+                    && sortingLines.All(a => a.SortingLineCode == s.SortingLineCode)).Count() > 0)
+            {
+                ps.State = StateType.Error;
+                ps.Errors.Add("当前调度的分拣线有未结单的数据！不能调度，请结单后在尝试。");
+                NotifyConnection(ps.Clone());
+                return;
+            }
+
                 //调度表未作业的数据
             var temp = sortOrderDispatchQuery.Join(sortOrderQuery,
                                                  dp => new { dp.OrderDate, dp.DeliverLineCode },
