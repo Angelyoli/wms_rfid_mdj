@@ -975,7 +975,7 @@ namespace THOK.WCS.Bll.Service
                     if (path == null) { errorInfo = "未找到路径信息的起始位置：" + originPosition.PositionName + "，目标位置：" + targetPosition.PositionName; return false; }
 
                     var moveTask = new Task();
-                    moveTask.TaskType = "01";
+                    moveTask.TaskType = "03";
                     moveTask.TaskLevel = taskLevel;
                     moveTask.PathID = path.ID;
                     moveTask.ProductCode = moveBillDetail.Product.ProductCode;
@@ -2136,7 +2136,7 @@ namespace THOK.WCS.Bll.Service
                     using (TransactionScope scope = new TransactionScope())
                     {
                         var positions = PositionRepository.GetQueryable()
-                            .Where(i => i.PositionType == "02"
+                            .Where(i => (i.PositionType == "02" || i.PositionType == "03" || i.PositionType == "04")
                                 && !i.HasGoods
                                 && !string.IsNullOrEmpty(i.ChannelCode)
                                 && i.ChannelCode != "0");
@@ -2559,7 +2559,24 @@ namespace THOK.WCS.Bll.Service
                         }
                         else
                         {
-                            if (CreateNewTaskForMoveBackRemain(task.ID, out errorInfo))
+                            if (task.CurrentPositionID != task.OriginPositionID )
+                            {
+                                if (CreateNewTaskForMoveBackRemain(task.ID, out errorInfo))
+                                {
+                                    task.CurrentPositionID = task.TargetPositionID;
+                                    task.State = "04";
+                                    TaskRepository.SaveChanges();
+
+                                    scope.Complete();
+                                    result.IsSuccess = true;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = string.Format("{0} 生成余烟回库任务失败！", position.PositionName);
+                                }
+                            }
+                            else
                             {
                                 task.CurrentPositionID = task.TargetPositionID;
                                 task.State = "04";
@@ -2567,11 +2584,6 @@ namespace THOK.WCS.Bll.Service
 
                                 scope.Complete();
                                 result.IsSuccess = true;
-                            }
-                            else
-                            {
-                                result.IsSuccess = false;
-                                result.Message = string.Format("{0} 生成余烟回库任务失败！", position.PositionName);
                             }
                         }
                     }
