@@ -499,6 +499,8 @@ namespace THOK.Wms.Bll.Service
 
         private void AutoMoveToSortingLine(SortWorkDispatch sortWork, IQueryable<OutBillDetail> outDetails)
         {
+            bool hasError = true;
+            string error = string.Empty;
             var sortingLowerlimitQuery = SortingLowerlimitRepository.GetQueryable();
             var sortingLineQuery = SortingLineRepository.GetQueryable();
             var storageQuery = StorageRepository.GetQueryable();
@@ -547,12 +549,18 @@ namespace THOK.Wms.Bll.Service
                 {
                     AlltoMoveBill(moveBillMaster, outDetail.Product, sortWork.SortingLine.Cell, ref quantity);
                 }
-
+               
                 if (quantity > 0)
                 {
-                    //生成移库不完整,可能是库存不足；
-                    throw new Exception(sortWork.SortingLine.SortingLineName + " " + outDetail.ProductCode + " " + outDetail.Product.ProductName + "仓储拆盘区库存不足，缺少：" + Convert.ToDecimal((quantity) / outDetail.Product.Unit.Count) + "(件)，未能结单！");
+                    //生成移库不完整,可能是库存不足； 
+                    hasError = false;                     
+                    error += sortWork.SortingLine.SortingLineName + " " + outDetail.ProductCode + " " + outDetail.Product.ProductName + " 拆盘库存不足，缺少：" + Convert.ToDecimal((quantity) / outDetail.Product.Unit.Count) + "(件)，未能结单"+"\r\n";
                 }
+            }
+
+            if (!hasError)
+            {
+                throw new Exception(error);
             }
 
             MoveBillMasterRepository.SaveChanges();
