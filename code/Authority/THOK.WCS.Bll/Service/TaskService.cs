@@ -686,6 +686,7 @@ namespace THOK.WCS.Bll.Service
             taskHistory.OrderType = task.OrderType;
             taskHistory.AllotID = task.AllotID;
             taskHistory.DownloadState = task.DownloadState;
+            taskHistory.StorageSequence = task.StorageSequence;
             taskHistory.ClearTime = System.DateTime.Now;
 
             TaskHistoryRepository.Add(taskHistory);
