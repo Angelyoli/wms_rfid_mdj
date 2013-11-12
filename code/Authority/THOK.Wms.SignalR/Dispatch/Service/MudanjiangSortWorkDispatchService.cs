@@ -356,7 +356,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                 if (cancellationToken.IsCancellationRequested) return;
                 var ss = storages.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
                                         && s.ProductCode == product.ProductCode)
-                                  .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+                                  .OrderBy(s => new { s.Cell.StorageTime, s.Cell.Area.AllotOutOrder, s.CellCode, s.StorageSequence, s.Quantity });
                 if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
             }
             else if (product.IsRounding == "0")
@@ -365,7 +365,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                 if (cancellationToken.IsCancellationRequested) return;
                 var ss = storages.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
                                         && s.ProductCode == product.ProductCode)
-                                  .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+                                  .OrderBy(s => new { s.Cell.StorageTime, s.Cell.Area.AllotOutOrder, s.CellCode, s.StorageSequence, s.Quantity });
                 if (quantity > 0) AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
             }
         }
@@ -375,12 +375,15 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             foreach (var s in ss.ToArray())
             {
                 if (cancellationToken.IsCancellationRequested) return;
+                int storageSequence = -1;
+                var storages = s.Cell.Storages.Where(t => (t.Quantity > 0 && t.OutFrozenQuantity == 0) || t.Cell.MaxPalletQuantity == 1);
+                if (storages.Count() > 0) storageSequence = storages.Min(t => t.StorageSequence);
                 if (quantity > 0)
                 {
                     decimal allotQuantity = s.Quantity - s.OutFrozenQuantity;
                     decimal billQuantity = quantity;
                     allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                    if (allotQuantity > 0)
+                    if (allotQuantity > 0 && s.StorageSequence == storageSequence)
                     {
                         var sourceStorage = Locker.LockNoEmptyStorage(s, s.Product);
                         var targetStorage = Locker.LockStorage(cell);
@@ -388,10 +391,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             && targetStorage.Quantity == 0
                             && targetStorage.InFrozenQuantity == 0)
                         {
-                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity,"1");
+                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity, "1");
                             quantity -= allotQuantity;
                         }
-                        else ps.Errors.Add("可用的移入目标库存记录不足！");                       
+                        else ps.Errors.Add("可用的移入目标库存记录不足！");
                     }
                 }
                 else break;
@@ -405,11 +408,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                 if (cancellationToken.IsCancellationRequested) return;
                 if (quantity > 0)
                 {
+                    int storageSequence = -1;
+                    var storages = s.Cell.Storages.Where(t => (t.Quantity > 0 && t.OutFrozenQuantity == 0) || t.Cell.MaxPalletQuantity == 1);
+                    if (storages.Count() > 0) storageSequence = storages.Min(t => t.StorageSequence);
                     decimal allotQuantity = Math.Floor((s.Quantity - s.OutFrozenQuantity) / s.Product.Unit.Count) * s.Product.Unit.Count;
                     decimal billQuantity = Math.Floor(quantity / s.Product.Unit.Count)
                                             * s.Product.Unit.Count;
                     allotQuantity = allotQuantity < billQuantity ? allotQuantity : billQuantity;
-                    if (allotQuantity > 0)
+                    if (allotQuantity > 0 && s.StorageSequence == storageSequence)
                     {
                         var sourceStorage = Locker.LockNoEmptyStorage(s, s.Product);
                         var targetStorage = Locker.LockStorage(cell);
@@ -417,10 +423,10 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                             && targetStorage.Quantity == 0
                             && targetStorage.InFrozenQuantity == 0)
                         {
-                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity,"1");
+                            MoveBillCreater.AddToMoveBillDetail(moveBillMaster, sourceStorage, targetStorage, allotQuantity, "1");
                             quantity -= allotQuantity;
                         }
-                        else ps.Errors.Add("可用的移入目标库存记录不足！");  
+                        else ps.Errors.Add("可用的移入目标库存记录不足！");
                     }
                 }
                 else break;
