@@ -1487,8 +1487,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.CurrentPositionState = "02";
                 newTask.State = "01";
                 newTask.TagState = "01";//拟不使用
-                newTask.Quantity = task.Quantity - task.OperateQuantity;
-                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
+                newTask.Quantity = task.OrderType == "04" ? task.Quantity : task.Quantity - task.TaskQuantity;
+                newTask.TaskQuantity = task.OrderType == "04" ? task.Quantity : task.Quantity - task.TaskQuantity;
                 newTask.OperateQuantity = 0;
                 newTask.OrderID = task.OrderID;
                 newTask.OrderType = task.OrderType == "02" ? "07" : (task.OrderType == "03" ? "08" : "09");
