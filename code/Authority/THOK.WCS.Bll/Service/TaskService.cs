@@ -626,7 +626,10 @@ namespace THOK.WCS.Bll.Service
                         .Where(t => t.OrderID == orderID
                             && (t.State == "04"
                                 || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                                || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
+                                || (t.OrderType != "01" && t.OrderType != "05"
+                                    && t.OrderType != "06" && t.OrderType != "07"
+                                    && t.OrderType != "08" && t.OrderType != "09" 
+                                    && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
 
                     foreach (var task in tasks)
                     {
@@ -638,7 +641,10 @@ namespace THOK.WCS.Bll.Service
                     TaskRepository.GetObjectSet().DeleteEntity(t => t.OrderID == orderID
                         && (t.State == "04"
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                            || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
+                            || (t.OrderType != "01" && t.OrderType != "05"
+                                && t.OrderType != "06" && t.OrderType != "07"
+                                && t.OrderType != "08" && t.OrderType != "09" 
+                                && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
 
                     if (TaskRepository.GetQueryable().Where(t => t.OrderID == orderID).Count() != 0)
                     {
@@ -1481,8 +1487,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.CurrentPositionState = "02";
                 newTask.State = "01";
                 newTask.TagState = "01";//拟不使用
-                newTask.Quantity = task.Quantity - task.OperateQuantity;
-                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
+                newTask.Quantity = task.OrderType == "04" ? task.Quantity : task.Quantity - task.TaskQuantity;
+                newTask.TaskQuantity = task.OrderType == "04" ? task.Quantity : task.Quantity - task.TaskQuantity;
                 newTask.OperateQuantity = 0;
                 newTask.OrderID = task.OrderID;
                 newTask.OrderType = task.OrderType == "02" ? "07" : (task.OrderType == "03" ? "08" : "09");
