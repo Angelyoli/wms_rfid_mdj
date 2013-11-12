@@ -1158,7 +1158,7 @@ namespace THOK.WCS.Bll.Service
 
                         var moveTask = new Task();
                         moveTask.TaskType = "01";
-                        moveTask.TaskLevel = 10;
+                        moveTask.TaskLevel = 12;
                         moveTask.PathID = path.ID;
                         moveTask.ProductCode = moveBillDetail.Product.ProductCode;
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
@@ -1413,7 +1413,7 @@ namespace THOK.WCS.Bll.Service
                 storage.OutFrozenQuantity += quantity;
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 11;
+                newTask.TaskLevel = 20;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
@@ -1475,7 +1475,7 @@ namespace THOK.WCS.Bll.Service
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 9;
+                newTask.TaskLevel = 11;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
