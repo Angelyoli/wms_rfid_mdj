@@ -1359,7 +1359,7 @@ namespace THOK.WCS.Bll.Service
                         && i.Quantity - i.OutFrozenQuantity > 0
                         && i.OutFrozenQuantity == 0
                         && i.InFrozenQuantity == 0)
-                    .OrderByDescending(i => i.StorageTime);
+                    .OrderBy(i => i.Quantity);
             }
             if (storageQuery == null)
             {
