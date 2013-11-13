@@ -104,6 +104,8 @@ namespace THOK.WCS.Bll.Service
                 task.AllotID = 0;
             if (task.DownloadState == "" || task.DownloadState == null)
                 task.DownloadState = "0";
+            if (task.StorageSequence == 0 || task.StorageSequence == null)
+                task.StorageSequence = 0;
         }
 
         public object GetDetails(int page, int rows, Task task)
@@ -168,6 +170,7 @@ namespace THOK.WCS.Bll.Service
                 t.OrderType,
                 t.AllotID,
                 t.DownloadState,
+                t.StorageSequence,
                 p.PathName,
                 OriginRegionName = p.OriginRegion.RegionName,
                 TargetRegionName = p.TargetRegion.RegionName
@@ -195,6 +198,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -223,6 +227,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -252,6 +257,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -282,6 +288,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -313,6 +320,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -367,7 +375,8 @@ namespace THOK.WCS.Bll.Service
                           t.OrderID,
                           OrderType = t.OrderType == "00" ? "无" : t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : t.OrderType == "05" ? "叠空托盘" : t.OrderType == "06" ? "补空托盘" : t.OrderType == "07" ? "小品种补货" : t.OrderType == "08" ? "出库余烟返库" : t.OrderType == "09" ? "盘点余烟返库" : "异常",
                           t.AllotID,
-                          DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常"
+                          DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常",
+                          t.StorageSequence
                       });
             #endregion
 
@@ -428,6 +437,7 @@ namespace THOK.WCS.Bll.Service
                                 t.OrderType = task.OrderType;
                                 t.AllotID = task.AllotID;
                                 t.DownloadState = task.DownloadState;
+                                t.StorageSequence = task.StorageSequence;
 
                                 TaskRepository.Add(t);
                                 TaskRepository.SaveChanges();
@@ -514,6 +524,7 @@ namespace THOK.WCS.Bll.Service
                                     t.OrderType = task.OrderType;
                                     t.AllotID = task.AllotID;
                                     t.DownloadState = task.DownloadState;
+                                    t.StorageSequence = task.StorageSequence;
 
                                     TaskRepository.SaveChanges();
                                     bResult = true;
