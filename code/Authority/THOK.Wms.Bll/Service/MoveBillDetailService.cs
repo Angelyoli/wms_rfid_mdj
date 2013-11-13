@@ -133,9 +133,7 @@ namespace THOK.Wms.Bll.Service
                 var inCell = CellRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
                 var isWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(t => t.ParameterValue).FirstOrDefault();//是否整托盘
 
-                int storageSequence = outCell.Storages.Where(t => t.Quantity - t.OutFrozenQuantity > 0).Min(t => t.StorageSequence);
-                if (isWholePallet == "1")//是整托盘移库            
-                    storageSequence = outCell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);              
+                int storageSequence = outCell.Storages.Where(t => (t.Quantity > 0 && t.OutFrozenQuantity == 0) || t.Cell.MaxPalletQuantity == 1).Min(t => t.StorageSequence);              
                 if (storageSequence != outStorage.StorageSequence)
                 {
                     strResult = "密集库通道请按照托盘顺序选择最小数出库";
@@ -292,11 +290,10 @@ namespace THOK.Wms.Bll.Service
                 outFrozenQuantity = outStorage.OutFrozenQuantity;
             }
 
-            int storageSequence = outCell.Storages.Where(t => t.Quantity - t.OutFrozenQuantity > 0).Min(t => t.StorageSequence);
-            if (isWholePallet == "1")//是整托盘移库            
-                storageSequence = outCell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
-           
-            if (storageSequence != outStorage.StorageSequence)
+            int storageSequence = outCell.Storages.Where(t => (t.Quantity > 0 && t.OutFrozenQuantity == 0) || t.Cell.MaxPalletQuantity == 1).Min(t => t.StorageSequence);
+            if (storageSequence != outStorage.StorageSequence
+                || (oldOutStorage != null && oldOutStorage.CellCode == oldOutStorage.CellCode
+                && outStorage.StorageSequence - oldOutStorage.StorageSequence == 1))
             {
                 strResult = "密集库通道请按照托盘顺序选择最小数出库";
                 return result;
