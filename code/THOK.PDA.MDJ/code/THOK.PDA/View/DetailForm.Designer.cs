@@ -118,7 +118,7 @@
             // 
             this.lbProductName.Location = new System.Drawing.Point(108, 119);
             this.lbProductName.Name = "lbProductName";
-            this.lbProductName.Size = new System.Drawing.Size(86, 20);
+            this.lbProductName.Size = new System.Drawing.Size(209, 20);
             this.lbProductName.Text = "ProductName";
             // 
             // lbCellCode
@@ -196,6 +196,7 @@
             this.btnComplete.Size = new System.Drawing.Size(79, 32);
             this.btnComplete.TabIndex = 25;
             this.btnComplete.Text = "完　成";
+            this.btnComplete.Click += new System.EventHandler(this.btnComplete_Click_1);
             // 
             // btnBack
             // 
@@ -206,6 +207,7 @@
             this.btnBack.Size = new System.Drawing.Size(77, 32);
             this.btnBack.TabIndex = 23;
             this.btnBack.Text = "上一步";
+            this.btnBack.Click += new System.EventHandler(this.btnBack_Click_1);
             // 
             // DetailForm
             // 

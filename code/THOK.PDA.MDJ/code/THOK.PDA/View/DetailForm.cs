@@ -39,7 +39,7 @@ namespace THOK.PDA.View
                 this.lbOrderID.Text = task.OrderID;
                 this.lbCellCode.Text = task.CellName;
                 this.lbProductName.Text = task.ProductName;
-                this.lbQuantity.Text = "(" + task.Quantity + ")";
+                this.lbQuantity.Text = task.Quantity.ToString();
                 this.lbPieceQuantity.Text = task.PieceQuantity.ToString();
                 this.lbBarQuantity.Text = task.BarQuantity.ToString();
                 this.lbStatus.Text = task.Status;
@@ -54,7 +54,15 @@ namespace THOK.PDA.View
             }
         }
 
-        private void btnComplete_Click(object sender, EventArgs e)
+        private void btnBack_Click_1(object sender, EventArgs e)
+        {
+            WaitCursor.Set();
+            TaskForm task = new TaskForm(this.positionType, this.orderType);
+            task.Show();
+            this.Close();
+        }
+
+        private void btnComplete_Click_1(object sender, EventArgs e)
         {
             WaitCursor.Set();
             string result = string.Empty;
@@ -73,7 +81,7 @@ namespace THOK.PDA.View
                     return;
                 }
                 MessageBox.Show(result);
-                TaskForm baseTaskForm = new TaskForm(this.positionType,this.orderType);
+                TaskForm baseTaskForm = new TaskForm(this.positionType, this.orderType);
                 if (this.Index > 0)
                 {
                     baseTaskForm.index = this.Index;
@@ -85,18 +93,10 @@ namespace THOK.PDA.View
             catch (Exception ex)
             {
                 WaitCursor.Restore();
-                MessageBox.Show("报错："+result + "，系统错误：" + ex.Message);
+                MessageBox.Show("报错：" + result + "，系统错误：" + ex.Message);
                 this.Close();
                 SystemCache.MainFrom.Visible = true;
             }
-        }
-
-        private void btnBack_Click(object sender, EventArgs e)
-        {
-            WaitCursor.Set();
-            TaskForm task = new TaskForm(this.positionType, this.orderType);
-            task.Show();
-            this.Close();
         }
     }
 }

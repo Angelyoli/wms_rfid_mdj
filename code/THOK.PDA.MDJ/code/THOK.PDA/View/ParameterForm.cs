@@ -25,9 +25,7 @@ namespace THOK.PDA.View
         }
 
         private void ParameterForm_Load(object sender, EventArgs e)
-        {         
-            string connetionString = configUtil.GetConfig("Connection")["ConnectionString"];
-            string[] connetions = connetionString.Split(';');
+        {   
             string HttpString = configUtil.GetConfig("HttpConnectionStr")["HttpConnStr"];
             this.txtHttpStr.Text = HttpString;
             WaitCursor.Restore();            

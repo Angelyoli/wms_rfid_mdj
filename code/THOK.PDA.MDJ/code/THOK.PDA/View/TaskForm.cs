@@ -46,12 +46,15 @@ namespace THOK.PDA.View
             gridStyle.MappingName = detailTable.TableName;
             dgInfo.TableStyles.Add(gridStyle);
             GridColumnStylesCollection columnStyles = this.dgInfo.TableStyles[0].GridColumnStyles;
+
             columnStyles["TaskID"].HeaderText = "任务号";
+            columnStyles["CellName"].HeaderText = "货位名称";
             columnStyles["ProductName"].HeaderText = "卷烟";
             columnStyles["Quantity"].HeaderText = "总数量";
             columnStyles["TaskQuantity"].HeaderText = "作业数量";
-            
+
             columnStyles["TaskID"].Width = 40;
+            columnStyles["CellName"].Width = 80;
             columnStyles["ProductName"].Width = 120;
             columnStyles["Quantity"].Width = 40;
             columnStyles["TaskQuantity"].Width = 70;
@@ -59,14 +62,12 @@ namespace THOK.PDA.View
             //如不显示，宽度设为0
             columnStyles["PieceQuantity"].HeaderText = "数量(件)";
             columnStyles["BarQuantity"].HeaderText = "数量(条)";
-            columnStyles["CellName"].HeaderText = "货位名称";
             columnStyles["OrderID"].HeaderText = "订单号";
             columnStyles["OrderType"].HeaderText = "类型";
             columnStyles["Status"].HeaderText = "状态";
 
             columnStyles["PieceQuantity"].Width = 0;
             columnStyles["BarQuantity"].Width = 0;
-            columnStyles["CellName"].Width = 0;
             columnStyles["OrderID"].Width = 0;
             columnStyles["OrderType"].Width = 0;
             columnStyles["Status"].Width = 0;

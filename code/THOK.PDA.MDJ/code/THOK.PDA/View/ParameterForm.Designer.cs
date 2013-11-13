@@ -41,9 +41,9 @@
             // 
             this.btnSave.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.btnSave.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnSave.Location = new System.Drawing.Point(47, 180);
+            this.btnSave.Location = new System.Drawing.Point(28, 248);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(62, 32);
+            this.btnSave.Size = new System.Drawing.Size(82, 32);
             this.btnSave.TabIndex = 4;
             this.btnSave.Text = "保  存";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -52,9 +52,9 @@
             // 
             this.btnCancel.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.btnCancel.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnCancel.Location = new System.Drawing.Point(204, 180);
+            this.btnCancel.Location = new System.Drawing.Point(204, 248);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(62, 32);
+            this.btnCancel.Size = new System.Drawing.Size(82, 32);
             this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "取  消";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -73,23 +73,23 @@
             // 
             this.btnStart.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Bold);
             this.btnStart.ForeColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnStart.Location = new System.Drawing.Point(126, 180);
+            this.btnStart.Location = new System.Drawing.Point(116, 248);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(63, 32);
+            this.btnStart.Size = new System.Drawing.Size(82, 32);
             this.btnStart.TabIndex = 23;
             this.btnStart.Text = "键  盘";
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // txtHttpStr
             // 
-            this.txtHttpStr.Location = new System.Drawing.Point(122, 116);
+            this.txtHttpStr.Location = new System.Drawing.Point(3, 116);
             this.txtHttpStr.Name = "txtHttpStr";
-            this.txtHttpStr.Size = new System.Drawing.Size(144, 23);
+            this.txtHttpStr.Size = new System.Drawing.Size(314, 23);
             this.txtHttpStr.TabIndex = 44;
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(34, 119);
+            this.label9.Location = new System.Drawing.Point(-5, 93);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(82, 20);
             this.label9.Text = "web地址：";

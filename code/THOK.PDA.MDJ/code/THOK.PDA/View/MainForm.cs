@@ -82,7 +82,7 @@ namespace THOK.PDA.View
             }
             catch (Exception ex)
             {
-                string msg = ex.Message;
+                MessageBox.Show(ex.Message);
             }            
         }
         private void btnParamenter_Click(object sender, EventArgs e)
