@@ -46,5 +46,20 @@ namespace Authority.Controllers.Wms.WarehouseInfo
             var storage = StorageService.GetMoveInStorgeDetails(page, rows, type, id, cellCode, productCode);
             return Json(storage, "text", JsonRequestBehavior.AllowGet);
         }
+
+        // POST: /Storage/FindDetail/
+        public ActionResult FindDetail(int page, int rows, string queryString, string value)
+        {
+            if (queryString == null)
+            {
+                queryString = "ProductCode";
+            }
+            if (value == null)
+            {
+                value = "";
+            }
+            var storage = StorageService.FindDetail(page, rows, queryString, value);
+            return Json(storage, "text", JsonRequestBehavior.AllowGet);
+        }
     }
 }
