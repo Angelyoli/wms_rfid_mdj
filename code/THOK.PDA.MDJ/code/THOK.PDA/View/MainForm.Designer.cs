@@ -78,7 +78,7 @@
             this.label2.Location = new System.Drawing.Point(56, 17);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(216, 30);
-            this.label2.Text = "仓储引导作业系统";
+            this.label2.Text = "手持引导作业系统";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnAbnormalMove

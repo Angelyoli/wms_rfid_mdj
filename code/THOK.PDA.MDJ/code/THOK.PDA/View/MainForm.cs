@@ -76,7 +76,14 @@ namespace THOK.PDA.View
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
-            Application.Exit();
+            try
+            {
+                Application.Exit();
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+            }            
         }
         private void btnParamenter_Click(object sender, EventArgs e)
         {

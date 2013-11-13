@@ -28,13 +28,8 @@ namespace THOK.PDA.View
         {         
             string connetionString = configUtil.GetConfig("Connection")["ConnectionString"];
             string[] connetions = connetionString.Split(';');
-            this.txtServer.Text = connetions[0].Remove(0, (connetions[0].IndexOf('=') + 1));
-            this.txtDatabase.Text = connetions[1].Remove(0, (connetions[1].IndexOf('=') + 1));
-            this.txtUid.Text = connetions[2].Remove(0, (connetions[2].IndexOf('=') + 1));
-            this.txtPwd.Text = connetions[3].Remove(0, (connetions[3].IndexOf('=') + 1));
             string HttpString = configUtil.GetConfig("HttpConnectionStr")["HttpConnStr"];
             this.txtHttpStr.Text = HttpString;
-            cbConType.SelectedItem = configUtil.GetConfig("ConnetionType")["Type"];
             WaitCursor.Restore();            
         }
 
@@ -50,15 +45,6 @@ namespace THOK.PDA.View
             WaitCursor.Set();
             try
             {
-                string connetionString = "server=" + this.txtServer.Text + ";database=" + this.txtDatabase.Text + ";uid=" + txtUid.Text + ";pwd=" + this.txtPwd.Text;
-                Dictionary<string, string> connetionList = new Dictionary<string, string>();
-                connetionList.Add("ConnectionString", connetionString);
-                configUtil.SaveConfig("Connection", connetionList);
-
-                Dictionary<string, string> typeList = new Dictionary<string, string>();
-                typeList.Add("Type", cbConType.SelectedItem.ToString());
-                configUtil.SaveConfig("ConnetionType", typeList);
-
                 Dictionary<string, string> httpStr = new Dictionary<string, string>();
                 httpStr.Add("HttpConnStr", this.txtHttpStr.Text);
                 configUtil.SaveConfig("HttpConnectionStr", httpStr);

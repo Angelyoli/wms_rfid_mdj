@@ -49,25 +49,27 @@ namespace THOK.PDA.View
             columnStyles["TaskID"].HeaderText = "任务号";
             columnStyles["ProductName"].HeaderText = "卷烟";
             columnStyles["Quantity"].HeaderText = "总数量";
-            columnStyles["TaskQuantity"].HeaderText = "数量(件)";
+            columnStyles["TaskQuantity"].HeaderText = "作业数量";
+            
+            columnStyles["TaskID"].Width = 40;
+            columnStyles["ProductName"].Width = 120;
+            columnStyles["Quantity"].Width = 40;
+            columnStyles["TaskQuantity"].Width = 70;
+            
+            //如不显示，宽度设为0
             columnStyles["PieceQuantity"].HeaderText = "数量(件)";
             columnStyles["BarQuantity"].HeaderText = "数量(条)";
             columnStyles["CellName"].HeaderText = "货位名称";
             columnStyles["OrderID"].HeaderText = "订单号";
             columnStyles["OrderType"].HeaderText = "类型";
             columnStyles["Status"].HeaderText = "状态";
-            //如不显示，宽度设为0
-            columnStyles["TaskID"].Width = 40;
-            columnStyles["OrderType"].Width = 40;
-            columnStyles["ProductName"].Width = 120;
-            columnStyles["TaskQuantity"].Width = 70;
-            columnStyles["Status"].Width = 40;
 
             columnStyles["PieceQuantity"].Width = 0;
             columnStyles["BarQuantity"].Width = 0;
-            columnStyles["Quantity"].Width = 0;
             columnStyles["CellName"].Width = 0;
             columnStyles["OrderID"].Width = 0;
+            columnStyles["OrderType"].Width = 0;
+            columnStyles["Status"].Width = 0;
 
             if (detailTable.Rows.Count != 0)
             {
