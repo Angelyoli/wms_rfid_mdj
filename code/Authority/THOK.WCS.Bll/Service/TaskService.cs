@@ -104,6 +104,8 @@ namespace THOK.WCS.Bll.Service
                 task.AllotID = 0;
             if (task.DownloadState == "" || task.DownloadState == null)
                 task.DownloadState = "0";
+            if (task.StorageSequence == 0 || task.StorageSequence == null)
+                task.StorageSequence = 0;
         }
 
         public object GetDetails(int page, int rows, Task task)
@@ -168,6 +170,7 @@ namespace THOK.WCS.Bll.Service
                 t.OrderType,
                 t.AllotID,
                 t.DownloadState,
+                t.StorageSequence,
                 p.PathName,
                 OriginRegionName = p.OriginRegion.RegionName,
                 TargetRegionName = p.TargetRegion.RegionName
@@ -195,6 +198,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -223,6 +227,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -252,6 +257,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -282,6 +288,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -313,6 +320,7 @@ namespace THOK.WCS.Bll.Service
                         t.OrderType,
                         t.AllotID,
                         t.DownloadState,
+                        t.StorageSequence,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -367,7 +375,8 @@ namespace THOK.WCS.Bll.Service
                           t.OrderID,
                           OrderType = t.OrderType == "00" ? "无" : t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : t.OrderType == "05" ? "叠空托盘" : t.OrderType == "06" ? "补空托盘" : t.OrderType == "07" ? "小品种补货" : t.OrderType == "08" ? "出库余烟返库" : t.OrderType == "09" ? "盘点余烟返库" : "异常",
                           t.AllotID,
-                          DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常"
+                          DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常",
+                          t.StorageSequence
                       });
             #endregion
 
@@ -428,6 +437,7 @@ namespace THOK.WCS.Bll.Service
                                 t.OrderType = task.OrderType;
                                 t.AllotID = task.AllotID;
                                 t.DownloadState = task.DownloadState;
+                                t.StorageSequence = task.StorageSequence;
 
                                 TaskRepository.Add(t);
                                 TaskRepository.SaveChanges();
@@ -514,6 +524,7 @@ namespace THOK.WCS.Bll.Service
                                     t.OrderType = task.OrderType;
                                     t.AllotID = task.AllotID;
                                     t.DownloadState = task.DownloadState;
+                                    t.StorageSequence = task.StorageSequence;
 
                                     TaskRepository.SaveChanges();
                                     bResult = true;
@@ -626,7 +637,10 @@ namespace THOK.WCS.Bll.Service
                         .Where(t => t.OrderID == orderID
                             && (t.State == "04"
                                 || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                                || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
+                                || (t.OrderType != "01" && t.OrderType != "05"
+                                    && t.OrderType != "06" && t.OrderType != "07"
+                                    && t.OrderType != "08" && t.OrderType != "09" 
+                                    && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
 
                     foreach (var task in tasks)
                     {
@@ -638,7 +652,10 @@ namespace THOK.WCS.Bll.Service
                     TaskRepository.GetObjectSet().DeleteEntity(t => t.OrderID == orderID
                         && (t.State == "04"
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
-                            || (t.OrderType != "01" && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
+                            || (t.OrderType != "01" && t.OrderType != "05"
+                                && t.OrderType != "06" && t.OrderType != "07"
+                                && t.OrderType != "08" && t.OrderType != "09" 
+                                && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
 
                     if (TaskRepository.GetQueryable().Where(t => t.OrderID == orderID).Count() != 0)
                     {
@@ -680,6 +697,7 @@ namespace THOK.WCS.Bll.Service
             taskHistory.OrderType = task.OrderType;
             taskHistory.AllotID = task.AllotID;
             taskHistory.DownloadState = task.DownloadState;
+            taskHistory.StorageSequence = task.StorageSequence;
             taskHistory.ClearTime = System.DateTime.Now;
 
             TaskHistoryRepository.Add(taskHistory);
@@ -1152,7 +1170,7 @@ namespace THOK.WCS.Bll.Service
 
                         var moveTask = new Task();
                         moveTask.TaskType = "01";
-                        moveTask.TaskLevel = 10;
+                        moveTask.TaskLevel = 12;
                         moveTask.PathID = path.ID;
                         moveTask.ProductCode = moveBillDetail.Product.ProductCode;
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
@@ -1313,7 +1331,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = 1;
                 newTask.TaskQuantity = 1;
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = "";
+                newTask.OrderID = targetStorage.StorageCode;
                 newTask.OrderType = "05";
                 newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
@@ -1353,7 +1371,7 @@ namespace THOK.WCS.Bll.Service
                         && i.Quantity - i.OutFrozenQuantity > 0
                         && i.OutFrozenQuantity == 0
                         && i.InFrozenQuantity == 0)
-                    .OrderByDescending(i => i.StorageTime);
+                    .OrderBy(i => i.Quantity);
             }
             if (storageQuery == null)
             {
@@ -1407,7 +1425,7 @@ namespace THOK.WCS.Bll.Service
                 storage.OutFrozenQuantity += quantity;
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 11;
+                newTask.TaskLevel = 20;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
@@ -1422,7 +1440,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = Convert.ToInt32(storage.Quantity);
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = "";
+                newTask.OrderID = storage.StorageCode;
                 newTask.OrderType = "06";               
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
@@ -1469,7 +1487,7 @@ namespace THOK.WCS.Bll.Service
 
                 var newTask = new Task();
                 newTask.TaskType = "01";
-                newTask.TaskLevel = 9;
+                newTask.TaskLevel = 11;
                 newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
@@ -1481,8 +1499,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.CurrentPositionState = "02";
                 newTask.State = "01";
                 newTask.TagState = "01";//拟不使用
-                newTask.Quantity = task.Quantity - task.OperateQuantity;
-                newTask.TaskQuantity = task.Quantity - task.OperateQuantity;
+                newTask.Quantity = task.OrderType == "04" ? task.Quantity : task.Quantity - task.TaskQuantity;
+                newTask.TaskQuantity = task.OrderType == "04" ? task.Quantity : task.Quantity - task.TaskQuantity;
                 newTask.OperateQuantity = 0;
                 newTask.OrderID = task.OrderID;
                 newTask.OrderType = task.OrderType == "02" ? "07" : (task.OrderType == "03" ? "08" : "09");
@@ -1519,8 +1537,8 @@ namespace THOK.WCS.Bll.Service
                 case "02": return FinishMoveBillTask(orderID, allotID, out errorInfo);
                 case "03": return FinishOutBillTask(orderID, allotID, out errorInfo);
                 case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
-                case "05": return FinishEmptyPalletStackTask(targetStorageCode, out errorInfo);
-                case "06": return FinishEmptyPalletSupplyTask(originStorageCode, out errorInfo);
+                case "05": return FinishEmptyPalletStackTask(targetStorageCode, orderID, out errorInfo);
+                case "06": return FinishEmptyPalletSupplyTask(originStorageCode, orderID,out errorInfo);
                 case "07": return FinishMoveRemainMoveBackTask(orderID, allotID);
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
@@ -1860,7 +1878,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }            
         }
-        private bool FinishEmptyPalletStackTask(string cellCode, out string errorInfo)
+        private bool FinishEmptyPalletStackTask(string cellCode,string storageCode, out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -1869,14 +1887,15 @@ namespace THOK.WCS.Bll.Service
                 using (TransactionScope scope = new TransactionScope())
                 {
                     var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
-                    if (cell != null && cell.Storages.FirstOrDefault() != null)
+                    if (cell != null)
                     {
-                        if (cell.Storages.FirstOrDefault().InFrozenQuantity >= 1)
+                        var storage = cell.Storages.Where(s => s.StorageCode == storageCode || string.IsNullOrEmpty(storageCode)).FirstOrDefault();
+                        if (storage.InFrozenQuantity >= 1)
                         {
-                            cell.Storages.FirstOrDefault().InFrozenQuantity -= 1;
-                            cell.Storages.FirstOrDefault().Quantity += 1;
-                            cell.Storages.FirstOrDefault().StorageSequence = 0;
-                            cell.Storages.FirstOrDefault().StorageTime = DateTime.Now;
+                            storage.InFrozenQuantity -= 1;
+                            storage.Quantity += 1;
+                            storage.StorageSequence = 0;
+                            storage.StorageTime = DateTime.Now;
                             CellRepository.SaveChanges();
 
                             scope.Complete();
@@ -1901,7 +1920,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-        private bool FinishEmptyPalletSupplyTask(string cellCode, out string errorInfo)
+        private bool FinishEmptyPalletSupplyTask(string cellCode, string storageCode, out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -1912,7 +1931,7 @@ namespace THOK.WCS.Bll.Service
                     var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
                     if (cell != null)
                     {
-                        var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
+                        var storage = cell.Storages.Where(s => s.StorageCode == storageCode || string.IsNullOrEmpty(storageCode)).FirstOrDefault();
                         if (storage != null && storage.OutFrozenQuantity > 0)
                         {
                             storage.ProductCode = null;
@@ -2196,21 +2215,19 @@ namespace THOK.WCS.Bll.Service
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
         {
             //选择当前订单操作目标仓库；
-            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()            
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()
                 .Where(s => s.Cell.WarehouseCode == moveBillMaster.WarehouseCode
                     && s.Quantity > 0
                     && s.OutFrozenQuantity == 0
                     && s.Cell.Area.AllotOutOrder > 0
                     && s.Cell.IsActive == "1");
 
-            if (product.IsRounding == "2")
-            {
-                //分配整托盘烟；大品种区 
-                var storages = storageQuery.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
-                                        && s.ProductCode == product.ProductCode)
-                                  .OrderBy(s => new { s.Cell.StorageTime, s.Cell.Area.AllotOutOrder,s.CellCode, s.StorageSequence, s.Quantity });
-                AllotPallet(moveBillMaster, storages, cell);
-            }
+
+            //分配整托盘烟；固定拆盘位； 
+            var storages = storageQuery.Where(s => product.PointAreaCodes.Contains(s.Cell.AreaCode)
+                                    && s.ProductCode == product.ProductCode)
+                              .OrderBy(s => new { s.Cell.StorageTime, s.Cell.Area.AllotOutOrder, s.CellCode, s.StorageSequence, s.Quantity });
+            AllotPallet(moveBillMaster, storages, cell);
         }
         private void AllotPallet(MoveBillMaster moveBillMaster, IOrderedQueryable<Storage> storages, Cell cell)
         {
