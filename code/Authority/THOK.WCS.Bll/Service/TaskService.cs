@@ -1331,7 +1331,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = 1;
                 newTask.TaskQuantity = 1;
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = "";
+                newTask.OrderID = targetStorage.StorageCode;
                 newTask.OrderType = "05";
                 newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
@@ -1440,7 +1440,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = Convert.ToInt32(storage.Quantity);
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = "";
+                newTask.OrderID = storage.StorageCode;
                 newTask.OrderType = "06";               
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
@@ -1537,8 +1537,8 @@ namespace THOK.WCS.Bll.Service
                 case "02": return FinishMoveBillTask(orderID, allotID, out errorInfo);
                 case "03": return FinishOutBillTask(orderID, allotID, out errorInfo);
                 case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
-                case "05": return FinishEmptyPalletStackTask(targetStorageCode, out errorInfo);
-                case "06": return FinishEmptyPalletSupplyTask(originStorageCode, out errorInfo);
+                case "05": return FinishEmptyPalletStackTask(targetStorageCode, orderID, out errorInfo);
+                case "06": return FinishEmptyPalletSupplyTask(originStorageCode, orderID,out errorInfo);
                 case "07": return FinishMoveRemainMoveBackTask(orderID, allotID);
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
@@ -1878,7 +1878,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }            
         }
-        private bool FinishEmptyPalletStackTask(string cellCode, out string errorInfo)
+        private bool FinishEmptyPalletStackTask(string cellCode,string storageCode, out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -1887,14 +1887,15 @@ namespace THOK.WCS.Bll.Service
                 using (TransactionScope scope = new TransactionScope())
                 {
                     var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
-                    if (cell != null && cell.Storages.FirstOrDefault() != null)
+                    if (cell != null)
                     {
-                        if (cell.Storages.FirstOrDefault().InFrozenQuantity >= 1)
+                        var storage = cell.Storages.Where(s => s.StorageCode == storageCode || string.IsNullOrEmpty(storageCode)).FirstOrDefault();
+                        if (storage.InFrozenQuantity >= 1)
                         {
-                            cell.Storages.FirstOrDefault().InFrozenQuantity -= 1;
-                            cell.Storages.FirstOrDefault().Quantity += 1;
-                            cell.Storages.FirstOrDefault().StorageSequence = 0;
-                            cell.Storages.FirstOrDefault().StorageTime = DateTime.Now;
+                            storage.InFrozenQuantity -= 1;
+                            storage.Quantity += 1;
+                            storage.StorageSequence = 0;
+                            storage.StorageTime = DateTime.Now;
                             CellRepository.SaveChanges();
 
                             scope.Complete();
@@ -1919,7 +1920,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-        private bool FinishEmptyPalletSupplyTask(string cellCode, out string errorInfo)
+        private bool FinishEmptyPalletSupplyTask(string cellCode, string storageCode, out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -1930,7 +1931,7 @@ namespace THOK.WCS.Bll.Service
                     var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
                     if (cell != null)
                     {
-                        var storage = cell.Storages.Where(s => s.OutFrozenQuantity > 0).FirstOrDefault();
+                        var storage = cell.Storages.Where(s => s.StorageCode == storageCode || string.IsNullOrEmpty(storageCode)).FirstOrDefault();
                         if (storage != null && storage.OutFrozenQuantity > 0)
                         {
                             storage.ProductCode = null;
