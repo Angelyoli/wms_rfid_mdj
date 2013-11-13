@@ -65,7 +65,7 @@
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(32, 281);
+            this.label1.Location = new System.Drawing.Point(49, 281);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(222, 32);
             this.label1.Text = "天海欧康科技信息(厦门)有限公司       版权所有        ©2010-2020";
@@ -78,7 +78,7 @@
             this.label2.Location = new System.Drawing.Point(56, 17);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(216, 30);
-            this.label2.Text = "手持引导作业系统";
+            this.label2.Text = "仓储引导作业系统";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnAbnormalMove

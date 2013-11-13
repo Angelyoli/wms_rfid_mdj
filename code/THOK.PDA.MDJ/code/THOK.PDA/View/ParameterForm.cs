@@ -25,10 +25,10 @@ namespace THOK.PDA.View
         }
 
         private void ParameterForm_Load(object sender, EventArgs e)
-        {   
+        {
             string HttpString = configUtil.GetConfig("HttpConnectionStr")["HttpConnStr"];
             this.txtHttpStr.Text = HttpString;
-            WaitCursor.Restore();            
+            WaitCursor.Restore();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -60,8 +60,8 @@ namespace THOK.PDA.View
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            inputPanel1.Enabled = !inputPanel1.Enabled;          
-        }      
+            inputPanel1.Enabled = !inputPanel1.Enabled;
+        }
 
         private void ParameterForm_KeyDown(object sender, KeyEventArgs e)
         {
