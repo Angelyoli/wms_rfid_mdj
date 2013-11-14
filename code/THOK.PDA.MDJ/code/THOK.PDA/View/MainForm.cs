@@ -64,7 +64,9 @@ namespace THOK.PDA.View
             try
             {
                 TaskForm taskFrom = new TaskForm(positionType,orderType);
-                taskFrom.Show();
+                taskFrom.ShowDialog();
+                taskFrom = null;
+                GC.Collect();
                 this.Visible = false;
             }
             catch (Exception ex)
@@ -76,6 +78,7 @@ namespace THOK.PDA.View
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
+            this.Dispose();
             Application.Exit();
         }
         private void btnParamenter_Click(object sender, EventArgs e)

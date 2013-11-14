@@ -14,6 +14,8 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetMoveInStorgeDetails(int page, int rows, string type, string id, string cellCode, string productCode);
 
+        object FindDetail(int page, int rows, string queryString, string value);
+
         bool uploadBusiStorage();
 
         bool uploadStorage();
