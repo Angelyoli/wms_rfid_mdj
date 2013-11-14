@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Net;
 using THOK.PDA.Util;
 using THOK.PDA.Model;
+using System.Linq;
 
 namespace THOK.PDA.Service
 {
@@ -16,24 +17,24 @@ namespace THOK.PDA.Service
         public DataTable SearchOutTask(string methodName)
         {
             string msg = util.GetDataFromServer(methodName);
-            Result r = JsonConvert.DeserializeObject<Result>(msg);
+            Result r = JsonConvert.DeserializeObject<Result>(msg);         
 
             DataTable table = BuildTaskTable();
             if (r.IsSuccess)
             {
-                for (int i = 0; i < r.RestTasks.Length; i++)
+                foreach (RestTask task in r.RestTasks)
                 {
                     DataRow row = table.NewRow();
-                    row["TaskID"] = r.RestTasks[i].TaskID;
-                    row["CellName"] = r.RestTasks[i].CellName;
-                    row["ProductName"] = r.RestTasks[i].ProductName;
-                    row["OrderID"] = r.RestTasks[i].OrderID;
-                    row["OrderType"] = r.RestTasks[i].OrderType;
-                    row["Status"] = r.RestTasks[i].Status;
-                    row["Quantity"] = r.RestTasks[i].Quantity;
-                    row["TaskQuantity"] = r.RestTasks[i].TaskQuantity;
-                    row["PieceQuantity"] = r.RestTasks[i].PieceQuantity;
-                    row["BarQuantity"] = r.RestTasks[i].BarQuantity;
+                    row["TaskID"] = task.TaskID;
+                    row["CellName"] = task.CellName;
+                    row["ProductName"] = task.ProductName;
+                    row["OrderID"] = task.OrderID;
+                    row["OrderType"] = task.OrderType;
+                    row["Status"] = task.Status;
+                    row["Quantity"] = task.Quantity;
+                    row["TaskQuantity"] = task.TaskQuantity;
+                    row["PieceQuantity"] = task.PieceQuantity;
+                    row["BarQuantity"] = task.BarQuantity;
                     table.Rows.Add(row);
                 }
                 return table;
@@ -46,14 +47,14 @@ namespace THOK.PDA.Service
 
         public string FinishTask(string methodName)
         {
-            string error = "任务已完成！";
+            string result = "任务已完成！";
             string msg = util.GetDataFromServer(methodName);
             Result r = JsonConvert.DeserializeObject<Result>(msg);
             if (!r.IsSuccess)
             {
-                error = r.Message;
+                result = r.Message;
             }
-            return error;
+            return result;
         }
 
         DataTable BuildTaskTable()

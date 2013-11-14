@@ -69,6 +69,9 @@ namespace THOK.WCS.Bll.Service
         public ISystemParameterRepository SystemParameterRepository { get; set; }
 
         [Dependency]
+        public ISortingLineRepository SortingLineRepository { get; set; }
+
+        [Dependency]
         public IStorageLocker Locker { get; set; }
 
         [Dependency]
@@ -908,7 +911,15 @@ namespace THOK.WCS.Bll.Service
                         var originPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == originCellPosition.StockOutPositionID);
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
-                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => c.CellCode == moveBillDetail.InCellCode);
+                        int targetPositionID = 0;
+                        if (SortingLineRepository.GetQueryable().Where(s=>s.CellCode == moveBillDetail.InCellCode).Count() > 0)
+                        {
+                            var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName) && s.ParameterName.Contains("StockOutAndCheckPositionID"));
+                            if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
+                            targetPositionID = Convert.ToInt32(targetSystemParam.ParameterValue);
+                        }
+
+                        var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(c => (targetPositionID > 0 && c.StockInPositionID == targetPositionID) || (targetPositionID == 0 && c.CellCode == moveBillDetail.InCellCode));
                         if (targetCellPosition == null) { errorInfo = "未找到货位位置的目标货位位置：" + moveBillDetail.InCell.CellName; return false; }
                         var targetPosition = PositionRepository.GetQueryable().FirstOrDefault(p => p.ID == targetCellPosition.StockInPositionID);
                         if (targetPosition == null) { errorInfo = "未找到目标货位位置：" + targetCellPosition.StockInPosition.PositionName; return false; }
@@ -1331,7 +1342,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = 1;
                 newTask.TaskQuantity = 1;
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = targetStorage.StorageCode;
+                newTask.OrderID = "";
                 newTask.OrderType = "05";
                 newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
@@ -1440,7 +1451,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.Quantity = Convert.ToInt32(storage.Quantity);
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
-                newTask.OrderID = storage.StorageCode;
+                newTask.OrderID = "";
                 newTask.OrderType = "06";               
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;

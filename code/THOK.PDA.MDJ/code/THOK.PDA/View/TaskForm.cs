@@ -35,39 +35,43 @@ namespace THOK.PDA.View
             string method = string.Format("GetOutTask/?positionType={0}&orderType={1}", positionType, orderType);
 
             detailTable = httpDataService.SearchOutTask(method);
-
-            this.dgInfo.DataSource = detailTable;
+            
             if (detailTable.Rows.Count == 0)
             {
                 this.btnNext.Enabled = false;
             }
+            
+            DataGridTableStyle tableStyle = new DataGridTableStyle();
 
-            DataGridTableStyle gridStyle = new DataGridTableStyle();
-            gridStyle.MappingName = detailTable.TableName;
-            dgInfo.TableStyles.Add(gridStyle);
-            GridColumnStylesCollection columnStyles = this.dgInfo.TableStyles[0].GridColumnStyles;
-            columnStyles["TaskID"].HeaderText = "任务号";
-            columnStyles["ProductName"].HeaderText = "卷烟";
-            columnStyles["Quantity"].HeaderText = "总数量";
-            columnStyles["TaskQuantity"].HeaderText = "数量(件)";
-            columnStyles["PieceQuantity"].HeaderText = "数量(件)";
-            columnStyles["BarQuantity"].HeaderText = "数量(条)";
-            columnStyles["CellName"].HeaderText = "货位名称";
-            columnStyles["OrderID"].HeaderText = "订单号";
-            columnStyles["OrderType"].HeaderText = "类型";
-            columnStyles["Status"].HeaderText = "状态";
-            //如不显示，宽度设为0
-            columnStyles["TaskID"].Width = 40;
-            columnStyles["OrderType"].Width = 40;
-            columnStyles["ProductName"].Width = 120;
-            columnStyles["TaskQuantity"].Width = 70;
-            columnStyles["Status"].Width = 40;
+            DataGridColumnStyle columnStyle = new DataGridTextBoxColumn();
+            columnStyle.MappingName = "TaskID";
+            columnStyle.HeaderText = "任务号";
+            columnStyle.Width = 40;
+            tableStyle.GridColumnStyles.Add(columnStyle);
 
-            columnStyles["PieceQuantity"].Width = 0;
-            columnStyles["BarQuantity"].Width = 0;
-            columnStyles["Quantity"].Width = 0;
-            columnStyles["CellName"].Width = 0;
-            columnStyles["OrderID"].Width = 0;
+            columnStyle = new DataGridTextBoxColumn();
+            columnStyle.MappingName = "CellName";
+            columnStyle.HeaderText = "货位名称";
+            columnStyle.Width = 90;
+            tableStyle.GridColumnStyles.Add(columnStyle);
+
+            columnStyle = new DataGridTextBoxColumn();
+            columnStyle.MappingName = "ProductName";
+            columnStyle.HeaderText = "卷烟";
+            columnStyle.Width = 130;
+            tableStyle.GridColumnStyles.Add(columnStyle);
+
+            columnStyle = new DataGridTextBoxColumn();
+            columnStyle.MappingName = "TaskQuantity";
+            columnStyle.HeaderText = "作业数量";
+            columnStyle.Width = 70;
+            tableStyle.GridColumnStyles.Add(columnStyle);
+            
+            dgInfo.TableStyles.Add(tableStyle);
+
+            DataView dataView = new DataView(detailTable);
+            dataView.Sort = "CellName";
+            dgInfo.DataSource = dataView;
 
             if (detailTable.Rows.Count != 0)
             {
@@ -111,7 +115,7 @@ namespace THOK.PDA.View
                     task.OrderID = dr[0]["OrderID"].ToString();
                     task.OrderType = dr[0]["OrderType"].ToString();
                     task.CellName = dr[0]["CellName"].ToString();
-                    
+                    task.Quantity = Convert.ToDecimal(dr[0]["Quantity"]);
                     task.PieceQuantity = Convert.ToDecimal(dr[0]["PieceQuantity"]);
                     task.BarQuantity = Convert.ToDecimal(dr[0]["BarQuantity"]);
                     task.ProductName = dr[0]["ProductName"].ToString();

@@ -2,7 +2,7 @@
     //判断是移出的货位还是移入的货位out为移出，in为移入
     var cellInOrOut;
     //加载仓库树形结构数据数据根据cType（in或者out）加载不同的树形结构的数据
-    function loadData(cType,cellCode,pCode) {
+    function loadData(cType, cellCode, pCode) {
         cellInOrOut = cType;
         $('#cellDetail').datagrid('loadData', { total: 0, rows: [] }); //清空库存列表
         $('#warehouseTree').tree({ url: '/Cell/GetMoveCellDetails/?inOrOut=' + cType + '&productCode=' + pCode }); //加载树形数据
@@ -22,7 +22,7 @@
         //双击选择移入货位
         $('#warehouseTree').tree({
             onDblClick: function (node) {
-                if (cellInOrOut=="in") {
+                if (cellInOrOut == "in") {
                     if (node.attributes == "cell") {
                         $('#inCellCode').val(node.id);
                         $('#inCellName').val(node.text);
@@ -81,52 +81,73 @@
             }
         })
     });
-</script>       
 
-<div id="cellData" class="easyui-dialog" modal="true" style="width: 840px; height: 460px;
-    padding: 1px 1px" closed="true" buttons="#dlg-cellDatabuttons">
-            <div class="easyui-layout" fit="true">
-                <div id="sidebar" region="west" border="false" style="width: 220px;border-right-style: solid; border-right-width: 1px; border-right-color: #99BBE8;" >
-                    <ul id="warehouseTree" class="easyui-tree" url=''>
-                    </ul>
-                </div>
-                <div id="main" region="center" fit="true" border="false" style="margin: 1px">
-                    <table id="cellDetail" class="easyui-datagrid" border="false" singleselect="true" pageSize="50"
-                        fit="true" pagination="true" rownumbers="true">
-                        <thead>
-                            <tr>
-                                <th field="CellCode" width="60">
-                                    货位编码
-                                </th>
-                                <th field="CellName" width="80">
-                                    货位名称
-                                </th>
-                                <th field="StorageCode" width="60">
-                                    储存编码
-                                </th>
-                                <th field="ProductCode" width="60">
-                                    产品编码
-                                </th>
-                                <th field="ProductName" width="124">
-                                    产品名称
-                                </th>
-                                <th field="UnitCode" width="60">
-                                    单位名称
-                                </th>
-                                <th field="Quantity" width="60">
-                                    数量
-                                </th>
-                                <th field="IsWholePallet" width="60" hidden="true">
-                                    是否整托盘
-                                </th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+    //根据条件查询
+    function productQueryClick() {
+        $("#cellDetail").datagrid({
+            url: '/Storage/FindDetail/?queryString=' + $('#productType').combogrid('getValue') + '&value=' + $('#productInfo').val()
+        });
+        $("#cellDetail").datagrid('reload');
+    }
+</script>
+<div id="cellData" class="easyui-dialog" modal="true" style="width: 840px; height: 500px;
+    padding: 1px 1px" closed="true" buttons="#dlg-cellDatabuttons" toolbar = "#btnQuery">
+    <div class="easyui-layout" fit="true">
+        <div id="sidebar" region="west" border="false" style="width: 220px; border-right-style: solid;
+            border-right-width: 1px; border-right-color: #99BBE8;">
+            <ul id="warehouseTree" class="easyui-tree" url=''>
+            </ul>
+        </div>
+        <div id="main" region="center" fit="true" border="false" style="margin: 1px">            
+            <table id="cellDetail" class="easyui-datagrid" fit="true" border="false" singleselect="true"
+                pagination="true" pagesize="50" rownumbers="true">
+                <thead>
+                    <tr>
+                        <th field="StorageCode" width="60" hidden="true">
+                            储存编码
+                        </th>
+                        <th field="CellCode" width="80">
+                            货位编码
+                        </th>
+                        <th field="CellName" width="80">
+                            货位名称
+                        </th>
+                        <th field="ProductCode" width="60">
+                            产品编码
+                        </th>
+                        <th field="ProductName" width="150">
+                            产品名称
+                        </th>
+                        <th field="Quantity" width="60">
+                            数量
+                        </th>
+                        <th field="UnitCode" width="60">
+                            单位名称
+                        </th>
+                        <th field="StorageSequence" width="60">
+                            库存顺序
+                        </th>
+                        <th field="IsWholePallet" width="60" hidden="true">
+                            是否整托盘
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="btnQuery" style="margin-left: 5px;">
+                <select id="productType" class="easyui-combobox" style="width: 100px;" readonly="true">
+                    <option value="ProductCode">卷烟编码</option>
+                    <option value="ProductName">卷烟名称</option>
+                </select>
+                <input id="productInfo" />
+                <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="productQueryClick()"
+                    id="productQuery">查询</a>
             </div>
+<div id="dlg-cellDatabuttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="cellSave()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#cellData').dialog('close')">
+        取消</a>
 </div>
 
-<div id="dlg-cellDatabuttons">
-	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="cellSave()">确定</a>
-	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#cellData').dialog('close')">取消</a>
-</div>

@@ -39,6 +39,7 @@ namespace THOK.PDA.View
                 this.lbOrderID.Text = task.OrderID;
                 this.lbCellCode.Text = task.CellName;
                 this.lbProductName.Text = task.ProductName;
+                this.lbQuantity.Text = task.Quantity.ToString();
                 this.lbPieceQuantity.Text = task.PieceQuantity.ToString();
                 this.lbBarQuantity.Text = task.BarQuantity.ToString();
                 this.lbStatus.Text = task.Status;
@@ -87,31 +88,6 @@ namespace THOK.PDA.View
                 MessageBox.Show("±¨´í£º"+result + "£¬ÏµÍ³´íÎó£º" + ex.Message);
                 this.Close();
                 SystemCache.MainFrom.Visible = true;
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            lbPieceQuantity.Text = Convert.ToString(Convert.ToInt32(lbPieceQuantity.Text) + 1);
-        }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            lbPieceQuantity.Text = Convert.ToString(Convert.ToInt32(lbPieceQuantity.Text) - 1);
-            if (Convert.ToInt32(lbPieceQuantity.Text) < 0)
-            {
-                lbPieceQuantity.Text = "0";
-            }
-        }
-        private void button3_Click(object sender, EventArgs e)
-        {
-            lbBarQuantity.Text = Convert.ToString(Convert.ToInt32(lbBarQuantity.Text) + 1);
-        }
-        private void button4_Click(object sender, EventArgs e)
-        {
-            lbBarQuantity.Text = Convert.ToString(Convert.ToInt32(lbBarQuantity.Text) - 1);
-            if (Convert.ToInt32(lbBarQuantity.Text) < 0)
-            {
-                lbBarQuantity.Text = "0";
             }
         }
 

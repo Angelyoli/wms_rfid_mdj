@@ -175,11 +175,54 @@ namespace THOK.Wms.Bll.Service
                     IsActive = s.IsActive == "1" ? "可用" : "不可用",
                     StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
                     IsWholePallet = IsWholePallet,
-                    UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                    UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd"),
+                    s.StorageSequence
                 });
             return new { total, rows = tmp.ToArray() };
         }
         #endregion
+
+        public object FindDetail(int page, int rows, string queryString, string value)
+        {
+            string productCode = "", productName = "";
+
+            if (queryString == "ProductCode")
+            {
+                productCode = value;
+            }
+            else
+            {
+                productName = value;
+            }
+            
+            IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()
+                                              .Where(a => a.ProductCode.Contains(productCode) && a.Product.ProductName.Contains(productName))
+                                              .OrderBy(a => a.CellCode).ThenBy(a => a.StorageSequence);
+            string IsWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
+            if (IsWholePallet == "1")//是整托盘出库
+            {
+                storageQuery = storageQuery.Where(s => s.OutFrozenQuantity == 0);
+            }
+            int total = storageQuery.Count();
+            storageQuery = storageQuery.Skip((page - 1) * rows).Take(rows);
+
+            var storage = storageQuery.Select(s => new
+            {
+                    s.StorageCode,
+                    s.Cell.CellCode,
+                    s.Cell.CellName,
+                    ProductCode = s.Product == null ? "" : s.Product.ProductCode,
+                    ProductName = s.Product == null ? "" : s.Product.ProductName,
+                    UnitCode = s.Product == null ? "" : s.Product.Unit.UnitCode,
+                    UnitName = s.Product == null ? "" : s.Product.Unit.UnitName,
+                    Price = s.Product == null ? 0 : s.Product.CostPrice,
+                    Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
+                    IsActive = s.IsActive == "1" ? "可用" : "不可用",
+                    IsWholePallet,
+                    s.StorageSequence
+            });
+            return new { total, rows = storage.ToArray() };
+        }
 
         #region IStorageService 成员
 

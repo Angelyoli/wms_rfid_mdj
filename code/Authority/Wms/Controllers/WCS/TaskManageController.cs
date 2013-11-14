@@ -25,8 +25,8 @@ namespace Wms.Controllers.WCS
             ViewBag.hasAdd = true;
             ViewBag.hasEdit = true;
             ViewBag.hasDelete = true;
-            ViewBag.hasPrint = true;
-            ViewBag.hasHelp = true;
+            //ViewBag.hasPrint = true;
+            //ViewBag.hasHelp = true;
             ViewBag.hasEmpty = true;
             ViewBag.ModuleID = moduleID;
             return View();
