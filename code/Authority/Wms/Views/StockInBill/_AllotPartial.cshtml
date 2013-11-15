@@ -248,7 +248,7 @@
         $.ajaxSender.send('/StockInBillAllot/AllotCancel/',
                         { billNo: billNo },
                         function (data) {
-                            //$('#details').datagrid('reload');
+                            $('#details').datagrid('reload');
                             $('#inBillDetails').datagrid('reload');
                             $('#inAllotBillDetails').datagrid('reload');
                             $('#allotBillDetails').datagrid('reload');
