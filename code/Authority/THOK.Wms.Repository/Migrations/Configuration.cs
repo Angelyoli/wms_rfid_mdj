@@ -4161,18 +4161,18 @@
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("ED0E6EF5-AD8A-4D50-8DB9-71D36EF77F9D")
                     },
-                    new Module()
-                    {
-                        ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003317C7B1DC"),
-                        ModuleName = "尺寸信息",
-                        ShowOrder = 7,
-                        ModuleURL = "/Size/",
-                        IndicateImage = "icon-son_SortWork",
-                        DeskTopImage = "image-son_SortWork",
-                        System = system,
-                        System_SystemID = system.SystemID,
-                        ParentModule_ModuleID = new Guid("ED0E6EF5-AD8A-4D50-8DB9-71D36EF77F9D")
-                    },
+                    //new Module()
+                    //{
+                    //    ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003317C7B1DC"),
+                    //    ModuleName = "尺寸信息",
+                    //    ShowOrder = 7,
+                    //    ModuleURL = "/Size/",
+                    //    IndicateImage = "icon-son_SortWork",
+                    //    DeskTopImage = "image-son_SortWork",
+                    //    System = system,
+                    //    System_SystemID = system.SystemID,
+                    //    ParentModule_ModuleID = new Guid("ED0E6EF5-AD8A-4D50-8DB9-71D36EF77F9D")
+                    //},
                     new Module()
                     {
                         ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003318C7B1DC"),
