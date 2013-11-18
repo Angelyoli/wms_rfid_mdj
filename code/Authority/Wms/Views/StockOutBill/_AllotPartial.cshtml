@@ -233,6 +233,7 @@
         $.ajaxSender.send('/StockOutBillAllot/AllotCancel/',
                         { billNo: billNo },
                         function (data) {
+                            $('#details').datagrid('reload');
                             $('#outBillDetails1').datagrid('reload');
                             $('#allotBillDetails').datagrid('reload');
                         }, $('#dlg-allot'));

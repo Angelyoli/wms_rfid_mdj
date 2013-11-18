@@ -4076,6 +4076,18 @@
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("ED0E6EF5-AD8A-4D50-8DB9-71D36EF77F9D")
                     },
+                    new Module
+                    {
+                        ModuleID = new Guid("145A95C4-C37D-48EE-96F1-6EDEAFE70A7E"),
+                        ModuleName = "任务管理",
+                        ShowOrder = 0,
+                        ModuleURL = "/TaskManage/",
+                        IndicateImage = "icon-son_SortWork",
+                        DeskTopImage = "image-son_SortWork",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("ED0E6EF5-AD8A-4D50-8DB9-71D36EF77F9D")
+                    },
                     new Module()
                     {
                         ModuleID = new Guid("ED0E6EF0-AC3C-4F58-91A7-003311C7B1DC"),
@@ -4179,18 +4191,6 @@
                         ModuleName = "报警信息",
                         ShowOrder = 8,
                         ModuleURL = "/AlarmInfo/",
-                        IndicateImage = "icon-son_SortWork",
-                        DeskTopImage = "image-son_SortWork",
-                        System = system,
-                        System_SystemID = system.SystemID,
-                        ParentModule_ModuleID = new Guid("ED0E6EF5-AD8A-4D50-8DB9-71D36EF77F9D")
-                    },
-                    new Module 
-                    {
-                        ModuleID = new Guid("145A95C4-C37D-48EE-96F1-6EDEAFE70A7E"),
-                        ModuleName = "任务管理",
-                        ShowOrder = 9,
-                        ModuleURL = "/TaskManage/",
                         IndicateImage = "icon-son_SortWork",
                         DeskTopImage = "image-son_SortWork",
                         System = system,
