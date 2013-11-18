@@ -39,8 +39,8 @@ namespace Wms.Controllers.WCS
             task.TaskType = collection["TaskType"] ?? "";
             task.ProductCode = collection["ProductCode"] ?? "";
             task.ProductName = collection["ProductName"] ?? "";
-            task.OriginStorageCode = collection["OriginStorageCode"] ?? "";
-            task.TargetStorageCode = collection["TargetStorageCode"] ?? "";
+            task.OriginCellCode = collection["OriginCellCode"] ?? "";
+            task.TargetCellCode = collection["TargetCellCode"] ?? "";
             task.CurrentPositionState = collection["CurrentPositionState"] ?? "";
             task.State = collection["State"] ?? "";
             task.TagState = collection["TagState"] ?? "";

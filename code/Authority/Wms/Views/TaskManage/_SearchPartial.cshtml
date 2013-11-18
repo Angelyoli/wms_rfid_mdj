@@ -47,8 +47,8 @@
         queryParams.PathID = $('#pathID1').val();
         queryParams.ProductCode = $('#productCode1').val();
         queryParams.ProductName = $('#productName1').val();
-        queryParams.OriginStorageCode = $('#originStorageCode1').val();
-        queryParams.TargetStorageCode = $('#targetStorageCode1').val();
+        queryParams.OriginCellCode = $('#originCellCode1').val();
+        queryParams.TargetCellCode = $('#targetCellCode1').val();
         queryParams.OriginPositionID = $('#originPositionID1').val();
         queryParams.TargetPositionID = $('#targetPositionID1').val();
         queryParams.CurrentPositionID = $('#currentPositionID1').val();
@@ -169,8 +169,8 @@
                         起始存储位：
                     </td>
                     <td>
-                        <input id="originCellCode1" name="OriginStorageCode" type="text" style="display: none;" />
-                        <input id="originCellName1" name="OriginStorageName" type="text" />
+                        <input id="originCellCode1" name="OriginCellCode" type="text" style="display: none;" />
+                        <input id="originCellName1" name="OriginCellName" type="text" />
                         <a href="#" onclick="cellQuery(1)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
@@ -178,8 +178,8 @@
                         目标存储位：
                     </td>
                     <td>
-                        <input id="targetCellCode1" name="TargetStorageCode" type="text" style="display: none;" />
-                        <input id="targetCellName1" name="TargetStorageName" type="text" />
+                        <input id="targetCellCode1" name="TargetCellCode" type="text" style="display: none;" />
+                        <input id="targetCellName1" name="TargetCellName" type="text" />
                         <a href="#" onclick="cellQuery(2)" class="easyui-linkbutton" iconcls="icon-search"
                             plain="true"></a>
                     </td>
