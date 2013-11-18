@@ -431,6 +431,8 @@ namespace THOK.WCS.Bll.Service
                                 t.ProductName = task.ProductName;
                                 t.OriginCellCode = task.OriginCellCode;
                                 t.TargetCellCode = task.TargetCellCode;
+                                t.OriginStorageCode = task.OriginStorageCode;
+                                t.TargetStorageCode = task.TargetStorageCode;
                                 t.OriginPositionID = originCellPosition.StockOutPositionID;
                                 t.TargetPositionID = targetCellPosition.StockInPositionID;
                                 if (task.CurrentPositionID == 0)
