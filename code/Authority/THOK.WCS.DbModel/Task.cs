@@ -25,5 +25,6 @@ namespace THOK.WCS.DbModel
         public int AllotID { get; set; }
         public string DownloadState { get; set; }
         public int StorageSequence { get; set; }
+        public System.DateTime CreateTime { get; set; }
     }
 }

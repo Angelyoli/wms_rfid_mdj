@@ -70,6 +70,8 @@ namespace THOK.WCS.DbModel.Mapping
                 .HasMaxLength(1);
             this.Property(t => t.StorageSequence)
                 .IsRequired();
+            this.Property(t => t.CreateTime)
+                .IsRequired();
             this.Property(t => t.ClearTime)
                 .IsRequired();
 
@@ -97,6 +99,7 @@ namespace THOK.WCS.DbModel.Mapping
             this.Property(t => t.AllotID).HasColumnName(ColumnMap.Value.To("AllotID"));
             this.Property(t => t.DownloadState).HasColumnName(ColumnMap.Value.To("DownloadState"));
             this.Property(t => t.StorageSequence).HasColumnName(ColumnMap.Value.To("StorageSequence"));
+            this.Property(t => t.CreateTime).HasColumnName(ColumnMap.Value.To("CreateTime"));
             this.Property(t => t.ClearTime).HasColumnName(ColumnMap.Value.To("ClearTime"));
         }
     }
