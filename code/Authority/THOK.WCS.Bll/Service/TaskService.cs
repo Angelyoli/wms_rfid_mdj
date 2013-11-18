@@ -109,6 +109,10 @@ namespace THOK.WCS.Bll.Service
                 task.DownloadState = "0";
             if (task.StorageSequence == 0 || task.StorageSequence == null)
                 task.StorageSequence = 0;
+            if (task.OriginStorageCode == "" || task.OriginStorageCode == null)
+                task.OriginStorageCode = "";
+            if (task.TargetStorageCode == "" || task.TargetStorageCode == null)
+                task.TargetStorageCode = "";
         }
 
         public object GetDetails(int page, int rows, Task task)
@@ -695,6 +699,8 @@ namespace THOK.WCS.Bll.Service
             taskHistory.ProductName = task.ProductName;
             taskHistory.OriginCellCode = task.OriginCellCode;
             taskHistory.TargetCellCode = task.TargetCellCode;
+            taskHistory.OriginStorageCode = task.OriginStorageCode;
+            taskHistory.TargetStorageCode = task.TargetStorageCode;
             taskHistory.OriginPositionID = task.OriginPositionID;
             taskHistory.TargetPositionID = task.TargetPositionID;
             taskHistory.CurrentPositionID = task.CurrentPositionID;
@@ -772,6 +778,8 @@ namespace THOK.WCS.Bll.Service
                         inTask.ProductName = inBillAllot.Product.ProductName;
                         inTask.OriginCellCode = originCell.CellCode;
                         inTask.TargetCellCode = inBillAllot.CellCode;
+                        inTask.OriginStorageCode = "";
+                        inTask.TargetStorageCode = "";
                         inTask.OriginPositionID = Convert.ToInt32(originSystemParam.ParameterValue);
                         inTask.TargetPositionID = targetPosition.ID;
                         inTask.CurrentPositionID = Convert.ToInt32(originSystemParam.ParameterValue);
@@ -860,6 +868,8 @@ namespace THOK.WCS.Bll.Service
                         outTask.ProductName = outBillAllot.Product.ProductName;
                         outTask.OriginCellCode = outBillAllot.CellCode;
                         outTask.TargetCellCode = targetCell.CellCode;
+                        outTask.OriginStorageCode = "";
+                        outTask.TargetStorageCode = "";
                         outTask.OriginPositionID = originPosition.ID;
                         outTask.TargetPositionID = targetPosition.ID;
                         outTask.CurrentPositionID = originPosition.ID;
@@ -948,6 +958,8 @@ namespace THOK.WCS.Bll.Service
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
                         moveTask.OriginCellCode = moveBillDetail.OutCellCode;
                         moveTask.TargetCellCode = moveBillDetail.InCellCode;
+                        moveTask.OriginStorageCode = "";
+                        moveTask.TargetStorageCode = "";
                         moveTask.OriginPositionID = originPosition.ID;
                         moveTask.TargetPositionID = targetPosition.ID;
                         moveTask.CurrentPositionID = originPosition.ID;
@@ -1026,6 +1038,8 @@ namespace THOK.WCS.Bll.Service
                     moveTask.ProductName = moveBillDetail.Product.ProductName;
                     moveTask.OriginCellCode = moveBillDetail.OutCellCode;
                     moveTask.TargetCellCode = moveBillDetail.InCellCode;
+                    moveTask.OriginStorageCode = "";
+                    moveTask.TargetStorageCode = "";
                     moveTask.OriginPositionID = originPosition.ID;
                     moveTask.TargetPositionID = targetPosition.ID;
                     moveTask.CurrentPositionID = originPosition.ID;
@@ -1122,6 +1136,8 @@ namespace THOK.WCS.Bll.Service
                         checkTask.ProductName = checkItem.Product.ProductName;
                         checkTask.OriginCellCode = checkItem.CellCode;
                         checkTask.TargetCellCode = targetCell.CellCode;
+                        checkTask.OriginStorageCode = "";
+                        checkTask.TargetStorageCode = "";
                         checkTask.OriginPositionID = originPosition.ID;
                         checkTask.TargetPositionID = targetPosition.ID;
                         checkTask.CurrentPositionID = originPosition.ID;
@@ -1206,6 +1222,8 @@ namespace THOK.WCS.Bll.Service
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
                         moveTask.OriginCellCode = moveBillDetail.OutCellCode;
                         moveTask.TargetCellCode = moveBillDetail.InCellCode;
+                        moveTask.OriginStorageCode = "";
+                        moveTask.TargetStorageCode = "";
                         moveTask.OriginPositionID = originPosition.ID;
                         moveTask.TargetPositionID = targetPosition.ID;
                         moveTask.CurrentPositionID = originPosition.ID;
@@ -1224,7 +1242,6 @@ namespace THOK.WCS.Bll.Service
 
                         TaskRepository.Add(moveTask);
                     }
-
                     moveBillMaster.Status = "3";
                     TaskRepository.SaveChanges();
                     scope.Complete();
@@ -1354,6 +1371,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.ProductName = "空托盘";
                 newTask.OriginCellCode = originCell.CellCode;
                 newTask.TargetCellCode = cell.CellCode;
+                newTask.OriginStorageCode = "";
+                newTask.TargetStorageCode = "";
                 newTask.OriginPositionID = position.ID;
                 newTask.TargetPositionID = cellPosition.StockInPositionID;
                 newTask.CurrentPositionID = position.ID;
@@ -1465,6 +1484,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.ProductName = "空托盘";
                 newTask.OriginCellCode = storage.CellCode;
                 newTask.TargetCellCode = positionCell != null ? positionCell.CellCode : "";
+                newTask.OriginStorageCode = "";
+                newTask.TargetStorageCode = "";
                 newTask.OriginPositionID = cellPosition.StockOutPositionID;
                 newTask.TargetPositionID = position.ID;
                 newTask.CurrentPositionID = cellPosition.StockOutPositionID;
@@ -1529,6 +1550,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.ProductName = task.ProductName;
                 newTask.OriginCellCode = task.TargetCellCode;
                 newTask.TargetCellCode = task.OriginCellCode;
+                newTask.OriginStorageCode = "";
+                newTask.TargetStorageCode = "";
                 newTask.OriginPositionID = task.CurrentPositionID;
                 newTask.TargetPositionID = cellPosition.StockInPositionID;
                 newTask.CurrentPositionID = task.CurrentPositionID;
