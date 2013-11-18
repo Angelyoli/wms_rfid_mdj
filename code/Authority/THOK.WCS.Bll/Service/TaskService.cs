@@ -179,182 +179,188 @@ namespace THOK.WCS.Bll.Service
                 OriginRegionName = p.OriginRegion.RegionName,
                 TargetRegionName = p.TargetRegion.RegionName
             })
-                    .Join(cellQuery, t => t.OriginStorageCode, c => c.CellCode, (t, c) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.CreateTime,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        OriginStorageName = c.CellName
-                    })
-                    .Join(cellQuery, t => t.TargetStorageCode, c => c.CellCode, (t, c) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.CreateTime,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        TargetStorageName = c.CellName
-                    })
-                    .Join(positionQuery, t => t.OriginPositionID, p => p.ID, (t, p) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.CreateTime,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        t.TargetStorageName,
-                        OriginPositionName = p.PositionName
-                    })
-                    .Join(positionQuery, t => t.TargetPositionID, p => p.ID, (t, p) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.CreateTime,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        t.TargetStorageName,
-                        t.OriginPositionName,
-                        TargetPositionName = p.PositionName
-                    })
-                    .Join(positionQuery, t => t.CurrentPositionID, p => p.ID, (t, p) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.CreateTime,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        t.TargetStorageName,
-                        t.OriginPositionName,
-                        t.TargetPositionName,
-                        CurrentPositionName = p.PositionName
-                    })
-                    .Where(t => t.TaskType.Contains(task.TaskType)
-                        ///路径的 区域
-                               && t.ProductCode.Contains(task.ProductCode)
-                               && t.ProductName.Contains(task.ProductName)
-                               && t.OriginStorageCode.Contains(task.OriginStorageCode)
-                               && t.TargetStorageCode.Contains(task.TargetStorageCode)
-                        ///起始位置，目标位置，当前位置
-                               && t.CurrentPositionState.Contains(task.CurrentPositionState)
-                               && t.State.Contains(task.State)
-                               && t.TagState.Contains(task.TagState)
-                               && t.OrderID.Contains(task.OrderID)
-                               && t.OrderType.Contains(task.OrderType)
-                               && t.DownloadState.Contains(task.DownloadState)
-                             )
-                      .OrderByDescending(t => t.ID)
-                      .Select(t => new
+            .Join(cellQuery, t => t.OriginStorageCode, c => c.CellCode, (t, c) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginStorageCode,
+                t.TargetStorageCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                OriginStorageName = c.CellName
+            })
+            .Join(cellQuery, t => t.TargetStorageCode, c => c.CellCode, (t, c) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginStorageCode,
+                t.TargetStorageCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginStorageName,
+                TargetStorageName = c.CellName
+            })
+            .Join(positionQuery, t => t.OriginPositionID, p => p.ID, (t, p) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginStorageCode,
+                t.TargetStorageCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginStorageName,
+                t.TargetStorageName,
+                OriginPositionName = p.PositionName
+            })
+            .Join(positionQuery, t => t.TargetPositionID, p => p.ID, (t, p) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginStorageCode,
+                t.TargetStorageCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginStorageName,
+                t.TargetStorageName,
+                t.OriginPositionName,
+                TargetPositionName = p.PositionName
+            })
+            .Join(positionQuery, t => t.CurrentPositionID, p => p.ID, (t, p) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginStorageCode,
+                t.TargetStorageCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginStorageName,
+                t.TargetStorageName,
+                t.OriginPositionName,
+                t.TargetPositionName,
+                CurrentPositionName = p.PositionName
+            })
+            .Where(t => t.TaskType.Contains(task.TaskType)
+                ///路径的 区域
+                        && t.ProductCode.Contains(task.ProductCode)
+                        && t.ProductName.Contains(task.ProductName)
+                        && t.OriginStorageCode.Contains(task.OriginStorageCode)
+                        && t.TargetStorageCode.Contains(task.TargetStorageCode)
+                ///起始位置，目标位置，当前位置
+                        && t.CurrentPositionState.Contains(task.CurrentPositionState)
+                        && t.State.Contains(task.State)
+                        && t.TagState.Contains(task.TagState)
+                        && t.OrderID.Contains(task.OrderID)
+                        && t.OrderType.Contains(task.OrderType)
+                        && t.DownloadState.Contains(task.DownloadState)
+                        )
+                .OrderByDescending(t => t.ID)
+                .Select(t => t);
+            #endregion
+
+            int total = taskQuery6.Count();
+            taskQuery6 = taskQuery6.Skip((page - 1) * rows).Take(rows);
+
+            var taskQuery7 = taskQuery6.ToArray().Select(t => new
                       {
                           t.ID,
                           t.PathID,
@@ -386,13 +392,9 @@ namespace THOK.WCS.Bll.Service
                           t.AllotID,
                           DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常",
                           t.StorageSequence,
-                          t.CreateTime
+                          CreateTime = t.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")
                       });
-            #endregion
-
-            int total = taskQuery6.Count();
-            var taskQuery7 = taskQuery6.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = taskQuery7.ToArray() };
+            return new { total, rows = taskQuery7 };
         }
         public bool Add(Task task, out string strResult)
         {
@@ -536,7 +538,6 @@ namespace THOK.WCS.Bll.Service
                                     t.AllotID = task.AllotID;
                                     t.DownloadState = task.DownloadState;
                                     t.StorageSequence = task.StorageSequence;
-                                    t.CreateTime = task.CreateTime;
 
                                     TaskRepository.SaveChanges();
                                     bResult = true;
