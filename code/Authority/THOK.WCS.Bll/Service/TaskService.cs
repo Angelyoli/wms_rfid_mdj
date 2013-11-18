@@ -1374,7 +1374,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.OriginCellCode = originCell.CellCode;
                 newTask.TargetCellCode = cell.CellCode;
                 newTask.OriginStorageCode = "";
-                newTask.TargetStorageCode = "";
+                newTask.TargetStorageCode = targetStorage.StorageCode;
                 newTask.OriginPositionID = position.ID;
                 newTask.TargetPositionID = cellPosition.StockInPositionID;
                 newTask.CurrentPositionID = position.ID;
@@ -1486,7 +1486,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.ProductName = "空托盘";
                 newTask.OriginCellCode = storage.CellCode;
                 newTask.TargetCellCode = positionCell != null ? positionCell.CellCode : "";
-                newTask.OriginStorageCode = "";
+                newTask.OriginStorageCode = storage.StorageCode;
                 newTask.TargetStorageCode = "";
                 newTask.OriginPositionID = cellPosition.StockOutPositionID;
                 newTask.TargetPositionID = position.ID;
@@ -1583,7 +1583,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null && task.State == "04")
             {
-                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode, out errorInfo);
+                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode,task.OriginStorageCode,task.TargetStorageCode, out errorInfo);
             }
             else
             {
@@ -1591,7 +1591,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-        public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode, out string errorInfo)
+        public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originCellCode, string targetCellCode, string originStorageCode, string targetStorageCode, out string errorInfo)
         {
             errorInfo = string.Empty;
             switch (orderType)
@@ -1600,8 +1600,8 @@ namespace THOK.WCS.Bll.Service
                 case "02": return FinishMoveBillTask(orderID, allotID, out errorInfo);
                 case "03": return FinishOutBillTask(orderID, allotID, out errorInfo);
                 case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
-                case "05": return FinishEmptyPalletStackTask(targetStorageCode, orderID, out errorInfo);
-                case "06": return FinishEmptyPalletSupplyTask(originStorageCode, orderID,out errorInfo);
+                case "05": return FinishEmptyPalletStackTask(targetCellCode,targetStorageCode, out errorInfo);
+                case "06": return FinishEmptyPalletSupplyTask(originCellCode,originStorageCode, out errorInfo);
                 case "07": return FinishMoveRemainMoveBackTask(orderID, allotID);
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
@@ -2614,7 +2614,7 @@ namespace THOK.WCS.Bll.Service
                 var task = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == tid);
                 var position = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.CurrentPositionID);
 
-                if (FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode, out errorInfo))
+                if (FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
                 {
                     using (TransactionScope scope = new TransactionScope())
                     {
