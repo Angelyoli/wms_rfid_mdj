@@ -174,6 +174,7 @@ namespace THOK.WCS.Bll.Service
                 t.AllotID,
                 t.DownloadState,
                 t.StorageSequence,
+                t.CreateTime,
                 p.PathName,
                 OriginRegionName = p.OriginRegion.RegionName,
                 TargetRegionName = p.TargetRegion.RegionName
@@ -202,6 +203,7 @@ namespace THOK.WCS.Bll.Service
                         t.AllotID,
                         t.DownloadState,
                         t.StorageSequence,
+                        t.CreateTime,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -231,6 +233,7 @@ namespace THOK.WCS.Bll.Service
                         t.AllotID,
                         t.DownloadState,
                         t.StorageSequence,
+                        t.CreateTime,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -261,6 +264,7 @@ namespace THOK.WCS.Bll.Service
                         t.AllotID,
                         t.DownloadState,
                         t.StorageSequence,
+                        t.CreateTime,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -292,6 +296,7 @@ namespace THOK.WCS.Bll.Service
                         t.AllotID,
                         t.DownloadState,
                         t.StorageSequence,
+                        t.CreateTime,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -324,6 +329,7 @@ namespace THOK.WCS.Bll.Service
                         t.AllotID,
                         t.DownloadState,
                         t.StorageSequence,
+                        t.CreateTime,
                         t.OriginRegionName,
                         t.TargetRegionName,
                         t.PathName,
@@ -379,7 +385,8 @@ namespace THOK.WCS.Bll.Service
                           OrderType = t.OrderType == "00" ? "无" : t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : t.OrderType == "05" ? "叠空托盘" : t.OrderType == "06" ? "补空托盘" : t.OrderType == "07" ? "小品种补货" : t.OrderType == "08" ? "出库余烟返库" : t.OrderType == "09" ? "盘点余烟返库" : "异常",
                           t.AllotID,
                           DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常",
-                          t.StorageSequence
+                          t.StorageSequence,
+                          t.CreateTime
                       });
             #endregion
 
@@ -441,6 +448,7 @@ namespace THOK.WCS.Bll.Service
                                 t.AllotID = task.AllotID;
                                 t.DownloadState = task.DownloadState;
                                 t.StorageSequence = task.StorageSequence;
+                                t.CreateTime = System.DateTime.Now;
 
                                 TaskRepository.Add(t);
                                 TaskRepository.SaveChanges();
@@ -528,6 +536,7 @@ namespace THOK.WCS.Bll.Service
                                     t.AllotID = task.AllotID;
                                     t.DownloadState = task.DownloadState;
                                     t.StorageSequence = task.StorageSequence;
+                                    t.CreateTime = task.CreateTime;
 
                                     TaskRepository.SaveChanges();
                                     bResult = true;
@@ -701,6 +710,7 @@ namespace THOK.WCS.Bll.Service
             taskHistory.AllotID = task.AllotID;
             taskHistory.DownloadState = task.DownloadState;
             taskHistory.StorageSequence = task.StorageSequence;
+            taskHistory.CreateTime = task.CreateTime;
             taskHistory.ClearTime = System.DateTime.Now;
 
             TaskHistoryRepository.Add(taskHistory);
@@ -777,6 +787,8 @@ namespace THOK.WCS.Bll.Service
                         inTask.AllotID = inBillAllot.ID;
                         inTask.DownloadState = "0";
                         inTask.StorageSequence = 0;
+                        inTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(inTask);
                     }
 
@@ -863,6 +875,8 @@ namespace THOK.WCS.Bll.Service
                         outTask.AllotID = outBillAllot.ID;
                         outTask.DownloadState = "0";
                         outTask.StorageSequence = outBillAllot.Storage.StorageSequence;
+                        outTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(outTask);
                     }
 
@@ -949,6 +963,8 @@ namespace THOK.WCS.Bll.Service
                         moveTask.AllotID = moveBillDetail.ID;
                         moveTask.DownloadState = "0";
                         moveTask.StorageSequence = moveBillDetail.OutStorage.StorageSequence;
+                        moveTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(moveTask);
                     }
 
@@ -1025,6 +1041,8 @@ namespace THOK.WCS.Bll.Service
                     moveTask.AllotID = moveBillDetail.ID;
                     moveTask.DownloadState = "0";
                     moveTask.StorageSequence = moveBillDetail.OutStorage.StorageSequence;
+                    moveTask.CreateTime = System.DateTime.Now;
+
                     TaskRepository.Add(moveTask);
                 }
 
@@ -1119,6 +1137,8 @@ namespace THOK.WCS.Bll.Service
                         checkTask.AllotID = checkItem.ID;
                         checkTask.DownloadState = "0";
                         checkTask.StorageSequence = checkItem.Storage.StorageSequence;
+                        checkTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(checkTask);
                     }
 
@@ -1201,6 +1221,8 @@ namespace THOK.WCS.Bll.Service
                         moveTask.AllotID = moveBillDetail.ID;
                         moveTask.DownloadState = "0";
                         moveTask.StorageSequence = moveBillDetail.OutStorage.StorageSequence;
+                        moveTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(moveTask);
                     }
 
@@ -1346,6 +1368,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.OrderType = "05";
                 newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
+                newTask.CreateTime = System.DateTime.Now;
+
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 result = true;
@@ -1455,6 +1479,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.OrderType = "06";               
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
+                newTask.CreateTime = System.DateTime.Now;
+
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 result = true;
@@ -1518,6 +1544,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.AllotID = task.AllotID;
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
+                newTask.CreateTime = System.DateTime.Now;
+
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 return newTask.ID;
