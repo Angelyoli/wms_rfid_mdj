@@ -1426,7 +1426,7 @@ namespace THOK.WCS.Bll.Service
                         && i.Quantity - i.OutFrozenQuantity > 0
                         && i.OutFrozenQuantity == 0
                         && i.InFrozenQuantity == 0)
-                    .OrderBy(i => i.Quantity);
+                    .OrderByDescending(i => i.Quantity);
             }
             if (storageQuery == null)
             {
@@ -1994,7 +1994,8 @@ namespace THOK.WCS.Bll.Service
                     var cell = CellRepository.GetQueryable().Where(i => i.CellCode == cellCode).FirstOrDefault();
                     if (cell != null)
                     {
-                        var storage = cell.Storages.Where(s => s.StorageCode == storageCode || string.IsNullOrEmpty(storageCode)).FirstOrDefault();
+                        var storage = cell.Storages.Where(s => (s.StorageCode == storageCode || string.IsNullOrEmpty(storageCode))
+                            && s.OutFrozenQuantity > 0).FirstOrDefault();
                         if (storage != null && storage.OutFrozenQuantity > 0)
                         {
                             storage.ProductCode = null;
