@@ -12,6 +12,8 @@ namespace THOK.WCS.DbModel
         public string ProductName { get; set; }
         public string OriginCellCode { get; set; }
         public string TargetCellCode { get; set; }
+        public string OriginStorageCode { get; set; }
+        public string TargetStorageCode { get; set; }
         public int OriginPositionID { get; set; }
         public int TargetPositionID { get; set; }
         public int CurrentPositionID { get; set; }
