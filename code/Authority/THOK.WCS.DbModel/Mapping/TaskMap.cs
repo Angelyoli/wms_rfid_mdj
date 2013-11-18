@@ -27,10 +27,10 @@ namespace THOK.WCS.DbModel.Mapping
             this.Property(t => t.ProductName)
                 .IsRequired()
                 .HasMaxLength(20);
-            this.Property(t => t.OriginStorageCode)
+            this.Property(t => t.OriginCellCode)
                 .IsRequired()
                 .HasMaxLength(50);
-            this.Property(t => t.TargetStorageCode)
+            this.Property(t => t.TargetCellCode)
                 .IsRequired()
                 .HasMaxLength(50);
             this.Property(t => t.OriginPositionID)
@@ -78,8 +78,8 @@ namespace THOK.WCS.DbModel.Mapping
             this.Property(t => t.PathID).HasColumnName(ColumnMap.Value.To("PathID"));
             this.Property(t => t.ProductCode).HasColumnName(ColumnMap.Value.To("ProductCode"));
             this.Property(t => t.ProductName).HasColumnName(ColumnMap.Value.To("ProductName"));
-            this.Property(t => t.OriginStorageCode).HasColumnName(ColumnMap.Value.To("OriginStorageCode"));
-            this.Property(t => t.TargetStorageCode).HasColumnName(ColumnMap.Value.To("TargetStorageCode"));
+            this.Property(t => t.OriginCellCode).HasColumnName(ColumnMap.Value.To("OriginCellCode"));
+            this.Property(t => t.TargetCellCode).HasColumnName(ColumnMap.Value.To("TargetCellCode"));
             this.Property(t => t.OriginPositionID).HasColumnName(ColumnMap.Value.To("OriginPositionID"));
             this.Property(t => t.TargetPositionID).HasColumnName(ColumnMap.Value.To("TargetPositionID"));
             this.Property(t => t.CurrentPositionID).HasColumnName(ColumnMap.Value.To("CurrentPositionID"));
