@@ -43,10 +43,10 @@ namespace Wms.Controllers.WCS
             return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode)
+        public ActionResult FinishTask(int taskID, string orderType, string orderID, int allotID, string originCellCode, string targetCellCode, string originStorageCode, string targetStorageCode)
         {
             string errorInfo = string.Empty;
-            bool bResult = TaskService.FinishTask(taskID, orderType, orderID, allotID, originStorageCode, targetStorageCode, out errorInfo);
+            bool bResult = TaskService.FinishTask(taskID, orderType, orderID, allotID,originCellCode,targetCellCode, originStorageCode, targetStorageCode, out errorInfo);
             return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
 
