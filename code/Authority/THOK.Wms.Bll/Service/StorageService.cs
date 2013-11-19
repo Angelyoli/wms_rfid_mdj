@@ -196,7 +196,8 @@ namespace THOK.Wms.Bll.Service
             }
             
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()
-                                              .Where(a => a.ProductCode.Contains(productCode) && a.Product.ProductName.Contains(productName))
+                                              .Where(a => (a.ProductCode.Contains(productCode) && a.Product.ProductName.Contains(productName)) 
+                                                       && ((a.Quantity - a.OutFrozenQuantity) > 0 && string.IsNullOrEmpty(a.Cell.LockTag)))
                                               .OrderBy(a => a.CellCode).ThenBy(a => a.StorageSequence);
             string IsWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
             if (IsWholePallet == "1")//是整托盘出库
