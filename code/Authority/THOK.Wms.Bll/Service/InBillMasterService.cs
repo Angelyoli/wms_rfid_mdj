@@ -467,45 +467,49 @@ namespace THOK.Wms.Bll.Service
             var ibm = InBillMasterRepository.GetQueryable().FirstOrDefault(i => i.BillNo == BillNo);
             if (ibm != null && ibm.Status == "5")
             {
-
-                try
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    //修改分配入库冻结量
-                    var inAllot = InBillAllotRepository.GetQueryable()
-                                                       .Where(o => o.BillNo == ibm.BillNo
-                                                           && o.Status != "2")
-                                                       .ToArray();
-                    var storages = inAllot.Select(i => i.Storage).ToArray();
-
-                    if (!Locker.Lock(storages))
+                    try
                     {
-                        strResult = "锁定储位失败，储位其他人正在操作，无法结单请稍候重试！";
-                        return false;
-                    }
+                        //修改分配入库冻结量
+                        var inAllot = InBillAllotRepository.GetQueryable()
+                                                           .Where(o => o.BillNo == ibm.BillNo
+                                                               && o.Status != "2")
+                                                           .ToArray();
+                        var storages = inAllot.Select(i => i.Storage).ToArray();
 
-                    inAllot.AsParallel().ForAll(
-                        (Action<InBillAllot>)delegate(InBillAllot i)
+                        if (!Locker.Lock(storages))
                         {
-                            if (i.Storage.ProductCode == i.ProductCode
-                                && i.Storage.InFrozenQuantity >= i.AllotQuantity)
-                            {
-                                i.Storage.InFrozenQuantity -= i.AllotQuantity;
-                                i.Storage.LockTag = string.Empty;
-                            }
-                            else
-                            {
-                                throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
-                            }
+                            strResult = "锁定储位失败，储位其他人正在操作，无法结单请稍候重试！";
+                            return false;
                         }
-                    );
-                    ibm.Status = "6";
-                    ibm.UpdateTime = DateTime.Now;
-                    InBillMasterRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception e)
-                {
-                    strResult = "入库单结单出错！原因：" + e.Message;
+
+                        inAllot.AsParallel().ForAll(
+                            (Action<InBillAllot>)delegate(InBillAllot i)
+                            {
+                                if (i.Storage.ProductCode == i.ProductCode
+                                    && i.Storage.InFrozenQuantity >= i.AllotQuantity)
+                                {
+                                    i.Storage.InFrozenQuantity -= i.AllotQuantity;
+                                    i.Storage.LockTag = string.Empty;
+                                }
+                                else
+                                {
+                                    throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
+                                }
+                            }
+                        );
+                        ibm.Status = "6";
+                        ibm.UpdateTime = DateTime.Now;
+                        InBillMasterRepository.SaveChanges();
+
+                        scope.Complete();
+                        result = true;
+                    }
+                    catch (Exception e)
+                    {
+                        strResult = "入库单结单出错！原因：" + e.Message;
+                    }
                 }
             }
             return result;

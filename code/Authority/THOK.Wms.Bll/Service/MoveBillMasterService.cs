@@ -367,7 +367,7 @@ namespace THOK.Wms.Bll.Service
             var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(m => m.BillNo == BillNo);
             if (mbm != null && mbm.Status == "3")
             {
-                using (var scope = new TransactionScope())
+                using (TransactionScope scope = new TransactionScope())
                 {
                     try
                     {
@@ -407,8 +407,9 @@ namespace THOK.Wms.Bll.Service
                         mbm.Status = "4";
                         mbm.UpdateTime = DateTime.Now;
                         MoveBillMasterRepository.SaveChanges();
-                        result = true;
+
                         scope.Complete();
+                        result = true;
                     }
                     catch (Exception e)
                     {
