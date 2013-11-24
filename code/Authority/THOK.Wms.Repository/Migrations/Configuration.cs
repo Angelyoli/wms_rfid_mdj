@@ -1177,14 +1177,25 @@
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("B8344F88-08AD-4FDA-8F45-EAD3BB471101")
-                    }
-                    ,
+                    },
                     new Module()
                     {
                         ModuleID = new Guid("D3344F88-08AD-4FDA-8F45-EAD3BB471102"),
                         ModuleName = "储位卷烟预设",
                         ShowOrder = 2,
                         ModuleURL = "/DefaultProductSet/",
+                        IndicateImage = "icon-son_Warehouse",
+                        DeskTopImage = "image-son_Warehouse",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("B8344F88-08AD-4FDA-8F45-EAD3BB471101")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("0587FC63-9DE4-447F-B15C-7261A6CBB2EA"),
+                        ModuleName = "拆盘位预设置",
+                        ShowOrder = 3,
+                        ModuleURL = "/SplitPalletCell/",
                         IndicateImage = "icon-son_Warehouse",
                         DeskTopImage = "image-son_Warehouse",
                         System = system,
@@ -1290,6 +1301,23 @@
                     ControlName = "help",
                     IndicateImage = "icon-help",
                     Module_ModuleID = new Guid("D3344F88-08AD-4FDA-8F45-EAD3BB471102")
+                },
+                new Function()
+                {
+                    //拆盘位预设置
+                    FunctionID = new Guid("6D2E6B3C-F0C2-4CE4-9870-991F06B82B6A"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("0587FC63-9DE4-447F-B15C-7261A6CBB2EA")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("358A066F-0656-4125-ABFF-9700EDA376A8"),
+                    FunctionName = "编辑",
+                    ControlName = "edit",
+                    IndicateImage = "icon-edit",
+                    Module_ModuleID = new Guid("0587FC63-9DE4-447F-B15C-7261A6CBB2EA")
                 }
                 );
             context.SaveChanges();

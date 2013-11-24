@@ -34,7 +34,6 @@ namespace THOK.Wms.Bll.Interfaces
 
         bool SaveCell(string wareCodes, string areaCodes, string shelfCodes, string cellCodes, string defaultProductCode, string editType);
 
-
         object GetCellInfo(int page,int rows);
 
         object GetCellInfo(string productCode);
@@ -56,5 +55,8 @@ namespace THOK.Wms.Bll.Interfaces
         bool uploadCell();
 
         object GetCellDetail(string shelfCode);
+
+        object GetSplitPalletCell(int page, int rows, string shelfType);
+        bool SaveSplitPalletCell(Cell cell, out string strResult);
     }
 }
