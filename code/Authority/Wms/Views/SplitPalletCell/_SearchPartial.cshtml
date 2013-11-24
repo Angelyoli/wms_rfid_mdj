@@ -1,7 +1,10 @@
 ﻿<script type="text/javascript">
-    function searchClick() {
-        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+    function searchInit() {
         $('#shelfType').combo({ editable: false, width: 130, panelHeight: 'auto' });
+    }
+    function searchClick() {
+        searchInit();
+        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
     }
     //查询条件
     function searchByParams() {
@@ -22,7 +25,7 @@
             <table>
                 <tr>
                     <td width="60" style="text-align: right">
-                        选择查询:
+                        拆盘类型:
                     </td>
                     <td>
                         <select id="shelfType" class="easyui-combobox">

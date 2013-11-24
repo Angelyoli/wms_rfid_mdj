@@ -1384,8 +1384,8 @@ namespace THOK.Wms.Bll.Service
                 b.DefaultProductCode,
                 DefaultProductName = b.Product.ProductName
             });
-            int total = cellQuery.Count();
-            cellQuery = cellQuery.Skip((page - 1) * rows).Take(rows);
+            int total = cell.Count();
+            cell = cell.Skip((page - 1) * rows).Take(rows);
             return new { total, rows = cell.ToArray() };
         }
         public bool SaveSplitPalletCell(Cell cell, out string strResult)
