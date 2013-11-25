@@ -1371,11 +1371,19 @@ namespace THOK.Wms.Bll.Service
 
             if (shelfType == "01" || shelfType == "")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-001" || c.ShelfCode == "001-07-002");
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-001");
             }
             else if (shelfType == "02")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-003" || c.ShelfCode == "001-07-004");
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-002");
+            }
+            else if (shelfType == "03")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-003");
+            }
+            else if (shelfType == "04")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-004");
             }
             var cell = cellQuery.OrderBy(b => b.CellCode).Select(b => new
             {
