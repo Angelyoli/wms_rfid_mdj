@@ -394,6 +394,18 @@
     <Compile Include="Migrations\201310101056238_add_task_history.Designer.cs">
       <DependentUpon>201310101056238_add_task_history.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201311180323319_add_task_and_history_createtime.cs" />
+    <Compile Include="Migrations\201311180323319_add_task_and_history_createtime.Designer.cs">
+      <DependentUpon>201311180323319_add_task_and_history_createtime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201311180502482_modify_task_and_history_to_cellcode.cs" />
+    <Compile Include="Migrations\201311180502482_modify_task_and_history_to_cellcode.Designer.cs">
+      <DependentUpon>201311180502482_modify_task_and_history_to_cellcode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201311180541385_add_task_and_history_storagecode.cs" />
+    <Compile Include="Migrations\201311180541385_add_task_and_history_storagecode.Designer.cs">
+      <DependentUpon>201311180541385_add_task_and_history_storagecode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -466,6 +478,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201310101056238_add_task_history.resx">
       <DependentUpon>201310101056238_add_task_history.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311180323319_add_task_and_history_createtime.resx">
+      <DependentUpon>201311180323319_add_task_and_history_createtime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311180502482_modify_task_and_history_to_cellcode.resx">
+      <DependentUpon>201311180502482_modify_task_and_history_to_cellcode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201311180541385_add_task_and_history_storagecode.resx">
+      <DependentUpon>201311180541385_add_task_and_history_storagecode.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

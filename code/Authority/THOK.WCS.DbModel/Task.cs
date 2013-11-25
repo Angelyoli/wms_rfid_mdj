@@ -9,6 +9,8 @@ namespace THOK.WCS.DbModel
         public int PathID { get; set; }
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
+        public string OriginCellCode { get; set; }
+        public string TargetCellCode { get; set; }
         public string OriginStorageCode { get; set; }
         public string TargetStorageCode { get; set; }
         public int OriginPositionID { get; set; }
@@ -25,5 +27,6 @@ namespace THOK.WCS.DbModel
         public int AllotID { get; set; }
         public string DownloadState { get; set; }
         public int StorageSequence { get; set; }
+        public System.DateTime CreateTime { get; set; }
     }
 }

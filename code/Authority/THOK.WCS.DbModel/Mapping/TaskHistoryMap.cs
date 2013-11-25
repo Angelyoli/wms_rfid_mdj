@@ -29,6 +29,12 @@ namespace THOK.WCS.DbModel.Mapping
             this.Property(t => t.ProductName)
                 .IsRequired()
                 .HasMaxLength(20);
+            this.Property(t => t.OriginCellCode)
+                .IsRequired()
+                .HasMaxLength(50);
+            this.Property(t => t.TargetCellCode)
+                .IsRequired()
+                .HasMaxLength(50);
             this.Property(t => t.OriginStorageCode)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -70,6 +76,8 @@ namespace THOK.WCS.DbModel.Mapping
                 .HasMaxLength(1);
             this.Property(t => t.StorageSequence)
                 .IsRequired();
+            this.Property(t => t.CreateTime)
+                .IsRequired();
             this.Property(t => t.ClearTime)
                 .IsRequired();
 
@@ -81,6 +89,8 @@ namespace THOK.WCS.DbModel.Mapping
             this.Property(t => t.PathID).HasColumnName(ColumnMap.Value.To("PathID"));
             this.Property(t => t.ProductCode).HasColumnName(ColumnMap.Value.To("ProductCode"));
             this.Property(t => t.ProductName).HasColumnName(ColumnMap.Value.To("ProductName"));
+            this.Property(t => t.OriginCellCode).HasColumnName(ColumnMap.Value.To("OriginCellCode"));
+            this.Property(t => t.TargetCellCode).HasColumnName(ColumnMap.Value.To("TargetCellCode"));
             this.Property(t => t.OriginStorageCode).HasColumnName(ColumnMap.Value.To("OriginStorageCode"));
             this.Property(t => t.TargetStorageCode).HasColumnName(ColumnMap.Value.To("TargetStorageCode"));
             this.Property(t => t.OriginPositionID).HasColumnName(ColumnMap.Value.To("OriginPositionID"));
@@ -97,6 +107,7 @@ namespace THOK.WCS.DbModel.Mapping
             this.Property(t => t.AllotID).HasColumnName(ColumnMap.Value.To("AllotID"));
             this.Property(t => t.DownloadState).HasColumnName(ColumnMap.Value.To("DownloadState"));
             this.Property(t => t.StorageSequence).HasColumnName(ColumnMap.Value.To("StorageSequence"));
+            this.Property(t => t.CreateTime).HasColumnName(ColumnMap.Value.To("CreateTime"));
             this.Property(t => t.ClearTime).HasColumnName(ColumnMap.Value.To("ClearTime"));
         }
     }

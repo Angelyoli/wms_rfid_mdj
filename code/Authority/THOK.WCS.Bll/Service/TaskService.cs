@@ -109,6 +109,10 @@ namespace THOK.WCS.Bll.Service
                 task.DownloadState = "0";
             if (task.StorageSequence == 0 || task.StorageSequence == null)
                 task.StorageSequence = 0;
+            if (task.OriginStorageCode == "" || task.OriginStorageCode == null)
+                task.OriginStorageCode = "";
+            if (task.TargetStorageCode == "" || task.TargetStorageCode == null)
+                task.TargetStorageCode = "";
         }
 
         public object GetDetails(int page, int rows, Task task)
@@ -158,8 +162,8 @@ namespace THOK.WCS.Bll.Service
                 t.PathID,
                 t.ProductCode,
                 t.ProductName,
-                t.OriginStorageCode,
-                t.TargetStorageCode,
+                t.OriginCellCode,
+                t.TargetCellCode,
                 t.OriginPositionID,
                 t.TargetPositionID,
                 t.CurrentPositionID,
@@ -174,181 +178,191 @@ namespace THOK.WCS.Bll.Service
                 t.AllotID,
                 t.DownloadState,
                 t.StorageSequence,
+                t.CreateTime,
                 p.PathName,
                 OriginRegionName = p.OriginRegion.RegionName,
                 TargetRegionName = p.TargetRegion.RegionName
             })
-                    .Join(cellQuery, t => t.OriginStorageCode, c => c.CellCode, (t, c) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        OriginStorageName = c.CellName
-                    })
-                    .Join(cellQuery, t => t.TargetStorageCode, c => c.CellCode, (t, c) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        TargetStorageName = c.CellName
-                    })
-                    .Join(positionQuery, t => t.OriginPositionID, p => p.ID, (t, p) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        t.TargetStorageName,
-                        OriginPositionName = p.PositionName
-                    })
-                    .Join(positionQuery, t => t.TargetPositionID, p => p.ID, (t, p) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        t.TargetStorageName,
-                        t.OriginPositionName,
-                        TargetPositionName = p.PositionName
-                    })
-                    .Join(positionQuery, t => t.CurrentPositionID, p => p.ID, (t, p) => new
-                    {
-                        t.ID,
-                        t.TaskType,
-                        t.TaskLevel,
-                        t.PathID,
-                        t.ProductCode,
-                        t.ProductName,
-                        t.OriginStorageCode,
-                        t.TargetStorageCode,
-                        t.OriginPositionID,
-                        t.TargetPositionID,
-                        t.CurrentPositionID,
-                        t.CurrentPositionState,
-                        t.State,
-                        t.TagState,
-                        t.Quantity,
-                        t.TaskQuantity,
-                        t.OperateQuantity,
-                        t.OrderID,
-                        t.OrderType,
-                        t.AllotID,
-                        t.DownloadState,
-                        t.StorageSequence,
-                        t.OriginRegionName,
-                        t.TargetRegionName,
-                        t.PathName,
-                        t.OriginStorageName,
-                        t.TargetStorageName,
-                        t.OriginPositionName,
-                        t.TargetPositionName,
-                        CurrentPositionName = p.PositionName
-                    })
-                    .Where(t => t.TaskType.Contains(task.TaskType)
-                        ///路径的 区域
-                               && t.ProductCode.Contains(task.ProductCode)
-                               && t.ProductName.Contains(task.ProductName)
-                               && t.OriginStorageCode.Contains(task.OriginStorageCode)
-                               && t.TargetStorageCode.Contains(task.TargetStorageCode)
-                        ///起始位置，目标位置，当前位置
-                               && t.CurrentPositionState.Contains(task.CurrentPositionState)
-                               && t.State.Contains(task.State)
-                               && t.TagState.Contains(task.TagState)
-                               && t.OrderID.Contains(task.OrderID)
-                               && t.OrderType.Contains(task.OrderType)
-                               && t.DownloadState.Contains(task.DownloadState)
-                             )
-                      .OrderByDescending(t => t.ID)
-                      .Select(t => new
+            .Join(cellQuery, t => t.OriginCellCode, c => c.CellCode, (t, c) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginCellCode,
+                t.TargetCellCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                OriginCellName = c.CellName
+            })
+            .Join(cellQuery, t => t.TargetCellCode, c => c.CellCode, (t, c) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginCellCode,
+                t.TargetCellCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginCellName,
+                TargetCellName = c.CellName
+            })
+            .Join(positionQuery, t => t.OriginPositionID, p => p.ID, (t, p) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginCellCode,
+                t.TargetCellCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginCellName,
+                t.TargetCellName,
+                OriginPositionName = p.PositionName
+            })
+            .Join(positionQuery, t => t.TargetPositionID, p => p.ID, (t, p) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginCellCode,
+                t.TargetCellCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginCellName,
+                t.TargetCellName,
+                t.OriginPositionName,
+                TargetPositionName = p.PositionName
+            })
+            .Join(positionQuery, t => t.CurrentPositionID, p => p.ID, (t, p) => new
+            {
+                t.ID,
+                t.TaskType,
+                t.TaskLevel,
+                t.PathID,
+                t.ProductCode,
+                t.ProductName,
+                t.OriginCellCode,
+                t.TargetCellCode,
+                t.OriginPositionID,
+                t.TargetPositionID,
+                t.CurrentPositionID,
+                t.CurrentPositionState,
+                t.State,
+                t.TagState,
+                t.Quantity,
+                t.TaskQuantity,
+                t.OperateQuantity,
+                t.OrderID,
+                t.OrderType,
+                t.AllotID,
+                t.DownloadState,
+                t.StorageSequence,
+                t.CreateTime,
+                t.OriginRegionName,
+                t.TargetRegionName,
+                t.PathName,
+                t.OriginCellName,
+                t.TargetCellName,
+                t.OriginPositionName,
+                t.TargetPositionName,
+                CurrentPositionName = p.PositionName
+            })
+            .Where(t => t.TaskType.Contains(task.TaskType)
+                        && t.ProductCode.Contains(task.ProductCode)
+                        && t.ProductName.Contains(task.ProductName)
+                        && t.OriginCellCode.Contains(task.OriginCellCode)
+                        && t.TargetCellCode.Contains(task.TargetCellCode)
+                        && t.CurrentPositionState.Contains(task.CurrentPositionState)
+                        && t.State.Contains(task.State)
+                        && t.TagState.Contains(task.TagState)
+                        && t.OrderID.Contains(task.OrderID)
+                        && t.OrderType.Contains(task.OrderType)
+                        && t.DownloadState.Contains(task.DownloadState)
+                        )
+            .OrderByDescending(t => t.ID)
+            .Select(t => t);
+            #endregion
+
+            int total = taskQuery6.Count();
+            taskQuery6 = taskQuery6.Skip((page - 1) * rows).Take(rows);
+
+            var taskQuery7 = taskQuery6.ToArray().Select(t => new
                       {
                           t.ID,
                           t.PathID,
@@ -362,10 +376,10 @@ namespace THOK.WCS.Bll.Service
                           t.ProductCode,
                           t.ProductName,
                           t.PathName,
-                          t.OriginStorageCode,
-                          t.OriginStorageName,
-                          t.TargetStorageCode,
-                          t.TargetStorageName,
+                          t.OriginCellCode,
+                          t.OriginCellName,
+                          t.TargetCellCode,
+                          t.TargetCellName,
                           t.OriginPositionName,
                           t.TargetPositionName,
                           t.CurrentPositionName,
@@ -379,13 +393,10 @@ namespace THOK.WCS.Bll.Service
                           OrderType = t.OrderType == "00" ? "无" : t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : t.OrderType == "05" ? "叠空托盘" : t.OrderType == "06" ? "补空托盘" : t.OrderType == "07" ? "小品种补货" : t.OrderType == "08" ? "出库余烟返库" : t.OrderType == "09" ? "盘点余烟返库" : "异常",
                           t.AllotID,
                           DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常",
-                          t.StorageSequence
+                          t.StorageSequence,
+                          CreateTime = t.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")
                       });
-            #endregion
-
-            int total = taskQuery6.Count();
-            var taskQuery7 = taskQuery6.Skip((page - 1) * rows).Take(rows);
-            return new { total, rows = taskQuery7.ToArray() };
+            return new { total, rows = taskQuery7 };
         }
         public bool Add(Task task, out string strResult)
         {
@@ -394,8 +405,8 @@ namespace THOK.WCS.Bll.Service
 
             InitValue(task);
 
-            var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginStorageCode));
-            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetStorageCode));
+            var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginCellCode));
+            var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetCellCode));
             if (originCellPosition != null && targetCellPosition!=null)
             {
                 //起始位置为货位位置的出库位置
@@ -418,6 +429,8 @@ namespace THOK.WCS.Bll.Service
                                 t.PathID = path.ID;
                                 t.ProductCode = task.ProductCode;
                                 t.ProductName = task.ProductName;
+                                t.OriginCellCode = task.OriginCellCode;
+                                t.TargetCellCode = task.TargetCellCode;
                                 t.OriginStorageCode = task.OriginStorageCode;
                                 t.TargetStorageCode = task.TargetStorageCode;
                                 t.OriginPositionID = originCellPosition.StockOutPositionID;
@@ -441,6 +454,7 @@ namespace THOK.WCS.Bll.Service
                                 t.AllotID = task.AllotID;
                                 t.DownloadState = task.DownloadState;
                                 t.StorageSequence = task.StorageSequence;
+                                t.CreateTime = System.DateTime.Now;
 
                                 TaskRepository.Add(t);
                                 TaskRepository.SaveChanges();
@@ -482,8 +496,8 @@ namespace THOK.WCS.Bll.Service
             var t = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == task.ID);
             if (t != null)
             {
-                var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginStorageCode));
-                var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetStorageCode));
+                var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginCellCode));
+                var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetCellCode));
                 if (originCellPosition != null && targetCellPosition!=null)
                 {
                     //起始位置为货位位置的出库位置
@@ -505,8 +519,8 @@ namespace THOK.WCS.Bll.Service
                                     t.PathID = path.ID;
                                     t.ProductCode = task.ProductCode;
                                     t.ProductName = task.ProductName;
-                                    t.OriginStorageCode = task.OriginStorageCode;
-                                    t.TargetStorageCode = task.TargetStorageCode;
+                                    t.OriginCellCode = task.OriginCellCode;
+                                    t.TargetCellCode = task.TargetCellCode;
                                     t.OriginPositionID = originCellPosition.StockOutPositionID;
                                     t.TargetPositionID = targetCellPosition.StockInPositionID;
                                     if (task.CurrentPositionID == 0 || task.CurrentPositionID == null)
@@ -685,6 +699,8 @@ namespace THOK.WCS.Bll.Service
             taskHistory.PathID = task.PathID;
             taskHistory.ProductCode = task.ProductCode;
             taskHistory.ProductName = task.ProductName;
+            taskHistory.OriginCellCode = task.OriginCellCode;
+            taskHistory.TargetCellCode = task.TargetCellCode;
             taskHistory.OriginStorageCode = task.OriginStorageCode;
             taskHistory.TargetStorageCode = task.TargetStorageCode;
             taskHistory.OriginPositionID = task.OriginPositionID;
@@ -701,6 +717,7 @@ namespace THOK.WCS.Bll.Service
             taskHistory.AllotID = task.AllotID;
             taskHistory.DownloadState = task.DownloadState;
             taskHistory.StorageSequence = task.StorageSequence;
+            taskHistory.CreateTime = task.CreateTime;
             taskHistory.ClearTime = System.DateTime.Now;
 
             TaskHistoryRepository.Add(taskHistory);
@@ -761,8 +778,10 @@ namespace THOK.WCS.Bll.Service
                         inTask.PathID = path.ID;
                         inTask.ProductCode = inBillAllot.Product.ProductCode;
                         inTask.ProductName = inBillAllot.Product.ProductName;
-                        inTask.OriginStorageCode = originCell.CellCode;
-                        inTask.TargetStorageCode = inBillAllot.CellCode;
+                        inTask.OriginCellCode = originCell.CellCode;
+                        inTask.TargetCellCode = inBillAllot.CellCode;
+                        inTask.OriginStorageCode = "";
+                        inTask.TargetStorageCode = "";
                         inTask.OriginPositionID = Convert.ToInt32(originSystemParam.ParameterValue);
                         inTask.TargetPositionID = targetPosition.ID;
                         inTask.CurrentPositionID = Convert.ToInt32(originSystemParam.ParameterValue);
@@ -777,6 +796,8 @@ namespace THOK.WCS.Bll.Service
                         inTask.AllotID = inBillAllot.ID;
                         inTask.DownloadState = "0";
                         inTask.StorageSequence = 0;
+                        inTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(inTask);
                     }
 
@@ -847,8 +868,10 @@ namespace THOK.WCS.Bll.Service
                         outTask.PathID = path.ID;
                         outTask.ProductCode = outBillAllot.Product.ProductCode;
                         outTask.ProductName = outBillAllot.Product.ProductName;
-                        outTask.OriginStorageCode = outBillAllot.CellCode;
-                        outTask.TargetStorageCode = targetCell.CellCode;
+                        outTask.OriginCellCode = outBillAllot.CellCode;
+                        outTask.TargetCellCode = targetCell.CellCode;
+                        outTask.OriginStorageCode = "";
+                        outTask.TargetStorageCode = "";
                         outTask.OriginPositionID = originPosition.ID;
                         outTask.TargetPositionID = targetPosition.ID;
                         outTask.CurrentPositionID = originPosition.ID;
@@ -863,6 +886,8 @@ namespace THOK.WCS.Bll.Service
                         outTask.AllotID = outBillAllot.ID;
                         outTask.DownloadState = "0";
                         outTask.StorageSequence = outBillAllot.Storage.StorageSequence;
+                        outTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(outTask);
                     }
 
@@ -933,8 +958,10 @@ namespace THOK.WCS.Bll.Service
                         moveTask.PathID = path.ID;
                         moveTask.ProductCode = moveBillDetail.Product.ProductCode;
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
-                        moveTask.OriginStorageCode = moveBillDetail.OutCellCode;
-                        moveTask.TargetStorageCode = moveBillDetail.InCellCode;
+                        moveTask.OriginCellCode = moveBillDetail.OutCellCode;
+                        moveTask.TargetCellCode = moveBillDetail.InCellCode;
+                        moveTask.OriginStorageCode = "";
+                        moveTask.TargetStorageCode = "";
                         moveTask.OriginPositionID = originPosition.ID;
                         moveTask.TargetPositionID = targetPosition.ID;
                         moveTask.CurrentPositionID = originPosition.ID;
@@ -949,6 +976,8 @@ namespace THOK.WCS.Bll.Service
                         moveTask.AllotID = moveBillDetail.ID;
                         moveTask.DownloadState = "0";
                         moveTask.StorageSequence = moveBillDetail.OutStorage.StorageSequence;
+                        moveTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(moveTask);
                     }
 
@@ -1009,8 +1038,10 @@ namespace THOK.WCS.Bll.Service
                     moveTask.PathID = path.ID;
                     moveTask.ProductCode = moveBillDetail.Product.ProductCode;
                     moveTask.ProductName = moveBillDetail.Product.ProductName;
-                    moveTask.OriginStorageCode = moveBillDetail.OutCellCode;
-                    moveTask.TargetStorageCode = moveBillDetail.InCellCode;
+                    moveTask.OriginCellCode = moveBillDetail.OutCellCode;
+                    moveTask.TargetCellCode = moveBillDetail.InCellCode;
+                    moveTask.OriginStorageCode = "";
+                    moveTask.TargetStorageCode = "";
                     moveTask.OriginPositionID = originPosition.ID;
                     moveTask.TargetPositionID = targetPosition.ID;
                     moveTask.CurrentPositionID = originPosition.ID;
@@ -1025,6 +1056,8 @@ namespace THOK.WCS.Bll.Service
                     moveTask.AllotID = moveBillDetail.ID;
                     moveTask.DownloadState = "0";
                     moveTask.StorageSequence = moveBillDetail.OutStorage.StorageSequence;
+                    moveTask.CreateTime = System.DateTime.Now;
+
                     TaskRepository.Add(moveTask);
                 }
 
@@ -1103,8 +1136,10 @@ namespace THOK.WCS.Bll.Service
                         checkTask.PathID = path.ID;
                         checkTask.ProductCode = checkItem.Product.ProductCode;
                         checkTask.ProductName = checkItem.Product.ProductName;
-                        checkTask.OriginStorageCode = checkItem.CellCode;
-                        checkTask.TargetStorageCode = targetCell.CellCode;
+                        checkTask.OriginCellCode = checkItem.CellCode;
+                        checkTask.TargetCellCode = targetCell.CellCode;
+                        checkTask.OriginStorageCode = "";
+                        checkTask.TargetStorageCode = "";
                         checkTask.OriginPositionID = originPosition.ID;
                         checkTask.TargetPositionID = targetPosition.ID;
                         checkTask.CurrentPositionID = originPosition.ID;
@@ -1119,6 +1154,8 @@ namespace THOK.WCS.Bll.Service
                         checkTask.AllotID = checkItem.ID;
                         checkTask.DownloadState = "0";
                         checkTask.StorageSequence = checkItem.Storage.StorageSequence;
+                        checkTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(checkTask);
                     }
 
@@ -1185,8 +1222,10 @@ namespace THOK.WCS.Bll.Service
                         moveTask.PathID = path.ID;
                         moveTask.ProductCode = moveBillDetail.Product.ProductCode;
                         moveTask.ProductName = moveBillDetail.Product.ProductName;
-                        moveTask.OriginStorageCode = moveBillDetail.OutCellCode;
-                        moveTask.TargetStorageCode = moveBillDetail.InCellCode;
+                        moveTask.OriginCellCode = moveBillDetail.OutCellCode;
+                        moveTask.TargetCellCode = moveBillDetail.InCellCode;
+                        moveTask.OriginStorageCode = "";
+                        moveTask.TargetStorageCode = "";
                         moveTask.OriginPositionID = originPosition.ID;
                         moveTask.TargetPositionID = targetPosition.ID;
                         moveTask.CurrentPositionID = originPosition.ID;
@@ -1201,9 +1240,10 @@ namespace THOK.WCS.Bll.Service
                         moveTask.AllotID = moveBillDetail.ID;
                         moveTask.DownloadState = "0";
                         moveTask.StorageSequence = moveBillDetail.OutStorage.StorageSequence;
+                        moveTask.CreateTime = System.DateTime.Now;
+
                         TaskRepository.Add(moveTask);
                     }
-
                     moveBillMaster.Status = "3";
                     TaskRepository.SaveChanges();
                     scope.Complete();
@@ -1331,8 +1371,10 @@ namespace THOK.WCS.Bll.Service
                 newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
-                newTask.OriginStorageCode = originCell.CellCode;
-                newTask.TargetStorageCode = cell.CellCode;
+                newTask.OriginCellCode = originCell.CellCode;
+                newTask.TargetCellCode = cell.CellCode;
+                newTask.OriginStorageCode = "";
+                newTask.TargetStorageCode = targetStorage.StorageCode;
                 newTask.OriginPositionID = position.ID;
                 newTask.TargetPositionID = cellPosition.StockInPositionID;
                 newTask.CurrentPositionID = position.ID;
@@ -1346,6 +1388,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.OrderType = "05";
                 newTask.DownloadState = "0";
                 newTask.StorageSequence = 0;
+                newTask.CreateTime = System.DateTime.Now;
+
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 result = true;
@@ -1440,8 +1484,10 @@ namespace THOK.WCS.Bll.Service
                 newTask.PathID = path.ID;
                 newTask.ProductCode = palletCode;
                 newTask.ProductName = "空托盘";
-                newTask.OriginStorageCode = storage.CellCode;
-                newTask.TargetStorageCode = positionCell != null ? positionCell.CellCode : "";
+                newTask.OriginCellCode = storage.CellCode;
+                newTask.TargetCellCode = positionCell != null ? positionCell.CellCode : "";
+                newTask.OriginStorageCode = storage.StorageCode;
+                newTask.TargetStorageCode = "";
                 newTask.OriginPositionID = cellPosition.StockOutPositionID;
                 newTask.TargetPositionID = position.ID;
                 newTask.CurrentPositionID = cellPosition.StockOutPositionID;
@@ -1455,6 +1501,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.OrderType = "06";               
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
+                newTask.CreateTime = System.DateTime.Now;
+
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 result = true;
@@ -1502,8 +1550,10 @@ namespace THOK.WCS.Bll.Service
                 newTask.PathID = path.ID;
                 newTask.ProductCode = task.ProductCode;
                 newTask.ProductName = task.ProductName;
-                newTask.OriginStorageCode = task.TargetStorageCode;
-                newTask.TargetStorageCode = task.OriginStorageCode;
+                newTask.OriginCellCode = task.TargetCellCode;
+                newTask.TargetCellCode = task.OriginCellCode;
+                newTask.OriginStorageCode = "";
+                newTask.TargetStorageCode = "";
                 newTask.OriginPositionID = task.CurrentPositionID;
                 newTask.TargetPositionID = cellPosition.StockInPositionID;
                 newTask.CurrentPositionID = task.CurrentPositionID;
@@ -1518,6 +1568,8 @@ namespace THOK.WCS.Bll.Service
                 newTask.AllotID = task.AllotID;
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
+                newTask.CreateTime = System.DateTime.Now;
+
                 TaskRepository.Add(newTask);
                 TaskRepository.SaveChanges();
                 return newTask.ID;
@@ -1531,7 +1583,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null && task.State == "04")
             {
-                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo);
+                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode,task.OriginStorageCode,task.TargetStorageCode, out errorInfo);
             }
             else
             {
@@ -1539,7 +1591,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-        public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originStorageCode, string targetStorageCode, out string errorInfo)
+        public bool FinishTask(int taskID, string orderType, string orderID, int allotID, string originCellCode, string targetCellCode, string originStorageCode, string targetStorageCode, out string errorInfo)
         {
             errorInfo = string.Empty;
             switch (orderType)
@@ -1548,8 +1600,8 @@ namespace THOK.WCS.Bll.Service
                 case "02": return FinishMoveBillTask(orderID, allotID, out errorInfo);
                 case "03": return FinishOutBillTask(orderID, allotID, out errorInfo);
                 case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
-                case "05": return FinishEmptyPalletStackTask(targetStorageCode, orderID, out errorInfo);
-                case "06": return FinishEmptyPalletSupplyTask(originStorageCode, orderID,out errorInfo);
+                case "05": return FinishEmptyPalletStackTask(targetCellCode,targetStorageCode, out errorInfo);
+                case "06": return FinishEmptyPalletSupplyTask(originCellCode,originStorageCode, out errorInfo);
                 case "07": return FinishMoveRemainMoveBackTask(orderID, allotID);
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
@@ -2198,7 +2250,7 @@ namespace THOK.WCS.Bll.Service
                             foreach (var cell in cells)
                             {
                                 var task = TaskRepository.GetQueryable()
-                                    .Where(t => t.State != "04" && t.TargetStorageCode == cell.CellCode)
+                                    .Where(t => t.State != "04" && t.TargetCellCode == cell.CellCode)
                                     .FirstOrDefault();
                                 if (task == null)
                                 {
@@ -2287,7 +2339,7 @@ namespace THOK.WCS.Bll.Service
                                 a.ID,
                                 a.TaskType,
                                 a.CurrentPositionID,                                
-                                a.TargetStorageCode,
+                                TargetStorageCode = a.TargetCellCode,
                                 a.OrderID,
                                 a.OrderType,
                                 a.ProductCode,
@@ -2373,7 +2425,7 @@ namespace THOK.WCS.Bll.Service
                                 a.ID,
                                 a.TaskType,
                                 a.CurrentPositionID,
-                                a.TargetStorageCode,
+                                TargetStorageCode = a.TargetCellCode,
                                 a.OrderID,
                                 a.OrderType,
                                 a.ProductCode,
@@ -2461,7 +2513,7 @@ namespace THOK.WCS.Bll.Service
                                 a.ID,
                                 a.TaskType,
                                 a.CurrentPositionID,
-                                a.TargetStorageCode,
+                                TargetStorageCode = a.TargetCellCode,
                                 a.OrderID,
                                 a.OrderType,
                                 a.ProductCode,
@@ -2562,7 +2614,7 @@ namespace THOK.WCS.Bll.Service
                 var task = TaskRepository.GetQueryable().FirstOrDefault(a => a.ID == tid);
                 var position = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == task.CurrentPositionID);
 
-                if (FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
+                if (FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode, task.OriginStorageCode, task.TargetStorageCode, out errorInfo))
                 {
                     using (TransactionScope scope = new TransactionScope())
                     {
