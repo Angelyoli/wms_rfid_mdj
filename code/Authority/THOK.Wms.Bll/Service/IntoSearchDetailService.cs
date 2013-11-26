@@ -40,7 +40,7 @@ namespace THOK.Wms.Bll.Service
                 i.UnitCode,
                 i.Unit.UnitName,
                 RealQuantity = i.RealQuantity / i.Unit.Count,
-                i.Status
+                Status = i.Status == "0" ? "未开始" : i.Status == "1" ? "已申请" : i.Status == "2" ? "已完成" : "异常"
             });
             return new { total, rows = inBillAllotDetail.ToArray() };
         }
