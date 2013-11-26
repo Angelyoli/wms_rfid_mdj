@@ -2325,276 +2325,289 @@ namespace THOK.WCS.Bll.Service
 
                 var taskQuery = TaskRepository.GetQueryable().Where(a => a.OrderType == orderType && a.State != "04");
                 var positionQuery = PositionRepository.GetQueryable().Where(a => a.PositionType == positionType);
-                
+
                 var outBillAllotQuery = OutBillAllotRepository.GetQueryable();
                 var moveBillDetailQuery = MoveBillDetailRepository.GetQueryable();
                 var checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
-                var cellPosition =CellPositionRepository.GetQueryable();
-                var cell =CellRepository.GetQueryable();
+                var cellPosition = CellPositionRepository.GetQueryable();
+                var cell = CellRepository.GetQueryable();
+                //var outTask = null;
+                if (orderType == "03")
+                {
+                    #region 出库
+                    RestTask = taskQuery
+                                .Join(outBillAllotQuery, a => a.AllotID, o => o.ID, (a, o) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    TargetStorageCode = a.TargetCellCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    o.Product,
+                                    o.AllotQuantity
+                                })
+                                .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
+                                {
 
-                #region 出库
-                var outTask = taskQuery
-                            .Join(outBillAllotQuery, a => a.AllotID, o => o.ID, (a, o) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,                                
-                                TargetStorageCode = a.TargetCellCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                o.Product,
-                                o.AllotQuantity
-                            })
-                            .Join(cellPosition,a=> a.CurrentPositionID,c=>c.StockInPositionID,(a,c)=>new{
-                            
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,                                
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.Product,
-                                a.AllotQuantity,
-                                c.CellCode
-                            })
-                            .Join(cell,a=>a.CellCode,c=>c.CellCode,(a,c)=>new{
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,                                
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.Product,
-                                a.AllotQuantity,
-                                a.CellCode,
-                                c.CellName                            
-                            })
-                            .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.AllotQuantity,
-                                a.Product,
-                                a.CellCode,
-                                a.CellName
-                            })
-                            .Select(i => new RestTask()
-                            {
-                                TaskID = i.ID,
-                                CellName = i.CellName,
-                                ProductCode = i.ProductCode,
-                                ProductName = i.ProductName,
-                                OrderID = i.OrderID,
-                                OrderType = i.OrderType == "02" ? "移库" : i.OrderType == "03" ? "出库" : "盘点",
-                                Quantity = i.Quantity,
-                                TaskQuantity = i.AllotQuantity / i.Product.Unit.Count,
-                                PieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
-                                BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
-                            })
-                            .ToArray();
-                #endregion}
-
-                #region 移库
-                var moveTask = taskQuery
-                            .Join(moveBillDetailQuery, a => a.AllotID, m => m.ID, (a, m) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,
-                                TargetStorageCode = a.TargetCellCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                m.RealQuantity,
-                                m.Product
-                            })
-                            .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
-                            {
-
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.Product,
-                                a.RealQuantity,
-                                c.CellCode
-                            })
-                            .Join(cell, a => a.CellCode, c => c.CellCode, (a, c) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.Product,
-                                a.RealQuantity,
-                                a.CellCode,
-                                c.CellName
-                            })
-                            .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.RealQuantity,
-                                a.Product,
-                                a.CellCode,
-                                a.CellName
-                            })
-                            .Select(i => new RestTask()
-                            {
-                                TaskID = i.ID,
-                                CellName = i.CellName,
-                                ProductCode = i.ProductCode,
-                                ProductName = i.ProductName,
-                                OrderID = i.OrderID,
-                                OrderType = i.OrderType == "02" ? "移库" : i.OrderType == "03" ? "出库" : "盘点",
-                                Quantity = i.Quantity,
-                                TaskQuantity = i.RealQuantity / i.Product.Unit.Count,
-                                PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
-                                BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
-                            })
-                            .ToArray();
-                #endregion
-
-                #region 盘点
-                var checkTask = taskQuery
-                            .Join(checkBillDetailQuery, a => a.AllotID, o => o.ID, (a, o) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,
-                                TargetStorageCode = a.TargetCellCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                o.Product,
-                                checkQuantity = o.Quantity
-                            })
-                            .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
-                            {
-
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.Product,
-                                a.checkQuantity,
-                                c.CellCode
-                            })
-                            .Join(cell, a => a.CellCode, c => c.CellCode, (a, c) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.CurrentPositionID,
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.Product,
-                                a.checkQuantity,
-                                a.CellCode,
-                                c.CellName
-                            })
-                            .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
-                            {
-                                a.ID,
-                                a.TaskType,
-                                a.TargetStorageCode,
-                                a.OrderID,
-                                a.OrderType,
-                                a.ProductCode,
-                                a.ProductName,
-                                a.Quantity,
-                                a.TaskQuantity,
-                                a.State,
-                                a.checkQuantity,
-                                a.Product,
-                                a.CellCode,
-                                a.CellName
-                            })
-                            .Select(i => new RestTask()
-                            {
-                                TaskID = i.ID,
-                                CellName = i.CellName,
-                                ProductCode = i.ProductCode,
-                                ProductName = i.ProductName,
-                                OrderID = i.OrderID,
-                                OrderType = i.OrderType == "02" ? "移库" : i.OrderType == "03" ? "出库" : "盘点",
-                                Quantity = i.Quantity,
-                                TaskQuantity = i.checkQuantity / i.Product.Unit.Count,
-                                PieceQuantity = Math.Floor(i.checkQuantity / i.Product.UnitList.Unit01.Count),
-                                BarQuantity = Math.Floor((i.checkQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
-                                Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
-                            })
-                            .ToArray();
-                #endregion
-
-                RestTask = RestTask.Concat(outTask).Concat(moveTask).Concat(checkTask).OrderBy(t=>t.CellCode).ToArray();
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.Product,
+                                    a.AllotQuantity,
+                                    c.CellCode
+                                })
+                                .Join(cell, a => a.CellCode, c => c.CellCode, (a, c) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.Product,
+                                    a.AllotQuantity,
+                                    a.CellCode,
+                                    c.CellName
+                                })
+                                .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.AllotQuantity,
+                                    a.Product,
+                                    a.CellCode,
+                                    a.CellName
+                                })
+                                .Select(i => new RestTask()
+                                {
+                                    TaskID = i.ID,
+                                    CellName = i.CellName,
+                                    ProductCode = i.ProductCode,
+                                    ProductName = i.ProductName,
+                                    OrderID = i.OrderID,
+                                    OrderType = i.OrderType == "02" ? "移库" : i.OrderType == "03" ? "出库" : "盘点",
+                                    Quantity = i.Quantity,
+                                    TaskQuantity = i.AllotQuantity / i.Product.Unit.Count,
+                                    PieceQuantity = Math.Floor(i.AllotQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
+                                })
+                                .OrderBy(t => t.CellCode)
+                                .ToArray();
+                    #endregion}
+                }
+                else if (orderType == "02")
+                {
+                    #region 移库
+                    RestTask = taskQuery
+                                .Join(moveBillDetailQuery, a => a.AllotID, m => m.ID, (a, m) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    TargetStorageCode = a.TargetCellCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    m.RealQuantity,
+                                    m.Product
+                                })
+                                .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.Product,
+                                    a.RealQuantity,
+                                    c.CellCode
+                                })
+                                .Join(cell, a => a.CellCode, c => c.CellCode, (a, c) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.Product,
+                                    a.RealQuantity,
+                                    a.CellCode,
+                                    c.CellName
+                                })
+                                .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.RealQuantity,
+                                    a.Product,
+                                    a.CellCode,
+                                    a.CellName
+                                })
+                                .Select(i => new RestTask()
+                                {
+                                    TaskID = i.ID,
+                                    CellName = i.CellName,
+                                    ProductCode = i.ProductCode,
+                                    ProductName = i.ProductName,
+                                    OrderID = i.OrderID,
+                                    OrderType = i.OrderType == "02" ? "移库" : i.OrderType == "03" ? "出库" : "盘点",
+                                    Quantity = i.Quantity,
+                                    TaskQuantity = i.RealQuantity / i.Product.Unit.Count,
+                                    PieceQuantity = Math.Floor(i.RealQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
+                                })
+                                .OrderBy(t => t.CellCode)
+                                .ToArray();
+                    #endregion
+                }
+                else if (orderType == "04")
+                {
+                    #region 盘点
+                    RestTask = taskQuery
+                                .Join(checkBillDetailQuery, a => a.AllotID, o => o.ID, (a, o) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    TargetStorageCode = a.TargetCellCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    o.Product,
+                                    checkQuantity = o.Quantity
+                                })
+                                .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.Product,
+                                    a.checkQuantity,
+                                    c.CellCode
+                                })
+                                .Join(cell, a => a.CellCode, c => c.CellCode, (a, c) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.CurrentPositionID,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.Product,
+                                    a.checkQuantity,
+                                    a.CellCode,
+                                    c.CellName
+                                })
+                                .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
+                                {
+                                    a.ID,
+                                    a.TaskType,
+                                    a.TargetStorageCode,
+                                    a.OrderID,
+                                    a.OrderType,
+                                    a.ProductCode,
+                                    a.ProductName,
+                                    a.Quantity,
+                                    a.TaskQuantity,
+                                    a.State,
+                                    a.checkQuantity,
+                                    a.Product,
+                                    a.CellCode,
+                                    a.CellName
+                                })
+                                .Select(i => new RestTask()
+                                {
+                                    TaskID = i.ID,
+                                    CellName = i.CellName,
+                                    ProductCode = i.ProductCode,
+                                    ProductName = i.ProductName,
+                                    OrderID = i.OrderID,
+                                    OrderType = i.OrderType == "02" ? "移库" : i.OrderType == "03" ? "出库" : "盘点",
+                                    Quantity = i.Quantity,
+                                    TaskQuantity = i.checkQuantity / i.Product.Unit.Count,
+                                    PieceQuantity = Math.Floor(i.checkQuantity / i.Product.UnitList.Unit01.Count),
+                                    BarQuantity = Math.Floor((i.checkQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
+                                    Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
+                                })
+                                .OrderBy(t => t.CellCode)
+                                .ToArray();
+                    #endregion
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "查询的订单类型不存在，请检查！";
+                }
                 result.IsSuccess = true;
                 result.RestTasks = RestTask;
             }
