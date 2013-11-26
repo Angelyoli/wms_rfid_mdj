@@ -71,7 +71,7 @@ namespace THOK.Wms.Bll.Service
                 storages = storageQuery.Where(s => s.Cell.CellCode == id);
             }
 
-            var temp = storages.Where(s=>s.Quantity>0).OrderBy(s=>s.CellCode).Select(s => s);
+            var temp = storages.Where(s => s.Quantity > 0).OrderBy(s => s.CellCode).ThenBy(s => s.StorageSequence).Select(s => s);
 
             int total = temp.Count();
             temp = temp.Skip((page - 1) * rows).Take(rows);
@@ -88,7 +88,8 @@ namespace THOK.Wms.Bll.Service
                 Quantity = s.Quantity / s.Product.Unit.Count,
                 IsActive = s.IsActive == "1" ? "可用" : "不可用",
                 StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd"),
+                s.StorageSequence
             });
             return new { total, rows = tmp.ToArray() };
         }
@@ -211,19 +212,19 @@ namespace THOK.Wms.Bll.Service
 
             var storage = temp.ToArray().Select(s => new
             {
-                    s.StorageCode,
-                    s.Cell.CellCode,
-                    s.Cell.CellName,
-                    ProductCode = s.Product == null ? "" : s.Product.ProductCode,
-                    ProductName = s.Product == null ? "" : s.Product.ProductName,
-                    UnitCode = s.Product == null ? "" : s.Product.Unit.UnitCode,
-                    UnitName = s.Product == null ? "" : s.Product.Unit.UnitName,
-                    Price = s.Product == null ? 0 : s.Product.CostPrice,
-                    Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
-                    IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                    IsWholePallet,
-                    s.StorageSequence,
-                    StorageTime = s.StorageTime.ToString("yyyy-MM-dd")
+                s.StorageCode,
+                s.Cell.CellCode,
+                s.Cell.CellName,
+                ProductCode = s.Product == null ? "" : s.Product.ProductCode,
+                ProductName = s.Product == null ? "" : s.Product.ProductName,
+                UnitCode = s.Product == null ? "" : s.Product.Unit.UnitCode,
+                UnitName = s.Product == null ? "" : s.Product.Unit.UnitName,
+                Price = s.Product == null ? 0 : s.Product.CostPrice,
+                Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
+                IsActive = s.IsActive == "1" ? "可用" : "不可用",
+                IsWholePallet,
+                s.StorageSequence,
+                StorageTime = s.StorageTime.ToString("yyyy-MM-dd")
             });
             return new { total, rows = storage.ToArray() };
         }

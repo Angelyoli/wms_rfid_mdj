@@ -150,7 +150,7 @@
         }
     }
 </script>
-<div id="addCheck" class="easyui-dialog" modal="true" style="width: 840px; height: 460px;
+<div id="addCheck" class="easyui-dialog" modal="true" style="width: 910px; height: 510px;
     padding: 1px 1px" closed="true" buttons="#dlg-buttons">
     <div id="checkTabs" class="easyui-tabs" fit="true">
         <div title="货位盘点" id="cellCheck">
@@ -164,14 +164,14 @@
                         fit="true" pagination="true" rownumbers="true">
                         <thead>
                             <tr>
-                                <th field="CellCode" width="60">
+                                <th field="StorageCode" width="60" hidden="true">
+                                    储存编码
+                                </th>
+                                <th field="CellCode" width="80">
                                     货位编码
                                 </th>
                                 <th field="CellName" width="80">
                                     货位名称
-                                </th>
-                                <th field="StorageCode" width="60">
-                                    储存编码
                                 </th>
                                 <th field="ProductCode" width="60">
                                     产品编码
@@ -184,6 +184,12 @@
                                 </th>
                                 <th field="Quantity" width="60">
                                     数量
+                                </th>
+                                <th field="StorageSequence" width="60">
+                                    库存顺序
+                                </th>
+                                <th field="StorageTime" width="80">
+                                    库存时间
                                 </th>
                             </tr>
                         </thead>

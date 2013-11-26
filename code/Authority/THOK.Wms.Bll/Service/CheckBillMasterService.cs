@@ -245,7 +245,7 @@ namespace THOK.Wms.Bll.Service
                 }
             }
             var storages = storageQuery.Where(s => (ware.Contains(s.Cell.Shelf.Area.Warehouse.WarehouseCode) || area.Contains(s.Cell.Shelf.Area.AreaCode) || shelf.Contains(s.Cell.Shelf.ShelfCode) || cell.Contains(s.Cell.CellCode)) && s.Quantity > 0 && s.IsLock == "0")
-                                       .OrderBy(s => s.StorageCode)
+                                       .OrderBy(s => s.CellCode).ThenBy(s => s.StorageSequence)
                                        .Select(s => s);
 
             int total = storages.Count();
@@ -263,7 +263,8 @@ namespace THOK.Wms.Bll.Service
                                            Quantity = s.Quantity / s.Product.Unit.Count,
                                            IsActive = s.IsActive == "1" ? "可用" : "不可用",
                                            StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                                           UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                                           UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd"),
+                                           s.StorageSequence
                                        });
             return new { total, rows = temp.ToArray() };
         }

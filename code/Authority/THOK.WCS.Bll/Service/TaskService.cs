@@ -2331,7 +2331,7 @@ namespace THOK.WCS.Bll.Service
                 var checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
                 var cellPosition = CellPositionRepository.GetQueryable();
                 var cell = CellRepository.GetQueryable();
-                //var outTask = null;
+                
                 if (orderType == "03")
                 {
                     #region 出库
