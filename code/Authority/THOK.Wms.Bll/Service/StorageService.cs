@@ -204,10 +204,12 @@ namespace THOK.Wms.Bll.Service
             {
                 storageQuery = storageQuery.Where(s => s.OutFrozenQuantity == 0);
             }
-            int total = storageQuery.Count();
-            storageQuery = storageQuery.Skip((page - 1) * rows).Take(rows);
 
-            var storage = storageQuery.Select(s => new
+            var temp = storageQuery.Select(s => s);
+            int total = temp.Count();
+            temp = temp.Skip((page - 1) * rows).Take(rows);
+
+            var storage = temp.ToArray().Select(s => new
             {
                     s.StorageCode,
                     s.Cell.CellCode,
@@ -220,7 +222,8 @@ namespace THOK.Wms.Bll.Service
                     Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
                     IsActive = s.IsActive == "1" ? "可用" : "不可用",
                     IsWholePallet,
-                    s.StorageSequence
+                    s.StorageSequence,
+                    StorageTime = s.StorageTime.ToString("yyyy-MM-dd")
             });
             return new { total, rows = storage.ToArray() };
         }

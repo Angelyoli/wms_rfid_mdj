@@ -90,7 +90,7 @@
         $("#cellDetail").datagrid('reload');
     }
 </script>
-<div id="cellData" class="easyui-dialog" modal="true" style="width: 840px; height: 500px;
+<div id="cellData" class="easyui-dialog" modal="true" style="width: 910px; height: 500px;
     padding: 1px 1px" closed="true" buttons="#dlg-cellDatabuttons" toolbar = "#btnQuery">
     <div class="easyui-layout" fit="true">
         <div id="sidebar" region="west" border="false" style="width: 220px; border-right-style: solid;
@@ -126,6 +126,9 @@
                         </th>
                         <th field="StorageSequence" width="60">
                             库存顺序
+                        </th>
+                        <th field="StorageTime" width="80">
+                            库存时间
                         </th>
                         <th field="IsWholePallet" width="60" hidden="true">
                             是否整托盘
