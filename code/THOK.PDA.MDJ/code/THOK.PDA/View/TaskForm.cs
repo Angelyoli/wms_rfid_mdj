@@ -50,7 +50,7 @@ namespace THOK.PDA.View
             tableStyle.GridColumnStyles.Add(columnStyle);
 
             columnStyle = new DataGridTextBoxColumn();
-            columnStyle.MappingName = "CellName";
+            columnStyle.MappingName = "TargetCellName";
             columnStyle.HeaderText = "»õÎ»Ãû³Æ";
             columnStyle.Width = 90;
             tableStyle.GridColumnStyles.Add(columnStyle);
@@ -70,7 +70,7 @@ namespace THOK.PDA.View
             dgInfo.TableStyles.Add(tableStyle);
 
             DataView dataView = new DataView(detailTable);
-            dataView.Sort = "CellName";
+            dataView.Sort = "TargetCellName";
             dgInfo.DataSource = dataView;
 
             if (detailTable.Rows.Count != 0)
@@ -114,7 +114,8 @@ namespace THOK.PDA.View
                     task.TaskID = Convert.ToInt32(dr[0]["TaskID"]);
                     task.OrderID = dr[0]["OrderID"].ToString();
                     task.OrderType = dr[0]["OrderType"].ToString();
-                    task.CellName = dr[0]["CellName"].ToString();
+                    task.OriginCellName = dr[0]["OriginCellName"].ToString();
+                    task.TargetCellName = dr[0]["TargetCellName"].ToString();
                     task.Quantity = Convert.ToDecimal(dr[0]["Quantity"]);
                     task.PieceQuantity = Convert.ToDecimal(dr[0]["PieceQuantity"]);
                     task.BarQuantity = Convert.ToDecimal(dr[0]["BarQuantity"]);
