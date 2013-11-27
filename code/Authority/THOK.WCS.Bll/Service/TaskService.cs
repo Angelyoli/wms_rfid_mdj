@@ -2284,7 +2284,8 @@ namespace THOK.WCS.Bll.Service
                     && s.Quantity > 0
                     && s.OutFrozenQuantity == 0
                     && s.Cell.Area.AllotOutOrder > 0
-                    && s.Cell.IsActive == "1");
+                    && s.Cell.IsActive == "1"
+                    && s.IsLock == "0");
 
 
             //分配整托盘烟；固定拆盘位； 
