@@ -2332,7 +2332,7 @@ namespace THOK.WCS.Bll.Service
                 var checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
                 var cellPosition = CellPositionRepository.GetQueryable();
                 var cell = CellRepository.GetQueryable();
-                //var outTask = null;
+
                 if (orderType == "03")
                 {
                     #region 出库
@@ -2342,7 +2342,6 @@ namespace THOK.WCS.Bll.Service
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    TargetStorageCode = a.TargetCellCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2351,15 +2350,17 @@ namespace THOK.WCS.Bll.Service
                                     a.TaskQuantity,
                                     a.State,
                                     o.Product,
-                                    o.AllotQuantity
+                                    o.AllotQuantity,
+                                    OriginCellCode = o.Cell.CellCode,
+                                    OriginCellName = o.Cell.CellName
                                 })
                                 .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
                                 {
-
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    a.TargetStorageCode,
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2376,7 +2377,6 @@ namespace THOK.WCS.Bll.Service
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    a.TargetStorageCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2386,14 +2386,15 @@ namespace THOK.WCS.Bll.Service
                                     a.State,
                                     a.Product,
                                     a.AllotQuantity,
-                                    a.CellCode,
-                                    c.CellName
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
+                                    TargetCellCode = a.CellCode,
+                                    TargetCellName = c.CellName
                                 })
                                 .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
                                 {
                                     a.ID,
                                     a.TaskType,
-                                    a.TargetStorageCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2403,13 +2404,18 @@ namespace THOK.WCS.Bll.Service
                                     a.State,
                                     a.AllotQuantity,
                                     a.Product,
-                                    a.CellCode,
-                                    a.CellName
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
+                                    a.TargetCellCode,
+                                    a.TargetCellName
                                 })
                                 .Select(i => new RestTask()
                                 {
                                     TaskID = i.ID,
-                                    CellName = i.CellName,
+                                    OriginCellCode = i.OriginCellCode,
+                                    OriginCellName = i.OriginCellName,
+                                    TargetCellCode = i.TargetCellCode,
+                                    TargetCellName = i.TargetCellName,
                                     ProductCode = i.ProductCode,
                                     ProductName = i.ProductName,
                                     OrderID = i.OrderID,
@@ -2420,7 +2426,7 @@ namespace THOK.WCS.Bll.Service
                                     BarQuantity = Math.Floor((i.AllotQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
                                 })
-                                .OrderBy(t => t.CellCode)
+                                .OrderBy(t => t.TargetCellCode)
                                 .ToArray();
                     #endregion}
                 }
@@ -2433,7 +2439,6 @@ namespace THOK.WCS.Bll.Service
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    TargetStorageCode = a.TargetCellCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2442,14 +2447,17 @@ namespace THOK.WCS.Bll.Service
                                     a.TaskQuantity,
                                     a.State,
                                     m.RealQuantity,
-                                    m.Product
+                                    m.Product,
+                                    OriginCellCode = m.OutCell.CellCode,
+                                    OriginCellName = m.OutCell.CellName,
                                 })
                                 .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
                                 {
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    a.TargetStorageCode,
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2466,7 +2474,6 @@ namespace THOK.WCS.Bll.Service
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    a.TargetStorageCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2476,14 +2483,15 @@ namespace THOK.WCS.Bll.Service
                                     a.State,
                                     a.Product,
                                     a.RealQuantity,
-                                    a.CellCode,
-                                    c.CellName
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
+                                    TargetCellCode = a.CellCode,
+                                    TargetCellName = c.CellName
                                 })
                                 .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
                                 {
                                     a.ID,
                                     a.TaskType,
-                                    a.TargetStorageCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2493,13 +2501,18 @@ namespace THOK.WCS.Bll.Service
                                     a.State,
                                     a.RealQuantity,
                                     a.Product,
-                                    a.CellCode,
-                                    a.CellName
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
+                                    a.TargetCellCode,
+                                    a.TargetCellName
                                 })
                                 .Select(i => new RestTask()
                                 {
                                     TaskID = i.ID,
-                                    CellName = i.CellName,
+                                    OriginCellCode = i.OriginCellCode,
+                                    OriginCellName = i.OriginCellName,
+                                    TargetCellCode = i.TargetCellCode,
+                                    TargetCellName = i.TargetCellName,
                                     ProductCode = i.ProductCode,
                                     ProductName = i.ProductName,
                                     OrderID = i.OrderID,
@@ -2510,7 +2523,7 @@ namespace THOK.WCS.Bll.Service
                                     BarQuantity = Math.Floor((i.RealQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
                                 })
-                                .OrderBy(t => t.CellCode)
+                                .OrderBy(t => t.TargetCellCode)
                                 .ToArray();
                     #endregion
                 }
@@ -2523,7 +2536,6 @@ namespace THOK.WCS.Bll.Service
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    TargetStorageCode = a.TargetCellCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2532,14 +2544,15 @@ namespace THOK.WCS.Bll.Service
                                     a.TaskQuantity,
                                     a.State,
                                     o.Product,
-                                    checkQuantity = o.Quantity
+                                    checkQuantity = o.Quantity,
+                                    OriginCellCode = o.Cell.CellCode,
+                                    OriginCellName = o.Cell.CellName,
                                 })
                                 .Join(cellPosition, a => a.CurrentPositionID, c => c.StockInPositionID, (a, c) => new
                                 {
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    a.TargetStorageCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2549,6 +2562,8 @@ namespace THOK.WCS.Bll.Service
                                     a.State,
                                     a.Product,
                                     a.checkQuantity,
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
                                     c.CellCode
                                 })
                                 .Join(cell, a => a.CellCode, c => c.CellCode, (a, c) => new
@@ -2556,7 +2571,6 @@ namespace THOK.WCS.Bll.Service
                                     a.ID,
                                     a.TaskType,
                                     a.CurrentPositionID,
-                                    a.TargetStorageCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2566,14 +2580,15 @@ namespace THOK.WCS.Bll.Service
                                     a.State,
                                     a.Product,
                                     a.checkQuantity,
-                                    a.CellCode,
-                                    c.CellName
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
+                                    TargetCellCode = a.CellCode,
+                                    TargetCellName = c.CellName
                                 })
                                 .Join(positionQuery, a => a.CurrentPositionID, p => p.ID, (a, p) => new
                                 {
                                     a.ID,
                                     a.TaskType,
-                                    a.TargetStorageCode,
                                     a.OrderID,
                                     a.OrderType,
                                     a.ProductCode,
@@ -2583,13 +2598,18 @@ namespace THOK.WCS.Bll.Service
                                     a.State,
                                     a.checkQuantity,
                                     a.Product,
-                                    a.CellCode,
-                                    a.CellName
+                                    a.OriginCellCode,
+                                    a.OriginCellName,
+                                    a.TargetCellCode,
+                                    a.TargetCellName
                                 })
                                 .Select(i => new RestTask()
                                 {
                                     TaskID = i.ID,
-                                    CellName = i.CellName,
+                                    OriginCellCode = i.OriginCellCode,
+                                    OriginCellName = i.OriginCellName,
+                                    TargetCellCode = i.TargetCellCode,
+                                    TargetCellName = i.TargetCellName,
                                     ProductCode = i.ProductCode,
                                     ProductName = i.ProductName,
                                     OrderID = i.OrderID,
@@ -2600,7 +2620,7 @@ namespace THOK.WCS.Bll.Service
                                     BarQuantity = Math.Floor((i.checkQuantity % i.Product.UnitList.Unit01.Count) / i.Product.UnitList.Unit02.Count),
                                     Status = i.State == "01" ? "等待中" : i.State == "02" ? " 执行中" : i.State == "03" ? "拣选中" : "已完成"
                                 })
-                                .OrderBy(t => t.CellCode)
+                                .OrderBy(t => t.TargetCellCode)
                                 .ToArray();
                     #endregion
                 }

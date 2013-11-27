@@ -1,0 +1,66 @@
+﻿<script type="text/javascript">
+    var positionType = "", orderType = "";
+    function searchClick() {
+        $('#dlg-search').dialog('open').dialog('setTitle', '请选择作业类型');
+    }
+    function select(positionType, orderType) {
+        if (positionType != "" && orderType != "") {          
+            $("#details").datagrid({
+                url: '/PdaTask/GetOutTask/?positionType=' + positionType + '&orderType=' + orderType
+            });
+            $('#dlg-search').dialog('close');
+        }
+        else {
+            $.messager.alert('系统提示', '未选中行', 'info');
+        }
+    }   
+</script>
+<style type="text/css">
+    .tr
+    {
+        margin: 20px 20px 20px 20px;
+    }
+    .td
+    {
+        text-align: center;
+    }
+</style>
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 300px; height: 180px;
+    padding: 2px 2px" closed="true">
+    <div class="easyui-layout" fit="true">
+        <div region="center" align="center" border="false" style="background: #fff; margin: 10px  0px 10px 0px;">
+            <table width="280" height="120">
+                <tr class="tr">
+                    <td class="td">
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="select('03','03')">
+                            一号库出库</a>
+                    </td>
+                    <td class="td">
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="select('04','03')">
+                            二号库出库</a>
+                    </td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="select('03','04')">
+                            一号库盘点</a>
+                    </td>
+                    <td class="td">
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="select('04','04')">
+                            二号库盘点</a>
+                    </td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="select('03','02')">
+                            小品种移库</a>
+                    </td>
+                    <td class="td">
+                        <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="select('04','02')">
+                            异形烟移库</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
