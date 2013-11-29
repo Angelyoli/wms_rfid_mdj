@@ -1,0 +1,16 @@
+﻿<script type="text/javascript">
+    function finishClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $.ajaxSender.send('/PdaTask/FinishOutTask/',
+                        {
+                            'taskID': row.TaskID
+                        },
+                        function (data) {
+                            $('#details').datagrid('reload');
+                        });
+        } else {
+            $.messager.alert('系统提示', '未选中行', 'info');
+        }
+    }
+</script>

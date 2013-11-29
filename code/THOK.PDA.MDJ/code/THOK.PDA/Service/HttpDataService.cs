@@ -26,7 +26,8 @@ namespace THOK.PDA.Service
                 {
                     DataRow row = table.NewRow();
                     row["TaskID"] = task.TaskID;
-                    row["CellName"] = task.CellName;
+                    row["OriginCellName"] = task.OriginCellName;
+                    row["TargetCellName"] = task.TargetCellName;
                     row["ProductName"] = task.ProductName;
                     row["OrderID"] = task.OrderID;
                     row["OrderType"] = task.OrderType;
@@ -64,7 +65,8 @@ namespace THOK.PDA.Service
             table.Columns.Add("OrderID");
             table.Columns.Add("OrderType");
             table.Columns.Add("Status");
-            table.Columns.Add("CellName");
+            table.Columns.Add("OriginCellName");
+            table.Columns.Add("TargetCellName");
             table.Columns.Add("ProductName");
             table.Columns.Add("Quantity");
             table.Columns.Add("TaskQuantity");

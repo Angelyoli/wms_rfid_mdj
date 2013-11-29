@@ -10,8 +10,10 @@ namespace THOK.PDA.Model
         public string TaskType { get; set; }
         public string OrderID { get; set; }
         public string OrderType { get; set; }
-        public string CellName { get; set; }
-        public string CellCode { get; set; }
+        public string OriginCellCode { get; set; }
+        public string OriginCellName { get; set; }
+        public string TargetCellCode { get; set; }
+        public string TargetCellName { get; set; }
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
 
