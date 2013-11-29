@@ -1,12 +1,14 @@
 ﻿<script type="text/javascript">
     function emptyClick() {
         $.messager.confirm('清空', '确认清空所有任务吗？请谨慎操作！', function (r) {
-            if (r) {
-                $.ajaxSender.send('/TaskManage/Clear/'
+            $.messager.confirm('清空', '是否继续清空吗？（如果有故障未处理或者有未完成的任务，请不要清空！）', function (r) {
+                if (r) {
+                    $.ajaxSender.send('/TaskManage/Clear/'
                                     , {}
                                     , function () { $('#details').datagrid('load'); }
                                  );
-            }
+                }
+            });
         });
     };
 </script>

@@ -3847,6 +3847,18 @@
                      System = system,
                      System_SystemID = system.SystemID,
                      ParentModule_ModuleID = new Guid("EA86ECE1-BFE3-42CD-9071-A7131A9280FD")
+                 },
+                 new Module()
+                 {
+                     ModuleID = new Guid("D4C8834D-11D0-4CAE-A12F-E33709242AA1"),
+                     ModuleName = "手持作业",
+                     ShowOrder = 5,
+                     ModuleURL = "/PdaTask/",
+                     IndicateImage = "icon-son_Employee",
+                     DeskTopImage = "image-son_Employee",
+                     System = system,
+                     System_SystemID = system.SystemID,
+                     ParentModule_ModuleID = new Guid("EA86ECE1-BFE3-42CD-9071-A7131A9280FD")
                  }
              );
             context.SaveChanges();
@@ -4015,6 +4027,23 @@
                     ControlName = "batch",
                     IndicateImage = "icon-batch",
                     Module_ModuleID = new Guid("737DDF67-4ADA-4F57-A239-8CEAFC0E3C0C")
+                },
+                //手持作业
+                new Function()
+                {
+                    FunctionID = new Guid("1FC72DA0-6D0D-4E6B-B59D-3F8B424A3588"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("D4C8834D-11D0-4CAE-A12F-E33709242AA1")
+                },
+                new Function()
+                {
+                    FunctionID = new Guid("85440D29-012A-4C84-A0BB-8AA0460323D3"),
+                    FunctionName = "完成",
+                    ControlName = "finish",
+                    IndicateImage = "icon-finish",
+                    Module_ModuleID = new Guid("D4C8834D-11D0-4CAE-A12F-E33709242AA1")
                 }
             );
             context.SaveChanges();
