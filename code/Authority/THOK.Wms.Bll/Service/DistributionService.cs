@@ -262,7 +262,7 @@ namespace THOK.Wms.Bll.Service
             {
                 storages = storageQuery.Where(s => s.Cell.Shelf.ShelfCode == id && s.ProductCode == productCode);
             }
-            var storage = storages.OrderBy(s => s.Product.ProductName).Where(s => s.Quantity > 0);
+            var storage = storages.OrderBy(s => s.CellCode).ThenBy(s => s.StorageSequence).Where(s => s.Quantity > 0);
             int total = storage.Count();
             storage = storage.Skip((page - 1) * rows).Take(rows);
             if (unitType == "1")
