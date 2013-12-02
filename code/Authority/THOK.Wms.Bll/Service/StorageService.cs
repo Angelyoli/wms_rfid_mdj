@@ -107,7 +107,7 @@ namespace THOK.Wms.Bll.Service
         public object GetMoveStorgeDetails(int page, int rows, string type, string id,string inOrOut,string productCode)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.OrderBy(s => s.StorageCode).Where(s => s.StorageCode != null);
+            var storages = storageQuery.Where(s => s.StorageCode != null);
             IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
             string IsWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
             if (type == "ware")
@@ -157,7 +157,8 @@ namespace THOK.Wms.Bll.Service
             {
                 return null;
             }
-            var temp = storages.OrderBy(i=>i.StorageSequence).Select(s =>s);
+            var orderBy = storages.OrderBy(i => i.Cell.CellName).ThenBy(i => i.StorageSequence);
+            var temp = orderBy.Select(s => s);
 
             int total = temp.Count();
             temp = temp.Skip((page - 1) * rows).Take(rows);
