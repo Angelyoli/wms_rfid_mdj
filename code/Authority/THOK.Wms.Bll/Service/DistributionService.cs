@@ -125,6 +125,7 @@ namespace THOK.Wms.Bll.Service
                                                     s.ProductCode,
                                                     s.ProductName
                                                 })
+                                                .OrderBy(s => s.Key.ProductName)
                                                 .Select(s => new
                                                 {
                                                     s.Key.ProductCode,
