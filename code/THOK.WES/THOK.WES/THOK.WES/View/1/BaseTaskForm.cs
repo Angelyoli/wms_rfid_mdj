@@ -303,50 +303,37 @@ namespace THOK.WES.View
         private void btnApply_Click(object sender, EventArgs e)
         {
             sp.Stop();
-            string errString = string.Empty;
-            List<string> listRfid = new List<string>();
-            string productRfid = "";
-            decimal quantityRfid = 0;
             try
             {
-                if (UseRfid == "0")
+                if (UseRfid == "1")
                 {
-                    ApplyPublicMethod();
-                }
-                else
-                {
-                    if (BillTypes == "1")
+                    RfidCode = getRfidCode();
+                    if (RfidCode == "")
                     {
-                        while (listRfid.Count == 0 || listRfid == null)
-                        {
-                            DisplayPlWailt();
-                            listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
-                            Application.DoEvents();
-                        }
-                        RfidCode = RfidCode = listRfid[0].ToString();
-                        Task task = new Task(url);
-                        task.SearchRfidInfo(RfidCode);
-                        task.GetRfidInfoCompleted += new Task.GetRfidInfoCompletedEventHandler(delegate(bool isSuccess, string msg, BillDetail[] billDetails)
-                        {
-                            if (billDetails != null && billDetails.Length != 0)
-                            {
-                                productRfid = billDetails[0].ProductCode;
-                                quantityRfid = billDetails[0].PieceQuantity;
-                            }
-                            ApplyPublicMethod(UseRfid, RfidCode, productRfid, quantityRfid);
-                        });
-                    }
-                    else
-                    {
-                        ApplyPublicMethod();
+                        THOKUtil.ShowError("读取RFID数据失败！请重新申请！");
+                        return;
                     }
                 }
+
+                ApplyPublicMethod();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("申请错误：" + ex.Message + " ,其它:" + errString);
+                THOKUtil.ShowError("申请错误：" + ex.Message);
+            }
+            finally
+            {
                 RefreshData();
             }
+        }
+
+        private string getRfidCode()
+        {
+            List<string> listRfid = new List<string>();
+            DisplayPlWailt();
+            listRfid = rRfid.ReadTrayRfid(port, 115200, out errInfo);
+            Application.DoEvents();
+            return listRfid[0].ToString();
         }
 
         //取消申请
@@ -383,11 +370,11 @@ namespace THOK.WES.View
                     RfidCode = "";
                 }
                 else
-                    MessageBox.Show("请选择要取消的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    THOKUtil.ShowError("请选择要取消的仓库作业。");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("取消失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                THOKUtil.ShowError("取消失败，原因：" + ex.Message);
             }
         }
 
@@ -405,11 +392,10 @@ namespace THOK.WES.View
             sp.Stop();
             if (!UseRfid.Equals("0"))
             {
-                MessageBox.Show("使用RFID无法批量完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                THOKUtil.ShowInfo("使用RFID无法批量完成！");
                 return;
             }
-            if (MessageBox.Show("当前操作将批量确认选择的已申请的所有任务！", "提示",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+            if (THOKUtil.ShowQuery("当前操作将批量确认选择的已申请的所有任务！") != DialogResult.Yes)
             {
                 return;
             }
@@ -442,7 +428,7 @@ namespace THOK.WES.View
                             MessageBox.Show(msg);
                         RefreshData();
                     });
-                    task.Execute(tmp, UseTag);
+                    task.Execute(tmp, UseTag);                    
                 }
                 else
                     MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -557,129 +543,20 @@ namespace THOK.WES.View
             }
         }
 
-        public void ApplyPublicMethod(string uRfid, string rfidId, string rfidProductCode, decimal rfidQuantity)
+        public void ApplyPublicMethod()
         {
             try
             {
-                errInfo = "";
-                bool isRfid = true;
-                RfidCode = rfidId;
-                decimal rfidQty = Convert.ToInt32(rfidQuantity);
-                if (dgvMain.SelectedRows.Count != 0)
+                if (dgvMain.SelectedRows.Count > 1 && UseRfid.Equals("1"))
                 {
-                    foreach (DataGridViewRow row in dgvMain.Rows)
-                    {
-                        if (row.Cells["Status"].Value.ToString().Equals("1") && !uRfid.Equals("0"))
-                        {
-                            MessageBox.Show("使用RFID,只能申请一条数据。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                    }
-                    DisplayPlWailt();
-                    IList<BillDetail> billDetails = new List<BillDetail>();
-
-                    switch (uRfid)
-                    {
-                        case "0":
-                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
-                            {
-                                BillDetail billDetail = new BillDetail();
-                                billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
-                                billDetail.BillType = row.Cells["@BillType"].Value.ToString();
-                                billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
-                                billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
-                                billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
-                                billDetail.Operator = Environment.MachineName;
-                                billDetails.Add(billDetail);
-                            }
-                            isRfid = false;
-                            break;
-                        case "1":
-                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
-                            {
-                                if (rfidProductCode.Equals(row.Cells["ProductCode"].Value.ToString())
-                                && rfidQty == Convert.ToInt32(row.Cells["PieceQuantity"].Value)
-                                && row.Cells["Status"].Value.ToString().Equals("0"))
-                                {
-                                    BillDetail billDetail = new BillDetail();
-                                    billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
-                                    billDetail.BillType = row.Cells["@BillType"].Value.ToString();
-                                    billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
-                                    billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
-                                    billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
-                                    billDetail.Operator = Environment.MachineName;
-                                    billDetails.Add(billDetail);
-                                    isRfid = false;
-                                    break;
-                                }
-                            }
-                            break;
-                        case "2":
-                            foreach (DataGridViewRow row in dgvMain.Rows)
-                            {
-                                //判断卷烟和数量与读取的是否一样。根据状态排除已经申请的货位。
-                                if (rfidProductCode.Equals(row.Cells["ProductCode"].Value.ToString())
-                                    && rfidQty == Convert.ToInt32(row.Cells["PieceQuantity"].Value)
-                                    && row.Cells["Status"].Value.ToString().Equals("0"))
-                                {
-                                    BillDetail billDetail = new BillDetail();
-                                    billDetail.BillNo = row.Cells["@BillNo"].Value.ToString();
-                                    billDetail.BillType = row.Cells["@BillType"].Value.ToString();
-                                    billDetail.DetailID = Convert.ToInt32(row.Cells["DetailID"].Value);
-                                    billDetail.PieceQuantity = Convert.ToInt32(row.Cells["PieceQuantity"].Value);
-                                    billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
-                                    billDetail.Operator = Environment.MachineName;
-                                    billDetails.Add(billDetail);
-                                    isRfid = false;
-                                    break;
-                                }
-                            }
-                            break;
-                        default:
-                            errInfo = "请查看使用RFID配置参数是否正确！";
-                            break;
-                    }
-
-                    BillDetail[] tmp = new BillDetail[billDetails.Count];
-                    billDetails.CopyTo(tmp, 0);
-
-                    Task task = new Task(url);
-                    task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
-                    {
-                        if (!isSuccess)
-                            errInfo += "  " + msg;
-                        RefreshData();
-                    });
-                    task.Apply(tmp, UseTag);
-
-                    if (isRfid)
-                        MessageBox.Show("申请失败，原因：当前托盘卷烟和数量与作业数据不匹配或者 其他错误:  " + errInfo, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                    MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("申请失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void ApplyPublicMethod()
-        {
-            try
-            {
-                string storageRfide = "";
-                if (dgvMain.SelectedRows.Count > 1 && !UseRfid.Equals("0"))
-                {
-                    MessageBox.Show("当前操作只允许操作一个任务！", "提示",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    THOKUtil.ShowInfo("当前操作只允许操作一个任务，已申请任务了，不能重新申请！");
                     return;
                 }
                 foreach (DataGridViewRow row in dgvMain.Rows)
                 {
-                    if (row.Cells["Status"].Value.ToString().Equals("1") && !UseRfid.Equals("0"))
+                    if (row.Cells["Status"].Value.ToString().Equals("1") && UseRfid.Equals("1"))
                     {
-                        MessageBox.Show("使用RFID,只能申请一条数据。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        THOKUtil.ShowInfo("使用RFID,只能申请一条数据。");
                         return;
                     }
                 }
@@ -698,10 +575,6 @@ namespace THOK.WES.View
                         billDetail.BarQuantity = Convert.ToInt32(row.Cells["BarQuantity"].Value);
                         billDetail.Operator = Environment.MachineName;
                         billDetails.Add(billDetail);
-                        if (!UseRfid.Equals("0"))
-                        {
-                            storageRfide = row.Cells["StorageRfid"].Value.ToString();
-                        }
                     }
 
                     BillDetail[] tmp = new BillDetail[billDetails.Count];
@@ -711,20 +584,17 @@ namespace THOK.WES.View
                     task.ApplyCompleted += new Task.ApplyCompletedEventHandler(delegate(bool isSuccess, string msg)
                     {
                         if (!isSuccess)
-                            MessageBox.Show(msg);
+                            THOKUtil.ShowError(msg);
                         RefreshData();
                     });
                     task.Apply(tmp, UseTag);
                 }
                 else
-                    MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                //if (!RfidCode.Equals(storageRfide))
-                //    MessageBox.Show("读取的rfid信息与申请的数据信息不一致，请重新申请", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    THOKUtil.ShowError("请选择要执行的仓库作业。");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("申请失败，原因：" + ex.Message, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                THOKUtil.ShowError("申请失败，原因：" + ex.Message);
                 RefreshData();
             }
         }
@@ -734,118 +604,49 @@ namespace THOK.WES.View
             string errString = string.Empty;
             try
             {
-                bool isRfid = true;
-                decimal quantity = 0;
                 List<string> listRfid = new List<string>();
-                if (UseRfid != "0")
+                if (UseRfid == "1")
                 {
-                    foreach (DataGridViewRow row in dgvMain.SelectedRows)
-                    {
-                        quantity = Convert.ToDecimal(row.Cells["PieceQuantity"].Value);
-                    }
-                    if (quantity == 30)
-                    {
-                        while (listRfid.Count == 0 || listRfid == null)
-                        {
-                            DisplayPlWailt();
-                            listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
-                            Application.DoEvents();
-                        }
-                    }
+                    DisplayPlWailt();
+                    listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
+                    Application.DoEvents();
                 }
                 if (dgvMain.SelectedRows.Count > 1)
                 {
-                    MessageBox.Show("当前操作只允许操作一个任务！", "提示",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    THOKUtil.ShowInfo("当前操作只允许操作一个任务！");
                     return;
-                }
-                if (listRfid.Count == 0 && !UseRfid.Equals("0") && quantity==30)
-                {
-                    MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
-                          MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-
                 }
 
                 if (dgvMain.SelectedRows.Count == 0)
                 {
-                    MessageBox.Show("当前操作失败！原因：没有选择数据，请选择！", "提示",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    THOKUtil.ShowInfo("当前操作失败！原因：没有选择数据，请选择！");
                     return;
                 }
 
                 IList<BillDetail> billDetails = new List<BillDetail>();
                 BillDetail billDetail = new BillDetail();
-                switch (UseRfid)
+
+                if (dgvMain.SelectedRows.Count == 1)
                 {
-                    case "0":
-                        if (dgvMain.SelectedRows.Count == 1)
+                    foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                    {
+                        if (BillTypes == "3" && RfidCode != "" && listRfid.Count != 0)
                         {
-                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
+                            if (!row.Cells["StorageRfid"].Value.ToString().Equals(RfidCode) || !listRfid.Contains(row.Cells["TargetStorageRfid"].Value.ToString()))//移出的库存(托盘)的rfid
                             {
-                                ConfirmMethod(row, billDetail, billDetails, RfidCode);
-                                isRfid = false;
-                            }
-                        }                        
-                        break;
-                    case "1":
-                        if (dgvMain.SelectedRows.Count == 1)
-                        {
-                            foreach (DataGridViewRow row in dgvMain.SelectedRows)
-                            {
-                                string cellRfid = row.Cells["CellRfid"].Value.ToString();
-                                if (BillTypes == "3")
-                                {
-                                    if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString())&& quantity==30)//移出的库存(托盘)的rfid
-                                    {
-                                        MessageBox.Show("读取RFID信息与数据不一致！请检查托盘卷烟与数据是否符合！", "提示",
-                                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        return;
-                                    }
-                                    cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();//移入的货位rfid
-                                }
-                                if (listRfid.Contains(cellRfid) || listRfid.Count==0)
-                                {
-                                    ConfirmMethod(row, billDetail, billDetails, RfidCode);
-                                    isRfid = false;
-                                }
+                                THOKUtil.ShowError("读取RFID数据失败！请重新读取！");
+                                return;
                             }
                         }
-                        break;
-                    case "2":
-                        foreach (DataGridViewRow row in dgvMain.Rows)
-                        {
-                            string cellRfid = row.Cells["CellRfid"].Value.ToString();
-                            if (BillTypes == "3")
-                            {
-                                if (!listRfid.Contains(row.Cells["StorageRfid"].Value.ToString()) && quantity == 30)
-                                {
-                                    MessageBox.Show("读取RFID信息失败！请取消任务重新申请！", "提示",
-                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    return;
-                                }
-                                cellRfid = row.Cells["TargetStorageRfid"].Value.ToString();
-                            }
-                            if (listRfid.Contains(cellRfid) || listRfid.Count == 0)
-                            {
-                                ConfirmMethod(row, billDetail, billDetails, RfidCode);
-                                isRfid = false;
-                                break;
-                            }
-                        }
-                        break;
-                    default:
-                        errInfo = "请查看使用RFID配置参数是否正确！";
-                        break;
+                        ConfirmMethod(row, billDetail, billDetails, RfidCode);
+                    }
                 }
-                if (isRfid)
-                    MessageBox.Show("完成确认失败，原因：找不到与货位RFID相等的数据！其他错误：" + errInfo + " ," + errString);
-                else
-                    RfidCode = "";
+
+                RfidCode = "";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("执行失败，原因：" + ex.Message + "," + errString, "消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                THOKUtil.ShowError("执行失败，原因：" + ex.Message + "," + errString);
             }
         }
 
@@ -895,7 +696,7 @@ namespace THOK.WES.View
                         MessageBox.Show(msg);
                     RefreshData();
                 });
-                task.Execute(tmp, UseTag);
+                task.Execute(tmp, UseTag);               
             }
         }
 
