@@ -94,12 +94,12 @@ namespace THOK.WES.Interface
                         byte[] btAryBuffer = new byte[nCount];
                         int nRead = iSerialPort.Read(btAryBuffer, 0, nCount);//读取串口缓存区数据
                         RunReceiveDataCallback(btAryBuffer);
-                        if (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 5)//5秒后无数据就返回
+                        if (listRfid.Count != 0 )//有数据就返回
                         {
                             break;
                         }
 
-                    } while (listRfid.Count == 0 || listRfid == null);//如果集合没有数据就继续运行
+                    } while (((TimeSpan)(DateTime.Now - now)).TotalSeconds < 8);//如果集合没有数据就继续运行
                 }
                 this.CloseCom();
                 return listRfid;
