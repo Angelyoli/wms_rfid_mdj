@@ -619,7 +619,7 @@ namespace THOK.WES.View
                 if (UseRfid == "1")
                 {
                     DisplayPlWailt();
-                    //listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
+                    listRfid = rRfid.ReadTrayRfid(port, 115200, out errString);
                     Application.DoEvents();
                 }
                 if (dgvMain.SelectedRows.Count > 1)
