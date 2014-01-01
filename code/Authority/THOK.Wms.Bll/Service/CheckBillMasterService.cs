@@ -448,7 +448,7 @@ namespace THOK.Wms.Bll.Service
                 products = products.Substring(0, products.Length - 1);
 
                 var storages = storageQuery.Where(s => s.ProductCode != null && products.Contains(s.ProductCode) && s.Quantity > 0 && s.IsLock == "0")
-                                      .OrderBy(s => s.StorageCode)
+                                      .OrderBy(s => s.CellCode).ThenBy(s => s.StorageSequence)
                                       .Select(s => s);
                 int total = storages.Count();
                 storages = storages.Skip((page - 1) * rows).Take(rows);
@@ -465,7 +465,8 @@ namespace THOK.Wms.Bll.Service
                     Quantity = s.Quantity / s.Product.Unit.Count,
                     IsActive = s.IsActive == "1" ? "可用" : "不可用",
                     StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                    UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                    UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd"),
+                    s.StorageSequence
                 });
                 return new { total, rows = temp.ToArray() };
             }
