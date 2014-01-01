@@ -1674,7 +1674,7 @@ namespace THOK.WCS.Bll.Service
                             }
                             catch (Exception ex)
                             {
-                                errorInfo = "入库进度反馈给浪潮失败！" + ex.Message;
+                                errorInfo = "Into Storage progress feedback to Inspur Failed！" + ex.Message;
                             }
 
                             #endregion 反馈给浪潮的xml数据信息
@@ -1774,7 +1774,7 @@ namespace THOK.WCS.Bll.Service
                             }
                             catch (Exception ex)
                             {
-                                errorInfo = "出库进度反馈给浪潮失败！" + ex.Message;
+                                errorInfo = "Out Storage progress feedback to Inspur Failed！" + ex.Message;
                             }
 
                             #endregion 反馈给浪潮的xml数据信息
