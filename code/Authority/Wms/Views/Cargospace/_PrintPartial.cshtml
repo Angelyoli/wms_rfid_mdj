@@ -1,6 +1,5 @@
 ﻿<script type="text/javascript">
     function printClick() {
-        alert(1);
         var row = $('#warehouseTree').tree("getSelected");
         var treeObj = $.fn.zTree.getZTreeObj("warehouseTree");
         var row1 = treeObj.getSelectedNodes();
@@ -8,8 +7,6 @@
             $.messager.alert("系统提示", "未选中树形菜单", "info");
         }
         else {
-            alert(row1[0].type);
-            alert(row1[0].id);
             var rowAttribute = null
               , rowId = null;
 
