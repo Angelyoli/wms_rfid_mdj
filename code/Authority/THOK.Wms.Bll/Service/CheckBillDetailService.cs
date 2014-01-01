@@ -136,7 +136,7 @@ namespace THOK.Wms.Bll.Service
 
         #endregion
 
-        #region ICheckBillDetailService 成员
+        #region 打印
         /// <summary>获得盘点细单信息</summary>
         public System.Data.DataTable GetCheckBillDetail(int page, int rows, string BillNo)
         {
@@ -144,7 +144,7 @@ namespace THOK.Wms.Bll.Service
             IQueryable<CheckBillDetail> checkBillDetailQuery = CheckBillDetailRepository.GetQueryable();
             if (BillNo != null && BillNo != string.Empty)
             {
-                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.BillNo).Select(i => new
+                var checkBillDetail = checkBillDetailQuery.Where(i => i.BillNo.Contains(BillNo)).OrderBy(i => i.CellCode).Select(i => new
                 {
                     i.BillNo,
                     i.Cell.CellCode,
