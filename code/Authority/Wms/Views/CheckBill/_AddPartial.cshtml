@@ -2,11 +2,26 @@
     var cellCheckParameter, ware, area, shelf, cell, productCheckParameter, begin, end;
     var ldata = { "rows": [] };
     var rdata = { "rows": [] };
+
+    //清空上次右移的临时控件数据
+    function clearCheckProductTable() {
+        var item = $('#checkProductTable').datagrid('getRows');
+        if (item) {
+            for (var i = item.length - 1; i >= 0; i--) {
+                var index = $('#checkProductTable').datagrid('getRowIndex', item[i]);
+                $('#checkProductTable').datagrid('deleteRow', index);
+            }
+        }
+        $('#checkProductTable').datagrid('loadData', { total: 0, rows: [] });
+    }
+
     //新增
     function addClick() {
+        clearCheckProductTable();
         addLoad();
         productLoad();
         $('#addCheck').dialog('open').dialog('setTitle', '新增盘点数据');
+        
         addKey = true;
         $.getJSON("/Product/CheckFindProduct/", function (json) {//加载要盘点的产品信息
             if (json) {

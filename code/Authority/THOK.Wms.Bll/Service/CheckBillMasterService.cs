@@ -448,7 +448,7 @@ namespace THOK.Wms.Bll.Service
                 products = products.Substring(0, products.Length - 1);
 
                 var storages = storageQuery.Where(s => s.ProductCode != null && products.Contains(s.ProductCode) && s.Quantity > 0 && s.IsLock == "0")
-                                      .OrderBy(s => s.CellCode).ThenBy(s => s.StorageSequence)
+                                      .OrderBy(s => s.ProductCode).ThenBy(s => s.CellCode).ThenBy(s => s.StorageSequence)
                                       .Select(s => s);
                 int total = storages.Count();
                 storages = storages.Skip((page - 1) * rows).Take(rows);
