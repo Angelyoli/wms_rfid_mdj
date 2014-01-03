@@ -3,21 +3,36 @@
 
     });
 </script>
-<div region="center" split="true" border="false" >    
-    <table id="details" class="easyui-datagrid" url="/ProductSize/Details/"  border="false" singleSelect="true" fit="true" toolbar="#tool"  pagination="true" rownumbers="true" >
+<div region="center" split="true" border="false">
+    <table id="details" class="easyui-datagrid" url="/ProductSize/Details/" border="false"
+        singleselect="true" fit="true" toolbar="#tool" pagination="true" rownumbers="true"
+        fitcolumns="true">
         <thead>
             <tr>
-                <th field="ID" width="100" >商品编号</th>
-                <th field="ProductCode" width="180" >商品代码</th>
-                <th field="ProductName" width="180" >商品名称</th>
-                <th field="ProductNo" width="180" >商品简码</th>
-                @*<th field="SizeNo" width="100">件烟尺寸编号</th>*@
-                <th field="Length" width="100">长度</th> 
-                <th field="Width" width="100">宽度</th> 
-                <th field="Height" width="100">高度</th> 
-                <th field="AreaNo" width="100">存储库区号</th>
+                <th field="ID" width="60" hidden="true">
+                </th>
+                <th field="ProductCode" width="80">
+                    商品代码
+                </th>
+                <th field="ProductName" width="150">
+                    商品名称
+                </th>
+                <th field="ProductNo" width="200">
+                    商品简码
+                </th>
+                <th field="Length" width="40">
+                    长度
+                </th>
+                <th field="Width" width="40">
+                    宽度
+                </th>
+                <th field="Height" width="100">
+                    高度
+                </th>
+                <th field="AreaNo" width="100">
+                    存储库区号
+                </th>
             </tr>
         </thead>
     </table>
 </div>
-
