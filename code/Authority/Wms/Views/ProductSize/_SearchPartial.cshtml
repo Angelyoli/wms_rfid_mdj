@@ -40,21 +40,16 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.ProductCode = $('#ProductCode1').val();
-        queryParams.ProductName = $('#inputProductName1').val();
+        queryParams.ProductCode = $('#productCode1').val();
+        queryParams.ProductName = $('#productName1').val();
 
-        queryParams.SizeNo = $('#SizeNo').val();
-        queryParams.AreaNo = $('#AreaNo').val();
+        queryParams.SizeNo = $('#sizeNo').val();
+        queryParams.AreaNo = $('#areaNo').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');
     }
 
-    function ProductSearchClick() {
-        $('#productData').dialog('open').dialog('setTitle', '商品名称');
-        $('#productDetail').datagrid({ url: '/Product/GetProductBy/' });
-        $("#productDetail").datagrid('reload');
-    }
     function SizeSearchClick() {
         $('#sizeData').dialog('open').dialog('setTitle', '件烟尺寸信息');
         $('#sizeDetail').datagrid({ url: '/Size/GetSize/' });
