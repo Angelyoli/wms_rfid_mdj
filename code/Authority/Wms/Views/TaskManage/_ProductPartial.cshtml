@@ -20,10 +20,10 @@
     function productSave() {
         var productRow = $('#productDetail').datagrid('getSelected');
         if (productRow) {
-            //AddPartial中的id
+            //SearchPartial中的id
             $('#productCode1').val(productRow.ProductCode);
             $('#productName1').val(productRow.ProductName);
-            //SearchPartial中的id
+            //AddPartial中的id
             $('#productCode2').val(productRow.ProductCode);
             $('#productName2').val(productRow.ProductName);
             $('#dlg-product').dialog('close');
