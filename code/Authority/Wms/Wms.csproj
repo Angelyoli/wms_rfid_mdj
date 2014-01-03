@@ -2387,7 +2387,6 @@
     <Content Include="Views\Path\_NodePartial.cshtml" />
     <Content Include="Views\Path\_NodeAdmin.cshtml" />
     <Content Include="Views\Shared\_NodePartial.cshtml" />
-    <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
     <Content Include="Views\ProductSize\_SizePartial.cshtml" />
     <Content Include="Views\Path\_PositionPartial.cshtml" />
     <Content Include="Views\StockOutBill\_TaskPartial.cshtml" />
@@ -2396,7 +2395,6 @@
     <Content Include="Views\Server\_PrintPartial.cshtml" />
     <Content Include="Views\System\_PrintPartial.cshtml" />
     <Content Include="Views\Module\_PrintPartial.cshtml" />
-    <Content Include="Views\ProductSize\_Product1Partial.cshtml" />
     <Content Include="Views\ProfitLossBill\_UnitPartial.cshtml" />
     <Content Include="Views\Position\_SRMName1Partial.cshtml" />
     <Content Include="Views\Path\_OriginPartial1.cshtml" />
@@ -2419,6 +2417,7 @@
     <Content Include="Views\PdaTask\_FinishPartial.cshtml" />
     <Content Include="Views\PdaTask\_SearchPartial.cshtml" />
     <Content Include="Views\PdaTask\Index.cshtml" />
+    <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
