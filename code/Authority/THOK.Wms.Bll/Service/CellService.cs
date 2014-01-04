@@ -1365,25 +1365,29 @@ namespace THOK.Wms.Bll.Service
         #endregion
 
         /// <summary>查询 拆盘位信息</summary>
-        public object GetSplitPalletCell(int page, int rows, string shelfType)
+        public object GetSplitPalletCell(int page, int rows, string productCode, string shelfType)
         {
             IQueryable<Cell> cellQuery = null;
+            if ((productCode == "" || productCode == null) && (shelfType == "" || shelfType == null))
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.DefaultProductCode.Contains(productCode));
+            }
 
             if (shelfType == "01" || shelfType == "")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-001");
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-001" && c.DefaultProductCode.Contains(productCode));
             }
             else if (shelfType == "02")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-002");
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-002" && c.DefaultProductCode.Contains(productCode));
             }
             else if (shelfType == "03")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-003");
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-003" && c.DefaultProductCode.Contains(productCode));
             }
             else if (shelfType == "04")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-004");
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-004" && c.DefaultProductCode.Contains(productCode));
             }
             var cell = cellQuery.OrderBy(b => b.CellCode).Select(b => new
             {

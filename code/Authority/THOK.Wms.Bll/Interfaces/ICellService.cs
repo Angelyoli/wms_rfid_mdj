@@ -56,7 +56,7 @@ namespace THOK.Wms.Bll.Interfaces
 
         object GetCellDetail(string shelfCode);
 
-        object GetSplitPalletCell(int page, int rows, string shelfType);
+        object GetSplitPalletCell(int page, int rows, string productCode,string shelfType);
         bool SaveSplitPalletCell(Cell cell, out string strResult);
     }
 }

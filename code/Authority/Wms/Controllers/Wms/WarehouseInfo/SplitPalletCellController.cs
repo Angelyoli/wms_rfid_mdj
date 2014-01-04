@@ -29,8 +29,9 @@ namespace Wms.Controllers.WMS.WarehouseInfo
         // GET: /SplitPalletCell/Details/
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
+            string productCode = collection["ProductCode"] ?? "";
             string shelfType = collection["ShelfType"] ?? "";
-            var cell = CellService.GetSplitPalletCell(page, rows, shelfType);
+            var cell = CellService.GetSplitPalletCell(page, rows, productCode, shelfType);
             return Json(cell, "text", JsonRequestBehavior.AllowGet);
         }
 
