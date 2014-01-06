@@ -7,17 +7,17 @@
         <form id="fm" method="post">
         <table>
             <tr>
+                <input name="ID" style="display: none" />
                 <td width="75" align="right">
                     商品名称：
                 </td>
                 <td width="168">
-                    <input name="ProductCode" id="ProductCode" class="easyui-validatebox" required="true"
-                        type="text" style="display: none" />
-                    @*  <input name="ID"/>*@
-                    <input name="ProductName" id="inputProductName" class="easyui-validatebox" required="true"
-                        readonly="readonly" type="text" />
+                    <input id="productCode2" name="ProductCode" class="easyui-validatebox" required="true"
+                        readonly="readonly" style="display: none" />
+                    <input id="productName2" name="ProductName" class="easyui-validatebox" required="true"
+                        readonly="readonly" />
                     <a href="#" id="ProductSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
-                        onclick="ProductSearchClick()"></a>
+                        onclick="productQuery()"></a>
                 </td>
             </tr>
             <tr>
@@ -25,23 +25,16 @@
                     商品简码：
                 </td>
                 <td width="168">
-                    <input name="ProductNo" id="ProductNo" class="easyui-validatebox" required="true"
-                        type="text" />
+                    <input name="ProductNo" id="ProductNo" class="easyui-validatebox" required="true" />
                 </td>
             </tr>
             <tr>
-                @*<td width="75" align="right">件烟尺寸编号：</td>
-            <td width="168">
-            <input name="ID"  style="display:none" />
-            <input name="SizeNo" id="SizeNo" required="true" readonly="readonly" type="text" class="easyui-validatebox"/>
-            <a href="#" id="SizeSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="SizeSearchClick()"></a>
-            </td>*@
                 <td width="75" align="right">
                     长度
                 </td>
                 <td>
                     <input name="Length" id="inputLength" class="easyui-numberbox" min="0" max="999999999"
-                        required="true" type="text" missingmessage="必须为数字" />
+                        required="true" missingmessage="必须为数字" />
                 </td>
             </tr>
             <tr>
@@ -50,7 +43,7 @@
                 </td>
                 <td>
                     <input name="Width" id="inputWidth" class="easyui-numberbox" min="0" max="999999999"
-                        required="true" type="text" missingmessage="必须为数字" />
+                        required="true" missingmessage="必须为数字" />
                 </td>
             </tr>
             <tr>
@@ -59,7 +52,7 @@
                 </td>
                 <td>
                     <input name="Height" id="inputHeight" class="easyui-numberbox" min="0" max="999999999"
-                        required="true" type="text" missingmessage="必须为数字" />
+                        required="true" missingmessage="必须为数字" />
                 </td>
             </tr>
             <tr>
@@ -67,9 +60,15 @@
                     存储库区号：
                 </td>
                 <td width="168">
-                    <input name="AreaNo" id="inputAreaNo" class="easyui-numberbox" min="0" max="999999999"
-                        required="true" type="text" missingmessage="必须为数字" />
-                    <input name="ID" style="display: none" />
+                    <select id="inputAreaNo" name="AreaNo" class="easyui-combobox" panelheight="auto"
+                        required="true" editable="false">
+                        <option value="1">密集库一区</option>
+                        <option value="2">密集库二区</option>
+                        <option value="3">大品种一区</option>
+                        <option value="4">大品种二区</option>
+                        <option value="5">小品种</option>
+                        <option value="6">异型烟</option>
+                    </select>
                 </td>
             </tr>
         </table>

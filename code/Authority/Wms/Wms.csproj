@@ -239,6 +239,7 @@
     <Compile Include="Controllers\WMS\WarehouseInfo\ExportExcel2Controller.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\ShelfController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\SplitPalletCellController.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\StorageController.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\Warehouse2Controller.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\WarehouseController.cs" />
@@ -1975,6 +1976,7 @@
     <Content Include="Views\CellPosition\_CellPartial.cshtml" />
     <Content Include="Views\CellPosition\_CellNamePartial.cshtml" />
     <Content Include="Views\CheckBill\_TaskPartial.cshtml" />
+    <Content Include="Views\Cargospace\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2385,7 +2387,6 @@
     <Content Include="Views\Path\_NodePartial.cshtml" />
     <Content Include="Views\Path\_NodeAdmin.cshtml" />
     <Content Include="Views\Shared\_NodePartial.cshtml" />
-    <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
     <Content Include="Views\ProductSize\_SizePartial.cshtml" />
     <Content Include="Views\Path\_PositionPartial.cshtml" />
     <Content Include="Views\StockOutBill\_TaskPartial.cshtml" />
@@ -2394,7 +2395,6 @@
     <Content Include="Views\Server\_PrintPartial.cshtml" />
     <Content Include="Views\System\_PrintPartial.cshtml" />
     <Content Include="Views\Module\_PrintPartial.cshtml" />
-    <Content Include="Views\ProductSize\_Product1Partial.cshtml" />
     <Content Include="Views\ProfitLossBill\_UnitPartial.cshtml" />
     <Content Include="Views\Position\_SRMName1Partial.cshtml" />
     <Content Include="Views\Path\_OriginPartial1.cshtml" />
@@ -2410,9 +2410,14 @@
     <Content Include="Views\TaskManage\_CellPartial.cshtml" />
     <Content Include="Views\TaskManage\_PositionPartial.cshtml" />
     <Content Include="Views\TaskManage\_EmptyPartial.cshtml" />
+    <Content Include="Views\SplitPalletCell\Index.cshtml" />
+    <Content Include="Views\SplitPalletCell\_SearchPartial.cshtml" />
+    <Content Include="Views\SplitPalletCell\_EditPartial.cshtml" />
+    <Content Include="Views\SplitPalletCell\_ProductPartial.cshtml" />
     <Content Include="Views\PdaTask\_FinishPartial.cshtml" />
     <Content Include="Views\PdaTask\_SearchPartial.cshtml" />
     <Content Include="Views\PdaTask\Index.cshtml" />
+    <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

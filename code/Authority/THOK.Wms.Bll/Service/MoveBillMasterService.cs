@@ -367,50 +367,55 @@ namespace THOK.Wms.Bll.Service
             var mbm = MoveBillMasterRepository.GetQueryable().FirstOrDefault(m => m.BillNo == BillNo);
             if (mbm != null && mbm.Status == "3")
             {
-                try
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    //结单移库单,修改冻结量
-                    var moveDetail = MoveBillDetailRepository.GetQueryable()
-                                                                 .Where(m => m.BillNo == BillNo
-                                                                     && m.Status != "2");
-                    var sourceStorages = moveDetail.Select(m => m.OutStorage).ToArray();
-                    var targetStorages = moveDetail.Select(m => m.InStorage).ToArray();
-                    if (!Locker.Lock(sourceStorages) || !Locker.Lock(targetStorages))
+                    try
                     {
-                        strResult = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
+                        //结单移库单,修改冻结量
+                        var moveDetail = MoveBillDetailRepository.GetQueryable()
+                                                                     .Where(m => m.BillNo == BillNo
+                                                                         && m.Status != "2");
+                        var sourceStorages = moveDetail.Select(m => m.OutStorage).ToArray();
+                        var targetStorages = moveDetail.Select(m => m.InStorage).ToArray();
+                        if (!Locker.Lock(sourceStorages) || !Locker.Lock(targetStorages))
+                        {
+                            strResult = "锁定储位失败，储位其他人正在操作，无法取消分配请稍候重试！";
+                            return false;
+                        }
+                        moveDetail.AsParallel().ForAll(
+                            (Action<MoveBillDetail>)delegate(MoveBillDetail m)
+                            {
+                                if (m.InStorage.ProductCode == m.ProductCode
+                                    && m.OutStorage.ProductCode == m.ProductCode
+                                    && m.InStorage.InFrozenQuantity >= m.RealQuantity
+                                    && m.OutStorage.OutFrozenQuantity >= m.RealQuantity)
+                                {
+                                    m.InStorage.InFrozenQuantity -= m.RealQuantity;
+                                    m.InStorage.ProductCode = null;
+                                    m.InStorage.StorageSequence = 0;
+                                    m.OutStorage.OutFrozenQuantity -= m.RealQuantity;
+                                    m.InStorage.LockTag = string.Empty;
+                                    m.OutStorage.LockTag = string.Empty;
+                                }
+                                else
+                                {
+                                    throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
+                                }
+                            }
+                        );
+                        MoveBillDetailRepository.SaveChanges();
+                        mbm.Status = "4";
+                        mbm.UpdateTime = DateTime.Now;
+                        MoveBillMasterRepository.SaveChanges();
+
+                        scope.Complete();
+                        result = true;
+                    }
+                    catch (Exception e)
+                    {
+                        strResult = "移库单结单出错！原因：" + e.Message;
                         return false;
                     }
-                    moveDetail.AsParallel().ForAll(
-                        (Action<MoveBillDetail>)delegate(MoveBillDetail m)
-                        {
-                            if (m.InStorage.ProductCode == m.ProductCode
-                                && m.OutStorage.ProductCode == m.ProductCode
-                                && m.InStorage.InFrozenQuantity >= m.RealQuantity
-                                && m.OutStorage.OutFrozenQuantity >= m.RealQuantity)
-                            {
-                                m.InStorage.InFrozenQuantity -= m.RealQuantity;
-                                m.InStorage.ProductCode = null;
-                                m.InStorage.StorageSequence = 0;
-                                m.OutStorage.OutFrozenQuantity -= m.RealQuantity;
-                                m.InStorage.LockTag = string.Empty;
-                                m.OutStorage.LockTag = string.Empty;
-                            }
-                            else
-                            {
-                                throw new Exception("储位的卷烟或入库冻结量与当前分配不符，信息可能被异常修改，不能结单！");
-                            }
-                        }
-                    );
-                    MoveBillDetailRepository.SaveChanges();
-                    mbm.Status = "4";
-                    mbm.UpdateTime = DateTime.Now;
-                    MoveBillMasterRepository.SaveChanges();
-                    result = true;
-                }
-                catch (Exception e)
-                {
-                    strResult = "移库单结单出错！原因：" + e.Message;
-                    return false;
                 }
             }
             return result;

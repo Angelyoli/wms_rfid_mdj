@@ -10,6 +10,7 @@
             onDblClick: function (node) {
                 if (node.attributes == "cell") {
                     $('#targetCellCode').val(node.id);
+                    $('#targetCellName').val(node.text);
                     $('#cellCode').val(node.id);
                     $('#cellName').val(node.text);
                     $('#MoveCellData').dialog('close');
@@ -23,6 +24,7 @@
         var node = $('#movewarehouseTree').tree('getSelected');
         if (node.attributes == "cell") {
             $('#targetCellCode').val(node.id);
+            $('#targetCellName').val(node.text);
             $('#cellCode').val(node.id);
             $('#cellName').val(node.text);
             $('#MoveCellData').dialog('close');

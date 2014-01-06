@@ -37,7 +37,7 @@ namespace THOK.PDA.View
             {
                 this.lbID.Text = task.TaskID.ToString();
                 this.lbOrderID.Text = task.OrderID;
-                this.lbOriginCellCode = task.OriginCellName;
+                this.lbOriginCellCode.Text = task.OriginCellName;
                 this.lbCellCode.Text = task.TargetCellName;
                 this.lbProductName.Text = task.ProductName;
                 this.lbQuantity.Text = task.Quantity.ToString();

@@ -16,15 +16,15 @@ namespace THOK.Authority.DbModel.Mapping
 
             this.Property(t => t.ParameterName)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(50);
 
             this.Property(t => t.ParameterValue)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(50);
 
             this.Property(t => t.Remark)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(50);
 
             this.Property(t => t.UserName)
                 .IsRequired()

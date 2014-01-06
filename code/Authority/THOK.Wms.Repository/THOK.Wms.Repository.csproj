@@ -406,6 +406,10 @@
     <Compile Include="Migrations\201311180541385_add_task_and_history_storagecode.Designer.cs">
       <DependentUpon>201311180541385_add_task_and_history_storagecode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201401030833308_modify_system_parameter_length.cs" />
+    <Compile Include="Migrations\201401030833308_modify_system_parameter_length.Designer.cs">
+      <DependentUpon>201401030833308_modify_system_parameter_length.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -487,6 +491,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201311180541385_add_task_and_history_storagecode.resx">
       <DependentUpon>201311180541385_add_task_and_history_storagecode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201401030833308_modify_system_parameter_length.resx">
+      <DependentUpon>201401030833308_modify_system_parameter_length.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

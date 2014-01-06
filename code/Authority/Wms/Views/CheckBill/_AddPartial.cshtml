@@ -2,11 +2,26 @@
     var cellCheckParameter, ware, area, shelf, cell, productCheckParameter, begin, end;
     var ldata = { "rows": [] };
     var rdata = { "rows": [] };
+
+    //清空上次右移的临时控件数据
+    function clearCheckProductTable() {
+        var item = $('#checkProductTable').datagrid('getRows');
+        if (item) {
+            for (var i = item.length - 1; i >= 0; i--) {
+                var index = $('#checkProductTable').datagrid('getRowIndex', item[i]);
+                $('#checkProductTable').datagrid('deleteRow', index);
+            }
+        }
+        $('#checkProductTable').datagrid('loadData', { total: 0, rows: [] });
+    }
+
     //新增
     function addClick() {
+        clearCheckProductTable();
         addLoad();
         productLoad();
         $('#addCheck').dialog('open').dialog('setTitle', '新增盘点数据');
+        
         addKey = true;
         $.getJSON("/Product/CheckFindProduct/", function (json) {//加载要盘点的产品信息
             if (json) {
@@ -150,7 +165,7 @@
         }
     }
 </script>
-<div id="addCheck" class="easyui-dialog" modal="true" style="width: 840px; height: 460px;
+<div id="addCheck" class="easyui-dialog" modal="true" style="width: 850px; height: 510px;
     padding: 1px 1px" closed="true" buttons="#dlg-buttons">
     <div id="checkTabs" class="easyui-tabs" fit="true">
         <div title="货位盘点" id="cellCheck">
@@ -164,14 +179,14 @@
                         fit="true" pagination="true" rownumbers="true">
                         <thead>
                             <tr>
-                                <th field="CellCode" width="60">
+                                <th field="StorageCode" width="60" hidden="true">
+                                    储存编码
+                                </th>
+                                <th field="CellCode" width="80" hidden="true">
                                     货位编码
                                 </th>
                                 <th field="CellName" width="80">
                                     货位名称
-                                </th>
-                                <th field="StorageCode" width="60">
-                                    储存编码
                                 </th>
                                 <th field="ProductCode" width="60">
                                     产品编码
@@ -179,11 +194,20 @@
                                 <th field="ProductName" width="124">
                                     产品名称
                                 </th>
-                                <th field="UnitCode" width="60">
+                                <th field="UnitCode" width="60" >
                                     单位名称
                                 </th>
-                                <th field="Quantity" width="60">
+                                <th field="UnitName" width="60">
+                                    单位名称
+                                </th>
+                                <th field="Quantity" width="50">
                                     数量
+                                </th>
+                                <th field="StorageTime" width="80">
+                                    入库时间
+                                </th>
+                                <th field="StorageSequence" width="40">
+                                    顺序
                                 </th>
                             </tr>
                         </thead>

@@ -39,7 +39,7 @@ namespace Wms.Controllers.WCS
         {
             ProductSize productSize = new ProductSize();
             productSize.ProductCode = collection["ProductCode"] ?? "";
-            //productSize.ProductName = collection["ProductName"] ?? "";
+            
             string ProductNo = collection["ProductNo"] ?? "";
             string SizeNo = collection["SizeNo"] ?? "";
             string AreaNo = collection["AreaNo"] ?? "";

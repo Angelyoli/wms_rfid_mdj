@@ -2,35 +2,50 @@
     Layout = null;
 }
 <div class="easyui-layout" fit="true" border="false">
-	<div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; " >   
-      <form id ="pfm">
+    <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+        border: 1px solid #ccc;">
+        <form id="pfm">
         <table width="280">
-                    <tr>
-                    <td width="75" align="right">商品名称：</td>
-                    <td width="168">
-                    <input name="ProductCode" id="ProductCode1"readonly="readonly" type="text" style="display:none"/>
-                    <input name="ProductName" id="inputProductName1" readonly="readonly" type="text"/>
-                    <a href="#" id="ProductSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ProductSearchClick()"></a>
-                    </td>
-                    </tr> 
-
-                    <tr>
-                    <td width="75" align="right">件烟尺寸编号：</td>
-                    <td width="168">
-                    <input name="SizeNo" id="SizeNo" readonly="readonly" type="text" />
-                    <a href="#" id="SizeSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="SizeSearchClick()"></a>
-                    </td>
-                    </tr> 
-
-                    <tr>
-                    <td width="75" align="right">存储库区号：</td>
-                    <td width="168"><input id="AreaNo" type="text" />
-                    </td>
-                    </tr> 
-
-                </table>
+            <tr>
+                <td width="75" align="right">
+                    商品名称：
+                </td>
+                <td width="168">
+                    <input id="productCode1" name="ProductCode" readonly="readonly" type="text" style="display: none" />
+                    <input id="productName1" name="ProductName" readonly="readonly" type="text" />
+                    <a href="#" id="ProductSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                        onclick="productQuery()"></a>
+                </td>
+            </tr>
+            @*<tr>
+                <td width="75" align="right">
+                    件烟尺寸编号：
+                </td>
+                <td width="168">
+                    <input id="sizeNo" name="SizeNo" readonly="readonly" type="text" />
+                    <a href="#" id="SizeSearch" class="easyui-linkbutton" iconcls="icon-search" plain="true"
+                        onclick="SizeSearchClick()"></a>
+                </td>
+            </tr>*@
+            <tr>
+                <td width="75" align="right">
+                    存储库区号：
+                </td>
+                <td width="168">
+                    <select id="areaNo" class="easyui-combobox" panelheight="auto" editable="false">
+                        <option value=""></option>
+                        <option value="1">密集库一区</option>
+                        <option value="2">密集库二区</option>
+                        <option value="3">大品种一区</option>
+                        <option value="4">大品种二区</option>
+                        <option value="5">小品种</option>
+                        <option value="6">异型烟</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
         </form>
     </div>
 </div>
- @Html.Partial("_Product1Partial");
-  @Html.Partial("_SizePartial");
+@Html.Partial("_ProductPartial");
+@*@Html.Partial("_SizePartial");*@

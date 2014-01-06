@@ -1,5 +1,5 @@
 ﻿<script type="text/javascript">
-    var Module = "TaskManage";
+    var Module = "SplitPalletCell";
 
     $(function () {
         productInit();
@@ -20,12 +20,9 @@
     function productSave() {
         var productRow = $('#productDetail').datagrid('getSelected');
         if (productRow) {
-            //SearchPartial中的id
+            //_EditPartial中的id
             $('#productCode1').val(productRow.ProductCode);
             $('#productName1').val(productRow.ProductName);
-            //AddPartial中的id
-            $('#productCode2').val(productRow.ProductCode);
-            $('#productName2').val(productRow.ProductName);
             $('#dlg-product').dialog('close');
         }
     }

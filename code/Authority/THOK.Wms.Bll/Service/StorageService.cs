@@ -71,7 +71,7 @@ namespace THOK.Wms.Bll.Service
                 storages = storageQuery.Where(s => s.Cell.CellCode == id);
             }
 
-            var temp = storages.Where(s=>s.Quantity>0).OrderBy(s=>s.CellCode).Select(s => s);
+            var temp = storages.Where(s => s.Quantity > 0).OrderBy(s => s.CellCode).ThenBy(s => s.StorageSequence).Select(s => s);
 
             int total = temp.Count();
             temp = temp.Skip((page - 1) * rows).Take(rows);
@@ -88,7 +88,8 @@ namespace THOK.Wms.Bll.Service
                 Quantity = s.Quantity / s.Product.Unit.Count,
                 IsActive = s.IsActive == "1" ? "可用" : "不可用",
                 StorageTime = s.StorageTime.ToString("yyyy-MM-dd"),
-                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd")
+                UpdateTime = s.UpdateTime.ToString("yyyy-MM-dd"),
+                s.StorageSequence
             });
             return new { total, rows = tmp.ToArray() };
         }
@@ -106,7 +107,7 @@ namespace THOK.Wms.Bll.Service
         public object GetMoveStorgeDetails(int page, int rows, string type, string id,string inOrOut,string productCode)
         {
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable();
-            var storages = storageQuery.OrderBy(s => s.StorageCode).Where(s => s.StorageCode != null);
+            var storages = storageQuery.Where(s => s.StorageCode != null);
             IQueryable<SystemParameter> systemParQuery = SystemParameterRepository.GetQueryable();
             string IsWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
             if (type == "ware")
@@ -156,7 +157,8 @@ namespace THOK.Wms.Bll.Service
             {
                 return null;
             }
-            var temp = storages.OrderBy(i=>i.StorageSequence).Select(s =>s);
+            var orderBy = storages.OrderBy(i => i.Cell.CellName).ThenBy(i => i.StorageSequence);
+            var temp = orderBy.Select(s => s);
 
             int total = temp.Count();
             temp = temp.Skip((page - 1) * rows).Take(rows);
@@ -196,30 +198,34 @@ namespace THOK.Wms.Bll.Service
             }
             
             IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()
-                                              .Where(a => a.ProductCode.Contains(productCode) && a.Product.ProductName.Contains(productName))
+                                              .Where(a => (a.ProductCode.Contains(productCode) && a.Product.ProductName.Contains(productName)) 
+                                                       && ((a.Quantity - a.OutFrozenQuantity) > 0 && string.IsNullOrEmpty(a.Cell.LockTag)))
                                               .OrderBy(a => a.CellCode).ThenBy(a => a.StorageSequence);
             string IsWholePallet = SystemParameterRepository.GetQueryable().Where(s => s.ParameterName == "IsWholePallet").Select(s => s.ParameterValue).FirstOrDefault();//是否整托盘
             if (IsWholePallet == "1")//是整托盘出库
             {
                 storageQuery = storageQuery.Where(s => s.OutFrozenQuantity == 0);
             }
-            int total = storageQuery.Count();
-            storageQuery = storageQuery.Skip((page - 1) * rows).Take(rows);
 
-            var storage = storageQuery.Select(s => new
+            var temp = storageQuery.Select(s => s);
+            int total = temp.Count();
+            temp = temp.Skip((page - 1) * rows).Take(rows);
+
+            var storage = temp.ToArray().Select(s => new
             {
-                    s.StorageCode,
-                    s.Cell.CellCode,
-                    s.Cell.CellName,
-                    ProductCode = s.Product == null ? "" : s.Product.ProductCode,
-                    ProductName = s.Product == null ? "" : s.Product.ProductName,
-                    UnitCode = s.Product == null ? "" : s.Product.Unit.UnitCode,
-                    UnitName = s.Product == null ? "" : s.Product.Unit.UnitName,
-                    Price = s.Product == null ? 0 : s.Product.CostPrice,
-                    Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
-                    IsActive = s.IsActive == "1" ? "可用" : "不可用",
-                    IsWholePallet,
-                    s.StorageSequence
+                s.StorageCode,
+                s.Cell.CellCode,
+                s.Cell.CellName,
+                ProductCode = s.Product == null ? "" : s.Product.ProductCode,
+                ProductName = s.Product == null ? "" : s.Product.ProductName,
+                UnitCode = s.Product == null ? "" : s.Product.Unit.UnitCode,
+                UnitName = s.Product == null ? "" : s.Product.Unit.UnitName,
+                Price = s.Product == null ? 0 : s.Product.CostPrice,
+                Quantity = s.Product == null ? 0 : s.Quantity / s.Product.Unit.Count,
+                IsActive = s.IsActive == "1" ? "可用" : "不可用",
+                IsWholePallet,
+                s.StorageSequence,
+                StorageTime = s.StorageTime.ToString("yyyy-MM-dd")
             });
             return new { total, rows = storage.ToArray() };
         }

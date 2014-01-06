@@ -390,7 +390,7 @@ namespace THOK.WCS.Bll.Service
                           t.TaskQuantity,
                           t.OperateQuantity,
                           t.OrderID,
-                          OrderType = t.OrderType == "00" ? "无" : t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : t.OrderType == "05" ? "叠空托盘" : t.OrderType == "06" ? "补空托盘" : t.OrderType == "07" ? "小品种补货" : t.OrderType == "08" ? "出库余烟返库" : t.OrderType == "09" ? "盘点余烟返库" : "异常",
+                          OrderType = t.OrderType == "00" ? "无" : t.OrderType == "01" ? "入库单" : t.OrderType == "02" ? "移库单" : t.OrderType == "03" ? "出库单" : t.OrderType == "04" ? "盘点单" : t.OrderType == "05" ? "叠空托盘" : t.OrderType == "06" ? "补空托盘" : t.OrderType == "07" ? "移库余烟反库" : t.OrderType == "08" ? "出库余烟返库" : t.OrderType == "09" ? "盘点余烟返库" : "异常",
                           t.AllotID,
                           DownloadState = t.DownloadState == "0" ? "未下载" : t.DownloadState == "1" ? "已下载" : "异常",
                           t.StorageSequence,
@@ -1311,9 +1311,9 @@ namespace THOK.WCS.Bll.Service
             }
             if (cellQuery == null)
             {
-                errorInfo = "请检查：该货位必须是单一货位，" + palletCode + "是否存在于卷烟信息表中。"
+                errorInfo = "叠空托盘的目标货位以及个数，请检查：该货位必须是单一货位，" + palletCode + "是否存在于卷烟信息表中。"
                           + "分析引导："
-                          + "1.此货位的数量+入库冻结量<((托盘充许存放数量/5)*2)，并且出库冻结量必须=0；"
+                          + "1.此货位的数量+入库冻结量<托盘的最大托盘个数((最大放入量/5)*2)，并且出库冻结量必须=0；"
                           + "2.LockTag必须未锁定，库存数量和入库冻结量必须=0";
                 return false;
             }
@@ -1674,7 +1674,7 @@ namespace THOK.WCS.Bll.Service
                             }
                             catch (Exception ex)
                             {
-                                errorInfo = "入库进度反馈给浪潮失败！" + ex.Message;
+                                errorInfo = "Into Storage progress feedback to Inspur Failed！" + ex.Message;
                             }
 
                             #endregion 反馈给浪潮的xml数据信息
@@ -1774,7 +1774,7 @@ namespace THOK.WCS.Bll.Service
                             }
                             catch (Exception ex)
                             {
-                                errorInfo = "出库进度反馈给浪潮失败！" + ex.Message;
+                                errorInfo = "Out Storage progress feedback to Inspur Failed！" + ex.Message;
                             }
 
                             #endregion 反馈给浪潮的xml数据信息

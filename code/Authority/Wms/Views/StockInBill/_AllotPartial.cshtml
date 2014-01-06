@@ -159,7 +159,7 @@
                 billNo = row.BillNo;
             }
         } else {
-            $.messager.confirm('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     };
 
@@ -191,7 +191,7 @@
                 billNo = row.BillNo;
             }
         } else {
-            $.messager.confirm('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
     var modifyUrl;
@@ -212,7 +212,7 @@
                 $.messager.confirm('错误', '所选卷烟已分配完成！');
             }
         } else {
-            $.messager.confirm('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
 
@@ -227,7 +227,7 @@
             $('#allotQuantity').attr("readonly", false);
             modifyUrl = '/StockInBillAllot/AllotEdit/';
         } else {
-            $.messager.confirm('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
 
@@ -240,7 +240,7 @@
             $('#allotQuantity').attr("readonly", true);
             modifyUrl = '/StockInBillAllot/AllotDelete/';
         } else {
-            $.messager.confirm('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
 

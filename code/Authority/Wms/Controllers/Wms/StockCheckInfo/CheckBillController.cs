@@ -175,9 +175,10 @@ namespace Authority.Controllers.Wms.StockCheckInfo
         {
             int page = 0, rows = 0;
             string billNo = Request.QueryString["billNo"];
+            string orderByType = Request.QueryString["orderByType"];
 
             ExportParam ep = new ExportParam();
-            ep.DT1 = CheckBillDetailService.GetCheckBillDetail(page, rows, billNo);
+            ep.DT1 = CheckBillDetailService.GetCheckBillDetail(page, rows, billNo, orderByType);
             ep.HeadTitle1 = "盘点单明细";
             return PrintService.Print(ep);
         }

@@ -1,0 +1,104 @@
+﻿<script type="text/javascript">
+    var url;
+
+    function editClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg-edit').dialog('open').dialog('setTitle', '编辑');
+
+            //文本赋值&下拉框赋值
+            $('#editFm').form('load', row);
+            $("#defaultProductCode2").attr("value", '');
+            $("#defaultProductName2").attr("value", '');
+            $('#defaultProductName2').attr('placeholder', '如不填写，则为删除');
+
+            $('#cellName2').attr('readonly', 'true');
+            $('#defaultProductName2').attr('readonly', 'true');
+            
+
+            url = "/SplitPalletCell/Edit";
+        }
+        else {
+            $.messager.alert('错误', '没有选择行！', 'info');
+        }
+    }
+    //保存
+    function save() {
+        $.messager.confirm('编辑', '警告：请谨慎操作！', function (r) {
+            if (r) {
+                $('#editFm').form('submit', {
+                    url: url,
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.success) {
+                            $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                            $('#dlg-edit').dialog('close');
+                            $('#details').datagrid('reload');
+                        } else {
+                            $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                            $('#details').datagrid('reload');
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+<style type="text/css">
+    #dlg-edit
+    {
+        width: 295px;
+        height: 110px;
+        padding: 0px 0px;
+    }
+    .div1
+    {
+        padding: 10px 10px;
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+    .edittable
+    {
+        width: 280px;
+        padding: 0px 0px;
+    }
+</style>
+<div id="dlg-edit" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="true" class="div1">
+            <form id="editFm" method="post" novalidate>
+            <table class="edittable">
+                <tr>
+                    <input id="cellCode2" name="CellCode" type="text" style="display: none;" />
+                    <td>
+                        货位名称：
+                    </td>
+                    <td>
+                        <input id="cellName2" name="CellName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        预设卷烟：
+                    </td>
+                    <td>
+                        <input id="defaultProductCode2" name="DefaultProductCode" type="text" style="display: none;" />
+                        <input id="defaultProductName2" type="text" />
+                        <a href="#" onclick="productQuery()" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true"></a>
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-edit').dialog('close')">
+        取消</a>
+</div>
+@Html.Partial("_ProductPartial")

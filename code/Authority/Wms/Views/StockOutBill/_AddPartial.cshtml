@@ -257,7 +257,7 @@
                 fit="true" fitColumns="true" singleSelect="true"  pagination="true" rownumbers="true" pageSize="50">
                 <thead>
                     <tr>
-                        <th field="ID"  hidden="true" width="100">细表ID</th>
+                        <th field="ID" width="100">细表号</th>
                         <th field="BillNo"  width="120" align="left">单据号</th>
                         <th field="ProductCode" width="100" align="left">产品代码</th>
                         <th field="ProductName" width="80" align="left">产品名称</th>
@@ -280,9 +280,9 @@
             <table height="100px">
                 <tr>
                 <td width="60">订单号</td>
-                <td width="168"><input name="BillNo" id="billNo" class="easyui-validatebox"  /></td>
+                <td width="168"><input name="BillNo" id="billNo" /></td>
                 <td width="60">制单日期</td>
-                <td width="168"><input name="BillDate" id="billDate" class="easyui-validatebox" /></td>
+                <td width="168"><input name="BillDate" id="billDate" /></td>
                 <td width="60">订单类型</td>
                 <td width="168"><input name="BillTypeCode" id="biiTypeadd" missingmessage="请选择订单类型" /></td>
                 </tr>
@@ -307,7 +307,9 @@
                 </tr>
                 <tr>
                 <td width="60">目标货位</td>
-                <td width="168"><input name="TargetCellCode" readonly="true" id="targetCellCode">
+                <td width="168">
+                <input name="TargetCellCode" readonly="true" id="targetCellCode" style="display:none;" />
+                <input name="TargetCellName" readonly="true" id="targetCellName" />
                 <a href="#" onclick="moveOutCellSelect()" class="easyui-linkbutton" iconcls="icon-search" plain="true">
                 </td>
                 </tr>

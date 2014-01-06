@@ -1363,5 +1363,71 @@ namespace THOK.Wms.Bll.Service
             return ds;
         }
         #endregion
+
+        /// <summary>查询 拆盘位信息</summary>
+        public object GetSplitPalletCell(int page, int rows, string productCode, string shelfType)
+        {
+            IQueryable<Cell> cellQuery = null;
+            if ((productCode == "" || productCode == null) && (shelfType == "" || shelfType == null))
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.DefaultProductCode.Contains(productCode));
+            }
+
+            if (shelfType == "01" || shelfType == "")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-001" && c.DefaultProductCode.Contains(productCode));
+            }
+            else if (shelfType == "02")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-002" && c.DefaultProductCode.Contains(productCode));
+            }
+            else if (shelfType == "03")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-003" && c.DefaultProductCode.Contains(productCode));
+            }
+            else if (shelfType == "04")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-004" && c.DefaultProductCode.Contains(productCode));
+            }
+            var cell = cellQuery.OrderBy(b => b.CellCode).Select(b => new
+            {
+                b.CellCode,
+                b.CellName,
+                b.DefaultProductCode,
+                DefaultProductName = b.Product.ProductName
+            });
+            int total = cell.Count();
+            cell = cell.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = cell.ToArray() };
+        }
+        public bool SaveSplitPalletCell(Cell cell, out string strResult)
+        {
+            bool bResult = false;
+            strResult = string.Empty;
+
+            var isExist = CellRepository.GetQueryable().Where(a => a.DefaultProductCode == cell.DefaultProductCode
+                                                                && a.CellCode != cell.CellCode
+                                                                && a.AreaCode == "001-07");
+            var c = CellRepository.GetQueryable().FirstOrDefault(a => a.CellCode == cell.CellCode);
+            
+            if (isExist.Count() < 1)
+            {
+                if (c != null)
+                {
+                    c.DefaultProductCode = cell.DefaultProductCode;
+                    CellRepository.SaveChanges();
+                    bResult = true;
+                }
+                else
+                {
+                    strResult = "未找到此货位信息！";
+                }
+            }
+            else
+            {
+                strResult = "此品牌在拆盘位中已存在预设！（一个品牌对应一个拆盘位）";
+            }
+            return bResult;
+        }
     }
 }

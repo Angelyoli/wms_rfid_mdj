@@ -11,12 +11,12 @@
                             { BillNo: row.BillNo },
                             function () {
                                 $('#details').datagrid('load');
-                            });     
+                            });
                     }
                 });
             }
         } else {
-            $.messager.alert('错误', '没有选择行，无法结单！');
+            $.messager.alert('错误', '没有选择行，无法结单！', 'info');
         }
     }
 </script>

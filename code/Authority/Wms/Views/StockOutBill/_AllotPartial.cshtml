@@ -143,7 +143,7 @@
                 billNo = row.BillNo;
             }
         } else {
-            $.messager.confirm('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
     function allotClick() {
@@ -165,7 +165,7 @@
                 billNo = row.BillNo;
             }
         } else {
-            $.messager.alert('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     };
 
@@ -195,7 +195,7 @@
                 $.messager.alert('错误', '所选卷烟已分配完成！');
             }
         } else {
-            $.messager.alert('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
 
@@ -213,7 +213,7 @@
             }
             modifyUrl = '/StockOutBillAllot/AllotEdit/';
         } else {
-            $.messager.alert('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
 
@@ -225,7 +225,7 @@
             $('#fm_allot').form('load', detailRow);
             modifyUrl = '/StockOutBillAllot/AllotDelete/';
         } else {
-            $.messager.alert('错误', '没有选择行！');
+            $.messager.alert('错误', '没有选择行！', 'info');
         }
     }
 

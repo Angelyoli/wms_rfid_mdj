@@ -25,7 +25,6 @@ namespace THOK.WCS.Bll.Service
 
         public object GetDetails(int page, int rows, ProductSize productSize)
         {
-
             IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable();
             IQueryable<Product> productQuery = ProductRepository.GetQueryable();
             //IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
@@ -49,15 +48,15 @@ namespace THOK.WCS.Bll.Service
             }
             int total = productSizeDetail3.Count();
             var productSizeDetails = productSizeDetail3.Skip((page - 1) * rows).Take(rows);
-            var productSize_Detail = productSizeDetails
+            var temp = productSizeDetails
                     .Join(productQuery
                         , ps => ps.ProductCode
                         , p => p.ProductCode
                         , (ps, p) => new { ps.ID, ps.ProductCode, ps.ProductNo, ps.SizeNo, ps.AreaNo, ps.Length, ps.Width, ps.Height, p.ProductName })
-                    //.Join(sizeQuery
-                    //    , ps => ps.SizeNo
-                    //    , s => s.SizeNo
-                    //    , (ps, s) => new { ps.ID, ps.ProductCode ,ps.ProductNo, ps.SizeNo, ps.AreaNo,ps.ProductName ,s.Length, s.Width, s.Height })
+                  //.Join(sizeQuery
+                  //    , ps => ps.SizeNo
+                  //    , s => s.SizeNo
+                  //    , (ps, s) => new { ps.ID, ps.ProductCode ,ps.ProductNo, ps.SizeNo, ps.AreaNo,ps.ProductName ,s.Length, s.Width, s.Height })
                 .Where(p => p.ProductCode.Contains(productSize.ProductCode))
                 .OrderBy(p => p.ID).AsEnumerable().Select(p => new
             {
@@ -66,14 +65,13 @@ namespace THOK.WCS.Bll.Service
                 p.ProductName,
                 p.ProductNo,
                 //p.SizeNo,
-                p.AreaNo,
+                AreaNo = p.AreaNo == 1 ? "密集库一区" : p.AreaNo == 2 ? "密集库二区" : p.AreaNo == 3 ? "大品种一区" : p.AreaNo == 4 ? "大品种二区" : p.AreaNo == 5 ? "小品种" : p.AreaNo == 6 ? "异型烟" : "异常",
                 p.Length,
                 p.Width,
                 p.Height
             });
-            return new { total, rows = productSize_Detail.ToArray() };
+            return new { total, rows = temp.ToArray() };
         }
-
 
         public bool Add(ProductSize productSize)
         {

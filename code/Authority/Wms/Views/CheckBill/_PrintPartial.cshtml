@@ -1,17 +1,51 @@
 ﻿<script type="text/javascript">
     function printClick() {
+        $('#orderByType').attr('readonly', 'true');
+        $('#orderByType').combo({ editable: false, width: 130, panelHeight: 'auto' });
+
         var row = $('#details').datagrid('getSelected');
 
-        if (row) {
-            
-            var rowBillNo = null;
-
-            if (row.BillNo == null) { rowBillNo = ""; } else { rowBillNo = row.BillNo; }
-
-            window.location.href = '/CheckBill/CreateExcelToClient/?billNo=' + rowBillNo;
-
-        } else {
+        if (!row) {
             $.messager.alert('系统提示', '未选中行', "info");
+            return;
         }
+        $('#dlg-orderByType').dialog('open').dialog('setTitle', '选择排序类型');
+    }
+    function printOK() {
+        var row = $('#details').datagrid('getSelected');
+        var orderByType = $('#orderByType').combo('getValue');
+
+        var rowBillNo = null;
+
+        if (row.BillNo == null) { rowBillNo = ""; } else { rowBillNo = row.BillNo; }
+
+        if ($('#orderByType').combo('getValue') == "CellCode") {
+            orderByType = "CellCode"
+        }
+        else if ($('#orderByType').combo('getValue') == "ProductCode") {
+            orderByType = "ProductCode"
+        }
+        else {
+            orderByType = "CellCode";
+        }
+        window.location.href = '/CheckBill/CreateExcelToClient/?billNo=' + rowBillNo + '&orderByType=' + orderByType;
     }
 </script>
+<style type="text/css">
+    #dlg-orderByType
+    {
+        width: 220px;
+        height: 40px;
+        padding: 10px 10px 10px 10px;
+    }
+</style>
+<div id="dlg-orderByType" class="easyui-dialog" modal="true" closed="true" buttons="#dlg-product-buttons">
+    <div id="btnQuery">
+        <select id="orderByType" class="easyui-combobox">
+            <option value="CellCode">根据货位排序</option>
+            <option value="ProductCode">根据卷烟排序</option>
+        </select>
+        <a href="#" id="printQuery" class="easyui-linkbutton" iconcls="icon-print" plain="true"
+            onclick="printOK()">打印</a>
+    </div>
+</div>

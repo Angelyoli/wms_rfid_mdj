@@ -61,11 +61,10 @@
         addKey = true;
         addDialog.dialog('open');
 
-        $('#fm .easyui-validatebox').validatebox({
-            required: true
-        });
-        $('form input').removeAttr("disabled");
         $('#fm').form('clear');
+        $('#fm .easyui-validatebox').validatebox({required: true});
+        $('form input').removeAttr("disabled");
+        
         $('#inputID').attr('value', '自动增长');
         url = '/ProductSize/Create/';
     };
@@ -92,11 +91,6 @@
                 }
             }
         });
-    }
-    function ProductSearchClick() {
-        $('#productData').dialog('open').dialog('setTitle', '商品名称');
-        $('#productDetail').datagrid({ url: '/Product/GetProductBy/' });
-        $("#productDetail").datagrid('reload');
     }
     function SizeSearchClick() {
         $('#sizeData').dialog('open').dialog('setTitle', '件烟尺寸信息');
