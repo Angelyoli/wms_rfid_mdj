@@ -77,11 +77,19 @@ namespace Wms.Controllers.WCS
             TaskService.GetOutTask(positionType, orderType, restReturn);
             return Json(restReturn, "application/json", JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult FinishOutTask(string taskID)
         {
             RestReturn restReturn = new RestReturn();
             TaskService.FinishTask(taskID, restReturn);
             return Json(restReturn, "application/json", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult CreateAutoMoveCell()
+        {
+            string errorInfo = string.Empty;
+            bool bResult = TaskService.CreateAutoMoveCell(out errorInfo);
+            return Json(new RestReturn() { IsSuccess = bResult, Message = errorInfo }, "application/json", JsonRequestBehavior.AllowGet);
         }
     }
 }
