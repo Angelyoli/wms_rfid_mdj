@@ -18,7 +18,7 @@ using System.Transactions;
 
 namespace THOK.WCS.Bll.Service
 {
-    public class TaskService:ITaskService
+    public class TaskService : ITaskService
     {
         [Dependency]
         public ITaskRepository TaskRepository { get; set; }
@@ -407,7 +407,7 @@ namespace THOK.WCS.Bll.Service
 
             var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginCellCode));
             var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetCellCode));
-            if (originCellPosition != null && targetCellPosition!=null)
+            if (originCellPosition != null && targetCellPosition != null)
             {
                 //起始位置为货位位置的出库位置
                 var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == originCellPosition.StockOutPositionID);
@@ -498,7 +498,7 @@ namespace THOK.WCS.Bll.Service
             {
                 var originCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.OriginCellCode));
                 var targetCellPosition = CellPositionRepository.GetQueryable().FirstOrDefault(a => a.CellCode.Contains(task.TargetCellCode));
-                if (originCellPosition != null && targetCellPosition!=null)
+                if (originCellPosition != null && targetCellPosition != null)
                 {
                     //起始位置为货位位置的出库位置
                     var originPosition = PositionRepository.GetQueryable().FirstOrDefault(a => a.ID == originCellPosition.StockOutPositionID);
@@ -610,7 +610,7 @@ namespace THOK.WCS.Bll.Service
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
                             || (t.OrderType != "01" && t.OrderType != "05"
                                 && t.OrderType != "06" && t.OrderType != "07"
-                                && t.OrderType != "08" && t.OrderType != "09" 
+                                && t.OrderType != "08" && t.OrderType != "09"
                                 && t.CurrentPositionID == t.OriginPositionID && t.State == "01"));
 
                     foreach (var task in tasks)
@@ -656,7 +656,7 @@ namespace THOK.WCS.Bll.Service
                                 || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
                                 || (t.OrderType != "01" && t.OrderType != "05"
                                     && t.OrderType != "06" && t.OrderType != "07"
-                                    && t.OrderType != "08" && t.OrderType != "09" 
+                                    && t.OrderType != "08" && t.OrderType != "09"
                                     && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
 
                     foreach (var task in tasks)
@@ -671,7 +671,7 @@ namespace THOK.WCS.Bll.Service
                             || (t.OrderType == "01" && t.CurrentPositionID == t.OriginPositionID && t.CurrentPositionState == "01")
                             || (t.OrderType != "01" && t.OrderType != "05"
                                 && t.OrderType != "06" && t.OrderType != "07"
-                                && t.OrderType != "08" && t.OrderType != "09" 
+                                && t.OrderType != "08" && t.OrderType != "09"
                                 && t.CurrentPositionID == t.OriginPositionID && t.State == "01")));
 
                     if (TaskRepository.GetQueryable().Where(t => t.OrderID == orderID).Count() != 0)
@@ -903,7 +903,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
         }
-        public bool CreateMoveBillTask(string billNo, int taskLevel,out string errorInfo)
+        public bool CreateMoveBillTask(string billNo, int taskLevel, out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -937,7 +937,7 @@ namespace THOK.WCS.Bll.Service
                         if (originPosition == null) { errorInfo = "未找到起始货位位置：" + originCellPosition.StockOutPosition.PositionName; return false; }
 
                         int targetPositionID = 0;
-                        if (SortingLineRepository.GetQueryable().Where(s=>s.CellCode == moveBillDetail.InCellCode).Count() > 0)
+                        if (SortingLineRepository.GetQueryable().Where(s => s.CellCode == moveBillDetail.InCellCode).Count() > 0)
                         {
                             var targetSystemParam = SystemParameterRepository.GetQueryable().FirstOrDefault(s => s.ParameterName.Contains(originPosition.SRMName) && s.ParameterName.Contains("StockOutAndCheckPositionID"));
                             if (targetSystemParam == null) { errorInfo = "请检查系统参数，未找到目标位置OutBillPosition！"; return false; }
@@ -1300,7 +1300,7 @@ namespace THOK.WCS.Bll.Service
                     && i.IsActive == "1"
                     && cellPositionQuery.Any(p => p.CellCode == i.CellCode)
                     && (i.Storages.Any(s => s.ProductCode == palletCode
-                        && s.Quantity + s.InFrozenQuantity < ((s.Cell.MaxQuantity /5) *2) && s.OutFrozenQuantity == 0)));
+                        && s.Quantity + s.InFrozenQuantity < ((s.Cell.MaxQuantity / 5) * 2) && s.OutFrozenQuantity == 0)));
             if (!cellQuery.Any())
             {
                 cellQuery = CellRepository.GetQueryable().Where(i => i.IsSingle == "1"
@@ -1450,7 +1450,7 @@ namespace THOK.WCS.Bll.Service
                 return false;
             }
             var positionCell = CellPositionRepository.GetQueryable().Where(i => i.StockInPositionID == position.ID).FirstOrDefault();
-            
+
             var task = TaskRepository.GetQueryable().Where(t => t.State != "04" && t.OrderType == "06").FirstOrDefault();
             if (task != null)
             {
@@ -1498,7 +1498,7 @@ namespace THOK.WCS.Bll.Service
                 newTask.TaskQuantity = Convert.ToInt32(quantity);
                 newTask.OperateQuantity = 0;
                 newTask.OrderID = "";
-                newTask.OrderType = "06";               
+                newTask.OrderType = "06";
                 newTask.DownloadState = "1";
                 newTask.StorageSequence = 0;
                 newTask.CreateTime = System.DateTime.Now;
@@ -1515,7 +1515,7 @@ namespace THOK.WCS.Bll.Service
         }
         public bool CreateNewTaskForMoveBackRemain(int taskID, out string errorInfo)
         {
-            return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID,out errorInfo) > 0;
+            return CreateNewTaskForMoveBackRemainAndReturnTaskID(taskID, out errorInfo) > 0;
         }
         private int CreateNewTaskForMoveBackRemainAndReturnTaskID(int taskID, out string errorInfo)
         {
@@ -1583,7 +1583,7 @@ namespace THOK.WCS.Bll.Service
             var task = TaskRepository.GetQueryable().Where(i => i.ID == taskID).FirstOrDefault();
             if (task != null && task.State == "04")
             {
-                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode,task.OriginStorageCode,task.TargetStorageCode, out errorInfo);
+                return FinishTask(task.ID, task.OrderType, task.OrderID, task.AllotID, task.OriginCellCode, task.TargetCellCode, task.OriginStorageCode, task.TargetStorageCode, out errorInfo);
             }
             else
             {
@@ -1600,22 +1600,22 @@ namespace THOK.WCS.Bll.Service
                 case "02": return FinishMoveBillTask(orderID, allotID, out errorInfo);
                 case "03": return FinishOutBillTask(orderID, allotID, out errorInfo);
                 case "04": return FinishCheckBillTask(orderID, allotID, out errorInfo);
-                case "05": return FinishEmptyPalletStackTask(targetCellCode,targetStorageCode, out errorInfo);
-                case "06": return FinishEmptyPalletSupplyTask(originCellCode,originStorageCode, out errorInfo);
+                case "05": return FinishEmptyPalletStackTask(targetCellCode, targetStorageCode, out errorInfo);
+                case "06": return FinishEmptyPalletSupplyTask(originCellCode, originStorageCode, out errorInfo);
                 case "07": return FinishMoveRemainMoveBackTask(orderID, allotID);
                 case "08": return FinishStockOutRemainMoveBackTask(orderID, allotID);
                 case "09": return FinishInventoryRemainMoveBackTask(orderID, allotID);
                 default: return true;
             }
         }
-        
+
         private bool FinishInBillTask(string orderID, int allotID, out string errorInfo)
         {
             errorInfo = string.Empty;
 
             try
             {
-                if(InBillAllotRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
+                if (InBillAllotRepository.GetQueryable().Where(i => i.BillNo == orderID && i.ID == allotID && i.Status == "2").Count() == 1)
                 {
                     return true;
                 }
@@ -1750,7 +1750,7 @@ namespace THOK.WCS.Bll.Service
                                 outAllot.OutBillMaster.Status = "6";
                             }
 
-                            OutBillAllotRepository.SaveChanges();             
+                            OutBillAllotRepository.SaveChanges();
 
                             #region 反馈给浪潮的xml数据信息
 
@@ -1799,7 +1799,7 @@ namespace THOK.WCS.Bll.Service
             {
                 errorInfo = ex.Message;
                 return false;
-            }            
+            }
         }
         private bool FinishMoveBillTask(string orderID, int allotID, out string errorInfo)
         {
@@ -1939,9 +1939,9 @@ namespace THOK.WCS.Bll.Service
             {
                 errorInfo = ex.Message;
                 return false;
-            }            
+            }
         }
-        private bool FinishEmptyPalletStackTask(string cellCode,string storageCode, out string errorInfo)
+        private bool FinishEmptyPalletStackTask(string cellCode, string storageCode, out string errorInfo)
         {
             errorInfo = string.Empty;
 
@@ -2024,10 +2024,10 @@ namespace THOK.WCS.Bll.Service
             {
                 errorInfo = ex.Message;
                 return false;
-            }            
+            }
         }
         private bool FinishMoveRemainMoveBackTask(string orderID, int allotID)
-        {            
+        {
             try
             {
                 using (TransactionScope scope = new TransactionScope())
@@ -2057,7 +2057,7 @@ namespace THOK.WCS.Bll.Service
             }
         }
         private bool FinishStockOutRemainMoveBackTask(string orderID, int allotID)
-        {            
+        {
             try
             {
                 using (TransactionScope scope = new TransactionScope())
@@ -2084,8 +2084,8 @@ namespace THOK.WCS.Bll.Service
             catch (Exception)
             {
                 return false;
-            }            
-        }        
+            }
+        }
         private bool FinishInventoryRemainMoveBackTask(string orderID, int allotID)
         {
             try
@@ -2114,7 +2114,7 @@ namespace THOK.WCS.Bll.Service
             catch (Exception)
             {
                 return false;
-            }           
+            }
         }
 
         public int FinishStockOutTask(int taskID, int stockOutQuantity, out string errorInfo)
@@ -2206,14 +2206,14 @@ namespace THOK.WCS.Bll.Service
                 return newTaskID;
             }
         }
-                
+
         private static object locker = new object();
         public bool CreateAutoMoveBill(out string errorInfo)
         {
             errorInfo = string.Empty;
 
             lock (locker)
-            {              
+            {
                 try
                 {
                     using (TransactionScope scope = new TransactionScope())
@@ -2273,7 +2273,7 @@ namespace THOK.WCS.Bll.Service
                 catch (Exception)
                 {
                     return true;
-                }                
+                }
             }
         }
         private void AlltoMoveBill(MoveBillMaster moveBillMaster, Product product, Cell cell)
@@ -2301,7 +2301,7 @@ namespace THOK.WCS.Bll.Service
                 int storageSequence = s.Cell.Storages.Where(t => t.Quantity > 0 && t.OutFrozenQuantity == 0).Min(t => t.StorageSequence);
                 decimal allotQuantity = Math.Floor((s.Quantity - s.OutFrozenQuantity) / s.Product.Unit.Count) * s.Product.Unit.Count;
 
-                if (allotQuantity > 0 
+                if (allotQuantity > 0
                     && allotQuantity == s.Quantity - s.OutFrozenQuantity
                     && storageSequence == s.StorageSequence)
                 {
@@ -2318,7 +2318,7 @@ namespace THOK.WCS.Bll.Service
             }
         }
 
-        public void GetOutTask(string positionType,string orderType, RestReturn result)
+        public void GetOutTask(string positionType, string orderType, RestReturn result)
         {
             try
             {
@@ -2639,9 +2639,9 @@ namespace THOK.WCS.Bll.Service
             }
         }
         public void FinishTask(string taskID, RestReturn result)
-        {            
+        {
             string errorInfo = string.Empty;
-            
+
             try
             {
                 int tid = Convert.ToInt32(taskID);
@@ -2683,7 +2683,7 @@ namespace THOK.WCS.Bll.Service
                         }
                         else
                         {
-                            if (task.CurrentPositionID != task.OriginPositionID )
+                            if (task.CurrentPositionID != task.OriginPositionID)
                             {
                                 if (CreateNewTaskForMoveBackRemain(task.ID, out errorInfo))
                                 {
@@ -2724,5 +2724,122 @@ namespace THOK.WCS.Bll.Service
                 result.Message = ex.Message + errorInfo;
             }
         }
+
+        public bool CreateAutoMoveCell(out string errorInfo)
+        {
+            errorInfo = string.Empty;
+
+            lock (locker)
+            {
+                string[] areaCodes = new string[] { "001-01", "001-02" };
+                IQueryable<Storage> storageQuery = StorageRepository.GetQueryable()
+                                        .Where(s => ((s.Quantity > 0 && s.OutFrozenQuantity == 0) || (s.Quantity == 0 && s.InFrozenQuantity > 0))
+                                        && s.Cell.IsActive == "1"
+                                        && areaCodes.Any(a => a == s.Cell.AreaCode)
+                                        && s.IsLock == "0"
+                                        && s.IsActive == "1");
+                try
+                {
+                    //需要移动的品牌
+                    var products = storageQuery.GroupBy(s => new { s.Product, s.Cell })
+                                        .Select(s => new
+                                        {
+                                            maxPallet = s.Key.Cell.MaxPalletQuantity,
+                                            s.Key.Product,
+                                            HasPalletCount = s.Count(),
+                                            CanMovePalletConut = s.Key.Cell.MaxPalletQuantity - s.Count()
+                                        }).Where(a => a.HasPalletCount < a.maxPallet && a.CanMovePalletConut >= 1)
+                                        .GroupBy(s => new { s.Product })
+                                        .Select(s => new
+                                        {
+                                            prpduct = s.Key.Product,
+                                            cellCount = s.Count()
+                                        }).Where(s => s.cellCount >= 2).OrderByDescending(s => s.cellCount);
+                    //遍历品牌
+                    foreach (var product in products.ToArray())
+                    {
+                        AutoMoveCell(storageQuery, product.prpduct.ProductCode, out errorInfo);
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    errorInfo += e.Message;
+                    return false;
+                }
+            }
+        }
+        private void AutoMoveCell(IQueryable<Storage> storageQuery, string productCode, out string errorInfo)
+        {
+            errorInfo = string.Empty;
+            var storages = storageQuery.Where(s => s.ProductCode == productCode).ToArray();
+            try
+            {
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    var systemParamWare = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "WarehouseCode");
+                    var systemParamMove = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "MoveBillTypeCode");
+                    var systemParamPerson = SystemParameterRepository.GetQueryable().FirstOrDefault(a => a.ParameterName == "OperatePersonID");
+
+                    string warehouseCode = systemParamWare.ParameterValue;
+                    string moveBillTypeCode = systemParamMove.ParameterValue;
+                    string operatePersonID = systemParamPerson.ParameterValue;
+
+                    MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(warehouseCode, moveBillTypeCode, operatePersonID);
+                    moveBillMaster.Origin = "2";
+                    moveBillMaster.Description = "系统自动生成同品牌合并货位移库单！";
+                    moveBillMaster.Status = "2";
+                    moveBillMaster.VerifyPersonID = Guid.Parse(operatePersonID);
+                    moveBillMaster.VerifyDate = DateTime.Now;
+
+                    //需要合并的货位
+                    var cells = storages.Where(s => (s.Quantity > 0 && s.OutFrozenQuantity == 0) || (s.Quantity == 0 && s.InFrozenQuantity > 0))
+                                       .GroupBy(s => new { s.Cell })
+                                       .Select(s => new
+                                       {
+                                           s.Key.Cell,
+                                           HasPalletCount = s.Count(),
+                                           CanMovePalletConut = s.Key.Cell.MaxPalletQuantity - s.Count()
+                                       })
+                                       .Where(a => a.HasPalletCount < a.Cell.MaxPalletQuantity && a.CanMovePalletConut >= 1);
+
+                    //遍历货位
+                    foreach (var cell in cells.OrderByDescending(s => s.HasPalletCount).ThenByDescending(s => s.Cell.CellCode).ToArray())
+                    {
+                        if (cell.Cell.Storages.Any(s => s.OutFrozenQuantity > 0))
+                        {
+                            continue;
+                        }
+                        for (int i = 0; i < cell.CanMovePalletConut; i++)
+                        {
+                            //查询需要移出的数据
+                            var sourceCell = cells.OrderBy(s => s.HasPalletCount).ThenBy(s => s.Cell.CellCode).FirstOrDefault().Cell.CellCode;
+                            if (cell.Cell.MaxPalletQuantity - cell.Cell.Storages.Where(s => s.Quantity > 0 && s.OutFrozenQuantity == 0).Count() > 0 && sourceCell != cell.Cell.CellCode)
+                            {
+                                var sourceStorage = storages.Where(s => s.Cell.CellCode == sourceCell)
+                                                           .Where(s => s.Quantity > 0 && s.OutFrozenQuantity == 0)
+                                                           .AsQueryable()
+                                                           .OrderBy(s => s.StorageSequence);
+                                AllotPallet(moveBillMaster, sourceStorage, cell.Cell);
+                            }
+                        }
+                    }
+
+                    if (moveBillMaster.MoveBillDetails.Count > 0)
+                    {
+                        CellRepository.SaveChanges();
+                        if (CreateAutoMoveBillTask(moveBillMaster.BillNo, 1, out errorInfo))
+                        {
+                            scope.Complete();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                errorInfo += e.Message;
+            }
+        }
+
     }
 }

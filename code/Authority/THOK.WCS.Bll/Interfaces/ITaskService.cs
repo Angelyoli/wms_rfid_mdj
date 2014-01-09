@@ -37,5 +37,7 @@ namespace THOK.WCS.Bll.Interfaces
 
         void GetOutTask(string positionType, string orderType, RestReturn result);
         void FinishTask(string taskID, RestReturn result);
+
+        bool CreateAutoMoveCell(out string errorInfo);
     }
 }
