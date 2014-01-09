@@ -1977,6 +1977,7 @@
     <Content Include="Views\CellPosition\_CellNamePartial.cshtml" />
     <Content Include="Views\CheckBill\_TaskPartial.cshtml" />
     <Content Include="Views\Cargospace\_PrintPartial.cshtml" />
+    <Content Include="Views\Distribution\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
