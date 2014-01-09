@@ -2752,13 +2752,13 @@ namespace THOK.WCS.Bll.Service
                                         .GroupBy(s => new { s.Product })
                                         .Select(s => new
                                         {
-                                            prpduct = s.Key.Product,
+                                            product = s.Key.Product,
                                             cellCount = s.Count()
                                         }).Where(s => s.cellCount >= 2).OrderByDescending(s => s.cellCount);
                     //遍历品牌
                     foreach (var product in products.ToArray())
                     {
-                        AutoMoveCell(storageQuery, product.prpduct.ProductCode, out errorInfo);
+                        AutoMoveCell(storageQuery, product.product.ProductCode, out errorInfo);
                     }
                     return true;
                 }
