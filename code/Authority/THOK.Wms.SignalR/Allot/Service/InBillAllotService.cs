@@ -68,6 +68,7 @@ namespace THOK.Wms.SignalR.Allot.Service
                                             && c.Warehouse.IsActive == "1"
                                             && c.Area.IsActive == "1"
                                             && c.IsActive == "1"
+                                            && c.Area.AreaType != "10"
                                             && (areaCodes.Any(a => a == c.AreaCode)
                                                 || (!areaCodes.Any() && c.Area.AllotInOrder > 0)))
                                  .ToArray();  
