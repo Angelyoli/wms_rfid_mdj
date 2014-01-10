@@ -2787,7 +2787,7 @@ namespace THOK.WCS.Bll.Service
 
                     MoveBillMaster moveBillMaster = MoveBillCreater.CreateMoveBillMaster(warehouseCode, moveBillTypeCode, operatePersonID);
                     moveBillMaster.Origin = "2";
-                    moveBillMaster.Description = "系统自动生成同品牌合并货位移库单！";
+                    moveBillMaster.Description = "系统自动生成同品牌货位调整移库单！";
                     moveBillMaster.Status = "2";
                     moveBillMaster.VerifyPersonID = Guid.Parse(operatePersonID);
                     moveBillMaster.VerifyDate = DateTime.Now;
