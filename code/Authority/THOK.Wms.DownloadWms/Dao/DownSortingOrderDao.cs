@@ -29,24 +29,18 @@ namespace THOK.WMS.DownloadWms.Dao
        public DataTable GetSortingOrder(string orderid)
        {
            string sql = "";
-           dbTypeName = this.SalesSystemDao();
-           switch (dbTypeName)
+           try
            {
-               case "gxyc-db2"://广西烟草db2
-                   sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,SUBSTR(A.ORDER_ID,3,8) AS ORDERID FROM V_WMS_SORT_ORDER A
-                                        LEFT JOIN V_WMS_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
-                   break;
-               case "gzyc-oracle"://贵州烟草oracle
-                   sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,ORDER_ID AS ORDERID FROM V_WMS_SORT_ORDER A
-                                        LEFT JOIN V_WMS_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
-                   break;
-               default://默认广西烟草
-                   sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,SUBSTR(A.ORDER_ID,3,8) AS ORDERID FROM V_WMS_SORT_ORDER A
-                                        LEFT JOIN V_WMS_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
-                   break;
+               sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,SUBSTR(A.ORDER_ID,3,8) AS ORDERID FROM V_WMS_SORT_ORDER A
+                                       LEFT JOIN V_WMS_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
+               return this.ExecuteQuery(sql).Tables[0];
            }
-
-           return this.ExecuteQuery(sql).Tables[0];
+           catch (Exception)
+           {
+               sql = string.Format(@"SELECT a.*,b.DIST_BILL_ID,b.DELIVERYMAN_CODE,b.DELIVERYMAN_NAME,SUBSTR(A.ORDER_ID,3,8) AS ORDERID FROM V_WMS_SORT_ORDER A
+                                        LEFT JOIN V_DWV_ORD_DIST_BILL B ON A.DIST_BILL_ID=B.DIST_BILL_ID WHERE {0} AND A.QUANTITY_SUM>0", orderid);
+               return this.ExecuteQuery(sql).Tables[0];
+           }
        }
 
        /// <summary>
@@ -54,28 +48,13 @@ namespace THOK.WMS.DownloadWms.Dao
        /// </summary>
        /// <returns></returns>
        public DataTable GetSortingOrderDetail(string orderid)
-       {           
-           string sql = "";
-           dbTypeName = this.SalesSystemDao();
-           switch (dbTypeName)
+       {
            {
-               case "gxyc-db2"://广西烟草db2
-                   sql = string.Format(@"SELECT A.* ,SUBSTR(A.ORDER_ID,3,8) AS ORDERID,B.BRAND_N AS BRANDCODE FROM V_WMS_SORT_ORDER_DETAIL A
-                                        LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE
-                                        LEFT JOIN V_WMS_SORT_ORDER C ON A.ORDER_ID=C.ORDER_ID WHERE {0} ", orderid);
-                   break;
-               case "gzyc-oracle"://贵州烟草oracle
-                   sql = string.Format(@"SELECT A.* ,A.ORDER_ID AS ORDERID,B.BRAND_CODE AS BRANDCODE FROM V_WMS_SORT_ORDER_DETAIL A
-                                        LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE
-                                        LEFT JOIN V_WMS_SORT_ORDER C ON A.ORDER_ID=C.ORDER_ID WHERE {0} ", orderid);
-                   break;
-               default://默认广西烟草
-                   sql = string.Format(@"SELECT A.* ,SUBSTR(A.ORDER_ID,3,8) AS ORDERID,B.BRAND_N AS BRANDCODE FROM V_WMS_SORT_ORDER_DETAIL A
-                                        LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE
-                                        LEFT JOIN V_WMS_SORT_ORDER C ON A.ORDER_ID=C.ORDER_ID WHERE {0} ", orderid);
-                   break;
+               string sql = string.Format(@"SELECT A.* ,SUBSTR(A.ORDER_ID,3,8) AS ORDERID,B.BRAND_N FROM V_WMS_SORT_ORDER_DETAIL A
+                                         LEFT JOIN V_WMS_BRAND B ON A.BRAND_CODE=B.BRAND_CODE
+                                         LEFT JOIN V_WMS_SORT_ORDER C ON A.ORDER_ID=C.ORDER_ID WHERE {0} ", orderid);
+               return this.ExecuteQuery(sql).Tables[0];
            }
-           return this.ExecuteQuery(sql).Tables[0];
        }
        /// <summary>
        /// 根据条件下载分拣订单主表信息 创联

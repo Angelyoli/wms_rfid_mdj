@@ -5,8 +5,8 @@
 		<Password Name = "PWD" Value = "65CED0851FFD283F"/>
 	</Connection>
 	<Connection Name = "YXConnection" DatabaseType="DB2">
-		<ConnectionString Value="server=10.80.1.239:50000;database =gxv3td;UID=ylcc" />
-		<Password Name="PWD" Value="2B081475F26880DF"/>
+		<ConnectionString Value="server=10.80.1.239:50000;database =gxv3td;UID=hzcc" />
+		<Password Name="PWD" Value="45DB2DFF959CBBAA"/>
 	</Connection>
 	<Connection Name = "ZYJCConnection" DatabaseType = "SQLSERVER">
 		<ConnectionString Value = "server=10.82.130.106;database =CORP_SCAN;UID =sa" />
