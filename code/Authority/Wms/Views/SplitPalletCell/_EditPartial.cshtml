@@ -1,6 +1,5 @@
 ﻿<script type="text/javascript">
     var url;
-
     function editClick() {
         var row = $('#details').datagrid('getSelected');
         if (row) {
@@ -14,7 +13,6 @@
 
             $('#cellName2').attr('readonly', 'true');
             $('#defaultProductName2').attr('readonly', 'true');
-            
 
             url = "/SplitPalletCell/Edit";
         }
