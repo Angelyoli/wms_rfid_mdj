@@ -390,5 +390,73 @@ namespace THOK.Wms.Bll.Service
             return ds;
         }
         #endregion
+
+        /// <summary>有烟的空货位</summary>
+        public object GetStorageCellHasProduct(int page, int rows, string areaCode)
+        {
+            string[] areaCodes = new string[] { areaCode };
+            var StorageQuery = StorageRepository.GetQueryable();
+            var temp = StorageQuery.Where(s => s.Quantity > 0
+                                            && s.InFrozenQuantity == 0
+                                            && s.OutFrozenQuantity == 0
+                                            && areaCodes.Any(a => a == s.Cell.AreaCode)
+                                            && s.IsActive == "1")
+                .GroupBy(s => new { s.Cell, s.Product })
+                .OrderByDescending(s => s.Key.Cell.MaxPalletQuantity - s.Count())
+                .Select(s => new
+                {
+                    CellCode = s.Key.Cell.CellCode,
+                    CellName = s.Key.Cell.CellName,
+                    ProductCode = s.Key.Product.ProductCode,
+                    ProductName = s.Key.Product.ProductName,
+                    StorageCount = s.Count(),
+                    EmptyCount = s.Key.Cell.MaxPalletQuantity - s.Count(),
+                    MaxCount = s.Key.Cell.MaxPalletQuantity,
+                })
+                .Where(a => a.StorageCount <= a.MaxCount && a.EmptyCount >= 1);
+
+            int total = temp.Count();
+            temp = temp.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = temp.ToArray() };
+        }
+        /// <summary>整通道空货位</summary>
+        public object GetStorageCellIsEmpty(int page, int rows, string areaType)
+        {
+            string[] areaCodes = null;
+
+            string[] areaTypes = new string[] { "001-03", "001-04", "001-05", "001-06" };
+            if (areaTypes.Any(a => a == areaType))
+            {
+                areaCodes = new string[] { areaType };
+            }
+            else
+            {
+                areaCodes = new string[] { "001-01", "001-02" };
+            }
+            var StorageQuery = StorageRepository.GetQueryable();
+            var temp = StorageQuery.Where(s => (s.Quantity == 0
+                                              && s.InFrozenQuantity == 0
+                                              && s.OutFrozenQuantity == 0
+                                              && areaCodes.Any(a => a == s.Cell.AreaCode)
+                                              && s.IsActive == "1"
+                                              && (!string.IsNullOrEmpty(s.ProductCode) || s.ProductCode.Equals(null))))
+                .GroupBy(s => new { s.Cell, s.Product })
+                .OrderBy(s => s.Key.Cell.CellCode)
+                .Select(s => new
+                {
+                    CellCode = s.Key.Cell.CellCode,
+                    CellName = s.Key.Cell.CellName,
+                    ProductCode = s.Key.Product.ProductCode,
+                    ProductName = s.Key.Product.ProductName,
+                    StorageCount = s.Key.Cell.MaxPalletQuantity - s.Count(),
+                    EmptyCount = s.Count(),
+                    MaxCount = s.Key.Cell.MaxPalletQuantity,
+                })
+                .Where(a => a.EmptyCount == a.MaxCount);
+
+            int total = temp.Count();
+            temp = temp.Skip((page - 1) * rows).Take(rows);
+            return new { total, rows = temp.ToArray() };
+        }
     }
 }

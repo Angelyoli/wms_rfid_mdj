@@ -19,5 +19,8 @@ namespace THOK.Wms.Bll.Interfaces
         bool uploadBusiStorage();
 
         bool uploadStorage();
+
+        object GetStorageCellHasProduct(int page, int rows, string areaCode);
+        object GetStorageCellIsEmpty(int page, int rows, string areaCode);
     }
 }
