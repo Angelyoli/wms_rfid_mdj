@@ -31,12 +31,15 @@
 
     function countSum() {
         var countSum = 0;
+        var outQuantitySum = 0;
         var rows = $('#workDispatchTable').datagrid('getRows');
         if (rows.length > 0) {
             for (var i = 0; i < rows.length; i++) {
                 countSum = parseInt(countSum) + rows[i].QuantitySum;
+                outQuantitySum = countSum / 50;
             }
             $('#countQuantitySum').text(countSum);
+            $('#outBillQuantitySum').text(outQuantitySum);
         } else {
             $('#countQuantitySum').text(0);
         }
@@ -108,10 +111,18 @@
     </div>
 </div>
 <div id="dlg-buttons">
-<table style="width:500px;">
+<table style="width:800px;">
 <tr>
-    <td style="width:100px; font-size:20px; font-family:微软雅黑;"><label>总数量：</label><b><label id="countQuantitySum" style="color:Red;"></label></b><label>（条）</label></td>
-    <td style="width:60px;"><label>选中量：</label><label id="checkQuantitySum"></label><label>（条）</label></td>
+    <td style="width:100px;">
+        <label>总数量：</label>
+        <b><label id="countQuantitySum" style="font-size:20px; font-family:微软雅黑; color:Red;"></label></b><label>（条）</label>
+        <label>/ 50 ≈ </label><label id="outBillQuantitySum"></label><label>（件）</label>
+        <label style="font-size:20px; font-family:微软雅黑; color:Red;"><b>请核对出库单！<b></label>
+    </td>
+    <td style="width:60px;">
+        <label>选中量：</label>
+        <label id="checkQuantitySum"></label><label>（条）</label>
+    </td>
 </tr>
 </table>
     <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">调度</a>
