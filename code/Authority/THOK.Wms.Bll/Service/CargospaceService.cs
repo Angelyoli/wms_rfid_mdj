@@ -289,7 +289,7 @@ namespace THOK.Wms.Bll.Service
                     storages = storageQuery.Where(s => s.Cell.CellCode == id);
                 }
 
-                var temp = storages.OrderBy(s => s.Product.ProductName).Where(s => s.Quantity > 0);
+                var temp = storages.OrderBy(s => s.CellCode).Where(s => s.Quantity > 0);
                 
                 var Storage = temp.ToArray().ToArray().Select(s => new
                 {

@@ -240,6 +240,7 @@
     <Compile Include="Controllers\WMS\WarehouseInfo\ExportExcelController.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\ShelfController.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\SplitPalletCellController.cs" />
+    <Compile Include="Controllers\WMS\WarehouseInfo\StorageCellPreviewController.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\StorageController.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\Warehouse2Controller.cs" />
     <Compile Include="Controllers\WMS\WarehouseInfo\WarehouseController.cs" />
@@ -1977,6 +1978,7 @@
     <Content Include="Views\CellPosition\_CellNamePartial.cshtml" />
     <Content Include="Views\CheckBill\_TaskPartial.cshtml" />
     <Content Include="Views\Cargospace\_PrintPartial.cshtml" />
+    <Content Include="Views\Distribution\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2418,6 +2420,8 @@
     <Content Include="Views\PdaTask\_SearchPartial.cshtml" />
     <Content Include="Views\PdaTask\Index.cshtml" />
     <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
+    <Content Include="Views\StorageCellPreview\Index.cshtml" />
+    <Content Include="Views\StorageCellPreview\_SearchPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

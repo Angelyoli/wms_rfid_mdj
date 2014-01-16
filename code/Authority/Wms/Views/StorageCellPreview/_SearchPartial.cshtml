@@ -1,0 +1,54 @@
+﻿<script type="text/javascript">
+    function searchInit() {
+        $('#areaType1').combo({ editable: false, width: 129, panelHeight: 'auto' });
+    }
+    //清空文本
+    function serachClear() {
+        $("input[type=text]").attr("value", "");
+        $('#areaType1').combo('setValue', "");
+    }
+    function searchClick() {
+        serachClear();
+        searchInit();
+        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+    }
+    //查询条件
+    function searchByParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.AreaType = $('#areaType1').combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $('#details').datagrid({ pageNumber: 1, pageSize: 50 });
+        $("#details").datagrid('reload');
+        $('#dlg-search').dialog('close');
+    }
+</script>
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width: 280px; height: 150px;
+    padding: 2px 2px" closed="true" buttons="#dlg-search-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff; border: 1px solid #ccc;">
+            <table>
+                <tr>
+                    <td width="60" style="text-align: right">
+                        选择库区：
+                    </td>
+                    <td>
+                        <select id="areaType1" class="easyui-combobox">
+                            <option value="">密集库空通道</option>
+                            <option value="001-01">密集库一区</option>
+                            <option value="001-02">密集库二区</option>
+                            <option value="001-03">大品种一区</option>
+                            <option value="001-04">大品种二区</option>
+                            <option value="001-05">小品种</option>
+                            <option value="001-06">异型烟</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="dlg-search-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="searchByParams()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">
+        取消</a>
+</div>

@@ -1196,8 +1196,20 @@
                         ModuleName = "拆盘位预设置",
                         ShowOrder = 3,
                         ModuleURL = "/SplitPalletCell/",
-                        IndicateImage = "icon-son_Warehouse",
-                        DeskTopImage = "image-son_Warehouse",
+                        IndicateImage = "icon-son_Bill_Type",
+                        DeskTopImage = "image-son_Bill_Type",
+                        System = system,
+                        System_SystemID = system.SystemID,
+                        ParentModule_ModuleID = new Guid("B8344F88-08AD-4FDA-8F45-EAD3BB471101")
+                    },
+                    new Module()
+                    {
+                        ModuleID = new Guid("A410FB87-3C37-4CC9-8284-9D08EC2C3AD8"),
+                        ModuleName = "库存货位预览",
+                        ShowOrder = 4,
+                        ModuleURL = "/StorageCellPreview/",
+                        IndicateImage = "icon-search",
+                        DeskTopImage = "image-search",
                         System = system,
                         System_SystemID = system.SystemID,
                         ParentModule_ModuleID = new Guid("B8344F88-08AD-4FDA-8F45-EAD3BB471101")
@@ -1318,6 +1330,15 @@
                     ControlName = "edit",
                     IndicateImage = "icon-edit",
                     Module_ModuleID = new Guid("0587FC63-9DE4-447F-B15C-7261A6CBB2EA")
+                },
+                new Function()
+                {
+                    //库存货位预览
+                    FunctionID = new Guid("4C4660E5-7D03-4F4E-BE12-25BB5FB34B4F"),
+                    FunctionName = "查询",
+                    ControlName = "search",
+                    IndicateImage = "icon-search",
+                    Module_ModuleID = new Guid("A410FB87-3C37-4CC9-8284-9D08EC2C3AD8")
                 }
                 );
             context.SaveChanges();

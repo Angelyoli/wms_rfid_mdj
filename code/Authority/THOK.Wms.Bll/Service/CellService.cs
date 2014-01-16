@@ -1368,26 +1368,51 @@ namespace THOK.Wms.Bll.Service
         public object GetSplitPalletCell(int page, int rows, string productCode, string shelfType)
         {
             IQueryable<Cell> cellQuery = null;
+            string cpw = "001-07", dpz1 = "001-07-001", dpz2 = "001-07-002", xpz1 = "001-07-003", yxy1 = "001-07-004";
+
             if ((productCode == "" || productCode == null) && (shelfType == "" || shelfType == null))
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.DefaultProductCode.Contains(productCode));
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == dpz1 && (c.DefaultProductCode.Contains(productCode) || c.DefaultProductCode.Equals(null)));
             }
-
-            if (shelfType == "01" || shelfType == "")
+            else if ((productCode != "" || productCode != null) && (shelfType == "" || shelfType == null))
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-001" && c.DefaultProductCode.Contains(productCode));
+                cellQuery = CellRepository.GetQueryable().Where(c => c.AreaCode == cpw && (c.DefaultProductCode.Contains(productCode)));
             }
-            else if (shelfType == "02")
+            else if ((productCode == "" || productCode == null) && shelfType == "01")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-002" && c.DefaultProductCode.Contains(productCode));
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == dpz1 && (c.DefaultProductCode.Contains(productCode) || c.DefaultProductCode.Equals(null)));
             }
-            else if (shelfType == "03")
+            else if ((productCode != "" || productCode != null) && shelfType == "01")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-003" && c.DefaultProductCode.Contains(productCode));
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == dpz1 && (c.DefaultProductCode.Contains(productCode)));
             }
-            else if (shelfType == "04")
+            else if ((productCode == "" || productCode == null) && shelfType == "02")
             {
-                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == "001-07-004" && c.DefaultProductCode.Contains(productCode));
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == dpz2 && (c.DefaultProductCode.Contains(productCode) || c.DefaultProductCode.Equals(null)));
+            }
+            else if ((productCode != "" || productCode != null) && shelfType == "02")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == dpz2 && (c.DefaultProductCode.Contains(productCode)));
+            }
+            else if ((productCode == "" || productCode == null) && shelfType == "03")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == xpz1 && (c.DefaultProductCode.Contains(productCode) || c.DefaultProductCode.Equals(null)));
+            }
+            else if ((productCode != "" || productCode != null) && shelfType == "03")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == xpz1 && (c.DefaultProductCode.Contains(productCode)));
+            }
+            else if ((productCode == "" || productCode == null) && shelfType == "04")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == yxy1 && (c.DefaultProductCode.Contains(productCode) || c.DefaultProductCode.Equals(null)));
+            }
+            else if ((productCode != "" || productCode != null) && shelfType == "04")
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == yxy1 && (c.DefaultProductCode.Contains(productCode)));
+            }
+            else
+            {
+                cellQuery = CellRepository.GetQueryable().Where(c => c.ShelfCode == dpz1 && (c.DefaultProductCode.Contains(productCode) || c.DefaultProductCode.Equals(null)));
             }
             var cell = cellQuery.OrderBy(b => b.CellCode).Select(b => new
             {
