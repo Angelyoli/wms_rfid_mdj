@@ -17,6 +17,8 @@ namespace THOK.Wms.Bll.Service
         public IProductRepository ProductRepository { get; set; }
         [Dependency]
         public IUnitRepository UnitRepository { get; set; }
+        [Dependency]
+        public ICellRepository CellRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -60,7 +62,9 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-                var isExistProduct = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);
+                IQueryable<Cell> cellQuery = CellRepository.GetQueryable().Where(s => s.DefaultProductCode == inBillDetail.ProductCode);
+                string DefaultProductCodeCell = "";
+                var isExistProduct = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);                
                 var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
                 if (isExistProduct == null)
                 {
@@ -72,7 +76,11 @@ namespace THOK.Wms.Bll.Service
                     ibd.BillQuantity = inBillDetail.BillQuantity * unit.Count;
                     ibd.AllotQuantity = 0;
                     ibd.RealQuantity = 0;
-                    ibd.Description = inBillDetail.Description;
+                    foreach (var item in cellQuery)
+                    {
+                        DefaultProductCodeCell += "[" + item.CellName + "]";
+                    }
+                    ibd.Description = DefaultProductCodeCell + inBillDetail.Description;
 
                     InBillDetailRepository.Add(ibd);
                     InBillDetailRepository.SaveChanges();
