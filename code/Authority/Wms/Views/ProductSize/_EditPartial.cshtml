@@ -6,12 +6,30 @@
             showDialog('编辑');
             editKey = true;
             addDialog.dialog('open');
-            url = '/ProductSize/Edit/';
             $('form input').removeAttr("disabled");
             $('#fm').form('load', row);
-            $('#fm .easyui-validatebox').validatebox({
-                required: true
-            });
+            $('#fm .easyui-validatebox').validatebox({ required: true });
+            //InputAreaNo
+            if (row.AreaNo == '密集库一区') {
+                $('#inputAreaNo').combo('setValue', '1').combo('setText', row.AreaNo);
+            }
+            else if (row.AreaNo == '密集库二区') {
+                $('#inputAreaNo').combo('setValue', '2').combo('setText', row.AreaNo);
+            }
+            else if (row.AreaNo == '大品种一区') {
+                $('#inputAreaNo').combo('setValue', '3').combo('setText', row.AreaNo);
+            }
+            else if (row.AreaNo == '大品种二区') {
+                $('#inputAreaNo').combo('setValue', '4').combo('setText', row.AreaNo);
+            }
+            else if (row.AreaNo == '小品种') {
+                $('#inputAreaNo').combo('setValue', '5').combo('setText', row.AreaNo);
+            }
+            else {
+                $('#inputAreaNo').combo('setValue', '6').combo('setText', row.AreaNo);
+            }
+            url = '/ProductSize/Edit/';
+
         } else {
             $.messager.alert('错误', '没有选择行！', 'info');
         }

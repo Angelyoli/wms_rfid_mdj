@@ -75,10 +75,18 @@ namespace THOK.WCS.Bll.Service
 
         public bool Add(ProductSize productSize)
         {
+            var maxProductNo = ProductSizeRepository.GetQueryable().Where(p => p.ProductCode != "emptypallet").Max(p => p.ProductNo);
             var pro = new ProductSize(); 
             pro.ID = productSize.ID;
             pro.ProductCode = productSize.ProductCode;
-            pro.ProductNo = productSize.ProductNo;
+            if (productSize.ProductNo != 0)
+            {
+                pro.ProductNo = productSize.ProductNo;
+            }
+            else
+            {
+                pro.ProductNo = maxProductNo + 1;
+            }
             //pro.SizeNo = productSize.SizeNo;
             pro.AreaNo = productSize.AreaNo;
             pro.Length = productSize.Length;
