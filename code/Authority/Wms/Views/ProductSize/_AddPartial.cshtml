@@ -41,6 +41,27 @@
                     if (title == '编辑') {
                         var erow = $('#details').datagrid('getSelected');
                         $('#fm').form('load', erow);
+                        if (erow.AreaNo == '密集库一区') {
+                            $('#inputAreaNo').combo('setValue', '1').combo('setText', erow.AreaNo);
+                        }
+                        else if (erow.AreaNo == '密集库二区') {
+                            $('#inputAreaNo').combo('setValue', '2').combo('setText', erow.AreaNo);
+                        }
+                        else if (erow.AreaNo == '大品种一区') {
+                            $('#inputAreaNo').combo('setValue', '3').combo('setText', erow.AreaNo);
+                        }
+                        else if (erow.AreaNo == '大品种二区') {
+                            $('#inputAreaNo').combo('setValue', '4').combo('setText', erow.AreaNo);
+                        }
+                        else if (erow.AreaNo == '小品种') {
+                            $('#inputAreaNo').combo('setValue', '5').combo('setText', erow.AreaNo);
+                        }
+                        else if (erow.AreaNo == '异型烟') {
+                            $('#inputAreaNo').combo('setValue', '6').combo('setText', erow.AreaNo);
+                        }
+                        else {
+                            $('#inputAreaNo').combo('setValue', '1').combo('setText', erow.AreaNo);
+                        }
                     }
                     else if (title == '删除') {
                         var drow = $('#details').datagrid('getSelected');

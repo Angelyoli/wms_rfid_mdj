@@ -25,51 +25,50 @@ namespace THOK.WCS.Bll.Service
 
         public object GetDetails(int page, int rows, ProductSize productSize)
         {
-            IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable();
+            IQueryable<ProductSize> productSizeQuery = ProductSizeRepository.GetQueryable().OrderByDescending(s => s.ID);
             IQueryable<Product> productQuery = ProductRepository.GetQueryable();
-            //IQueryable<Size> sizeQuery = SizeRepository.GetQueryable();
 
-            var productSizeDetail = productSizeQuery.Where(p =>
-                p.ProductCode.Contains(productSize.ProductCode)).OrderBy(p => p.ID);
+            var productSizeDetail = productSizeQuery.Where(p => p.ProductCode.Contains(productSize.ProductCode));
             var productSizeDetail1 = productSizeDetail;
-            //if (productSize.SizeNo != null && productSize.SizeNo != 0)
-            //{
-            //    productSizeDetail1 = productSizeDetail.Where(p => p.SizeNo == productSize.SizeNo).OrderBy(p => p.ID);
-            //}
+            
             var productSizeDetail2 = productSizeDetail1;
-            if (productSize.ProductNo != null && productSize.ProductNo != 0)
+            if (productSize.ProductNo != 0)
             {
-                productSizeDetail2 = productSizeDetail1.Where(p => p.ProductNo == productSize.ProductNo).OrderBy(p => p.ID);
+                productSizeDetail2 = productSizeDetail1.Where(p => p.ProductNo == productSize.ProductNo);
             }
             var productSizeDetail3 = productSizeDetail2;
-            if (productSize.AreaNo != null && productSize.AreaNo != 0)
+            if (productSize.AreaNo != 0)
             {
-                productSizeDetail3 = productSizeDetail2.Where(p => p.AreaNo == productSize.AreaNo).OrderBy(p => p.ID);
+                productSizeDetail3 = productSizeDetail2.Where(p => p.AreaNo == productSize.AreaNo);
             }
             int total = productSizeDetail3.Count();
             var productSizeDetails = productSizeDetail3.Skip((page - 1) * rows).Take(rows);
-            var temp = productSizeDetails
-                    .Join(productQuery
-                        , ps => ps.ProductCode
-                        , p => p.ProductCode
-                        , (ps, p) => new { ps.ID, ps.ProductCode, ps.ProductNo, ps.SizeNo, ps.AreaNo, ps.Length, ps.Width, ps.Height, p.ProductName })
-                  //.Join(sizeQuery
-                  //    , ps => ps.SizeNo
-                  //    , s => s.SizeNo
-                  //    , (ps, s) => new { ps.ID, ps.ProductCode ,ps.ProductNo, ps.SizeNo, ps.AreaNo,ps.ProductName ,s.Length, s.Width, s.Height })
-                .Where(p => p.ProductCode.Contains(productSize.ProductCode))
-                .OrderBy(p => p.ID).AsEnumerable().Select(p => new
-            {
-                p.ID,
-                p.ProductCode,
-                p.ProductName,
-                p.ProductNo,
-                //p.SizeNo,
-                AreaNo = p.AreaNo == 1 ? "密集库一区" : p.AreaNo == 2 ? "密集库二区" : p.AreaNo == 3 ? "大品种一区" : p.AreaNo == 4 ? "大品种二区" : p.AreaNo == 5 ? "小品种" : p.AreaNo == 6 ? "异型烟" : "异常",
-                p.Length,
-                p.Width,
-                p.Height
-            });
+            var temp = productSizeDetails.Join(productQuery, ps => ps.ProductCode, p => p.ProductCode, (ps, p) => new
+                        {
+                            ps.ID,
+                            ps.ProductCode,
+                            ps.ProductNo,
+                            ps.SizeNo,
+                            ps.AreaNo,
+                            ps.Length,
+                            ps.Width,
+                            ps.Height,
+                            p.ProductName
+                        })
+                        .Where(p => p.ProductCode.Contains(productSize.ProductCode))
+                        .AsEnumerable()
+                        .Select(p => new
+                        {
+                            p.ID,
+                            p.ProductCode,
+                            p.ProductName,
+                            p.ProductNo,
+                            AreaNo = p.AreaNo == 1 ? "密集库一区" : p.AreaNo == 2 ? "密集库二区" : p.AreaNo == 3 ? "大品种一区" : p.AreaNo == 4 ? "大品种二区" : p.AreaNo == 5 ? "小品种" : p.AreaNo == 6 ? "异型烟" : "异常",
+                            p.Length,
+                            p.Width,
+                            p.Height
+                        });
+
             return new { total, rows = temp.ToArray() };
         }
 

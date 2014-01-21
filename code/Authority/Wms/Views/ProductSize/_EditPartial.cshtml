@@ -9,7 +9,7 @@
             $('form input').removeAttr("disabled");
             $('#fm').form('load', row);
             $('#fm .easyui-validatebox').validatebox({ required: true });
-            //InputAreaNo
+
             if (row.AreaNo == '密集库一区') {
                 $('#inputAreaNo').combo('setValue', '1').combo('setText', row.AreaNo);
             }
@@ -25,8 +25,11 @@
             else if (row.AreaNo == '小品种') {
                 $('#inputAreaNo').combo('setValue', '5').combo('setText', row.AreaNo);
             }
-            else {
+            else if (row.AreaNo == '异型烟') {
                 $('#inputAreaNo').combo('setValue', '6').combo('setText', row.AreaNo);
+            }
+            else {
+                $('#inputAreaNo').combo('setValue', '1').combo('setText', row.AreaNo);
             }
             url = '/ProductSize/Edit/';
 
