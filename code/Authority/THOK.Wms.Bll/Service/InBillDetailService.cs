@@ -62,7 +62,7 @@ namespace THOK.Wms.Bll.Service
             try
             {
                 IQueryable<InBillDetail> inBillDetailQuery = InBillDetailRepository.GetQueryable();
-                IQueryable<Cell> cellQuery = CellRepository.GetQueryable().Where(s => s.DefaultProductCode == inBillDetail.ProductCode);
+                IQueryable<Cell> cellQuery = CellRepository.GetQueryable().Where(s => s.AreaCode == "001-07" && s.DefaultProductCode == inBillDetail.ProductCode);
                 string DefaultProductCodeCell = "";
                 var isExistProduct = inBillDetailQuery.FirstOrDefault(i => i.BillNo == inBillDetail.BillNo && i.ProductCode == inBillDetail.ProductCode);                
                 var unit = UnitRepository.GetQueryable().FirstOrDefault(u => u.UnitCode == inBillDetail.UnitCode);
