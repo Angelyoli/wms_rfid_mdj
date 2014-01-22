@@ -428,18 +428,7 @@ namespace THOK.WES.View
                             MessageBox.Show(msg);
                         RefreshData();
                     });
-                    task.Execute(tmp, UseTag);
-                    //浪潮接口
-                    if (BillTypes == "1")
-                    {
-                        task.GetWarehouseInBillProgressFeedback(tmp);
-                        task.GetWarehouseInBillFinish(tmp);
-                    }
-                    if (BillTypes == "2")
-                    {
-                        task.GetWarehouseOutBillProgressFeedback(tmp);
-                        task.GetWarehouseOutBillFinish(tmp);
-                    }
+                    task.Execute(tmp, UseTag);                    
                 }
                 else
                     MessageBox.Show("请选择要执行的仓库作业。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -707,18 +696,7 @@ namespace THOK.WES.View
                         MessageBox.Show(msg);
                     RefreshData();
                 });
-                task.Execute(tmp, UseTag);
-                //浪潮接口
-                if (BillTypes == "1")
-                {
-                    task.GetWarehouseInBillProgressFeedback(tmp);
-                    task.GetWarehouseInBillFinish(tmp);
-                }
-                if (BillTypes == "2")
-                {
-                    task.GetWarehouseOutBillProgressFeedback(tmp);
-                    task.GetWarehouseOutBillFinish(tmp);
-                }
+                task.Execute(tmp, UseTag);               
             }
         }
 
