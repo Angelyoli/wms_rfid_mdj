@@ -392,7 +392,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                               .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
             decimal pieceSumQuantity = 0.00M;
             if (ss.Count() != 0)
-                pieceSumQuantity  = ss.Select(s => s.Quantity).Sum();
+                pieceSumQuantity = ss.Select(s => new { allowQuantity = s.Quantity - s.OutFrozenQuantity }).Sum(s => s.allowQuantity);
             if (pieceSumQuantity < quantity)
             {
                 areaTypes = new string[] { "2", "3", "5" };
@@ -448,6 +448,33 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     PalletAllot(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
                 else
                     AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
+            }
+
+            //判断零烟区的烟够不够出零烟，如果不够出，则从先从其他库区出，顺序为：件烟区-暂存区&&主库区
+            if (cancellationToken.IsCancellationRequested) return;
+            areaTypes = new string[] { "3" };
+            ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+                                        && s.ProductCode == product.ProductCode)
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+            decimal barSumQuantity = 0.00M;
+            if (ss.Count() != 0)
+                barSumQuantity = ss.Select(s => new { allowQuantity = s.Quantity - s.OutFrozenQuantity }).Sum(s => s.allowQuantity);
+            if (barSumQuantity < quantity)
+            {
+                //分配条烟；件烟区
+                areaTypes = new string[] { "2" };
+                ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+                                            && s.ProductCode == product.ProductCode)
+                                  .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+                if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
+
+                //分配条烟；排除 件烟区 条烟区 分拣区
+                areaTypes = new string[] { "2", "3", "5" };
+                ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+                                            && s.ProductCode == product.ProductCode
+                                            && s.Cell.Layer == 1)
+                                  .OrderBy(s => new { s.Cell.Area.AllotOutOrder , s.StorageTime , s.Quantity });
+                if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
             }
 
             //分配条烟；条烟区
