@@ -1642,6 +1642,9 @@
     <Content Include="Scripts\mykeyboardshortcuts.js" />
     <Content Include="Scripts\mymigration.js" />
     <Content Include="Service\WMSService.asmx" />
+    <Content Include="TransactionScopeFactoryProviderConfig.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Company\_%40EditPartial.cshtml">
       <SubType>Code</SubType>
     </Content>

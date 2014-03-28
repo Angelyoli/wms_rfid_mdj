@@ -27,7 +27,7 @@ namespace THOK.Wms.DownloadWms.Dao
             {
                 sql = string.Format("SELECT * FROM V_DWV_ORD_DIST_BILL WHERE {0}", distCarCode);
                 return this.ExecuteQuery(sql).Tables[0];
-           }
+            }
         }
 
         public DataTable GetDistStationCode()
