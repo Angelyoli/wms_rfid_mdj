@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TransactionScopeFactoryProvider>
+	<property name="DBOperationLogger" type="DBRabbit.Logger.DBOperationLogger,DBRabbit.dll"/>
+	<property name="MasterDataConfigurationDictionary">
+		<key name="master-01">
+			<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+				<DataBaseType value ="OleDb"  desc =""/>
+				<ORMappingType value ="Emit" desc =""/>
+				<CommandTimeoutInSecs value ="" desc =""/>
+				<ConnectionLifetimeInSecs value ="" desc =""/>
+				<MinPoolSize value ="" desc =""/>
+				<MaxPoolSize value ="" desc =""/>
+				<DataBaseSchemaFileName value ="" desc =""/>
+				
+				<DataSource value ="Provider=SQLOLEDB;Data Source=.;Password=123456;User ID=sa;Initial Catalog=SortDB" desc =""/>
+				<IP value ="." desc =""/>
+				<DataBaseName value ="master" desc =""/>
+				<User value ="sa" desc =""/>
+				<Password value ="123456" desc =""/>
+			</DataConfiguration>
+		</key>
+		<key name="master-02">
+			<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+				<DataBaseType value ="SqlServer"  desc =""/>
+				<ORMappingType value ="Emit" desc =""/>
+				<CommandTimeoutInSecs value ="" desc =""/>
+				<ConnectionLifetimeInSecs value ="" desc =""/>
+				<MinPoolSize value ="" desc =""/>
+				<MaxPoolSize value ="" desc =""/>
+				<DataBaseSchemaFileName value ="" desc =""/>
+
+				<DataSource value ="" desc =""/>
+				<IP value ="." desc =""/>
+				<DataBaseName value ="SortDB" desc =""/>
+				<User value ="sa" desc =""/>
+				<Password value ="123456" desc =""/>
+			</DataConfiguration>
+		</key>
+	</property>
+
+	<property name="SlaveSuitDictionary">
+		<key name="master-01">
+			<key name="Slave-01">
+				<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+					<DataBaseType value ="SqlServer"  desc =""/>
+					<ORMappingType value ="Emit" desc =""/>
+					<CommandTimeoutInSecs value ="" desc =""/>
+					<ConnectionLifetimeInSecs value ="" desc =""/>
+					<MinPoolSize value ="" desc =""/>
+					<MaxPoolSize value ="" desc =""/>
+					<DataBaseSchemaFileName value ="" desc =""/>
+
+					<DataSource value ="" desc =""/>
+					<IP value ="." desc =""/>
+					<DataBaseName value ="SortDB" desc =""/>
+					<User value ="sa" desc =""/>
+					<Password value ="123456" desc =""/>
+				</DataConfiguration>
+			</key>
+			<key name="Slave-02">
+				<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+					<DataBaseType value ="SqlServer"  desc =""/>
+					<ORMappingType value ="Emit" desc =""/>
+					<CommandTimeoutInSecs value ="" desc =""/>
+					<ConnectionLifetimeInSecs value ="" desc =""/>
+					<MinPoolSize value ="" desc =""/>
+					<MaxPoolSize value ="" desc =""/>
+					<DataBaseSchemaFileName value ="" desc =""/>
+
+					<DataSource value ="" desc =""/>
+					<IP value ="." desc =""/>
+					<DataBaseName value ="SortDB" desc =""/>
+					<User value ="sa" desc =""/>
+					<Password value ="123456" desc =""/>
+				</DataConfiguration>
+			</key>
+		</key>
+		<key name="master-02">
+			<key name="Slave-01">
+				<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+					<DataBaseType value ="SqlServer"  desc =""/>
+					<ORMappingType value ="Emit" desc =""/>
+					<CommandTimeoutInSecs value ="" desc =""/>
+					<ConnectionLifetimeInSecs value ="" desc =""/>
+					<MinPoolSize value ="" desc =""/>
+					<MaxPoolSize value ="" desc =""/>
+					<DataBaseSchemaFileName value ="" desc =""/>
+
+					<DataSource value ="" desc =""/>
+					<IP value ="." desc =""/>
+					<DataBaseName value ="SortDB" desc =""/>
+					<User value ="sa" desc =""/>
+					<Password value ="123456" desc =""/>
+				</DataConfiguration>
+			</key>
+			<key name="Slave-02">
+				<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+					<DataBaseType value ="SqlServer"  desc =""/>
+					<ORMappingType value ="Emit" desc =""/>
+					<CommandTimeoutInSecs value ="" desc =""/>
+					<ConnectionLifetimeInSecs value ="" desc =""/>
+					<MinPoolSize value ="" desc =""/>
+					<MaxPoolSize value ="" desc =""/>
+					<DataBaseSchemaFileName value ="" desc =""/>
+
+					<DataSource value ="" desc =""/>
+					<IP value ="." desc =""/>
+					<DataBaseName value ="SortDB" desc =""/>
+					<User value ="sa" desc =""/>
+					<Password value ="123456" desc =""/>
+				</DataConfiguration>
+			</key>
+		</key>
+	</property>
+</TransactionScopeFactoryProvider>
+

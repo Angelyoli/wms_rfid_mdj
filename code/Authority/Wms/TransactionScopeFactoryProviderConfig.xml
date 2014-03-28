@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TransactionScopeFactoryProvider>
+	<property name="DBOperationLogger" type="DBRabbit.Logger.DBOperationLogger,DBRabbit.dll"/>
+	<property name="MasterDataConfigurationDictionary">
+		<key name="master">
+			<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+				<DataBaseType value ="OleDb"  desc =""/>
+				<ORMappingType value ="Emit" desc =""/>
+				<CommandTimeoutInSecs value ="" desc =""/>
+				<ConnectionLifetimeInSecs value ="" desc =""/>
+				<MinPoolSize value ="" desc =""/>
+				<MaxPoolSize value ="" desc =""/>
+				<DataBaseSchemaFileName value ="" desc =""/>
+				
+				<DataSource value ="Provider=SQLOLEDB;Data Source=.;Password=123456;User ID=sa;Initial Catalog=SortDB" desc =""/>
+				<IP value ="." desc =""/>
+				<DataBaseName value ="master" desc =""/>
+				<User value ="sa" desc =""/>
+				<Password value ="123456" desc =""/>
+			</DataConfiguration>
+		</key>
+		<key name="YXConnection">
+			<DataConfiguration type="DBRabbit.Config.DataConfiguration,DBRabbit.dll">
+				<DataBaseType value ="DB2"  desc =""/>
+				<ORMappingType value ="Emit" desc =""/>
+				<CommandTimeoutInSecs value ="" desc =""/>
+				<ConnectionLifetimeInSecs value ="" desc =""/>
+				<MinPoolSize value ="" desc =""/>
+				<MaxPoolSize value ="" desc =""/>
+				<DataBaseSchemaFileName value ="" desc =""/>
+
+				<DataSource value ="" desc =""/>
+				<IP value ="10.80.1.239:50000" desc =""/>
+				<DataBaseName value ="gxv3td" desc =""/>
+				<User value ="lzcc" desc =""/>
+				<Password value ="lzcc" desc =""/>
+			</DataConfiguration>
+		</key>
+	</property>
+	<property name="SlaveSuitDictionary">		
+	</property>
+</TransactionScopeFactoryProvider>
+
