@@ -17,8 +17,17 @@ namespace THOK.Wms.DownloadWms.Dao
 
         public DataTable GetDistCarBillInfo(string distCarCode)
         {
-            string sql = string.Format("SELECT * FROM V_WMS_DIST_BILL WHERE {0}", distCarCode);
-            return this.ExecuteQuery(sql).Tables[0];
+            string sql = "";
+            try
+            {
+                sql = string.Format("SELECT * FROM V_WMS_DIST_BILL WHERE {0}", distCarCode);
+                return this.ExecuteQuery(sql).Tables[0];
+            }
+            catch (Exception)
+            {
+                sql = string.Format("SELECT * FROM V_DWV_ORD_DIST_BILL WHERE {0}", distCarCode);
+                return this.ExecuteQuery(sql).Tables[0];
+            }
         }
 
         public DataTable GetDistStationCode()

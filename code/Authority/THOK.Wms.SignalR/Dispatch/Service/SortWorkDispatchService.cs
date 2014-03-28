@@ -161,7 +161,7 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                 {
                                     MoveBillCreater.CreateSyncMoveBillDetail(lastMoveBillMaster);
                                 }
-                            }
+                            }   
 
                             sumAllotLineQuantity = 0;
 
@@ -270,7 +270,6 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                                     {
                                         quantity = product.SumQuantity - storQuantity;
                                     }
-
                                     if (quantity > 0)
                                     {
                                         if (cancellationToken.IsCancellationRequested) return;
@@ -390,10 +389,9 @@ namespace THOK.Wms.SignalR.Dispatch.Service
             //分配整盘；排除 件烟区 条烟区 分拣区
             if (cancellationToken.IsCancellationRequested) return;
             string[] areaTypes = new string[] { "2", "3", "5" };
-            var ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
-                                        && s.Cell.IsSingle == "1"
+            var ss = storages.Where(s => s.Cell.Area.AreaType != "2" && s.Cell.Area.AreaType != "3" && s.Cell.Area.AreaType != "5"
                                         && s.ProductCode == product.ProductCode)
-                             .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder,s.Quantity});
+                             .OrderBy(s => new { s.Cell.Area.AllotOutOrder,s.StorageTime ,s.Quantity});
             if (quantity > 0)
             {
                 if (isChoose)
@@ -402,12 +400,34 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     AllotPallet(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
             }
 
+            //判断件烟区的烟够不够出件烟，如果不够出，则从先从分配整托盘的库区出件烟
+            if (cancellationToken.IsCancellationRequested) return;
+            areaTypes = new string[] { "2" };
+            ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+                                        && s.ProductCode == product.ProductCode)
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+            decimal pieceSumQuantity = 0.00M;
+            if (ss.Count() != 0)
+                pieceSumQuantity = ss.Select(s => new { allowQuantity = s.Quantity - s.OutFrozenQuantity }).Sum(s => s.allowQuantity);
+            if (pieceSumQuantity < quantity)
+            {
+                areaTypes = new string[] { "2", "3", "5" };
+                ss = storages.Where(s => s.Cell.Area.AreaType != "2" && s.Cell.Area.AreaType != "3" && s.Cell.Area.AreaType != "5"
+                                            && s.ProductCode == product.ProductCode)
+                                 .OrderBy(s => new { s.Cell.Area.AllotOutOrder, s.StorageTime, s.Quantity });
+                if (quantity > 0)
+                {
+                    if (!isChoose)
+                        AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
+                }
+            }
+
             //分配件烟；件烟区 
             if (cancellationToken.IsCancellationRequested) return;
             areaTypes = new string[] { "2" };
             ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
                                         && s.ProductCode == product.ProductCode)
-                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });            
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
             if (quantity > 0)
             {
                 if (isChoose)
@@ -444,6 +464,33 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     PalletAllot(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
                 else
                     AllotPiece(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
+            }
+
+            //判断零烟区的烟够不够出零烟，如果不够出，则从先从其他库区出，顺序为：件烟区-暂存区&&主库区
+            if (cancellationToken.IsCancellationRequested) return;
+            areaTypes = new string[] { "3" };
+            ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+                                        && s.ProductCode == product.ProductCode)
+                              .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+            decimal barSumQuantity = 0.00M;
+            if (ss.Count() != 0)
+                barSumQuantity = ss.Select(s => new { allowQuantity = s.Quantity - s.OutFrozenQuantity }).Sum(s => s.allowQuantity);
+            if (barSumQuantity < quantity)
+            {
+                //分配条烟；件烟区
+                areaTypes = new string[] { "2" };
+                ss = storages.Where(s => areaTypes.Any(a => a == s.Cell.Area.AreaType)
+                                            && s.ProductCode == product.ProductCode)
+                                  .OrderBy(s => new { s.StorageTime, s.Cell.Area.AllotOutOrder, s.Quantity });
+                if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
+
+                //分配条烟；排除 件烟区 条烟区 分拣区
+                areaTypes = new string[] { "2", "3", "5" };
+                ss = storages.Where(s => areaTypes.All(a => a != s.Cell.Area.AreaType)
+                                            && s.ProductCode == product.ProductCode
+                                            && s.Cell.Layer == 1)
+                                  .OrderBy(s => new { s.Cell.Area.AllotOutOrder , s.StorageTime , s.Quantity });
+                if (quantity > 0) AllotBar(moveBillMaster, ss, cell, ref quantity, cancellationToken, ps);
             }
 
             //分配条烟；条烟区
@@ -569,7 +616,14 @@ namespace THOK.Wms.SignalR.Dispatch.Service
                     decimal allotQuantity = Math.Floor((s.Quantity - s.OutFrozenQuantity) / s.Product.Unit.Count) * s.Product.Unit.Count;
                     decimal billQuantity = Math.Floor(quantity / s.Product.Unit.Count)
                                             * s.Product.Unit.Count;
-                    if (billQuantity >= allotQuantity && allotQuantity==maxCellQuantity)
+                    //根据实际要求，托盘量 从 货位最大量 与 该商品托盘量 取最小值为托盘量
+                    decimal palletQuantity = 0.00M;
+                    if (s.Cell.MaxQuantity < s.Product.CellMaxProductQuantity)
+                        palletQuantity = s.Cell.MaxQuantity;
+                    else
+                        palletQuantity = s.Product.CellMaxProductQuantity;
+
+                    if (billQuantity >= allotQuantity && allotQuantity / s.Product.Unit.Count == palletQuantity)
                     {
                         var sourceStorage = Locker.LockNoEmptyStorage(s, s.Product);
                         var targetStorage = Locker.LockStorage(cell);

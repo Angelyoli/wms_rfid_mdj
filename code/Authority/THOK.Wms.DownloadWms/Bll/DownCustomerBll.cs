@@ -23,9 +23,6 @@ namespace THOK.WMS.DownloadWms.Bll
             try
             {
                 this.DeleteCustomer();
-                DataTable customerCodeDt = this.GetCustomerCode();
-                string CusromerList = UtinString.MakeString(customerCodeDt, "customer_code");
-                CusromerList = " CUST_CODE NOT IN (" + CusromerList + ")";
                 DataTable customerDt = this.GetCustomerInfo("1=1");
                 if (customerDt.Rows.Count > 0)
                 {
