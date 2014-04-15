@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="WCS\THOK.WCS.Bll" Label="THOK.WCS.Bll" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="WCS\THOK.WCS.DbModel" Label="THOK.WCS.DbModel" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="WCS\THOK.WCS.Dal" Label="THOK.WCS.Dal" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="Repository\THOK.Wms.Repository" Label="THOK.Wms.Repository" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="Application\WMS" Label="WMS" Category="项目" />
+    <Node Id="Common.Logging 2.1.2" Label="Common.Logging 2.1.2" Category="包" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="jQuery 1.6.4" Label="jQuery 1.6.4" Category="包" />
+    <Node Id="Microsoft.Web.Infrastructure 1.0.0.0" Label="Microsoft.Web.Infrastructure 1.0.0.0" Category="包" />
+    <Node Id="Newtonsoft.Json 4.5.7" Label="Newtonsoft.Json 4.5.7" Category="包" />
+    <Node Id="NPOI 1.2.5" Label="NPOI 1.2.5" Category="包" />
+    <Node Id="Quartz 2.1.2" Label="Quartz 2.1.2" Category="包" />
+    <Node Id="SignalR 0.5.2" Label="SignalR 0.5.2" Category="包" />
+    <Node Id="SignalR.Hosting.AspNet 0.5.2" Label="SignalR.Hosting.AspNet 0.5.2" Category="包" />
+    <Node Id="SignalR.Hosting.Common 0.5.2" Label="SignalR.Hosting.Common 0.5.2" Category="包" />
+    <Node Id="SignalR.Js 0.5.2" Label="SignalR.Js 0.5.2" Category="包" />
+    <Node Id="SignalR.Server 0.5.2" Label="SignalR.Server 0.5.2" Category="包" />
+    <Node Id="WMS\THOK.WMS.DbModel" Label="THOK.WMS.DbModel" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="WMS\BLL\THOK.WMS.Download" Label="THOK.WMS.Download" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="WMS\BLL\THOK.WMS.Allot" Label="THOK.WMS.Allot" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="WMS\BLL\THOK.WMS.DownloadWms" Label="THOK.WMS.DownloadWms" Category="项目" />
+    <Node Id="DBRabbit 1.0.3" Label="DBRabbit 1.0.3" Category="包" />
+    <Node Id="WMS\BLL\THOK.WMS.AutomotiveSystems" Label="THOK.WMS.AutomotiveSystems" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="WMS\BLL\THOK.WMS.SignalR" Label="THOK.WMS.SignalR" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="jQuery 1.6.4" Label="jQuery 1.6.4" Category="包" />
+    <Node Id="Microsoft.Web.Infrastructure 1.0.0.0" Label="Microsoft.Web.Infrastructure 1.0.0.0" Category="包" />
+    <Node Id="Newtonsoft.Json 4.5.7" Label="Newtonsoft.Json 4.5.7" Category="包" />
+    <Node Id="SignalR 0.5.2" Label="SignalR 0.5.2" Category="包" />
+    <Node Id="SignalR.Hosting.AspNet 0.5.2" Label="SignalR.Hosting.AspNet 0.5.2" Category="包" />
+    <Node Id="SignalR.Hosting.Common 0.5.2" Label="SignalR.Hosting.Common 0.5.2" Category="包" />
+    <Node Id="SignalR.Js 0.5.2" Label="SignalR.Js 0.5.2" Category="包" />
+    <Node Id="SignalR.Server 0.5.2" Label="SignalR.Server 0.5.2" Category="包" />
+    <Node Id="WMS\THOK.WMS.Bll" Label="THOK.WMS.Bll" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="WMS\THOK.WMS.Dal" Label="THOK.WMS.Dal" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="Common\THOK.Common.Entity" Label="THOK.Common.Entity" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="Common\THOK.Common.NPOI" Label="THOK.Common.NPOI" Category="项目" />
+    <Node Id="NPOI 1.2.5" Label="NPOI 1.2.5" Category="包" />
+    <Node Id="Common\THOK.Common.Ef" Label="THOK.Common.Ef" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="Authority\THOK.Authority.Dal" Label="THOK.Authority.Dal" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+    <Node Id="Authority\THOK.Authority.DbModel" Label="THOK.Authority.DbModel" Category="项目" />
+    <Node Id="EntityFramework 6.0.0-alpha3" Label="EntityFramework 6.0.0-alpha3" Category="包" />
+  </Nodes>
+  <Links>
+    <Link Source="WCS\THOK.WCS.Bll" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="WCS\THOK.WCS.DbModel" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="WCS\THOK.WCS.Dal" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="Repository\THOK.Wms.Repository" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="Quartz 2.1.2" Target="Common.Logging 2.1.2" Category="程序包依赖项" />
+    <Link Source="SignalR 0.5.2" Target="SignalR.Hosting.AspNet 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR 0.5.2" Target="SignalR.Js 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR.Hosting.AspNet 0.5.2" Target="SignalR.Hosting.Common 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR.Hosting.AspNet 0.5.2" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="SignalR.Hosting.Common 0.5.2" Target="SignalR.Server 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR.Js 0.5.2" Target="jQuery 1.6.4" Category="程序包依赖项" />
+    <Link Source="SignalR.Server 0.5.2" Target="Newtonsoft.Json 4.5.7" Category="程序包依赖项" />
+    <Link Source="Application\WMS" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="Application\WMS" Target="NPOI 1.2.5" Category="安装的程序包" />
+    <Link Source="Application\WMS" Target="Quartz 2.1.2" Category="安装的程序包" />
+    <Link Source="Application\WMS" Target="SignalR 0.5.2" Category="安装的程序包" />
+    <Link Source="WMS\THOK.WMS.DbModel" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="WMS\BLL\THOK.WMS.Download" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="WMS\BLL\THOK.WMS.Allot" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="WMS\BLL\THOK.WMS.DownloadWms" Target="DBRabbit 1.0.3" Category="安装的程序包" />
+    <Link Source="WMS\BLL\THOK.WMS.AutomotiveSystems" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="SignalR 0.5.2" Target="SignalR.Hosting.AspNet 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR 0.5.2" Target="SignalR.Js 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR.Hosting.AspNet 0.5.2" Target="SignalR.Hosting.Common 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR.Hosting.AspNet 0.5.2" Target="Microsoft.Web.Infrastructure 1.0.0.0" Category="程序包依赖项" />
+    <Link Source="SignalR.Hosting.Common 0.5.2" Target="SignalR.Server 0.5.2" Category="程序包依赖项" />
+    <Link Source="SignalR.Js 0.5.2" Target="jQuery 1.6.4" Category="程序包依赖项" />
+    <Link Source="SignalR.Server 0.5.2" Target="Newtonsoft.Json 4.5.7" Category="程序包依赖项" />
+    <Link Source="WMS\BLL\THOK.WMS.SignalR" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="WMS\BLL\THOK.WMS.SignalR" Target="SignalR 0.5.2" Category="安装的程序包" />
+    <Link Source="WMS\THOK.WMS.Bll" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="WMS\THOK.WMS.Dal" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="Common\THOK.Common.Entity" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="Common\THOK.Common.NPOI" Target="NPOI 1.2.5" Category="安装的程序包" />
+    <Link Source="Common\THOK.Common.Ef" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="Authority\THOK.Authority.Dal" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+    <Link Source="Authority\THOK.Authority.DbModel" Target="EntityFramework 6.0.0-alpha3" Category="安装的程序包" />
+  </Links>
+  <Categories>
+    <Category Id="项目" />
+    <Category Id="包" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="项目" ValueLabel="True">
+      <Condition Expression="HasCategory('项目')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="程序包依赖项" ValueLabel="True">
+      <Condition Expression="HasCategory('程序包依赖项')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>

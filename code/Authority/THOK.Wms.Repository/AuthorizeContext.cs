@@ -3,6 +3,7 @@ using THOK.Wms.Repository.Migrations;
 using THOK.Authority.DbModel.Mapping;
 using THOK.Wms.DbModel.Mapping;
 using THOK.WCS.DbModel.Mapping;
+using THOK.SMS.DbModel.Mapping;
 
 namespace THOK.Wms.Repository
 {
@@ -144,7 +145,9 @@ namespace THOK.Wms.Repository
             modelBuilder.Configurations.Add(new PalletMap());
 
             #endregion
-
+            #region sms
+            modelBuilder.Configurations.Add(new BatchMap());
+            #endregion
             modelBuilder.Configurations.Add(new SystemParameterMap());
 
             
