@@ -75,8 +75,10 @@
     </Reference>
     <Reference Include="Microsoft.Build.Conversion.v4.0" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>C:\Program Files (x86)\Microsoft Office\Office15\DCF\Microsoft.Office.Interop.Excel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -159,6 +161,7 @@
     <Compile Include="Controllers\Authority\UserController.cs" />
     <Compile Include="Controllers\Authority\UserPermissionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SMS\BatchController.cs" />
     <Compile Include="Controllers\WCS\TaskRestController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\PdaTaskController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\StockCheckTaskController.cs" />
@@ -1722,6 +1725,18 @@
       <Project>{2F9C4207-F8A0-4E55-A2CB-3514ADC0A437}</Project>
       <Name>THOK.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\THOK.SMS.Bll\THOK.SMS.Bll.csproj">
+      <Project>{3857795F-03BB-49A4-B6CD-7B01AF22C563}</Project>
+      <Name>THOK.SMS.Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.SMS.Dal\THOK.SMS.Dal.csproj">
+      <Project>{A83872B4-27B6-4521-91F2-060062551EB8}</Project>
+      <Name>THOK.SMS.Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.SMS.DbModel\THOK.SMS.DbModel.csproj">
+      <Project>{90503686-2101-43DA-B8BA-473F0F3D7A41}</Project>
+      <Name>THOK.SMS.DbModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.WCS.Bll\THOK.WCS.Bll.csproj">
       <Project>{C7885513-E200-41BD-8409-359DE49C232D}</Project>
       <Name>THOK.WCS.Bll</Name>
@@ -1982,6 +1997,13 @@
     <Content Include="Views\CheckBill\_TaskPartial.cshtml" />
     <Content Include="Views\Cargospace\_PrintPartial.cshtml" />
     <Content Include="Views\Distribution\_PrintPartial.cshtml" />
+    <Content Include="Views\Batch\_AddPartial.cshtml" />
+    <Content Include="Views\Batch\Index.cshtml" />
+    <Content Include="Views\Batch\_DeletePartial.cshtml" />
+    <Content Include="Views\Batch\_EditPartial.cshtml" />
+    <Content Include="Views\Batch\AddPage.cshtml" />
+    <Content Include="Views\Batch\_SearchPartial.cshtml" />
+    <Content Include="Views\Batch\SearchPage.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

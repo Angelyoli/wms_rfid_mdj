@@ -5,7 +5,7 @@ using THOK.Common;
 using THOK.SMS.Bll.Interfaces;
 using THOK.Common.Ef.Interfaces;
 
-namespace THOK.SMS.Bll.Servive
+namespace THOK.SMS.Bll.Service
 {
      public abstract class ServiceBase<T> : LoggerBase, IService<T> 
     {
