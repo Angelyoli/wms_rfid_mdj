@@ -1,16 +1,29 @@
 ﻿<script type="text/javascript">
     function deleteClick() {
-        var row = $('#details').datagrid('getSelected');
-        if (row) {
-            url = '/Batch/Delete/?code=' + row.BatchId;
-            showDialog('删除');
-            deleteKey = true;
-            addDialog.dialog('open');
-            $('#fm').form('load', row);
-            $('form input').attr("disabled", "disabled");
-            $('form textarea').attr("disabled", "disabled");
-        } else {
-            $.messager.alert('错误', '没有选择行！');
+        var billnoRow = "";
+        var rows = $('#details').datagrid('getSelections');
+        if (rows.length > 0) {
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].State != "不可用") {
+
+                    billnoRow += rows[i].BatchId;
+                  
+                }
+            }
         }
-    };
+        if (billnoRow != "") {
+            $.messager.confirm('删除', '确认要删除该记录吗？', function (r) {
+                if (r) {
+                    $.ajaxSender.send('/Batch/Delete/',
+                            { BatchId: billnoRow },
+                            function () {
+                                $('#details').datagrid('load');
+                            });
+                }
+            });
+        } else {
+            $.messager.alert(g_MsgBoxTitle, '所选择的行没有可用状态的单据！无法删除！', "error");
+        }
+    }
 </script>
+

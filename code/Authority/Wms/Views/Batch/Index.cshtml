@@ -1,13 +1,48 @@
 ﻿<div region="center" split="true" border="false">
-    <table id="details" class="easyui-datagrid" url="/Batch/Details/" border="false" singleselect="true"
-        pagesize="50" fit="true" fitcolumns="true" toolbar="#tool" pagination="true" rownumbers="true">
+    <table id="details" class="easyui-datagrid" url="/Batch/Details/" border="false"
+        singleselect="true" pagesize="50" fit="true" fitcolumns="true" toolbar="#tool"
+        pagination="true" rownumbers="true">
         <thead>
             <tr>
-               
-                <th field="BatchId" width="100">报警/警告编码</th>              
-                 <th field="BatchName" width="100">报警/警告编码</th>
-                  <th field="BatchNo" width="100">报警/警告编码</th>
-                    <th field="Description" width="500">描述</th>
+                <th field="BatchId" width="100" hidden="true">
+                    ID
+                </th>
+                <th field="OrderDate" width="80">
+                    订单日期
+                </th>
+                <th field="BatchNo" width="50">
+                    批次号
+                </th>
+                <th field="BatchName" width="80">
+                    批次名称
+                </th>
+                <th field="OperateDate" width="80">
+                    操作日期
+                </th>
+                <th field="OperatePersonId" width="80" hidden="true">
+                    操作人员
+                </th>
+                <th field="OperatePersonName" width="80">
+                    操作人员
+                </th>
+                <th field="OptimizeSchedule" width="50">
+                    优化调度
+                </th>
+                <th field="VerifyPersonId" width="80" hidden="true">
+                    审核人员
+                </th>
+                <th field="VerifyPersonName" width="80">
+                    审核人员
+                </th>
+                <th field="Description" width="100">
+                    描述
+                </th>
+                <th field="ProjectBatchNo" width="50">
+                    一号工程
+                </th>
+                <th field="State" width="50">
+                    状态
+                </th>
             </tr>
         </thead>
     </table>

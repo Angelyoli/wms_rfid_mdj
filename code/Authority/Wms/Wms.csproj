@@ -2001,7 +2001,6 @@
     <Content Include="Views\Batch\Index.cshtml" />
     <Content Include="Views\Batch\_DeletePartial.cshtml" />
     <Content Include="Views\Batch\_EditPartial.cshtml" />
-    <Content Include="Views\Batch\AddPage.cshtml" />
     <Content Include="Views\Batch\_SearchPartial.cshtml" />
     <Content Include="Views\Batch\SearchPage.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
