@@ -49,7 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Batch.cs" />
+    <Compile Include="BatchStatus.cs" />
     <Compile Include="Mapping\BatchMap.cs" />
+    <Compile Include="Mapping\BatchStatusMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityRepository\BatchRepository.cs.cs" />
+    <Compile Include="EntityRepository\BatchRepository.cs" />
+    <Compile Include="EntityRepository\BatchStatusRepository.cs" />
     <Compile Include="Interfaces\IBatchRepository.cs" />
+    <Compile Include="Interfaces\IBatchStatusRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
