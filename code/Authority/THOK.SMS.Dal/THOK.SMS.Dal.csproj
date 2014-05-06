@@ -48,9 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityRepository\BatchRepository.cs" />
-    <Compile Include="EntityRepository\BatchStatusRepository.cs" />
+    <Compile Include="EntityRepository\BatchSortRepository.cs" />
     <Compile Include="Interfaces\IBatchRepository.cs" />
-    <Compile Include="Interfaces\IBatchStatusRepository.cs" />
+    <Compile Include="Interfaces\IBatchSortRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

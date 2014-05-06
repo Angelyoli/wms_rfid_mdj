@@ -9,10 +9,10 @@ using THOK.Common.Entity;
 
 namespace THOK.SMS.Bll.Service
 {
-    public class BatchStatusService : ServiceBase<BatchStatus>, IBatchStatusService
+    public class BatchSortService : ServiceBase<BatchSort>, IBatchSortService
     {
         [Dependency]
-        public IBatchStatusRepository BatchStatusRepository { get; set; }
+        public IBatchSortRepository BatchSortRepository { get; set; }
 
         protected override Type LogPrefix
         {
@@ -20,40 +20,40 @@ namespace THOK.SMS.Bll.Service
         }
 
 
-        public object GetDetails(int page, int rows, BatchStatus batchStatus)
+        public object GetDetails(int page, int rows, BatchSort BatchSort)
         {
 
-            IQueryable<BatchStatus> bathquery = BatchStatusRepository.GetQueryable();
+            IQueryable<BatchSort> bathquery = BatchSortRepository.GetQueryable();
 
-            var batchStatuss = bathquery.Where(a => a.BatchStatusId.Equals(batchStatus.BatchStatusId)).OrderBy(a => a.BatchStatusId);
+            var BatchSorts = bathquery.Where(a => a.BatchSortId.Equals(BatchSort.BatchSortId)).OrderBy(a => a.BatchSortId);
 
-            int total = batchStatuss.Count();
-            var batchStatussRow = batchStatuss.Skip((page - 1) * rows).Take(rows);
-            var batchStatussSelect = batchStatussRow.ToArray().Select(a => new
+            int total = BatchSorts.Count();
+            var BatchSortsRow = BatchSorts.Skip((page - 1) * rows).Take(rows);
+            var BatchSortsSelect = BatchSortsRow.ToArray().Select(a => new
             {
 
-                a.BatchStatusId,
+                a.BatchSortId,
                 a.BatchId,
                 a.batch.BatchName,
                 a.SortingLineCode,
                 a.State
             });
 
-            return new { total, rows = batchStatussSelect.ToArray() };
+            return new { total, rows = BatchSortsSelect.ToArray() };
         }
 
 
 
-        public bool Add(BatchStatus batchStatus, out string strResult)
+        public bool Add(BatchSort BatchSort, out string strResult)
         {
 
             strResult = string.Empty;
             bool result = false;
-            var al = BatchStatusRepository.GetQueryable().FirstOrDefault(a => a.BatchStatusId == batchStatus.BatchStatusId);
+            var al = BatchSortRepository.GetQueryable().FirstOrDefault(a => a.BatchSortId == BatchSort.BatchSortId);
             if (al == null)
             {
 
-                BatchStatus batchStatuss = new BatchStatus();
+                BatchSort BatchSorts = new BatchSort();
                 try
                 {
                     //
@@ -77,13 +77,13 @@ namespace THOK.SMS.Bll.Service
 
 
 
-        public bool Save(BatchStatus batchStatus, out string strResult)
+        public bool Save(BatchSort BatchSort, out string strResult)
         {
 
             strResult = string.Empty;
             bool result = false;
-            var batchStatuss = BatchStatusRepository.GetQueryable().FirstOrDefault(a => a.BatchStatusId == batchStatus.BatchStatusId);
-            if (batchStatuss != null)
+            var BatchSorts = BatchSortRepository.GetQueryable().FirstOrDefault(a => a.BatchSortId == BatchSort.BatchSortId);
+            if (BatchSorts != null)
             {
                 //
                 //   未更新。。
@@ -98,17 +98,17 @@ namespace THOK.SMS.Bll.Service
             return result;
         }
 
-        public bool Delete(int batchStatusCode, out string strResult)
+        public bool Delete(int BatchSortCode, out string strResult)
         {
 
             strResult = string.Empty;
             bool result = false;
-            var batchStatus = BatchStatusRepository.GetQueryable().FirstOrDefault(a => a.BatchStatusId.Equals(batchStatusCode));
-            if (batchStatus != null)
+            var BatchSort = BatchSortRepository.GetQueryable().FirstOrDefault(a => a.BatchSortId.Equals(BatchSortCode));
+            if (BatchSort != null)
             {
 
-                BatchStatusRepository.Delete(batchStatus);
-                BatchStatusRepository.SaveChanges();
+                BatchSortRepository.Delete(BatchSort);
+                BatchSortRepository.SaveChanges();
                 result = true;
             }
             else
@@ -120,7 +120,7 @@ namespace THOK.SMS.Bll.Service
         }
 
 
-        public System.Data.DataTable GetBatchStatus(int page, int rows, BatchStatus BatchStatusInfo)
+        public System.Data.DataTable GetBatchSort(int page, int rows, BatchSort BatchSortInfo)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
             //

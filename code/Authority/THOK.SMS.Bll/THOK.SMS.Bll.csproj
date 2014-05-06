@@ -52,11 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IBatchService.cs" />
-    <Compile Include="Interfaces\IBatchStatusService.cs" />
+    <Compile Include="Interfaces\IBatchSortService.cs" />
     <Compile Include="Interfaces\IService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\BatchService.cs" />
-    <Compile Include="Service\BatchStatusService.cs" />
+    <Compile Include="Service\BatchSortService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@ using THOK.SMS.DbModel;
 
 namespace THOK.SMS.Dal.Interfaces
 {
-    public interface IBatchStatusRepository : IRepository<BatchStatus>
+    public interface IBatchSortRepository : IRepository<BatchSort>
     {
 
     }

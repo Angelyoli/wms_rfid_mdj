@@ -7,16 +7,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace THOK.SMS.DbModel.Mapping
 {
-    public class BatchStatusMap : EntityMappingBase<BatchStatus>
+    public class BatchSortMap : EntityMappingBase<BatchSort>
     {
-        public BatchStatusMap()
+        public BatchSortMap()
             : base("Sms")
         {
             // Primary Key
-            this.HasKey(t => t.BatchStatusId);
+            this.HasKey(t => t.BatchSortId);
 
             // Properties
-            this.Property(t => t.BatchStatusId)
+            this.Property(t => t.BatchSortId)
                 .IsRequired();
             this.Property(t => t.BatchId)
                 .IsRequired();
@@ -29,14 +29,14 @@ namespace THOK.SMS.DbModel.Mapping
                 .HasMaxLength(2);
 
             // Table & Column Mappings
-            this.Property(t => t.BatchStatusId).HasColumnName(ColumnMap.Value.To("BatchStatusId"));
+            this.Property(t => t.BatchSortId).HasColumnName(ColumnMap.Value.To("BatchSortId"));
             this.Property(t => t.BatchId).HasColumnName(ColumnMap.Value.To("BatchId"));
             this.Property(t => t.SortingLineCode).HasColumnName(ColumnMap.Value.To("SortingLineCode"));
             this.Property(t => t.State).HasColumnName(ColumnMap.Value.To("State"));
 
             // Relationships
             this.HasRequired(t => t.batch)
-                .WithMany(t => t.BatchStatuss)
+                .WithMany(t => t.BatchSorts)
                 .HasForeignKey(d => d.BatchId)
                 .WillCascadeOnDelete(false);
         }

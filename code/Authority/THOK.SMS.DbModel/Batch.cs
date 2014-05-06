@@ -9,7 +9,7 @@ namespace THOK.SMS.DbModel
     {
         public Batch()
        {
-           this.BatchStatuss = new List<BatchStatus>();
+           this.BatchSorts = new List<BatchSort>();
        }
 
         public int BatchId { get; set; }
@@ -24,6 +24,6 @@ namespace THOK.SMS.DbModel
         public int ProjectBatchNo { get; set; }
         public string State { get; set; }
 
-        public virtual ICollection<BatchStatus> BatchStatuss { get; set; }
+        public virtual ICollection<BatchSort> BatchSorts { get; set; }
     }
 }

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace THOK.SMS.DbModel
 {
-    public class BatchStatus
+    public class BatchSort
     {
-        public int BatchStatusId { get; set; }
+        public int BatchSortId { get; set; }
         public int BatchId { get; set; }
         public string SortingLineCode { get; set; }
         public string State { get; set; }

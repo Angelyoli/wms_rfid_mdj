@@ -4,7 +4,7 @@ using THOK.SMS.Dal.Interfaces;
 
 namespace THOK.SMS.Dal.EntityRepository
 {
-    public class BatchStatusRepository : RepositoryBase<BatchStatus>, IBatchStatusRepository
+    public class BatchSortRepository : RepositoryBase<BatchSort>, IBatchSortRepository
     {
 
     }
