@@ -8,9 +8,9 @@ namespace THOK.SMS.DbModel
     public class Batch
     {
         public Batch()
-       {
-           this.BatchSorts = new List<BatchSort>();
-       }
+        {
+            this.BatchSorts = new List<BatchSort>();
+        }
 
         public int BatchId { get; set; }
         public DateTime OrderDate { get; set; }

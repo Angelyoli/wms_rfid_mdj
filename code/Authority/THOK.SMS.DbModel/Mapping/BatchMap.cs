@@ -39,7 +39,7 @@ namespace THOK.SMS.DbModel.Mapping
                 .IsRequired()
                 .IsFixedLength()
                 .HasMaxLength(2);
-         
+
             // Table & Column Mappings
             this.Property(t => t.BatchId).HasColumnName(ColumnMap.Value.To("BatchId"));
             this.Property(t => t.OrderDate).HasColumnName(ColumnMap.Value.To("OrderDate"));

@@ -10,7 +10,7 @@ namespace THOK.SMS.DbModel
         public Led()
         {
             this.Leds = new List<Led>();
-            this.Channels =new List<Channel>();
+            this.Channels = new List<Channel>();
         }
 
         public string LedCode { get; set; }

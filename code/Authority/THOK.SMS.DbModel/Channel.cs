@@ -7,6 +7,12 @@ namespace THOK.SMS.DbModel
 {
     public class Channel
     {
+        public Channel()
+        {
+            this.ChannelAllots = new List<ChannelAllot>();
+            this.SortSupplys = new List<SortSupply>();
+            this.SortOrderAllotDetails = new List<SortOrderAllotDetail>();
+        }
         public string ChannelCode { get; set; }
         public string SortingLineCode { get; set; }
         public string ChannelName { get; set; }
@@ -23,6 +29,10 @@ namespace THOK.SMS.DbModel
         public string Status { get; set; }
 
         public Led led { get; set; }
+
+        public virtual ICollection<ChannelAllot> ChannelAllots { get; set; }
+        public virtual ICollection<SortSupply> SortSupplys { get; set; }
+        public virtual ICollection<SortOrderAllotDetail> SortOrderAllotDetails { get; set; }
 
     }
 }

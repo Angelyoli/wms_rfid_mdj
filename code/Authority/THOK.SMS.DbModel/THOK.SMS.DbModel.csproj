@@ -51,14 +51,22 @@
     <Compile Include="Batch.cs" />
     <Compile Include="BatchSort.cs" />
     <Compile Include="Channel.cs" />
+    <Compile Include="ChannelAllot.cs" />
     <Compile Include="DeliverLineAllot.cs" />
     <Compile Include="Led.cs" />
     <Compile Include="Mapping\BatchMap.cs" />
     <Compile Include="Mapping\BatchSortMap.cs" />
+    <Compile Include="Mapping\ChannelAllotMap.cs" />
     <Compile Include="Mapping\ChannelMap.cs" />
     <Compile Include="Mapping\DeliverLineAllotMap.cs" />
     <Compile Include="Mapping\LedMap.cs" />
+    <Compile Include="Mapping\SortOrderAllotDetailMap.cs" />
+    <Compile Include="Mapping\SortOrderAllotMasterMap.cs" />
+    <Compile Include="Mapping\SortSupplyMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SortOrderAllotDetail.cs" />
+    <Compile Include="SortOrderAllotMaster.cs" />
+    <Compile Include="SortSupply.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
