@@ -94,7 +94,7 @@ namespace THOK.SMS.Bll.Service
                 a.OptimizeSchedule,
                 a.OperateDate,
                 a.ProjectBatchNo,
-                a.State,
+                a.Status,
                 a.VerifyPersonId
 
             })
@@ -132,7 +132,7 @@ namespace THOK.SMS.Bll.Service
                 a.OptimizeSchedule,
                 a.OperateDate,
                 a.ProjectBatchNo,
-                a.State,
+                a.Status,
                 a.VerifyPersonId,
                 VerifyPersonName = uu.UserName
 
@@ -168,7 +168,7 @@ namespace THOK.SMS.Bll.Service
                      a.Description,
                      OrderDate = a.OrderDate.ToString("yyyy-MM-dd HH:mm:ss"),
                      a.ProjectBatchNo,
-                     State = WhatStatus(a.State),
+                     State = WhatStatus(a.Status),
                      a.VerifyPersonId,
                      OperateDate = a.OperateDate.ToString("yyyy-MM-dd HH:mm:ss"),
                      OptimizeSchedule = WhatOptimizeSchedule(a.OptimizeSchedule.ToString()),
@@ -204,7 +204,7 @@ namespace THOK.SMS.Bll.Service
                     batchs.OptimizeSchedule = 0;
                     batchs.OrderDate = batchInfo.OrderDate;
                     batchs.ProjectBatchNo = 0;
-                    batchs.State = "01";
+                    batchs.Status = "01";
                     batchs.OperatePersonId = al.UserID;
                     batchs.VerifyPersonId = al.UserID;
 
@@ -240,7 +240,7 @@ namespace THOK.SMS.Bll.Service
                 batchs.OptimizeSchedule = batchInfo.OptimizeSchedule;
                 batchs.OrderDate = batchInfo.OrderDate;
                 batchs.ProjectBatchNo = batchInfo.ProjectBatchNo;
-                batchs.State = batchInfo.State;
+                batchs.Status = batchInfo.Status;
                 batchs.OperatePersonId = batchInfo.OperatePersonId;
                 batchInfo.VerifyPersonId = batchInfo.VerifyPersonId;
 
