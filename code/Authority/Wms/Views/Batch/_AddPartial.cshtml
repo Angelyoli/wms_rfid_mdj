@@ -1,69 +1,59 @@
 ﻿<script type="text/javascript">
     var url;
-    var addDialog;
 
-    //加载新增、编辑和删除窗体
-    function showDialog(title) {
-        if (addDialog == null) {
-            addDialog = $('<div></div>').dialog({
-                title: title,
-                width: 280,
-                height: 220,
-                closed: true,
-                cache: false,
-                modal: true,
-                href: '/Batch/AddPage/',
-                buttons: [{
-                    text: '确定',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        save();
-                    }
-                }, {
-                    text: '取消',
-                    iconCls: 'icon-cancel',
-                    handler: function () {
-                        addDialog.dialog('close');
-                    }
-                }],
-                onLoad: function () {
-                    if (title == '编辑') {
-                        var erow = $('#details').datagrid('getSelected');
-                        $('#fm').form('load', erow);
-                        $('#inputBatchId').attr("disabled", 'disabled');
-                    }
-                    else if (title == '删除') {
-                        var drow = $('#details').datagrid('getSelected');
-                        $('#fm').form('load', drow);
-                        $('form input').attr("disabled", "disabled");
-                        $('form textarea').attr("disabled", "disabled");
-                    }
-                }
-            });
-        }
-        else {
-            addDialog.dialog({ title: title });
-        }
+    function getTime() {
+        var d = new Date();
+        var vYear = d.getFullYear();
+        var vMon = d.getMonth() + 1;
+        var vDay = d.getDate();
+        var h = d.getHours();
+        var m = d.getMinutes();
+        t = vYear + "-" + (vMon < 10 ? "0" + vMon : vMon) + "-" + (vDay < 10 ? "0" + vDay : vDay) + " " + (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m);
+        return t;
     }
 
     function addClick() {
-        showDialog('新增');
-        addKey = true;
-        addDialog.dialog('open');
 
-        $('form input').removeAttr("disabled"); //removeAttr() 方法从被选元素中移除属性。
-        $('form textarea').removeAttr("disabled");
-        $('#fm').form('clear');
-        url = '/Batch/Create/';
+
+
+        $('#OrderDate').attr("readonly", true);
+        $('#OperateDate').attr("readonly", true);
+
+        $.getJSON("/StockInBill/GenInBillNo/", function (json) {
+            if (json) {
+                $('#dlg').dialog('open').dialog('setTitle', '新增');
+                addKey = true;
+                $('#fm').form('clear');
+                $('#addOperatePersonId').val(json.employeeID);
+                $('#OperatePersonID').val(json.employeeName);
+
+
+                $('#addVerifyPersonId').val(json.employeeID);
+                $('#VerifyPersonId').val(json.employeeName);
+
+
+                $('#OrderDate').val(getTime());
+                $('#OperateDate').val(getTime());
+                $('#fm.easyui-validatebox').validatebox({
+                    required: true
+                });
+                $('form input').removeAttr("disabled");
+                $('form textarea').removeAttr("disabled");
+
+
+
+                $('#cc').combo({
+                    hasDownArrow: true
+                });
+                url = '/Batch/Create/';
+            } else {
+                $.messager.show({ title: '系统提示', msg: '失败!请检查原因！' });
+            }
+        });
     };
 
+    //保存
     function save() {
-        if ($("#inputDescription").val().length > 200) {
-            $.messager.alert("提示", "描述应小于200个字(包括空格)", "info");
-            return false
-        }
-        $('form input').removeAttr("disabled");
-        $('form textarea').removeAttr("disabled");
         $('#fm').form('submit', {
             url: url,
             onSubmit: function () {
@@ -75,8 +65,9 @@
                     $.messager.alert(g_MsgBoxTitle, result.msg, "info");
                     addKey = false;
                     editKey = false;
-                    addDialog.dialog('close');
+                    $('#dlg').dialog('close');
                     $('#details').datagrid('reload');
+
                 } else {
                     $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
                     addKey = false;
@@ -85,5 +76,117 @@
                 }
             }
         });
+
     }
+
 </script>
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 510px; height: 300px;
+    padding: 10px 10px" closed="true" buttons="#dlg-buttons">
+    <form id="fm" method="post" novalidate>
+    <table width="480">
+        <tr hidden="true">
+            <th width="100" style="display: none">
+                ID
+            </th>
+            <td>
+                <input name="BatchId" style="display: none" />
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td width="60">
+                订单日期:
+            </td>
+            <td width="168">
+                <input id="OrderDate" name="OrderDate" type="text" class="easyui-validatebox" readonly="readonly" />
+            </td>
+            <td width="60">
+                操作日期:
+            </td>
+            <td width="168">
+                <input id="OperateDate" name="OperateDate" type="text" class="easyui-validatebox"
+                    readonly="readonly" />
+            </td>
+        </tr>
+        <tr>
+            <td width="60">
+                批次号:
+            </td>
+            <td width="168">
+                <input name="BatchNo" class="easyui-validatebox" required="true"  readonly="readonly" />
+            </td>
+            <td width="60">
+                批次名称:
+            </td>
+            <td width="168">
+                <input name="BatchName" class="easyui-validatebox" validtype="maxLength[50]" required="true"   readonly="readonly"/>
+            </td>
+        </tr>
+        <tr>
+            <td width="60">
+                经办人:
+            </td>
+            <td width="168">
+                <input name="OperatePersonName" readonly="true" id="OperatePersonID" />
+                <input name="OperatePersonId" readonly="true" id="addOperatePersonId" style="display: none" />
+                <td width="60">
+                    审核人员:
+                </td>
+                <td width="168">
+                    <input name="VerifyPersonName" id="VerifyPersonId" readonly="readonly" />
+                    <input name="VerifyPersonId" id="addVerifyPersonId" style="display: none" />
+                </td>
+        </tr>
+        <tr>
+            <td width="60">
+                优化进度:
+            </td>
+            <td width="168">
+                <select id="addOptimizeSchedule" name="OptimizeSchedule" class="easyui-combobox" readonly="readonly">
+                    <option value="1">分拣线优化</option>
+                    <option value="02">分拣线路优化</option>
+                    <option value="03">烟道优化</option>
+                    <option value="04"></option>
+                    <option value="05"></option>
+                </select>
+            </td>
+            <td width="70">
+                工程批次号:
+            </td>
+            <td width="168">
+                <input id="ProjectBatchNo" name="ProjectBatchNo" />
+            </td>
+        </tr>
+        <tr>
+            <td width="60">
+                任务状态:
+            </td>
+            <td width="168">
+                <select name="State" id="addState" class="easyui-combobox" readonly="readonly">
+                    <option value="01">初始化</option>
+                    <option value="02">已下载</option>
+                    <option value="03">已优化</option>
+                    <option value="04">已上传</option>
+                    <option value="05">已结单</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td width="60">
+                描述:
+            </td>
+            <td width="168" colspan="3">
+                <textarea name="Description" id="adddesId" style="width: 367px; height: 60px"  readonly="readonly"></textarea>
+            </td>
+        </tr>
+    </table>
+    </form>
+</div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
+        取消</a>
+</div>

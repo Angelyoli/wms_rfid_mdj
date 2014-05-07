@@ -9,11 +9,16 @@
 
     function searchClick() {
         $("input[type=text]").attr("value", "");
+        $('#searchOperateDate').datebox({ editable: false });
+        $('#searchOperateDate').datebox('setValue', "");
+//        $('#searchOrderDate').datebox({ editable: false });
+//        $('#searchOrderDate').datebox('setValue', "");
+
         if (searchDialog == null) {
             searchDialog = $('<div></div>').dialog({
                 title: '查询',
                 width: 280,
-                height: 190,
+                height: 150,
                 closed: true,
                 cache: false,
                 modal: true,
@@ -38,8 +43,10 @@
     };
     function GetQueryParams() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.BatchId = $('#BatchId').val();
-        queryParams.Description = $('#Description').val();
+        queryParams.BatchNo = $('#searchBatchNo').val();
+//        queryParams.BatchName = $('#searchBatchName').val();
+        queryParams.OperateDate = $('#searchOperateDate').datebox('getValue');
+//        queryParams.OrderDate = $('#searchOrderDate').datebox('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $("#details").datagrid('load');
         searchDialog.dialog('close');
