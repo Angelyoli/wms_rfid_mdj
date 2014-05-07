@@ -36,7 +36,7 @@ namespace THOK.SMS.Bll.Service
                 a.BatchId,
                 a.batch.BatchName,
                 a.SortingLineCode,
-                a.State
+                state=a.Status
             });
 
             return new { total, rows = BatchSortsSelect.ToArray() };

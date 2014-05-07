@@ -19,10 +19,10 @@ namespace THOK.SMS.DbModel
         public DateTime OperateDate { get; set; }
         public Guid OperatePersonId { get; set; }
         public int OptimizeSchedule { get; set; }
-        public Guid VerifyPersonId { get; set; }
+        public Guid? VerifyPersonId { get; set; }
         public string Description { get; set; }
         public int ProjectBatchNo { get; set; }
-        public string State { get; set; }
+        public string Status { get; set; }
 
         public virtual ICollection<BatchSort> BatchSorts { get; set; }
     }

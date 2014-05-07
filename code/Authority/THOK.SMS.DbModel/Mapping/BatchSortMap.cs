@@ -17,13 +17,13 @@ namespace THOK.SMS.DbModel.Mapping
 
             // Properties
             this.Property(t => t.BatchSortId)
-                .IsRequired();
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             this.Property(t => t.BatchId)
                 .IsRequired();
             this.Property(t => t.SortingLineCode)
                 .IsRequired()
-                .HasMaxLength(100);
-            this.Property(t => t.State)
+                .HasMaxLength(20);
+            this.Property(t => t.Status)
                 .IsRequired()
                 .IsFixedLength()
                 .HasMaxLength(2);
@@ -32,7 +32,7 @@ namespace THOK.SMS.DbModel.Mapping
             this.Property(t => t.BatchSortId).HasColumnName(ColumnMap.Value.To("BatchSortId"));
             this.Property(t => t.BatchId).HasColumnName(ColumnMap.Value.To("BatchId"));
             this.Property(t => t.SortingLineCode).HasColumnName(ColumnMap.Value.To("SortingLineCode"));
-            this.Property(t => t.State).HasColumnName(ColumnMap.Value.To("State"));
+            this.Property(t => t.Status).HasColumnName(ColumnMap.Value.To("Status"));
 
             // Relationships
             this.HasRequired(t => t.batch)

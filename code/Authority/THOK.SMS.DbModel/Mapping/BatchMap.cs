@@ -35,7 +35,7 @@ namespace THOK.SMS.DbModel.Mapping
             this.Property(t => t.Description)
                 .HasMaxLength(200);
             this.Property(t => t.ProjectBatchNo);
-            this.Property(t => t.State)
+            this.Property(t => t.Status)
                 .IsRequired()
                 .IsFixedLength()
                 .HasMaxLength(2);
@@ -51,7 +51,7 @@ namespace THOK.SMS.DbModel.Mapping
             this.Property(t => t.VerifyPersonId).HasColumnName(ColumnMap.Value.To("VerifyPersonId"));
             this.Property(t => t.Description).HasColumnName(ColumnMap.Value.To("Description"));
             this.Property(t => t.ProjectBatchNo).HasColumnName(ColumnMap.Value.To("ProjectBatchNo"));
-            this.Property(t => t.State).HasColumnName(ColumnMap.Value.To("State"));
+            this.Property(t => t.Status).HasColumnName(ColumnMap.Value.To("Status"));
 
             // Relationships
         }

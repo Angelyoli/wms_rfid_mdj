@@ -50,8 +50,14 @@
   <ItemGroup>
     <Compile Include="Batch.cs" />
     <Compile Include="BatchSort.cs" />
+    <Compile Include="Channel.cs" />
+    <Compile Include="DeliverLineAllot.cs" />
+    <Compile Include="Led.cs" />
     <Compile Include="Mapping\BatchMap.cs" />
     <Compile Include="Mapping\BatchSortMap.cs" />
+    <Compile Include="Mapping\ChannelMap.cs" />
+    <Compile Include="Mapping\DeliverLineAllotMap.cs" />
+    <Compile Include="Mapping\LedMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
