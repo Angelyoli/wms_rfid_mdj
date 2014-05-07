@@ -4,7 +4,7 @@
         var rows = $('#details').datagrid('getSelections');
         if (rows.length > 0) {
             for (var i = 0; i < rows.length; i++) {
-                if (rows[i].State != "不可用") {
+                if (rows[i].State == "初始化") {
 
                     billnoRow += rows[i].BatchId;
                   
@@ -22,7 +22,7 @@
                 }
             });
         } else {
-            $.messager.alert(g_MsgBoxTitle, '所选择的行没有可用状态的单据！无法删除！', "error");
+            $.messager.alert(g_MsgBoxTitle, '所选择的行无法删除！', "error");
         }
     }
 </script>

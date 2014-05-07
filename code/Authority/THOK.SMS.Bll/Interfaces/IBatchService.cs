@@ -8,11 +8,17 @@ namespace THOK.SMS.Bll.Interfaces
 {
     public interface IBatchService:IService<Batch>
     {
-        object GetDetails(int page, int rows, Batch batchInfo);
-        bool Add(Batch bathInfo, out string strResult);
-        bool Save(Batch bathInfoCode, out string strResult);
-        bool Delete(string bathCode, out string strResult);
-        System.Data.DataTable GetBathInfo(int page, int rows, Batch batchInfo);
+
+        object GetDetails(int page, int rows, string BatchNo, string operateDate);
+        //object GetDetails(int page, int rows, string BatchNo, string BatchName, string orderDate, string operateDate);
+
+
+        //object GetDetails(int page, int rows, Batch batchInfo);
+
+        bool Add(Batch batchInfo, string userName, out string strResult);
+        bool Save(Batch batchInfo, out string strResult);
+        bool Delete(int batchId, out string strResult);
+      
 
     }
 }

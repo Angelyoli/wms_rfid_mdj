@@ -62,6 +62,14 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\THOK.Authority.Dal\THOK.Authority.Dal.csproj">
+      <Project>{A8E32F0A-A9F4-4CDD-8C7A-8304CD034070}</Project>
+      <Name>THOK.Authority.Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\THOK.Authority.DbModel\THOK.Authority.DbModel.csproj">
+      <Project>{F7EB9C5D-6082-4DE6-B1C0-740AFF0CFE11}</Project>
+      <Name>THOK.Authority.DbModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
       <Name>THOK.Common.Ef</Name>

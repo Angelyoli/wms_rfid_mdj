@@ -47,12 +47,12 @@ namespace Wms.Controllers.SMS
         public ActionResult Details(int page, int rows, FormCollection collection)
         {
         
-            string BatchName = collection["BatchName"] ?? "";     
-            string OrderDate = collection["OrderDate"] ?? "";
+            //string BatchName = collection["BatchName"] ?? "";     
+            //string OrderDate = collection["OrderDate"] ?? "";
             string OperateDate = collection["OperateDate"] ?? "";
             string BatchNo = collection["BatchNo"] ?? "";
 
-            var srmDetail = BatchInfoService.GetDetails(page, rows, BatchNo, BatchName, OrderDate, OperateDate);
+            var srmDetail = BatchInfoService.GetDetails(page, rows, BatchNo, OperateDate);
             return Json(srmDetail, "text", JsonRequestBehavior.AllowGet);
                
            
