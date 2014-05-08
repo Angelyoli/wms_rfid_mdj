@@ -414,6 +414,10 @@
     <Compile Include="Migrations\201404150636429_AddSmsBatch.Designer.cs">
       <DependentUpon>201404150636429_AddSmsBatch.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201405080244564_Add-SMS_Tables.cs" />
+    <Compile Include="Migrations\201405080244564_Add-SMS_Tables.Designer.cs">
+      <DependentUpon>201405080244564_Add-SMS_Tables.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="AuthorizeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -505,6 +509,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201404150636429_AddSmsBatch.resx">
       <DependentUpon>201404150636429_AddSmsBatch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201405080244564_Add-SMS_Tables.resx">
+      <DependentUpon>201405080244564_Add-SMS_Tables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

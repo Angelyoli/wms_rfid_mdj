@@ -49,8 +49,22 @@
   <ItemGroup>
     <Compile Include="EntityRepository\BatchRepository.cs" />
     <Compile Include="EntityRepository\BatchSortRepository.cs" />
+    <Compile Include="EntityRepository\ChannelAllotRepository.cs" />
+    <Compile Include="EntityRepository\ChannelRepository.cs" />
+    <Compile Include="EntityRepository\DeliverLineAllotRepository.cs" />
+    <Compile Include="EntityRepository\LedRepository.cs" />
+    <Compile Include="EntityRepository\SortOrderAllotDetailRepository.cs" />
+    <Compile Include="EntityRepository\SortOrderAllotMasterRepository.cs" />
+    <Compile Include="EntityRepository\SortSupplyRepository.cs" />
     <Compile Include="Interfaces\IBatchRepository.cs" />
     <Compile Include="Interfaces\IBatchSortRepository.cs" />
+    <Compile Include="Interfaces\IChannelAllotRepository.cs" />
+    <Compile Include="Interfaces\IChannelRepository.cs" />
+    <Compile Include="Interfaces\IDeliverLineAllotRepository.cs" />
+    <Compile Include="Interfaces\ILedRepository.cs" />
+    <Compile Include="Interfaces\ISortOrderAllotDetailRepository.cs" />
+    <Compile Include="Interfaces\ISortOrderAllotMasterRepository.cs" />
+    <Compile Include="Interfaces\ISortSupplyRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

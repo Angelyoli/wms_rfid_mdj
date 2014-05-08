@@ -53,11 +53,25 @@
   <ItemGroup>
     <Compile Include="Interfaces\IBatchService.cs" />
     <Compile Include="Interfaces\IBatchSortService.cs" />
+    <Compile Include="Interfaces\IChannelAllotService.cs" />
+    <Compile Include="Interfaces\IChannelService.cs" />
+    <Compile Include="Interfaces\IDeliverLineAllotService.cs" />
+    <Compile Include="Interfaces\ILedService.cs" />
     <Compile Include="Interfaces\IService.cs" />
+    <Compile Include="Interfaces\ISortOrderAllotDetailService.cs" />
+    <Compile Include="Interfaces\ISortOrderAllotMasterService.cs" />
+    <Compile Include="Interfaces\ISortSupplyService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\BatchService.cs" />
     <Compile Include="Service\BatchSortService.cs" />
+    <Compile Include="Service\ChannelAllotService.cs" />
+    <Compile Include="Service\ChannelService.cs" />
+    <Compile Include="Service\DeliverLineAllotService.cs" />
+    <Compile Include="Service\LedService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
+    <Compile Include="Service\SortOrderAllotDetailService.cs" />
+    <Compile Include="Service\SortOrderAllotMasterService.cs" />
+    <Compile Include="Service\SortSupplyService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
