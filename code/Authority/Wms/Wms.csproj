@@ -163,6 +163,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SMS\BatchController.cs" />
     <Compile Include="Controllers\SMS\BatchSortController.cs" />
+    <Compile Include="Controllers\SMS\ChannelController.cs" />
     <Compile Include="Controllers\WCS\TaskRestController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\PdaTaskController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\StockCheckTaskController.cs" />
@@ -2005,6 +2006,14 @@
     <Content Include="Views\Batch\_SearchPartial.cshtml" />
     <Content Include="Views\Batch\SearchPage.cshtml" />
     <Content Include="Views\BatchSort\Index.cshtml" />
+    <Content Include="Views\Channel\Index.cshtml" />
+    <Content Include="Views\Channel\_SearchPartial.cshtml" />
+    <Content Include="Views\Channel\_AddPartial.cshtml" />
+    <Content Include="Views\Channel\_ProductPartial.cshtml" />
+    <Content Include="Views\Channel\_SortingLinePartial.cshtml" />
+    <Content Include="Views\Channel\_EditPartial.cshtml" />
+    <Content Include="Views\Channel\_DeletePartial.cshtml" />
+    <Content Include="Views\Channel\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />

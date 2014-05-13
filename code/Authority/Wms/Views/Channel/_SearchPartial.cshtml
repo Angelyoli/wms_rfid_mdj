@@ -1,0 +1,65 @@
+﻿<script type="text/javascript">
+    function searchClick() {
+        $('#dlg-search input').val("");
+        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+    }
+
+    function select() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.ChannelName = $("#search-ChannelName").val();
+        queryParams.ChannelType = $("#search-ChannelType").combo('getValue');
+        queryParams.GroupNo = $("#search-GroupNo").combo('getValue');
+        queryParams.Status = $("#search-Status").combo('getValue');
+        $('#details').datagrid('options').queryParams = queryParams;
+        $('#details').datagrid({
+            pageNumber: 1
+        });
+       // $('#details').datagrid("reload");
+        $('#dlg-search').dialog("close");
+    }
+</script>
+
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width:280px;height:210px;padding:2px 2px"
+		closed="true" buttons="#dlg-buttons-search">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; ">
+            <table width ="250">
+                <tr>
+                    <td width="60">烟道名称：</td>
+                    <td><input id="search-ChannelName" /></td>
+                </tr>
+                <tr>
+                    <td width="60">烟道类型：</td>
+                    <td><select id="search-ChannelType" class="easyui-combobox" style="width:130px" editable="false" panelHeight="125">
+                        <option value="">　</option>
+                        <option value="1">叠垛机</option>
+                        <option value="2">立式机</option>
+                        <option value="3">通道机</option>
+                        <option value="4">卧式机</option>
+                        <option value="5">混合烟道</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td width="60">组　　号：</td>
+                    <td><select id="search-GroupNo" class="easyui-combobox" style="width:130px" editable="false" panelHeight="65">
+                        <option value="">　</option>
+                        <option value="1">A线</option>
+                        <option value="2">B线</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td width="60">状　　态：</td>
+                    <td><select id="search-Status" class="easyui-combobox" style="width:130px" editable="false" panelHeight="65">
+                        <option value="">　</option>
+                        <option value="1">可　用</option>
+                        <option value="2">不可用</option>
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-search">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="select()">查询</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">取消</a>
+</div>
