@@ -163,6 +163,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SMS\BatchController.cs" />
     <Compile Include="Controllers\SMS\BatchSortController.cs" />
+    <Compile Include="Controllers\SMS\ChannelController.cs" />
+    <Compile Include="Controllers\SMS\LedController.cs" />
     <Compile Include="Controllers\WCS\TaskRestController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\PdaTaskController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\StockCheckTaskController.cs" />
@@ -2004,7 +2006,20 @@
     <Content Include="Views\Batch\_EditPartial.cshtml" />
     <Content Include="Views\Batch\_SearchPartial.cshtml" />
     <Content Include="Views\Batch\SearchPage.cshtml" />
+    <Content Include="Views\BatchSort\SearchPage.cshtml" />
+    <Content Include="Views\BatchSort\_AddPartial.cshtml" />
+    <Content Include="Views\BatchSort\_DeletePartial.cshtml" />
+    <Content Include="Views\BatchSort\_EditPartial.cshtml" />
+    <Content Include="Views\BatchSort\_SearchPartial.cshtml" />
     <Content Include="Views\BatchSort\Index.cshtml" />
+    <Content Include="Views\Channel\SearchPage.cshtml" />
+    <Content Include="Views\Channel\_AddPartial.cshtml" />
+    <Content Include="Views\Channel\_DeletePartial.cshtml" />
+    <Content Include="Views\Channel\_EditPartial.cshtml" />
+    <Content Include="Views\Channel\_SearchPartial.cshtml" />
+    <Content Include="Views\Channel\Index.cshtml" />
+    <Content Include="Views\BatchSort\_BatchPartial.cshtml" />
+    <Content Include="Views\BatchSort\AddPage.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2448,6 +2463,12 @@
     <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
     <Content Include="Views\StorageCellPreview\Index.cshtml" />
     <Content Include="Views\StorageCellPreview\_SearchPartial.cshtml" />
+    <Content Include="Views\Led\SearchPage.cshtml" />
+    <Content Include="Views\Led\_AddPartial.cshtml" />
+    <Content Include="Views\Led\_DeletePartial.cshtml" />
+    <Content Include="Views\Led\_EditPartial.cshtml" />
+    <Content Include="Views\Led\_SearchPartial.cshtml" />
+    <Content Include="Views\Led\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
