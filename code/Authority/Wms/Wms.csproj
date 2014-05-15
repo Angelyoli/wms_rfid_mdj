@@ -164,6 +164,7 @@
     <Compile Include="Controllers\SMS\BatchController.cs" />
     <Compile Include="Controllers\SMS\BatchSortController.cs" />
     <Compile Include="Controllers\SMS\ChannelController.cs" />
+    <Compile Include="Controllers\SMS\SortOrderAllotController.cs" />
     <Compile Include="Controllers\WCS\TaskRestController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\PdaTaskController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\StockCheckTaskController.cs" />
@@ -2457,6 +2458,9 @@
     <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
     <Content Include="Views\StorageCellPreview\Index.cshtml" />
     <Content Include="Views\StorageCellPreview\_SearchPartial.cshtml" />
+    <Content Include="Views\SortOrderAllot\Index.cshtml" />
+    <Content Include="Views\SortOrderAllot\_SearchPartial.cshtml" />
+    <Content Include="Views\SortOrderAllot\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
