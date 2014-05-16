@@ -1,21 +1,17 @@
 ﻿<script type="text/javascript">
     function searchClick() {
-        $('#isActive').combo({
+        $('#status').combo({
             editable: false,
             panelHeight: 65,
             panelWidth: 130
         });
         $('#dlg-search').dialog('open').dialog('setTitle', '配送区域信息查询');
-        $("input[type=text]").attr("value", "");
-        $('#status').combo('setValue', "");
+        $('#dlg-search input').val("");
     };
 
     function deliver_select() {
         var queryParams = $('#details').datagrid('options').queryParams;
-        queryParams.DistCode = $('#distCode').val();
-        queryParams.CustomCode = $('#customCode').val();
         queryParams.DistName = $('#distName').val();
-        queryParams.CompanyCode = $('#companyCode').val();
         queryParams.IsActive = $('#status').combo('getValue');
         $('#details').datagrid('options').queryParams = queryParams;
         $('#details').datagrid({
@@ -50,7 +46,7 @@
                     </td>
                     <td>
                         <select id="status" class="easyui-combobox">
-                            <option value="">请选择</option>
+                            <option value="">　</option>
                             <option value="1">可用</option>
                             <option value="0">不可用</option>
                         </select>
