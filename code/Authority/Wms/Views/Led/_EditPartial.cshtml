@@ -1,0 +1,24 @@
+﻿<script type="text/javascript">
+    function editClick() {
+        var row = $('#details').datagrid('getSelected');
+        if (row) {
+            $('#dlg').dialog('open').dialog('setTitle', '编辑');
+            $('#fm.easyui-validatebox').validatebox({
+                required: true
+            });
+            $('form input').removeAttr("disabled");
+            $('#Status').combo({
+                hasDownArrow: true
+            });
+            $('#fm').form('load', row);
+            if (row.Status == "可用") {
+                $('#addStatus').combo('setValue', 1).combo('setText', row.Status);
+            } else {
+                $('#addStatus').combo('setValue', 0).combo('setText', row.Status);
+            }
+            url = '/Led/Edit/';
+        } else {
+            $.messager.confirm('错误', '没有选择行！');
+        }
+    }
+</script>

@@ -2463,12 +2463,13 @@
     <Content Include="Views\ProductSize\_ProductPartial.cshtml" />
     <Content Include="Views\StorageCellPreview\Index.cshtml" />
     <Content Include="Views\StorageCellPreview\_SearchPartial.cshtml" />
-    <Content Include="Views\Led\SearchPage.cshtml" />
     <Content Include="Views\Led\_AddPartial.cshtml" />
     <Content Include="Views\Led\_DeletePartial.cshtml" />
     <Content Include="Views\Led\_EditPartial.cshtml" />
     <Content Include="Views\Led\_SearchPartial.cshtml" />
     <Content Include="Views\Led\Index.cshtml" />
+    <Content Include="Views\Led\_LedGroupCodePartial.cshtml" />
+    <Content Include="Views\Led\_AddPartial2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
