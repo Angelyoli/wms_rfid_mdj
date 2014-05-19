@@ -89,7 +89,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.SMS.Dal", "THOK.SMS.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.SMS.DbModel", "THOK.SMS.DbModel\THOK.SMS.DbModel.csproj", "{90503686-2101-43DA-B8BA-473F0F3D7A41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THOK.SMS.Optimize", "THOK.SMS.Optimize\THOK.SMS.Optimize.csproj", "{50BD809C-BC8D-498E-9F09-A5C2593C5E43}"
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Authority.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -359,6 +364,16 @@ Global
 		{90503686-2101-43DA-B8BA-473F0F3D7A41}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{90503686-2101-43DA-B8BA-473F0F3D7A41}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{90503686-2101-43DA-B8BA-473F0F3D7A41}.Release|x86.ActiveCfg = Release|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -391,8 +406,6 @@ Global
 		{3857795F-03BB-49A4-B6CD-7B01AF22C563} = {C2CCF5EC-EA9C-42EE-A7CA-79FFAEF8071D}
 		{A83872B4-27B6-4521-91F2-060062551EB8} = {C2CCF5EC-EA9C-42EE-A7CA-79FFAEF8071D}
 		{90503686-2101-43DA-B8BA-473F0F3D7A41} = {C2CCF5EC-EA9C-42EE-A7CA-79FFAEF8071D}
-	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = Authority.vsmdi
+		{50BD809C-BC8D-498E-9F09-A5C2593C5E43} = {C2CCF5EC-EA9C-42EE-A7CA-79FFAEF8071D}
 	EndGlobalSection
 EndGlobal
