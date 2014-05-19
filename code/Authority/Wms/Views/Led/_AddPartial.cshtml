@@ -1,0 +1,206 @@
+﻿<script type="text/javascript">
+    var url;
+    var Add_fatherContentID;
+    var Add_moduleID;
+    $(function () {
+        $.extend($.fn.validatebox.defaults.rules, {
+            maxLength: {
+                validator: function (value, param) {
+                    return value.length <= param[0];
+                },
+                message: '不能超过{0}个字符.'
+            }
+        });
+    })
+    function addClick() {
+        AddLoad();
+        $('#dlg').dialog('open').dialog('setTitle', '新增');
+        $('#fm').form('clear');
+        $('#fm.easyui-validatebox').validatebox({
+            required: true
+        });
+        $('form input').removeAttr("disabled");
+        $('form textarea').removeAttr("disabled");
+        $('#contentCode').attr("readonly", false);
+        $('#addLedType').combo({
+            hasDownArrow: true
+        });
+        $('#addStatus').combo({
+            hasDownArrow: true
+        });
+        url = '/Led/Create/';
+    };
+
+    function save() {
+        if ($("#addLedType").combo("getValue") == "2") {
+            if ($("#addLedGroupCode").val() == "") {
+                $.messager.alert("提示", "父结点不能为空!", "info");
+                return false
+            }
+            if ($("#addLedIp").val() != "") {
+
+                $.messager.alert("提示", "分屏不能添加IP地址", "info");
+                return false
+            }
+        }
+        if ($("#addLedType").combo("getValue") == "1") {
+            if ($("#addLedGroupCode").val() != "") {
+                $.messager.alert("提示", "没有父节点!", "info");
+                return false
+            }
+        }
+        $('#fm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    $('#dlg').dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+
+    function AddLoad() {
+        $('#addStatus').combo({
+            required: true,
+            editable: false,
+            panelHeight: 45,
+            panelWidth: 130
+        });
+
+        $('#LedType').combo({
+            required: true,
+            editable: false,
+            panelHeight: 65,
+            panelWidth: 130
+        });
+    }
+    function LedGroupCodeSelect() {
+        $('#LedgroupData').dialog('open').dialog('setTitle', '选择父结点');
+        $('#LedGroupCodeDetail').datagrid({ url: '/Led/Details/?LedType=1' });
+        $("#LedGroupCodeDetail").datagrid('reload');
+    }
+</script>
+<div id="dlg" class="easyui-dialog" modal="true" style="width: 510px; height: 280px;
+    padding: 2px 2px" closed="true" buttons="#dlg-buttons">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px 10px; background: #fff;
+            border: 1px solid #ccc;">
+            <form id="fm" method="post">
+            <table width="480">               
+                <tr>
+                    <td width="60">
+                        Led编码:
+                    </td>
+                    <td width="168">
+                        <input id="addLedCode" name="LedCode" type="text" class="easyui-validatebox" required="true" />
+                    </td>
+                    <td width="60">
+                        分拣线:
+                    </td>
+                    <td width="168">
+                        <select id="addSortingLineCode" name="SortingLineCode" class="easyui-combobox" readonly="true"
+                            required="true">
+                            <option value="">请选择</option>
+                            <option value="01">分拣线A</option>
+                            <option value="02">分拣线B</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        名称:
+                    </td>
+                    <td width="168">
+                        <input id="addLedName" name="LedName" type="text" class="easyui-validatebox" required="true" />
+                    </td>
+                    <td width="60">
+                        类型:
+                    </td>
+                    <td width="168">
+                        <select id="addLedType" name="LedType" class="easyui-combobox" readonly="true" required="true">
+                            <option value="">请选择</option>
+                            <option value="1">整屏</option>
+                            <option value="2">分屏</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        IP地址:
+                    </td>
+                    <td width="168">
+                        <input name="LedIp" class="easyui-validatebox" id="addLedIp" />
+                    </td>
+                    <td width="60">
+                        状态:
+                    </td>
+                    <td width="168">
+                        <select id="addStatus" name="Status" class="easyui-combobox" readonly="true">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        X 轴坐标:
+                    </td>
+                    <td width="168">
+                        <input name="XAxes" class="easyui-validatebox" validtype="maxLength[50]" id="addXAxes" />
+                    </td>
+                    <td width="60">
+                        Y 轴坐标:
+                    </td>
+                    <td width="168">
+                        <input name="YAxes" id="addYAxes" class="easyui-validatebox" validtype="maxLength[50]" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="60">
+                        Led 宽:
+                    </td>
+                    <td width="168">
+                        <input name="Width" id="addWidth" required="true" />
+                    </td>
+                    <td width="60">
+                        Led 高:
+                    </td>
+                    <td width="168">
+                        <input name="Height" id="addHeight" required="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td width="70">
+                        顺序号:
+                    </td>
+                    <td width="168">
+                        <input id="addOrderNo" name="OrderNo" required="true" />
+                    </td>
+                    <td width="60">
+                        父级编号:
+                    </td>
+                    <td width="168">
+                        <input name="LedGroupCode" id="addLedGroupCode" />
+                        <a href="#" id="LedGroupCodeSearch" class="easyui-linkbutton" iconcls="icon-search"
+                            plain="true" onclick="LedGroupCodeSelect()"></a>
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="save()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">
+        取消</a>
+</div>

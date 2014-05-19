@@ -1,0 +1,54 @@
+﻿<script type="text/javascript">
+    var searchDialog;
+    var module = "BatchSort";
+    var searchKey = false;
+    var addKey = false;
+    var editKey = false;
+    var deleteKey = false;
+    var parentComNameKey = false;
+
+    function searchClick() {
+        $("input[type=text]").attr("value", "");
+        $('#searchStatus').combo({ editable: false });
+        $('#searchStatus').combo('setValue', "");
+        $('#searchOperateDate').datebox({ editable: false });
+        $('#searchOperateDate').datebox('setValue', "");
+        if (searchDialog == null) {
+            searchDialog = $('<div></div>').dialog({
+                title: '查询',
+                width: 280,
+                height: 200,
+                closed: true,
+                cache: false,
+                modal: true,
+                href: '/BatchSort/SearchPage/',
+                buttons: [{
+                    text: '查询',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        GetQueryParams();
+                    }
+                }, {
+                    text: '取消',
+                    iconCls: 'icon-cancel',
+                    handler: function () {
+                        searchDialog.dialog('close');
+                    }
+                }]
+            });
+        }
+        searchKey = true;
+        searchDialog.dialog('open');
+    };
+    function GetQueryParams() {
+        var queryParams = $('#details').datagrid('options').queryParams;
+        queryParams.Status = $('#searchStatus').combo('getValue');
+        queryParams.BatchName = $('#searchBatchName').val();
+        queryParams.OperateDate = $('#searchOperateDate').datebox('getValue');
+        queryParams.BatchNo = $('#searchBatchNo').val();
+        $('#details').datagrid('options').queryParams = queryParams;
+        $("#details").datagrid('load');
+        searchDialog.dialog('close');
+    }
+</script>
+<script type="text/javascript" src="../../Scripts/mykeyboardshortcuts.js"></script>

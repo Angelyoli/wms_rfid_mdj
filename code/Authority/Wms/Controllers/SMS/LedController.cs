@@ -4,23 +4,26 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-using THOK.SMS.DbModel;
-using THOK.Common.WebUtil;
 using THOK.Security;
 using Microsoft.Practices.Unity;
 using THOK.SMS.Bll.Interfaces;
+using THOK.SMS.DbModel;
+
+using THOK.Common.WebUtil;
 
 namespace Wms.Controllers.SMS
 {
-     [TokenAclAuthorize]
-    public class BatchSortController : Controller
+      [TokenAclAuthorize]
+    public class LedController : Controller
     {
         //
-        // GET: /BatchSort/
+        // GET: /Led/
 
-        [Dependency]
+          [Dependency]
 
-        public IBatchSortService BatchSortService { get; set; }
+          public ILedService LedService { get; set; }
+
+
 
         public ActionResult Index(string moduleID)
         {
@@ -43,50 +46,57 @@ namespace Wms.Controllers.SMS
         {
             return View();
         }
+        //
+        // GET: /Led/Details/5
 
-        public ActionResult Details(int page, int rows, string Status, string BatchNo, string BatchName,string OperateDate)
+        public ActionResult Details(int page, int rows, string Status, string LedName, string LedGroupCode, string LedType, string LedCode)
+
+        //public ActionResult Details(int page, int rows, string Status, string LedCode, string LedName, string LedType, string LedGroupCode)
         {
-            var srmDetail = BatchSortService.GetDetails(page, rows, Status, BatchNo, BatchName, OperateDate);
+
+            var srmDetail = LedService.GetDetails(page, rows, Status, LedName,LedGroupCode,LedType,LedCode);
             return Json(srmDetail, "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetBatch(int page, int rows, string queryString, string value)
-        {
 
-            if (queryString == null)
-            {
-                queryString = "BatchNo";
-            }
-            if (value == null)
-            {
-                value = "";
-            }
-            var batch =BatchSortService.GetBatch(page, rows, queryString, value);
-            return Json(batch, "text", JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Create(BatchSort BatchSort)
+     
+        public ActionResult Create(Led ledInfo)
         {
             string strResult = string.Empty;
-            bool bResult = BatchSortService.Add(BatchSort, out strResult);
+            bool bResult = LedService.Add(ledInfo, out strResult);
             string msg = bResult ? "新增成功" : "新增失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Edit(BatchSort BatchSort)
+        public ActionResult Edit(Led ledInfo)
         {
             string strResult = string.Empty;
-            bool bResult = BatchSortService.Save(BatchSort, out strResult);
+            bool bResult = LedService.Save(ledInfo, out strResult);
             string msg = bResult ? "修改成功" : "修改失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Delete(int BatchSortId)
+        public ActionResult Delete(string ledCode)
         {
             string strResult = string.Empty;
-            bool bResult = BatchSortService.Delete(BatchSortId, out strResult);
+            bool bResult = LedService.Delete(ledCode, out strResult);
             string msg = bResult ? "删除成功" : "删除失败";
             return Json(JsonMessageHelper.getJsonMessage(bResult, msg, strResult), "text", JsonRequestBehavior.AllowGet);
+        }
+
+          //获取
+        public ActionResult GetLedGroupCode(int page, int rows, string QueryString, string Value)
+        {
+            if (QueryString == null)
+            {
+                QueryString = "LedName";
+            }
+            if (Value == null)
+            {
+                Value = "";
+            }
+            var product = LedService.GetLedGroupCode(page, rows, QueryString, Value);
+            return Json(product, "text", JsonRequestBehavior.AllowGet);
         }
     }
 }
