@@ -48,7 +48,6 @@
     <Compile Include="Service\DeliverLineOptimizeService.cs" />
     <Compile Include="Service\ServiceBase.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\THOK.Common.Ef\THOK.Common.Ef.csproj">
       <Project>{59FB8EB5-F5B8-4423-8550-A7819C855CDE}</Project>
