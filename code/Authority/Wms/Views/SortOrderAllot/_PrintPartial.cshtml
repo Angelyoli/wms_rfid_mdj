@@ -1,0 +1,12 @@
+﻿<script type="text/javascript">
+    function printClick() {
+        var options = $('#master').datagrid('getPager').data("pagination").options;
+        window.location.href = "/SortOrderAllot/CreateExcelToClient/"
+                                + "?page=" + options.pageNumber
+                                + "&rows=" + options.pageSize
+                                + "&batchNo=" + $('#search-BatchNo').val()
+                                + "&orderId=" + $('#search-OrderId').val()
+                                + "&status=" + $('#search-Status').combo('getValue');
+    }
+</script>
+

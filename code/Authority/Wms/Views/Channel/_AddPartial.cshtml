@@ -1,0 +1,156 @@
+﻿<script type="text/javascript">
+    function addClick() {
+        $('#fm').form('clear');
+        $("#dlg-details").dialog("open").dialog("setTitle", "新增");
+        $('form input').removeAttr("disabled");
+        $('#details-ChannelCode').removeAttr('readonly');
+        url = '/Channel/Create/';
+    }
+
+    //查询分拣线
+    function SortingLineNameSearchClick() {
+        $('#dlg-SortingLine').dialog('open').dialog('setTitle', '选择分拣线');
+        $('#SortingLineDetails').datagrid({ url: '/SortingLine/Details/' });
+        $("#SortingLineDetails").datagrid('load');
+    }
+
+    //查询卷烟
+    function DefaultProductNameSearchClick() {
+        $('#productData').dialog('open').dialog('setTitle', '选择卷烟信息');
+        $('#productDetail').datagrid({ url: '/DefaultProductSet/LoadProduct/' });
+        $("#productDetail").datagrid('load');
+    }
+
+    //查询LED
+    function LedNameSearchClick() {
+        //todo:查询LED
+    }
+
+    //保存修改
+    function save() {
+        $('form input').removeAttr("disabled");
+        $('#fm').form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.success) {
+                    $.messager.alert(g_MsgBoxTitle, result.msg, "info");
+                    addKey = false;
+                    editKey = false;
+                    $("#dlg-details").dialog('close');
+                    $('#details').datagrid('reload');
+                } else {
+                    $.messager.alert(g_MsgBoxTitle, result.msg + '<br />' + result.data, "error");
+                    addKey = false;
+                    editKey = false;
+                    $('#details').datagrid('reload');
+                }
+            }
+        });
+    }
+</script>
+
+<div id="dlg-details" class="easyui-dialog" modal="true" style="width:520px;height:290px;padding:2px 2px" closed="true" buttons="#dlg-buttons-details">
+  <div fit="true" region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc">
+    <form id="fm" method="post">
+      <table >
+        <tr>
+           <td style="width:60px;">烟道代码：</td>
+           <td align="right" style="width:170px;"><input id="details-ChannelCode" name="ChannelCode" class="easyui-validatebox" required="true"/></td>
+           <td align="right" style="width:75px;">烟道名称：</td>
+           <td align="left" style="width:130px;"><input id="details-ChannelName" name="ChannelName" class="easyui-validatebox" required="true"/></td>
+        </tr>
+        <tr>
+           <td align="right" style="width:75px;">分拣线名称：</td>
+           <td align="left" style="width:170px;">
+               <input id="details-SortingLineCode" name="SortingLineCode" style="display: none;"/>
+               <input id="details-SortingLineName" name="SortingLineName" class="easyui-validatebox" readonly="readonly" required="true"/>
+               <a href="#" id="SortingLineNameSearch" class="easyui-linkbutton" iconcls="icon-search"
+                        plain="true" onclick="SortingLineNameSearchClick()"></a>
+           </td>
+           <td align="right" style="width:60px;">烟道类型：</td>
+           <td align="left" style="width:130px;">
+              <select id="details-ChannelType" name="ChannelType" class="easyui-combobox" style="width:130px" editable="false" panelHeight="105" required="true">
+                  <option value="1">叠垛机</option>
+                  <option value="2">立式机</option>
+                  <option value="3">通道机</option>
+                  <option value="4">卧式机</option>
+                  <option value="5">混合烟道</option>
+              </select></td>
+        </tr>
+        <tr>
+           <td align="right" style="width:75px;">预设卷烟：</td>
+           <td align="left" style="width:170px;">
+               <input id="details-DefaultProductCode" name="DefaultProductCode" style="display: none;"/>
+               <input id="details-DefaultProductName" name="DefaultProductName" class="easyui-validatebox" readonly="readonly"/>
+               <a href="#" id="DefaultProductNameSearch" class="easyui-linkbutton" iconcls="icon-search"
+                        plain="true" onclick="DefaultProductNameSearchClick()"></a>
+           </td>
+           <td align="right" style="width:60px;">提前量：</td>
+           <td align="left" style="width:130px;">
+               <input id="details-RemainQuantity" name="RemainQuantity" class="easyui-numberbox" required="true" placeholder="请输入数字"/>
+           </td>
+        </tr>
+        <tr>
+           <td align="right" style="width:75px;">补货中间量：</td>
+           <td align="left" style="width:170px;">
+               <input id="details-MiddleQuantity" name="MiddleQuantity" class="easyui-numberbox" required="true" placeholder="请输入数字"/>
+           </td>
+           <td align="right" style="width:60px;">最大缓存量：</td>
+           <td align="left" style="width:130px;">
+               <input id="details-MaxQuantity" name="MaxQuantity" class="easyui-numberbox" required="true" placeholder="请输入数字"/>
+           </td>
+        </tr>
+        <tr>
+           <td align="right" style="width:75px;">Led屏名称：</td>
+           <td align="left" style="width:170px;">
+               <input id="details-LedCode" name="LedCode" style="display:none"/>
+               <input id="details-LedName" name="LedName" class="easyui-validatebox"/>
+               <a href="#" id="LedNameSearch" class="easyui-linkbutton" iconcls="icon-search"
+                        plain="true" onclick="LedNameSearchClick()"></a>
+           </td>
+           <td align="right" style="width:60px;">组　　号：</td>
+           <td align="left" style="width:130px;">
+               <select id="details-GroupNo" name="GroupNo" class="easyui-combobox" style="width:130px" editable="false" panelHeight="45" required="true">
+                        <option value="1">A线</option>
+                        <option value="2">B线</option>
+               </select>
+           </td>
+        </tr>
+        <tr>
+           <td align="right" style="width:75px;">顺序号：</td>
+           <td align="left" style="width:170px;">
+               <input id="details-OrderNo" name="OrderNo" class="easyui-numberbox" placeholder="请输入数字" required="true"/>
+           </td>
+           <td align="right" style="width:60px;">物理地址：</td>
+           <td align="left" style="width:130px;">
+               <input id="details-Address" name="Address" class="easyui-numberbox" placeholder="请输入数字" required="true"/>
+           </td>
+        </tr>
+        <tr>
+           <td align="right" style="width:75px;">货位代码：</td>
+           <td align="left" style="width:170px;">
+               <input id="details-CellCode" name="CellCode" class="easyui-validatebox"/>
+           </td>
+           <td align="right" style="width:60px;">状　　态：</td>
+           <td align="left" style="width:130px;">
+               <select id="details-Status" name="Status" class="easyui-combobox" style="width:130px" editable="false" panelHeight="45" required="true">
+                     <option value="1">可　用</option>
+                     <option value="2">不可用</option>
+               </select>
+           </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+<div id="dlg-buttons-details">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">确定</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-details').dialog('close')">取消</a>
+</div>
+
+@Html.Partial("_ProductPartial")
+@Html.Partial("_SortingLinePartial")

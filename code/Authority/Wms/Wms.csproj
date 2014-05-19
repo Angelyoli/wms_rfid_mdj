@@ -165,6 +165,7 @@
     <Compile Include="Controllers\SMS\BatchSortController.cs" />
     <Compile Include="Controllers\SMS\ChannelController.cs" />
     <Compile Include="Controllers\SMS\LedController.cs" />
+    <Compile Include="Controllers\SMS\SortOrderAllotController.cs" />
     <Compile Include="Controllers\WCS\TaskRestController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\PdaTaskController.cs" />
     <Compile Include="Controllers\WMS\AutomotiveSystems\StockCheckTaskController.cs" />
@@ -2020,6 +2021,14 @@
     <Content Include="Views\Channel\Index.cshtml" />
     <Content Include="Views\BatchSort\_BatchPartial.cshtml" />
     <Content Include="Views\BatchSort\AddPage.cshtml" />
+    <Content Include="Views\Channel\Index.cshtml" />
+    <Content Include="Views\Channel\_SearchPartial.cshtml" />
+    <Content Include="Views\Channel\_AddPartial.cshtml" />
+    <Content Include="Views\Channel\_ProductPartial.cshtml" />
+    <Content Include="Views\Channel\_SortingLinePartial.cshtml" />
+    <Content Include="Views\Channel\_EditPartial.cshtml" />
+    <Content Include="Views\Channel\_DeletePartial.cshtml" />
+    <Content Include="Views\Channel\_PrintPartial.cshtml" />
     <None Include="Views\Home\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Home\_LogonPartial.cshtml" />
     <Content Include="Views\Home\_MenuPartial.cshtml" />
@@ -2470,6 +2479,9 @@
     <Content Include="Views\Led\Index.cshtml" />
     <Content Include="Views\Led\_LedGroupCodePartial.cshtml" />
     <Content Include="Views\Led\_AddPartial2.cshtml" />
+    <Content Include="Views\SortOrderAllot\Index.cshtml" />
+    <Content Include="Views\SortOrderAllot\_SearchPartial.cshtml" />
+    <Content Include="Views\SortOrderAllot\_PrintPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />

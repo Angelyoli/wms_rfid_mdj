@@ -1,0 +1,41 @@
+﻿<script type="text/javascript">
+    function editClick() {
+        var selectedRow = $('#details').datagrid('getSelected');
+        if (selectedRow) {
+            $("#dlg-details").dialog("open").dialog("setTitle", "编辑");
+            url = '/Channel/Edit/';
+            $('#fm').form('load', selectedRow);
+            $('form input').removeAttr("disabled");
+            $('#details-ChannelCode').attr('readonly', 'true');
+            switch (selectedRow.ChannelType) {
+                case "叠垛机":
+                    $('#details-ChannelType').combo('setValue', 1).combo('setText', selectedRow.ChannelType);
+                    break;
+                case "立式机":
+                    $('#details-ChannelType').combo('setValue', 2).combo('setText', selectedRow.ChannelType);
+                    break;
+                case "通道机":
+                    $('#details-ChannelType').combo('setValue', 3).combo('setText', selectedRow.ChannelType);
+                    break;
+                case "卧式机":
+                    $('#details-ChannelType').combo('setValue', 4).combo('setText', selectedRow.ChannelType);
+                    break;
+                case "混合烟道":
+                    $('#details-ChannelType').combo('setValue', 5).combo('setText', selectedRow.ChannelType);
+                    break;
+            }
+            if (selectedRow.Status == 'A线') {
+                $('#details-GroupNo').combo('setValue', 1).combo('setText', selectedRow.GroupNo);
+            } else {
+                $('#details-GroupNo').combo('setValue', 2).combo('setText', selectedRow.GroupNo);
+            }
+            if (selectedRow.Status == '可用') {
+                $('#details-Status').combo('setValue', 1).combo('setText', selectedRow.Status);
+            } else {
+                $('#details-Status').combo('setValue', 2).combo('setText', selectedRow.Status);
+            }
+        } else {
+            $.messager.alert('提示', '没有选择行！', 'info');
+        }
+    }
+</script>

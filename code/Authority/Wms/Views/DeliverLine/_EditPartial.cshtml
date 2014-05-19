@@ -5,20 +5,20 @@
             $('#dlg').dialog('open').dialog('setTitle', '编辑配送线路信息');
             editKey = true;
             $('#deliverlinefm').form('load', row);
-            $('#deliverlinefm.easyui-validatebox').validatebox({
-                required:  true
+            $('#deliverlinefm　.easyui-validatebox').validatebox({
+                required: true
             });
-            if (row.IsActive == "可用") {
-                $('#L_isActive').combo('setValue', 1).combo('setText', row.IsActive);
-            } else {
-                $('#L_isActive').combo('setValue', 0).combo('setText', row.IsActive);
-            }
             $('form input').removeAttr("disabled");
             $('form textarea').removeAttr("disabled");
             $('#deliverLineCode1').attr("readonly", true);
             $('#L_isActive').combo({
                 hasDownArrow: true
             });
+            if (row.IsActive == "可用") {
+                $('#L_isActive').combo('setValue', 1).combo('setText', row.IsActive);
+            } else {
+                $('#L_isActive').combo('setValue', 0).combo('setText', row.IsActive);
+            }
             url = '/DeliverLine/Edit/';
 
         } else {

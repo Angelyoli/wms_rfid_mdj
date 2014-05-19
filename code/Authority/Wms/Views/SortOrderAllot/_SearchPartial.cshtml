@@ -1,0 +1,49 @@
+﻿<script type="text/javascript">
+    function searchClick() {
+        $('#dlg-search input').val("");
+        $('#dlg-search').dialog('open').dialog('setTitle', '查询');
+    }
+
+    function select() {
+        var queryParams = $('#master').datagrid('options').queryParams;
+        queryParams.BatchNo = $("#search-BatchNo").val();
+        queryParams.OrderId = $("#search-OrderId").val();
+        queryParams.Status = $("#search-Status").combo('getValue');
+        $('#master').datagrid('options').queryParams = queryParams;
+        $('#master').datagrid({
+            pageNumber: 1
+        });
+        $('#dlg-search').dialog("close");
+    }
+</script>
+<div id="dlg-search" class="easyui-dialog" modal="true" style="width:280px;height:200px;padding:2px 2px"
+		closed="true" buttons="#dlg-buttons-search">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding:10px 10px;background:#fff;border:1px solid #ccc; ">
+            <table width ="250">
+                <tr>
+                    <td width="60">批次号：</td>
+                    <td><input id="search-BatchNo" class="easyui-numberbox" placeholder="请输入数字"/></td>
+                </tr>
+                <tr>
+                    <td width="60">订单编码：</td>
+                    <td><input id="search-OrderId" /></td>
+                </tr>
+                <tr>
+                    <td width="60">任务状态：</td>
+                    <td><select id="search-Status" class="easyui-combobox" style="width:130px" editable="false" panelHeight="105">
+                        <option value="">　</option>
+                        <option value="01">已分配</option>
+                        <option value="02">已中止</option>
+                        <option value="03">已完成</option>
+                        <option value="04">已结单</option>
+                    </select></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="dlg-buttons-search">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="select()">查询</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg-search').dialog('close')">取消</a>
+</div>

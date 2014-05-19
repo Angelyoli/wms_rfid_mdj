@@ -1,0 +1,70 @@
+﻿<script type="text/javascript">
+    $(function () {
+        $('#SortingLineDetails').datagrid({
+            //双击赋值
+            onDblClickRow: function () {
+                sortingLineSave();
+            }
+        })
+    });
+
+    //保存选择
+    function sortingLineSave() {
+        var selectedRow = $('#SortingLineDetails').datagrid('getSelected');
+        if (selectedRow) {
+            if (selectedRow.IsActive == '可用') {
+                $('#details-SortingLineCode').val(selectedRow.SortingLineCode);
+                $('#details-SortingLineName').val(selectedRow.SortingLineName);
+                $('#dlg-SortingLine').dialog('close');
+            } else {
+                $.messager.alert('提示', '请选择可用分拣线！！', 'warning');
+            }
+        }
+    }
+
+    //查询
+    function SortingLineQueryClick() {
+        var queryParams = $('#SortingLineDetails').datagrid('options').queryParams;
+        if ($("#querySortingLineType").combo("getValue") == "SortingLineCode") {
+            queryParams.SortingLineCode = $("#SortingLineInfo").val();
+        } else if ($("#querySortingLineType").combo("getValue") == "SortingLineName") {
+            queryParams.SortingLineName = $("#SortingLineInfo").val();
+        }
+        alert(queryParams.SortingLineCode + "  " + queryParams.SortingLineName);
+        $('#SortingLineDetails').datagrid('options').queryParams = queryParams;
+        $('#SortingLineDetails').datagrid({
+            pageNumber: 1
+        });
+    }
+</script>
+<div id="dlg-SortingLine" class="easyui-dialog" modal="true" style="width:500px;height:410;padding:2px 2px" closed="true"
+  buttons="#dlg-buttons-SortingLine">
+  <div id="btnSortingLineQuery">
+  <form id="fm-SortingLine">
+    <select id="querySortingLineType" class="easyui-combobox" style="width:100px;" editable="false" panelHeight="45px">
+        <option value="SortingLineCode">分拣线代码</option>
+        <option value="SortingLineName">分拣线名称</option>
+    </select>
+    <input id="SortingLineInfo" class="easyui-validatebox"/>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="SortingLineQueryClick()">查询</a>
+  </form>
+  </div>
+  <div split="true" border="false" style="width:480px;height:310px;">
+    <table id="SortingLineDetails" class="easyui-datagrid" border="false" toolbar="#btnSortingLineQuery" pageSize="10"
+      singleselect="true" fit="true" fitcolumns="true" pagination="true" rownumbers="true">
+      <thead>
+        <tr>
+          <th field="SortingLineCode" width="70">分拣线代码</th>
+          <th field="SortingLineName" width="100">分拣线名称</th>
+          <th field="IsActive" width="40">是否可用</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+</div>
+
+<div id="dlg-buttons-SortingLine">
+    <a href="#" class="easyui-linkbutton" iconcls="icon-ok" onclick="sortingLineSave()">确定</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg-SortingLine').dialog('close')">
+        取消</a>
+</div>

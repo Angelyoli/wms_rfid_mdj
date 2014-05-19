@@ -1,0 +1,13 @@
+﻿<script type="text/javascript">
+    function deleteClick() { 
+        var selectedRow = $('#details').datagrid('getSelected');
+        if (selectedRow) {
+            url = '/Channel/Delete/?channelCode=' + selectedRow.ChannelCode;
+            $("#dlg-details").dialog("open").dialog("setTitle", "删除");
+            $('#fm').form('load', selectedRow);
+            $('form input').attr("disabled", "disabled");
+        } else {
+            $.messager.alert('提示', '没有选择行！', 'info');
+        }
+    }
+</script>
